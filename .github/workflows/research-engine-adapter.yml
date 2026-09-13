@@ -1,0 +1,26 @@
+name: Engine Adapter Research Verify
+
+on:
+  pull_request:
+    paths:
+      - 'docs/ENGINE_ADAPTER_ARCHITECTURE.md'
+      - 'contracts/engine-contract.schema.json'
+      - 'contracts/adapter-contract.schema.json'
+      - 'contracts/binding-profile.schema.json'
+      - 'src/engine-adapter-contract.mjs'
+      - 'test/engine-adapter-contract.test.mjs'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Parse contracts
+        run: node -e "for (const f of ['contracts/engine-contract.schema.json','contracts/adapter-contract.schema.json','contracts/binding-profile.schema.json']) JSON.parse(require('fs').readFileSync(f,'utf8')); console.log('contracts ok')"
+      - name: Syntax check
+        run: node --check src/engine-adapter-contract.mjs
+      - name: Synthetic tests
+        run: node --test test/engine-adapter-contract.test.mjs
