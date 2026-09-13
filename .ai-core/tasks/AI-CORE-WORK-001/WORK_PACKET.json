@@ -1,0 +1,36 @@
+{
+  "task_id": "AI-CORE-WORK-001",
+  "owner": "work",
+  "status": "WORK_ACTIVE",
+  "source_repo": "freepass-creator/ai-core",
+  "source_branch": "feature/orchestrator-v0.1",
+  "target_work_branch": "work/ai-core-v0.2",
+  "goal": "Execute, validate, and harden the current AI Core v0.2 candidate in a real repository environment.",
+  "allowed_scope": [
+    "src/**",
+    "test/**",
+    "examples/**",
+    "contracts/**",
+    ".github/workflows/verify.yml",
+    "package.json",
+    "documentation strictly required for the implementation result"
+  ],
+  "required_checks": [
+    "node --test",
+    "node src/cli.mjs examples/freepass-product-detail.json",
+    "node src/demo-page.mjs"
+  ],
+  "evidence_required": [
+    "start_sha",
+    "end_sha",
+    "commands_executed",
+    "test_counts",
+    "failures_and_skips",
+    "changed_files",
+    "unresolved_issues",
+    "work_result_status"
+  ],
+  "success_condition": "All declared checks actually execute against the final end_sha, with no hidden failures/skips, and any remaining limitations are explicit.",
+  "authorization": "NO_MERGE_NO_DEPLOY",
+  "handoff_to": "chat_review"
+}
