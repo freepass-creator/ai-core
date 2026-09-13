@@ -1,0 +1,22 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://freepass.local/ai-core/outcome-record.schema.json",
+  "title":"AI Core Outcome Record",
+  "type":"object",
+  "required":["task_signature","route","subject_revision","verification_status","elapsed_seconds","rework_count","context_items_loaded","first_pass_success","false_pass","regression"],
+  "properties":{
+    "task_signature":{"type":"string","minLength":1},
+    "route":{"enum":["GPT_DIRECT","WORK_CODEX","LOCAL_REQUIRED","HUMAN_GATE"]},
+    "subject_revision":{"type":"string","minLength":1},
+    "verification_status":{"enum":["VERIFIED","FAILED","PARTIAL"]},
+    "elapsed_seconds":{"type":"number","minimum":0},
+    "rework_count":{"type":"integer","minimum":0},
+    "context_items_loaded":{"type":"integer","minimum":0},
+    "first_pass_success":{"type":"boolean"},
+    "false_pass":{"type":"boolean"},
+    "regression":{"type":"boolean"},
+    "evidence_refs":{"type":"array","items":{"type":"string"}},
+    "notes":{"type":"string"}
+  },
+  "additionalProperties":true
+}
