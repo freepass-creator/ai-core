@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-core.local/contracts/proof-bundle.schema.json",
+  "title": "Proof Bundle",
+  "type": "object",
+  "required": ["task_id", "subject_revision", "requirements", "checks", "unknowns", "deployment_state", "outcome_state"],
+  "properties": {
+    "task_id": {"type": "string", "minLength": 1},
+    "subject_revision": {"type": "string", "minLength": 1},
+    "requirements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "status"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "status": {"enum": ["PASS", "FAIL", "PARTIAL", "UNKNOWN"]},
+          "evidence_refs": {"type": "array", "items": {"type": "string"}}
+        },
+        "additionalProperties": true
+      }
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "status", "executed"],
+        "properties": {
+          "name": {"type": "string"},
+          "status": {"enum": ["PASS", "FAIL", "SKIP", "UNKNOWN"]},
+          "executed": {"type": "boolean"},
+          "evidence_ref": {"type": ["string", "null"]}
+        },
+        "additionalProperties": true
+      }
+    },
+    "preview_refs": {"type": "array", "items": {"type": "string"}},
+    "changed_files": {"type": "array", "items": {"type": "string"}},
+    "unknowns": {"type": "array", "items": {"type": "string"}},
+    "rollback": {"type": ["string", "null"]},
+    "deployment_state": {"enum": ["NOT_REQUESTED", "NOT_DEPLOYED", "DEPLOYED", "FAILED", "UNKNOWN"]},
+    "outcome_state": {"enum": ["NOT_MEASURED", "OBSERVED", "INCONCLUSIVE"]}
+  },
+  "additionalProperties": true
+}
