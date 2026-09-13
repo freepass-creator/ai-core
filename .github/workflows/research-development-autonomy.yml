@@ -4,11 +4,16 @@ on:
   pull_request:
     paths:
       - 'src/development-autonomy.mjs'
+      - 'src/development-continuity.mjs'
       - 'test/development-autonomy.test.mjs'
+      - 'test/development-continuity.test.mjs'
       - 'contracts/project-capsule.schema.json'
       - 'contracts/change-packet.schema.json'
       - 'contracts/proof-bundle.schema.json'
+      - 'contracts/requirement-graph.schema.json'
+      - 'contracts/dev-episode.schema.json'
       - 'docs/DEVELOPMENT_AUTONOMY_LADDER.md'
+      - 'docs/DEVELOPMENT_CONTINUITY.md'
 
 jobs:
   verify:
@@ -19,8 +24,10 @@ jobs:
         with:
           node-version: '22'
       - name: Parse contracts
-        run: node -e "for (const f of ['contracts/project-capsule.schema.json','contracts/change-packet.schema.json','contracts/proof-bundle.schema.json']) JSON.parse(require('fs').readFileSync(f,'utf8')); console.log('contracts ok')"
+        run: node -e "for (const f of ['contracts/project-capsule.schema.json','contracts/change-packet.schema.json','contracts/proof-bundle.schema.json','contracts/requirement-graph.schema.json','contracts/dev-episode.schema.json']) JSON.parse(require('fs').readFileSync(f,'utf8')); console.log('contracts ok')"
       - name: Syntax check
-        run: node --check src/development-autonomy.mjs
+        run: |
+          node --check src/development-autonomy.mjs
+          node --check src/development-continuity.mjs
       - name: Synthetic tests
-        run: node --test test/development-autonomy.test.mjs
+        run: node --test test/development-autonomy.test.mjs test/development-continuity.test.mjs
