@@ -8,7 +8,7 @@ The system should optimize for **fastest path that preserves required evidence**
 
 ## Current priority — Development first
 
-The user has explicitly prioritized development as the first domain to make materially easier. Near-term research and implementation should therefore focus on reducing repeated explanation, repeated repository discovery, handoff loss, stale requirements, manual verification, preview friction, and release uncertainty.
+The user has explicitly prioritized development as the first domain to make materially easier. Near-term research and implementation should therefore focus on reducing repeated explanation, repeated repository discovery, handoff loss, stale requirements, manual verification, preview friction, release uncertainty, and duplicated integration logic.
 
 First development research reference: `docs/DEVELOPMENT_RUNTIME.md`.
 
@@ -18,11 +18,25 @@ Priority building blocks:
 2. Change Compiler — user intent → executable development contract / acceptance criteria.
 3. Proof Bundle — revision-bound evidence returned by Work/Codex instead of prose-only "done" claims.
 4. Requirement Continuity — stable requirement IDs, user-confirmed vs AI-inferred provenance, requirement-set digest, stale-plan detection, Development Episode state, minimal Plan Slice.
-5. Codebase Twin + Impact Planner — read-only code graph and minimal-change impact planning.
-6. Sandbox/Preview + Verification Fabric + Release Gate — isolated execution, visible preview, layered proof, safe release/rollback.
-7. Failure Memory + Development Portfolio — reuse prior fixes and prevent multi-agent/project conflicts.
+5. Engine / Port / Adapter contracts — separate business/domain logic from provider/project mapping, transport, binding, and runtime orchestration. Research: PR #15 / `research/engine-adapter-contract-v0.1`; DevCenter adoption proposal: issue #2.
+6. Codebase Twin + Impact Planner — read-only code graph and minimal-change impact planning.
+7. Sandbox/Preview + Verification Fabric + Release Gate — isolated execution, visible preview, layered proof, safe release/rollback.
+8. Failure Memory + Development Portfolio — reuse prior fixes and prevent multi-agent/project conflicts.
 
 These are research candidates, not adopted project rules. Existing project SSOT, DevCenter baseline, Work Packet, and authority boundaries remain controlling.
+
+### Engine / Adapter working model
+
+- Engine = business/domain calculation, rules, validation, or state-transition logic.
+- Port = abstract semantic contract required/provided by an Engine.
+- Adapter = project/provider-specific implementation of a Port, including field/unit mapping and controlled side effects.
+- Connector = low-level HTTP/DB/API transport.
+- Binding Profile = revision-bound project/environment wiring of Engine ports to Adapters.
+- Runtime = execution order, run state, retries, proof, and orchestration across Engines/Adapters.
+
+Invariant: **Engine owns meaning; Adapter owns connection; Connector owns transport; Runtime owns execution state.**
+
+Current DevCenter `engine/` is documented as a future common executor/runtime, not a mature domain-engine catalog. `capabilities/integrations` is already described as the location for external API/data contracts and adapters. Do not move folders yet; formalize contracts and pilot one real function first.
 
 ## Current model
 
@@ -151,7 +165,7 @@ The ideal memory query is: **what missing fact could change the decision, and wh
 
 ## Immediate research frontier
 
-1. Development Runtime + Continuity: shadow-test Project Capsule / Change Compiler / Proof Bundle / Living Requirement Graph / Development Episode first, then Codebase Twin / Impact Planner / Preview+Verification.
+1. Development Runtime + Continuity + Engine/Adapter contracts: shadow-test Project Capsule / Change Compiler / Proof Bundle / Living Requirement Graph / Development Episode / one Engine+Adapter pilot first, then Codebase Twin / Impact Planner / Preview+Verification.
 2. Human Stewardship: test whether goal/portfolio/agency/follow-through framing improves actual human outcomes.
 3. Commitment Graph: track active promises, deadlines, dependencies, waiting-on, blockers, and superseded commitments.
 4. Opportunity Radar: surface high-value opportunities/risks with evidence without auto-executing them.
