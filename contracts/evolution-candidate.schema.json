@@ -1,0 +1,25 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://freepass.local/ai-core/evolution-candidate.schema.json",
+  "title":"AI Core Evolution Candidate",
+  "type":"object",
+  "required":["candidate_id","origin","before_failure","mechanism","prediction","scope","limits"],
+  "properties":{
+    "candidate_id":{"type":"string","minLength":1},
+    "origin":{"enum":["ai-core","aiops","devcenter","project"]},
+    "before_failure":{"type":"string","minLength":1},
+    "mechanism":{"type":"string","minLength":1},
+    "prediction":{"type":"string","minLength":1},
+    "scope":{"enum":["LOCAL","DOMAIN","UNIVERSAL"]},
+    "evidence":{"type":"array","items":{"type":"object"}},
+    "outcomes":{"type":"array","items":{"type":"object"}},
+    "cost":{"type":"object"},
+    "limits":{"type":"array","items":{"type":"string"},"minItems":1},
+    "transfer":{"type":"object","properties":{
+      "positive_conditions":{"type":"array","items":{"type":"string"}},
+      "negative_conditions":{"type":"array","items":{"type":"string"}},
+      "outside_origin_successes":{"type":"integer","minimum":0}
+    }}
+  },
+  "additionalProperties":true
+}
