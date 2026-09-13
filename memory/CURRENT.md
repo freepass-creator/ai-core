@@ -6,6 +6,23 @@ Build an AI operating system that does more than answer prompts: it should under
 
 The system should optimize for **fastest path that preserves required evidence**, not speed alone.
 
+## Current priority — Development first
+
+The user has explicitly prioritized development as the first domain to make materially easier. Near-term research and implementation should therefore focus on reducing repeated explanation, repeated repository discovery, handoff loss, manual verification, preview friction, and release uncertainty.
+
+First development research reference: `docs/DEVELOPMENT_RUNTIME.md`.
+
+Priority building blocks:
+
+1. Project Capsule — thin machine-readable project entry point bound to source revision.
+2. Change Compiler — user intent → executable development contract / acceptance criteria.
+3. Proof Bundle — revision-bound evidence returned by Work/Codex instead of prose-only "done" claims.
+4. Codebase Twin + Impact Planner — read-only code graph and minimal-change impact planning.
+5. Sandbox/Preview + Verification Fabric + Release Gate — isolated execution, visible preview, layered proof, safe release/rollback.
+6. Failure Memory + Development Portfolio — reuse prior fixes and prevent multi-agent/project conflicts.
+
+These are research candidates, not adopted project rules. Existing project SSOT, DevCenter baseline, Work Packet, and authority boundaries remain controlling.
+
 ## Current model
 
 ### Human-facing layer
@@ -117,10 +134,11 @@ The ideal memory query is: **what missing fact could change the decision, and wh
 
 ## Immediate research frontier
 
-1. Human Stewardship: test whether goal/portfolio/agency/follow-through framing improves actual human outcomes.
-2. Commitment Graph: track active promises, deadlines, dependencies, waiting-on, blockers, and superseded commitments.
-3. Opportunity Radar: surface high-value opportunities/risks with evidence without auto-executing them.
-4. Simulation/Foresight: test reversible scenarios before expensive/irreversible action.
-5. Real shadow pilots across development, documents, and non-development human workflows.
+1. Development Runtime: test Project Capsule / Change Compiler / Proof Bundle first, then Codebase Twin / Impact Planner / Preview+Verification.
+2. Human Stewardship: test whether goal/portfolio/agency/follow-through framing improves actual human outcomes.
+3. Commitment Graph: track active promises, deadlines, dependencies, waiting-on, blockers, and superseded commitments.
+4. Opportunity Radar: surface high-value opportunities/risks with evidence without auto-executing them.
+5. Simulation/Foresight: test reversible scenarios before expensive/irreversible action.
+6. Real shadow pilots across development, documents, and non-development human workflows.
 
 Until those are tested, they remain research candidates.
