@@ -1,0 +1,16 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://freepass.local/ai-core/institution.schema.json",
+  "title":"AI Core Federation Institution",
+  "type":"object",
+  "required":["id","kind","status"],
+  "properties":{
+    "id":{"type":"string","pattern":"^(core|plane|center)\\.[a-z0-9_.-]+$"},
+    "kind":{"enum":["core","plane","center"]},
+    "status":{"enum":["candidate","logical","proposed","adopted","suspended","retired"]},
+    "repository":{"type":"string"},
+    "source":{"type":"string"},
+    "aliases":{"type":"array","items":{"type":"string"},"uniqueItems":true}
+  },
+  "additionalProperties":true
+}
