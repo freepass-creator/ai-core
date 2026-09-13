@@ -1,0 +1,26 @@
+name: Precision-Speed Research Verify
+
+on:
+  pull_request:
+    paths:
+      - 'src/self-improvement-loop.mjs'
+      - 'src/precision-speed-controller.mjs'
+      - 'test/self-improvement-loop.test.mjs'
+      - 'test/precision-speed-controller.test.mjs'
+      - 'contracts/outcome-record.schema.json'
+      - 'docs/PRECISION_SPEED_LEARNING.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  synthetic-verification:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Run self-improvement and precision-speed synthetic tests
+        run: node --test test/self-improvement-loop.test.mjs test/precision-speed-controller.test.mjs
