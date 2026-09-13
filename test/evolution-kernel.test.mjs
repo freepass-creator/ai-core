@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {
   compileEvolutionPlan,
   createImprovementCandidate,
+  derivePreflightSignals,
   evaluateTransferGate,
   reviewLensesFor,
   routeImprovementSignal
@@ -12,6 +13,14 @@ test('routes operational, development and core gaps to their owning systems', ()
   assert.equal(routeImprovementSignal({ kind: 'operational_failure' }), 'aiops');
   assert.equal(routeImprovementSignal({ kind: 'capability_gap' }), 'devcenter');
   assert.equal(routeImprovementSignal({ kind: 'routing_gap' }), 'ai-core');
+  assert.equal(routeImprovementSignal({
+    kind: 'conversation_lesson',
+    domains: ['legal']
+  }), 'aiops');
+  assert.equal(routeImprovementSignal({
+    kind: 'conversation_lesson',
+    domains: ['development']
+  }), 'devcenter');
 });
 
 test('development work receives proactive lenses the user did not have to enumerate', () => {
@@ -19,6 +28,12 @@ test('development work receives proactive lenses the user did not have to enumer
   assert.ok(lenses.includes('security_privacy_and_authority'));
   assert.ok(lenses.includes('deployment_migration_rollback_and_compatibility'));
   assert.ok(lenses.includes('observability_and_real_outcome'));
+});
+
+test('legal work receives current-authority and responsible-review lenses', () => {
+  const lenses = reviewLensesFor({ domain: 'legal' });
+  assert.ok(lenses.includes('current_official_law_and_case_authority'));
+  assert.ok(lenses.includes('responsible_human_final_review'));
 });
 
 test('an improvement signal creates a candidate but never auto-adopts it', () => {
@@ -83,4 +98,18 @@ test('invalid observations are rejected without crashing the evolution plan', ()
   assert.equal(plan.candidates.length, 1);
   assert.equal(plan.rejected.length, 1);
   assert.equal(plan.auto_adopted, false);
+});
+
+test('missing current legal authority becomes an AIOPS knowledge candidate', () => {
+  const signals = derivePreflightSignals({
+    task: { task_id: 'LEGAL-1', domain: 'legal' },
+    sourceBindings: [{
+      system: 'domain',
+      kind: 'current_authority',
+      required: true,
+      status: 'HOLD'
+    }]
+  });
+  const candidate = createImprovementCandidate(signals[0], { taskId: 'LEGAL-1' });
+  assert.equal(candidate.target_system, 'aiops');
 });

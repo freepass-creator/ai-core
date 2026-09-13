@@ -13,6 +13,16 @@ const SIGNAL_TARGET = Object.freeze({
   cross_system_conflict: 'ai-core'
 });
 
+const CONVERSATION_DOMAIN_TARGET = Object.freeze({
+  development: 'devcenter',
+  legal: 'aiops',
+  business: 'aiops',
+  document: 'aiops',
+  communication: 'aiops',
+  general: 'ai-core',
+  core: 'ai-core'
+});
+
 const DEVELOPMENT_REVIEW_LENSES = Object.freeze([
   'requirements_and_done_when',
   'ssot_and_source_revision',
@@ -27,11 +37,40 @@ const DEVELOPMENT_REVIEW_LENSES = Object.freeze([
 ]);
 
 const DOCUMENT_REVIEW_LENSES = Object.freeze([
-  'source_accuracy_and_revision',
-  'structure_and_visual_hierarchy',
-  'privacy_and_audience',
+  'purpose_audience_and_requested_action',
+  'source_claim_citation_and_revision_alignment',
+  'cross_section_number_term_and_date_consistency',
+  'structure_visual_hierarchy_and_reader_clarity',
+  'privacy_confidentiality_and_audience',
   'rendering_and_export_integrity',
   'accessibility_and_reuse'
+]);
+
+const LEGAL_REVIEW_LENSES = Object.freeze([
+  'objective_jurisdiction_issues_and_remedy',
+  'fact_evidence_opponent_claim_inference_authority_uncertainty',
+  'sourced_chronology_and_procedural_deadlines',
+  'current_official_law_and_case_authority',
+  'adverse_evidence_counterarguments_and_exceptions',
+  'citation_quote_and_evidence_number_integrity',
+  'confidentiality_privilege_and_minimum_disclosure',
+  'responsible_human_final_review'
+]);
+
+const BUSINESS_REVIEW_LENSES = Object.freeze([
+  'contract_revenue_cash_customer_behavior_and_outcome_separation',
+  'cost_margin_cashflow_and_working_capital',
+  'assumptions_scenarios_sensitivity_and_unknowns',
+  'downside_risk_stop_conditions_and_reversibility',
+  'baseline_metric_time_horizon_and_measured_outcome'
+]);
+
+const COMMUNICATION_REVIEW_LENSES = Object.freeze([
+  'sender_recipient_channel_and_authority',
+  'fact_number_promise_attachment_accuracy',
+  'tone_relationship_and_minimum_disclosure',
+  'recipient_action_deadline_and_reply_path',
+  'draft_approval_delivery_receipt_and_outcome_separation'
 ]);
 
 const GENERAL_REVIEW_LENSES = Object.freeze([
@@ -45,10 +84,19 @@ const GENERAL_REVIEW_LENSES = Object.freeze([
 export function reviewLensesFor(task) {
   if (task?.domain === 'development') return [...DEVELOPMENT_REVIEW_LENSES];
   if (task?.domain === 'document') return [...DOCUMENT_REVIEW_LENSES];
+  if (task?.domain === 'legal') return [...LEGAL_REVIEW_LENSES];
+  if (task?.domain === 'business') return [...BUSINESS_REVIEW_LENSES];
+  if (task?.domain === 'communication') return [...COMMUNICATION_REVIEW_LENSES];
   return [...GENERAL_REVIEW_LENSES];
 }
 
 export function routeImprovementSignal(signal) {
+  if (signal?.kind === 'conversation_lesson') {
+    const domains = Array.isArray(signal.domains) ? signal.domains : [];
+    const targets = new Set(domains.map(domain => CONVERSATION_DOMAIN_TARGET[domain]).filter(Boolean));
+    if (!targets.size) throw new Error('conversation_lesson requires a supported domain');
+    return targets.size === 1 ? [...targets][0] : 'ai-core';
+  }
   const target = SIGNAL_TARGET[signal?.kind];
   if (!target) throw new Error(`unsupported improvement signal: ${signal?.kind ?? 'missing'}`);
   return target;
@@ -56,10 +104,15 @@ export function routeImprovementSignal(signal) {
 
 function normalizedEvidenceRefs(references = []) {
   return references
-    .filter(reference => reference?.location && reference?.revision_or_sha)
+    .filter(reference => (
+      reference?.location && (reference?.revision_or_sha || reference?.observed_at)
+    ))
     .map(reference => ({
       location: reference.location,
-      revision_or_sha: reference.revision_or_sha
+      ...(reference.revision_or_sha
+        ? { revision_or_sha: reference.revision_or_sha }
+        : { observed_at: reference.observed_at }),
+      ...(reference.kind ? { kind: reference.kind } : {})
     }));
 }
 
@@ -167,7 +220,7 @@ export function derivePreflightSignals({
 
   for (const binding of sourceBindings) {
     if (!binding.required || binding.status === 'BOUND') continue;
-    const kind = binding.system === 'aiops'
+    const kind = ['aiops', 'domain'].includes(binding.system)
       ? 'business_knowledge_gap'
       : binding.system === 'devcenter'
         ? 'capability_gap'

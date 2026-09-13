@@ -19,7 +19,8 @@
         "routing_gap",
         "context_gap",
         "governance_gap",
-        "cross_system_conflict"
+        "cross_system_conflict",
+        "conversation_lesson"
       ]
     },
     "summary": { "type": "string", "minLength": 1 },
@@ -31,11 +32,17 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["location", "revision_or_sha"],
+        "required": ["location"],
         "properties": {
           "location": { "type": "string" },
-          "revision_or_sha": { "type": "string" }
+          "revision_or_sha": { "type": "string" },
+          "observed_at": { "type": "string", "format": "date-time" },
+          "kind": { "type": "string" }
         },
+        "anyOf": [
+          { "required": ["revision_or_sha"] },
+          { "required": ["observed_at"] }
+        ],
         "additionalProperties": true
       }
     }

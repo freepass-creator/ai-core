@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://freepass.local/ai-core/learning-observation.schema.json",
+  "title": "Sanitized Conversation Learning Observation",
+  "type": "object",
+  "required": [
+    "observation_id",
+    "rule_key",
+    "summary",
+    "expected_behavior",
+    "domains",
+    "authority",
+    "source_ref",
+    "sanitized"
+  ],
+  "properties": {
+    "observation_id": { "type": "string", "minLength": 1 },
+    "rule_key": { "type": "string", "minLength": 1 },
+    "summary": { "type": "string", "minLength": 1 },
+    "expected_behavior": { "type": "string", "minLength": 1 },
+    "domains": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": ["development", "legal", "business", "document", "communication", "general", "core"]
+      }
+    },
+    "authority": {
+      "enum": ["user_directive", "observed_outcome", "verified_source", "assistant_inference"]
+    },
+    "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+    "source_ref": {
+      "type": "object",
+      "required": ["location"],
+      "properties": {
+        "location": { "type": "string", "minLength": 1 },
+        "revision_or_sha": { "type": "string", "minLength": 1 },
+        "observed_at": { "type": "string", "format": "date-time" },
+        "kind": { "type": "string" }
+      },
+      "anyOf": [
+        { "required": ["revision_or_sha"] },
+        { "required": ["observed_at"] }
+      ],
+      "additionalProperties": false
+    },
+    "causal_principle": { "type": "string" },
+    "required_conditions": { "type": "array", "items": { "type": "string" } },
+    "failure_conditions": { "type": "array", "items": { "type": "string" } },
+    "counterexample": { "type": "string" },
+    "small_test": { "type": "string" },
+    "sanitized": { "const": true }
+  },
+  "not": {
+    "anyOf": [
+      { "required": ["raw_content"] },
+      { "required": ["transcript"] },
+      { "required": ["message_body"] },
+      { "required": ["full_text"] },
+      { "required": ["sensitive_payload"] }
+    ]
+  },
+  "additionalProperties": false
+}

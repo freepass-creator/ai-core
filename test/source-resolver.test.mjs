@@ -35,3 +35,11 @@ test('multiple authoritative sources hold instead of guessing', () => {
   ]);
   assert.equal(result[0].status, 'HOLD');
 });
+
+test('legal work requires a current official authority source', () => {
+  const requirements = resolveSourceRequirements({ domain: 'legal' });
+  const authority = requirements.find(item => (
+    item.system === 'domain' && item.kind === 'current_authority'
+  ));
+  assert.equal(authority.required, true);
+});

@@ -40,6 +40,15 @@ export function resolveSourceRequirements(task) {
     });
   }
 
+  if (task.domain === 'legal') {
+    requirements.push({
+      system: 'domain',
+      kind: 'current_authority',
+      required: true,
+      reason: 'current official law, case authority and procedure for the applicable jurisdiction'
+    });
+  }
+
   return requirements;
 }
 

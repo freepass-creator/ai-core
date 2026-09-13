@@ -86,11 +86,21 @@ AI Core는 낮은 위험의 조사·후보 작성·테스트·비교·시정안 
 - 실패나 접근 불가를 PASS로 변환
 - 사용자의 최신 지시보다 과거 학습을 우선 적용
 
-## 8. 현재 구현 단계
+## 8. 대화 기반 자기 진화
 
-v0.3 candidate는 다음까지만 구현한다.
+대화에서 나온 지시·수정·실패도 결과 관찰로 취급하되 원문을 Core에 복사하지 않는다. 비식별 규칙 후보와 출처 포인터만 받아 `OBSERVATION → PATTERN → PRINCIPLE → SYSTEM_CANDIDATE`로 성숙도를 분류한다. 충돌은 `HOLD_CONFLICT`, 채택은 기존 Transfer Gate를 그대로 따른다.
+
+개발 외에도 법률·사업·문서·커뮤니케이션에 서로 다른 증명 의무를 부착한다. 전체 규칙과 영수증 계약은 `docs/CONTINUOUS_LEARNING.md`를 따른다.
+
+## 9. 현재 구현 단계
+
+v0.4 candidate는 다음까지만 구현한다.
 
 - 모든 개발 Work Packet에 선제 검토 관점 부착
+- 개발·법률·사업·문서·커뮤니케이션별 증명 의무 부착
+- 완료조건 ID·digest와 같은 revision에 묶인 검사 영수증 평가
+- 작성·검증·승인·실행·성과 상태의 모순 차단
+- 비식별 대화 관찰의 정규화·중복 제거·충돌 차단·성숙도 분류
 - Live preflight와 외부 observation에서 개선 신호 생성
 - 개선 신호를 AI Core/AIOPS/DevCenter로 분류
 - 후보 자동 생성

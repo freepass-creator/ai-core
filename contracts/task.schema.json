@@ -9,10 +9,28 @@
     "goal": { "type": "string", "minLength": 1 },
     "project": { "type": ["string", "null"] },
     "project_ref": { "type": "string", "minLength": 1, "default": "main" },
-    "domain": { "enum": ["development", "document", "legal", "business"] },
+    "domain": { "enum": ["development", "document", "legal", "business", "communication"] },
     "risk": { "enum": ["A", "B", "C", "D"] },
     "authority_required": { "type": "boolean" },
-    "done_when": { "type": "array", "items": { "type": "string" } },
+    "done_when": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          { "type": "string", "minLength": 1 },
+          {
+            "type": "object",
+            "required": ["text"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "text": { "type": "string", "minLength": 1 },
+              "mode": { "enum": ["automated", "manual", "external"] },
+              "required": { "type": "boolean", "default": true }
+            },
+            "additionalProperties": false
+          }
+        ]
+      }
+    },
     "constraints": { "type": "array", "items": { "type": "string" } },
     "changed_files_estimate": { "type": "integer", "minimum": 0 },
     "needs_build": { "type": "boolean" },

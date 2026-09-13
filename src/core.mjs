@@ -6,8 +6,10 @@ import {
   derivePreflightSignals,
   reviewLensesFor
 } from './evolution-kernel.mjs';
+import { compileConversationLearning } from './conversation-learning.mjs';
+import { compileProofContract } from './domain-quality.mjs';
 
-export const CORE_VERSION = '0.3.0-candidate.0';
+export const CORE_VERSION = '0.4.0-candidate.0';
 
 const DEV_HINTS = [
   '개발', '코드', 'ui', 'ux', 'erp', '웹', '앱', '버그', '기능',
@@ -15,8 +17,32 @@ const DEV_HINTS = [
 ];
 const DOC_HINTS = ['문서', '보고서', 'pdf', '계약서', '양식'];
 const LEGAL_HINTS = ['법률', '소송', '준비서면', '고소', '판례', '법원'];
-const DOMAINS = new Set(['development', 'document', 'legal', 'business']);
+const COMMUNICATION_HINTS = ['이메일', '메일', '메시지', '공문', '안내문', '회신'];
+const DOMAINS = new Set(['development', 'document', 'legal', 'business', 'communication']);
 const RISKS = new Set(['A', 'B', 'C', 'D']);
+
+function defaultRiskForDomain(domain) {
+  return domain === 'legal' ? 'C' : 'A';
+}
+
+function normalizeDoneWhen(doneWhen) {
+  if (!Array.isArray(doneWhen)) return [];
+  return doneWhen.map((entry, index) => {
+    if (typeof entry === 'string') {
+      if (!entry.trim()) throw new Error(`done_when[${index}] must not be empty`);
+      return entry.trim();
+    }
+    if (entry && typeof entry === 'object' && String(entry.text ?? '').trim()) {
+      return {
+        id: entry.id ? String(entry.id) : `REQ-${String(index + 1).padStart(3, '0')}`,
+        text: String(entry.text),
+        mode: entry.mode ? String(entry.mode) : 'automated',
+        required: entry.required !== false
+      };
+    }
+    throw new Error(`done_when[${index}] must be a string or requirement object`);
+  });
+}
 
 export function normalizeTask(input = {}) {
   if (!input.goal || typeof input.goal !== 'string' || !input.goal.trim()) {
@@ -24,7 +50,7 @@ export function normalizeTask(input = {}) {
   }
 
   const domain = input.domain ?? inferDomain(input.goal);
-  const risk = input.risk ?? 'A';
+  const risk = input.risk ?? defaultRiskForDomain(domain);
   if (!DOMAINS.has(domain)) throw new Error(`unsupported domain: ${domain}`);
   if (!RISKS.has(risk)) throw new Error(`unsupported risk: ${risk}`);
 
@@ -41,7 +67,7 @@ export function normalizeTask(input = {}) {
     domain,
     risk,
     authority_required: Boolean(input.authority_required),
-    done_when: Array.isArray(input.done_when) ? input.done_when : [],
+    done_when: normalizeDoneWhen(input.done_when),
     constraints: Array.isArray(input.constraints) ? input.constraints : [],
     changed_files_estimate: changedFilesEstimate,
     needs_build: Boolean(input.needs_build),
@@ -57,6 +83,7 @@ export function inferDomain(goal) {
   if (DEV_HINTS.some(hint => normalized.includes(hint))) return 'development';
   if (LEGAL_HINTS.some(hint => normalized.includes(hint))) return 'legal';
   if (DOC_HINTS.some(hint => normalized.includes(hint))) return 'document';
+  if (COMMUNICATION_HINTS.some(hint => normalized.includes(hint))) return 'communication';
   return 'business';
 }
 
@@ -78,17 +105,28 @@ export function capabilityPlan(task) {
 export function executionRoute(task) {
   const hasExternalEffect = task.external_effect !== 'none';
   if (task.risk === 'D' || hasExternalEffect) {
+    const requiredApprovals = ['CLAUDE_DESIGN', 'CLAUDE_FINAL', 'USER_JUST_IN_TIME'];
+    if (task.domain === 'legal') requiredApprovals.push('RESPONSIBLE_HUMAN_FINAL_REVIEW');
     return {
       route: 'HUMAN_GATE',
       reason: 'live or external effect requires owner-system gates',
-      required_approvals: ['CLAUDE_DESIGN', 'CLAUDE_FINAL', 'USER_JUST_IN_TIME']
+      required_approvals: requiredApprovals
     };
   }
   if (task.risk === 'C') {
+    const requiredApprovals = ['CLAUDE_DESIGN'];
+    if (task.domain === 'legal') requiredApprovals.push('RESPONSIBLE_HUMAN_FINAL_REVIEW');
     return {
       route: 'HUMAN_GATE',
       reason: 'new workflow or protected structure requires design approval',
-      required_approvals: ['CLAUDE_DESIGN']
+      required_approvals: requiredApprovals
+    };
+  }
+  if (task.domain === 'legal') {
+    return {
+      route: 'HUMAN_GATE',
+      reason: 'legal work requires current official authority and responsible human review',
+      required_approvals: ['RESPONSIBLE_HUMAN_FINAL_REVIEW']
     };
   }
   if (task.authority_required) {
@@ -179,6 +217,27 @@ export function orchestrate(input, environment = {}) {
   }
   if (context.status === 'HOLD') holds.push('CONTEXT_HOLD');
 
+  const learning = compileConversationLearning(
+    Array.isArray(environment.conversation_observations)
+      ? environment.conversation_observations
+      : []
+  );
+  if (learning.status === 'HOLD_CONFLICT') holds.push('LEARNING_CONFLICT');
+  if (learning.status === 'HOLD_INVALID_INPUT') holds.push('LEARNING_INPUT_REJECTED');
+
+  const proofEvaluationRequested = environment.proof_evaluation_requested === true
+    || Array.isArray(environment.proof_receipts);
+  const assurance = compileProofContract(task, {
+    subjectRevision: environment.subject_revision ?? null,
+    receipts: Array.isArray(environment.proof_receipts) ? environment.proof_receipts : [],
+    evaluationRequested: proofEvaluationRequested
+  });
+  if (proofEvaluationRequested && assurance.gate.status === 'FAIL') {
+    holds.push('PROOF_GATE_FAILED');
+  } else if (proofEvaluationRequested && assurance.gate.status !== 'PASS') {
+    holds.push('PROOF_GATE_HOLD');
+  }
+
   const uniqueHolds = [...new Set(holds)];
   const status = uniqueHolds.length
     ? 'HOLD'
@@ -204,6 +263,7 @@ export function orchestrate(input, environment = {}) {
     task,
     observations: [
       ...preflightSignals,
+      ...learning.signals,
       ...(Array.isArray(environment.observations) ? environment.observations : [])
     ],
     sourcePointers: pinnedSources
@@ -218,6 +278,8 @@ export function orchestrate(input, environment = {}) {
     capability_bindings: capabilityBindings,
     context,
     execution,
+    learning,
+    assurance,
     evolution,
     status,
     holds: uniqueHolds,
@@ -233,17 +295,52 @@ export function orchestrate(input, environment = {}) {
       execution_route: execution.route,
       approval_requirements: execution.required_approvals,
       proactive_review_lenses: proactiveReviewLenses,
+      proof_contract: {
+        policy_revision: assurance.policy_revision,
+        domain: assurance.domain,
+        requirement_set: assurance.requirement_set,
+        obligations: assurance.obligations,
+        gate: assurance.gate
+      },
+      learning_contract: {
+        lifecycle: learning.lifecycle,
+        candidate_rules: learning.candidates.map(candidate => ({
+          rule_key: candidate.rule_key,
+          fingerprint: candidate.fingerprint,
+          domains: candidate.domains,
+          maturity: candidate.maturity,
+          governance_status: candidate.governance_status,
+          source_refs: candidate.source_refs
+        })),
+        conflicts: learning.conflicts,
+        resolved_conflicts: learning.resolved_conflicts,
+        raw_conversation_stored: false,
+        semantic_sanitization_verified: false,
+        auto_adopted: false
+      },
       feedback_contract: {
         destination: 'AI_CORE_EVOLUTION_KERNEL',
-        accepts: ['failures', 'friction', 'unexpected_results', 'metrics', 'review_findings']
+        accepts: [
+          'failures',
+          'friction',
+          'unexpected_results',
+          'metrics',
+          'review_findings',
+          'sanitized_conversation_observations'
+        ]
       },
       evidence_required: [
         'subject_revision',
         'source_revision_set',
         'capability_revision_set',
+        'requirement_set_digest',
         'checks_executed',
         'failures_and_skips',
-        'review_status'
+        'proof_receipts',
+        'review_status',
+        'authorization_evidence',
+        'execution_evidence',
+        'outcome_evidence'
       ]
     },
     execution_authorized: false

@@ -11,13 +11,15 @@ AIOPS의 업무 기억·운영 제어와 DevCenter의 개발 규격·검증 능�
 - 개발은 Cloud First다. 실제 저장소 실행환경이 필요할 때 Work/Codex를 사용한다.
 - AI Core 자체가 운영 실행 권한을 만들지 않는다. 기존 승인 게이트를 보존한다.
 
-## v0.3 candidate
+## v0.4 candidate
 
-현재 후보는 두 모드가 있다.
+현재 후보는 다섯 구성으로 작동한다.
 
 1. **오프라인 계획**: 필요한 정본과 capability를 계산한다. 실제 SHA가 없으므로 `HOLD`가 정상이다.
 2. **Live Context Bootstrap**: 읽기 전용 GitHub API로 프로젝트·AIOPS·DevCenter 원본과 capability를 가져와 SHA를 고정한 뒤 Work Packet을 만든다.
 3. **Evolution Kernel**: 실제 실패·낭비·결손을 AI Core/AIOPS/DevCenter 개선 후보로 분류하고 Transfer Gate에 올린다.
+4. **Conversation Learning**: 비식별 대화 관찰을 패턴·원칙·시스템 후보로 승격하되 원문을 저장하거나 자동 채택하지 않는다.
+5. **Domain Proof Gate**: 개발·법률·사업·문서·커뮤니케이션별 증명 의무와 요구사항 영수증을 같은 revision에 묶는다.
 
 ```text
 Task
@@ -28,7 +30,9 @@ Task
   → Capability Resolver
   → Execution Router
   → Work Packet
+  → Domain Proof Contract
   → Result Observation
+  → Conversation Learning
   → Evolution Candidate
   → Transfer Gate
 ```
@@ -51,7 +55,11 @@ AI_CORE_GITHUB_TOKEN=<read-only-token> node src/cli.mjs --live examples/freepass
 
 Live 조회 성공은 실행 승인이 아니다. 모든 출력의 `execution_authorized`는 `false`이며, C등급은 Claude DESIGN, D등급·라이브 외부 변경은 Claude DESIGN/FINAL과 사용자 직전 승인을 요구한다.
 
-AI Core의 최상위 역할과 두 축을 고도화하는 순환 구조는 [`docs/CIVILIZATION_KERNEL.md`](docs/CIVILIZATION_KERNEL.md)에 정의한다. 개발 Work Packet에는 보안·데이터 무결성·성능·접근성·배포·롤백·관찰 가능성 등 사용자가 일일이 요청하지 않은 선제 검토 관점도 자동으로 포함한다.
+AI Core의 최상위 역할과 두 축을 고도화하는 순환 구조는 [`docs/CIVILIZATION_KERNEL.md`](docs/CIVILIZATION_KERNEL.md)에 정의한다. 대화 학습·도메인별 증명·상태 분리 규칙은 [`docs/CONTINUOUS_LEARNING.md`](docs/CONTINUOUS_LEARNING.md)에 정의한다.
+
+개발 Work Packet에는 보안·데이터 무결성·성능·접근성·배포·롤백·관찰 가능성 등 사용자가 일일이 요청하지 않은 선제 검토 관점을 자동으로 포함한다. 법률은 FACT/EVIDENCE/상대 주장/INFERENCE/AUTHORITY/UNCERTAINTY, 최신 공식 근거, 절차 기한, 책임 있는 인간 검토가 없으면 통과하지 않는다. 사업·문서·커뮤니케이션도 각자의 현실 실패 방식에 맞는 별도 증명 의무를 갖는다.
+
+“완벽”을 상태로 선언하지 않는다. PASS는 선언한 범위·입력·정책·revision에 묶이며 하나라도 바뀌면 STALE이다. 알려지지 않은 항목은 UNKNOWN/HOLD로 보존하고 다음 개선 루프의 입력으로 사용한다.
 
 ## 저장소 관계
 

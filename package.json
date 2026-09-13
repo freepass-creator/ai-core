@@ -1,6 +1,6 @@
 {
   "name": "@freepass/ai-core",
-  "version": "0.3.0-candidate.0",
+  "version": "0.4.0-candidate.0",
   "private": true,
   "type": "module",
   "description": "AIOPS × DevCenter orchestration core",
