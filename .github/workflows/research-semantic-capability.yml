@@ -1,0 +1,27 @@
+name: Semantic Capability Research Verify
+
+on:
+  pull_request:
+    paths:
+      - 'docs/SEMANTIC_CAPABILITY_FABRIC.md'
+      - 'docs/WORK_REFERENCE_SEMANTIC_CAPABILITIES.md'
+      - 'contracts/capability-cell.schema.json'
+      - 'contracts/capability-query.schema.json'
+      - 'src/semantic-capability.mjs'
+      - 'test/semantic-capability.test.mjs'
+      - '.github/workflows/research-semantic-capability.yml'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Parse contracts
+        run: node -e "for (const f of ['contracts/capability-cell.schema.json','contracts/capability-query.schema.json']) JSON.parse(require('fs').readFileSync(f,'utf8')); console.log('contracts ok')"
+      - name: Syntax check
+        run: node --check src/semantic-capability.mjs
+      - name: Synthetic tests
+        run: node --test test/semantic-capability.test.mjs
