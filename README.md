@@ -1,6 +1,6 @@
 # AI Core
 
-AIOPS의 업무 기억·운영 제어와 DevCenter의 개발 규격·검증 능력을 복제하지 않고, 필요한 순간에 찾아 조합하는 상위 오케스트레이터.
+AIOPS의 업무 기억·운영 제어와 DevCenter의 개발 규격·검증 능력을 복제하지 않고 조합하며, 실제 결과를 다시 두 기관과 자기 자신의 개선으로 환류하는 최상위 진화 오케스트레이터.
 
 ## 원칙
 
@@ -11,12 +11,13 @@ AIOPS의 업무 기억·운영 제어와 DevCenter의 개발 규격·검증 능�
 - 개발은 Cloud First다. 실제 저장소 실행환경이 필요할 때 Work/Codex를 사용한다.
 - AI Core 자체가 운영 실행 권한을 만들지 않는다. 기존 승인 게이트를 보존한다.
 
-## v0.2 candidate
+## v0.3 candidate
 
 현재 후보는 두 모드가 있다.
 
 1. **오프라인 계획**: 필요한 정본과 capability를 계산한다. 실제 SHA가 없으므로 `HOLD`가 정상이다.
 2. **Live Context Bootstrap**: 읽기 전용 GitHub API로 프로젝트·AIOPS·DevCenter 원본과 capability를 가져와 SHA를 고정한 뒤 Work Packet을 만든다.
+3. **Evolution Kernel**: 실제 실패·낭비·결손을 AI Core/AIOPS/DevCenter 개선 후보로 분류하고 Transfer Gate에 올린다.
 
 ```text
 Task
@@ -27,6 +28,9 @@ Task
   → Capability Resolver
   → Execution Router
   → Work Packet
+  → Result Observation
+  → Evolution Candidate
+  → Transfer Gate
 ```
 
 Live 모드는 대상 프로젝트의 branch/tag를 먼저 commit SHA로 고정하고, 같은 revision의 프로젝트 지침을 읽는다. 읽은 원문은 결과나 Work Packet에 복사하지 않는다. 위치·SHA·scope와 성공/실패 증거만 남긴다. 접근 실패, 잘못된 registry, 후보뿐인 capability, SHA 없는 자산은 통과시키지 않는다.
@@ -46,6 +50,8 @@ AI_CORE_GITHUB_TOKEN=<read-only-token> node src/cli.mjs --live examples/freepass
 ```
 
 Live 조회 성공은 실행 승인이 아니다. 모든 출력의 `execution_authorized`는 `false`이며, C등급은 Claude DESIGN, D등급·라이브 외부 변경은 Claude DESIGN/FINAL과 사용자 직전 승인을 요구한다.
+
+AI Core의 최상위 역할과 두 축을 고도화하는 순환 구조는 [`docs/CIVILIZATION_KERNEL.md`](docs/CIVILIZATION_KERNEL.md)에 정의한다. 개발 Work Packet에는 보안·데이터 무결성·성능·접근성·배포·롤백·관찰 가능성 등 사용자가 일일이 요청하지 않은 선제 검토 관점도 자동으로 포함한다.
 
 ## 저장소 관계
 

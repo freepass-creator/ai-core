@@ -241,6 +241,7 @@ export async function bootstrapLiveContext(input, {
     status: requiredSourceHold || capabilityHold || subjectRevisionHold ? 'HOLD' : 'RESOLVED',
     environment: {
       subject_revision: subjectRevision,
+      live_context_attempted: true,
       resolved_sources: resolvedSources,
       devcenter_registry: enrichedRegistry,
       capability_refs: capabilityRefs

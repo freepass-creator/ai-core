@@ -1,8 +1,13 @@
 import { resolveSourceRequirements, bindResolvedSources } from './source-resolver.mjs';
 import { compileContext } from './context-compiler.mjs';
 import { resolveCapabilities } from './capability-resolver.mjs';
+import {
+  compileEvolutionPlan,
+  derivePreflightSignals,
+  reviewLensesFor
+} from './evolution-kernel.mjs';
 
-export const CORE_VERSION = '0.2.0-candidate.0';
+export const CORE_VERSION = '0.3.0-candidate.0';
 
 const DEV_HINTS = [
   '개발', '코드', 'ui', 'ux', 'erp', '웹', '앱', '버그', '기능',
@@ -186,6 +191,23 @@ export function orchestrate(input, environment = {}) {
   const resolvedCapabilities = capabilityBindings
     .filter(binding => binding.status === 'RESOLVED')
     .map(binding => binding.asset);
+  const proactiveReviewLenses = reviewLensesFor(task);
+  const preflightSignals = environment.live_context_attempted
+    ? derivePreflightSignals({
+        task,
+        sourceBindings,
+        capabilityBindings,
+        holds: uniqueHolds
+      })
+    : [];
+  const evolution = compileEvolutionPlan({
+    task,
+    observations: [
+      ...preflightSignals,
+      ...(Array.isArray(environment.observations) ? environment.observations : [])
+    ],
+    sourcePointers: pinnedSources
+  });
 
   return {
     core_version: CORE_VERSION,
@@ -196,6 +218,7 @@ export function orchestrate(input, environment = {}) {
     capability_bindings: capabilityBindings,
     context,
     execution,
+    evolution,
     status,
     holds: uniqueHolds,
     work_packet: {
@@ -209,6 +232,11 @@ export function orchestrate(input, environment = {}) {
       capabilities: resolvedCapabilities,
       execution_route: execution.route,
       approval_requirements: execution.required_approvals,
+      proactive_review_lenses: proactiveReviewLenses,
+      feedback_contract: {
+        destination: 'AI_CORE_EVOLUTION_KERNEL',
+        accepts: ['failures', 'friction', 'unexpected_results', 'metrics', 'review_findings']
+      },
       evidence_required: [
         'subject_revision',
         'source_revision_set',

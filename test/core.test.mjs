@@ -38,6 +38,8 @@ test('small bounded development is READY only with pinned sources and capabiliti
   assert.equal(output.execution.route, 'GPT_DIRECT');
   assert.equal(output.status, 'READY');
   assert.equal(output.execution_authorized, false);
+  assert.ok(output.work_packet.proactive_review_lenses.includes('security_privacy_and_authority'));
+  assert.equal(output.evolution.status, 'NO_SIGNAL');
 });
 
 test('offline planning holds instead of claiming missing live sources are ready', () => {
@@ -50,6 +52,7 @@ test('offline planning holds instead of claiming missing live sources are ready'
   assert.ok(output.holds.includes('SOURCE_HOLD'));
   assert.ok(output.holds.includes('CAPABILITY_UNRESOLVED'));
   assert.ok(output.holds.includes('SUBJECT_REVISION_UNRESOLVED'));
+  assert.equal(output.evolution.status, 'NO_SIGNAL');
 });
 
 test('build loop routes WORK_CODEX', () => {

@@ -29,6 +29,14 @@ const sourcePills = output.source_bindings.map(binding => (
 const capabilityPills = output.capability_bindings.map(binding => (
   `<span class="pill">${escapeHtml(`${binding.scope} · ${binding.status}`)}</span>`
 )).join('');
+const reviewPills = output.work_packet.proactive_review_lenses.map(lens => (
+  `<span class="pill">${escapeHtml(lens)}</span>`
+)).join('');
+const evolutionItems = output.evolution.candidates.length
+  ? output.evolution.candidates.map(candidate => (
+      `<li>${escapeHtml(`${candidate.target_system} · ${candidate.kind} · ${candidate.status}`)}</li>`
+    )).join('')
+  : '<li>현재 입력만으로 생성된 개선 후보 없음</li>';
 const holds = output.holds.length
   ? output.holds.map(item => `<li>${escapeHtml(item)}</li>`).join('')
   : '<li>없음</li>';
@@ -49,6 +57,8 @@ code,pre{background:#f6f6f6;border-radius:10px}pre{padding:16px;overflow:auto}.p
 <div class="card"><h2>입력</h2><p>${escapeHtml(output.task.goal)}</p></div>
 <div class="card"><h2>판정</h2><table>${rows.map(([label, value]) => `<tr><td>${escapeHtml(label)}</td><td>${escapeHtml(value)}</td></tr>`).join('')}</table><h3>보류 사유</h3><ul>${holds}</ul></div>
 <div class="card"><h2>정본 연결</h2>${sourcePills}<h3>DevCenter capability</h3>${capabilityPills}</div>
+<div class="card"><h2>선제 검토 관점</h2>${reviewPills}</div>
+<div class="card"><h2>Evolution Kernel</h2><ul>${evolutionItems}</ul><p class="sub">후보 생성은 자동 채택이나 실행 승인이 아니다.</p></div>
 <div class="card"><h2>Work Packet</h2><pre>${escapeHtml(JSON.stringify(output.work_packet, null, 2))}</pre></div>
 <p class="sub">오프라인 데모의 HOLD는 실제 SHA가 주입되지 않았다는 뜻이다. 이 페이지는 운영 실행 권한을 부여하지 않는다.</p>
 </body>

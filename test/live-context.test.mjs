@@ -56,6 +56,7 @@ test('live bootstrap pins required sources and capability before READY', async (
   assert.equal(output.execution_authorized, false);
   assert.equal(output.work_packet.subject_revision, 'subject-commit-sha');
   assert.doesNotMatch(JSON.stringify(output), /SECRET_BODY/);
+  assert.equal(output.evolution.status, 'NO_SIGNAL');
 });
 
 test('missing required source remains HOLD with explicit evidence', async () => {
@@ -121,4 +122,25 @@ test('live mode holds when subject branch cannot be pinned to a commit', async (
     output.live_context.subject_revision_evidence.outcome,
     'REVISION_FETCHER_MISSING'
   );
+  assert.ok(output.evolution.candidates.some(candidate => candidate.target_system === 'ai-core'));
+});
+
+test('missing capability source becomes a DevCenter improvement candidate', async () => {
+  const missing = Object.assign(new Error('not found'), { code: 'NOT_FOUND' });
+  const output = await orchestrateLive({
+    goal: 'AI Core 코드 문구 수정',
+    project: 'ai-core',
+    done_when: ['tests pass']
+  }, {
+    fetchFile: fixtureFetcher({
+      'freepass-creator/aiops:docs/저장소지도.md': missing
+    }),
+    fetchRevision: fixtureRevisionFetcher
+  });
+
+  assert.equal(output.status, 'HOLD');
+  const candidate = output.evolution.candidates.find(item => item.kind === 'capability_gap');
+  assert.equal(candidate.target_system, 'devcenter');
+  assert.equal(candidate.auto_adopted, false);
+  assert.equal(candidate.transfer_gate.status, 'HOLD');
 });

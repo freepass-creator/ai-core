@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://freepass.local/ai-core/improvement.schema.json",
+  "title": "AI Core Improvement Signal",
+  "type": "object",
+  "required": ["signal_id", "kind", "summary"],
+  "properties": {
+    "signal_id": { "type": "string", "minLength": 1 },
+    "kind": {
+      "enum": [
+        "operational_failure",
+        "workflow_friction",
+        "business_knowledge_gap",
+        "capability_gap",
+        "reusable_asset_gap",
+        "verification_gap",
+        "standard_drift",
+        "project_onboarding_gap",
+        "routing_gap",
+        "context_gap",
+        "governance_gap",
+        "cross_system_conflict"
+      ]
+    },
+    "summary": { "type": "string", "minLength": 1 },
+    "scope": { "type": "string" },
+    "severity": { "enum": ["notice", "hold", "fail"] },
+    "change_class": { "enum": ["A", "B", "C", "D"] },
+    "created_by": { "type": "string" },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["location", "revision_or_sha"],
+        "properties": {
+          "location": { "type": "string" },
+          "revision_or_sha": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}
