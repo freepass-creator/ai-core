@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-core.local/contracts/capability-cell.schema.json",
+  "title": "Semantic Capability Cell",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "capability_id",
+    "kind",
+    "purpose",
+    "semantic_key",
+    "scope",
+    "lifecycle",
+    "implementation_refs",
+    "contract",
+    "semantic_provenance",
+    "evidence_state",
+    "unknowns"
+  ],
+  "properties": {
+    "capability_id": {"type": "string", "minLength": 3},
+    "kind": {
+      "enum": ["ENGINE", "PORT", "ADAPTER", "CONNECTOR", "COMPONENT", "VALIDATOR", "GENERATOR", "TEST_UTILITY", "WORKFLOW"]
+    },
+    "purpose": {"type": "string", "minLength": 3},
+    "semantic_key": {"type": "string", "minLength": 3},
+    "scope": {"enum": ["LOCAL", "DOMAIN", "UNIVERSAL_CANDIDATE", "UNIVERSAL"]},
+    "lifecycle": {
+      "enum": ["DISCOVERED", "DESCRIBED", "CONTRACTED", "EXECUTION_VERIFIED", "INDEPENDENTLY_VERIFIED", "ADOPTED_WITHIN_SCOPE", "OUTCOME_OBSERVED", "HOLD", "DEPRECATED", "SUPERSEDED", "REJECTED"]
+    },
+    "implementation_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["repo", "path", "revision"],
+        "properties": {
+          "repo": {"type": "string", "minLength": 3},
+          "path": {"type": "string", "minLength": 1},
+          "revision": {"type": "string", "minLength": 7},
+          "export": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["inputs", "outputs", "invariants", "errors", "side_effect"],
+      "properties": {
+        "inputs": {"type": "array", "items": {"$ref": "#/$defs/valueSpec"}},
+        "outputs": {"type": "array", "items": {"$ref": "#/$defs/valueSpec"}},
+        "invariants": {"type": "array", "items": {"type": "string"}},
+        "errors": {"type": "array", "items": {"type": "string"}},
+        "side_effect": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["class"],
+          "properties": {
+            "class": {"enum": ["NONE", "READ_EXTERNAL", "WRITE_EXTERNAL", "MIXED"]},
+            "idempotency": {"enum": ["NOT_APPLICABLE", "SUPPORTED", "UNSUPPORTED", "UNKNOWN"]},
+            "authority_required": {"type": "boolean"}
+          }
+        }
+      }
+    },
+    "implements_ports": {"type": "array", "items": {"type": "string"}, "default": []},
+    "depends_on": {"type": "array", "items": {"type": "string"}, "default": []},
+    "wraps_connectors": {"type": "array", "items": {"type": "string"}, "default": []},
+    "compatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "runtimes": {"type": "array", "items": {"type": "string"}},
+        "frameworks": {"type": "array", "items": {"type": "string"}},
+        "projects": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "semantic_provenance": {
+      "enum": ["USER_CONFIRMED", "SOURCE_DERIVED", "AI_INFERRED", "MIXED"]
+    },
+    "evidence_state": {
+      "enum": ["NONE", "STATIC_ONLY", "SYNTHETIC", "EXECUTED", "INDEPENDENT", "SHADOW", "OUTCOME"]
+    },
+    "evidence_refs": {"type": "array", "items": {"type": "string"}, "default": []},
+    "unknowns": {"type": "array", "items": {"type": "string"}},
+    "supersedes": {"type": ["string", "null"]},
+    "fingerprint": {"type": ["string", "null"]}
+  },
+  "$defs": {
+    "valueSpec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "type"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "type": {"type": "string", "minLength": 1},
+        "unit": {"type": ["string", "null"]},
+        "nullable": {"type": "boolean", "default": false},
+        "semantic_note": {"type": ["string", "null"]}
+      }
+    }
+  }
+}
