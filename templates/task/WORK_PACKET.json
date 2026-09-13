@@ -1,0 +1,18 @@
+{
+  "schema": "ai-core-work-packet/0.1",
+  "task_id": "TASK-ID",
+  "project": null,
+  "repo": null,
+  "base_sha": null,
+  "branch": null,
+  "goal": null,
+  "out_of_scope": [],
+  "allowed_paths": [],
+  "forbidden_paths": [],
+  "source_pointers": [],
+  "capability_pointers": [],
+  "acceptance_criteria": [],
+  "required_checks": [],
+  "deployment_allowed": false,
+  "operational_write_allowed": false
+}
