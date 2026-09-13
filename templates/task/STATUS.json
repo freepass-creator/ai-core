@@ -1,0 +1,11 @@
+{
+  "schema": "ai-core-task-status/0.1",
+  "task_id": "TASK-ID",
+  "phase": "DESIGNED",
+  "owner": "chat",
+  "handoff_from": null,
+  "handoff_revision": null,
+  "next_action": "prepare_work_packet",
+  "scope_changed": false,
+  "blocked_reason": null
+}
