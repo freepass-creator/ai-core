@@ -1,0 +1,30 @@
+name: AI Core Verify
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Unit tests
+        run: node --test
+      - name: CLI demo
+        run: node src/cli.mjs examples/freepass-product-detail.json > demo-output.json
+      - name: Human-readable demo
+        run: node src/demo-page.mjs
+      - name: Upload verification evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-core-v0.1-evidence
+          path: |
+            demo-output.json
+            dist/index.html
