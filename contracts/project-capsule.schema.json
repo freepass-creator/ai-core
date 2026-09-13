@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-core.local/contracts/project-capsule.schema.json",
+  "title": "Project Capsule",
+  "type": "object",
+  "required": ["project_id", "repository", "source_revision", "mission", "commands", "pointers", "generated_at"],
+  "properties": {
+    "project_id": {"type": "string", "minLength": 1},
+    "repository": {"type": "string", "minLength": 1},
+    "source_revision": {"type": "string", "minLength": 1},
+    "mission": {"type": "string", "minLength": 1},
+    "stack": {"type": "array", "items": {"type": "string"}, "default": []},
+    "commands": {
+      "type": "object",
+      "properties": {
+        "install": {"type": ["string", "null"]},
+        "dev": {"type": ["string", "null"]},
+        "build": {"type": ["string", "null"]},
+        "test": {"type": ["string", "null"]},
+        "lint": {"type": ["string", "null"]}
+      },
+      "additionalProperties": true
+    },
+    "pointers": {
+      "type": "object",
+      "properties": {
+        "authoritative_docs": {"type": "array", "items": {"type": "string"}},
+        "source_roots": {"type": "array", "items": {"type": "string"}},
+        "design_system": {"type": "array", "items": {"type": "string"}},
+        "data_models": {"type": "array", "items": {"type": "string"}},
+        "state_machines": {"type": "array", "items": {"type": "string"}},
+        "deploy": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": true
+    },
+    "known_blockers": {"type": "array", "items": {"type": "string"}, "default": []},
+    "required_approvals": {"type": "array", "items": {"type": "string"}, "default": []},
+    "generated_at": {"type": "string", "minLength": 1}
+  },
+  "additionalProperties": true
+}
