@@ -1,0 +1,26 @@
+name: Human Stewardship Research Verify
+
+on:
+  pull_request:
+    paths:
+      - 'src/human-stewardship.mjs'
+      - 'test/human-stewardship.test.mjs'
+      - 'contracts/stewardship-state.schema.json'
+      - 'docs/HUMAN_STEWARDSHIP_OS.md'
+      - 'docs/WORK_REFERENCE_STEWARDSHIP.md'
+      - '.github/workflows/research-human-stewardship.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  synthetic-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Run stewardship synthetic tests
+        run: node --test test/human-stewardship.test.mjs
