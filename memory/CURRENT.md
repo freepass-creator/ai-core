@@ -8,7 +8,7 @@ The system should optimize for **fastest path that preserves required evidence**
 
 ## Current priority — Development first
 
-The user has explicitly prioritized development as the first domain to make materially easier. Near-term research and implementation should therefore focus on reducing repeated explanation, repeated repository discovery, handoff loss, manual verification, preview friction, and release uncertainty.
+The user has explicitly prioritized development as the first domain to make materially easier. Near-term research and implementation should therefore focus on reducing repeated explanation, repeated repository discovery, handoff loss, stale requirements, manual verification, preview friction, and release uncertainty.
 
 First development research reference: `docs/DEVELOPMENT_RUNTIME.md`.
 
@@ -17,9 +17,10 @@ Priority building blocks:
 1. Project Capsule — thin machine-readable project entry point bound to source revision.
 2. Change Compiler — user intent → executable development contract / acceptance criteria.
 3. Proof Bundle — revision-bound evidence returned by Work/Codex instead of prose-only "done" claims.
-4. Codebase Twin + Impact Planner — read-only code graph and minimal-change impact planning.
-5. Sandbox/Preview + Verification Fabric + Release Gate — isolated execution, visible preview, layered proof, safe release/rollback.
-6. Failure Memory + Development Portfolio — reuse prior fixes and prevent multi-agent/project conflicts.
+4. Requirement Continuity — stable requirement IDs, user-confirmed vs AI-inferred provenance, requirement-set digest, stale-plan detection, Development Episode state, minimal Plan Slice.
+5. Codebase Twin + Impact Planner — read-only code graph and minimal-change impact planning.
+6. Sandbox/Preview + Verification Fabric + Release Gate — isolated execution, visible preview, layered proof, safe release/rollback.
+7. Failure Memory + Development Portfolio — reuse prior fixes and prevent multi-agent/project conflicts.
 
 These are research candidates, not adopted project rules. Existing project SSOT, DevCenter baseline, Work Packet, and authority boundaries remain controlling.
 
@@ -61,6 +62,19 @@ Current major domain systems are conceptually:
 
 Additional centers should not be created just because a topic exists. A separate center is justified only when it has sufficiently independent SSOT/assets, lifecycle, and verification needs. Otherwise use a Domain Pack/capability family.
 
+### Repository topology decision
+
+AI Core is the **logical parent/orchestrator**, but AIOPS, DevCenter, Design/Doc Center and projects remain **physically independent repositories/systems for now**. Do not move them under the `ai-core/` directory merely to make the filesystem resemble the organization chart.
+
+Reconsider physical consolidation only when all of the following are materially true:
+
+- the systems no longer need meaningfully independent SSOT/lifecycle/CI/authority boundaries;
+- cross-repository handoff cost is repeatedly larger than the isolation benefit;
+- path/registry/CI migration can be done without creating duplicate SSOTs;
+- rollback and compatibility for existing projects/agents are prepared.
+
+Until then, represent hierarchy through institution/capability pointers rather than repository nesting.
+
 ## Work/Chat collaboration
 
 GitHub is the handoff surface.
@@ -69,7 +83,7 @@ Chat should do intent discovery, architecture, decision framing, source selectio
 
 Work/Codex should handle repository-wide exploration, build/test/debug loops, dependency/runtime work, and larger implementation.
 
-Handoff should use a revision-bound Plan Slice / Work Packet rather than copying the whole conversation. A source revision, completion condition, or blocker change can make a prior plan stale.
+Handoff should use a revision-bound Plan Slice / Work Packet rather than copying the whole conversation. A source revision, requirement-set digest, completion condition, or blocker change can make a prior plan stale.
 
 ## Verification invariants
 
@@ -132,9 +146,12 @@ The ideal memory query is: **what missing fact could change the decision, and wh
 - Old default: newest research mail automatically becomes the operating standard.  
   Current default: research and adoption are separate states.
 
+- Old temptation: make the filesystem mirror the conceptual hierarchy by moving every Center under AI Core.  
+  Current default: keep logical hierarchy and physical repository ownership separate until consolidation has a measured operational advantage.
+
 ## Immediate research frontier
 
-1. Development Runtime: test Project Capsule / Change Compiler / Proof Bundle first, then Codebase Twin / Impact Planner / Preview+Verification.
+1. Development Runtime + Continuity: shadow-test Project Capsule / Change Compiler / Proof Bundle / Living Requirement Graph / Development Episode first, then Codebase Twin / Impact Planner / Preview+Verification.
 2. Human Stewardship: test whether goal/portfolio/agency/follow-through framing improves actual human outcomes.
 3. Commitment Graph: track active promises, deadlines, dependencies, waiting-on, blockers, and superseded commitments.
 4. Opportunity Radar: surface high-value opportunities/risks with evidence without auto-executing them.
