@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-core.local/contracts/requirement-graph.schema.json",
+  "title": "Living Requirement Graph",
+  "type": "object",
+  "required": ["project_id", "requirements"],
+  "properties": {
+    "project_id": {"type": "string", "minLength": 1},
+    "requirements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "statement", "provenance", "status", "version"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "statement": {"type": "string", "minLength": 1},
+          "provenance": {"enum": ["USER_CONFIRMED", "AI_INFERRED", "SOURCE_DERIVED"]},
+          "status": {"enum": ["ACTIVE", "SUPERSEDED", "REJECTED", "UNKNOWN"]},
+          "version": {"type": "integer", "minimum": 1},
+          "depends_on": {"type": "array", "items": {"type": "string"}, "default": []},
+          "acceptance": {"type": "array", "items": {"type": "string"}, "default": []},
+          "non_goals": {"type": "array", "items": {"type": "string"}, "default": []},
+          "supersedes": {"type": ["string", "null"]}
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}
