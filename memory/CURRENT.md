@@ -1,0 +1,126 @@
+# Current Memory — 2026-09-13
+
+## Mission
+
+Build an AI operating system that does more than answer prompts: it should understand the user's intended outcome, identify decision-changing gaps, reuse existing knowledge/capabilities, choose the right executor, verify reality, follow through, and learn from outcomes.
+
+The system should optimize for **fastest path that preserves required evidence**, not speed alone.
+
+## Current model
+
+### Human-facing layer
+
+AI should not assume it can read the user's mind. It should:
+
+- infer intent provisionally, not as fact;
+- ask only questions that can materially change a decision;
+- first use already available context or authoritative sources when that is enough;
+- distinguish value judgments that belong to the human from technical/operational work that can be delegated;
+- support the full lifecycle: understand → advise → plan → prepare → execute/coordinate → verify → follow up → learn.
+
+The latest research direction extends this from task orchestration to **Human Stewardship**: direction, reality, foresight, choice, commitments, resources, human agency, resilience, and growth. This is still research, not adopted operational policy.
+
+### AI infrastructure
+
+The six common infrastructure planes are:
+
+1. Control — authority, policy, risk, approvals.
+2. Intelligence — memory, context, world state, decision state.
+3. Capability — what the AI organization can actually do and where the authoritative capability lives.
+4. Execution — Chat, Work/Codex, tools, connectors, other agents.
+5. Evidence — source revisions, test/run evidence, reviews, actual observations.
+6. Evolution — measured learning, shadow comparison, promotion/revert decisions.
+
+These planes are infrastructure; they are not themselves the user's life/work goals.
+
+### Domain institutions
+
+Current major domain systems are conceptually:
+
+- Work/AIOPS — business/operations/control knowledge and generalized lessons.
+- DevCenter — development standards, reusable assets, verification profiles.
+- DocsHub / Doc Center — document templates, A4/PDF/layout design system.
+- Projects — real code/business/project SSOT.
+
+Additional centers should not be created just because a topic exists. A separate center is justified only when it has sufficiently independent SSOT/assets, lifecycle, and verification needs. Otherwise use a Domain Pack/capability family.
+
+## Work/Chat collaboration
+
+GitHub is the handoff surface.
+
+Chat should do intent discovery, architecture, decision framing, source selection, bounded edits, review, and next-generation research.
+
+Work/Codex should handle repository-wide exploration, build/test/debug loops, dependency/runtime work, and larger implementation.
+
+Handoff should use a revision-bound Plan Slice / Work Packet rather than copying the whole conversation. A source revision, completion condition, or blocker change can make a prior plan stale.
+
+## Verification invariants
+
+Never equate these states:
+
+- artifact created
+- verification passed
+- authorization granted
+- external execution confirmed
+- real-world outcome observed
+
+A PASS is not permanent. It is valid only for its declared scope, source/revision, policy/requirement set, and actual checks.
+
+Zero executed checks, skipped checks, stale pre-fix checks, unverified claims, or a passing self-report are not enough.
+
+For requirement-driven work, evidence should trace back to the current required completion criteria. If the requirement set changes, an old receipt is stale.
+
+## Learning invariants
+
+A new document, name, rule count, or test count is not itself progress.
+
+A meaningful evolution candidate needs:
+
+- a concrete prior failure or gap;
+- a changed behavior/mechanism;
+- executable counterexample/regression checks where possible;
+- declared scope and remaining limits;
+- outcome or shadow evidence before broad adoption.
+
+Keep DESIGN, LOCALLY_TESTED, independently verified, shadow validated, real outcome, and operational adoption distinct.
+
+## Knowledge inheritance
+
+Use three scopes:
+
+- UNIVERSAL — reusable only after transfer conditions and non-application conditions are explicit and cross-domain evidence exists.
+- DOMAIN — specific to a capability/domain.
+- LOCAL — project/case/session-specific.
+
+Inherit evidence-backed claims and procedures, not repeated prose. Duplicated wording is not duplicated evidence.
+
+## Context efficiency
+
+Do not reread history for its own sake. Retrieve more information when one of these can change the conclusion:
+
+- freshness/currentness;
+- contradiction;
+- critical missing information.
+
+The ideal memory query is: **what missing fact could change the decision, and what is the minimum trustworthy source that resolves it?**
+
+## Superseded defaults
+
+- Old default: every AI starts by rereading all `[AI AIOPS]` Gmail.  
+  Current default: start from this GitHub memory and current project sources; go back to Gmail only for provenance/history gaps.
+
+- Old default: Gmail can function as the active common-memory SSOT.  
+  Current default: Gmail is archive/distribution/provenance; current operational memory is versioned in GitHub and project-specific adopted standards remain in their owner systems.
+
+- Old default: newest research mail automatically becomes the operating standard.  
+  Current default: research and adoption are separate states.
+
+## Immediate research frontier
+
+1. Human Stewardship: test whether goal/portfolio/agency/follow-through framing improves actual human outcomes.
+2. Commitment Graph: track active promises, deadlines, dependencies, waiting-on, blockers, and superseded commitments.
+3. Opportunity Radar: surface high-value opportunities/risks with evidence without auto-executing them.
+4. Simulation/Foresight: test reversible scenarios before expensive/irreversible action.
+5. Real shadow pilots across development, documents, and non-development human workflows.
+
+Until those are tested, they remain research candidates.
