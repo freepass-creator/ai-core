@@ -1,0 +1,18 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://freepass.local/ai-core/cognitive-state.schema.json",
+  "title":"AI Core Cognitive Runtime State",
+  "type":"object",
+  "required":["runtime_version","status","invariant_kernel","goal_graph","world_state","decision_gaps","authorization"],
+  "properties":{
+    "runtime_version":{"type":"string"},
+    "status":{"enum":["READY","PLAN_READY","HOLD"]},
+    "invariant_kernel":{"type":"array","items":{"type":"string"},"minItems":4,"uniqueItems":true},
+    "goal_graph":{"type":"object"},
+    "world_state":{"type":"object"},
+    "decision_gaps":{"type":"array","items":{"type":"object"}},
+    "next_action":{"type":"object"},
+    "authorization":{"const":"NOT_GRANTED"}
+  },
+  "additionalProperties":true
+}
