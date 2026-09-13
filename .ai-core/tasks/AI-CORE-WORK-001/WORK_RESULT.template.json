@@ -1,0 +1,18 @@
+{
+  "task_id": "AI-CORE-WORK-001",
+  "owner": "chat_review",
+  "status": "IMPLEMENTED_OR_TESTED_NOT_REVIEWED",
+  "start_sha": null,
+  "end_sha": null,
+  "commands_executed": [],
+  "test_counts": {
+    "passed": null,
+    "failed": null,
+    "skipped": null
+  },
+  "changed_files": [],
+  "failures_and_skips": [],
+  "unresolved_issues": [],
+  "notes": [],
+  "authorization": "NOT_GRANTED"
+}
