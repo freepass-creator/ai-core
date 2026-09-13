@@ -1,0 +1,377 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://freepass.local/ai-core/plan-slice.schema.json",
+  "title": "AI Core Revision-bound Plan Slice Candidate",
+  "type": "object",
+  "required": [
+    "schema_version", "slice_id", "attempt_id", "issued_at", "expires_at",
+    "lifecycle", "freshness", "handoff_status", "audience", "target",
+    "task_id", "objective", "scope", "basis", "requirements",
+    "source_revision_set", "capability_revision_set",
+    "decision_context_fingerprint", "decision_gaps", "actions", "gates",
+    "stewardship_projection", "disclosure_review",
+    "work_return_contract", "invariant_kernel", "trust_boundary",
+    "authorization", "slice_digest"
+  ],
+  "properties": {
+    "schema_version": { "const": "plan-slice/0.6-candidate" },
+    "slice_id": { "type": "string", "pattern": "^slice:.+" },
+    "attempt_id": { "type": "string", "pattern": "^attempt:.+" },
+    "issued_at": { "type": "string", "format": "date-time" },
+    "expires_at": { "type": "string", "format": "date-time" },
+    "lifecycle": { "const": "COMPILED_CANDIDATE" },
+    "freshness": { "const": "COMPILED_UNVERIFIED" },
+    "handoff_status": {
+      "enum": ["NOT_REQUIRED", "BLOCKED", "PREPARE_ONLY", "READY_FOR_EXECUTOR_REVIEW"]
+    },
+    "audience": { "type": "string", "minLength": 1 },
+    "target": {
+      "type": "object",
+      "required": ["project", "repository_identity", "project_ref", "subject_revision"],
+      "properties": {
+        "project": { "type": ["string", "null"] },
+        "repository_identity": { "type": ["string", "null"] },
+        "project_ref": { "type": "string", "minLength": 1 },
+        "subject_revision": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    },
+    "task_id": { "type": "string", "minLength": 1 },
+    "objective": {
+      "type": "object",
+      "required": ["goal", "goal_digest", "desired_outcome", "desired_outcome_digest"],
+      "properties": {
+        "goal": { "type": "string", "minLength": 1 },
+        "goal_digest": { "$ref": "#/$defs/digest" },
+        "desired_outcome": { "type": ["string", "null"] },
+        "desired_outcome_digest": {
+          "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/digest" }]
+        }
+      },
+      "additionalProperties": false
+    },
+    "scope": {
+      "type": "object",
+      "required": [
+        "status", "allowed", "forbidden", "constraints",
+        "constraints_are_allowed_scope", "forbidden_precedence"
+      ],
+      "properties": {
+        "status": { "enum": ["NOT_REQUIRED", "EXPLICIT", "UNRESOLVED"] },
+        "allowed": { "type": "array", "uniqueItems": true, "items": { "type": "string" } },
+        "forbidden": { "type": "array", "uniqueItems": true, "items": { "type": "string" } },
+        "constraints": { "type": "array", "items": { "type": "string" } },
+        "constraints_are_allowed_scope": { "const": false },
+        "forbidden_precedence": { "const": true }
+      },
+      "additionalProperties": false
+    },
+    "basis": { "$ref": "#/$defs/basis" },
+    "requirements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "text", "text_digest", "mode", "required", "fingerprint"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "text": { "type": "string", "minLength": 1 },
+          "text_digest": { "$ref": "#/$defs/digest" },
+          "mode": { "enum": ["automated", "manual", "external"] },
+          "required": { "type": "boolean" },
+          "fingerprint": { "$ref": "#/$defs/digest" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "source_revision_set": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["system", "kind", "location", "revision_or_sha", "observed_at"],
+        "properties": {
+          "system": { "type": "string", "minLength": 1 },
+          "kind": { "type": "string", "minLength": 1 },
+          "location": { "type": "string", "minLength": 1 },
+          "revision_or_sha": { "type": "string", "minLength": 1 },
+          "observed_at": { "type": ["string", "null"] }
+        },
+        "additionalProperties": false
+      }
+    },
+    "capability_revision_set": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "scope", "location", "revision_or_sha"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "scope": { "type": "string", "minLength": 1 },
+          "location": { "type": "string", "minLength": 1 },
+          "revision_or_sha": { "type": "string", "minLength": 1 }
+        },
+        "additionalProperties": false
+      }
+    },
+    "decision_context_fingerprint": {
+      "type": "object",
+      "required": [
+        "digest", "confirmed_intent_ids", "resolved_question_ids",
+        "applicable_memory_ids", "selected_failure_ids", "selected_decision_ids",
+        "raw_conversation_included", "memory_summaries_included"
+      ],
+      "properties": {
+        "digest": { "$ref": "#/$defs/digest" },
+        "confirmed_intent_ids": { "$ref": "#/$defs/stringSet" },
+        "resolved_question_ids": { "$ref": "#/$defs/stringSet" },
+        "applicable_memory_ids": { "$ref": "#/$defs/stringSet" },
+        "selected_failure_ids": { "$ref": "#/$defs/stringSet" },
+        "selected_decision_ids": { "$ref": "#/$defs/stringSet" },
+        "raw_conversation_included": { "const": false },
+        "memory_summaries_included": { "const": false }
+      },
+      "additionalProperties": false
+    },
+    "decision_gaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["gap_id", "type", "blocks", "resolution"],
+        "properties": {
+          "gap_id": { "type": "string", "minLength": 1 },
+          "type": { "type": "string", "minLength": 1 },
+          "blocks": { "type": "array", "items": { "type": "string" } },
+          "resolution": { "type": "string", "minLength": 1 }
+        },
+        "additionalProperties": false
+      }
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id", "description", "description_digest", "target", "operation", "effect", "reversible",
+          "depends_on", "phase", "action_context_digest"
+        ],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "description": { "type": "string", "minLength": 1 },
+          "description_digest": { "$ref": "#/$defs/digest" },
+          "target": { "type": ["string", "null"] },
+          "operation": { "type": ["string", "null"] },
+          "effect": { "type": "string", "minLength": 1 },
+          "reversible": { "type": "boolean" },
+          "depends_on": { "$ref": "#/$defs/stringSet" },
+          "phase": { "enum": ["PREPARATION", "EXECUTION_REVIEW", "BLOCKED"] },
+          "action_context_digest": { "$ref": "#/$defs/digest" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "gates": {
+      "type": "object",
+      "required": ["preparation", "execution"],
+      "properties": {
+        "preparation": {
+          "type": "object",
+          "required": ["status", "allowed_action_ids", "blockers"],
+          "properties": {
+            "status": { "enum": ["ALLOWED", "BLOCKED"] },
+            "allowed_action_ids": { "$ref": "#/$defs/stringSet" },
+            "blockers": { "$ref": "#/$defs/stringSet" }
+          },
+          "additionalProperties": false
+        },
+        "execution": {
+          "type": "object",
+          "required": [
+            "status", "authorized", "blockers", "required_approvals",
+            "approval_action_ids"
+          ],
+          "properties": {
+            "status": { "enum": ["REVIEW_READY", "HOLD", "APPROVAL_REQUIRED"] },
+            "authorized": { "const": false },
+            "blockers": { "$ref": "#/$defs/stringSet" },
+            "required_approvals": { "$ref": "#/$defs/stringSet" },
+            "approval_action_ids": { "$ref": "#/$defs/stringSet" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "stewardship_projection": {
+      "type": "object",
+      "required": ["portfolio", "foresight", "follow_through"],
+      "properties": {
+        "portfolio": {
+          "type": "object",
+          "required": [
+            "status", "recommendation", "snapshot_digest",
+            "relevant_commitment_digests", "conflict_codes", "trust",
+            "priority_change_authorized"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "NOT_REQUIRED", "NOT_DECLARED", "NOT_ASSESSED_ADVISORY", "NOT_EVALUATED",
+                "STRUCTURALLY_ANALYZED_UNAUTHENTICATED", "STALE_UNAUTHENTICATED"
+              ]
+            },
+            "recommendation": { "type": "string" },
+            "snapshot_digest": {
+              "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/digest" }]
+            },
+            "relevant_commitment_digests": { "$ref": "#/$defs/stringSet" },
+            "conflict_codes": { "$ref": "#/$defs/stringSet" },
+            "trust": { "type": "string" },
+            "priority_change_authorized": { "const": false }
+          },
+          "additionalProperties": false
+        },
+        "foresight": {
+          "type": "object",
+          "required": [
+            "mode", "assessment_status", "risk_codes", "risk_digests",
+            "smallest_reversible_next_step", "execution_hold_required",
+            "automatic_action_selected"
+          ],
+          "properties": {
+            "mode": { "enum": ["LIGHT", "DEEP"] },
+            "assessment_status": { "type": "string" },
+            "risk_codes": { "$ref": "#/$defs/stringSet" },
+            "risk_digests": { "$ref": "#/$defs/stringSet" },
+            "smallest_reversible_next_step": { "type": "string" },
+            "execution_hold_required": { "type": "boolean" },
+            "automatic_action_selected": { "const": false }
+          },
+          "additionalProperties": false
+        },
+        "follow_through": {
+          "type": "object",
+          "required": [
+            "status", "observation_ids", "observation_binding_digests",
+            "tracking_active", "automation_binding"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "NOT_REQUIRED", "PLANNED_UNBOUND",
+                "DEFERRED_UNTIL_CONSEQUENTIAL_ACTION_BOUND"
+              ]
+            },
+            "observation_ids": { "$ref": "#/$defs/stringSet" },
+            "observation_binding_digests": { "$ref": "#/$defs/stringSet" },
+            "tracking_active": { "const": false },
+            "automation_binding": { "const": "NOT_IMPLEMENTED" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "disclosure_review": {
+      "type": "object",
+      "required": ["status", "method", "redacted_field_paths", "raw_conversation_included"],
+      "properties": {
+        "status": { "enum": ["STRUCTURAL_SCAN_CLEAR", "REDACTED_BLOCKED"] },
+        "method": { "const": "SECRET_PATTERN_SCAN_NOT_DLP" },
+        "redacted_field_paths": { "$ref": "#/$defs/stringSet" },
+        "raw_conversation_included": { "const": false }
+      },
+      "additionalProperties": false
+    },
+    "work_return_contract": {
+      "type": "object",
+      "required": [
+        "schema_version", "required_binding_fields", "proof_must_bind_end_revision",
+        "structural_validation_only", "trusted_acceptance_requires_issued_slice_store",
+        "replay_protection"
+      ],
+      "properties": {
+        "schema_version": { "const": "work-return/0.6-candidate" },
+        "required_binding_fields": {
+          "const": [
+            "slice_id", "slice_digest", "attempt_id", "task_id",
+            "audience", "target", "basis"
+          ]
+        },
+        "proof_must_bind_end_revision": { "const": true },
+        "structural_validation_only": { "const": true },
+        "trusted_acceptance_requires_issued_slice_store": { "const": true },
+        "replay_protection": { "const": "NOT_IMPLEMENTED" }
+      },
+      "additionalProperties": false
+    },
+    "invariant_kernel": {
+      "type": "object",
+      "required": [
+        "plan_slice_is_projection_not_ssot", "capability_reference_is_not_authority",
+        "hash_is_not_signature", "stale_slice_cannot_authorize_work",
+        "forbidden_scope_precedes_allowed_scope", "result_claim_is_not_proof"
+      ],
+      "properties": {
+        "plan_slice_is_projection_not_ssot": { "const": true },
+        "capability_reference_is_not_authority": { "const": true },
+        "hash_is_not_signature": { "const": true },
+        "stale_slice_cannot_authorize_work": { "const": true },
+        "forbidden_scope_precedes_allowed_scope": { "const": true },
+        "result_claim_is_not_proof": { "const": true }
+      },
+      "additionalProperties": false
+    },
+    "trust_boundary": {
+      "type": "object",
+      "required": [
+        "issued_slice_store", "cryptographic_signature", "transport_identity",
+        "current_head_revalidation", "authenticity"
+      ],
+      "properties": {
+        "issued_slice_store": { "const": "NOT_IMPLEMENTED" },
+        "cryptographic_signature": { "const": "NOT_IMPLEMENTED" },
+        "transport_identity": { "const": "NOT_IMPLEMENTED" },
+        "current_head_revalidation": { "const": "REQUIRED_AT_DISPATCH_AND_RETURN" },
+        "authenticity": { "const": "UNAUTHENTICATED" }
+      },
+      "additionalProperties": false
+    },
+    "authorization": { "const": "NOT_GRANTED" },
+    "slice_digest": { "$ref": "#/$defs/digest" }
+  },
+  "$defs": {
+    "digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "stringSet": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "basis": {
+      "type": "object",
+      "required": [
+        "task_contract_digest", "requirement_set_digest", "base_subject_revision",
+        "source_revision_set_digest", "capability_revision_set_digest",
+        "policy_revision", "decision_context_digest", "action_graph_digest",
+        "gate_contract_digest", "blocker_set_digest", "stewardship_contract_digest",
+        "work_packet_basis_digest", "plan_projection_digest", "plan_contract_revision"
+      ],
+      "properties": {
+        "task_contract_digest": { "$ref": "#/$defs/digest" },
+        "requirement_set_digest": { "$ref": "#/$defs/digest" },
+        "base_subject_revision": { "type": ["string", "null"] },
+        "source_revision_set_digest": { "$ref": "#/$defs/digest" },
+        "capability_revision_set_digest": { "$ref": "#/$defs/digest" },
+        "policy_revision": { "type": "string", "minLength": 1 },
+        "decision_context_digest": { "$ref": "#/$defs/digest" },
+        "action_graph_digest": { "$ref": "#/$defs/digest" },
+        "gate_contract_digest": { "$ref": "#/$defs/digest" },
+        "blocker_set_digest": { "$ref": "#/$defs/digest" },
+        "stewardship_contract_digest": { "$ref": "#/$defs/digest" },
+        "work_packet_basis_digest": { "$ref": "#/$defs/digest" },
+        "plan_projection_digest": { "$ref": "#/$defs/digest" },
+        "plan_contract_revision": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

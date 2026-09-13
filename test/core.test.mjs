@@ -378,9 +378,13 @@ test('a rejected improvement observation holds the whole Core result', () => {
     project: 'ai-core',
     done_when: ['문구가 일치'],
     external_effect: 'none',
+    allowed_scope: ['path:notes/**'],
+    forbidden_scope: ['path:secrets/**'],
     proposed_actions: [{
       id: 'PREPARE-EVOLUTION-REVIEW',
       description: '거부된 개선 입력을 제외하고 로컬 검토 메모를 준비한다',
+      target: 'ai-core',
+      operation: 'write:path:notes/evolution-review.md',
       effect: 'local_artifact',
       reversible: true
     }]
@@ -456,6 +460,7 @@ test('unconfirmed intent blocks execution but preserves safe preparation', () =>
     goal: '상품 관리 화면을 개선한다',
     project: 'ai-core',
     done_when: ['검토된 화면 초안이 준비됨'],
+    allowed_scope: ['path:drafts/**'],
     intent_hypotheses: [{
       id: 'INTENT-1',
       statement: '처리 속도를 최우선으로 봅니까?',
@@ -466,12 +471,16 @@ test('unconfirmed intent blocks execution but preserves safe preparation', () =>
       {
         id: 'DRAFT',
         description: '가역적인 화면 초안을 만든다',
+        target: 'ai-core',
+        operation: 'write:path:drafts/screen.md',
         effect: 'local_artifact',
         reversible: true
       },
       {
         id: 'DEPLOY',
         description: '운영에 배포한다',
+        target: 'production',
+        operation: 'deploy:production',
         effect: 'production',
         reversible: true
       }
@@ -615,10 +624,14 @@ test('a proposed consequential action requires approval even without task extern
     goal: '상품 카드 UI 문구 수정',
     project: 'ai-core',
     done_when: ['문구가 요구사항과 일치'],
+    allowed_scope: ['environment:production'],
+    forbidden_scope: ['environment:unresolved'],
     proposed_actions: [{
-      id: 'SEND',
-      description: '결과를 외부 수신자에게 보낸다',
-      effect: 'external_message',
+      id: 'DEPLOY',
+      description: '검토된 결과를 운영에 배포한다',
+      target: 'ai-core-production',
+      operation: 'deploy:production',
+      effect: 'production',
       reversible: true
     }]
   }, resolvedEnvironment);
@@ -627,16 +640,118 @@ test('a proposed consequential action requires approval even without task extern
   assert.equal(output.human_orchestration.status, 'APPROVAL_REQUIRED');
   assert.equal(output.human_orchestration.phase_gate.execution_blocked, true);
   assert.equal(output.execution.route, 'HUMAN_GATE');
-  assert.deepEqual(output.execution.approval_action_ids, ['SEND']);
+  assert.deepEqual(output.execution.approval_action_ids, ['DEPLOY']);
   assert.deepEqual(output.work_packet.approval_requirements, [
     'CLAUDE_DESIGN',
     'CLAUDE_FINAL',
     'USER_JUST_IN_TIME'
   ]);
   assert.equal(
-    output.work_packet.execution_gate.approval_contracts[0].action_digest,
-    output.human_orchestration.actions.approval_required[0].action_digest
+    output.work_packet.execution_gate.approval_contracts[0].action_context_digest,
+    output.work_packet.plan_slice.actions[0].action_context_digest
   );
+  assert.equal(output.execution_authorized, false);
+});
+
+test('a typed portfolio change cannot proceed without scoped commitments', () => {
+  const output = orchestrate({
+    task_id: 'PORTFOLIO-IMPACT-GATE',
+    goal: '업무 우선순위를 변경한다',
+    domain: 'business',
+    risk: 'A',
+    external_effect: 'none',
+    portfolio_effect: 'change_priority',
+    done_when: ['관련 commitment가 확인된다']
+  }, resolvedEnvironment);
+  assert.equal(output.status, 'HOLD');
+  assert.ok(output.holds.includes('PORTFOLIO_DISCOVERY_REQUIRED'));
+  assert.equal(output.human_stewardship.portfolio_contract.status, 'NOT_DECLARED');
+  assert.equal(output.work_packet.plan_slice.handoff_status, 'BLOCKED');
+});
+
+test('a local action without a repository identity is held before handoff', () => {
+  const output = orchestrate({
+    task_id: 'LOCAL-WITHOUT-IDENTITY',
+    goal: '로컬 초안을 작성한다',
+    domain: 'business',
+    external_effect: 'none',
+    done_when: ['초안이 작성된다'],
+    allowed_scope: ['path:drafts/**'],
+    proposed_actions: [{
+      id: 'DRAFT',
+      description: '로컬 초안을 만든다',
+      target: 'local:workspace',
+      operation: 'write:path:drafts/note.md',
+      effect: 'local_artifact',
+      reversible: true
+    }]
+  }, resolvedEnvironment);
+  assert.equal(output.status, 'HOLD');
+  assert.ok(output.holds.includes('TARGET_REPOSITORY_IDENTITY_UNRESOLVED'));
+  assert.equal(output.work_packet.preparation_gate.status, 'BLOCKED');
+  assert.equal(output.work_packet.plan_slice.handoff_status, 'BLOCKED');
+});
+
+test('an irreversible action without recovery is held by the stewardship foresight gate', () => {
+  const output = orchestrate({
+    task_id: 'IRREVERSIBLE-NO-RECOVERY',
+    goal: '운영 데이터를 삭제한다',
+    project: 'ai-core',
+    risk: 'D',
+    external_effect: 'delete',
+    done_when: ['삭제 범위가 검증됨'],
+    allowed_scope: ['data:obsolete-records'],
+    forbidden_scope: ['data:active-records'],
+    proposed_actions: [{
+      id: 'DELETE',
+      description: '폐기 대상을 삭제한다',
+      target: 'ai-core-production',
+      operation: 'delete:data:obsolete-records',
+      effect: 'production_delete',
+      reversible: false
+    }]
+  }, resolvedEnvironment);
+  assert.equal(output.status, 'HOLD');
+  assert.ok(output.holds.includes('FORESIGHT_RECOVERY_PATH_REQUIRED'));
+  assert.equal(output.human_stewardship.foresight_contract.execution_hold_required, true);
+  assert.equal(output.work_packet.plan_slice.handoff_status, 'BLOCKED');
+  assert.equal(output.execution_authorized, false);
+});
+
+test('an irreversible execution hold still allows independent recovery preparation', () => {
+  const output = orchestrate({
+    task_id: 'IRREVERSIBLE-WITH-RECOVERY-PREP',
+    goal: '삭제 전 복구 증거를 준비한다',
+    project: 'ai-core',
+    risk: 'D',
+    external_effect: 'delete',
+    done_when: ['복구 증거와 삭제 계획이 분리됨'],
+    allowed_scope: ['path:recovery/**', 'data:obsolete-records'],
+    forbidden_scope: ['data:active-records'],
+    proposed_actions: [{
+      id: 'PREPARE-RECOVERY',
+      description: '복구 검증 자료를 로컬에 만든다',
+      target: 'ai-core',
+      operation: 'write:path:recovery/rollback-plan.md',
+      effect: 'local_artifact',
+      reversible: true
+    }, {
+      id: 'DELETE',
+      description: '검토 뒤 폐기 대상을 삭제한다',
+      target: 'ai-core-production',
+      operation: 'delete:data:obsolete-records',
+      effect: 'production_delete',
+      reversible: false,
+      depends_on: ['PREPARE-RECOVERY']
+    }]
+  }, resolvedEnvironment);
+  assert.equal(output.status, 'HOLD');
+  assert.ok(output.holds.includes('FORESIGHT_RECOVERY_PATH_REQUIRED'));
+  assert.equal(output.work_packet.preparation_gate.status, 'ALLOWED');
+  assert.deepEqual(output.work_packet.preparation_gate.allowed_action_ids, [
+    'PREPARE-RECOVERY'
+  ]);
+  assert.equal(output.work_packet.plan_slice.handoff_status, 'PREPARE_ONLY');
   assert.equal(output.execution_authorized, false);
 });
 
@@ -755,6 +870,12 @@ test('security-relevant arrays fail closed instead of being silently dropped', (
 });
 
 test('nested task contracts reject unknown fields instead of echoing raw payloads', () => {
+  assert.throws(() => orchestrate({
+    goal: '작업을 검토한다',
+    external_effect: 'none',
+    raw_content: 'must never be accepted'
+  }), /task has unsupported fields: raw_content/);
+
   assert.throws(() => orchestrate({
     goal: '의도를 검토한다',
     external_effect: 'none',
@@ -887,10 +1008,14 @@ test('final preparation gate blocks local preparation when authoritative context
   const output = orchestrate({
     goal: '상품 카드 UI 문구 수정',
     project: 'ai-core',
+    external_effect: 'none',
     done_when: ['문구가 일치'],
+    allowed_scope: ['path:drafts/**'],
     proposed_actions: [{
       id: 'DRAFT',
       description: '화면 초안을 만든다',
+      target: 'ai-core',
+      operation: 'write:path:drafts/screen.md',
       effect: 'local_artifact',
       reversible: true
     }]

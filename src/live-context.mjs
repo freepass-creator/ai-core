@@ -302,7 +302,10 @@ export async function orchestrateLive(input, options) {
   const { humanContext = {}, ...bootstrapOptions } = options ?? {};
   const allowedHumanContext = normalizeHumanContextEnvironment(humanContext);
   const bootstrap = await bootstrapLiveContext(input, bootstrapOptions);
-  const result = orchestrate(bootstrap.task, {
+  // Re-normalize the original Task at the Core boundary. The bootstrap's
+  // normalized task also contains derived assessment fields that are output,
+  // not caller-authorized Task inputs.
+  const result = orchestrate(input, {
     ...bootstrap.environment,
     ...allowedHumanContext
   });

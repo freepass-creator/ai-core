@@ -13,6 +13,8 @@ AI Core는 AIOPS와 DevCenter를 단순 조회하는 라우터가 아니다. 모
 - 전체 진화 구조와 Transfer Gate는 `docs/CIVILIZATION_KERNEL.md`를 따른다.
 - 대화 학습·증명 영수증·상태 분리는 `docs/CONTINUOUS_LEARNING.md`를 따른다.
 - 사용자 의도 가설·기억 범위와 철회·안전한 준비와 결과적 행동 분리는 `docs/HUMAN_ORCHESTRATION.md`를 따른다.
+- 실행자 handoff는 전체 대화가 아니라 `docs/COGNITIVE_RUNTIME.md`의 revision-bound Plan Slice와 exact action/scope 계약을 사용한다.
+- 사람의 장기 보좌는 `docs/HUMAN_STEWARDSHIP.md`의 Portfolio·Foresight·Follow-through 계약을 따르며, 우선순위·commitment·미래 예측·현실 성과를 AI 판단만으로 확정하지 않는다.
 
 자동 발견·후보 생성은 자동 채택이나 실행 승인이 아니다. 확인하지 못한 위험을 PASS로 바꾸지 않는다.
 
@@ -50,6 +52,12 @@ AI Core는 AIOPS와 DevCenter를 단순 조회하는 라우터가 아니다. 모
 - 철회·대체·만료·범위 밖 기억을 현재 Work Packet에 적용하지 않는다.
 - 준비 가능한 분석·초안을 승인 대기 실행과 합치거나, 준비 권한을 실행 권한으로 해석하지 않는다.
 - action 설명문을 실행 명령으로 믿지 않는다. 선언된 effect와 실제 capability를 대조하고 최종 gate가 허용한 action ID만 수행한다.
+- `constraints`를 `allowed_scope`로 해석하지 않는다. 행동에는 정확한 allowed/forbidden scope와 target·operation을 요구하며 forbidden scope가 항상 우선한다.
+- Plan Slice 해시를 서명이나 발행 증명으로 취급하지 않는다. issued store·현재 generation·nonce 소비·transport identity·trusted head/source/capability/policy 재검증이 없으면 handoff와 Return은 비인증 후보다.
+- Task·requirement·subject/source/capability/policy·의사결정 컨텍스트·action/gate/blocker digest가 바뀌거나 Slice가 만료되면 기존 Slice를 STALE로 만들고, 값이 원복돼도 과거 Slice를 부활시키지 않는다.
+- Work Return의 완료·검사·증거·verifier 문자열은 주장이다. trusted adapter가 결과 revision과 실제 증거를 재조회하기 전에는 proof·완료·성과·승인으로 수락하지 않는다.
+- automation binding이 없으면 모니터링·추적 중이라고 주장하지 않는다. 산출물 완료와 현실 결과 관찰을 분리한다.
+- 지원 품질의 여러 축을 근거 없이 단일 점수로 합치지 않는다. 관찰하지 않은 항목은 UNKNOWN으로 보존한다.
 - 사용자 확인·정본 조사 결과는 ID·내용 digest·출처가 결속된 trusted adapter 영수증 없이 확정하지 않는다.
 - 인간만 정할 수 있다고 표시된 질문은 과거 기억이나 외부 정본 영수증으로 대신 답하지 않는다.
 - failure·decision scope는 `*` 또는 `project:<id>`/`domain:<id>`의 exact 값과 `.`, `/`, `:` 하위 경계만 허용한다. namespace 없는 legacy selector는 신뢰된 migration layer에서 변환하며, 빈 project나 부분 문자열로 타 범위 컨텍스트를 포함하지 않는다.

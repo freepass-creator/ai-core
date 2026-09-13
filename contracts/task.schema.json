@@ -8,6 +8,15 @@
     "task_id": { "type": "string" },
     "goal": { "type": "string", "minLength": 1 },
     "desired_outcome": { "type": ["string", "null"] },
+    "outcome_observation": {
+      "type": ["object", "null"],
+      "required": ["event_or_metric", "evidence_required"],
+      "properties": {
+        "event_or_metric": { "type": "string", "minLength": 1 },
+        "evidence_required": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
     "project": { "type": ["string", "null"] },
     "project_ref": { "type": "string", "minLength": 1, "default": "main" },
     "domain": { "enum": ["development", "document", "legal", "business", "communication"] },
@@ -40,6 +49,33 @@
       }
     },
     "constraints": { "type": "array", "items": { "type": "string" } },
+    "allowed_scope": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "forbidden_scope": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "related_commitment_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "resource_claims": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "portfolio_effect": {
+      "enum": [
+        "none", "create_commitment", "change_commitment", "change_deadline",
+        "change_priority", "change_allocation", "unknown"
+      ]
+    },
+    "recovery_strategy": { "type": ["string", "null"], "minLength": 1 },
     "changed_files_estimate": { "type": "integer", "minimum": 0 },
     "needs_build": { "type": "boolean" },
     "needs_dependency_install": { "type": "boolean" },
@@ -152,6 +188,8 @@
         "properties": {
           "id": { "type": "string" },
           "description": { "type": "string", "minLength": 1 },
+          "target": { "type": "string", "minLength": 1 },
+          "operation": { "type": "string", "minLength": 1 },
           "effect": { "type": "string", "minLength": 1 },
           "reversible": { "type": "boolean" },
           "approval_required": { "type": "boolean" },
@@ -161,5 +199,5 @@
       }
     }
   },
-  "additionalProperties": true
+  "additionalProperties": false
 }

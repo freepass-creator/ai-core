@@ -1,13 +1,13 @@
 # Human Orchestration — 의도·기억·행동 분리
 
 상태: `candidate implementation`  
-정책 revision: `2026-09-13.5`
+정책 revision: `2026-09-13.7`
 
 ## 목적
 
 AI Core는 사용자의 요청을 그대로 실행하는 명령 처리기나 사용자의 숨은 목적을 안다고 주장하는 시스템이 아니다. 현재 요청과 정본에서 목적을 잠정적으로 구조화하고, 인간 판단이 필요한 빈칸만 사용자에게 올리며, 사실 질문은 정본 조사로 돌리고, 안전한 준비는 계속하고 결과가 큰 행동만 별도 승인 경계에 둔다.
 
-이 구현은 Chat 연구실의 세 검토 과제를 현재 v0.5 후보 오케스트레이터에 연결한다.
+이 구현은 Chat 연구실의 세 검토 과제를 현재 v0.6 후보 오케스트레이터에 연결한다. v0.6은 scope·회복 전략과 기억 철회 집합까지 decision context에 포함하고, 그 출력을 revision-bound Plan Slice와 Stewardship 계약에 결속한다.
 
 1. 의도 가설과 사용자 확인을 구별한다.
 2. 철회·대체·만료된 기억을 다음 작업에 적용하지 않는다.
@@ -73,7 +73,7 @@ CLI의 `human_context`는 memory·revocation·intent confirmation·question reso
 
 안전해 보이는 준비라도 승인 대기 행동에 의존하면 함께 `AWAIT_APPROVAL`로 이동한다. 알 수 없는 dependency와 중복 action ID는 입력 오류로 차단한다.
 
-각 행동은 `effect`와 `reversible`을 명시해야 한다. 누락·잘못된 타입·순환 dependency는 실패 폐쇄된다. 설명 문자열은 실행 권한이 아니며, 실제 executor는 허용된 effect/capability 경계를 별도로 강제해야 한다.
+각 행동은 `effect`와 `reversible`을 명시해야 한다. 누락·잘못된 타입·순환 dependency는 실패 폐쇄된다. `operation`·`target`이 deploy/merge/delete/send/payment/permission/production 의미를 가지면 caller의 안전한 effect·가역성 자기신고보다 높은 위험 분류가 우선한다. 설명 문자열은 실행 권한이 아니며, 실제 executor는 허용된 effect/capability 경계를 별도로 강제해야 한다.
 
 확인되지 않은 의도나 승인 대기 행동이 있어도 안전한 준비까지 자동 폐기하지 않는다. `phase_gate=PREPARE_ONLY`는 준비만 가능하고 실행은 차단된 상태다.
 

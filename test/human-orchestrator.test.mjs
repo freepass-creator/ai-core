@@ -20,6 +20,7 @@ test('decision-changing inferred intent stays provisional and asks one question'
     goal: '관리자 화면을 개선한다',
     domain: 'development',
     project: 'freepasserp',
+    allowed_scope: ['path:drafts/**'],
     intent_hypotheses: [{
       id: 'INTENT-1',
       statement: '업무 처리 속도 개선이 최우선입니까?',
@@ -30,12 +31,16 @@ test('decision-changing inferred intent stays provisional and asks one question'
       {
         id: 'DRAFT',
         description: '가역적인 화면 초안을 만든다',
+        target: 'freepasserp',
+        operation: 'write:path:drafts/screen.md',
         effect: 'local_artifact',
         reversible: true
       },
       {
         id: 'DEPLOY',
         description: '운영 화면에 배포한다',
+        target: 'production',
+        operation: 'deploy:production',
         effect: 'production',
         reversible: true
       }
@@ -474,11 +479,25 @@ test('raw or unversioned memory input fails closed without leaking content', () 
 
 test('preparation and consequential actions are never collapsed', () => {
   const actions = partitionActions([
-    { id: 'ANALYZE', description: '정본을 분석한다', effect: 'none', reversible: true },
-    { id: 'DRAFT', description: '초안을 만든다', effect: 'local_artifact', reversible: true },
-    { id: 'SEND', description: '외부에 발송한다', effect: 'external_message', reversible: true },
-    { id: 'DELETE', description: '데이터를 삭제한다', effect: 'live_data', reversible: false }
-  ]);
+    {
+      id: 'ANALYZE', description: '정본을 분석한다', target: 'local:workspace',
+      operation: 'read:path:src/source.mjs', effect: 'none', reversible: true
+    },
+    {
+      id: 'DRAFT', description: '초안을 만든다', target: 'local:workspace',
+      operation: 'write:path:drafts/note.md', effect: 'local_artifact', reversible: true
+    },
+    {
+      id: 'SEND', description: '외부에 발송한다', target: 'external:recipient',
+      operation: 'send:message', effect: 'external_message', reversible: true
+    },
+    {
+      id: 'DELETE', description: '데이터를 삭제한다', target: 'production',
+      operation: 'delete:data', effect: 'live_data', reversible: false
+    }
+  ], {
+    taskScope: { allowed: ['path:src/**', 'path:drafts/**'], forbidden: [] }
+  });
 
   assert.deepEqual(actions.prepare_now.map(item => item.id), ['ANALYZE', 'DRAFT']);
   assert.deepEqual(actions.approval_required.map(item => item.id), ['SEND', 'DELETE']);
@@ -487,15 +506,22 @@ test('preparation and consequential actions are never collapsed', () => {
 
 test('safe-looking work cannot bypass an approval dependency', () => {
   const actions = partitionActions([
-    { id: 'DEPLOY', description: '운영에 배포한다', effect: 'production', reversible: true },
+    {
+      id: 'DEPLOY', description: '운영에 배포한다', target: 'production',
+      operation: 'deploy:production', effect: 'production', reversible: true
+    },
     {
       id: 'POST-DEPLOY-NOTE',
       description: '배포 후 안내 초안을 만든다',
+      target: 'local:workspace',
+      operation: 'write:path:drafts/post-deploy-note.md',
       effect: 'local_artifact',
       reversible: true,
       depends_on: ['DEPLOY']
     }
-  ]);
+  ], {
+    taskScope: { allowed: ['path:drafts/**'], forbidden: [] }
+  });
 
   assert.deepEqual(actions.prepare_now, []);
   assert.deepEqual(

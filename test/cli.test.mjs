@@ -11,7 +11,7 @@ test('CLI accepts the human-context envelope and exposes all four work lanes', (
   );
   const output = JSON.parse(stdout);
 
-  assert.equal(output.core_version, '0.5.0-candidate.0');
+  assert.equal(output.core_version, '0.6.0-candidate.0');
   assert.notEqual(output.human_orchestration.status, 'HOLD_INVALID_INPUT');
   assert.equal(output.human_orchestration.questions_to_ask.length, 1);
   assert.deepEqual(output.human_orchestration.research_now, []);
@@ -19,6 +19,9 @@ test('CLI accepts the human-context envelope and exposes all four work lanes', (
   assert.deepEqual(output.human_orchestration.actions.approval_required.map(item => item.id), [
     'DEPLOY'
   ]);
+  assert.equal(output.work_packet.plan_slice.authorization, 'NOT_GRANTED');
+  assert.equal(output.work_packet.plan_slice.trust_boundary.issued_slice_store, 'NOT_IMPLEMENTED');
+  assert.equal(output.human_stewardship.outcome_observed, false);
   assert.equal(output.execution_authorized, false);
 });
 

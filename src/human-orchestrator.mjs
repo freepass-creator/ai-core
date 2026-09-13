@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto';
 import { effectiveDomains, effectiveRisk } from './domain-policy.mjs';
+import { assessActionSemantics } from './action-semantics.mjs';
 
 const MEMORY_SCOPES = new Set(['UNIVERSAL', 'DOMAIN', 'LOCAL']);
 const MEMORY_STATES = new Set(['ACTIVE', 'REVOKED', 'SUPERSEDED']);
@@ -8,7 +9,6 @@ const MEMORY_KINDS = new Set([
   'context', 'principle', 'constraint', 'preference', 'temporary_decision'
 ]);
 const TIME_BOUND_MEMORY_KINDS = new Set(['preference', 'temporary_decision']);
-const SAFE_PREPARATION_EFFECTS = new Set(['none', 'local_artifact']);
 const VAGUE_GOAL_HINTS = [
   '개선', '고도화', '최적화', '알아서', '완벽', '좋게',
   'improve', 'optimize', 'better', 'best'
@@ -111,7 +111,21 @@ function decisionTaskContext(task = {}) {
     desired_outcome: task.desired_outcome == null
       ? null
       : String(task.desired_outcome).trim() || null,
+    outcome_observation: task.outcome_observation == null
+      ? null
+      : {
+          event_or_metric: String(task.outcome_observation.event_or_metric ?? '').trim(),
+          evidence_required: String(task.outcome_observation.evidence_required ?? '').trim()
+        },
     constraints: Array.isArray(task.constraints) ? task.constraints.map(String) : [],
+    allowed_scope: Array.isArray(task.allowed_scope) ? task.allowed_scope.map(String) : [],
+    forbidden_scope: Array.isArray(task.forbidden_scope) ? task.forbidden_scope.map(String) : [],
+    related_commitment_ids: Array.isArray(task.related_commitment_ids)
+      ? task.related_commitment_ids.map(String)
+      : [],
+    resource_claims: Array.isArray(task.resource_claims) ? task.resource_claims.map(String) : [],
+    portfolio_effect: task.portfolio_effect ?? 'unknown',
+    recovery_strategy: task.recovery_strategy ?? null,
     domain: task.domain ?? domains[0] ?? null,
     applicable_domains: [...domains].sort(),
     risk: domains.length ? effectiveRisk(task, domains) : null,
@@ -419,7 +433,9 @@ export function buildIntentEnvelope(task = {}, {
     stated: {
       goal: task.goal,
       desired_outcome: task.desired_outcome ?? null,
-      constraints: Array.isArray(task.constraints) ? task.constraints : []
+      constraints: Array.isArray(task.constraints) ? task.constraints : [],
+      allowed_scope: Array.isArray(task.allowed_scope) ? task.allowed_scope : [],
+      forbidden_scope: Array.isArray(task.forbidden_scope) ? task.forbidden_scope : []
     },
     hypotheses,
     unresolved_hypothesis_ids: unresolved.map(item => item.id),
@@ -713,6 +729,7 @@ export function selectApplicableMemory(claims = [], {
   return {
     applicable,
     excluded,
+    revocation_set_digest: stableDigest(JSON.stringify([...context.revokedMemoryIds].sort())),
     revoked_memory_applied: false,
     raw_memory_stored: false
   };
@@ -741,6 +758,8 @@ function normalizeAction(action, index) {
   const normalized = {
     id,
     description,
+    target: action.target == null ? null : String(action.target).trim() || null,
+    operation: action.operation == null ? null : String(action.operation).trim() || null,
     effect: String(action.effect).trim(),
     reversible: action.reversible,
     approval_required: action.approval_required === true,
@@ -754,7 +773,10 @@ function normalizeAction(action, index) {
   };
 }
 
-export function partitionActions(actions = []) {
+export function partitionActions(actions = [], {
+  taskProject = null,
+  taskScope = null
+} = {}) {
   if (!Array.isArray(actions)) throw new Error('proposed_actions must be an array');
   const normalized = actions.map(normalizeAction);
   const actionsById = new Map();
@@ -791,12 +813,12 @@ export function partitionActions(actions = []) {
   }
   if (visited !== normalized.length) throw new Error('proposed action dependencies must be acyclic');
 
+  const assessments = new Map(normalized.map(action => [
+    action.id,
+    assessActionSemantics(action, { taskProject, taskScope })
+  ]));
   const gatedIds = new Set(normalized
-    .filter(action => (
-      !SAFE_PREPARATION_EFFECTS.has(action.effect)
-      || !action.reversible
-      || action.approval_required
-    ))
+    .filter(action => !assessments.get(action.id).safe_preparation_candidate)
     .map(action => action.id));
   let changed = true;
   while (changed) {
@@ -812,6 +834,7 @@ export function partitionActions(actions = []) {
   const prepareNow = [];
   const approvalRequired = [];
   for (const action of normalized) {
+    const assessment = assessments.get(action.id);
     const gatedDependency = action.depends_on.some(id => gatedIds.has(id));
     const safePreparation = !gatedIds.has(action.id);
     if (safePreparation) {
@@ -820,7 +843,9 @@ export function partitionActions(actions = []) {
       approvalRequired.push({
         ...action,
         decision: 'AWAIT_APPROVAL',
-        reason: action.approval_required
+        reason: assessment.issues.length
+          ? 'ACTION_SEMANTICS_CONFLICT'
+          : action.approval_required
           ? 'EXPLICIT_APPROVAL_REQUIRED'
           : !action.reversible
             ? 'IRREVERSIBLE_ACTION'
@@ -841,7 +866,7 @@ export function partitionActions(actions = []) {
 
 function invalidResult(error) {
   return {
-    architecture_version: 'human-orchestration/0.5-candidate',
+    architecture_version: 'human-orchestration/0.6-candidate',
     status: 'HOLD_INVALID_INPUT',
     issues: [error.message],
     intent: null,
@@ -854,6 +879,7 @@ function invalidResult(error) {
     memory: {
       applicable: [],
       excluded: [],
+      revocation_set_digest: stableDigest(JSON.stringify([])),
       revoked_memory_applied: false,
       raw_memory_stored: false
     },
@@ -934,7 +960,13 @@ export function compileHumanOrchestration(task = {}, {
       revokedMemoryIds,
       now: currentTime
     });
-    const actions = partitionActions(task.proposed_actions ?? []);
+    const actions = partitionActions(task.proposed_actions ?? [], {
+      taskProject: task.project ?? null,
+      taskScope: {
+        allowed: task.allowed_scope ?? [],
+        forbidden: task.forbidden_scope ?? []
+      }
+    });
     const unresolvedDecisionQuestions = evaluatedQuestions.filter(question => (
       !['RESOLVED_FROM_SOURCE', 'ALREADY_KNOWN', 'RESOLVE_WITH_SOURCE_FIRST'].includes(
         question.reason
@@ -956,7 +988,7 @@ export function compileHumanOrchestration(task = {}, {
       : 'READY_TO_PLAN';
 
     return {
-      architecture_version: 'human-orchestration/0.5-candidate',
+      architecture_version: 'human-orchestration/0.6-candidate',
       evaluation_time: new Date(dateTimeEpoch(currentTime)).toISOString(),
       status: decisionRequired
         ? 'DECISION_REQUIRED'

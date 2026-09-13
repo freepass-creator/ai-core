@@ -13,9 +13,9 @@ AIOPS의 업무 기억·운영 제어와 DevCenter의 개발 규격·검증 능�
 - 개발은 Cloud First다. 실제 저장소 실행환경이 필요할 때 Work/Codex를 사용한다.
 - AI Core 자체가 운영 실행 권한을 만들지 않는다. 기존 승인 게이트를 보존한다.
 
-## v0.5 candidate
+## v0.6 candidate
 
-현재 후보는 여섯 구성으로 작동한다.
+현재 후보는 여덟 구성으로 작동한다.
 
 1. **오프라인 계획**: 필요한 정본과 capability를 계산한다. 실제 SHA가 없으므로 `HOLD`가 정상이다.
 2. **Live Context Bootstrap**: 읽기 전용 GitHub API로 프로젝트·AIOPS·DevCenter 원본과 capability를 가져와 SHA를 고정한 뒤 Work Packet을 만든다.
@@ -23,6 +23,8 @@ AIOPS의 업무 기억·운영 제어와 DevCenter의 개발 규격·검증 능�
 4. **Conversation Learning**: 비식별 대화 관찰을 패턴·원칙·시스템 후보로 승격하되 원문을 저장하거나 자동 채택하지 않는다.
 5. **Domain Proof Gate**: 개발·법률·사업·문서·커뮤니케이션별 증명 의무와 요구사항 영수증을 같은 revision에 묶는다. 혼합 업무는 한 도메인으로 축소하지 않고 모든 해당 도메인의 정본·capability·검토·증명 의무를 합성한다.
 6. **Human Orchestration**: 명시된 목적과 잠정 의도, 적용 가능한 기억과 철회된 기억, 안전한 준비와 승인 필요한 행동을 분리한다.
+7. **Cognitive Runtime**: 전체 대화 대신 최소 Plan Slice 후보를 만들고 Task·대상·정본·capability·결정 컨텍스트·행동·게이트 revision에 결속한다. caller가 최신 snapshot과 stale tombstone을 제공할 때 basis drift를 구조적으로 탐지한다.
+8. **Human Stewardship**: 선언된 관련 commitment의 제한적 상태, 조건부 미래 위험, 산출물 이후 현실 결과 관찰 계획을 Portfolio·Foresight·Follow-through 계약으로 분리한다.
 
 ```text
 Task
@@ -32,8 +34,11 @@ Task
   → Context Compiler
   → Capability Resolver
   → Human Intent / Memory / Action Gate
+  → Portfolio / Foresight / Follow-through
   → Execution Router
   → Work Packet
+  → Revision-bound Plan Slice
+  → Work Return Structural Validation
   → Domain Proof Contract
   → Result Observation
   → Conversation Learning
@@ -60,9 +65,17 @@ AI_CORE_GITHUB_TOKEN=<read-only-token> node src/cli.mjs --live examples/freepass
 
 Live 조회 성공은 실행 승인이 아니다. 모든 출력의 `execution_authorized`는 `false`이며, C등급은 Claude DESIGN, D등급·라이브 외부 변경은 Claude DESIGN/FINAL과 사용자 직전 승인을 요구한다. 준비는 `work_packet.preparation_gate`, 실행은 `work_packet.execution_gate`의 합성 결과만 따른다. 손상되거나 같은 ID로 충돌하는 evolution 입력은 격리하고 Transfer·실행을 HOLD하며, 그 입력과 무관한 가역적 로컬 준비만 별도 허용할 수 있다.
 
+행동이 있는 Task는 `allowed_scope`와 각 action의 `target`·`operation`을 명시해야 한다. 자동 준비가 가능한 v0.6 operation은 허용 범위 안의 단일 concrete 파일을 가리키는 `read:path:…`, `write:path:…`, `patch:path:…`로 제한한다. wildcard·traversal·절대경로·금지 경로·등록되지 않은 test/build 명령은 계획 단계에서 차단한다. `constraints`는 허용 범위로 해석하지 않으며 `forbidden_scope`가 항상 우선한다. authoritative repository identity가 없는 프로젝트 없는 local action도 외부 handoff 전에 차단한다. 누락되면 Plan Slice handoff가 차단된다.
+
+`operation` verb와 exact `target`이 deploy/send/delete/payment/permission/production 의미를 가지면 caller가 `effect=local_artifact` 또는 `reversible=true`라고 표시해도 안전한 준비로 승격하지 않는다. Work Return의 변경 경로는 canonical concrete scope이면서 해당 action operation의 exact path여야 한다. traversal·wildcard·authoritative project source에서 유도한 exact `owner/repo`와 다른 산출물·revision 불일치를 거부하고, read action의 변경 주장도 거부한다. 사람이 쓴 목적·완료조건·action 필드에서 비밀 패턴이 발견되면 Slice에서는 값을 redaction하고 handoff를 HOLD한다. 이는 제한된 secret pattern scan이며 완전한 DLP를 뜻하지 않는다.
+
+Portfolio 판단은 자유문장 keyword가 아니라 Task의 typed `portfolio_effect`를 사용한다. Follow-through는 `desired_outcome`만으로 monitoring을 만들지 않으며, 명시적 `outcome_observation` 또는 실제 결과적 action에 task-context-bound 관찰 후보를 결속한다. 실제 결과적 action이 아직 없으면 관찰은 deferred 상태다.
+
+v0.6의 `READY_FOR_EXECUTOR_REVIEW`와 내부 execution gate의 `REVIEW_READY`는 실행 허가가 아니다. 행동 없는 직접 응답은 handoff `NOT_REQUIRED`지만, 명시적인 외부효과나 portfolio 변경에 필요한 action이 없으면 `ACTION_GRAPH_EMPTY`로 차단한다. Runtime Head는 stale tombstone과 발행시각 high-water mark를 보존하며, 무효화 뒤 새 candidate로 복귀해도 generation chain을 잃지 않는다. 현재 Plan Slice issued store·서명·transport identity·nonce 단일소비가 없으므로 Slice와 Work Return은 `UNAUTHENTICATED`다. 최신 snapshot이 없거나 정상 구조의 Return이어도 `HOLD_TRUSTED_ADAPTER_REQUIRED`, `proof_accepted=false`, `task_completed=false`, `outcome_observed=false`, `authorization=NOT_GRANTED`를 유지한다.
+
 CLI는 단순 Task JSON과 `{ "task": ..., "human_context": ... }` 개발용 envelope를 모두 받는다. 후자의 confirmation/research 영수증은 production에서 사용자 payload로 직접 받지 말고 인증된 Chat/AIOPS adapter가 구성해야 한다. `human_context`는 기억·철회·확인·조사 결과만 허용하며, source/proof/capability나 클라이언트 시각을 통한 권위 우회는 거부한다.
 
-AI Core의 최상위 역할과 두 축을 고도화하는 순환 구조는 [`docs/CIVILIZATION_KERNEL.md`](docs/CIVILIZATION_KERNEL.md)에 정의한다. 대화 학습·도메인별 증명·상태 분리 규칙은 [`docs/CONTINUOUS_LEARNING.md`](docs/CONTINUOUS_LEARNING.md), 사용자 의도·기억·행동 경계는 [`docs/HUMAN_ORCHESTRATION.md`](docs/HUMAN_ORCHESTRATION.md)에 정의한다.
+AI Core의 최상위 역할과 두 축을 고도화하는 순환 구조는 [`docs/CIVILIZATION_KERNEL.md`](docs/CIVILIZATION_KERNEL.md)에 정의한다. 대화 학습·도메인별 증명·상태 분리 규칙은 [`docs/CONTINUOUS_LEARNING.md`](docs/CONTINUOUS_LEARNING.md), 사용자 의도·기억·행동 경계는 [`docs/HUMAN_ORCHESTRATION.md`](docs/HUMAN_ORCHESTRATION.md)에 정의한다. revision-bound handoff는 [`docs/COGNITIVE_RUNTIME.md`](docs/COGNITIVE_RUNTIME.md), 인간 장기 보좌 경계는 [`docs/HUMAN_STEWARDSHIP.md`](docs/HUMAN_STEWARDSHIP.md), 실제 효과 비교 계획은 [`docs/SHADOW_PILOT_V0.6.md`](docs/SHADOW_PILOT_V0.6.md)를 따른다.
 
 개발 Work Packet에는 보안·데이터 무결성·성능·접근성·배포·롤백·관찰 가능성 등 사용자가 일일이 요청하지 않은 선제 검토 관점을 자동으로 포함한다. 법률은 FACT/EVIDENCE/상대 주장/INFERENCE/AUTHORITY/UNCERTAINTY, 최신 공식 근거, 절차 기한, 책임 있는 인간 검토가 없으면 통과하지 않는다. 법률 기능 개발처럼 도메인이 겹치면 법률 최소 C등급과 개발 검증을 동시에 적용한다. 현재 도메인 자동 판별은 보수적인 한·영 키워드 휴리스틱이므로 완전한 법률 분류기가 아니며, 운영 전에는 인증된 의미 분류 adapter가 필요하다. 사업·문서·커뮤니케이션도 각자의 현실 실패 방식에 맞는 별도 증명 의무를 갖는다.
 

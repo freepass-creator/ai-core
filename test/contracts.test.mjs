@@ -13,6 +13,9 @@ test('task schema preserves fail-closed human action inputs', () => {
   const action = schema.properties.proposed_actions.items;
   assert.deepEqual(action.required, ['description', 'effect', 'reversible']);
   assert.equal(action.additionalProperties, false);
+  assert.ok(schema.properties.allowed_scope);
+  assert.ok(schema.properties.forbidden_scope);
+  assert.equal(schema.additionalProperties, false);
   assert.ok(schema.properties.decision_questions.items.properties.resolution_ref);
 });
 
@@ -47,4 +50,37 @@ test('proof receipt schema binds source and capability revision sets', () => {
   assert.ok(schema.required.includes('capability_revision_set_digest'));
   assert.ok(schema.required.includes('failures'));
   assert.ok(schema.required.includes('skips'));
+});
+
+test('Plan Slice, Runtime Head and Work Return contracts are strict and non-authorizing', () => {
+  const plan = readContract('plan-slice.schema.json');
+  const runtime = readContract('runtime-head.schema.json');
+  const workReturn = readContract('work-return.schema.json');
+  const stewardship = readContract('stewardship-state.schema.json');
+  const portfolio = readContract('portfolio-snapshot.schema.json');
+  assert.equal(plan.additionalProperties, false);
+  assert.equal(plan.properties.authorization.const, 'NOT_GRANTED');
+  assert.equal(plan.properties.trust_boundary.properties.issued_slice_store.const, 'NOT_IMPLEMENTED');
+  assert.equal(runtime.additionalProperties, false);
+  assert.equal(runtime.properties.authorization.const, 'NOT_GRANTED');
+  assert.ok(runtime.required.includes('latest_slice_issued_at'));
+  assert.equal(workReturn.additionalProperties, false);
+  assert.equal(workReturn.properties.action_results.items.additionalProperties, false);
+  assert.equal(
+    workReturn.properties.action_results.items.properties.start_subject_revision.type,
+    'string',
+  );
+  assert.equal(stewardship.additionalProperties, false);
+  assert.equal(stewardship.properties.composite_support_score.type, 'null');
+  assert.equal(portfolio.additionalProperties, false);
+  assert.equal(portfolio.properties.commitments.items.additionalProperties, false);
+  for (const field of ['dependencies', 'resource_claims', 'priority']) {
+    assert.ok(portfolio.properties.commitments.items.required.includes(field));
+  }
+  for (const field of ['system', 'kind', 'location', 'revision_or_sha']) {
+    assert.equal(plan.properties.source_revision_set.items.properties[field].type, 'string');
+  }
+  for (const field of ['id', 'scope', 'location', 'revision_or_sha']) {
+    assert.equal(plan.properties.capability_revision_set.items.properties[field].type, 'string');
+  }
 });

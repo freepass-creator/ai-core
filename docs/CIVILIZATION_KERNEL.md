@@ -98,7 +98,7 @@ AI Core는 낮은 위험의 조사·후보 작성·테스트·비교·시정안 
 
 ## 9. 현재 구현 단계
 
-v0.5 candidate는 다음까지만 구현한다.
+v0.6 candidate는 다음까지만 구현한다.
 
 - 모든 개발 Work Packet에 선제 검토 관점 부착
 - 개발·법률·사업·문서·커뮤니케이션별 증명 의무 부착
@@ -112,5 +112,8 @@ v0.5 candidate는 다음까지만 구현한다.
 - 후보 자동 생성
 - Transfer Gate의 task-context·증거·독립검토·승인 검사
 - 의도 확인/질문 답변 영수증의 task-context 결속, 범위·철회·만료 기억, 안전한 준비/결과적 행동 분리
+- decision-context와 모든 중요 revision에 묶인 최소 Plan Slice, caller-managed Runtime Head와 영구 stale tombstone
+- Work Return의 strict 구조·결속·범위 검사. 단 issued store와 trusted adapter가 없으므로 수락·proof·완료로 승격하지 않음
+- 관련 commitment만 보는 Portfolio, 조건부 위험 최대 세 개를 보는 Foresight, 실제 binding 없이는 추적을 주장하지 않는 Follow-through
 
-대상 저장소에 후보를 자동 제출하고, 채택 후 여러 프로젝트에 전파하고, 실제 성과를 비교해 롤백하는 executor는 후속 단계다.
+Plan Slice 발행 저장소·서명·transport identity·원자적 nonce 소비, 대상 저장소에 후보를 자동 제출하고 채택 후 여러 프로젝트에 전파하며 실제 성과를 비교해 롤백하는 executor는 후속 단계다.

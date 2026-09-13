@@ -23,6 +23,10 @@ const rows = [
   ['이유', output.execution.reason],
   ['증명 게이트', output.assurance.gate.status],
   ['대화 학습', output.learning.status],
+  ['Plan Slice', output.work_packet.plan_slice.handoff_status],
+  ['Plan 신뢰', output.work_packet.plan_slice.trust_boundary.authenticity],
+  ['미래 검토', output.human_stewardship.foresight_contract.mode],
+  ['현실 결과', output.human_stewardship.follow_through_contract.outcome_state],
   ['실행 권한', output.execution_authorized ? '허용' : '미부여']
 ];
 const sourcePills = output.source_bindings.map(binding => (
@@ -65,6 +69,8 @@ code,pre{background:#f6f6f6;border-radius:10px}pre{padding:16px;overflow:auto}.p
 <div class="card"><h2>선제 검토 관점</h2>${reviewPills}</div>
 <div class="card"><h2>Domain Proof Contract</h2><p class="sub">요구사항 digest: ${escapeHtml(output.assurance.requirement_set.digest)}</p><ul>${proofItems}</ul><p class="sub">사전 계획에서는 NOT_EVALUATED가 정상이며, 최종 판정에는 같은 revision의 영수증이 필요하다.</p></div>
 <div class="card"><h2>Evolution Kernel</h2><ul>${evolutionItems}</ul><p class="sub">후보 생성은 자동 채택이나 실행 승인이 아니다.</p></div>
+<div class="card"><h2>Cognitive Runtime</h2><p class="sub">Slice digest: ${escapeHtml(output.work_packet.plan_slice.slice_digest)}</p><p>이 Plan Slice는 revision-bound 검토 후보이며 발행 서명이나 실행 권한이 아니다.</p></div>
+<div class="card"><h2>Human Stewardship</h2><pre>${escapeHtml(JSON.stringify(output.human_stewardship, null, 2))}</pre></div>
 <div class="card"><h2>Work Packet</h2><pre>${escapeHtml(JSON.stringify(output.work_packet, null, 2))}</pre></div>
 <p class="sub">오프라인 데모의 HOLD는 실제 SHA가 주입되지 않았다는 뜻이다. 이 페이지는 운영 실행 권한을 부여하지 않는다.</p>
 </body>

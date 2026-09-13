@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://freepass.local/ai-core/runtime-head.schema.json",
+  "title": "AI Core Immutable Runtime Head Candidate",
+  "type": "object",
+  "required": [
+    "schema_version", "runtime_id", "task_id", "target", "generation",
+    "previous_state_id", "latest_slice_issued_at", "active_slice_id", "active_slice_digest",
+    "active_basis_digest", "stale_slice_ids", "lifecycle", "transition_record",
+    "persistence", "authorization", "state_id"
+  ],
+  "properties": {
+    "schema_version": { "const": "runtime-head/0.6-candidate" },
+    "runtime_id": { "type": "string", "pattern": "^task:" },
+    "task_id": { "type": "string", "minLength": 1 },
+    "target": {
+      "type": "object",
+      "required": ["project", "repository_identity", "project_ref"],
+      "properties": {
+        "project": { "type": ["string", "null"] },
+        "repository_identity": { "type": ["string", "null"] },
+        "project_ref": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "generation": { "type": "integer", "minimum": 1 },
+    "previous_state_id": { "type": ["string", "null"] },
+    "latest_slice_issued_at": { "type": "string", "format": "date-time" },
+    "active_slice_id": { "type": ["string", "null"] },
+    "active_slice_digest": {
+      "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/digest" }]
+    },
+    "active_basis_digest": {
+      "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/digest" }]
+    },
+    "stale_slice_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "lifecycle": { "enum": ["ACTIVE_CANDIDATE", "REPLAN_REQUIRED"] },
+    "transition_record": {
+      "type": "object",
+      "required": [
+        "kind", "reason_codes", "reason_digest", "from_basis_digest", "to_basis_digest"
+      ],
+      "properties": {
+        "kind": { "enum": ["CREATED", "INVALIDATED", "SUPERSEDED"] },
+        "reason_codes": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "reason_digest": {
+          "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/digest" }]
+        },
+        "from_basis_digest": {
+          "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/digest" }]
+        },
+        "to_basis_digest": {
+          "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/digest" }]
+        }
+      },
+      "additionalProperties": false
+    },
+    "persistence": { "const": "CALLER_MANAGED_NOT_TRUSTED" },
+    "authorization": { "const": "NOT_GRANTED" },
+    "state_id": { "type": "string", "pattern": "^state:[a-f0-9]{64}$" }
+  },
+  "$defs": {
+    "digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "lifecycle": { "const": "ACTIVE_CANDIDATE" } } },
+      "then": {
+        "properties": {
+          "active_slice_id": { "type": "string" },
+          "active_slice_digest": { "$ref": "#/$defs/digest" },
+          "active_basis_digest": { "$ref": "#/$defs/digest" }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "lifecycle": { "const": "REPLAN_REQUIRED" } } },
+      "then": {
+        "properties": {
+          "active_slice_id": { "type": "null" },
+          "active_slice_digest": { "type": "null" },
+          "active_basis_digest": { "type": "null" }
+        }
+      }
+    }
+  ],
+  "additionalProperties": false
+}

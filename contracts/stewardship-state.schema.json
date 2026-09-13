@@ -1,0 +1,213 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://freepass.local/ai-core/stewardship-state.schema.json",
+  "title": "AI Core Human Stewardship Candidate",
+  "type": "object",
+  "required": [
+    "architecture_version", "contract_revision", "status", "issues",
+    "portfolio_contract", "foresight_contract", "follow_through_contract",
+    "support_quality_vector", "composite_support_score", "user_priority_changed",
+    "user_commitment_cancelled", "outcome_observed", "authorization"
+  ],
+  "properties": {
+    "architecture_version": { "const": "human-stewardship/0.6-candidate" },
+    "contract_revision": { "type": "string", "minLength": 1 },
+    "status": { "enum": ["CANDIDATE", "HOLD_INVALID_INPUT"] },
+    "issues": { "$ref": "#/$defs/stringArray" },
+    "portfolio_contract": {
+      "type": "object",
+      "required": [
+        "status", "recommendation", "relevant_commitments", "conflicts",
+        "priority_change_authorized"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "NOT_REQUIRED", "NOT_DECLARED", "NOT_ASSESSED_ADVISORY", "NOT_EVALUATED",
+            "STRUCTURALLY_ANALYZED_UNAUTHENTICATED", "STALE_UNAUTHENTICATED"
+          ]
+        },
+        "recommendation": { "type": "string", "minLength": 1 },
+        "relevant_commitments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "commitment_id", "status", "due_at", "dependencies",
+              "resource_claims", "priority", "source_ref", "commitment_digest"
+            ],
+            "properties": {
+              "commitment_id": { "type": "string" },
+              "status": { "enum": ["PLANNED", "ACTIVE", "BLOCKED", "COMPLETED", "CANCELLED"] },
+              "due_at": { "type": ["string", "null"], "format": "date-time" },
+              "dependencies": { "$ref": "#/$defs/stringArray" },
+              "resource_claims": { "$ref": "#/$defs/stringArray" },
+              "priority": {
+                "enum": [
+                  "USER_CONFIRMED_HIGH", "USER_CONFIRMED_MEDIUM",
+                  "USER_CONFIRMED_LOW", "UNKNOWN"
+                ]
+              },
+              "source_ref": { "$ref": "#/$defs/sourceRef" },
+              "commitment_digest": { "$ref": "#/$defs/digest" }
+            },
+            "additionalProperties": false
+          }
+        },
+        "conflicts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["code", "commitment_id", "evidence_digest"],
+            "properties": {
+              "code": { "type": "string" },
+              "commitment_id": { "type": "string" },
+              "resource_claims": { "$ref": "#/$defs/stringArray" },
+              "evidence_digest": { "$ref": "#/$defs/digest" }
+            },
+            "additionalProperties": false
+          }
+        },
+        "missing_commitment_ids": { "$ref": "#/$defs/stringArray" },
+        "snapshot_revision": { "type": "string" },
+        "snapshot_observed_at": { "type": "string", "format": "date-time" },
+        "snapshot_digest": { "$ref": "#/$defs/digest" },
+        "priority_change_authorized": { "const": false },
+        "reason": { "type": "string" },
+        "trust": { "const": "UNAUTHENTICATED_CALLER_INPUT" }
+        ,"conflict_claims_are_advisory": { "const": true }
+      },
+      "additionalProperties": false
+    },
+    "foresight_contract": {
+      "type": "object",
+      "required": [
+        "mode", "assessment_status", "risks", "smallest_reversible_next_step",
+        "execution_hold_required", "future_claims_promoted_to_fact",
+        "automatic_action_selected"
+      ],
+      "properties": {
+        "mode": { "enum": ["LIGHT", "DEEP"] },
+        "assessment_status": {
+          "enum": ["BOUNDED_LIGHT_REVIEW", "CONDITIONAL_ONLY_NOT_EXECUTION_CLEARANCE"]
+        },
+        "risks": {
+          "type": "array",
+          "maxItems": 3,
+          "items": {
+            "type": "object",
+            "required": [
+              "code", "claim_class", "if", "then", "evidence", "uncertainty",
+              "early_warning", "prevention", "rollback_or_containment",
+              "stop_condition"
+            ],
+            "properties": {
+              "code": { "type": "string" },
+              "claim_class": { "const": "CONDITIONAL_SCENARIO_NOT_FACT" },
+              "if": { "type": "string" },
+              "then": { "type": "string" },
+              "evidence": { "$ref": "#/$defs/stringArray" },
+              "uncertainty": { "const": "UNKNOWN_UNTIL_OBSERVED" },
+              "early_warning": { "type": "string" },
+              "prevention": { "type": "string" },
+              "rollback_or_containment": { "type": "string" },
+              "stop_condition": { "type": "string" }
+            },
+            "additionalProperties": false
+          }
+        },
+        "smallest_reversible_next_step": { "type": "string" },
+        "execution_hold_required": { "type": "boolean" },
+        "future_claims_promoted_to_fact": { "const": false },
+        "automatic_action_selected": { "const": false }
+      },
+      "additionalProperties": false
+    },
+    "follow_through_contract": {
+      "type": "object",
+      "required": [
+        "status", "deliverable_state", "outcome_state", "active_observations",
+        "tracking_active", "automation_binding"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "NOT_REQUIRED", "PLANNED_UNBOUND",
+            "DEFERRED_UNTIL_CONSEQUENTIAL_ACTION_BOUND"
+          ]
+        },
+        "deliverable_state": { "const": "NOT_STARTED" },
+        "outcome_state": { "const": "NOT_STARTED" },
+        "active_observations": {
+          "type": "array",
+          "maxItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "observation_id", "event_or_metric", "owner", "trigger",
+              "evidence_required", "task_id", "action_ids", "task_context_digest",
+              "base_subject_revision", "binding_digest", "activation_requires"
+            ],
+            "properties": {
+              "observation_id": { "type": "string" },
+              "event_or_metric": { "type": "string" },
+              "owner": { "const": "UNASSIGNED" },
+              "trigger": { "const": "TRUSTED_EXECUTION_RECEIPT_ACCEPTED" },
+              "evidence_required": { "type": "string" },
+              "task_id": { "type": "string" },
+              "action_ids": { "$ref": "#/$defs/stringArray" },
+              "task_context_digest": { "$ref": "#/$defs/digest" },
+              "base_subject_revision": { "type": ["string", "null"] },
+              "binding_digest": { "$ref": "#/$defs/digest" },
+              "activation_requires": { "const": "TRUSTED_EXECUTION_RECEIPT" }
+            },
+            "additionalProperties": false
+          }
+        },
+        "tracking_active": { "const": false },
+        "automation_binding": { "const": "NOT_IMPLEMENTED" },
+        "outcome_confirmation_requires_receipt": { "type": "boolean" },
+        "transition_implemented": { "const": false }
+      },
+      "additionalProperties": false
+    },
+    "support_quality_vector": {
+      "type": "object",
+      "required": [
+        "direction", "reality", "foresight", "choice", "commitment",
+        "resource", "agency", "resilience", "growth"
+      ],
+      "properties": {
+        "direction": { "const": "UNKNOWN" },
+        "reality": { "const": "UNKNOWN" },
+        "foresight": { "const": "UNKNOWN" },
+        "choice": { "const": "UNKNOWN" },
+        "commitment": { "const": "UNKNOWN" },
+        "resource": { "const": "UNKNOWN" },
+        "agency": { "const": "UNKNOWN" },
+        "resilience": { "const": "UNKNOWN" },
+        "growth": { "const": "UNKNOWN" }
+      },
+      "additionalProperties": false
+    },
+    "composite_support_score": { "type": "null" },
+    "user_priority_changed": { "const": false },
+    "user_commitment_cancelled": { "const": false },
+    "outcome_observed": { "const": false },
+    "authorization": { "const": "NOT_GRANTED" }
+  },
+  "$defs": {
+    "stringArray": { "type": "array", "items": { "type": "string" } },
+    "digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "sourceRef": {
+      "type": "object",
+      "required": ["location", "revision_or_sha"],
+      "properties": {
+        "location": { "type": "string" },
+        "revision_or_sha": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

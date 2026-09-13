@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://freepass.local/ai-core/work-return.schema.json",
+  "title": "AI Core Work Return Claim",
+  "type": "object",
+  "required": [
+    "schema_version", "return_id", "reported_at", "slice_id", "slice_digest",
+    "attempt_id", "task_id", "audience", "target", "basis", "action_results",
+    "requirement_results"
+  ],
+  "properties": {
+    "schema_version": { "const": "work-return/0.6-candidate" },
+    "return_id": { "type": "string", "minLength": 1 },
+    "reported_at": { "type": "string", "format": "date-time" },
+    "slice_id": { "type": "string", "minLength": 1 },
+    "slice_digest": { "$ref": "#/$defs/digest" },
+    "attempt_id": { "type": "string", "minLength": 1 },
+    "task_id": { "type": "string", "minLength": 1 },
+    "audience": { "type": "string", "minLength": 1 },
+    "target": {
+      "type": "object",
+      "required": ["project", "repository_identity", "project_ref"],
+      "properties": {
+        "project": { "type": ["string", "null"] },
+        "repository_identity": { "type": ["string", "null"] },
+        "project_ref": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "basis": { "$ref": "plan-slice.schema.json#/$defs/basis" },
+    "action_results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "action_id", "action_context_digest", "result", "executed_checks",
+          "failures", "skips", "start_subject_revision", "end_subject_revision",
+          "changed_scopes", "changed_artifact_refs", "evidence_refs",
+          "residual_risk_codes"
+        ],
+        "properties": {
+          "action_id": { "type": "string", "minLength": 1 },
+          "action_context_digest": { "$ref": "#/$defs/digest" },
+          "result": { "enum": ["COMPLETED", "PARTIAL", "FAILED", "NOT_RUN"] },
+          "executed_checks": { "type": "integer", "minimum": 0 },
+          "failures": { "type": "integer", "minimum": 0 },
+          "skips": { "type": "integer", "minimum": 0 },
+          "start_subject_revision": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Batch starting subject revision; must match the Plan Slice base revision"
+          },
+          "end_subject_revision": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Final subject revision shared by every action result in the Work Return batch"
+          },
+          "changed_scopes": { "$ref": "#/$defs/stringSet" },
+          "changed_artifact_refs": { "$ref": "#/$defs/pointers" },
+          "evidence_refs": { "$ref": "#/$defs/pointers" },
+          "residual_risk_codes": { "$ref": "#/$defs/stringSet" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "requirement_results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "requirement_id", "requirement_fingerprint", "result",
+          "executed_checks", "failures", "skips", "subject_revision",
+          "evidence_refs"
+        ],
+        "properties": {
+          "requirement_id": { "type": "string", "minLength": 1 },
+          "requirement_fingerprint": { "$ref": "#/$defs/digest" },
+          "result": { "enum": ["COMPLETED", "PARTIAL", "FAILED", "NOT_RUN"] },
+          "executed_checks": { "type": "integer", "minimum": 0 },
+          "failures": { "type": "integer", "minimum": 0 },
+          "skips": { "type": "integer", "minimum": 0 },
+          "subject_revision": { "type": "string", "minLength": 1 },
+          "evidence_refs": { "$ref": "#/$defs/pointers" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "$defs": {
+    "digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "stringSet": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "pointer": {
+      "type": "object",
+      "required": ["location", "revision_or_sha"],
+      "properties": {
+        "location": { "type": "string", "minLength": 1 },
+        "revision_or_sha": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "pointers": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/pointer" }
+    }
+  },
+  "additionalProperties": false
+}

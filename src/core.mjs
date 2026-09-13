@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import { resolveSourceRequirements, bindResolvedSources } from './source-resolver.mjs';
 import { compileContext } from './context-compiler.mjs';
 import { resolveCapabilities } from './capability-resolver.mjs';
@@ -9,6 +10,11 @@ import {
 import { compileConversationLearning } from './conversation-learning.mjs';
 import { compileProofContract } from './domain-quality.mjs';
 import { compileHumanOrchestration } from './human-orchestrator.mjs';
+import { compileHumanStewardship } from './human-stewardship.mjs';
+import { compilePlanSlice } from './cognitive-runtime.mjs';
+import { assessActionSemantics } from './action-semantics.mjs';
+import { sensitivePaths } from './disclosure.mjs';
+import { isValidScopePattern } from './scope-contract.mjs';
 import {
   effectiveDomains,
   effectiveRisk,
@@ -17,7 +23,7 @@ import {
 
 export { inferApplicableDomains } from './domain-policy.mjs';
 
-export const CORE_VERSION = '0.5.0-candidate.0';
+export const CORE_VERSION = '0.6.0-candidate.0';
 
 const APPROVAL_ORDER = [
   'CLAUDE_DESIGN',
@@ -26,6 +32,22 @@ const APPROVAL_ORDER = [
   'CLAUDE_FINAL',
   'USER_JUST_IN_TIME'
 ];
+const TASK_FIELDS = [
+  'task_id', 'goal', 'desired_outcome', 'outcome_observation', 'project', 'project_ref', 'domain',
+  'applicable_domains', 'risk', 'authority_required', 'done_when', 'constraints',
+  'allowed_scope', 'forbidden_scope', 'related_commitment_ids', 'resource_claims',
+  'portfolio_effect', 'recovery_strategy', 'changed_files_estimate', 'needs_build',
+  'needs_dependency_install', 'needs_runtime_debug', 'cloud_reproducible',
+  'external_effect', 'intent_hypotheses', 'decision_questions', 'proposed_actions'
+];
+const ENVIRONMENT_FIELDS = new Set([
+  'resolved_sources', 'capability_refs', 'failures', 'decisions',
+  'conversation_observations', 'observations', 'proof_receipts',
+  'proof_evaluation_requested', 'live_context_attempted', 'live_context_hold',
+  'subject_revision', 'devcenter_registry', 'memory_claims', 'revoked_memory_ids',
+  'verified_intent_confirmations', 'verified_question_resolutions',
+  'portfolio_snapshot'
+]);
 
 function assertRecord(value, label) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
@@ -116,6 +138,26 @@ function normalizeDoneWhen(doneWhen) {
     }
     throw new Error(`done_when[${index}] must be a string or requirement object`);
   });
+}
+
+function normalizeOutcomeObservation(value) {
+  if (value == null) return null;
+  assertRecord(value, 'outcome_observation');
+  rejectUnknownFields(
+    value,
+    ['event_or_metric', 'evidence_required'],
+    'outcome_observation'
+  );
+  return {
+    event_or_metric: normalizedString(
+      value.event_or_metric,
+      'outcome_observation.event_or_metric'
+    ),
+    evidence_required: normalizedString(
+      value.evidence_required,
+      'outcome_observation.evidence_required'
+    )
+  };
 }
 
 function normalizeIntentHypotheses(input) {
@@ -241,7 +283,10 @@ function normalizeProposedActions(input) {
     assertRecord(action, label);
     rejectUnknownFields(
       action,
-      ['id', 'description', 'effect', 'reversible', 'approval_required', 'depends_on'],
+      [
+        'id', 'description', 'target', 'operation', 'effect', 'reversible',
+        'approval_required', 'depends_on'
+      ],
       label
     );
     if (!Array.isArray(action.depends_on ?? [])) {
@@ -251,8 +296,16 @@ function normalizeProposedActions(input) {
       normalizedString(value, `${label}.depends_on[${dependencyIndex}]`)
     ));
     return {
-      ...(action.id != null ? { id: normalizedString(action.id, `${label}.id`) } : {}),
+      id: action.id == null
+        ? `ACTION-${String(index + 1).padStart(3, '0')}`
+        : normalizedString(action.id, `${label}.id`),
       description: normalizedString(action.description, `${label}.description`),
+      ...(action.target != null
+        ? { target: normalizedString(action.target, `${label}.target`) }
+        : {}),
+      ...(action.operation != null
+        ? { operation: normalizedString(action.operation, `${label}.operation`) }
+        : {}),
       effect: normalizedString(action.effect, `${label}.effect`),
       reversible: normalizedOptionalBoolean(action.reversible, `${label}.reversible`),
       ...(action.approval_required != null
@@ -313,6 +366,30 @@ function environmentRevision(environment, field, issues) {
 }
 
 export function normalizeTask(input = {}) {
+  assertRecord(input, 'task');
+  rejectUnknownFields(input, TASK_FIELDS, 'task');
+  if (sensitivePaths({
+    task_id: input.task_id ?? null,
+    project: input.project ?? null,
+    project_ref: input.project_ref ?? null,
+    requirement_ids: Array.isArray(input.done_when)
+      ? input.done_when.map(item => (
+          item && typeof item === 'object' && !Array.isArray(item) ? item.id ?? null : null
+        ))
+      : [],
+    intent_ids: Array.isArray(input.intent_hypotheses)
+      ? input.intent_hypotheses.map(item => item?.id ?? null)
+      : [],
+    question_ids: Array.isArray(input.decision_questions)
+      ? input.decision_questions.map(item => item?.id ?? null)
+      : [],
+    action_ids_and_dependencies: Array.isArray(input.proposed_actions)
+      ? input.proposed_actions.flatMap(item => [
+          item?.id ?? null,
+          ...(Array.isArray(item?.depends_on) ? item.depends_on : [])
+        ])
+      : []
+  }).length) throw new Error('task identity fields must not contain sensitive values');
   if (!input.goal || typeof input.goal !== 'string' || !input.goal.trim()) {
     throw new Error('goal is required');
   }
@@ -341,16 +418,46 @@ export function normalizeTask(input = {}) {
     { optional: true }
   );
   if (input.external_effect != null) normalizedString(input.external_effect, 'external_effect');
+  const portfolioEffect = input.portfolio_effect == null
+    ? 'unknown'
+    : normalizedString(input.portfolio_effect, 'portfolio_effect');
+  if (![
+    'none', 'create_commitment', 'change_commitment', 'change_deadline',
+    'change_priority', 'change_allocation', 'unknown'
+  ].includes(portfolioEffect)) throw new Error('portfolio_effect is unsupported');
   const constraints = normalizeArrayField(input, 'constraints').map((value, index) => (
     normalizedString(value, `constraints[${index}]`)
   ));
+  const allowedScope = normalizeArrayField(input, 'allowed_scope').map((value, index) => (
+    normalizedString(value, `allowed_scope[${index}]`)
+  ));
+  const forbiddenScope = normalizeArrayField(input, 'forbidden_scope').map((value, index) => (
+    normalizedString(value, `forbidden_scope[${index}]`)
+  ));
+  for (const [field, entries] of [
+    ['allowed_scope', allowedScope],
+    ['forbidden_scope', forbiddenScope]
+  ]) {
+    entries.forEach((entry, index) => {
+      if (!isValidScopePattern(entry)) throw new Error(`${field}[${index}] is not a canonical scope`);
+    });
+  }
+  const relatedCommitmentIds = normalizeArrayField(input, 'related_commitment_ids')
+    .map((value, index) => normalizedString(value, `related_commitment_ids[${index}]`));
+  const resourceClaims = normalizeArrayField(input, 'resource_claims').map((value, index) => (
+    normalizedString(value, `resource_claims[${index}]`)
+  ));
+  if (input.recovery_strategy != null) {
+    normalizedString(input.recovery_strategy, 'recovery_strategy');
+  }
 
   return {
-    task_id: input.task_id?.trim() ?? `CORE-${Date.now()}`,
+    task_id: input.task_id?.trim() ?? `CORE-${randomUUID()}`,
     goal: input.goal.trim(),
     desired_outcome: input.desired_outcome == null
       ? null
       : String(input.desired_outcome).trim() || null,
+    outcome_observation: normalizeOutcomeObservation(input.outcome_observation),
     project: input.project?.trim() ?? null,
     project_ref: input.project_ref?.trim() ?? 'main',
     domain,
@@ -361,6 +468,12 @@ export function normalizeTask(input = {}) {
     authority_required: normalizeBooleanField(input, 'authority_required', false),
     done_when: normalizeDoneWhen(input.done_when),
     constraints,
+    allowed_scope: [...new Set(allowedScope)].sort(),
+    forbidden_scope: [...new Set(forbiddenScope)].sort(),
+    related_commitment_ids: [...new Set(relatedCommitmentIds)].sort(),
+    resource_claims: [...new Set(resourceClaims)].sort(),
+    portfolio_effect: portfolioEffect,
+    recovery_strategy: input.recovery_strategy?.trim() ?? null,
     changed_files_estimate: changedFilesEstimate,
     needs_build: normalizeBooleanField(input, 'needs_build', false),
     needs_dependency_install: normalizeBooleanField(input, 'needs_dependency_install', false),
@@ -477,8 +590,23 @@ function contextPointersFromBindings(sourceBindings) {
 export function orchestrate(input, environment = {}) {
   const evaluationTime = new Date().toISOString();
   const task = normalizeTask(input);
+  const actionSemanticAssessments = task.proposed_actions.map(action => (
+    assessActionSemantics(action, {
+      taskProject: task.project,
+      taskScope: {
+        allowed: task.allowed_scope,
+        forbidden: task.forbidden_scope
+      }
+    })
+  ));
   const environmentInputIssues = [];
   const proofInputIssues = [];
+  if (!environment || typeof environment !== 'object' || Array.isArray(environment)) {
+    environment = {};
+    environmentInputIssues.push('environment must be an object');
+  } else if (Object.keys(environment).some(key => !ENVIRONMENT_FIELDS.has(key))) {
+    environmentInputIssues.push('environment contains unsupported fields');
+  }
   const resolvedSourcesInput = environmentArray(
     environment, 'resolved_sources', environmentInputIssues
   );
@@ -545,22 +673,13 @@ export function orchestrate(input, environment = {}) {
     ...(baseExecution.required_approvals ?? []),
     ...(actionAwareExecution.required_approvals ?? [])
   ]);
-  const actionApprovalContracts = actionApprovalRequired
-    ? humanOrchestration.actions.approval_required.map(action => ({
-        action_id: action.id,
-        action_digest: action.action_digest,
-        effect: action.effect,
-        subject_revision: subjectRevision,
-        required_approvals: combinedActionApprovals
-      }))
-    : [];
   const execution = actionApprovalRequired
     ? {
         route: 'HUMAN_GATE',
         reason: 'one or more proposed consequential actions require explicit approval',
         required_approvals: combinedActionApprovals,
         approval_action_ids: humanOrchestration.actions.approval_required.map(item => item.id),
-        approval_contracts: actionApprovalContracts,
+        approval_contracts: [],
         prior_route: baseExecution.route
       }
     : baseExecution;
@@ -568,6 +687,23 @@ export function orchestrate(input, environment = {}) {
   if (environmentInputIssues.length) holds.push('ENVIRONMENT_INPUT_REJECTED');
   if (proofInputIssues.length) holds.push('PROOF_INPUT_REJECTED');
   if (liveContextHold) holds.push('LIVE_CONTEXT_HOLD');
+  if (task.proposed_actions.length && !task.allowed_scope.length) {
+    holds.push('SCOPE_UNRESOLVED');
+  }
+  if (task.proposed_actions.some(action => !action.target || !action.operation)) {
+    holds.push('ACTION_TARGET_OR_OPERATION_UNRESOLVED');
+  }
+  const actionScopeConflict = actionSemanticAssessments.some(assessment => (
+    assessment.issues.some(issue => issue.startsWith('ACTION_OPERATION_SCOPE_'))
+  ));
+  const actionMetadataConflict = actionSemanticAssessments.some(assessment => (
+    assessment.issues.some(issue => !issue.startsWith('ACTION_OPERATION_SCOPE_'))
+  ));
+  if (actionScopeConflict) holds.push('ACTION_SCOPE_CONFLICT');
+  if (actionMetadataConflict) {
+    holds.push('ACTION_SEMANTICS_CONFLICT');
+  }
+  if (sensitivePaths(task).length) holds.push('DISCLOSURE_REVIEW_REQUIRED');
 
   if (!task.project && effectiveDomains(task).includes('development')) {
     holds.push('PROJECT_UNRESOLVED');
@@ -588,6 +724,12 @@ export function orchestrate(input, environment = {}) {
     holds.push('CAPABILITY_UNRESOLVED');
   }
   if (context.status === 'HOLD') holds.push('CONTEXT_HOLD');
+  for (const entries of [context.relevant_failures, context.relevant_decisions]) {
+    const ids = entries.map(entry => entry.id).filter(id => typeof id === 'string' && id);
+    if (ids.length !== entries.length || new Set(ids).size !== ids.length) {
+      holds.push('DECISION_CONTEXT_CONFLICT');
+    }
+  }
   if (humanOrchestration.status === 'HOLD_INVALID_INPUT') {
     holds.push('HUMAN_CONTEXT_INPUT_REJECTED');
   }
@@ -602,6 +744,9 @@ export function orchestrate(input, environment = {}) {
   if (humanOrchestration.research_now?.length) {
     holds.push('HUMAN_CONTEXT_RESEARCH_REQUIRED');
   }
+  if (!task.project && humanOrchestration.actions.prepare_now.length) {
+    holds.push('TARGET_REPOSITORY_IDENTITY_UNRESOLVED');
+  }
 
   const learning = compileConversationLearning(conversationObservationsInput, {
     currentTime: evaluationTime
@@ -615,6 +760,9 @@ export function orchestrate(input, environment = {}) {
   const resolvedCapabilities = capabilityBindings
     .filter(binding => binding.status === 'RESOLVED')
     .map(binding => binding.asset);
+  if (sensitivePaths({ pinnedSources, resolvedCapabilities, context }).length) {
+    holds.push('DISCLOSURE_REVIEW_REQUIRED');
+  }
   const proofEvaluationRequested = proofEvaluationFlag
     || Object.hasOwn(environment, 'proof_receipts');
   const assurance = compileProofContract(task, {
@@ -658,6 +806,44 @@ export function orchestrate(input, environment = {}) {
   });
   if (evolution.rejected.length) holds.push('EVOLUTION_INPUT_REJECTED');
 
+  const stewardship = compileHumanStewardship(task, {
+    humanOrchestration,
+    holds: [...new Set(holds)],
+    portfolioSnapshot: environment.portfolio_snapshot ?? null,
+    subjectRevision,
+    currentTime: evaluationTime
+  });
+  if (stewardship.status === 'HOLD_INVALID_INPUT') {
+    holds.push('STEWARDSHIP_INPUT_REJECTED');
+  }
+  const consequentialPortfolioDecision = task.external_effect !== 'none'
+    || ['C', 'D'].includes(task.risk)
+    || !['none', 'unknown'].includes(task.portfolio_effect)
+    || humanOrchestration.actions.approval_required.length > 0;
+  if (
+    consequentialPortfolioDecision
+    && stewardship.portfolio_contract.status === 'NOT_DECLARED'
+  ) holds.push('PORTFOLIO_DISCOVERY_REQUIRED');
+  if (
+    consequentialPortfolioDecision
+    && stewardship.portfolio_contract.status === 'NOT_EVALUATED'
+  ) holds.push('PORTFOLIO_CONTEXT_REQUIRED');
+  if (
+    consequentialPortfolioDecision
+    && [
+      'STRUCTURALLY_ANALYZED_UNAUTHENTICATED',
+      'STALE_UNAUTHENTICATED'
+    ].includes(stewardship.portfolio_contract.status)
+  ) holds.push('PORTFOLIO_TRUSTED_REVALIDATION_REQUIRED');
+  if (
+    stewardship.foresight_contract.execution_hold_required
+    && stewardship.foresight_contract.risks.some(risk => (
+      risk.code === 'IRREVERSIBLE_ACTION_WITHOUT_VERIFIED_RECOVERY'
+    ))
+  ) {
+    holds.push('FORESIGHT_RECOVERY_PATH_REQUIRED');
+  }
+
   const uniqueHolds = [...new Set(holds)];
   const status = uniqueHolds.length
     ? 'HOLD'
@@ -667,7 +853,16 @@ export function orchestrate(input, environment = {}) {
       : 'READY';
   const preparationBlockers = uniqueHolds.filter(hold => ![
     'INTENT_CONFIRMATION_REQUIRED',
-    'EVOLUTION_INPUT_REJECTED'
+    'EVOLUTION_INPUT_REJECTED',
+    'SCOPE_UNRESOLVED',
+    'ACTION_TARGET_OR_OPERATION_UNRESOLVED',
+    'ACTION_SCOPE_CONFLICT',
+    'ACTION_SEMANTICS_CONFLICT',
+    'STEWARDSHIP_INPUT_REJECTED',
+    'PORTFOLIO_CONTEXT_REQUIRED',
+    'PORTFOLIO_DISCOVERY_REQUIRED',
+    'PORTFOLIO_TRUSTED_REVALIDATION_REQUIRED',
+    'FORESIGHT_RECOVERY_PATH_REQUIRED'
   ].includes(hold));
   const preparationActionIds = humanOrchestration.actions?.prepare_now?.map(item => item.id) ?? [];
   const preparationAllowed = preparationActionIds.length > 0 && preparationBlockers.length === 0;
@@ -678,11 +873,68 @@ export function orchestrate(input, environment = {}) {
     note: 'This final gate supersedes the component-local human_orchestration phase gate.'
   };
 
+  const executionGateBasis = {
+    status,
+    authorized: false,
+    blockers: uniqueHolds,
+    required_approvals: execution.required_approvals,
+    approval_action_ids: execution.approval_action_ids ?? []
+  };
+  const workPacketBasis = {
+    task_id: task.task_id,
+    project: task.project,
+    project_ref: task.project_ref,
+    subject_revision: subjectRevision,
+    goal: task.goal,
+    desired_outcome: task.desired_outcome,
+    outcome_observation: task.outcome_observation,
+    portfolio_effect: task.portfolio_effect,
+    allowed_scope: task.allowed_scope,
+    forbidden_scope: task.forbidden_scope,
+    done_when: task.done_when,
+    source_revision_set_digest: assurance.source_revision_set.digest,
+    capability_revision_set_digest: assurance.capability_revision_set.digest,
+    requirement_set_digest: assurance.requirement_set.digest,
+    execution_route: execution.route,
+    preparation_gate: preparationGate,
+    execution_gate: executionGateBasis
+  };
+  const planSlice = compilePlanSlice({
+    task,
+    assurance,
+    context,
+    humanOrchestration,
+    stewardship,
+    holds: uniqueHolds,
+    preparationGate,
+    executionGate: executionGateBasis,
+    workPacketBasis
+  }, { now: evaluationTime });
+  const planActions = new Map(planSlice.actions.map(action => [action.id, action]));
+  const approvalContracts = (execution.approval_action_ids ?? []).map(actionId => ({
+    action_id: actionId,
+    action_context_digest: planActions.get(actionId)?.action_context_digest ?? null,
+    subject_revision: subjectRevision,
+    slice_id: planSlice.slice_id,
+    slice_digest: planSlice.slice_digest,
+    required_approvals: execution.required_approvals,
+    authorization: 'NOT_GRANTED'
+  }));
+  const boundExecution = {
+    ...execution,
+    ...(execution.approval_action_ids ? { approval_contracts: approvalContracts } : {})
+  };
+  const executionGate = {
+    ...executionGateBasis,
+    approval_contracts: approvalContracts
+  };
+
   return {
     core_version: CORE_VERSION,
     input_issues: {
       environment: environmentInputIssues,
-      proof: proofInputIssues
+      proof: proofInputIssues,
+      stewardship: stewardship.issues
     },
     task,
     source_requirements: requirements,
@@ -690,8 +942,9 @@ export function orchestrate(input, environment = {}) {
     requested_capability_scopes: requestedScopes,
     capability_bindings: capabilityBindings,
     context,
-    execution,
+    execution: boundExecution,
     human_orchestration: humanOrchestration,
+    human_stewardship: stewardship,
     learning,
     assurance,
     evolution,
@@ -702,22 +955,22 @@ export function orchestrate(input, environment = {}) {
       project: task.project,
       subject_revision: subjectRevision,
       goal: task.goal,
-      allowed_scope: task.constraints,
+      scope: {
+        allowed: task.allowed_scope,
+        forbidden: task.forbidden_scope,
+        constraints: task.constraints,
+        constraints_are_allowed_scope: false
+      },
       done_when: task.done_when,
       source_bindings: pinnedSources,
       capabilities: resolvedCapabilities,
-      execution_route: execution.route,
-      approval_requirements: execution.required_approvals,
+      execution_route: boundExecution.route,
+      approval_requirements: boundExecution.required_approvals,
       human_agency_contract: humanOrchestration,
+      stewardship_contract: stewardship,
+      plan_slice: planSlice,
       preparation_gate: preparationGate,
-      execution_gate: {
-        status,
-        authorized: false,
-        blockers: uniqueHolds,
-        required_approvals: execution.required_approvals,
-        approval_action_ids: execution.approval_action_ids ?? [],
-        approval_contracts: execution.approval_contracts ?? []
-      },
+      execution_gate: executionGate,
       proactive_review_lenses: proactiveReviewLenses,
       proof_contract: {
         policy_revision: assurance.policy_revision,

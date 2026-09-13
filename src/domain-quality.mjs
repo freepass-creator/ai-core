@@ -1,7 +1,7 @@
-import { createHash } from 'node:crypto';
 import { effectiveDomains, effectiveRisk } from './domain-policy.mjs';
+import { canonicalDigest } from './canonical-json.mjs';
 
-export const PROOF_POLICY_REVISION = '2026-09-13.5';
+export const PROOF_POLICY_REVISION = '2026-09-13.7';
 
 const UNIVERSAL_OBLIGATIONS = Object.freeze([
   obligation(
@@ -93,10 +93,6 @@ function obligation(id, statement, evidence, condition = 'always') {
   return Object.freeze({ id, statement, evidence_required: evidence, condition });
 }
 
-function sha256(value) {
-  return createHash('sha256').update(value).digest('hex');
-}
-
 function dateTimeEpoch(value) {
   if (
     typeof value !== 'string'
@@ -139,11 +135,17 @@ function normalizedRequirement(entry, index) {
       : `REQ-${String(index + 1).padStart(3, '0')}`,
     text,
     mode,
-    required: typeof entry === 'object' ? entry?.required !== false : true
+    required: typeof entry === 'object' ? entry?.required !== false : true,
+    text_digest: canonicalDigest(text)
   };
   return {
     ...requirement,
-    fingerprint: `sha256:${sha256(JSON.stringify(requirement))}`
+    fingerprint: canonicalDigest({
+      id: requirement.id,
+      text_digest: requirement.text_digest,
+      mode: requirement.mode,
+      required: requirement.required
+    })
   };
 }
 
@@ -157,21 +159,30 @@ export function buildRequirementSet(task) {
     project_ref: task?.project_ref ?? null,
     goal: String(task?.goal ?? '').trim(),
     desired_outcome: task?.desired_outcome ?? null,
+    outcome_observation: task?.outcome_observation ?? null,
     constraints: Array.isArray(task?.constraints) ? task.constraints.map(String) : [],
+    allowed_scope: Array.isArray(task?.allowed_scope) ? task.allowed_scope.map(String) : [],
+    forbidden_scope: Array.isArray(task?.forbidden_scope) ? task.forbidden_scope.map(String) : [],
+    related_commitment_ids: Array.isArray(task?.related_commitment_ids)
+      ? task.related_commitment_ids.map(String)
+      : [],
+    resource_claims: Array.isArray(task?.resource_claims) ? task.resource_claims.map(String) : [],
+    portfolio_effect: task?.portfolio_effect ?? 'unknown',
+    recovery_strategy: task?.recovery_strategy ?? null,
     domain: task?.domain ?? null,
     applicable_domains: effectiveDomains(task),
     risk: effectiveRisk(task),
     authority_required: task?.authority_required === true,
     external_effect: task?.external_effect ?? 'unknown'
   };
-  const canonical = JSON.stringify({
-    task_contract: taskContract,
+  const canonical = {
+    task_contract_digest: canonicalDigest(taskContract),
     requirements
-  });
+  };
   return {
     requirements,
-    digest: `sha256:${sha256(canonical)}`,
-    task_contract_digest: `sha256:${sha256(JSON.stringify(taskContract))}`,
+    digest: canonicalDigest(canonical),
+    task_contract_digest: canonicalDigest(taskContract),
     duplicate_ids: duplicateIds,
     status: duplicateIds.length ? 'HOLD' : requirements.length ? 'DEFINED' : 'HOLD'
   };
@@ -198,7 +209,7 @@ function buildRevisionSet(items = [], kind) {
   }).sort((left, right) => JSON.stringify(left).localeCompare(JSON.stringify(right)));
   return {
     items: normalized,
-    digest: `sha256:${sha256(JSON.stringify(normalized))}`
+    digest: canonicalDigest(normalized)
   };
 }
 
