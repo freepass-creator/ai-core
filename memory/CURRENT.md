@@ -8,7 +8,7 @@ The system should optimize for **fastest path that preserves required evidence**
 
 ## Current priority — Development first
 
-The user has explicitly prioritized development as the first domain to make materially easier. Near-term research and implementation should therefore focus on reducing repeated explanation, repeated repository discovery, handoff loss, stale requirements, manual verification, preview friction, release uncertainty, and duplicated integration logic.
+The user has explicitly prioritized development as the first domain to make materially easier. Near-term research and implementation should therefore focus on reducing repeated explanation, repeated repository discovery, handoff loss, stale requirements, manual verification, preview friction, release uncertainty, duplicated integration logic, and duplicated capability implementation.
 
 First development research reference: `docs/DEVELOPMENT_RUNTIME.md`.
 
@@ -19,9 +19,10 @@ Priority building blocks:
 3. Proof Bundle — revision-bound evidence returned by Work/Codex instead of prose-only "done" claims.
 4. Requirement Continuity — stable requirement IDs, user-confirmed vs AI-inferred provenance, requirement-set digest, stale-plan detection, Development Episode state, minimal Plan Slice.
 5. Engine / Port / Adapter contracts — separate business/domain logic from provider/project mapping, transport, binding, and runtime orchestration. Research: PR #15 / `research/engine-adapter-contract-v0.1`; DevCenter adoption proposal: issue #2.
-6. Codebase Twin + Impact Planner — read-only code graph and minimal-change impact planning.
-7. Sandbox/Preview + Verification Fabric + Release Gate — isolated execution, visible preview, layered proof, safe release/rollback.
-8. Failure Memory + Development Portfolio — reuse prior fixes and prevent multi-agent/project conflicts.
+6. Semantic Capability Fabric — promote only demand-relevant raw symbols into revision-bound Capability Cells with meaning, contract, side-effect and evidence metadata; resolve reuse/adapt/compose/new by semantics rather than name similarity. Research: PR #16 / `research/semantic-capability-fabric-v0.1`; DevCenter adoption proposal: issue #3.
+7. Semantic Capability Graph first, Full Codebase Twin on demand — keep high-level reusable meaning always queryable, expand to file/function graph only when impact analysis needs it.
+8. Sandbox/Preview + Verification Fabric + Release Gate — isolated execution, visible preview, layered proof, safe release/rollback.
+9. Failure Memory + Development Portfolio — reuse prior fixes and prevent multi-agent/project conflicts.
 
 These are research candidates, not adopted project rules. Existing project SSOT, DevCenter baseline, Work Packet, and authority boundaries remain controlling.
 
@@ -37,6 +38,29 @@ These are research candidates, not adopted project rules. Existing project SSOT,
 Invariant: **Engine owns meaning; Adapter owns connection; Connector owns transport; Runtime owns execution state.**
 
 Current DevCenter `engine/` is documented as a future common executor/runtime, not a mature domain-engine catalog. `capabilities/integrations` is already described as the location for external API/data contracts and adapters. Do not move folders yet; formalize contracts and pilot one real function first.
+
+### Semantic Capability working model
+
+DevCenter's current function warehouse is a discovery substrate, not a reusable capability registry. Static symbols become reusable only when enough meaning and evidence are known.
+
+Abstraction path:
+
+`Raw Symbol/File → Candidate Cluster → Semantic Capability Cell → Capability Graph → Capability Resolver`
+
+Capability Cell must distinguish:
+- semantic purpose/key;
+- source/implementation revision;
+- input/output meaning, units and null semantics where applicable;
+- invariants/errors/side effects;
+- compatibility/dependencies/implemented Ports;
+- semantic provenance (`USER_CONFIRMED / SOURCE_DERIVED / AI_INFERRED`);
+- evidence state and unknowns.
+
+Resolver outcomes include exact reuse, reuse with Adapter, composition/extension candidate, new capability, or HOLD for unknown semantics/evidence/side effects/compatibility.
+
+Key recommendation: **build Semantic Capability Graph before a giant persistent Codebase Twin.** File/function-level graph expansion should be demand-driven for actual impact analysis.
+
+Long-term development direction: AI should write only the delta that the existing capability system cannot already satisfy.
 
 ## Current model
 
@@ -163,13 +187,18 @@ The ideal memory query is: **what missing fact could change the decision, and wh
 - Old temptation: make the filesystem mirror the conceptual hierarchy by moving every Center under AI Core.  
   Current default: keep logical hierarchy and physical repository ownership separate until consolidation has a measured operational advantage.
 
+- Old temptation: build a giant Codebase Twin before proving its value.  
+  Current default: first test semantic capability resolution and demand-driven impact expansion; keep persistent context as small and meaningful as possible.
+
 ## Immediate research frontier
 
-1. Development Runtime + Continuity + Engine/Adapter contracts: shadow-test Project Capsule / Change Compiler / Proof Bundle / Living Requirement Graph / Development Episode / one Engine+Adapter pilot first, then Codebase Twin / Impact Planner / Preview+Verification.
-2. Human Stewardship: test whether goal/portfolio/agency/follow-through framing improves actual human outcomes.
-3. Commitment Graph: track active promises, deadlines, dependencies, waiting-on, blockers, and superseded commitments.
-4. Opportunity Radar: surface high-value opportunities/risks with evidence without auto-executing them.
-5. Simulation/Foresight: test reversible scenarios before expensive/irreversible action.
-6. Real shadow pilots across development, documents, and non-development human workflows.
+1. Development Runtime + Continuity + Engine/Adapter + Semantic Capability Fabric: shadow-test Project Capsule / Change Compiler / Proof Bundle / Living Requirement Graph / Development Episode / one Engine+Adapter+Capability Cell pilot first.
+2. Prove demand-first capability promotion: static symbol → semantic contract → execution evidence → second-use reuse measurement.
+3. Only after that, deepen Impact Planner / on-demand Codebase Twin / Preview+Verification.
+4. Human Stewardship: test whether goal/portfolio/agency/follow-through framing improves actual human outcomes.
+5. Commitment Graph: track active promises, deadlines, dependencies, waiting-on, blockers, and superseded commitments.
+6. Opportunity Radar: surface high-value opportunities/risks with evidence without auto-executing them.
+7. Simulation/Foresight: test reversible scenarios before expensive/irreversible action.
+8. Real shadow pilots across development, documents, and non-development human workflows.
 
 Until those are tested, they remain research candidates.
