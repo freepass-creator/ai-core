@@ -1,0 +1,14 @@
+{
+  "schema": "ai-core-work-result/0.1",
+  "task_id": "TASK-ID",
+  "start_sha": null,
+  "end_sha": null,
+  "changed_files": [],
+  "commands_run": [],
+  "checks": [],
+  "failures": [],
+  "skips": [],
+  "scope_changed": false,
+  "remaining_risks": [],
+  "recommended_next_action": "chat_review"
+}
