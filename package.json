@@ -1,0 +1,12 @@
+{
+  "name": "@freepass/ai-core",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "AIOPS × DevCenter orchestration core",
+  "scripts": {
+    "test": "node --test",
+    "demo": "node src/cli.mjs examples/freepass-product-detail.json"
+  },
+  "engines": { "node": ">=20" }
+}
