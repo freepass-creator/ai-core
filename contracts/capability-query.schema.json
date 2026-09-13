@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-core.local/contracts/capability-query.schema.json",
+  "title": "Capability Query",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["query_id", "semantic_key", "allowed_kinds", "side_effect_policy", "minimum_evidence"],
+  "properties": {
+    "query_id": {"type": "string", "minLength": 3},
+    "semantic_key": {"type": "string", "minLength": 3},
+    "allowed_kinds": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"enum": ["ENGINE", "PORT", "ADAPTER", "CONNECTOR", "COMPONENT", "VALIDATOR", "GENERATOR", "TEST_UTILITY", "WORKFLOW"]}
+    },
+    "required_inputs": {"type": "array", "items": {"type": "string"}, "default": []},
+    "required_outputs": {"type": "array", "items": {"type": "string"}, "default": []},
+    "required_port": {"type": ["string", "null"]},
+    "target_project": {"type": ["string", "null"]},
+    "target_runtime": {"type": ["string", "null"]},
+    "adapter_allowed": {"type": "boolean", "default": true},
+    "side_effect_policy": {"enum": ["NONE_ONLY", "READ_OK", "WRITE_OK"]},
+    "minimum_evidence": {"enum": ["STATIC_ONLY", "SYNTHETIC", "EXECUTED", "INDEPENDENT", "SHADOW", "OUTCOME"]}
+  }
+}
