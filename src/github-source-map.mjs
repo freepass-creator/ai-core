@@ -67,7 +67,8 @@ export function buildFetchManifest(task, requirements, sourceMap = DEFAULT_SOURC
 }
 
 export function toResolvedPointer(item, fetched) {
-  if (!fetched?.sha) {
+  const revision = typeof fetched?.sha === 'string' ? fetched.sha.trim() : '';
+  if (!revision) {
     return {
       system: item.system,
       kind: item.kind,
@@ -85,7 +86,7 @@ export function toResolvedPointer(item, fetched) {
     kind: item.kind,
     status: item.role === 'adopted' ? 'adopted' : 'authoritative',
     location: `${item.repo}:${item.path ?? fetched.path}`,
-    revision_or_sha: fetched.sha,
+    revision_or_sha: revision,
     revision_kind: fetched.revision_kind ?? 'git_blob_sha',
     scope: item.reason,
     required: item.required

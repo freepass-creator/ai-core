@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { orchestrateLive, parseCapabilityLocator } from '../src/live-context.mjs';
+import { DEFAULT_SOURCE_MAP } from '../src/github-source-map.mjs';
 
 const registry = {
   version: 1,
@@ -27,7 +28,7 @@ function fixtureFetcher(overrides = {}) {
     const fixture = fixtures.get(`${repo}:${path}`);
     if (fixture instanceof Error) throw fixture;
     if (!fixture) throw Object.assign(new Error('not found'), { code: 'NOT_FOUND' });
-    return { path, revision_kind: 'git_blob_sha', ...fixture };
+    return { path, kind: 'file', revision_kind: 'git_blob_sha', ...fixture };
   };
 }
 
@@ -43,6 +44,7 @@ test('live bootstrap pins required sources and capability before READY', async (
     task_id: 'LIVE-1',
     goal: 'AI Core 코드 문구 수정',
     project: 'ai-core',
+    external_effect: 'none',
     done_when: ['tests pass']
   }, { fetchFile: fixtureFetcher(), fetchRevision: fixtureRevisionFetcher });
 
@@ -97,6 +99,98 @@ test('invalid registry cannot become a bound authoritative source', async () => 
   assert.equal(evidence.outcome, 'INVALID_REGISTRY_JSON');
 });
 
+test('directories cannot satisfy file source or capability contracts', async () => {
+  const directory = {
+    kind: 'directory',
+    sha: 'sha256:directory',
+    revision_kind: 'directory_manifest_sha256',
+    content: null
+  };
+  const output = await orchestrateLive({
+    goal: 'AI Core 코드 문구 수정',
+    project: 'ai-core',
+    external_effect: 'none',
+    done_when: ['tests pass']
+  }, {
+    fetchFile: fixtureFetcher({
+      'freepass-creator/ai-core:AGENTS.md': directory,
+      'freepass-creator/aiops:docs/저장소지도.md': directory
+    }),
+    fetchRevision: fixtureRevisionFetcher
+  });
+  assert.equal(output.status, 'HOLD');
+  assert.ok(output.holds.includes('SOURCE_HOLD'));
+  assert.ok(output.holds.includes('CAPABILITY_UNRESOLVED'));
+  assert.ok(output.live_context.source_fetch_evidence.some(item => (
+    item.outcome === 'UNSUPPORTED_CONTENT_RESPONSE'
+  )));
+});
+
+test('live capability revalidation holds on a declared revision mismatch', async () => {
+  const pinnedRegistry = {
+    version: 1,
+    datasets: [{
+      ...registry.datasets[0],
+      source: {
+        ...registry.datasets[0].source,
+        revision_or_sha: 'approved-capability-sha'
+      }
+    }]
+  };
+  const output = await orchestrateLive({
+    goal: 'AI Core 코드 문구 수정',
+    project: 'ai-core',
+    external_effect: 'none',
+    done_when: ['tests pass']
+  }, {
+    fetchFile: fixtureFetcher({
+      'freepass-creator/devcenter:registry.json': {
+        sha: 'registry-sha',
+        content: JSON.stringify(pinnedRegistry)
+      }
+    }),
+    fetchRevision: fixtureRevisionFetcher
+  });
+  assert.equal(output.status, 'HOLD');
+  assert.ok(output.holds.includes('LIVE_CONTEXT_HOLD'));
+  assert.ok(output.holds.includes('CAPABILITY_UNRESOLVED'));
+  assert.equal(output.capability_bindings[0].status, 'MISSING');
+  assert.ok(output.live_context.capability_fetch_evidence.some(item => (
+    item.outcome === 'REVISION_MISMATCH'
+    && item.declared_sha === 'approved-capability-sha'
+    && item.fetched_sha === 'capability-sha'
+  )));
+});
+
+test('live capability revalidation accepts the exact declared revision', async () => {
+  const pinnedRegistry = {
+    version: 1,
+    datasets: [{
+      ...registry.datasets[0],
+      source: {
+        ...registry.datasets[0].source,
+        revision_or_sha: 'capability-sha'
+      }
+    }]
+  };
+  const output = await orchestrateLive({
+    goal: 'AI Core 코드 문구 수정',
+    project: 'ai-core',
+    external_effect: 'none',
+    done_when: ['tests pass']
+  }, {
+    fetchFile: fixtureFetcher({
+      'freepass-creator/devcenter:registry.json': {
+        sha: 'registry-sha',
+        content: JSON.stringify(pinnedRegistry)
+      }
+    }),
+    fetchRevision: fixtureRevisionFetcher
+  });
+  assert.equal(output.status, 'READY');
+  assert.equal(output.live_context.capability_fetch_evidence[0].revalidated, true);
+});
+
 test('capability locator accepts repository and owner-qualified forms', () => {
   assert.deepEqual(
     parseCapabilityLocator('aiops/docs/저장소지도.md'),
@@ -143,4 +237,54 @@ test('missing capability source becomes a DevCenter improvement candidate', asyn
   assert.equal(candidate.target_system, 'devcenter');
   assert.equal(candidate.auto_adopted, false);
   assert.equal(candidate.transfer_gate.status, 'HOLD');
+});
+
+test('final live status includes Core source identity validation', async () => {
+  const sourceMap = {
+    ...DEFAULT_SOURCE_MAP,
+    aiops: {
+      ...DEFAULT_SOURCE_MAP.aiops,
+      control: {
+        repo: 'untrusted/control-plane',
+        path: 'CONTROL.md',
+        role: 'authoritative'
+      }
+    }
+  };
+  const output = await orchestrateLive({
+    task_id: 'LIVE-WRONG-SOURCE',
+    goal: 'AI Core 코드 문구 수정',
+    project: 'ai-core',
+    external_effect: 'none',
+    done_when: ['tests pass']
+  }, {
+    sourceMap,
+    fetchFile: fixtureFetcher({
+      'untrusted/control-plane:CONTROL.md': {
+        sha: 'untrusted-control-sha',
+        content: 'wrong control plane'
+      }
+    }),
+    fetchRevision: fixtureRevisionFetcher
+  });
+  assert.equal(output.live_context.bootstrap_status, 'RESOLVED');
+  assert.equal(output.live_context.status, 'HOLD');
+  assert.equal(output.status, 'HOLD');
+  assert.ok(output.holds.includes('SOURCE_HOLD'));
+});
+
+test('live context cannot be RESOLVED without a required development project', async () => {
+  const output = await orchestrateLive({
+    task_id: 'LIVE-NO-PROJECT',
+    goal: '코드 문구 수정',
+    domain: 'development',
+    external_effect: 'none',
+    done_when: ['tests pass']
+  }, {
+    fetchFile: fixtureFetcher(),
+    fetchRevision: fixtureRevisionFetcher
+  });
+  assert.equal(output.status, 'HOLD');
+  assert.ok(output.holds.includes('PROJECT_UNRESOLVED'));
+  assert.equal(output.live_context.status, 'HOLD');
 });

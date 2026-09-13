@@ -1,6 +1,7 @@
 import { normalizeTask, capabilityPlan, orchestrate } from './core.mjs';
 import { resolveSourceRequirements } from './source-resolver.mjs';
 import { resolveCapabilities } from './capability-resolver.mjs';
+import { normalizeHumanContextEnvironment } from './human-orchestrator.mjs';
 import {
   DEFAULT_OWNER,
   DEFAULT_SOURCE_MAP,
@@ -35,14 +36,27 @@ async function fetchManifestEntry(item, fetchFile) {
   for (const path of paths) {
     try {
       const fetched = await fetchFile({ repo: item.repo, path, ref: item.ref ?? 'main' });
-      if (!fetched?.sha) {
+      if (fetched?.kind !== 'file' || typeof fetched?.content !== 'string') {
+        evidence.attempts.push({ path, outcome: 'UNSUPPORTED_CONTENT_RESPONSE' });
+        evidence.outcome = 'UNSUPPORTED_CONTENT_RESPONSE';
+        return {
+          pointer: toResolvedPointer(
+            { ...item, path },
+            { reason: 'UNSUPPORTED_CONTENT_RESPONSE' }
+          ),
+          evidence,
+          content: null
+        };
+      }
+      const revision = typeof fetched?.sha === 'string' ? fetched.sha.trim() : '';
+      if (!revision) {
         evidence.attempts.push({ path, outcome: 'REVISION_MISSING' });
         continue;
       }
-      evidence.attempts.push({ path, outcome: 'FETCHED', sha: fetched.sha });
+      evidence.attempts.push({ path, outcome: 'FETCHED', sha: revision });
       evidence.outcome = 'FETCHED';
       evidence.path = path;
-      evidence.sha = fetched.sha;
+      evidence.sha = revision;
       return {
         pointer: toResolvedPointer({ ...item, path }, fetched),
         evidence,
@@ -92,11 +106,7 @@ async function pinCapability(binding, fetchFile, owner) {
     locator: asset?.source?.locator ?? null
   };
 
-  if (binding.status === 'RESOLVED') {
-    evidence.outcome = 'ALREADY_PINNED';
-    return { binding, evidence, asset };
-  }
-  if (binding.status !== 'SELECTED') {
+  if (!['RESOLVED', 'SELECTED'].includes(binding.status)) {
     evidence.outcome = binding.status;
     return { binding, evidence, asset: null };
   }
@@ -115,19 +125,49 @@ async function pinCapability(binding, fetchFile, owner) {
   evidence.path = target.path;
   try {
     const fetched = await fetchFile({ repo: target.repo, path: target.path, ref: 'main' });
-    if (!fetched?.sha) throw Object.assign(new Error('revision missing'), { code: 'REVISION_MISSING' });
+    if (fetched?.kind !== 'file' || typeof fetched?.content !== 'string') {
+      throw Object.assign(
+        new Error('unsupported capability content'),
+        { code: 'UNSUPPORTED_CONTENT_RESPONSE' }
+      );
+    }
+    const revision = typeof fetched?.sha === 'string' ? fetched.sha.trim() : '';
+    if (!revision) {
+      throw Object.assign(new Error('revision missing'), { code: 'REVISION_MISSING' });
+    }
+    const declaredRevision = typeof asset?.source?.revision_or_sha === 'string'
+      ? asset.source.revision_or_sha.trim()
+      : '';
+    if (declaredRevision && declaredRevision !== revision) {
+      evidence.outcome = 'REVISION_MISMATCH';
+      evidence.declared_sha = declaredRevision;
+      evidence.fetched_sha = revision;
+      return {
+        binding: {
+          ...binding,
+          status: 'HOLD',
+          reason: 'CAPABILITY_REVISION_MISMATCH'
+        },
+        evidence,
+        asset: null
+      };
+    }
 
     const pinned = {
       ...asset,
       source: {
         ...asset.source,
         location: `${target.repo}:${target.path}`,
-        revision_or_sha: fetched.sha,
+        revision_or_sha: revision,
         revision_kind: fetched.revision_kind ?? 'git_blob_sha'
       }
     };
     evidence.outcome = 'FETCHED';
-    evidence.sha = fetched.sha;
+    if (declaredRevision) {
+      evidence.declared_sha = declaredRevision;
+      evidence.revalidated = true;
+    }
+    evidence.sha = revision;
     return {
       binding: { scope: binding.scope, status: 'RESOLVED', asset: pinned },
       evidence,
@@ -166,7 +206,9 @@ export async function bootstrapLiveContext(input, {
         repo: subjectRevisionEvidence.repo,
         ref: task.project_ref
       });
-      subjectRevision = fetchedRevision?.sha ?? null;
+      subjectRevision = typeof fetchedRevision?.sha === 'string'
+        ? fetchedRevision.sha.trim() || null
+        : null;
       subjectRevisionEvidence.outcome = subjectRevision ? 'FETCHED' : 'REVISION_MISSING';
       subjectRevisionEvidence.sha = subjectRevision;
     } catch (error) {
@@ -214,7 +256,10 @@ export async function bootstrapLiveContext(input, {
   const enrichedRegistry = registry
     ? {
         ...registry,
-        datasets: registry.datasets.map(asset => pinnedAssets.get(capabilityKey(asset)) ?? asset)
+        // Only successfully re-fetched assets may be presented to Core as usable.
+        // Keeping the original registry row here would let a failed or mismatched
+        // pin be reinterpreted as RESOLVED on the second pass.
+        datasets: [...pinnedAssets.values()]
       }
     : null;
   const resolvedSources = sourceResults
@@ -242,6 +287,7 @@ export async function bootstrapLiveContext(input, {
     environment: {
       subject_revision: subjectRevision,
       live_context_attempted: true,
+      live_context_hold: requiredSourceHold || capabilityHold || subjectRevisionHold,
       resolved_sources: resolvedSources,
       devcenter_registry: enrichedRegistry,
       capability_refs: capabilityRefs
@@ -253,12 +299,31 @@ export async function bootstrapLiveContext(input, {
 }
 
 export async function orchestrateLive(input, options) {
-  const bootstrap = await bootstrapLiveContext(input, options);
-  const result = orchestrate(bootstrap.task, bootstrap.environment);
+  const { humanContext = {}, ...bootstrapOptions } = options ?? {};
+  const allowedHumanContext = normalizeHumanContextEnvironment(humanContext);
+  const bootstrap = await bootstrapLiveContext(input, bootstrapOptions);
+  const result = orchestrate(bootstrap.task, {
+    ...bootstrap.environment,
+    ...allowedHumanContext
+  });
+  const contextHoldCodes = new Set([
+    'PROJECT_UNRESOLVED',
+    'SUBJECT_REVISION_UNRESOLVED',
+    'SOURCE_HOLD',
+    'CAPABILITY_CONFLICT',
+    'CAPABILITY_UNRESOLVED',
+    'CONTEXT_HOLD',
+    'LIVE_CONTEXT_HOLD'
+  ]);
+  const finalLiveStatus = bootstrap.status === 'HOLD'
+    || result.holds.some(hold => contextHoldCodes.has(hold))
+    ? 'HOLD'
+    : 'RESOLVED';
   return {
     ...result,
     live_context: {
-      status: bootstrap.status,
+      status: finalLiveStatus,
+      bootstrap_status: bootstrap.status,
       subject_revision_evidence: bootstrap.subject_revision_evidence,
       source_fetch_evidence: bootstrap.source_fetch_evidence,
       capability_fetch_evidence: bootstrap.capability_fetch_evidence

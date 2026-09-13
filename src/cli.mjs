@@ -5,6 +5,7 @@ import {
   createGitHubRevisionFetcher
 } from './github-client.mjs';
 import { orchestrateLive } from './live-context.mjs';
+import { normalizeHumanContextEnvironment } from './human-orchestrator.mjs';
 
 const args = process.argv.slice(2);
 const live = args.includes('--live');
@@ -16,17 +17,26 @@ if (!file) {
 }
 
 try {
-  const input = JSON.parse(fs.readFileSync(file, 'utf8'));
+  const document = JSON.parse(fs.readFileSync(file, 'utf8'));
+  const envelopeMode = document?.task != null;
+  const input = envelopeMode ? document.task : document;
+  const humanContext = normalizeHumanContextEnvironment(
+    envelopeMode ? (document.human_context ?? {}) : {}
+  );
+  if (!input || typeof input !== 'object' || Array.isArray(input)) {
+    throw new Error('task input must be an object');
+  }
   let output;
   if (live) {
     const token = process.env.AI_CORE_GITHUB_TOKEN ?? process.env.GITHUB_TOKEN;
     if (!token) throw new Error('live mode requires AI_CORE_GITHUB_TOKEN or GITHUB_TOKEN');
     output = await orchestrateLive(input, {
       fetchFile: createGitHubContentsFetcher({ token }),
-      fetchRevision: createGitHubRevisionFetcher({ token })
+      fetchRevision: createGitHubRevisionFetcher({ token }),
+      humanContext
     });
   } else {
-    output = orchestrate(input);
+    output = orchestrate(input, humanContext);
   }
   console.log(JSON.stringify(output, null, 2));
 } catch (error) {

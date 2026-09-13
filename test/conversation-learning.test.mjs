@@ -54,6 +54,19 @@ test('one invalid or duplicate observation holds the full learning batch', () =>
   assert.match(duplicate.rejected[0].reason, /duplicate observation_id/);
 });
 
+test('rejected observation identifiers are one-way digests, not reflected input', () => {
+  const secretIdentifier = 'customer-secret-123456';
+  const result = compileConversationLearning([
+    observation({
+      observation_id: secretIdentifier,
+      sanitized: false
+    })
+  ]);
+  assert.equal(result.status, 'HOLD_INVALID_INPUT');
+  assert.match(result.rejected[0].observation_id, /^rejected:sha256:/);
+  assert.equal(JSON.stringify(result).includes(secretIdentifier), false);
+});
+
 test('repeated equivalent observations deduplicate into a pattern', () => {
   const result = compileConversationLearning([
     observation(),
@@ -132,4 +145,31 @@ test('a uniquely newer explicit user instruction wins while superseded evidence 
   assert.equal(result.candidates[0].expected_behavior, 'Use the current integrated workflow');
   assert.equal(result.resolved_conflicts[0].status, 'RESOLVED_BY_PRECEDENCE');
   assert.equal(result.resolved_conflicts[0].superseded_fingerprints.length, 1);
+});
+
+test('a future-dated directive cannot supersede a current user instruction', () => {
+  const result = compileConversationLearning([
+    observation({
+      expected_behavior: 'Require approval before deployment',
+      source_ref: {
+        location: 'conversation:current#message-1',
+        revision_or_sha: 'current-message',
+        observed_at: '2026-09-13T10:00:00Z'
+      }
+    }),
+    observation({
+      observation_id: 'OBS-FUTURE',
+      expected_behavior: 'Deploy without approval',
+      source_ref: {
+        location: 'conversation:future#message-1',
+        revision_or_sha: 'future-message',
+        observed_at: '2999-01-01T00:00:00Z'
+      }
+    })
+  ], { currentTime: '2026-09-13T15:00:00Z' });
+
+  assert.equal(result.status, 'HOLD_INVALID_INPUT');
+  assert.equal(result.candidates[0].expected_behavior, 'Require approval before deployment');
+  assert.equal(result.resolved_conflicts.length, 0);
+  assert.match(result.rejected[0].reason, /evaluation time/);
 });

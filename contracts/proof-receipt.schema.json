@@ -9,9 +9,13 @@
     "task_id",
     "subject_revision",
     "requirement_set_digest",
+    "source_revision_set_digest",
+    "capability_revision_set_digest",
     "policy_revision",
     "result",
     "executed_checks",
+    "failures",
+    "skips",
     "verifier",
     "verified_at",
     "artifact_ref",
@@ -24,10 +28,14 @@
     "task_id": { "type": "string", "minLength": 1 },
     "project": { "type": ["string", "null"] },
     "subject_revision": { "type": "string", "minLength": 1 },
-    "requirement_set_digest": { "type": "string", "pattern": "^sha256:" },
+    "requirement_set_digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "source_revision_set_digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "capability_revision_set_digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
     "policy_revision": { "type": "string", "minLength": 1 },
     "result": { "enum": ["PASS", "FAIL", "PARTIAL", "SKIPPED", "UNKNOWN"] },
     "executed_checks": { "type": "integer", "minimum": 0 },
+    "failures": { "type": "integer", "minimum": 0 },
+    "skips": { "type": "integer", "minimum": 0 },
     "verifier": { "type": "string", "minLength": 1 },
     "verified_at": { "type": "string", "format": "date-time" },
     "artifact_ref": { "$ref": "#/$defs/evidencePointer" },
@@ -47,10 +55,12 @@
         ],
         "properties": {
           "requirement_id": { "type": "string", "minLength": 1 },
-          "requirement_fingerprint": { "type": "string", "pattern": "^sha256:" },
+          "requirement_fingerprint": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
           "mode": { "enum": ["automated", "manual", "external"] },
           "result": { "enum": ["PASS", "FAIL", "NOT_RUN", "UNKNOWN", "CONFIRMED", "EVIDENCED"] },
           "executed_checks": { "type": "integer", "minimum": 0 },
+          "failures": { "type": "integer", "minimum": 0 },
+          "skips": { "type": "integer", "minimum": 0 },
           "verifier": { "type": "string", "minLength": 1 },
           "verified_at": { "type": "string", "format": "date-time" },
           "evidence_refs": {
@@ -58,6 +68,12 @@
             "items": { "$ref": "#/$defs/evidencePointer" }
           }
         },
+        "allOf": [
+          {
+            "if": { "properties": { "mode": { "const": "automated" } } },
+            "then": { "required": ["executed_checks", "failures", "skips"] }
+          }
+        ],
         "additionalProperties": false
       }
     },

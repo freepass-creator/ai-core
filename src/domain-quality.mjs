@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
+import { effectiveDomains, effectiveRisk } from './domain-policy.mjs';
 
-export const PROOF_POLICY_REVISION = '2026-09-13.1';
+export const PROOF_POLICY_REVISION = '2026-09-13.5';
 
 const UNIVERSAL_OBLIGATIONS = Object.freeze([
   obligation(
@@ -96,6 +97,34 @@ function sha256(value) {
   return createHash('sha256').update(value).digest('hex');
 }
 
+function dateTimeEpoch(value) {
+  if (
+    typeof value !== 'string'
+    || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/.test(value)
+  ) return Number.NaN;
+  return Date.parse(value);
+}
+
+function unsupportedFields(value, allowed) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return ['INVALID_OBJECT'];
+  return Object.keys(value).filter(key => !allowed.has(key)).sort();
+}
+
+const PROOF_RECEIPT_FIELDS = new Set([
+  'receipt_id', 'obligation_id', 'task_id', 'project', 'subject_revision',
+  'requirement_set_digest', 'source_revision_set_digest',
+  'capability_revision_set_digest', 'policy_revision', 'result',
+  'executed_checks', 'failures', 'skips', 'verifier', 'verified_at', 'artifact_ref',
+  'execution_ref', 'requirement_receipts', 'evidence_refs'
+]);
+const REQUIREMENT_RECEIPT_FIELDS = new Set([
+  'requirement_id', 'requirement_fingerprint', 'mode', 'result',
+  'executed_checks', 'failures', 'skips', 'verifier', 'verified_at', 'evidence_refs'
+]);
+const EVIDENCE_POINTER_FIELDS = new Set([
+  'location', 'revision_or_sha', 'observed_at'
+]);
+
 function normalizedRequirement(entry, index) {
   const text = typeof entry === 'string' ? entry.trim() : String(entry?.text ?? '').trim();
   if (!text) throw new Error(`done_when[${index}] must contain text`);
@@ -122,33 +151,99 @@ export function buildRequirementSet(task) {
   const requirements = (task?.done_when ?? []).map(normalizedRequirement);
   const ids = requirements.map(item => item.id);
   const duplicateIds = [...new Set(ids.filter((id, index) => ids.indexOf(id) !== index))];
-  const canonical = JSON.stringify({
+  const taskContract = {
     task_id: task?.task_id ?? null,
     project: task?.project ?? null,
+    project_ref: task?.project_ref ?? null,
+    goal: String(task?.goal ?? '').trim(),
+    desired_outcome: task?.desired_outcome ?? null,
+    constraints: Array.isArray(task?.constraints) ? task.constraints.map(String) : [],
+    domain: task?.domain ?? null,
+    applicable_domains: effectiveDomains(task),
+    risk: effectiveRisk(task),
+    authority_required: task?.authority_required === true,
+    external_effect: task?.external_effect ?? 'unknown'
+  };
+  const canonical = JSON.stringify({
+    task_contract: taskContract,
     requirements
   });
   return {
     requirements,
     digest: `sha256:${sha256(canonical)}`,
+    task_contract_digest: `sha256:${sha256(JSON.stringify(taskContract))}`,
     duplicate_ids: duplicateIds,
     status: duplicateIds.length ? 'HOLD' : requirements.length ? 'DEFINED' : 'HOLD'
   };
 }
 
+function buildRevisionSet(items = [], kind) {
+  if (!Array.isArray(items)) throw new Error(`${kind}_revision_set must be an array`);
+  const normalized = items.map(item => {
+    if (kind === 'source') {
+      return {
+        system: item?.system ?? null,
+        kind: item?.kind ?? null,
+        location: item?.location ?? null,
+        revision_or_sha: item?.revision_or_sha ?? null,
+        observed_at: item?.observed_at ?? null
+      };
+    }
+    return {
+      id: item?.id ?? null,
+      scope: item?.scope ?? null,
+      location: item?.source?.locator ?? item?.location ?? null,
+      revision_or_sha: item?.source?.revision_or_sha ?? item?.revision_or_sha ?? null
+    };
+  }).sort((left, right) => JSON.stringify(left).localeCompare(JSON.stringify(right)));
+  return {
+    items: normalized,
+    digest: `sha256:${sha256(JSON.stringify(normalized))}`
+  };
+}
+
+export function buildSourceRevisionSet(items = []) {
+  return buildRevisionSet(items, 'source');
+}
+
+export function buildCapabilityRevisionSet(items = []) {
+  return buildRevisionSet(items, 'capability');
+}
+
 export function proofObligationsFor(task) {
-  const domain = task?.domain;
-  const domainItems = DOMAIN_OBLIGATIONS[domain];
-  if (!domainItems) throw new Error(`unsupported proof domain: ${domain ?? 'missing'}`);
-  return [...UNIVERSAL_OBLIGATIONS, ...domainItems].map(item => ({ ...item }));
+  const domains = effectiveDomains(task);
+  const obligations = [...UNIVERSAL_OBLIGATIONS];
+  for (const domain of domains) {
+    const domainItems = DOMAIN_OBLIGATIONS[domain];
+    if (!domainItems) throw new Error(`unsupported proof domain: ${domain ?? 'missing'}`);
+    obligations.push(...domainItems);
+  }
+  return [...new Map(obligations.map(item => [item.id, item])).values()]
+    .map(item => ({ ...item }));
 }
 
-function pointerIsVersioned(pointer) {
-  return Boolean(pointer?.location && (pointer?.revision_or_sha || pointer?.observed_at));
+function pointerIsVersioned(pointer, evaluationEpoch = Date.now()) {
+  if (unsupportedFields(pointer, EVIDENCE_POINTER_FIELDS).length) return false;
+  const location = typeof pointer?.location === 'string' ? pointer.location.trim() : '';
+  const revision = typeof pointer?.revision_or_sha === 'string'
+    ? pointer.revision_or_sha.trim()
+    : '';
+  const observedAt = typeof pointer?.observed_at === 'string'
+    ? pointer.observed_at.trim()
+    : '';
+  const observedEpoch = dateTimeEpoch(observedAt);
+  if (observedAt && (Number.isNaN(observedEpoch) || observedEpoch > evaluationEpoch)) return false;
+  return Boolean(location && (revision || observedAt));
 }
 
-function receiptIssues(receipt, contract, knownObligations) {
+function receiptIssues(receipt, contract, knownObligations, evaluationEpoch) {
   const issues = [];
-  if (!receipt?.receipt_id) issues.push('RECEIPT_ID_MISSING');
+  if (unsupportedFields(receipt, PROOF_RECEIPT_FIELDS).length) {
+    issues.push('RECEIPT_SHAPE_OR_FIELDS_INVALID');
+  }
+  if (typeof receipt?.receipt_id !== 'string' || !receipt.receipt_id.trim()) {
+    issues.push('RECEIPT_ID_MISSING_OR_INVALID');
+  }
   if (!knownObligations.has(receipt?.obligation_id)) issues.push('ORPHANED_OBLIGATION');
   if (receipt?.task_id !== contract.task_id) issues.push('WRONG_TASK');
   if ((receipt?.project ?? null) !== (contract.project ?? null)) issues.push('WRONG_PROJECT');
@@ -157,6 +252,12 @@ function receiptIssues(receipt, contract, knownObligations) {
   }
   if (receipt?.requirement_set_digest !== contract.requirement_set.digest) {
     issues.push('STALE_REQUIREMENT_SET');
+  }
+  if (receipt?.source_revision_set_digest !== contract.source_revision_set.digest) {
+    issues.push('STALE_SOURCE_REVISION_SET');
+  }
+  if (receipt?.capability_revision_set_digest !== contract.capability_revision_set.digest) {
+    issues.push('STALE_CAPABILITY_REVISION_SET');
   }
   if (receipt?.policy_revision !== PROOF_POLICY_REVISION) issues.push('STALE_POLICY_REVISION');
   if (!['PASS', 'FAIL', 'PARTIAL', 'SKIPPED', 'UNKNOWN'].includes(receipt?.result)) {
@@ -167,22 +268,44 @@ function receiptIssues(receipt, contract, knownObligations) {
   if (!Number.isInteger(receipt?.executed_checks) || receipt.executed_checks <= 0) {
     issues.push('ZERO_OR_UNKNOWN_EXECUTION');
   }
-  if (!String(receipt?.verifier ?? '').trim()) issues.push('VERIFIER_MISSING');
-  if (!receipt?.verified_at || Number.isNaN(Date.parse(receipt.verified_at))) {
-    issues.push('VERIFIED_AT_MISSING_OR_INVALID');
+  if (!Number.isInteger(receipt?.failures) || receipt.failures < 0) {
+    issues.push('FAILURE_COUNT_MISSING_OR_INVALID');
   }
-  if (!pointerIsVersioned(receipt?.artifact_ref)) issues.push('ARTIFACT_REF_MISSING');
+  if (!Number.isInteger(receipt?.skips) || receipt.skips < 0) {
+    issues.push('SKIP_COUNT_MISSING_OR_INVALID');
+  }
+  if (receipt?.result === 'PASS' && (receipt.failures !== 0 || receipt.skips !== 0)) {
+    issues.push('PASS_WITH_FAILURE_OR_SKIP');
+  }
+  if (typeof receipt?.verifier !== 'string' || !receipt.verifier.trim()) {
+    issues.push('VERIFIER_MISSING_OR_INVALID');
+  }
+  const verifiedAt = dateTimeEpoch(receipt?.verified_at);
+  if (Number.isNaN(verifiedAt)) {
+    issues.push('VERIFIED_AT_MISSING_OR_INVALID');
+  } else if (verifiedAt > evaluationEpoch) {
+    issues.push('FUTURE_VERIFICATION_TIMESTAMP');
+  }
+  if (!pointerIsVersioned(receipt?.artifact_ref, evaluationEpoch)) {
+    issues.push('ARTIFACT_REF_MISSING_OR_INVALID');
+  }
   if (contract.subject_revision && receipt?.artifact_ref?.revision_or_sha !== contract.subject_revision) {
     issues.push('ARTIFACT_REVISION_MISMATCH');
   }
-  if (!pointerIsVersioned(receipt?.execution_ref)) issues.push('EXECUTION_REF_MISSING');
-  if (!Array.isArray(receipt?.evidence_refs) || !receipt.evidence_refs.some(pointerIsVersioned)) {
-    issues.push('VERSIONED_EVIDENCE_MISSING');
+  if (!pointerIsVersioned(receipt?.execution_ref, evaluationEpoch)) {
+    issues.push('EXECUTION_REF_MISSING_OR_INVALID');
+  }
+  if (
+    !Array.isArray(receipt?.evidence_refs)
+    || receipt.evidence_refs.length === 0
+    || receipt.evidence_refs.some(pointer => !pointerIsVersioned(pointer, evaluationEpoch))
+  ) {
+    issues.push('VERSIONED_EVIDENCE_MISSING_OR_INVALID');
   }
   return issues;
 }
 
-function traceabilityEvaluation(receipt, requirementSet) {
+function traceabilityEvaluation(receipt, requirementSet, evaluationEpoch) {
   if (receipt?.obligation_id !== 'CORE-REQ-TRACEABILITY') {
     return { issues: [], partial_reasons: [] };
   }
@@ -215,19 +338,29 @@ function traceabilityEvaluation(receipt, requirementSet) {
       }
       continue;
     }
+    if (unsupportedFields(binding, REQUIREMENT_RECEIPT_FIELDS).length) {
+      issues.push('REQUIREMENT_RECEIPT_SHAPE_OR_FIELDS_INVALID');
+    }
     if (binding.requirement_fingerprint !== requirement.fingerprint) {
       issues.push('STALE_REQUIREMENT_FINGERPRINT');
     }
     if (binding.mode !== requirement.mode) issues.push('WRONG_VERIFICATION_MODE');
-    if (!String(binding.verifier ?? '').trim()) issues.push('REQUIREMENT_VERIFIER_MISSING');
-    if (!binding.verified_at || Number.isNaN(Date.parse(binding.verified_at))) {
+    if (typeof binding.verifier !== 'string' || !binding.verifier.trim()) {
+      issues.push('REQUIREMENT_VERIFIER_MISSING_OR_INVALID');
+    }
+    const verifiedAt = dateTimeEpoch(binding.verified_at);
+    if (Number.isNaN(verifiedAt)) {
       issues.push('REQUIREMENT_VERIFIED_AT_MISSING_OR_INVALID');
+    } else if (verifiedAt > evaluationEpoch) {
+      issues.push('REQUIREMENT_FUTURE_VERIFICATION_TIMESTAMP');
     }
-    if (!Array.isArray(binding.evidence_refs) || !binding.evidence_refs.some(pointerIsVersioned)) {
-      issues.push('REQUIREMENT_EVIDENCE_MISSING');
+    if (
+      !Array.isArray(binding.evidence_refs)
+      || binding.evidence_refs.length === 0
+      || binding.evidence_refs.some(pointer => !pointerIsVersioned(pointer, evaluationEpoch))
+    ) {
+      issues.push('REQUIREMENT_EVIDENCE_MISSING_OR_INVALID');
     }
-    if (!requirement.required) continue;
-
     if (binding.result === 'FAIL') {
       issues.push('FAILED_REQUIREMENT');
       continue;
@@ -236,6 +369,15 @@ function traceabilityEvaluation(receipt, requirementSet) {
       if (binding.result !== 'PASS') issues.push('AUTOMATED_REQUIREMENT_NOT_PASS');
       if (!Number.isInteger(binding.executed_checks) || binding.executed_checks <= 0) {
         issues.push('REQUIREMENT_ZERO_OR_UNKNOWN_EXECUTION');
+      }
+      if (!Number.isInteger(binding.failures) || binding.failures < 0) {
+        issues.push('REQUIREMENT_FAILURE_COUNT_MISSING_OR_INVALID');
+      }
+      if (!Number.isInteger(binding.skips) || binding.skips < 0) {
+        issues.push('REQUIREMENT_SKIP_COUNT_MISSING_OR_INVALID');
+      }
+      if (binding.result === 'PASS' && (binding.failures !== 0 || binding.skips !== 0)) {
+        issues.push('REQUIREMENT_PASS_WITH_FAILURE_OR_SKIP');
       }
     } else if (requirement.mode === 'manual' && binding.result !== 'CONFIRMED') {
       partialReasons.push(`MANUAL_CONFIRMATION_PENDING:${requirement.id}`);
@@ -260,18 +402,24 @@ export function evaluateProofGate(contract, receipts = [], { requested = false }
   }
 
   const knownObligations = new Set(contract.obligations.map(item => item.id));
+  const evaluationEpoch = dateTimeEpoch(contract.evaluation_time);
   const receiptIds = receipts.map(item => item?.receipt_id).filter(Boolean);
   const obligationIds = receipts.map(item => item?.obligation_id).filter(Boolean);
   const issues = [];
+  if (Number.isNaN(evaluationEpoch)) issues.push('EVALUATION_TIME_INVALID');
   if (new Set(receiptIds).size !== receiptIds.length) issues.push('DUPLICATE_RECEIPT_ID');
   if (new Set(obligationIds).size !== obligationIds.length) issues.push('DUPLICATE_OBLIGATION_RECEIPT');
   if (contract.requirement_set.status !== 'DEFINED') issues.push('REQUIREMENT_SET_INVALID');
   if (!contract.subject_revision) issues.push('SUBJECT_REVISION_UNRESOLVED');
 
   const evaluated = receipts.map(receipt => {
-    const traceability = traceabilityEvaluation(receipt, contract.requirement_set);
+    const traceability = traceabilityEvaluation(
+      receipt,
+      contract.requirement_set,
+      evaluationEpoch
+    );
     const receiptIssueSet = [...new Set([
-      ...receiptIssues(receipt, contract, knownObligations),
+      ...receiptIssues(receipt, contract, knownObligations, evaluationEpoch),
       ...traceability.issues
     ])];
     return {
@@ -318,7 +466,9 @@ export function evaluateProofGate(contract, receipts = [], { requested = false }
       task_id: contract.task_id,
       project: contract.project,
       subject_revision: contract.subject_revision,
-      requirement_set_digest: contract.requirement_set.digest
+      requirement_set_digest: contract.requirement_set.digest,
+      source_revision_set_digest: contract.source_revision_set.digest,
+      capability_revision_set_digest: contract.capability_revision_set.digest
     },
     pass_is_bound_to_revision: true
   };
@@ -326,16 +476,25 @@ export function evaluateProofGate(contract, receipts = [], { requested = false }
 
 export function compileProofContract(task, {
   subjectRevision = null,
+  sourceRevisionSet = [],
+  capabilityRevisionSet = [],
   receipts = [],
-  evaluationRequested = false
+  evaluationRequested = false,
+  currentTime = new Date().toISOString()
 } = {}) {
+  const evaluationEpoch = dateTimeEpoch(currentTime);
+  if (Number.isNaN(evaluationEpoch)) throw new Error('currentTime must be a valid date-time');
   const contract = {
     policy_revision: PROOF_POLICY_REVISION,
+    evaluation_time: new Date(evaluationEpoch).toISOString(),
     task_id: task.task_id,
     project: task.project,
     domain: task.domain,
+    applicable_domains: effectiveDomains(task),
     subject_revision: subjectRevision,
     requirement_set: buildRequirementSet(task),
+    source_revision_set: buildSourceRevisionSet(sourceRevisionSet),
+    capability_revision_set: buildCapabilityRevisionSet(capabilityRevisionSet),
     obligations: proofObligationsFor(task),
     epistemic_limit: 'Structural PASS does not prove legal correctness, business impact, deployment, or source freshness beyond bound evidence'
   };
@@ -345,8 +504,12 @@ export function compileProofContract(task, {
   };
 }
 
-export function evaluateTruthStates(states = {}, currentRevision = null) {
+export function evaluateTruthStates(states = {}, currentRevision = null, {
+  currentTime = new Date().toISOString()
+} = {}) {
   const issues = [];
+  const evaluationEpoch = Date.parse(currentTime);
+  if (Number.isNaN(evaluationEpoch)) issues.push('EVALUATION_TIME_INVALID');
   const artifact = states.artifact ?? { state: 'ABSENT' };
   const verification = states.verification ?? { state: 'NOT_RUN' };
   const authorization = states.authorization ?? { state: 'NOT_GRANTED' };
@@ -361,21 +524,32 @@ export function evaluateTruthStates(states = {}, currentRevision = null) {
     if (!Number.isInteger(verification.executed_checks) || verification.executed_checks <= 0) {
       issues.push('ZERO_RUN_PASS');
     }
-    if ((verification.failures ?? 0) > 0 || (verification.skips ?? 0) > 0) {
+    if (!Number.isInteger(verification.failures) || verification.failures < 0) {
+      issues.push('FAILURE_COUNT_MISSING_OR_INVALID');
+    }
+    if (!Number.isInteger(verification.skips) || verification.skips < 0) {
+      issues.push('SKIP_COUNT_MISSING_OR_INVALID');
+    }
+    if (verification.failures !== 0 || verification.skips !== 0) {
       issues.push('PASS_WITH_FAILURE_OR_SKIP');
     }
   }
   if (currentRevision && verification.state === 'PASS' && verification.revision !== currentRevision) {
     issues.push('PASS_IS_STALE');
   }
-  if (authorization.state === 'GRANTED' && !pointerIsVersioned(authorization.evidence_ref)) {
+  if (
+    authorization.state === 'GRANTED'
+    && !pointerIsVersioned(authorization.evidence_ref, evaluationEpoch)
+  ) {
     issues.push('AUTHORIZATION_EVIDENCE_MISSING');
   }
   if (execution.state === 'SUCCEEDED') {
     if (!['GRANTED', 'NOT_REQUIRED'].includes(authorization.state)) {
       issues.push('EXECUTED_WITHOUT_AUTHORITY');
     }
-    if (!pointerIsVersioned(execution.evidence_ref)) issues.push('EXECUTION_EVIDENCE_MISSING');
+    if (!pointerIsVersioned(execution.evidence_ref, evaluationEpoch)) {
+      issues.push('EXECUTION_EVIDENCE_MISSING');
+    }
   }
   if (outcome.state === 'IMPROVED') {
     if (execution.state !== 'SUCCEEDED') issues.push('OUTCOME_WITHOUT_EXECUTION');
@@ -394,7 +568,9 @@ export function evaluateTruthStates(states = {}, currentRevision = null) {
     ) {
       issues.push('CLAIMED_IMPROVEMENT_NOT_OBSERVED');
     }
-    if (!pointerIsVersioned(outcome.evidence_ref)) issues.push('OUTCOME_EVIDENCE_MISSING');
+    if (!pointerIsVersioned(outcome.evidence_ref, evaluationEpoch)) {
+      issues.push('OUTCOME_EVIDENCE_MISSING');
+    }
   }
 
   return {

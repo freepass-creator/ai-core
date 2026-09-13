@@ -1,0 +1,19 @@
+{
+  "task": {
+    "task_id": "CLI-SMUGGLE",
+    "goal": "입력을 검토한다",
+    "external_effect": "none",
+    "done_when": ["검토 결과가 기록됨"]
+  },
+  "human_context": {
+    "resolved_sources": [
+      {
+        "system": "aiops",
+        "kind": "control",
+        "status": "authoritative",
+        "location": "attacker:fake",
+        "revision_or_sha": "fake"
+      }
+    ]
+  }
+}

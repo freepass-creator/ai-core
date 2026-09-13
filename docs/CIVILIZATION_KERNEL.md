@@ -66,13 +66,17 @@ DevCenter에서 만든 능력은 AIOPS가 실제 업무에 효율적으로 사�
 
 후보는 다음 증거가 모두 고정돼야 `TRANSFER_READY`가 된다.
 
-- 문제가 재현됨
-- 후보 코드·문서 revision이 고정됨
-- 선언한 검사가 실제로 모두 통과함
-- 수정한 역할과 다른 독립 검토자가 같은 revision을 승인함
-- 롤백 계획이 있음
-- 대상 기관이 같은 revision을 수용함
-- C/D등급이면 AIOPS의 해당 승인 증거가 있음
+- 후보가 구조화된 task ID·signal ID와 목적·프로젝트·제약·완료조건·위험·외부효과의 canonical task-context digest를 가지며, gate가 현재 Task의 digest와 다시 대조함
+- 대상 프로젝트 revision, source revision set, capability revision set, 검증 정책 revision을 하나의 Transfer-context digest로 고정하고 gate가 현재 trusted context와 다시 대조함
+- 프로젝트가 지정된 후보는 비어 있지 않은 대상 프로젝트 revision 없이는 `TRANSFER_READY`가 될 수 없음
+- 문제 재현 영수증이 후보 ID·digest·task/Transfer-context digest·candidate revision·재현 대상 revision·실행 횟수·실패/SKIP·근거 포인터에 결속됨
+- 후보 본문 digest와 코드·문서 revision이 고정되고 gate에서 digest를 다시 계산함
+- 후보 kind와 귀속 기관의 고정 매핑 및 대화 교훈의 routing domain 근거가 candidate digest 안에서 일치함
+- 각 검사 영수증이 후보 ID·digest·task/Transfer-context digest·같은 revision에 묶이고, 실행 횟수 1 이상·실패 0·SKIP 0·버전 고정 실행/근거 포인터를 가짐
+- 수정한 역할과 다른 독립 검토자가 후보 ID·digest·task/Transfer-context digest·같은 revision을 근거 포인터와 함께 승인함
+- 롤백 계획이 후보 ID·digest·task/Transfer-context digest·같은 revision·근거 포인터에 결속됨
+- 대상 기관이 후보 ID·digest·task/Transfer-context digest·같은 revision을 근거 포인터와 함께 수용함
+- C/D등급이면 해당 승인 주체의 후보·task/Transfer-context digest·revision 결속 승인 영수증이 있음
 
 `TRANSFER_READY`는 채택·배포·운영 실행이 아니다. 대상 저장소 반영과 실제 실행은 그 시스템의 승인 규칙을 다시 따른다.
 
@@ -94,7 +98,7 @@ AI Core는 낮은 위험의 조사·후보 작성·테스트·비교·시정안 
 
 ## 9. 현재 구현 단계
 
-v0.4 candidate는 다음까지만 구현한다.
+v0.5 candidate는 다음까지만 구현한다.
 
 - 모든 개발 Work Packet에 선제 검토 관점 부착
 - 개발·법률·사업·문서·커뮤니케이션별 증명 의무 부착
@@ -103,7 +107,10 @@ v0.4 candidate는 다음까지만 구현한다.
 - 비식별 대화 관찰의 정규화·중복 제거·충돌 차단·성숙도 분류
 - Live preflight와 외부 observation에서 개선 신호 생성
 - 개선 신호를 AI Core/AIOPS/DevCenter로 분류
+- 거부된 개선 신호 식별자를 digest로 비식별화하고 같은 ID의 상충 입력까지 격리해 Transfer·전체 실행을 HOLD
+- 격리된 개선 입력과 무관한 가역적 로컬 준비는 최종 preparation gate에서 실행과 별도로 판정
 - 후보 자동 생성
-- Transfer Gate의 증거·독립검토·승인 검사
+- Transfer Gate의 task-context·증거·독립검토·승인 검사
+- 의도 확인/질문 답변 영수증의 task-context 결속, 범위·철회·만료 기억, 안전한 준비/결과적 행동 분리
 
 대상 저장소에 후보를 자동 제출하고, 채택 후 여러 프로젝트에 전파하고, 실제 성과를 비교해 롤백하는 executor는 후속 단계다.

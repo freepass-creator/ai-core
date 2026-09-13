@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://freepass.local/ai-core/human-context.schema.json",
+  "title": "AI Core Trusted Human Context Environment",
+  "type": "object",
+  "properties": {
+    "revoked_memory_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "memory_claims": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/memoryClaim" }
+    },
+    "verified_intent_confirmations": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/verifiedIntentConfirmation" }
+    },
+    "verified_question_resolutions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/verifiedQuestionResolution" }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "sourceRef": {
+      "type": "object",
+      "required": ["location"],
+      "properties": {
+        "location": { "type": "string", "minLength": 1 },
+        "revision_or_sha": { "type": "string", "minLength": 1 },
+        "observed_at": { "type": "string", "format": "date-time" }
+      },
+      "anyOf": [
+        { "required": ["revision_or_sha"] },
+        { "required": ["observed_at"] }
+      ],
+      "additionalProperties": false
+    },
+    "memoryClaim": {
+      "type": "object",
+      "required": [
+        "memory_id",
+        "rule_key",
+        "summary",
+        "scope",
+        "state",
+        "authority",
+        "source_ref",
+        "sanitized"
+      ],
+      "properties": {
+        "memory_id": { "type": "string", "minLength": 1 },
+        "rule_key": { "type": "string", "minLength": 1 },
+        "summary": { "type": "string", "minLength": 1, "maxLength": 2000 },
+        "scope": { "enum": ["UNIVERSAL", "DOMAIN", "LOCAL"] },
+        "state": { "enum": ["ACTIVE", "REVOKED", "SUPERSEDED"] },
+        "authority": { "enum": ["user_directive", "approved_source", "transfer_gate"] },
+        "domain": { "type": "string", "minLength": 1 },
+        "project": { "type": "string", "minLength": 1 },
+        "kind": {
+          "enum": ["context", "principle", "constraint", "preference", "temporary_decision"]
+        },
+        "expires_at": { "type": "string", "format": "date-time" },
+        "source_ref": { "$ref": "#/$defs/sourceRef" },
+        "sanitized": { "const": true }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "scope": { "const": "DOMAIN" } } },
+          "then": { "required": ["domain"] }
+        },
+        {
+          "if": { "properties": { "scope": { "const": "LOCAL" } } },
+          "then": { "required": ["project"] }
+        },
+        {
+          "if": { "properties": { "scope": { "const": "UNIVERSAL" } } },
+          "then": { "properties": { "authority": { "const": "transfer_gate" } } }
+        },
+        {
+          "if": {
+            "required": ["kind"],
+            "properties": {
+              "kind": { "enum": ["preference", "temporary_decision"] }
+            }
+          },
+          "then": { "required": ["expires_at"] }
+        }
+      ],
+      "not": {
+        "anyOf": [
+          { "required": ["raw_content"] },
+          { "required": ["transcript"] },
+          { "required": ["message_body"] },
+          { "required": ["full_text"] },
+          { "required": ["sensitive_payload"] }
+        ]
+      },
+      "additionalProperties": false
+    },
+    "verifiedIntentConfirmation": {
+      "type": "object",
+      "required": [
+        "task_id",
+        "hypothesis_id",
+        "statement_digest",
+        "intent_context_digest",
+        "source_ref"
+      ],
+      "properties": {
+        "task_id": { "type": "string", "minLength": 1 },
+        "hypothesis_id": { "type": "string", "minLength": 1 },
+        "statement_digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+        "intent_context_digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+        "source_ref": { "$ref": "#/$defs/sourceRef" }
+      },
+      "additionalProperties": false
+    },
+    "verifiedQuestionResolution": {
+      "type": "object",
+      "required": [
+        "question_id",
+        "prompt_digest",
+        "task_id",
+        "question_context_digest",
+        "source_ref",
+        "resolution_summary",
+        "sanitized"
+      ],
+      "properties": {
+        "task_id": { "type": "string", "minLength": 1 },
+        "question_id": { "type": "string", "minLength": 1 },
+        "prompt_digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+        "question_context_digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+        "source_ref": { "$ref": "#/$defs/sourceRef" },
+        "resolution_summary": { "type": "string", "minLength": 1, "maxLength": 2000 },
+        "sanitized": { "const": true }
+      },
+      "additionalProperties": false
+    }
+  }
+}

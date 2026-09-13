@@ -27,6 +27,15 @@ function stableHash(value) {
   return createHash('sha256').update(JSON.stringify(value)).digest('hex');
 }
 
+function rejectedObservationIdFor(value) {
+  if (value == null) return null;
+  try {
+    return `rejected:sha256:${stableHash({ observation_id: value })}`;
+  } catch {
+    return 'rejected:unavailable';
+  }
+}
+
 function hasForbiddenRawField(value) {
   if (!value || typeof value !== 'object') return false;
   for (const [key, child] of Object.entries(value)) {
@@ -36,7 +45,15 @@ function hasForbiddenRawField(value) {
   return false;
 }
 
-function normalizeSourceRef(sourceRef) {
+function evaluationEpochFor(currentTime) {
+  const evaluationEpoch = Date.parse(currentTime);
+  if (!Number.isFinite(evaluationEpoch)) {
+    throw new Error('currentTime must be a valid timestamp');
+  }
+  return evaluationEpoch;
+}
+
+function normalizeSourceRef(sourceRef, evaluationEpoch) {
   const location = String(sourceRef?.location ?? '').trim();
   const revision = String(sourceRef?.revision_or_sha ?? '').trim();
   const observedAt = String(sourceRef?.observed_at ?? '').trim();
@@ -45,6 +62,9 @@ function normalizeSourceRef(sourceRef) {
   }
   if (observedAt && Number.isNaN(Date.parse(observedAt))) {
     throw new Error('source_ref observed_at must be a valid timestamp');
+  }
+  if (observedAt && Date.parse(observedAt) > evaluationEpoch) {
+    throw new Error('source_ref observed_at cannot be after the evaluation time');
   }
   return {
     location,
@@ -64,7 +84,10 @@ function confidenceFor(observation) {
   return 0.4;
 }
 
-export function normalizeLearningObservation(observation = {}) {
+export function normalizeLearningObservation(observation = {}, {
+  currentTime = new Date().toISOString()
+} = {}) {
+  const evaluationEpoch = evaluationEpochFor(currentTime);
   if (hasForbiddenRawField(observation)) {
     throw new Error('raw conversation or sensitive payload fields are forbidden');
   }
@@ -81,9 +104,9 @@ export function normalizeLearningObservation(observation = {}) {
     throw new Error('one or more supported domains are required');
   }
   const authority = observation.authority ?? 'assistant_inference';
-  if (!LEARNING_AUTHORITIES.has(authority)) throw new Error(`unsupported authority: ${authority}`);
+  if (!LEARNING_AUTHORITIES.has(authority)) throw new Error('unsupported learning authority');
 
-  const sourceRef = normalizeSourceRef(observation.source_ref);
+  const sourceRef = normalizeSourceRef(observation.source_ref, evaluationEpoch);
   const normalized = {
     observation_id: String(observation.observation_id).trim(),
     rule_key: String(observation.rule_key).trim(),
@@ -124,7 +147,11 @@ function ownerForDomains(domains) {
 }
 
 function sourceIdentity(sourceRef) {
-  return `${sourceRef.location}@${sourceRef.revision_or_sha ?? sourceRef.observed_at}`;
+  return [
+    sourceRef.location,
+    sourceRef.revision_or_sha ?? '',
+    sourceRef.observed_at ?? ''
+  ].join('@');
 }
 
 function authorityRank(authority) {
@@ -221,14 +248,19 @@ function buildSignal(cluster) {
   };
 }
 
-export function compileConversationLearning(observations = []) {
+export function compileConversationLearning(observations = [], {
+  currentTime = new Date().toISOString()
+} = {}) {
+  const evaluationEpoch = evaluationEpochFor(currentTime);
   const accepted = [];
   const rejected = [];
   const seenObservationIds = new Set();
 
   for (const observation of observations) {
     try {
-      const normalized = normalizeLearningObservation(observation);
+      const normalized = normalizeLearningObservation(observation, {
+        currentTime: new Date(evaluationEpoch).toISOString()
+      });
       if (seenObservationIds.has(normalized.observation_id)) {
         throw new Error('duplicate observation_id');
       }
@@ -236,7 +268,7 @@ export function compileConversationLearning(observations = []) {
       accepted.push(normalized);
     } catch (error) {
       rejected.push({
-        observation_id: observation?.observation_id ?? null,
+        observation_id: rejectedObservationIdFor(observation?.observation_id),
         reason: error?.message ?? 'invalid learning observation'
       });
     }
