@@ -1,0 +1,131 @@
+{
+  "generated_on": "2026-09-13",
+  "purpose": "Archival provenance map for the deduplicated GitHub memory. Gmail is not the current operating SSOT.",
+  "records": [
+    {
+      "message_id": "1a099198ee9e8289",
+      "type": "FOUNDATION",
+      "title": "[AI AIOPS] 자율개발·고도화 시스템 시작 기준",
+      "summary": "Autonomous improvement loop and external long-term memory baseline.",
+      "status": "HISTORICAL_FOUNDATION"
+    },
+    {
+      "message_id": "1a0991a075a3b302",
+      "type": "FOUNDATION",
+      "title": "[AI AIOPS] 개발 AI 공용지식 공유 프로토콜 v1",
+      "summary": "Shared-AI knowledge inheritance; early Gmail-first startup protocol.",
+      "status": "PARTIALLY_SUPERSEDED"
+    },
+    {
+      "message_id": "1a0991e8a91a4f83",
+      "type": "CIVILIZATION",
+      "version": "v2",
+      "title": "[AI AIOPS][CIVILIZATION] v2 — 지식을 저장하지 말고 진화시켜라",
+      "summary": "Move from storage/copying to evolutionary inheritance.",
+      "status": "RESEARCH_LINEAGE"
+    },
+    {
+      "message_id": "1a09920cad5cc22e",
+      "type": "CIVILIZATION",
+      "version": "v3",
+      "title": "[AI AIOPS][CIVILIZATION] v3 — 증거 기반 지식 상속",
+      "summary": "Evidence, provenance, lineage, conflict/expiry, benchmark/regression discipline.",
+      "status": "RESEARCH_LINEAGE"
+    },
+    {
+      "message_id": "1a09922ea0ddd790",
+      "type": "CIVILIZATION",
+      "version": "v4",
+      "title": "[AI AIOPS][CIVILIZATION] v4 — 자기교정 운영체제: 예측·실험·의존성·회복성",
+      "summary": "Self-correction through prediction, experiment, dependency and recovery thinking.",
+      "status": "RESEARCH_LINEAGE"
+    },
+    {
+      "message_id": "1a0992538f63018f",
+      "type": "CIVILIZATION",
+      "version": "v5",
+      "title": "[AI AIOPS][CIVILIZATION] v5 — 범용 지식 운영체제: Kernel·Domain Adapter·Context Compiler",
+      "summary": "Common kernel plus domain-specific reasoning and context compiler.",
+      "status": "RESEARCH_LINEAGE"
+    },
+    {
+      "message_id": "1a0992e30c368a84",
+      "type": "CIVILIZATION",
+      "version": "v6",
+      "title": "[AI AIOPS][CIVILIZATION] v6 — 선언에서 집행으로: 검증 가능한 업무 계약",
+      "summary": "Capability/work contracts, state separation, evidence/authority boundary, selective context, research/adoption separation.",
+      "status": "DESIGN_PLUS_LOCAL_PROTOTYPE"
+    },
+    {
+      "message_id": "1a0993e70cb41abd",
+      "type": "DEVKIT",
+      "version": "v6.1",
+      "title": "[AI AIOPS][DEVKIT] v6.1 — 재사용 개발 파일과 v1→v6 발전 비교",
+      "summary": "Reusable v6 implementation/test/handoff/comparison/pilot package.",
+      "status": "IMPLEMENTATION_LINEAGE"
+    },
+    {
+      "message_id": "1a0995c7e37d32c2",
+      "type": "DEVKIT",
+      "version": "v6.2",
+      "title": "[AI AIOPS][DEVKIT] v6.2 — 공통 개발 표준 v1.0: 필수 10개·조건부 6개",
+      "summary": "Common development standard with mandatory core and conditional capability-specific checks.",
+      "status": "CANDIDATE_STANDARD_LINEAGE"
+    },
+    {
+      "message_id": "1a0996cc49b6e014",
+      "type": "DEVKIT",
+      "version": "v6.3",
+      "title": "[AI AIOPS][DEVKIT] v6.3 — 검사 결과의 유효성: 실제 변경·실행 기록·재검사",
+      "summary": "Bind verification to actual source/Git state; invalidate stale PASS; actual-vs-declared change comparison.",
+      "status": "CANDIDATE_PROFILE_LINEAGE"
+    },
+    {
+      "message_id": "1a09a482b7c37da2",
+      "type": "MASTER",
+      "title": "[AI AIOPS] MASTER - 범용 업무 통합 플레이북 2026-09-13",
+      "summary": "Cross-domain v6-era consolidation and explicit Gmail-as-archive decision.",
+      "status": "CONSOLIDATION_RECORD"
+    },
+    {
+      "message_id": "1a09a5d3984db410",
+      "type": "DEVKIT",
+      "version": "v6.4",
+      "title": "[AI AIOPS][DEVKIT] v6.4 — 검증 결과의 목적 결속: 요구사항↔검사 추적성",
+      "summary": "Requirement-to-check traceability on top of source-state binding.",
+      "status": "LOCALLY_TESTED_CANDIDATE"
+    },
+    {
+      "message_id": "1a09ab6323ec491f",
+      "type": "CIVILIZATION",
+      "version": "v7",
+      "title": "[AI AIOPS][CIVILIZATION] v7 — 연방형 AI 운영체제: Plane·Center·Reality·Outcome Loop",
+      "summary": "Federated architecture of common planes, domain centers, projects/reality, and outcome/evolution.",
+      "status": "RESEARCH_CANDIDATE"
+    },
+    {
+      "message_id": "1a09ac08579739a2",
+      "type": "CIVILIZATION",
+      "version": "v8",
+      "title": "[AI AIOPS][CIVILIZATION] v8 — 지속형 인지 런타임: Goal·World·Decision·Plan Slice",
+      "summary": "Persistent cognitive runtime and revision-bound Plan Slice across Chat/Work/tools/centers.",
+      "status": "RESEARCH_CANDIDATE"
+    },
+    {
+      "message_id": "1a09ac6a6fd1fd9f",
+      "type": "CIVILIZATION",
+      "version": "v9",
+      "title": "[AI AIOPS][CIVILIZATION] v9 — 인간 조력 운영체제: Human Intent·Question Value·Domain Pack·Follow-through",
+      "summary": "Human intent discovery, question-value gating, domain packs, proactivity and follow-through.",
+      "status": "RESEARCH_CANDIDATE"
+    },
+    {
+      "message_id": "1a09acf250dc71ff",
+      "type": "CIVILIZATION",
+      "version": "v10",
+      "title": "[AI AIOPS][CIVILIZATION] v10 — 인간 수탁 운영체제: Direction·Portfolio·Foresight·Agency·Follow-through",
+      "summary": "Human Stewardship layer above AI infrastructure; portfolio, foresight, agency, resilience and growth.",
+      "status": "RESEARCH_CANDIDATE"
+    }
+  ]
+}
