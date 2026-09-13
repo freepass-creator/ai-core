@@ -1,0 +1,26 @@
+name: Development Autonomy Research Verify
+
+on:
+  pull_request:
+    paths:
+      - 'src/development-autonomy.mjs'
+      - 'test/development-autonomy.test.mjs'
+      - 'contracts/project-capsule.schema.json'
+      - 'contracts/change-packet.schema.json'
+      - 'contracts/proof-bundle.schema.json'
+      - 'docs/DEVELOPMENT_AUTONOMY_LADDER.md'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Parse contracts
+        run: node -e "for (const f of ['contracts/project-capsule.schema.json','contracts/change-packet.schema.json','contracts/proof-bundle.schema.json']) JSON.parse(require('fs').readFileSync(f,'utf8')); console.log('contracts ok')"
+      - name: Syntax check
+        run: node --check src/development-autonomy.mjs
+      - name: Synthetic tests
+        run: node --test test/development-autonomy.test.mjs
