@@ -1,0 +1,14 @@
+{
+  "task_id": "CORE-DEMO-001",
+  "goal": "freepasserp4 상품 상세 UI를 기존 규격과 부품을 재사용해서 개선",
+  "project": "freepasserp4",
+  "done_when": [
+    "기존 SSOT와 UI 규격을 확인한다",
+    "재사용 가능한 기존 부품을 우선 사용한다",
+    "수정본에 대한 검증 증거를 남긴다"
+  ],
+  "changed_files_estimate": 6,
+  "needs_build": true,
+  "cloud_reproducible": true,
+  "external_effect": "none"
+}
