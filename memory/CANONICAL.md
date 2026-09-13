@@ -222,3 +222,11 @@ Track what still needs to happen after the artifact is created.
 For high-cost or hard-to-reverse choices, consider failure cases, rollback, external dependencies, and second-order effects.
 
 Foresight is not prophecy. Its purpose is to expose avoidable failure and preserve future options.
+
+## 25. Logical hierarchy does not require physical nesting
+
+A coordinating system can be the logical parent of domain institutions without moving their repositories or SSOTs under one directory.
+
+Keep specialized systems physically independent while they have meaningful independent SSOT, lifecycle, CI, permission, or verification boundaries. Use stable institution/capability pointers to express hierarchy.
+
+Physical consolidation should be considered only when measured cross-repository friction is greater than the value of isolation and a reversible migration path exists. Filesystem neatness alone is not a sufficient reason to merge repositories.
