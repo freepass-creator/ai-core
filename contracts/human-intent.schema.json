@@ -1,0 +1,24 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://freepass.local/ai-core/human-intent.schema.json",
+  "title":"AI Core Human Intent Envelope",
+  "type":"object",
+  "required":["goal"],
+  "properties":{
+    "goal":{"type":"string","minLength":1},
+    "desired_outcome":{"type":["string","null"]},
+    "domain":{"type":"string"},
+    "deadline":{"type":["string","null"]},
+    "stakeholders":{"type":"array"},
+    "constraints":{"type":"array"},
+    "preferences":{"type":"array"},
+    "resources":{"type":"array"},
+    "authority":{"enum":["ADVISE_ONLY","PREPARE_ONLY","EXECUTE_WITH_APPROVAL"]},
+    "known":{"type":"object"},
+    "unknowns":{"type":"array"},
+    "artifact_requested":{"type":"boolean"},
+    "execution_requested":{"type":"boolean"},
+    "monitor_requested":{"type":"boolean"}
+  },
+  "additionalProperties":true
+}
