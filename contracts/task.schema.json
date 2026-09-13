@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://freepass.local/ai-core/task.schema.json",
+  "title": "AI Core Task Envelope",
+  "type": "object",
+  "required": ["goal"],
+  "properties": {
+    "task_id": {"type":"string"},
+    "goal": {"type":"string","minLength":1},
+    "project": {"type":["string","null"]},
+    "domain": {"enum":["development","document","legal","business"]},
+    "risk": {"enum":["A","B","C","D"]},
+    "authority_required": {"type":"boolean"},
+    "done_when": {"type":"array","items":{"type":"string"}},
+    "constraints": {"type":"array","items":{"type":"string"}},
+    "changed_files_estimate": {"type":"integer","minimum":0},
+    "needs_build": {"type":"boolean"},
+    "needs_dependency_install": {"type":"boolean"},
+    "needs_runtime_debug": {"type":"boolean"},
+    "cloud_reproducible": {"type":"boolean"},
+    "external_effect": {"type":"string"}
+  },
+  "additionalProperties": true
+}
