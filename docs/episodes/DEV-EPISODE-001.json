@@ -17,7 +17,7 @@
   },
   "intent": {
     "summary": "Align ai-core with measured self-improvement by removing false main claims and making the first real development episode the sole current priority.",
-    "requirement_set_digest": "sha256:a6a483cfc1e3ecee469117b002fad70f009927d95287f352afbaa3cd29242243",
+    "requirement_set_digest": "sha256:955af2672ebbbf08018ba22a51e1e2960b830e818fb77148ae0fcde30ca07f47",
     "requirements": [
       {
         "id": "REQ-001",
@@ -142,6 +142,15 @@
           "test/ui-components.test.mjs",
           "docs/evidence/UI-COMPONENTS-BROWSER.json"
         ]
+      },
+      {
+        "id": "REQ-013",
+        "text": "inventory and standardize commonly used UI components and UX workflows while preserving product-specific visual choices",
+        "provenance": "USER_CONFIRMED",
+        "status": "ACTIVE",
+        "evidence_refs": [
+          "docs/UI_UX_INVENTORY.md"
+        ]
       }
     ]
   },
@@ -191,7 +200,8 @@
       "docs/SCREEN_DESIGN_STANDARD.md",
       "examples/ui-components.html",
       "test/ui-components.test.mjs",
-      "docs/evidence/UI-COMPONENTS-BROWSER.json"
+      "docs/evidence/UI-COMPONENTS-BROWSER.json",
+      "docs/UI_UX_INVENTORY.md"
     ],
     "rework_loops": 38
   },
@@ -230,11 +240,11 @@
     "candidate_reuse_count": 2,
     "reused_capability_count": 1,
     "new_capability_count": 0,
-    "files_touched_count": 30,
+    "files_touched_count": 31,
     "rework_loop_count": 38,
     "intent_to_first_preview_minutes": null,
-    "acceptance_criteria_total": 12,
-    "criteria_with_current_evidence": 10,
+    "acceptance_criteria_total": 13,
+    "criteria_with_current_evidence": 11,
     "false_completion_events": 1,
     "regression_events": 0,
     "unverified_criteria_count": 2
