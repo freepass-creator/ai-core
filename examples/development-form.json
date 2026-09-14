@@ -12,9 +12,9 @@
   "acceptance_criteria": [{ "id": "AC-001", "text": "검증·승인·배포·결과 상태를 분리한다.", "status": "OPEN", "evidence_refs": [] }],
   "lane": { "actor": "CODEX", "branch": "work/codex/development-form", "worktree": "C:/dev/ai-core-codex-development-form", "head_revision": null },
   "verification": { "status": "NOT_RUN", "subject_revision": null, "checks": [], "artifacts": [] },
-  "review": { "status": "PARTIAL", "subject_revision": null, "reviewers": ["GEMINI"], "receipt_refs": [], "findings": [] },
+  "review": { "status": "PARTIAL", "subject_revision": null, "reviewers": ["GEMINI"], "receipts": [], "findings": [] },
   "authorization": { "required": false, "status": "NOT_REQUIRED", "action": null, "target": null, "revision": null, "scope": [], "authorized_by": null, "authorized_at": null, "expires_at": null },
-  "release": { "state": "NOT_REQUESTED", "target": null, "revision": null, "rollback": null },
+  "release": { "state": "NOT_REQUESTED", "target": null, "revision": null, "released_at": null, "rollback": null },
   "outcome": { "status": "NOT_OBSERVED", "observations": [] },
   "handoff": { "summary": "계약 초안", "next_action": "검증기 구현", "blocked_by": ["Claude limit", "Cursor timeout"], "updated_at": "2026-09-14T00:00:00Z" }
 }

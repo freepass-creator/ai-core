@@ -54,12 +54,12 @@
     "verification": { "$ref": "#/$defs/gate" },
     "review": {
       "type": "object", "additionalProperties": false,
-      "required": ["status", "subject_revision", "reviewers", "receipt_refs", "findings"],
+      "required": ["status", "subject_revision", "reviewers", "receipts", "findings"],
       "properties": {
         "status": { "enum": ["NOT_REQUESTED", "PENDING", "PARTIAL", "PASSED", "FAILED"] },
         "subject_revision": { "type": ["string", "null"], "pattern": "^[0-9a-f]{40}$" },
         "reviewers": { "type": "array", "items": { "enum": ["CODEX", "CURSOR", "CLAUDE", "GEMINI", "HUMAN"] } },
-        "receipt_refs": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "receipts": { "type": "array", "items": { "$ref": "#/$defs/reviewReceipt" } },
         "findings": { "type": "array", "items": { "$ref": "#/$defs/evidence" } }
       }
     },
@@ -73,18 +73,19 @@
         "target": { "type": ["string", "null"] },
         "revision": { "type": ["string", "null"], "pattern": "^[0-9a-f]{40}$" },
         "scope": { "type": "array", "items": { "type": "string" } },
-        "authorized_by": { "type": ["string", "null"] },
+        "authorized_by": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/humanAuthority" }] },
         "authorized_at": { "type": ["string", "null"], "format": "date-time" },
         "expires_at": { "type": ["string", "null"], "format": "date-time" }
       }
     },
     "release": {
       "type": "object", "additionalProperties": false,
-      "required": ["state", "target", "revision", "rollback"],
+      "required": ["state", "target", "revision", "released_at", "rollback"],
       "properties": {
         "state": { "enum": ["NOT_REQUESTED", "READY", "MERGED", "DEPLOYED", "ROLLED_BACK", "HOLD"] },
         "target": { "type": ["string", "null"] },
         "revision": { "type": ["string", "null"], "pattern": "^[0-9a-f]{40}$" },
+        "released_at": { "type": ["string", "null"], "format": "date-time" },
         "rollback": { "type": ["string", "null"] }
       }
     },
@@ -108,6 +109,22 @@
     }
   },
   "$defs": {
+    "humanAuthority": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kind", "id", "authority_ref"],
+      "properties": { "kind": { "const": "HUMAN" }, "id": { "type": "string", "minLength": 1 }, "authority_ref": { "type": "string", "minLength": 1 } }
+    },
+    "reviewReceipt": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "reviewer", "issuer", "subject_revision", "verdict", "reviewed_at", "ref", "artifact_digest"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 }, "reviewer": { "enum": ["CODEX", "CURSOR", "CLAUDE", "GEMINI", "HUMAN"] },
+        "issuer": { "type": "string", "minLength": 1 },
+        "subject_revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" }, "verdict": { "enum": ["PASS", "FAIL", "HOLD"] },
+        "reviewed_at": { "type": "string", "format": "date-time" }, "ref": { "type": "string", "minLength": 1 },
+        "artifact_digest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+      }
+    },
     "source": {
       "type": "object", "additionalProperties": false,
       "required": ["kind", "ref", "revision", "verified_at", "file_id", "tab", "range", "modified_time", "disclosed_scope"],

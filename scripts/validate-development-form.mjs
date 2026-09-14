@@ -11,7 +11,7 @@ const ajv = new Ajv2020({ allErrors: true, strict: false });
 addFormats(ajv);
 const validateStructure = ajv.compile(schema);
 
-export function validateDevelopmentForm(form) {
+export function validateDevelopmentForm(form, now = new Date()) {
   const errors = [];
   const add = (code, path) => errors.push({ code, path });
   if (!form || typeof form !== 'object' || Array.isArray(form)) return [{ code: 'FORM_REQUIRED', path: '$' }];
@@ -36,6 +36,7 @@ export function validateDevelopmentForm(form) {
     if (!verification.subject_revision) add('VERIFICATION_REVISION_REQUIRED', 'verification.subject_revision');
     if (!(verification.checks ?? []).some(check => check.status === 'PASS')) add('VERIFICATION_PASS_CHECK_REQUIRED', 'verification.checks');
     const evidence = [...verification.checks, ...verification.artifacts];
+    if (new Set(evidence.map(item => item.id)).size !== evidence.length) add('EVIDENCE_ID_DUPLICATE', 'verification');
     const byId = new Map(evidence.map(item => [item.id, item]));
     for (const criterion of criteria) {
       const refs = criterion.evidence_refs ?? [];
@@ -47,17 +48,22 @@ export function validateDevelopmentForm(form) {
 
   const review = form.review ?? {};
   if (review.status === 'PASSED') {
-    if (review.subject_revision !== verification.subject_revision || !review.receipt_refs.length) add('REVIEW_PROOF_REQUIRED', 'review');
+    const validReceipts = review.receipts.filter(receipt => receipt.verdict === 'PASS' && receipt.subject_revision === review.subject_revision && receipt.reviewer !== form.lane.actor && review.reviewers.includes(receipt.reviewer) && receipt.issuer !== form.lane.actor && receipt.artifact_digest);
+    if (review.subject_revision !== verification.subject_revision || !validReceipts.length) add('REVIEW_PROOF_REQUIRED', 'review');
     if (!(review.reviewers ?? []).some(reviewer => reviewer !== form.lane?.actor)) add('INDEPENDENT_REVIEW_REQUIRED', 'review.reviewers');
     if ((review.findings ?? []).some(finding => ['FAIL', 'HOLD'].includes(finding.status))) add('REVIEW_FINDING_UNRESOLVED', 'review.findings');
   }
   const authorization = form.authorization ?? {};
   if (authorization.required && authorization.status === 'NOT_REQUIRED') add('AUTHORIZATION_STATE_INVALID', 'authorization.status');
-  if (authorization.status === 'GRANTED' && (!authorization.authorized_by || ['CODEX','CURSOR','CLAUDE','GEMINI'].includes(authorization.authorized_by.toUpperCase()) || !authorization.authorized_at || !authorization.expires_at || !authorization.action || !authorization.target || !authorization.revision || !(authorization.scope ?? []).length)) add('AUTHORIZATION_PROOF_REQUIRED', 'authorization');
+  if (authorization.status === 'GRANTED') {
+    if (authorization.authorized_by?.kind !== 'HUMAN' || !authorization.authorized_at || !authorization.expires_at || !authorization.action || !authorization.target || !authorization.revision || !(authorization.scope ?? []).length) add('AUTHORIZATION_PROOF_REQUIRED', 'authorization');
+    else if (Date.parse(authorization.expires_at) <= Date.parse(authorization.authorized_at) || Date.parse(authorization.expires_at) <= now.getTime()) add('AUTHORIZATION_EXPIRED', 'authorization.expires_at');
+  }
 
   const release = form.release ?? {};
   if (released.has(release.state)) {
     if (verification.status !== 'PASS' || !release.revision || release.revision !== verification.subject_revision) add('RELEASE_REVISION_NOT_VERIFIED', 'release.revision');
+    if (!release.target?.trim() || !release.released_at) add('RELEASE_TARGET_TIME_REQUIRED', 'release');
     if (authorization.required && authorization.status !== 'GRANTED') add('RELEASE_NOT_AUTHORIZED', 'authorization.status');
     if (review.status !== 'PASSED' || review.subject_revision !== release.revision) add('RELEASE_NOT_REVIEWED', 'review');
     const expectedAction = release.state === 'DEPLOYED' ? 'DEPLOY' : 'MERGE';
@@ -66,7 +72,7 @@ export function validateDevelopmentForm(form) {
   const outcome = form.outcome ?? {};
   if (outcome.status === 'SUCCESS') {
     if (!released.has(release.state)) add('SUCCESS_WITHOUT_RELEASE', 'outcome.status');
-    if (!(outcome.observations ?? []).some(item => item.status === 'PASS' && item.kind === 'OBSERVATION' && item.revision === release.revision && item.target === release.target && item.observed_at)) add('SUCCESS_OBSERVATION_REQUIRED', 'outcome.observations');
+    if (!(outcome.observations ?? []).some(item => item.status === 'PASS' && item.kind === 'OBSERVATION' && item.revision === release.revision && item.target === release.target && item.observed_at && release.released_at && Date.parse(item.observed_at) >= Date.parse(release.released_at))) add('SUCCESS_OBSERVATION_REQUIRED', 'outcome.observations');
   }
   if (request.stage === 'CLOSED') {
     if (criteria.some(item => item.status !== 'PASS')) add('CLOSED_WITH_OPEN_CRITERIA', 'acceptance_criteria');
@@ -75,11 +81,11 @@ export function validateDevelopmentForm(form) {
   return errors;
 }
 
-export function deriveActions(form) {
-  const invalid = validateDevelopmentForm(form);
-  const has = code => invalid.some(error => error.code === code);
+export function deriveActions(form, context = {}) {
+  const invalid = validateDevelopmentForm(form, context.now ?? new Date());
+  const structural = invalid.filter(error => error.code.startsWith('SCHEMA_'));
   const result = {};
-  const set = (name, reasons) => { result[name] = { enabled: reasons.length === 0, reasons }; };
+  const set = (name, reasons) => { const all = [...new Set([...structural.map(error => error.code), ...reasons])]; result[name] = { enabled: all.length === 0, reasons: all }; };
   set('save_draft', !form?.request?.title || !form?.request?.user_intent ? ['IDENTITY_OR_INTENT_REQUIRED'] : []);
   set('mark_ready', [
     (form?.request?.unknowns ?? []).length && 'UNKNOWNS',
@@ -89,9 +95,9 @@ export function deriveActions(form) {
   set('start_isolated_work', form?.request?.stage === 'READY' ? [] : ['REQUEST_NOT_READY']);
   set('run_verification', form?.lane?.head_revision ? [] : ['IMPLEMENTATION_REVISION_REQUIRED']);
   set('request_review', form?.verification?.status === 'PASS' && form.verification.subject_revision === form.lane?.head_revision ? [] : ['CURRENT_REVISION_NOT_VERIFIED']);
-  set('safe_commit_push', form?.request?.stage === 'IN_PROGRESS' ? [] : ['WORK_NOT_IN_PROGRESS']);
-  set('request_authorization', form?.authorization?.required && form.authorization.status === 'PENDING' ? [] : ['AUTHORIZATION_NOT_PENDING']);
-  set('merge_or_deploy', released.has(form?.release?.state) && !invalid.some(error => error.code.startsWith('RELEASE_')) ? [] : ['RELEASE_GATE_CLOSED']);
+  set('request_authorization', form?.authorization?.required && !['PENDING','GRANTED'].includes(form.authorization.status) ? [] : ['AUTHORIZATION_REQUEST_NOT_NEEDED']);
+  set('safe_commit_push', [form?.request?.stage !== 'IN_PROGRESS' && 'WORK_NOT_IN_PROGRESS', !context.checksConfigured && 'CHECKS_NOT_CONFIGURED', !(context.selectedPaths ?? []).length && 'PATHS_NOT_SELECTED'].filter(Boolean));
+  set('merge_or_deploy', [form?.release?.state !== 'READY' && 'RELEASE_NOT_READY', !form?.release?.target && 'RELEASE_TARGET_REQUIRED', form?.release?.revision !== form?.verification?.subject_revision && 'RELEASE_REVISION_MISMATCH', form?.verification?.status !== 'PASS' && 'VERIFICATION_REQUIRED', form?.review?.status !== 'PASSED' && 'REVIEW_REQUIRED', invalid.some(error => ['REVIEW_PROOF_REQUIRED','AUTHORIZATION_PROOF_REQUIRED','AUTHORIZATION_EXPIRED'].includes(error.code)) && 'GATE_PROOF_INVALID', form?.authorization?.required && form.authorization.status !== 'GRANTED' && 'AUTHORIZATION_REQUIRED'].filter(Boolean));
   set('observe_outcome', released.has(form?.release?.state) && form.release.revision ? [] : ['RELEASE_REQUIRED']);
   set('close', form?.acceptance_criteria?.every(item => item.status === 'PASS') && (form.release?.state === 'NOT_REQUESTED' || form.outcome?.status === 'SUCCESS') ? [] : ['COMPLETION_EVIDENCE_REQUIRED']);
   return result;

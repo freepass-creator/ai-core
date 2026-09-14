@@ -46,10 +46,11 @@ npm run form:validate -- examples/development-form.json
 
 - `READY` cannot coexist with unresolved `unknowns`, unresolved `decisions_required` or unrevisioned authoritative sources.
 - Verification `PASS` requires a subject revision, at least one passing check and evidence for every acceptance criterion; evidence IDs and revisions must resolve to that subject revision.
-- Review `PASSED` requires the reviewed revision, a receipt, at least one reviewer distinct from the lane actor and no unresolved failing finding.
+- Review `PASSED` requires the reviewed revision and a digest-bound receipt whose reviewer and issuer differ from the lane actor, plus no unresolved failing finding. Resolving the receipt artifact remains an external evidence check.
 - Authorization `GRANTED` requires a human authorizer, timestamp, expiry, action, target, revision and exact scope; AI actors cannot self-authorize protected execution.
 - `MERGED` or `DEPLOYED` requires verification of that same revision and any required authorization.
 - Outcome `SUCCESS` requires observation evidence from the released target; tests and reviews are insufficient.
+- Release records `released_at`; a success observation must be from the same revision and target at or after that time.
 - Google Workspace sources store file ID, tab/range where relevant, revision or modified time, and minimum disclosed scope. A local pointer is not a verified Workspace source.
 
 ## Four-AI review record
