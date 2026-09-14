@@ -16,6 +16,7 @@
 | Development Autonomy + Continuity | `research/development-autonomy-v0.1` | #14 | RESEARCH_CANDIDATE | L0→L6 개발 성숙도 + Project Capsule / Change Packet / Proof Bundle + Living Requirement Graph / Development Episode / stale plan detection / multi-agent write conflict |
 | Engine / Port / Adapter Contracts | `research/engine-adapter-contract-v0.1` | #15 | DESIGN | Engine=업무의미, Port=추상계약, Adapter=provider/project 연결, Connector=transport, Binding Profile=배선, Runtime=실행조정 |
 | Semantic Capability Fabric | `research/semantic-capability-fabric-v0.1` | #16 | RESEARCH_CANDIDATE | Raw symbol→Capability Cell→Capability Graph→Resolver; 의미·계약·증거 기반 재사용, semantic graph first |
+| Development Episode Pilot | `experiment/development-episode-pilot-v0.1` | #19 | EXPERIMENT_DESIGN | 다음 실제 비운영 개발 요청을 DEV-EPISODE-001로 측정; 반복질문·stale·rework·preview 시간·evidence coverage·false completion 관찰 |
 | Evolution Engine | `research/evolution-engine-v0.1` | #3 | DESIGN | 실제 outcome 기반 진화/승격 |
 | Self-Improvement Loop | `research/self-improvement-loop-v0.1` | #4 | RESEARCH_CANDIDATE | 관찰→진단→제안→실험→승격/폐기 |
 | Precision-Speed Learning | `research/precision-speed-controller-v0.1` | #5 | LOCALLY_TESTED candidate | 신속 정확, 라우팅 outcome 학습 |
@@ -42,12 +43,13 @@
 2. 개발의 지속 상태/요구 추적은 PR #14 / `research/development-autonomy-v0.1`을 본다.
 3. Engine/Port/Adapter/Runtime 경계는 PR #15 / `research/engine-adapter-contract-v0.1`을 본다.
 4. 기존 기능의 의미 기반 재사용/Capability Graph/Resolver는 PR #16 / `research/semantic-capability-fabric-v0.1`을 본다.
-5. 먼저 기존 Work Packet/WORK_RESULT/DevCenter registry·기능창고를 확장 가능한지 검토하고, 평행 규격을 새로 만들지 않는다.
-6. Project Capsule + Change Compiler + Proof Bundle + Requirement Continuity + Engine/Adapter + Capability Cell의 실제 Shadow Pilot 전에는 Full Codebase Twin 대규모 구현을 우선하지 않는다. Semantic Capability Graph를 먼저 검증한다.
+5. **다음 실제 비운영 개발 요청을 측정형 Development Episode로 실행할 때는 PR #19 / `experiment/development-episode-pilot-v0.1`을 사용한다.**
+6. 먼저 기존 Work Packet/WORK_RESULT/DevCenter registry·기능창고를 확장 가능한지 검토하고, 평행 규격을 새로 만들지 않는다.
+7. `DEV-EPISODE-001` 실증 전에는 Full Codebase Twin 대규모 구현을 우선하지 않는다. Semantic Capability Graph와 demand-driven impact expansion을 먼저 검증한다.
 
 ## 중요
 
 - 연구 문서/branch의 존재 자체는 채택/merge/배포를 의미하지 않는다.
 - Chat이 새 연구를 만들면 이 Index에만 1줄 추가하고 기존 원칙과 중복이면 새 항목을 만들지 않는다.
 - Work가 연구를 구현하려면 현재 Work Packet 범위와 충돌하지 않는지 먼저 확인한다.
-- 현재 사용자 우선순위는 **개발 경험 단순화**다. Development Runtime, Autonomy + Continuity, Engine/Adapter, Semantic Capability Fabric을 개발 고도화의 우선 참조 후보로 본다.
+- 현재 사용자 우선순위는 **개발 경험 단순화**다. 이제 우선순위는 연구 추가보다 `DEV-EPISODE-001`의 실제 관찰을 얻는 쪽으로 이동한다.
