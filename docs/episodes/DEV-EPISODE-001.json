@@ -99,7 +99,7 @@
       "scripts/evaluate-self-evolution.mjs",
       "test/evaluate-self-evolution.test.mjs"
     ],
-    "rework_loops": 11
+    "rework_loops": 12
   },
   "evidence_state": {
     "proof_revision_matches_subject": null,
@@ -133,7 +133,7 @@
     "reused_capability_count": 1,
     "new_capability_count": 0,
     "files_touched_count": 10,
-    "rework_loop_count": 11,
+    "rework_loop_count": 12,
     "intent_to_first_preview_minutes": null,
     "acceptance_criteria_total": 8,
     "criteria_with_current_evidence": 6,

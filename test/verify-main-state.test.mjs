@@ -7,6 +7,7 @@ const valid = {
   readme: '`main`에는 실행 가능한 오케스트레이터가 없다 WORK_READ_FIRST.md MEMORY.md memory/CURRENT.md memory/RESEARCH_INDEX.md',
   current: 'Status: `AWAITING_USER_REVIEW` PR #1 is the only current implementation line to evaluate PR #17 PR #18 must not be advanced does not observe these facts itself',
   researchIndex: '#1 #17 #18 #19 DEFERRED_CANDIDATE',
+  selfEvolution: 'unverified_criteria_count: 1',
   episode: {
     episode_id: 'DEV-EPISODE-001', status: 'AWAITING_USER_REVIEW',
     execution: { subject_revision: null, changed_files: ['README.md'], rework_loops: 1 },
@@ -94,6 +95,11 @@ test('rejects disagreement between execution and metric rework counts', () => {
     }
   });
   assert.ok(errors.some(error => error.includes('rework counts disagree')));
+});
+
+test('rejects self-evolution prose that drifts from episode evidence', () => {
+  const errors = validateMainState({ ...valid, selfEvolution: 'unverified_criteria_count: 9' });
+  assert.ok(errors.some(error => error.includes('self-evolution current decision')));
 });
 
 test('open episode comparison includes new untracked files once', () => {

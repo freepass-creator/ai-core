@@ -18,7 +18,7 @@ export function combineChangedFiles(tracked = [], untracked = []) {
   return [...new Set([...tracked, ...untracked].filter(Boolean))];
 }
 
-export function validateMainState({ readme, current, researchIndex, episode, fileExists, revisionExists, changedFiles }) {
+export function validateMainState({ readme, current, researchIndex, selfEvolution, episode, fileExists, revisionExists, changedFiles }) {
   const errors = [];
   const runtimeExists = fileExists('src/cli.mjs') || fileExists('src/core.mjs');
 
@@ -46,6 +46,9 @@ export function validateMainState({ readme, current, researchIndex, episode, fil
   }
   if (!current.includes(`Status: \`${episode.status}\``)) {
     errors.push('CURRENT episode status does not match the episode record');
+  }
+  if (!selfEvolution.includes(`unverified_criteria_count: ${episode.metrics?.unverified_criteria_count}`)) {
+    errors.push('self-evolution current decision does not match episode evidence');
   }
 
   for (const marker of ['#1', '#17', '#18', '#19', 'DEFERRED_CANDIDATE']) {
@@ -110,8 +113,9 @@ export function validateMainState({ readme, current, researchIndex, episode, fil
 
 export async function verifyRepository(root) {
   const read = path => readFile(resolve(root, path), 'utf8');
-  const [readme, current, researchIndex, episodeText] = await Promise.all([
+  const [readme, current, researchIndex, selfEvolution, episodeText] = await Promise.all([
     read('README.md'), read('memory/CURRENT.md'), read('memory/RESEARCH_INDEX.md'),
+    read('docs/SELF_EVOLUTION.md'),
     read('docs/episodes/DEV-EPISODE-001.json')
   ]);
   const fileExists = path => {
@@ -136,7 +140,7 @@ export async function verifyRepository(root) {
       .trim().split(/\r?\n/).filter(Boolean);
   const changedFiles = combineChangedFiles(trackedFiles, untrackedFiles);
   return validateMainState({
-    readme, current, researchIndex, episode, fileExists, revisionExists, changedFiles
+    readme, current, researchIndex, selfEvolution, episode, fileExists, revisionExists, changedFiles
   });
 }
 

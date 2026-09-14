@@ -80,4 +80,4 @@ If any of these is absent, the result is `HOLD_INCOMPLETE_CANDIDATE`.
 
 ## Current decision
 
-`DEV-EPISODE-001` is still open, has no frozen subject/proof revision, has an unknown baseline and has one unverified criterion. It can supply an observed limitation and candidate mechanism, but it cannot yet prove that AI Core evolved.
+`DEV-EPISODE-001` is still open, has no frozen subject/proof revision, has an unknown baseline and currently records `unverified_criteria_count: 2`. It can supply an observed limitation and candidate mechanism, but it cannot yet prove that AI Core evolved.
