@@ -1,13 +1,13 @@
 {
   "receipt_id": "UI-PATTERNS-BROWSER-001",
-  "observed_at": "2026-09-14T17:13:15+09:00",
+  "observed_at": "2026-09-14T17:17:22+09:00",
   "base_commit": "16c2734",
   "source_sha256": {
-    "design-system/components.css": "e2a3cdecf15eced95410022e63d75f61ab78278d3aae9c43084dd15b9ae4d401",
+    "design-system/components.css": "84c8c9372febcc34ae671843238f7ab439a89c3d7578db82079ad82e76622841",
     "docs/SCREEN_DESIGN_STANDARD.md": "57b49582492f2d3810ef09f1d1cdefd1ba25206dab12ac527b50921072a51c5a",
-    "examples/ui-patterns.html": "bf1b33fb6eb0bbc3be41ca1a99acab9a03610859dc85cf864d26e83eeaf8bcda",
-    "examples/ui-patterns.js": "d6b9da30197d01c428d4f9f850dc59db4a605bcf4b7a535339237e10fc127958",
-    "design-system/tokens.css": "78d5fdc0bdbe13f422fb14c255d75fc08df42c8cb458b252dddf3564bdb19b96"
+    "examples/ui-patterns.html": "d7233ec1c25df7cec96edb6b78418df02bb4337472b01e75f0d77986e017c702",
+    "examples/ui-patterns.js": "3ff54717a1bd00a5e27947195e8e825aeb0bfb588c8e37d304bd965d065f3ab6",
+    "design-system/tokens.css": "8c199eb4dd1fc5f961f87d7a8f67fa0f7811b28efc2e7453f35570583a7d32b9"
   },
   "runner": {
     "name": "agent-browser",
@@ -47,6 +47,26 @@
       "returned_focus_id": "dialog-open"
     },
     "reduced_motion_animation_name": "none",
-    "page_errors": 0
+    "page_errors": 0,
+    "tab_to_panel_focus_id": "panel-checks",
+    "pagination": {
+      "upper_status": "3 / 3 페이지",
+      "upper_next_disabled": true,
+      "after_previous_status": "2 / 3 페이지"
+    },
+    "dialog_dismissal": {
+      "escape": {
+        "closed": true,
+        "returned_focus_id": "dialog-open"
+      },
+      "backdrop": {
+        "closed": true,
+        "returned_focus_id": "dialog-open"
+      }
+    },
+    "toast_timer_reset": {
+      "visible_after_prior_timer_deadline": true,
+      "text": "샘플에서는 삭제를 실행하지 않습니다."
+    }
   }
 }

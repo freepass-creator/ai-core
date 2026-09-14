@@ -1,9 +1,9 @@
 {
   "receipt_id": "UI-COMPONENTS-BROWSER-001",
-  "observed_at": "2026-09-14T17:13:11+09:00",
+  "observed_at": "2026-09-14T17:17:39+09:00",
   "base_commit": "087f2a9",
   "source_sha256": {
-    "design-system/tokens.css": "78d5fdc0bdbe13f422fb14c255d75fc08df42c8cb458b252dddf3564bdb19b96",
+    "design-system/tokens.css": "8c199eb4dd1fc5f961f87d7a8f67fa0f7811b28efc2e7453f35570583a7d32b9",
     "examples/ui-components.html": "f1ce88c66d6692fd1a7a101b0bb1154796e96b5e38732c96e1102b0b76d4eef5"
   },
   "runner": {

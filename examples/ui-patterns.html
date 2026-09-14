@@ -34,9 +34,9 @@
       <button class="ui-tab" id="tab-checks" role="tab" aria-selected="false" aria-controls="panel-checks" tabindex="-1">검증</button>
       <button class="ui-tab" id="tab-history" role="tab" aria-selected="false" aria-controls="panel-history" tabindex="-1">이력</button>
     </div>
-    <div class="ui-panel" id="panel-summary" role="tabpanel" aria-labelledby="tab-summary">현재 변경의 목적과 영향을 먼저 보여줍니다.</div>
-    <div class="ui-panel" id="panel-checks" role="tabpanel" aria-labelledby="tab-checks" hidden>자동 검사와 사용자 흐름 검증을 분리해 표시합니다.</div>
-    <div class="ui-panel" id="panel-history" role="tabpanel" aria-labelledby="tab-history" hidden>변경 시각, 작성자, revision과 결과를 보존합니다.</div>
+    <div class="ui-panel" id="panel-summary" role="tabpanel" aria-labelledby="tab-summary" tabindex="0">현재 변경의 목적과 영향을 먼저 보여줍니다.</div>
+    <div class="ui-panel" id="panel-checks" role="tabpanel" aria-labelledby="tab-checks" tabindex="0" hidden>자동 검사와 사용자 흐름 검증을 분리해 표시합니다.</div>
+    <div class="ui-panel" id="panel-history" role="tabpanel" aria-labelledby="tab-history" tabindex="0" hidden>변경 시각, 작성자, revision과 결과를 보존합니다.</div>
     <details class="ui-disclosure"><summary>고급 조건 보기</summary><div>자주 쓰지 않는 옵션은 접되, 선택 상태와 접근 가능한 이름을 유지합니다.</div></details>
   </section>
 
@@ -47,7 +47,7 @@
       <button class="ui-button secondary" type="button" data-state="loading">로딩</button><button class="ui-button secondary" type="button" data-state="empty">빈 상태</button><button class="ui-button secondary" type="button" data-state="error">오류</button><button class="ui-button secondary" type="button" data-state="populated">데이터</button>
     </div>
     <div class="ui-state" id="data-state" aria-live="polite"></div>
-    <nav class="ui-pagination" aria-label="결과 페이지"><button class="ui-button secondary" type="button" disabled aria-describedby="page-reason">이전</button><span id="page-reason">1 / 3 페이지</span><button class="ui-button secondary" type="button">다음</button></nav>
+    <nav class="ui-pagination" aria-label="결과 페이지"><button class="ui-button secondary" id="page-prev" type="button" disabled aria-describedby="page-status">이전</button><span id="page-status" role="status" aria-live="polite">1 / 3 페이지</span><button class="ui-button secondary" id="page-next" type="button" aria-describedby="page-status">다음</button></nav>
     <div class="ui-row"><button class="ui-button" id="toast-open" type="button">저장 알림 보기</button><button class="ui-button danger" id="dialog-open" type="button">기록 삭제</button></div>
   </section>
 </main>

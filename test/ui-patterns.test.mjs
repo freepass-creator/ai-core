@@ -22,6 +22,7 @@ test('tabs expose APG roles and keyboard navigation', () => {
   assert.match(html, /role="tab" aria-selected="true"/);
   assert.match(html, /role="tabpanel"/);
   for (const key of ['ArrowRight', 'ArrowLeft', 'Home', 'End']) assert.match(js, new RegExp(key));
+  assert.match(html, /role="tabpanel"[^>]*tabindex="0"/);
 });
 
 test('feedback covers loading empty error populated toast and retry', () => {
@@ -41,7 +42,9 @@ test('dialog has name description and explicit cancel and confirm actions', () =
 test('navigation and disclosure use native and programmatic semantics', () => {
   assert.match(html, /<details class="ui-disclosure"><summary>/);
   assert.match(html, /<nav class="ui-pagination" aria-label="결과 페이지">/);
-  assert.match(html, /disabled aria-describedby="page-reason"/);
+  assert.match(html, /id="page-status" role="status" aria-live="polite"/);
+  assert.match(js, /currentPage = Math\.min/);
+  assert.match(js, /currentPage = Math\.max/);
 });
 
 test('browser receipt binds current sources and complete interaction checks', async () => {
@@ -55,7 +58,12 @@ test('browser receipt binds current sources and complete interaction checks', as
   assert.ok(receipt.results.input_height_px >= 44);
   assert.equal(receipt.results.invalid_submit.focused_id, 'name');
   assert.equal(receipt.results.keyboard_tab.selected, true);
+  assert.equal(receipt.results.tab_to_panel_focus_id, 'panel-checks');
+  assert.equal(receipt.results.pagination.upper_next_disabled, true);
   assert.equal(receipt.results.dialog.returned_focus_id, 'dialog-open');
+  assert.equal(receipt.results.dialog_dismissal.escape.returned_focus_id, 'dialog-open');
+  assert.equal(receipt.results.dialog_dismissal.backdrop.returned_focus_id, 'dialog-open');
+  assert.equal(receipt.results.toast_timer_reset.visible_after_prior_timer_deadline, true);
   assert.equal(receipt.results.reduced_motion_animation_name, 'none');
   assert.equal(receipt.results.page_errors, 0);
 });

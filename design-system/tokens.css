@@ -11,6 +11,9 @@
   --color-danger-hover: #912018;
   --color-focus: #dc6803;
   --color-success: #067647;
+  --color-info-surface: #eef3fb;
+  --color-error-surface: #fff1f0;
+  --color-disabled-surface: #e4e7ec;
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;

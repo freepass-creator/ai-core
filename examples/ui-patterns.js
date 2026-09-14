@@ -58,15 +58,28 @@ document.addEventListener('click', event => { const name = event.target.closest(
 renderState('populated');
 
 let toastTimer;
-$('#toast-open').addEventListener('click', () => {
+function showToast(message) {
   const toast = $('#toast');
+  toast.textContent = message;
   toast.hidden = false;
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => { toast.hidden = true; }, 3000);
-});
+}
+$('#toast-open').addEventListener('click', () => showToast('변경사항을 저장했습니다.'));
+
+let currentPage = 1;
+const pageCount = 3;
+function renderPage() {
+  $('#page-status').textContent = `${currentPage} / ${pageCount} 페이지`;
+  $('#page-prev').disabled = currentPage === 1;
+  $('#page-next').disabled = currentPage === pageCount;
+}
+$('#page-prev').addEventListener('click', () => { currentPage = Math.max(1, currentPage - 1); renderPage(); });
+$('#page-next').addEventListener('click', () => { currentPage = Math.min(pageCount, currentPage + 1); renderPage(); });
+renderPage();
 
 const dialog = $('#confirm-dialog');
 $('#dialog-open').addEventListener('click', () => dialog.showModal());
 $('#dialog-cancel').addEventListener('click', () => dialog.close('cancel'));
-$('#dialog-confirm').addEventListener('click', () => { dialog.close('confirmed'); $('#toast').textContent = '샘플에서는 삭제를 실행하지 않습니다.'; $('#toast').hidden = false; });
+$('#dialog-confirm').addEventListener('click', () => { dialog.close('confirmed'); showToast('샘플에서는 삭제를 실행하지 않습니다.'); });
 dialog.addEventListener('click', event => { if (event.target === dialog) dialog.close('backdrop'); });

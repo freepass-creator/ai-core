@@ -17,12 +17,12 @@ This inventory separates reusable interaction contracts from product-specific vi
 | Family | Common elements | Required states or behavior | Current status |
 |---|---|---|---|
 | Actions | primary, secondary, destructive, icon button, link | default, hover, pressed, focus, disabled, busy, success, error | partial |
-| Forms | text, textarea, search, select, checkbox, radio, switch, date/file input | label, hint, required, validation, disabled, read-only, saving | missing |
-| Navigation | header, breadcrumb, tabs, pagination, bottom navigation | current location, keyboard order, overflow, back/restore | missing |
-| Feedback | inline error, alert, status, toast, progress, skeleton | polite/assertive announcement, retry, dismissal, reduced motion | missing |
+| Forms | text, textarea, search, select, checkbox, radio, switch, date/file input | label, hint, required, validation, disabled, read-only, saving | partial: text, email, select, checkbox, radio and validation samples |
+| Navigation | header, breadcrumb, tabs, pagination, bottom navigation | current location, keyboard order, overflow, back/restore | partial: keyboard tabs and bounded pagination samples |
+| Feedback | inline error, alert, status, toast, progress, skeleton | polite/assertive announcement, retry, dismissal, reduced motion | partial: error, status, toast, progress and retry samples |
 | Data display | list, card, badge, table, definition list | loading, empty, error, populated, sorting, selection | partial |
-| Overlays | dialog, confirmation, drawer, popover, tooltip | focus entry/trap/return, Escape, backdrop, destructive boundary | missing |
-| Disclosure | accordion, details, expandable filters | `aria-expanded`, keyboard activation, retained state | missing |
+| Overlays | dialog, confirmation, drawer, popover, tooltip | focus entry/trap/return, Escape, backdrop, destructive boundary | partial: native confirmation dialog sample |
+| Disclosure | accordion, details, expandable filters | `aria-expanded`, keyboard activation, retained state | partial: native details/summary sample |
 | Workflow UX | draft, autosave, submit, retry, cancel, leave while saving | stable work key, duplicate prevention, recovery, outcome receipt | missing |
 
 ## UX rules shared across products

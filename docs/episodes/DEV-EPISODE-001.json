@@ -214,7 +214,7 @@
       "test/ui-patterns.test.mjs",
       "docs/evidence/UI-PATTERNS-BROWSER.json"
     ],
-    "rework_loops": 43
+    "rework_loops": 47
   },
   "evidence_state": {
     "proof_revision_matches_subject": null,
@@ -234,7 +234,7 @@
       "agent-browser UI patterns WCAG and interaction verification"
     ],
     "passes": 5,
-    "failures": 33,
+    "failures": 37,
     "skips": 0,
     "unknowns": 2,
     "independent_review": "PARTIAL",
@@ -254,7 +254,7 @@
     "reused_capability_count": 1,
     "new_capability_count": 0,
     "files_touched_count": 36,
-    "rework_loop_count": 43,
+    "rework_loop_count": 47,
     "intent_to_first_preview_minutes": null,
     "acceptance_criteria_total": 13,
     "criteria_with_current_evidence": 11,
