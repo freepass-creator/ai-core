@@ -33,7 +33,8 @@ The checkpoint tool:
 
 - requires a `work/<actor>/<task>` branch;
 - accepts exact repository-relative paths, never broad implicit staging;
-- refuses pre-staged changes, path traversal and files outside the worktree;
+- refuses pre-staged changes, directories, path traversal and linked paths whose real location leaves the worktree;
+- requires the lane to have no dirty paths outside the selected set, so checks run against the exact prospective commit;
 - runs the repository tests and state verifier before committing;
 - fetches first and refuses a branch whose remote tip is not an ancestor;
 - commits only the requested paths;
@@ -46,7 +47,7 @@ The checkpoint tool:
 
 `HOLD_REMOTE_DIVERGED` means another writer changed the same branch. Do not auto-rebase, auto-merge or force-push. Fetch both tips, compare scopes and resolve deliberately.
 
-Unrelated dirty files are preserved and excluded from the checkpoint. If another process has already staged anything, the checkpoint stops so it cannot inherit someone else's staging area.
+Unrelated dirty files are preserved, but the checkpoint stops until they are committed in their own coherent checkpoint or moved to another worktree. If another process has already staged anything, the checkpoint stops so it cannot inherit someone else's staging area. If staging or commit fails, paths staged by the tool are returned to unstaged state while working files remain intact. Tracked deletions are valid exact paths and can be checkpointed.
 
 ## Current repository branch
 

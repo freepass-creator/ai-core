@@ -1,5 +1,5 @@
-import { closeSync, openSync, unlinkSync } from 'node:fs';
-import { access, realpath } from 'node:fs/promises';
+import { closeSync, existsSync, openSync, statSync, unlinkSync } from 'node:fs';
+import { realpath } from 'node:fs/promises';
 import { dirname, isAbsolute, relative, resolve } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
@@ -26,6 +26,34 @@ function lines(value) {
   return value ? value.split(/\r?\n/).filter(Boolean).map(path => path.replaceAll('\\', '/')) : [];
 }
 
+async function assertSafeFile(root, path) {
+  const absolute = resolve(root, path);
+  try {
+    const actual = await realpath(absolute);
+    const outside = relative(root, actual);
+    if (outside === '..' || outside.startsWith(`..${process.platform === 'win32' ? '\\' : '/'}`)) {
+      fail('HOLD_PATH_OUTSIDE_WORKTREE');
+    }
+    if (!statSync(actual).isFile()) fail('HOLD_PATH_NOT_FILE');
+  } catch (error) {
+    if (error.code !== 'ENOENT') throw error;
+    try { git(root, ['ls-files', '--error-unmatch', '--', path]); }
+    catch { fail('HOLD_PATH_MISSING'); }
+    const parent = await realpath(dirname(absolute));
+    const outside = relative(root, parent);
+    if (outside === '..' || outside.startsWith(`..${process.platform === 'win32' ? '\\' : '/'}`)) {
+      fail('HOLD_PATH_OUTSIDE_WORKTREE');
+    }
+  }
+}
+
+function changedPaths(root) {
+  return [...new Set([
+    ...lines(git(root, ['diff', '--name-only'])),
+    ...lines(git(root, ['ls-files', '--others', '--exclude-standard']))
+  ])];
+}
+
 function remoteBranchExists(root, branch) {
   try { git(root, ['show-ref', '--verify', '--quiet', `refs/remotes/origin/${branch}`]); return true; }
   catch { return false; }
@@ -34,12 +62,7 @@ function remoteBranchExists(root, branch) {
 function runChecks(root) {
   execFileSync(process.execPath, ['--test'], { cwd: root, stdio: 'inherit' });
   const verifier = resolve(root, 'scripts/verify-main-state.mjs');
-  try {
-    execFileSync(process.execPath, [verifier], { cwd: root, stdio: 'inherit' });
-  } catch (error) {
-    if (error.code === 'ENOENT') return;
-    throw error;
-  }
+  if (existsSync(verifier)) execFileSync(process.execPath, [verifier], { cwd: root, stdio: 'inherit' });
 }
 
 export async function checkpointWork({ root, message, paths, push = false, checks = true }) {
@@ -47,16 +70,20 @@ export async function checkpointWork({ root, message, paths, push = false, check
   if (!String(message ?? '').trim()) fail('HOLD_MESSAGE_REQUIRED');
   if (!Array.isArray(paths) || !paths.length) fail('HOLD_PATHS_REQUIRED');
   const selected = [...new Set(paths.map(path => normalizePath(root, path)))];
-  const gitDir = resolve(root, git(root, ['rev-parse', '--git-dir']));
-  const lockPath = resolve(gitDir, 'ai-core-checkpoint.lock');
+  const lockPath = resolve(root, git(root, ['rev-parse', '--git-path', 'ai-core-checkpoint.lock']));
   let lock;
+  let stagedByUs = false;
+  let committed = false;
   try { lock = openSync(lockPath, 'wx'); } catch { fail('HOLD_CHECKPOINT_LOCKED'); }
 
   try {
     const branch = git(root, ['branch', '--show-current']);
     if (!/^work\/[a-z0-9._-]+\/[a-z0-9._-]+$/i.test(branch)) fail('HOLD_BRANCH_NOT_OWNED');
     if (lines(git(root, ['diff', '--cached', '--name-only'])).length) fail('HOLD_PRESTAGED_CHANGES');
-    for (const path of selected) await access(resolve(root, path));
+    for (const path of selected) await assertSafeFile(root, path);
+    const dirty = changedPaths(root);
+    const unrelated = dirty.filter(path => !selected.includes(path));
+    if (unrelated.length) fail('HOLD_UNRELATED_DIRTY', `Unrelated dirty paths: ${unrelated.join(', ')}`);
 
     git(root, ['fetch', 'origin', '--prune']);
     if (remoteBranchExists(root, branch)) {
@@ -66,10 +93,12 @@ export async function checkpointWork({ root, message, paths, push = false, check
 
     if (checks) runChecks(root);
     git(root, ['add', '--', ...selected]);
+    stagedByUs = true;
     const staged = lines(git(root, ['diff', '--cached', '--name-only']));
     if (!staged.length) fail('HOLD_NO_SELECTED_CHANGES');
     if (staged.some(path => !selected.includes(path))) fail('HOLD_STAGED_SCOPE_MISMATCH');
     git(root, ['commit', '-m', message.trim()]);
+    committed = true;
     const commit = git(root, ['rev-parse', 'HEAD']);
     if (push) {
       try { git(root, ['push', '--set-upstream', 'origin', `HEAD:${branch}`], { stdio: 'inherit' }); }
@@ -77,6 +106,9 @@ export async function checkpointWork({ root, message, paths, push = false, check
     }
     return { status: push ? 'COMMITTED_AND_PUSHED' : 'COMMITTED_LOCAL', branch, commit, paths: staged };
   } finally {
+    if (stagedByUs && !committed) {
+      try { git(root, ['reset', '--mixed', 'HEAD', '--', ...selected]); } catch {}
+    }
     if (lock != null) closeSync(lock);
     try { unlinkSync(lockPath); } catch {}
   }
