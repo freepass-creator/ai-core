@@ -106,10 +106,12 @@
       "scripts/evaluate-self-evolution.mjs",
       "test/evaluate-self-evolution.test.mjs",
       "docs/CONCURRENT_WORK.md",
+      "examples/development.config.json",
+      "package.json",
       "scripts/checkpoint-work.mjs",
       "test/checkpoint-work.test.mjs"
     ],
-    "rework_loops": 18
+    "rework_loops": 19
   },
   "evidence_state": {
     "proof_revision_matches_subject": null,
@@ -123,7 +125,7 @@
       "node scripts/verify-main-state.mjs"
     ],
     "passes": 3,
-    "failures": 7,
+    "failures": 8,
     "skips": 0,
     "unknowns": 2,
     "independent_review": "PARTIAL",
@@ -142,8 +144,8 @@
     "candidate_reuse_count": 2,
     "reused_capability_count": 1,
     "new_capability_count": 0,
-    "files_touched_count": 13,
-    "rework_loop_count": 18,
+    "files_touched_count": 15,
+    "rework_loop_count": 19,
     "intent_to_first_preview_minutes": null,
     "acceptance_criteria_total": 9,
     "criteria_with_current_evidence": 7,

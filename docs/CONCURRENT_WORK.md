@@ -29,6 +29,25 @@ After a coherent change:
 node scripts/checkpoint-work.mjs --message "describe the verified change" --path README.md --path test/example.test.mjs --push
 ```
 
+In a target project, declare its real test and build commands as argument arrays so no shell text is evaluated:
+
+```json
+{
+  "checks": [
+    ["npm", "test"],
+    ["npm", "run", "build"]
+  ]
+}
+```
+
+Then run:
+
+```powershell
+npm run checkpoint -- --config .ai-core/development.json --message "feat: verified change" --path src/example.ts --push
+```
+
+Copy `examples/development.config.json` to `.ai-core/development.json` and replace the example commands with that repository's deterministic checks. Each command is an executable plus literal arguments; shell operators and command interpolation are not supported.
+
 The checkpoint tool:
 
 - requires a `work/<actor>/<task>` branch;

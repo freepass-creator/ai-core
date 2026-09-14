@@ -51,6 +51,27 @@ test('commits a selected clean-lane change after checks', async () => {
   assert.equal(git(root, ['status', '--short']), '');
 });
 
+test('runs project-specific check commands without a shell', async () => {
+  const root = await repository();
+  await writeFile(join(root, 'selected.txt'), 'selected\n');
+  const result = await checkpointWork({
+    root,
+    message: 'custom checks',
+    paths: ['selected.txt'],
+    checkCommands: [[process.execPath, '-e', "process.exit(0)"]]
+  });
+  assert.equal(result.status, 'COMMITTED_LOCAL');
+});
+
+test('rejects malformed project check commands', async () => {
+  const root = await repository();
+  await writeFile(join(root, 'selected.txt'), 'selected\n');
+  await assert.rejects(
+    checkpointWork({ root, message: 'bad checks', paths: ['selected.txt'], checkCommands: ['node --test'] }),
+    error => error.code === 'HOLD_INVALID_CHECK_COMMAND'
+  );
+});
+
 test('preserves but refuses unrelated dirty work', async () => {
   const root = await repository();
   await writeFile(join(root, 'selected.txt'), 'selected\n');

@@ -1,4 +1,4 @@
-import { closeSync, existsSync, lstatSync, openSync, statSync, unlinkSync } from 'node:fs';
+import { closeSync, existsSync, lstatSync, openSync, readFileSync, statSync, unlinkSync } from 'node:fs';
 import { realpath } from 'node:fs/promises';
 import { isAbsolute, relative, resolve } from 'node:path';
 import { execFileSync } from 'node:child_process';
@@ -79,14 +79,23 @@ function remoteBranchExists(root, branch) {
   catch { return false; }
 }
 
-function runChecks(root) {
+function runChecks(root, commands) {
   const { NODE_TEST_CONTEXT: ignored, ...cleanEnv } = process.env;
+  if (commands) {
+    for (const command of commands) {
+      if (!Array.isArray(command) || !command.length || command.some(value => typeof value !== 'string')) {
+        fail('HOLD_INVALID_CHECK_COMMAND');
+      }
+      execFileSync(command[0], command.slice(1), { cwd: root, stdio: 'inherit', env: cleanEnv });
+    }
+    return;
+  }
   execFileSync(process.execPath, ['--test'], { cwd: root, stdio: 'inherit', env: cleanEnv });
   const verifier = resolve(root, 'scripts/verify-main-state.mjs');
   if (existsSync(verifier)) execFileSync(process.execPath, [verifier], { cwd: root, stdio: 'inherit' });
 }
 
-export async function checkpointWork({ root, message, paths, push = false, checks = true }) {
+export async function checkpointWork({ root, message, paths, push = false, checks = true, checkCommands }) {
   root = await realpath(root);
   if (!String(message ?? '').trim()) fail('HOLD_MESSAGE_REQUIRED');
   if (!Array.isArray(paths) || !paths.length) fail('HOLD_PATHS_REQUIRED');
@@ -114,7 +123,7 @@ export async function checkpointWork({ root, message, paths, push = false, check
 
     const checkedDirty = JSON.stringify([...dirty].sort());
     const checkedSnapshot = await selectedSnapshot(root, selected);
-    if (checks) runChecks(root);
+    if (checks) runChecks(root, checkCommands);
     for (const path of selected) await assertSafeFile(root, path);
     if (JSON.stringify(changedPaths(root).sort()) !== checkedDirty ||
         await selectedSnapshot(root, selected) !== checkedSnapshot) {
@@ -158,6 +167,7 @@ function parseArgs(args) {
     if (args[i] === '--message') result.message = args[++i];
     else if (args[i] === '--path') result.paths.push(args[++i]);
     else if (args[i] === '--push') result.push = true;
+    else if (args[i] === '--config') result.config = args[++i];
     else fail('HOLD_UNKNOWN_ARGUMENT', args[i]);
   }
   return result;
@@ -165,7 +175,14 @@ function parseArgs(args) {
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   try {
-    console.log(JSON.stringify(await checkpointWork({ root: process.cwd(), ...parseArgs(process.argv.slice(2)) }), null, 2));
+    const args = parseArgs(process.argv.slice(2));
+    if (args.config) {
+      const configPath = resolve(process.cwd(), args.config);
+      const config = JSON.parse(readFileSync(configPath, 'utf8'));
+      args.checkCommands = config.checks;
+      delete args.config;
+    }
+    console.log(JSON.stringify(await checkpointWork({ root: process.cwd(), ...args }), null, 2));
   } catch (error) {
     console.error(JSON.stringify({ status: error.code ?? 'HOLD_CHECKPOINT_FAILED', reason: error.message }));
     process.exitCode = 1;
