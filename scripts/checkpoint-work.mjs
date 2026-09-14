@@ -122,13 +122,17 @@ export async function checkpointWork({ root, message, paths, push = false, check
     }
     git(root, ['add', '--', ...selected]);
     stagedByUs = true;
+    if (await selectedSnapshot(root, selected) !== checkedSnapshot) {
+      fail('HOLD_SELECTED_CHANGED_DURING_STAGING');
+    }
     const staged = lines(git(root, ['diff', '--cached', '--name-only']));
     if (!staged.length) fail('HOLD_NO_SELECTED_CHANGES');
     if (staged.some(path => !selected.includes(path))) fail('HOLD_STAGED_SCOPE_MISMATCH');
     const stagedTree = git(root, ['write-tree']);
-    git(root, ['commit', '--no-verify', '-m', message.trim()]);
+    const parent = git(root, ['rev-parse', 'HEAD']);
+    const commit = git(root, ['commit-tree', stagedTree, '-p', parent], { input: `${message.trim()}\n` });
+    git(root, ['update-ref', `refs/heads/${branch}`, commit, parent]);
     committed = true;
-    const commit = git(root, ['rev-parse', 'HEAD']);
     const commitTree = git(root, ['rev-parse', 'HEAD^{tree}']);
     const committedPaths = lines(git(root, ['diff-tree', '--no-commit-id', '--name-only', '-r', 'HEAD']));
     if (commitTree !== stagedTree || JSON.stringify(committedPaths.sort()) !== JSON.stringify([...staged].sort())) {
