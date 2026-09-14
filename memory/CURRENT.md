@@ -1,4 +1,4 @@
-# Current Memory — 2026-09-13
+# Current Memory — 2026-09-14
 
 ## Mission
 
@@ -6,25 +6,40 @@ Build an AI operating system that does more than answer prompts: it should under
 
 The system should optimize for **fastest path that preserves required evidence**, not speed alone.
 
-## Current priority — Development first
+## Current priority — Development first, now moving from design to measured execution
 
-The user has explicitly prioritized development as the first domain to make materially easier. Near-term research and implementation should therefore focus on reducing repeated explanation, repeated repository discovery, handoff loss, stale requirements, manual verification, preview friction, release uncertainty, duplicated integration logic, and duplicated capability implementation.
+The user has explicitly prioritized development as the first domain to make materially easier. The architecture research is now sufficiently rich that the next priority is **not another large framework**. It is the first measured real Development Episode.
 
-First development research reference: `docs/DEVELOPMENT_RUNTIME.md`.
+Experiment reference: PR #19 / `experiment/development-episode-pilot-v0.1`.
 
-Priority building blocks:
+`DEV-EPISODE-001` starts on the next suitable real non-production development request. Do not invent a fake task merely to exercise the framework.
+
+Primary observation targets:
+- clarification questions and repeated information requests;
+- stale requirement/plan/proof events;
+- user corrections and review rounds;
+- reuse vs new implementation decisions;
+- rework loops and files touched;
+- intent-to-first-preview time;
+- acceptance criteria with current evidence;
+- false completion/regression events;
+- handoff/resume cost.
+
+Use raw measurements first. Do not manufacture a single intelligence score or unsupported improvement percentage.
+
+## Development building blocks
 
 1. Project Capsule — thin machine-readable project entry point bound to source revision.
 2. Change Compiler — user intent → executable development contract / acceptance criteria.
 3. Proof Bundle — revision-bound evidence returned by Work/Codex instead of prose-only "done" claims.
 4. Requirement Continuity — stable requirement IDs, user-confirmed vs AI-inferred provenance, requirement-set digest, stale-plan detection, Development Episode state, minimal Plan Slice.
-5. Engine / Port / Adapter contracts — separate business/domain logic from provider/project mapping, transport, binding, and runtime orchestration. Research: PR #15 / `research/engine-adapter-contract-v0.1`; DevCenter adoption proposal: issue #2.
-6. Semantic Capability Fabric — promote only demand-relevant raw symbols into revision-bound Capability Cells with meaning, contract, side-effect and evidence metadata; resolve reuse/adapt/compose/new by semantics rather than name similarity. Research: PR #16 / `research/semantic-capability-fabric-v0.1`; DevCenter adoption proposal: issue #3.
-7. Semantic Capability Graph first, Full Codebase Twin on demand — keep high-level reusable meaning always queryable, expand to file/function graph only when impact analysis needs it.
+5. Engine / Port / Adapter contracts — separate business/domain logic from provider/project mapping, transport, binding, and runtime orchestration. Research: PR #15; DevCenter proposal: issue #2.
+6. Semantic Capability Fabric — demand-first promotion of raw symbols into revision-bound Capability Cells; semantic reuse/adapt/compose/new decisions. Research: PR #16; DevCenter proposal: issue #3.
+7. Semantic Capability Graph first, Full Codebase Twin on demand — persist high-level reusable meaning and expand file/function relationships only for actual impact analysis.
 8. Sandbox/Preview + Verification Fabric + Release Gate — isolated execution, visible preview, layered proof, safe release/rollback.
 9. Failure Memory + Development Portfolio — reuse prior fixes and prevent multi-agent/project conflicts.
 
-These are research candidates, not adopted project rules. Existing project SSOT, DevCenter baseline, Work Packet, and authority boundaries remain controlling.
+These remain research/experiment candidates unless separately adopted within a project or Center. Existing project SSOT, DevCenter baseline, current user instruction, Work Packet, and authority boundaries remain controlling.
 
 ### Engine / Adapter working model
 
@@ -62,9 +77,13 @@ Key recommendation: **build Semantic Capability Graph before a giant persistent 
 
 Long-term development direction: AI should write only the delta that the existing capability system cannot already satisfy.
 
-## Current model
+## Tool / agent availability
 
-### Human-facing layer
+Gemini CLI is user-confirmed connected; see `memory/TOOL_CONNECTIONS.md`. Connection alone is not task-level verification. Gemini counts as an independent reviewer only when its actual review output is bound to the exact subject revision.
+
+Executor assignment should be capability-based rather than permanently tied to model names.
+
+## Human-facing layer
 
 AI should not assume it can read the user's mind. It should:
 
@@ -74,11 +93,11 @@ AI should not assume it can read the user's mind. It should:
 - distinguish value judgments that belong to the human from technical/operational work that can be delegated;
 - support the full lifecycle: understand → advise → plan → prepare → execute/coordinate → verify → follow up → learn.
 
-The latest research direction extends this from task orchestration to **Human Stewardship**: direction, reality, foresight, choice, commitments, resources, human agency, resilience, and growth. This is still research, not adopted operational policy.
+Human Stewardship remains a broader research direction, not adopted operating policy.
 
-### AI infrastructure
+## AI infrastructure
 
-The six common infrastructure planes are:
+The six common infrastructure planes remain:
 
 1. Control — authority, policy, risk, approvals.
 2. Intelligence — memory, context, world state, decision state.
@@ -87,9 +106,9 @@ The six common infrastructure planes are:
 5. Evidence — source revisions, test/run evidence, reviews, actual observations.
 6. Evolution — measured learning, shadow comparison, promotion/revert decisions.
 
-These planes are infrastructure; they are not themselves the user's life/work goals.
+These planes are infrastructure, not the user's goals.
 
-### Domain institutions
+## Domain institutions
 
 Current major domain systems are conceptually:
 
@@ -98,107 +117,70 @@ Current major domain systems are conceptually:
 - DocsHub / Doc Center — document templates, A4/PDF/layout design system.
 - Projects — real code/business/project SSOT.
 
-Additional centers should not be created just because a topic exists. A separate center is justified only when it has sufficiently independent SSOT/assets, lifecycle, and verification needs. Otherwise use a Domain Pack/capability family.
+Additional Centers are justified only when independent SSOT/assets/lifecycle/verification needs warrant them; otherwise use a capability/domain pack.
 
 ### Repository topology decision
 
-AI Core is the **logical parent/orchestrator**, but AIOPS, DevCenter, Design/Doc Center and projects remain **physically independent repositories/systems for now**. Do not move them under the `ai-core/` directory merely to make the filesystem resemble the organization chart.
+AI Core is the logical parent/orchestrator, while AIOPS, DevCenter, Design/Doc Center and projects remain physically independent repositories/systems for now.
 
-Reconsider physical consolidation only when all of the following are materially true:
+Physical consolidation should be reconsidered only when independent boundaries are no longer valuable, cross-repository friction is repeatedly greater than isolation benefit, migration avoids duplicate SSOT, and rollback/compatibility are prepared.
 
-- the systems no longer need meaningfully independent SSOT/lifecycle/CI/authority boundaries;
-- cross-repository handoff cost is repeatedly larger than the isolation benefit;
-- path/registry/CI migration can be done without creating duplicate SSOTs;
-- rollback and compatibility for existing projects/agents are prepared.
+## Work / Chat collaboration
 
-Until then, represent hierarchy through institution/capability pointers rather than repository nesting.
+GitHub is the durable handoff surface.
 
-## Work/Chat collaboration
+Chat handles intent discovery, architecture, decision framing, source selection, bounded edits, review, and next-generation research.
 
-GitHub is the handoff surface.
+Work/Codex handles repository-wide exploration, build/test/debug loops, dependency/runtime work, and larger implementation.
 
-Chat should do intent discovery, architecture, decision framing, source selection, bounded edits, review, and next-generation research.
-
-Work/Codex should handle repository-wide exploration, build/test/debug loops, dependency/runtime work, and larger implementation.
-
-Handoff should use a revision-bound Plan Slice / Work Packet rather than copying the whole conversation. A source revision, requirement-set digest, completion condition, or blocker change can make a prior plan stale.
+Handoff uses revision-bound Plan Slices / Work Packets rather than full conversations. A source revision, requirement-set digest, completion condition, or blocker change can stale a prior plan.
 
 ## Verification invariants
 
-Never equate these states:
+Never equate:
+- artifact created;
+- verification passed;
+- authorization granted;
+- external execution confirmed;
+- real-world outcome observed.
 
-- artifact created
-- verification passed
-- authorization granted
-- external execution confirmed
-- real-world outcome observed
+A PASS is valid only for its declared scope, source/revision, policy/requirement set, and actual checks.
 
-A PASS is not permanent. It is valid only for its declared scope, source/revision, policy/requirement set, and actual checks.
+Zero executed checks, skipped checks, stale checks, unverified claims, or self-report alone are not enough.
 
-Zero executed checks, skipped checks, stale pre-fix checks, unverified claims, or a passing self-report are not enough.
-
-For requirement-driven work, evidence should trace back to the current required completion criteria. If the requirement set changes, an old receipt is stale.
+Each current acceptance criterion should map to current evidence or remain explicitly unverified.
 
 ## Learning invariants
 
-A new document, name, rule count, or test count is not itself progress.
+New wording, names, rule count, test count, or architecture size is not progress by itself.
 
-A meaningful evolution candidate needs:
-
-- a concrete prior failure or gap;
-- a changed behavior/mechanism;
-- executable counterexample/regression checks where possible;
-- declared scope and remaining limits;
-- outcome or shadow evidence before broad adoption.
+A meaningful evolution candidate needs a prior limitation/failure, a changed mechanism, executable counterexample/regression checks where possible, declared scope/limits, and outcome or shadow evidence before broad adoption.
 
 Keep DESIGN, LOCALLY_TESTED, independently verified, shadow validated, real outcome, and operational adoption distinct.
 
 ## Knowledge inheritance
 
-Use three scopes:
-
-- UNIVERSAL — reusable only after transfer conditions and non-application conditions are explicit and cross-domain evidence exists.
-- DOMAIN — specific to a capability/domain.
-- LOCAL — project/case/session-specific.
-
-Inherit evidence-backed claims and procedures, not repeated prose. Duplicated wording is not duplicated evidence.
+Use UNIVERSAL / DOMAIN / LOCAL scopes. Inherit evidence-backed claims and procedures, not duplicated prose. Preserve provenance, supersession and non-application conditions.
 
 ## Context efficiency
 
-Do not reread history for its own sake. Retrieve more information when one of these can change the conclusion:
-
-- freshness/currentness;
-- contradiction;
-- critical missing information.
-
-The ideal memory query is: **what missing fact could change the decision, and what is the minimum trustworthy source that resolves it?**
+Retrieve more information when freshness, contradiction, or a critical missing premise can change the conclusion. Do not reread history for its own sake.
 
 ## Superseded defaults
 
-- Old default: every AI starts by rereading all `[AI AIOPS]` Gmail.  
-  Current default: start from this GitHub memory and current project sources; go back to Gmail only for provenance/history gaps.
+- Do not reread all Gmail by default; GitHub memory/current project sources are the operational start point.
+- Gmail is archive/distribution/provenance, not active common-memory SSOT.
+- Newest research is not automatic operating policy.
+- Logical hierarchy does not require repository nesting.
+- Do not build a giant persistent Codebase Twin before proving semantic capability resolution and demand-driven impact expansion.
+- Do not keep adding development frameworks when the missing evidence is a real episode.
 
-- Old default: Gmail can function as the active common-memory SSOT.  
-  Current default: Gmail is archive/distribution/provenance; current operational memory is versioned in GitHub and project-specific adopted standards remain in their owner systems.
+## Immediate research / execution frontier
 
-- Old default: newest research mail automatically becomes the operating standard.  
-  Current default: research and adoption are separate states.
+1. Run `DEV-EPISODE-001` on the next suitable real non-production development change using PR #19's observation contract.
+2. Measure which Development Runtime mechanisms reduce real friction or prevent real failure.
+3. Remove pilot fields/steps that create overhead without changing behavior or evidence.
+4. If relevant in the episode, test one Engine+Adapter and one Capability Cell through actual reuse/execution evidence.
+5. Only then deepen Impact Planner, on-demand Codebase Twin, Preview/Verification, Adapter Forge, Semantic Diff, or release observation based on observed bottlenecks.
 
-- Old temptation: make the filesystem mirror the conceptual hierarchy by moving every Center under AI Core.  
-  Current default: keep logical hierarchy and physical repository ownership separate until consolidation has a measured operational advantage.
-
-- Old temptation: build a giant Codebase Twin before proving its value.  
-  Current default: first test semantic capability resolution and demand-driven impact expansion; keep persistent context as small and meaningful as possible.
-
-## Immediate research frontier
-
-1. Development Runtime + Continuity + Engine/Adapter + Semantic Capability Fabric: shadow-test Project Capsule / Change Compiler / Proof Bundle / Living Requirement Graph / Development Episode / one Engine+Adapter+Capability Cell pilot first.
-2. Prove demand-first capability promotion: static symbol → semantic contract → execution evidence → second-use reuse measurement.
-3. Only after that, deepen Impact Planner / on-demand Codebase Twin / Preview+Verification.
-4. Human Stewardship: test whether goal/portfolio/agency/follow-through framing improves actual human outcomes.
-5. Commitment Graph: track active promises, deadlines, dependencies, waiting-on, blockers, and superseded commitments.
-6. Opportunity Radar: surface high-value opportunities/risks with evidence without auto-executing them.
-7. Simulation/Foresight: test reversible scenarios before expensive/irreversible action.
-8. Real shadow pilots across development, documents, and non-development human workflows.
-
-Until those are tested, they remain research candidates.
+Until measured, these remain candidates rather than claims of improvement.
