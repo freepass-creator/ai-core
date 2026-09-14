@@ -80,9 +80,10 @@
     },
     "release": {
       "type": "object", "additionalProperties": false,
-      "required": ["state", "target", "revision", "released_at", "rollback"],
+      "required": ["state", "requested_action", "target", "revision", "released_at", "rollback"],
       "properties": {
         "state": { "enum": ["NOT_REQUESTED", "READY", "MERGED", "DEPLOYED", "ROLLED_BACK", "HOLD"] },
+        "requested_action": { "type": ["string", "null"], "enum": [null, "MERGE", "DEPLOY"] },
         "target": { "type": ["string", "null"] },
         "revision": { "type": ["string", "null"], "pattern": "^[0-9a-f]{40}$" },
         "released_at": { "type": ["string", "null"], "format": "date-time" },
