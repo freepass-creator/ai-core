@@ -10,8 +10,12 @@ function includesAll(text, values) {
 
 export function validateMainState({ readme, current, researchIndex, episode, fileExists, revisionExists }) {
   const errors = [];
+  const runtimeExists = fileExists('src/cli.mjs') || fileExists('src/core.mjs');
 
-  if (!readme.includes('`main`에는 실행 가능한 오케스트레이터가 없다')) {
+  if (runtimeExists && readme.includes('`main`에는 실행 가능한 오케스트레이터가 없다')) {
+    errors.push('README denies an executable orchestrator that exists in the tree');
+  }
+  if (!runtimeExists && !readme.includes('`main`에는 실행 가능한 오케스트레이터가 없다')) {
     errors.push('README must state that main has no executable orchestrator');
   }
   if (/## 빠른 실행/.test(readme)) {
@@ -40,11 +44,23 @@ export function validateMainState({ readme, current, researchIndex, episode, fil
 
   if (episode.episode_id !== 'DEV-EPISODE-001') errors.push('episode id must be DEV-EPISODE-001');
   if (!revisionExists(episode.execution?.subject_revision)) errors.push('episode subject revision does not exist');
+  if (episode.status !== 'CLOSED' && episode.evidence_state?.proof_revision_matches_subject === true) {
+    errors.push('open episode must not claim final proof revision alignment');
+  }
   if (episode.metrics?.false_completion_events !== episode.evidence_state?.false_completion_events) {
     errors.push('false completion counts disagree');
   }
   if (episode.metrics?.criteria_with_current_evidence > episode.metrics?.acceptance_criteria_total) {
     errors.push('evidenced criteria exceed total criteria');
+  }
+  if (episode.metrics?.unverified_criteria_count !==
+      episode.metrics?.acceptance_criteria_total - episode.metrics?.criteria_with_current_evidence) {
+    errors.push('unverified criteria count disagrees with evidence coverage');
+  }
+  for (const requirement of episode.intent?.requirements ?? []) {
+    if (requirement.provenance === 'USER_CONFIRMED' && requirement.id === 'REQ-006') {
+      errors.push('implementation mechanism cannot be recorded as user-confirmed intent');
+    }
   }
   for (const path of episode.execution?.changed_files ?? []) {
     if (!fileExists(path)) errors.push(`episode changed file is missing: ${path}`);

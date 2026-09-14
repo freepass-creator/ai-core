@@ -40,15 +40,9 @@
 5. 현재 작업과 직접 관련된 연구 문서/branch 하나만 선택
 6. 구현/검증 결과를 `WORK_RESULT` 또는 PR evidence로 반환
 
-## 개발 우선순위일 때
+## 현재 개발 작업
 
-1. `main/docs/DEVELOPMENT_RUNTIME.md`로 전체 방향을 본다.
-2. 개발의 지속 상태/요구 추적은 PR #14 / `research/development-autonomy-v0.1`을 본다.
-3. Engine/Port/Adapter/Runtime 경계는 PR #15 / `research/engine-adapter-contract-v0.1`을 본다.
-4. 기존 기능의 의미 기반 재사용/Capability Graph/Resolver는 PR #16 / `research/semantic-capability-fabric-v0.1`을 본다.
-5. **다음 실제 비운영 개발 요청을 측정형 Development Episode로 실행할 때는 PR #19 / `experiment/development-episode-pilot-v0.1`을 사용한다.**
-6. 먼저 기존 Work Packet/WORK_RESULT/DevCenter registry·기능창고를 확장 가능한지 검토하고, 평행 규격을 새로 만들지 않는다.
-7. `DEV-EPISODE-001` 실증 전에는 Full Codebase Twin 대규모 구현을 우선하지 않는다. Semantic Capability Graph와 demand-driven impact expansion을 먼저 검증한다.
+`memory/CURRENT.md`에 지정된 `DEV-EPISODE-001`만 진행한다. PR #19의 관찰 양식은 실제 사실을 기록할 때만 사용한다. 다른 연구 항목은 episode에서 구체적인 결손이 관찰되고 해당 항목이 직접 관련될 때만 한 건씩 읽는다.
 
 ## 중요
 

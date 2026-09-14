@@ -10,10 +10,11 @@ const valid = {
   episode: {
     episode_id: 'DEV-EPISODE-001', status: 'AWAITING_USER_REVIEW',
     execution: { subject_revision: 'abc', changed_files: ['README.md'] },
-    metrics: { false_completion_events: 1, criteria_with_current_evidence: 2, acceptance_criteria_total: 2 },
-    evidence_state: { false_completion_events: 1 }
+    metrics: { false_completion_events: 1, criteria_with_current_evidence: 1, acceptance_criteria_total: 2, unverified_criteria_count: 1 },
+    evidence_state: { false_completion_events: 1, proof_revision_matches_subject: null },
+    intent: { requirements: [{ id: 'REQ-006', provenance: 'AI_INFERRED' }] }
   },
-  fileExists: () => true,
+  fileExists: path => !['src/cli.mjs', 'src/core.mjs'].includes(path),
   revisionExists: () => true
 };
 
@@ -24,6 +25,14 @@ test('current repository state is internally consistent', async () => {
 test('rejects the false quickstart that triggered this improvement', () => {
   const errors = validateMainState({ ...valid, readme: `${valid.readme}\n## 빠른 실행` });
   assert.ok(errors.some(error => error.includes('quickstart')));
+});
+
+test('rejects a README that denies runtime files present in the tree', () => {
+  const errors = validateMainState({
+    ...valid,
+    fileExists: path => path === 'src/core.mjs' || valid.fileExists(path)
+  });
+  assert.ok(errors.some(error => error.includes('exists in the tree')));
 });
 
 test('rejects implementation-line inflation and status drift', () => {
@@ -40,11 +49,15 @@ test('rejects inconsistent episode evidence', () => {
     ...valid,
     episode: {
       ...valid.episode,
-      metrics: { false_completion_events: 2, criteria_with_current_evidence: 3, acceptance_criteria_total: 2 }
+      metrics: { false_completion_events: 2, criteria_with_current_evidence: 3, acceptance_criteria_total: 2, unverified_criteria_count: 0 },
+      evidence_state: { false_completion_events: 1, proof_revision_matches_subject: true },
+      intent: { requirements: [{ id: 'REQ-006', provenance: 'USER_CONFIRMED' }] }
     },
     revisionExists: () => false
   });
   assert.ok(errors.some(error => error.includes('revision')));
   assert.ok(errors.some(error => error.includes('false completion')));
   assert.ok(errors.some(error => error.includes('exceed')));
+  assert.ok(errors.some(error => error.includes('final proof')));
+  assert.ok(errors.some(error => error.includes('user-confirmed')));
 });

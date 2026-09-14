@@ -2,13 +2,6 @@ name: Main State Consistency
 
 on:
   pull_request:
-    paths:
-      - README.md
-      - memory/CURRENT.md
-      - memory/RESEARCH_INDEX.md
-      - docs/episodes/**
-      - scripts/verify-main-state.mjs
-      - test/verify-main-state.test.mjs
   push:
     branches: [main]
 

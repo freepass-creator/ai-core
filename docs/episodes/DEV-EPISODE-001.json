@@ -55,8 +55,8 @@
       {
         "id": "REQ-006",
         "text": "prevent recurrence of main documentation, implementation-line and episode-evidence drift with an executable check",
-        "provenance": "USER_CONFIRMED",
-        "status": "ACTIVE",
+        "provenance": "AI_INFERRED",
+        "status": "HOLD",
         "evidence_refs": ["commit:daf67fa"]
       }
     ]
@@ -83,7 +83,7 @@
     "rework_loops": 2
   },
   "evidence_state": {
-    "proof_revision_matches_subject": true,
+    "proof_revision_matches_subject": null,
     "commands_run": [
       "git ls-tree -r --name-only origin/main",
       "gh pr list --state open",
@@ -96,7 +96,7 @@
     "passes": 7,
     "failures": 0,
     "skips": 0,
-    "unknowns": 1,
+    "unknowns": 2,
     "independent_review": "PARTIAL",
     "false_completion_events": 1
   },
@@ -117,10 +117,10 @@
     "rework_loop_count": 2,
     "intent_to_first_preview_minutes": null,
     "acceptance_criteria_total": 6,
-    "criteria_with_current_evidence": 6,
+    "criteria_with_current_evidence": 5,
     "false_completion_events": 1,
     "regression_events": 0,
-    "unverified_criteria_count": 0
+    "unverified_criteria_count": 1
   },
   "baseline": {
     "status": "UNKNOWN",
