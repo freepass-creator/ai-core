@@ -16,7 +16,7 @@
   },
   "intent": {
     "summary": "Align ai-core with measured self-improvement by removing false main claims and making the first real development episode the sole current priority.",
-    "requirement_set_digest": "sha256:b10138c4ba95765e1c0f1bf63e02338ddded9b53ff7002b8953b795931866166",
+    "requirement_set_digest": "sha256:a79ab03bf39818908435093e4650b5b477e2ecd7a1409916f57dc9d8466284c8",
     "requirements": [
       {
         "id": "REQ-001",
@@ -73,6 +73,13 @@
         "provenance": "AI_INFERRED",
         "status": "HOLD",
         "evidence_refs": ["scripts/evaluate-self-evolution.mjs", "test/evaluate-self-evolution.test.mjs"]
+      },
+      {
+        "id": "REQ-009",
+        "text": "support validated automatic commits while local and GitHub workers operate concurrently without overwriting each other",
+        "provenance": "USER_CONFIRMED",
+        "status": "ACTIVE",
+        "evidence_refs": ["docs/CONCURRENT_WORK.md", "scripts/checkpoint-work.mjs", "test/checkpoint-work.test.mjs"]
       }
     ]
   },
@@ -97,7 +104,10 @@
       "docs/episodes/DEV-EPISODE-001.json",
       "docs/SELF_EVOLUTION.md",
       "scripts/evaluate-self-evolution.mjs",
-      "test/evaluate-self-evolution.test.mjs"
+      "test/evaluate-self-evolution.test.mjs",
+      "docs/CONCURRENT_WORK.md",
+      "scripts/checkpoint-work.mjs",
+      "test/checkpoint-work.test.mjs"
     ],
     "rework_loops": 12
   },
@@ -123,7 +133,7 @@
     "clarification_question_count": 0,
     "repeated_information_request_count": 0,
     "user_correction_count": 1,
-    "user_review_round_count": 3,
+    "user_review_round_count": 4,
     "repo_orientation_minutes": null,
     "context_reread_count": 1,
     "stale_plan_events": 1,
@@ -132,11 +142,11 @@
     "candidate_reuse_count": 2,
     "reused_capability_count": 1,
     "new_capability_count": 0,
-    "files_touched_count": 10,
+    "files_touched_count": 13,
     "rework_loop_count": 12,
     "intent_to_first_preview_minutes": null,
-    "acceptance_criteria_total": 8,
-    "criteria_with_current_evidence": 6,
+    "acceptance_criteria_total": 9,
+    "criteria_with_current_evidence": 7,
     "false_completion_events": 1,
     "regression_events": 0,
     "unverified_criteria_count": 2
