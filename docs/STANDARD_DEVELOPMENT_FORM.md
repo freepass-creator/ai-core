@@ -10,12 +10,13 @@ This form is the shared contract for Codex, Cursor, Claude, Gemini and a future 
 2. **Sources** — repository or Workspace source, exact revision and last verification time.
 3. **Scope** — included work, exclusions, affected paths and minimum necessary data scope.
 4. **Acceptance** — independently testable criteria and evidence references.
-5. **Work lane** — one actor, branch, worktree and current revision.
-6. **Proof** — checks and artifacts bound to the subject revision.
-7. **Review** — independent reviewers, findings and unresolved severity.
-8. **Authorization** — whether external execution needs a person, exact scope and expiry state.
-9. **Release and outcome** — merge/deploy state and later real-world observation remain separate.
-10. **Handoff** — compact current truth, next action and blockers.
+5. **Delivery coverage** — frontend, backend, API, database, infrastructure, UI and UX scope with one user journey and data flow.
+6. **Work lane** — one actor, branch, worktree and current revision.
+7. **Proof** — checks and artifacts bound to the subject revision.
+8. **Review** — independent reviewers, findings and unresolved severity.
+9. **Authorization** — whether external execution needs a person, exact scope and expiry state.
+10. **Release and outcome** — merge/deploy state and later real-world observation remain separate.
+11. **Handoff** — compact current truth, next action and blockers.
 
 ## Primary buttons
 
@@ -45,6 +46,8 @@ npm run form:validate -- examples/development-form.json
 ## Cross-field invariants
 
 - `READY` cannot coexist with unresolved `unknowns`, unresolved `decisions_required` or unrevisioned authoritative sources.
+- All seven delivery layers must be classified. `UNKNOWN` blocks readiness; included layers require affected references and acceptance-criterion references.
+- UI work requires device coverage and default/loading/empty/error states. UX work requires a complete journey and failure recovery. Data writes require an authority boundary.
 - Verification `PASS` requires a subject revision, at least one passing check and evidence for every acceptance criterion; evidence IDs and revisions must resolve to that subject revision.
 - Review `PASSED` requires the reviewed revision and a digest-bound receipt whose reviewer and issuer differ from the lane actor, plus no unresolved failing finding. The receipt ID must also be supplied as externally verified context.
 - Authorization `GRANTED` requires a human authorizer, timestamp no later than evaluation time, future expiry, action, target, revision and exact scope. Its authority reference must be supplied as externally verified context; AI actors cannot self-authorize protected execution.

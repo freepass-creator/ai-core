@@ -70,6 +70,19 @@ export function validateDevelopmentForm(form, input) {
   if (!criteria.length) add('ACCEPTANCE_CRITERIA_REQUIRED', 'acceptance_criteria');
   const ids = criteria.map(item => item.id);
   if (new Set(ids).size !== ids.length) add('ACCEPTANCE_ID_DUPLICATE', 'acceptance_criteria');
+  const coverage = form.delivery.coverage;
+  const requiredLayers = ['FRONTEND','BACKEND','API','DATABASE','INFRA','UI','UX'];
+  const layers = coverage.map(item => item.layer);
+  if (new Set(layers).size !== layers.length || requiredLayers.some(layer => !layers.includes(layer))) add('COVERAGE_INCOMPLETE', 'delivery.coverage');
+  for (const item of coverage) {
+    if (item.status === 'IN_SCOPE' && (!item.change?.trim() || !item.affected_refs.length || !item.verification_refs.length || item.verification_refs.some(ref => !ids.includes(ref)))) add('LAYER_PLAN_INCOMPLETE', `delivery.coverage.${item.layer}`);
+    if (item.status === 'OUT_OF_SCOPE' && (item.change !== null || item.affected_refs.length || item.verification_refs.length)) add('OUT_OF_SCOPE_HAS_CHANGES', `delivery.coverage.${item.layer}`);
+  }
+  if (request.stage === 'READY' && coverage.some(item => item.status === 'UNKNOWN')) add('READY_COVERAGE_UNKNOWN', 'delivery.coverage');
+  const journey = form.delivery.journey;
+  if (coverage.some(item => item.layer === 'UX' && item.status === 'IN_SCOPE') && (!journey.primary_user?.trim() || !journey.entry_point?.trim() || !journey.steps.length || !journey.success_feedback?.trim() || !journey.failure_recovery?.trim())) add('UX_JOURNEY_INCOMPLETE', 'delivery.journey');
+  if (coverage.some(item => item.layer === 'UI' && item.status === 'IN_SCOPE') && (!journey.surfaces.length || journey.surfaces.some(surface => !surface.devices.length || !['DEFAULT','LOADING','EMPTY','ERROR'].every(state => surface.states.includes(state))))) add('UI_STATES_INCOMPLETE', 'delivery.journey.surfaces');
+  if (form.delivery.data_flow.some(flow => flow.write && !flow.authority?.trim())) add('DATA_WRITE_AUTHORITY_REQUIRED', 'delivery.data_flow');
   const verification = form.verification ?? {};
   if (verification.status === 'PASS') {
     if (!verification.subject_revision) add('VERIFICATION_REVISION_REQUIRED', 'verification.subject_revision');
@@ -137,7 +150,9 @@ export function deriveActions(form, context = {}) {
   set('mark_ready', [
     (form?.request?.unknowns ?? []).length && 'UNKNOWNS',
     (form?.request?.decisions_required ?? []).length && 'DECISIONS',
-    (!(form?.project?.authoritative_sources ?? []).length || form.project.authoritative_sources.some(source => !source.revision || !source.verified_at)) && 'SOURCES'
+    (!(form?.project?.authoritative_sources ?? []).length || form.project.authoritative_sources.some(source => !source.revision || !source.verified_at)) && 'SOURCES',
+    form?.delivery?.coverage?.some(item => item.status === 'UNKNOWN') && 'COVERAGE_UNKNOWN',
+    invalid.some(error => ['COVERAGE_INCOMPLETE','LAYER_PLAN_INCOMPLETE','OUT_OF_SCOPE_HAS_CHANGES','UX_JOURNEY_INCOMPLETE','UI_STATES_INCOMPLETE','DATA_WRITE_AUTHORITY_REQUIRED'].includes(error.code)) && 'DELIVERY_PLAN_INVALID'
   ].filter(Boolean));
   set('start_isolated_work', [form?.request?.stage !== 'READY' && 'REQUEST_NOT_READY', !context.laneAvailable && 'LANE_NOT_AVAILABLE'].filter(Boolean));
   set('run_verification', [!form?.lane?.head_revision && 'IMPLEMENTATION_REVISION_REQUIRED', !context.implementationExists && 'IMPLEMENTATION_NOT_FOUND'].filter(Boolean));

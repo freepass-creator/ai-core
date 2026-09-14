@@ -17,7 +17,7 @@
   },
   "intent": {
     "summary": "Align ai-core with measured self-improvement by removing false main claims and making the first real development episode the sole current priority.",
-    "requirement_set_digest": "sha256:e3c18a22d7ebba467ed8903463adbc3c72d6667b531e87b2a2aa30ed665ee7a4",
+    "requirement_set_digest": "sha256:bb45684945bb9f26f9f8a1c0ab042abdbab91dfe64a3c4cf6dea97912e4af923",
     "requirements": [
       {
         "id": "REQ-001",
@@ -117,6 +117,18 @@
           "scripts/validate-development-form.mjs",
           "test/validate-development-form.test.mjs"
         ]
+      },
+      {
+        "id": "REQ-011",
+        "text": "cover frontend, backend, API, database, infrastructure, UI and UX in a simple development planning flow",
+        "provenance": "USER_CONFIRMED",
+        "status": "ACTIVE",
+        "evidence_refs": [
+          "contracts/development-form.schema.json",
+          "docs/DEVELOPMENT_COVERAGE.md",
+          "scripts/validate-development-form.mjs",
+          "test/validate-development-form.test.mjs"
+        ]
       }
     ]
   },
@@ -149,6 +161,7 @@
       "scripts/evaluate-self-evolution.mjs",
       "test/evaluate-self-evolution.test.mjs",
       "docs/CONCURRENT_WORK.md",
+      "docs/DEVELOPMENT_COVERAGE.md",
       "contracts/development-form.schema.json",
       "contracts/development-form-context.schema.json",
       "docs/STANDARD_DEVELOPMENT_FORM.md",
@@ -195,11 +208,11 @@
     "candidate_reuse_count": 2,
     "reused_capability_count": 1,
     "new_capability_count": 0,
-    "files_touched_count": 24,
+    "files_touched_count": 25,
     "rework_loop_count": 29,
     "intent_to_first_preview_minutes": null,
-    "acceptance_criteria_total": 10,
-    "criteria_with_current_evidence": 8,
+    "acceptance_criteria_total": 11,
+    "criteria_with_current_evidence": 9,
     "false_completion_events": 1,
     "regression_events": 0,
     "unverified_criteria_count": 2

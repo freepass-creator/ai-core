@@ -4,7 +4,7 @@
   "title": "AI Core Standard Development Form",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "change_id", "request", "project", "scope", "acceptance_criteria", "lane", "verification", "review", "authorization", "release", "outcome", "handoff"],
+  "required": ["schema_version", "change_id", "request", "project", "scope", "delivery", "acceptance_criteria", "lane", "verification", "review", "authorization", "release", "outcome", "handoff"],
   "properties": {
     "schema_version": { "const": "1.0" },
     "change_id": { "type": "string", "pattern": "^[A-Z][A-Z0-9_-]*-[0-9]{3,}$" },
@@ -38,6 +38,25 @@
         "out": { "type": "array", "items": { "type": "string" } },
         "affected_paths": { "type": "array", "items": { "type": "string" } },
         "data_scopes": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "delivery": {
+      "type": "object", "additionalProperties": false,
+      "required": ["coverage", "journey", "data_flow", "quality"],
+      "properties": {
+        "coverage": { "type": "array", "minItems": 7, "maxItems": 7, "items": { "$ref": "#/$defs/layerCoverage" } },
+        "journey": { "$ref": "#/$defs/userJourney" },
+        "data_flow": { "type": "array", "items": { "$ref": "#/$defs/dataFlow" } },
+        "quality": {
+          "type": "object", "additionalProperties": false,
+          "required": ["security", "performance", "accessibility", "observability"],
+          "properties": {
+            "security": { "type": "array", "items": { "type": "string" } },
+            "performance": { "type": "array", "items": { "type": "string" } },
+            "accessibility": { "type": "array", "items": { "type": "string" } },
+            "observability": { "type": "array", "items": { "type": "string" } }
+          }
+        }
       }
     },
     "acceptance_criteria": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/criterion" } },
@@ -110,6 +129,32 @@
     }
   },
   "$defs": {
+    "layerCoverage": {
+      "type": "object", "additionalProperties": false,
+      "required": ["layer", "status", "change", "affected_refs", "verification_refs"],
+      "properties": {
+        "layer": { "enum": ["FRONTEND", "BACKEND", "API", "DATABASE", "INFRA", "UI", "UX"] },
+        "status": { "enum": ["IN_SCOPE", "OUT_OF_SCOPE", "UNKNOWN"] },
+        "change": { "type": ["string", "null"] },
+        "affected_refs": { "type": "array", "items": { "type": "string" } },
+        "verification_refs": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "userJourney": {
+      "type": "object", "additionalProperties": false,
+      "required": ["primary_user", "entry_point", "steps", "success_feedback", "failure_recovery", "surfaces"],
+      "properties": {
+        "primary_user": { "type": ["string", "null"] }, "entry_point": { "type": ["string", "null"] },
+        "steps": { "type": "array", "items": { "type": "string" } }, "success_feedback": { "type": ["string", "null"] },
+        "failure_recovery": { "type": ["string", "null"] },
+        "surfaces": { "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["name", "devices", "states"], "properties": { "name": { "type": "string" }, "devices": { "type": "array", "items": { "enum": ["DESKTOP", "TABLET", "MOBILE"] } }, "states": { "type": "array", "items": { "enum": ["DEFAULT", "LOADING", "EMPTY", "ERROR", "DISABLED", "SUCCESS"] } } } } }
+      }
+    },
+    "dataFlow": {
+      "type": "object", "additionalProperties": false,
+      "required": ["from", "through", "to", "data", "write", "authority"],
+      "properties": { "from": { "type": "string" }, "through": { "type": "string" }, "to": { "type": "string" }, "data": { "type": "string" }, "write": { "type": "boolean" }, "authority": { "type": ["string", "null"] } }
+    },
     "humanAuthority": {
       "type": "object", "additionalProperties": false,
       "required": ["kind", "id", "authority_ref"],
