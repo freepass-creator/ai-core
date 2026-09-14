@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "development-episode-observation.schema.json",
+  "title": "Development Episode Observation",
+  "type": "object",
+  "required": ["episode_id", "status", "project", "intent", "metrics", "evidence_state"],
+  "properties": {
+    "episode_id": {"type": "string", "minLength": 1},
+    "status": {
+      "enum": ["OPEN", "UNDERSTANDING", "READY_TO_EXECUTE", "EXECUTING", "VERIFYING", "AWAITING_USER_REVIEW", "READY_TO_RELEASE", "CLOSED", "HOLD", "SUPERSEDED"]
+    },
+    "project": {
+      "type": "object",
+      "required": ["id", "repository", "base_revision"],
+      "properties": {
+        "id": {"type": "string"},
+        "repository": {"type": "string"},
+        "base_revision": {"type": "string"},
+        "capsule_revision": {"type": ["string", "null"]},
+        "authoritative_sources": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
+    "intent": {
+      "type": "object",
+      "required": ["summary", "requirement_set_digest", "requirements"],
+      "properties": {
+        "summary": {"type": "string"},
+        "requirement_set_digest": {"type": "string"},
+        "requirements": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "text", "provenance", "status"],
+            "properties": {
+              "id": {"type": "string"},
+              "text": {"type": "string"},
+              "provenance": {"enum": ["USER_CONFIRMED", "SOURCE_DERIVED", "AI_INFERRED"]},
+              "status": {"enum": ["ACTIVE", "SUPERSEDED", "HOLD"]},
+              "evidence_refs": {"type": "array", "items": {"type": "string"}}
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "capability_resolution": {
+      "type": "object",
+      "properties": {
+        "searched": {"type": "boolean"},
+        "candidate_count": {"type": "integer", "minimum": 0},
+        "reused_count": {"type": "integer", "minimum": 0},
+        "new_count": {"type": "integer", "minimum": 0},
+        "decisions": {
+          "type": "array",
+          "items": {
+            "enum": ["REUSE_EXACT", "REUSE_WITH_ADAPTER", "COMPOSE", "EXTEND_CANDIDATE", "NEW_REQUIRED", "NOT_APPLICABLE", "HOLD"]
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "execution": {
+      "type": "object",
+      "properties": {
+        "executors": {"type": "array", "items": {"type": "string"}},
+        "branch": {"type": ["string", "null"]},
+        "subject_revision": {"type": ["string", "null"]},
+        "changed_files": {"type": "array", "items": {"type": "string"}},
+        "rework_loops": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "evidence_state": {
+      "type": "object",
+      "required": ["proof_revision_matches_subject", "false_completion_events"],
+      "properties": {
+        "proof_revision_matches_subject": {"type": ["boolean", "null"]},
+        "commands_run": {"type": "array", "items": {"type": "string"}},
+        "passes": {"type": "integer", "minimum": 0},
+        "failures": {"type": "integer", "minimum": 0},
+        "skips": {"type": "integer", "minimum": 0},
+        "unknowns": {"type": "integer", "minimum": 0},
+        "independent_review": {"enum": ["NOT_REQUIRED", "NOT_RUN", "PARTIAL", "CONFIRMED"]},
+        "false_completion_events": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "metrics": {
+      "type": "object",
+      "required": ["clarification_question_count", "user_correction_count", "rework_loop_count", "acceptance_criteria_total", "criteria_with_current_evidence"],
+      "properties": {
+        "clarification_question_count": {"type": "integer", "minimum": 0},
+        "repeated_information_request_count": {"type": "integer", "minimum": 0},
+        "user_correction_count": {"type": "integer", "minimum": 0},
+        "user_review_round_count": {"type": "integer", "minimum": 0},
+        "repo_orientation_minutes": {"type": ["number", "null"], "minimum": 0},
+        "context_reread_count": {"type": "integer", "minimum": 0},
+        "stale_plan_events": {"type": "integer", "minimum": 0},
+        "stale_proof_events": {"type": "integer", "minimum": 0},
+        "resume_time_minutes": {"type": ["number", "null"], "minimum": 0},
+        "candidate_reuse_count": {"type": "integer", "minimum": 0},
+        "reused_capability_count": {"type": "integer", "minimum": 0},
+        "new_capability_count": {"type": "integer", "minimum": 0},
+        "files_touched_count": {"type": "integer", "minimum": 0},
+        "rework_loop_count": {"type": "integer", "minimum": 0},
+        "intent_to_first_preview_minutes": {"type": ["number", "null"], "minimum": 0},
+        "acceptance_criteria_total": {"type": "integer", "minimum": 0},
+        "criteria_with_current_evidence": {"type": "integer", "minimum": 0},
+        "false_completion_events": {"type": "integer", "minimum": 0},
+        "regression_events": {"type": "integer", "minimum": 0},
+        "unverified_criteria_count": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "baseline": {
+      "type": "object",
+      "properties": {
+        "status": {"enum": ["KNOWN", "PARTIAL", "UNKNOWN"]},
+        "reference": {"type": ["string", "null"]},
+        "notes": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "outcome": {
+      "type": "object",
+      "properties": {
+        "first_preview_accepted": {"type": ["boolean", "null"]},
+        "release_state": {"enum": ["NOT_REQUESTED", "NOT_RELEASED", "RELEASE_READY", "RELEASED", "ROLLED_BACK"]},
+        "post_completion_defects": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
