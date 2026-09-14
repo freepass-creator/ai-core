@@ -8,14 +8,28 @@ import { createHash } from 'node:crypto';
 
 const released = new Set(['MERGED', 'DEPLOYED']);
 const schema = JSON.parse(readFileSync(new URL('../contracts/development-form.schema.json', import.meta.url)));
+const contextSchema = JSON.parse(readFileSync(new URL('../contracts/development-form-context.schema.json', import.meta.url)));
 const ajv = new Ajv2020({ allErrors: true, strict: false });
 addFormats(ajv);
 const validateStructure = ajv.compile(schema);
+const validateContextStructure = ajv.compile(contextSchema);
 
 function normalizeContext(input) {
   if (input instanceof Date) return { now: input, trustedReviewReceipts: [], trustedAuthorityAttestations: [] };
   const now = input?.now instanceof Date ? input.now : new Date(input?.now ?? Date.now());
   return { now, trustedReviewReceipts: input?.trustedReviewReceipts ?? [], trustedAuthorityAttestations: input?.trustedAuthorityAttestations ?? [] };
+}
+
+export function validateDevelopmentContext(input = {}) {
+  if (!input || typeof input !== 'object' || Array.isArray(input)) return [{ code: 'CONTEXT_REQUIRED', path: '$' }];
+  const serializable = { ...input };
+  if (serializable.now instanceof Date) {
+    if (!Number.isFinite(serializable.now.getTime())) return [{ code: 'CONTEXT_TIME_INVALID', path: 'now' }];
+    serializable.now = serializable.now.toISOString();
+  }
+  if (!validateContextStructure(serializable)) return validateContextStructure.errors.map(error => ({ code: `CONTEXT_SCHEMA_${error.keyword.toUpperCase()}`, path: error.instancePath || '$' }));
+  if (input.now !== undefined && !Number.isFinite(new Date(input.now).getTime())) return [{ code: 'CONTEXT_TIME_INVALID', path: 'now' }];
+  return [];
 }
 
 export function createTrustedReviewReceipt(receipt) {
@@ -33,9 +47,11 @@ export function createAuthorityAttestation(authorization) {
 }
 
 export function validateDevelopmentForm(form, input) {
+  const contextErrors = input instanceof Date ? (Number.isFinite(input.getTime()) ? [] : [{ code: 'CONTEXT_TIME_INVALID', path: 'now' }]) : validateDevelopmentContext(input ?? {});
   const context = normalizeContext(input);
   const now = context.now;
   const errors = [];
+  errors.push(...contextErrors);
   const add = (code, path) => errors.push({ code, path });
   if (!form || typeof form !== 'object' || Array.isArray(form)) return [{ code: 'FORM_REQUIRED', path: '$' }];
   if (!validateStructure(form)) return validateStructure.errors.map(error => ({ code: `SCHEMA_${error.keyword.toUpperCase()}`, path: error.instancePath || '$' }));
@@ -114,7 +130,7 @@ export function validateDevelopmentForm(form, input) {
 
 export function deriveActions(form, context = {}) {
   const invalid = validateDevelopmentForm(form, context);
-  const structural = invalid.filter(error => error.code.startsWith('SCHEMA_'));
+  const structural = invalid.filter(error => error.code.startsWith('SCHEMA_') || error.code.startsWith('CONTEXT_'));
   const result = {};
   const set = (name, reasons) => { const all = [...new Set([...structural.map(error => error.code), ...reasons])]; result[name] = { enabled: all.length === 0, reasons: all }; };
   set('save_draft', !form?.request?.title || !form?.request?.user_intent ? ['IDENTITY_OR_INTENT_REQUIRED'] : []);

@@ -3,7 +3,6 @@
   "title": "Development Form Runtime Context",
   "type": "object",
   "additionalProperties": false,
-  "required": ["laneAvailable", "implementationExists", "checksConfigured", "selectedPaths", "now", "trustedReviewReceipts", "trustedAuthorityAttestations"],
   "properties": {
     "laneAvailable": { "type": "boolean" },
     "implementationExists": { "type": "boolean" },
