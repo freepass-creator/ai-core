@@ -34,7 +34,7 @@ This form is the shared contract for Codex, Cursor, Claude, Gemini and a future 
 
 Any failed prerequisite renders the action disabled with its `HOLD` reasons. A button never silently advances more than one boundary.
 
-UI implementations import `deriveActions(form)` from `scripts/validate-development-form.mjs`. The returned map is the canonical enabled state and reason list for every primary button; UI code must not recreate these rules independently.
+UI implementations import `deriveActions(form, context)` from `scripts/validate-development-form.mjs`. Context supplies lane availability, implementation existence, configured checks, selected paths, current time, verified review receipt IDs and verified human authority references. Missing external evidence fails closed. The returned map is the canonical enabled state and reason list for every primary button; UI code must not recreate these rules independently.
 
 Validate a form before enabling state-changing buttons:
 
@@ -46,8 +46,8 @@ npm run form:validate -- examples/development-form.json
 
 - `READY` cannot coexist with unresolved `unknowns`, unresolved `decisions_required` or unrevisioned authoritative sources.
 - Verification `PASS` requires a subject revision, at least one passing check and evidence for every acceptance criterion; evidence IDs and revisions must resolve to that subject revision.
-- Review `PASSED` requires the reviewed revision and a digest-bound receipt whose reviewer and issuer differ from the lane actor, plus no unresolved failing finding. Resolving the receipt artifact remains an external evidence check.
-- Authorization `GRANTED` requires a human authorizer, timestamp, expiry, action, target, revision and exact scope; AI actors cannot self-authorize protected execution.
+- Review `PASSED` requires the reviewed revision and a digest-bound receipt whose reviewer and issuer differ from the lane actor, plus no unresolved failing finding. The receipt ID must also be supplied as externally verified context.
+- Authorization `GRANTED` requires a human authorizer, timestamp no later than evaluation time, future expiry, action, target, revision and exact scope. Its authority reference must be supplied as externally verified context; AI actors cannot self-authorize protected execution.
 - `MERGED` or `DEPLOYED` requires verification of that same revision and any required authorization.
 - Outcome `SUCCESS` requires observation evidence from the released target; tests and reviews are insufficient.
 - Release records `released_at`; a success observation must be from the same revision and target at or after that time.
