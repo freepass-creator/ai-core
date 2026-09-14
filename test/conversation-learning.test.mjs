@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   compileConversationLearning,
+  planLearningExperiments,
   normalizeLearningObservation
 } from '../src/conversation-learning.mjs';
 
@@ -183,4 +184,35 @@ test('same rule name in different domain sets preserves separate meaning and ide
   assert.equal(result.candidates.length, 2);
   assert.equal(new Set(result.candidates.map(c => c.fingerprint)).size, 2);
   assert.deepEqual(result.candidates.map(c => c.owner_system), ['devcenter', 'aiops']);
+});
+
+
+test('next-task experiments filter domains and require actual outcome evidence', () => {
+  const learning = compileConversationLearning([observation()]);
+  assert.equal(planLearningExperiments(learning, ['business']).experiments.length, 0);
+  const [experiment] = planLearningExperiments(learning, ['development']).experiments;
+  assert.equal(experiment.status, 'NEEDS_TEST_DESIGN');
+  assert.equal(experiment.outcome, 'UNOBSERVED');
+  assert.equal(experiment.execution_authorized, false);
+  assert.ok(experiment.evidence_required.includes('subject_revision'));
+});
+
+test('invalid feedback cannot produce next-task experiments', () => {
+  const learning = compileConversationLearning([observation(), observation({ sanitized: false })]);
+  assert.equal(planLearningExperiments(learning, ['development']).status, 'HOLD');
+  assert.deepEqual(planLearningExperiments(learning, ['development']).experiments, []);
+});
+
+test('testable lesson produces a proposal without claiming adoption or improvement', () => {
+  const learning = compileConversationLearning([observation({
+    causal_principle: 'Unexecuted checks hide regressions',
+    required_conditions: ['A change is under review'],
+    failure_conditions: ['No check executed'],
+    counterexample: 'A test description without a run',
+    small_test: 'Submit a skipped check and verify no PASS'
+  })]);
+  const [experiment] = planLearningExperiments(learning, ['development']).experiments;
+  assert.equal(experiment.status, 'PROPOSED');
+  assert.equal(experiment.auto_adopted, false);
+  assert.equal(experiment.candidate_fingerprint, learning.candidates[0].fingerprint);
 });

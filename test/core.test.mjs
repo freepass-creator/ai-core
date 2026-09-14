@@ -1026,3 +1026,22 @@ test('final preparation gate blocks local preparation when authoritative context
   assert.ok(output.work_packet.preparation_gate.blockers.includes('SOURCE_HOLD'));
   assert.deepEqual(output.work_packet.preparation_gate.allowed_action_ids, []);
 });
+
+test('work packet turns relevant feedback into a reviewable next-task experiment', () => {
+  const result = orchestrate({ task_id: 'feedback-loop', goal: 'Improve development checks',
+    project: 'ai-core', domain: 'development', risk: 'A', done_when: ['Checks executed'] }, {
+    ...resolvedEnvironment,
+    conversation_observations: [{ observation_id: 'feedback-1', rule_key: 'actual-checks',
+      summary: 'Use actual check evidence', expected_behavior: 'Run a regression check',
+      domains: ['development'], sanitized: true, authority: 'observed_outcome',
+      source_ref: { location: 'episode:opaque/check', revision_or_sha: 'episode-revision' },
+      causal_principle: 'A description cannot detect regressions',
+      required_conditions: ['A code change is proposed'], failure_conditions: ['Check skipped'],
+      counterexample: 'Skipped check reported as passed', small_test: 'Reject skipped PASS' }]
+  });
+  const plan = result.work_packet.learning_contract.next_task_experiments;
+  assert.equal(plan.status, 'REVIEW_REQUIRED');
+  assert.equal(plan.experiments[0].proposed_check, 'Reject skipped PASS');
+  assert.equal(plan.experiments[0].outcome, 'UNOBSERVED');
+  assert.equal(plan.experiments[0].execution_authorized, false);
+});

@@ -7,7 +7,7 @@ import {
   derivePreflightSignals,
   reviewLensesFor
 } from './evolution-kernel.mjs';
-import { compileConversationLearning } from './conversation-learning.mjs';
+import { compileConversationLearning, planLearningExperiments } from './conversation-learning.mjs';
 import { compileProofContract } from './domain-quality.mjs';
 import { compileHumanOrchestration } from './human-orchestrator.mjs';
 import { compileHumanStewardship } from './human-stewardship.mjs';
@@ -985,6 +985,7 @@ export function orchestrate(input, environment = {}) {
       },
       learning_contract: {
         lifecycle: learning.lifecycle,
+        next_task_experiments: planLearningExperiments(learning, effectiveDomains(task)),
         candidate_rules: learning.candidates.map(candidate => ({
           rule_key: candidate.rule_key,
           fingerprint: candidate.fingerprint,

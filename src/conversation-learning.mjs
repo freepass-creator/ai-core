@@ -363,3 +363,33 @@ export function compileConversationLearning(observations = [], {
     execution_authorized: false
   };
 }
+
+// These are experiments for the next task, never adopted rules or executable actions.
+export function planLearningExperiments(learning, domains = []) {
+  if (learning.status.startsWith('HOLD')) {
+    return { status: 'HOLD', experiments: [], auto_adopted: false };
+  }
+  const experiments = learning.candidates
+    .filter(candidate => candidate.domains.some(domain => domains.includes(domain)))
+    .map(candidate => ({
+      candidate_fingerprint: candidate.fingerprint,
+      rule_key: candidate.rule_key,
+      owner_system: candidate.owner_system,
+      status: candidate.small_test && candidate.required_conditions.length
+        && candidate.failure_conditions.length && candidate.counterexample
+        && candidate.causal_principle ? 'PROPOSED' : 'NEEDS_TEST_DESIGN',
+      proposed_behavior: candidate.expected_behavior,
+      applicability_to_confirm: candidate.required_conditions,
+      failure_conditions: candidate.failure_conditions,
+      counterexample: candidate.counterexample,
+      proposed_check: candidate.small_test,
+      source_refs: candidate.source_refs,
+      outcome: 'UNOBSERVED',
+      evidence_required: ['candidate_fingerprint', 'task_id', 'subject_revision',
+        'applicability_confirmed', 'check_execution_ref', 'observed_result', 'regressions'],
+      auto_adopted: false,
+      execution_authorized: false
+    }));
+  return { status: experiments.length ? 'REVIEW_REQUIRED' : 'NO_RELEVANT_CANDIDATES',
+    experiments, auto_adopted: false };
+}
