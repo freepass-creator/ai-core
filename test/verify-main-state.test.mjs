@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
-import { validateMainState, verifyRepository } from '../scripts/verify-main-state.mjs';
+import { combineChangedFiles, validateMainState, verifyRepository } from '../scripts/verify-main-state.mjs';
 
 const valid = {
   readme: '`main`에는 실행 가능한 오케스트레이터가 없다 WORK_READ_FIRST.md MEMORY.md memory/CURRENT.md memory/RESEARCH_INDEX.md',
@@ -94,4 +94,11 @@ test('rejects disagreement between execution and metric rework counts', () => {
     }
   });
   assert.ok(errors.some(error => error.includes('rework counts disagree')));
+});
+
+test('open episode comparison includes new untracked files once', () => {
+  assert.deepEqual(
+    combineChangedFiles(['README.md', 'docs/episode.json'], ['docs/SELF_EVOLUTION.md', 'README.md']),
+    ['README.md', 'docs/episode.json', 'docs/SELF_EVOLUTION.md']
+  );
 });

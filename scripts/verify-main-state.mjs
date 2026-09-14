@@ -14,6 +14,10 @@ function requirementSetDigest(requirements = []) {
   return `sha256:${createHash('sha256').update(JSON.stringify(normalized)).digest('hex')}`;
 }
 
+export function combineChangedFiles(tracked = [], untracked = []) {
+  return [...new Set([...tracked, ...untracked].filter(Boolean))];
+}
+
 export function validateMainState({ readme, current, researchIndex, episode, fileExists, revisionExists, changedFiles }) {
   const errors = [];
   const runtimeExists = fileExists('src/cli.mjs') || fileExists('src/core.mjs');
@@ -120,12 +124,17 @@ export async function verifyRepository(root) {
       return true;
     } catch { return false; }
   };
-  const diffTarget = JSON.parse(episodeText).execution?.subject_revision || 'HEAD';
-  const changedFiles = execFileSync(
-    'git', ['diff', '--name-only', `${JSON.parse(episodeText).project.base_revision}...${diffTarget}`],
+  const episode = JSON.parse(episodeText);
+  const diffTarget = episode.execution?.subject_revision || 'HEAD';
+  const trackedFiles = execFileSync(
+    'git', ['diff', '--name-only', `${episode.project.base_revision}...${diffTarget}`],
     { cwd: root, encoding: 'utf8' }
   ).trim().split(/\r?\n/).filter(Boolean);
-  const episode = JSON.parse(episodeText);
+  const untrackedFiles = episode.execution?.subject_revision
+    ? []
+    : execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' })
+      .trim().split(/\r?\n/).filter(Boolean);
+  const changedFiles = combineChangedFiles(trackedFiles, untrackedFiles);
   return validateMainState({
     readme, current, researchIndex, episode, fileExists, revisionExists, changedFiles
   });

@@ -90,7 +90,7 @@
       "docs/episodes/DEV-EPISODE-001.json",
       "docs/SELF_EVOLUTION.md"
     ],
-    "rework_loops": 4
+    "rework_loops": 6
   },
   "evidence_state": {
     "proof_revision_matches_subject": null,
@@ -104,7 +104,7 @@
       "node scripts/verify-main-state.mjs"
     ],
     "passes": 3,
-    "failures": 0,
+    "failures": 2,
     "skips": 0,
     "unknowns": 2,
     "independent_review": "PARTIAL",
@@ -124,7 +124,7 @@
     "reused_capability_count": 1,
     "new_capability_count": 0,
     "files_touched_count": 8,
-    "rework_loop_count": 4,
+    "rework_loop_count": 6,
     "intent_to_first_preview_minutes": null,
     "acceptance_criteria_total": 7,
     "criteria_with_current_evidence": 6,
