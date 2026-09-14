@@ -83,3 +83,86 @@ $('#dialog-open').addEventListener('click', () => dialog.showModal());
 $('#dialog-cancel').addEventListener('click', () => dialog.close('cancel'));
 $('#dialog-confirm').addEventListener('click', () => { dialog.close('confirmed'); showToast('샘플에서는 삭제를 실행하지 않습니다.'); });
 dialog.addEventListener('click', event => { if (event.target === dialog) dialog.close('backdrop'); });
+
+const workflowKey = 'ai-core:ui-patterns:workflow-v1';
+const note = $('#work-note');
+const saveButton = $('#draft-save');
+const externalButton = $('#external-action');
+const workflowStatus = $('#workflow-status');
+let savedValue = '';
+let saveRevision = 0;
+let saveInFlight = false;
+
+function readDraft() {
+  try { return JSON.parse(localStorage.getItem(workflowKey) || 'null'); } catch { return null; }
+}
+function writeDraft(value) {
+  localStorage.setItem(workflowKey, JSON.stringify({ value, updatedAt: new Date().toISOString() }));
+}
+function setWorkflowStatus(message, error = false) {
+  workflowStatus.textContent = message;
+  workflowStatus.classList.toggle('error', error);
+}
+function markDirty() {
+  if (saveRevision > 0 && note.value === savedValue) {
+    localStorage.removeItem(workflowKey);
+    externalButton.disabled = false;
+    $('#save-receipt').hidden = false;
+    setWorkflowStatus(`revision local-demo-r${saveRevision} 저장 내용과 같습니다.`);
+    return;
+  }
+  writeDraft(note.value);
+  externalButton.disabled = true;
+  $('#save-receipt').hidden = true;
+  setWorkflowStatus('초안을 이 기기에 보존했습니다. 서버 저장이 필요합니다.');
+}
+
+const recoveredDraft = readDraft();
+if (recoveredDraft?.value) {
+  note.value = recoveredDraft.value;
+  setWorkflowStatus('이 기기에서 이전 초안을 복구했습니다. 서버 저장이 필요합니다.');
+}
+note.addEventListener('input', markDirty);
+
+saveButton.addEventListener('click', async () => {
+  if (saveInFlight) return;
+  saveInFlight = true;
+  saveButton.disabled = true;
+  saveButton.setAttribute('aria-busy', 'true');
+  setWorkflowStatus('저장 중입니다. 중복 저장을 잠시 막았습니다. 입력 변경은 새 초안으로 보존됩니다.');
+  const valueAtStart = note.value;
+  await new Promise(resolve => setTimeout(resolve, 450));
+  const shouldFail = $('#simulate-save-failure').checked;
+  $('#simulate-save-failure').checked = false;
+  saveInFlight = false;
+  saveButton.disabled = false;
+  saveButton.removeAttribute('aria-busy');
+  if (shouldFail) {
+    writeDraft(note.value);
+    externalButton.disabled = true;
+    setWorkflowStatus('저장하지 못했습니다. 입력은 보존했습니다. 다시 시도하세요.', true);
+    saveButton.textContent = '저장 다시 시도';
+    saveButton.focus();
+    return;
+  }
+  savedValue = valueAtStart;
+  saveRevision += 1;
+  localStorage.removeItem(workflowKey);
+  $('#receipt-key').textContent = workflowKey;
+  $('#receipt-revision').textContent = `local-demo-r${saveRevision}`;
+  $('#receipt-time').textContent = new Date().toLocaleString('ko-KR');
+  $('#save-receipt').hidden = false;
+  saveButton.textContent = '서버 저장 시뮬레이션';
+  if (note.value !== valueAtStart) {
+    writeDraft(note.value);
+    externalButton.disabled = true;
+    setWorkflowStatus('저장 중 바뀐 입력은 새 초안으로 보존했습니다. 다시 저장하세요.');
+    return;
+  }
+  externalButton.disabled = false;
+  setWorkflowStatus(`revision local-demo-r${saveRevision} 저장을 확인했습니다.`);
+});
+
+externalButton.addEventListener('click', () => {
+  showToast('외부 실행은 별도 승인·실행 단계입니다. 샘플에서는 실행하지 않습니다.');
+});

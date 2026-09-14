@@ -23,7 +23,7 @@ This inventory separates reusable interaction contracts from product-specific vi
 | Data display | list, card, badge, table, definition list | loading, empty, error, populated, sorting, selection | partial |
 | Overlays | dialog, confirmation, drawer, popover, tooltip | focus entry/trap/return, Escape, backdrop, destructive boundary | partial: native confirmation dialog sample |
 | Disclosure | accordion, details, expandable filters | `aria-expanded`, keyboard activation, retained state | partial: native details/summary sample |
-| Workflow UX | draft, autosave, submit, retry, cancel, leave while saving | stable work key, duplicate prevention, recovery, outcome receipt | missing |
+| Workflow UX | draft, local preservation, submit, retry, leave during save | stable work key, duplicate prevention, recovery, outcome receipt | covered in local simulation; real API idempotency and navigation integration remain product-owned |
 
 ## UX rules shared across products
 

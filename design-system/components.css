@@ -38,5 +38,10 @@
 .ui-dialog-body { padding: var(--space-6); }
 .ui-dialog-actions { display: flex; justify-content: end; gap: var(--space-2); margin-top: var(--space-6); }
 .ui-pagination { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
+.ui-workflow-actions { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; }
+.ui-receipt { display: grid; gap: var(--space-2); margin: 0; padding: var(--space-4); border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: var(--color-info-surface); }
+.ui-receipt > div { display: grid; grid-template-columns: minmax(90px, 0.35fr) 1fr; gap: var(--space-3); }
+.ui-receipt dt { font-weight: 700; }
+.ui-receipt dd { margin: 0; overflow-wrap: anywhere; }
 @media (max-width: 640px) { .ui-page { width: min(calc(100% - 24px), var(--content-max)); padding-top: 20px; } .ui-card { padding: var(--space-4); } .ui-row > .ui-button { flex: 1 1 100%; } .ui-dialog-actions { display: grid; } }
 @media (prefers-reduced-motion: reduce) { .ui-progress::after { animation: none; width: 100%; } }
