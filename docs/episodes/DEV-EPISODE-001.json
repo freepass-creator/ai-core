@@ -10,12 +10,13 @@
       "user adversarial review in current task",
       "main@179352b3d594457dac18485df97146824da3c509",
       "PR #1",
-      "PR #19"
+      "PR #19",
+      "user request to define self-learning evolution in current task"
     ]
   },
   "intent": {
     "summary": "Align ai-core with measured self-improvement by removing false main claims and making the first real development episode the sole current priority.",
-    "requirement_set_digest": "sha256:c8981677b47ef38cdb7ba75d0e30254f8cb012124c68bf10c58ad07d609aa886",
+    "requirement_set_digest": "sha256:770a1def7b91b7cd50ad4abdd8ce46fdc4eadd23f1889d94575744012c7b8025",
     "requirements": [
       {
         "id": "REQ-001",
@@ -58,6 +59,13 @@
         "provenance": "AI_INFERRED",
         "status": "HOLD",
         "evidence_refs": ["commit:daf67fa"]
+      },
+      {
+        "id": "REQ-007",
+        "text": "define how AI Core learns and evolves from real outcomes without self-approving progress",
+        "provenance": "USER_CONFIRMED",
+        "status": "ACTIVE",
+        "evidence_refs": ["docs/SELF_EVOLUTION.md"]
       }
     ]
   },
@@ -79,7 +87,8 @@
       ".github/workflows/main-state.yml",
       "scripts/verify-main-state.mjs",
       "test/verify-main-state.test.mjs",
-      "docs/episodes/DEV-EPISODE-001.json"
+      "docs/episodes/DEV-EPISODE-001.json",
+      "docs/SELF_EVOLUTION.md"
     ],
     "rework_loops": 4
   },
@@ -105,7 +114,7 @@
     "clarification_question_count": 0,
     "repeated_information_request_count": 0,
     "user_correction_count": 1,
-    "user_review_round_count": 2,
+    "user_review_round_count": 3,
     "repo_orientation_minutes": null,
     "context_reread_count": 1,
     "stale_plan_events": 1,
@@ -114,11 +123,11 @@
     "candidate_reuse_count": 2,
     "reused_capability_count": 1,
     "new_capability_count": 0,
-    "files_touched_count": 7,
+    "files_touched_count": 8,
     "rework_loop_count": 4,
     "intent_to_first_preview_minutes": null,
-    "acceptance_criteria_total": 6,
-    "criteria_with_current_evidence": 5,
+    "acceptance_criteria_total": 7,
+    "criteria_with_current_evidence": 6,
     "false_completion_events": 1,
     "regression_events": 0,
     "unverified_criteria_count": 1
