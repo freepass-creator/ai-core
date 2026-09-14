@@ -54,4 +54,4 @@ Official references:
 
 ## Sample
 
-Open `examples/ui-components.html` through a local web server. It contains working buttons, a native dropdown and a responsive accessible table using the canonical tokens.
+Open `examples/ui-components.html` through a local web server. It demonstrates working button actions plus busy and disabled buttons, a native dropdown and the populated state of a responsive accessible table using the canonical tokens. Loading, empty and error table examples remain required when a product adopts the table component; this first sample does not claim to demonstrate them.

@@ -139,7 +139,8 @@
           "design-system/tokens.css",
           "docs/SCREEN_DESIGN_STANDARD.md",
           "examples/ui-components.html",
-          "test/ui-components.test.mjs"
+          "test/ui-components.test.mjs",
+          "docs/evidence/UI-COMPONENTS-BROWSER.json"
         ]
       }
     ]
@@ -189,9 +190,10 @@
       "design-system/tokens.css",
       "docs/SCREEN_DESIGN_STANDARD.md",
       "examples/ui-components.html",
-      "test/ui-components.test.mjs"
+      "test/ui-components.test.mjs",
+      "docs/evidence/UI-COMPONENTS-BROWSER.json"
     ],
-    "rework_loops": 36
+    "rework_loops": 38
   },
   "evidence_state": {
     "proof_revision_matches_subject": null,
@@ -209,7 +211,7 @@
       "agent-browser button, dropdown, keyboard focus and reduced-motion verification"
     ],
     "passes": 4,
-    "failures": 25,
+    "failures": 29,
     "skips": 0,
     "unknowns": 2,
     "independent_review": "PARTIAL",
@@ -228,8 +230,8 @@
     "candidate_reuse_count": 2,
     "reused_capability_count": 1,
     "new_capability_count": 0,
-    "files_touched_count": 29,
-    "rework_loop_count": 36,
+    "files_touched_count": 30,
+    "rework_loop_count": 38,
     "intent_to_first_preview_minutes": null,
     "acceptance_criteria_total": 12,
     "criteria_with_current_evidence": 10,

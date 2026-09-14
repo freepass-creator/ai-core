@@ -1,0 +1,39 @@
+{
+  "receipt_id": "UI-COMPONENTS-BROWSER-001",
+  "observed_at": "2026-09-14T17:01:00+09:00",
+  "base_commit": "087f2a9",
+  "source_sha256": {
+    "design-system/tokens.css": "78d5fdc0bdbe13f422fb14c255d75fc08df42c8cb458b252dddf3564bdb19b96",
+    "docs/SCREEN_DESIGN_STANDARD.md": "967c34eb9ae0995af8f0004466ce2ff5a17f5094b60df2ce7c03f0c06956f422",
+    "examples/ui-components.html": "e88b4a2fa09b55526c2333314f4ab9db61ebce61c086f84b00238269737cccdf"
+  },
+  "runner": {
+    "name": "agent-browser",
+    "version": "0.37.1",
+    "engine": "chrome"
+  },
+  "results": {
+    "wcag2a_wcag2aa": {
+      "violations": 0,
+      "incomplete": 0,
+      "passes": 22
+    },
+    "mobile_viewport_css_px": {
+      "width": 390,
+      "height": 844
+    },
+    "body_overflow": false,
+    "table_horizontal_scroll": {
+      "scroll_width": 680,
+      "client_width": 330
+    },
+    "primary_button_height_px": 46,
+    "select_height_px": 44,
+    "primary_button_notice": "검증을 시작했습니다.",
+    "dropdown_selected_value": "UI",
+    "first_tab_target": "검증 실행",
+    "first_tab_outline": "rgb(220, 104, 3) solid 3px",
+    "reduced_motion_transition_duration": "1e-05s",
+    "page_errors": 0
+  }
+}
