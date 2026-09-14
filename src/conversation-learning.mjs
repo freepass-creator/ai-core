@@ -276,15 +276,17 @@ export function compileConversationLearning(observations = [], {
 
   const byRule = new Map();
   for (const item of accepted) {
-    const items = byRule.get(item.rule_key) ?? [];
+    const scopedKey = JSON.stringify([item.rule_key, [...item.domains].sort()]);
+    const items = byRule.get(scopedKey) ?? [];
     items.push(item);
-    byRule.set(item.rule_key, items);
+    byRule.set(scopedKey, items);
   }
 
   const conflicts = [];
   const resolvedConflicts = [];
   const candidates = [];
-  for (const [ruleKey, items] of byRule.entries()) {
+  for (const items of byRule.values()) {
+    const ruleKey = items[0].rule_key;
     const behaviors = new Map();
     for (const item of items) {
       const group = behaviors.get(item.expected_behavior) ?? [];

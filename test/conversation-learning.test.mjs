@@ -173,3 +173,14 @@ test('a future-dated directive cannot supersede a current user instruction', () 
   assert.equal(result.resolved_conflicts.length, 0);
   assert.match(result.rejected[0].reason, /evaluation time/);
 });
+
+test('same rule name in different domain sets preserves separate meaning and identity', () => {
+  const result = compileConversationLearning([
+    observation(),
+    observation({ observation_id: 'OBS-2', domains: ['business'], expected_behavior: 'Use business evidence' })
+  ]);
+  assert.equal(result.conflicts.length, 0);
+  assert.equal(result.candidates.length, 2);
+  assert.equal(new Set(result.candidates.map(c => c.fingerprint)).size, 2);
+  assert.deepEqual(result.candidates.map(c => c.owner_system), ['devcenter', 'aiops']);
+});
