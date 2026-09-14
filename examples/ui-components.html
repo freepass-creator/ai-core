@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Core UI 기본 부품</title>
+  <link rel="stylesheet" href="../design-system/tokens.css">
+  <style>
+    main { width: min(calc(100% - 32px), var(--content-max)); margin: 0 auto; padding: 32px 0 64px; }
+    h1 { margin: 0 0 8px; font-size: 28px; } h2 { margin-top: 0; font-size: var(--font-size-lg); }
+    .intro { color: var(--color-muted); margin: 0 0 24px; }
+    .card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); padding: var(--space-6); margin-bottom: var(--space-4); }
+    .row { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: end; }
+    .button { min-height: var(--control-height); border: 1px solid transparent; border-radius: var(--radius-sm); padding: 10px 16px; font-weight: 700; cursor: pointer; }
+    .button-primary { background: var(--color-primary); color: white; } .button-primary:hover { background: var(--color-primary-hover); }
+    .button-secondary { background: white; color: var(--color-text); border-color: var(--color-border); }
+    .button-danger { background: var(--color-danger); color: white; } .button-danger:hover { background: var(--color-danger-hover); }
+    .button:active { transform: translateY(1px); }
+    .button[aria-busy="true"] { cursor: progress; }
+    .button:disabled { background: #e4e7ec; color: #667085; cursor: not-allowed; }
+    label { display: grid; gap: var(--space-2); font-weight: 700; }
+    select { min-height: var(--control-height); min-width: 220px; padding: 8px 40px 8px 12px; color: var(--color-text); background: white; border: 1px solid var(--color-border); border-radius: var(--radius-sm); }
+    .hint { font-size: var(--font-size-sm); color: var(--color-muted); font-weight: 400; }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--color-border); border-radius: var(--radius-sm); }
+    table { width: 100%; min-width: 680px; border-collapse: collapse; background: white; }
+    caption { text-align: left; padding: 0 0 12px; font-weight: 700; }
+    th, td { padding: 12px 16px; border-bottom: 1px solid var(--color-border); text-align: left; }
+    th { background: #eef3fb; font-size: var(--font-size-sm); } tbody tr:last-child td { border-bottom: 0; }
+    .status { display: inline-block; border-radius: 999px; padding: 2px 8px; font-size: 13px; font-weight: 700; }
+    .status-pass { color: var(--color-success); background: #ecfdf3; } .status-hold { color: #93370d; background: #fffaeb; }
+    #notice { min-height: 24px; margin-top: 12px; color: var(--color-success); font-weight: 700; }
+    @media (max-width: 640px) { main { width: min(calc(100% - 24px), var(--content-max)); padding-top: 20px; } .card { padding: var(--space-4); } .row > * { width: 100%; } select, .button { width: 100%; } }
+  </style>
+</head>
+<body>
+<main>
+  <h1>UI 기본 부품</h1>
+  <p class="intro">버튼, 드롭다운, 표의 기본·비활성·성공·보류 상태를 확인하는 샘플입니다.</p>
+
+  <section class="card" aria-labelledby="buttons-title">
+    <h2 id="buttons-title">버튼</h2>
+    <div class="row">
+      <button class="button button-primary" type="button" data-message="검증을 시작했습니다.">검증 실행</button>
+      <button class="button button-secondary" type="button" data-message="초안을 저장했습니다.">초안 저장</button>
+      <button class="button button-danger" type="button" data-message="되돌리기는 확인 절차가 필요합니다.">되돌리기</button>
+      <button class="button" type="button" aria-busy="true" disabled>검증 중…</button>
+      <button class="button" type="button" disabled aria-describedby="disabled-reason">배포</button>
+    </div>
+    <p id="disabled-reason" class="hint">배포 버튼은 검증·리뷰·승인이 끝난 뒤 활성화됩니다.</p>
+    <div id="notice" role="status" aria-live="polite"></div>
+  </section>
+
+  <section class="card" aria-labelledby="select-title">
+    <h2 id="select-title">드롭다운</h2>
+    <label for="coverage">개발 영역
+      <span class="hint">이번 변경이 영향을 주는 영역을 선택하세요.</span>
+      <select id="coverage" name="coverage">
+        <option value="">선택하세요</option>
+        <option>프론트엔드</option><option>백엔드</option><option>API</option><option>데이터베이스</option><option>인프라</option><option>UI</option><option>UX</option>
+      </select>
+    </label>
+  </section>
+
+  <section class="card" aria-labelledby="table-title">
+    <h2 id="table-title">표</h2>
+    <div class="table-wrap" tabindex="0" role="region" aria-label="개발 영역 검토표, 가로 스크롤 가능">
+      <table>
+        <caption>개발 영역 검토 상태</caption>
+        <thead><tr><th scope="col">영역</th><th scope="col">범위</th><th scope="col">검증</th><th scope="col">상태</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">프론트엔드</th><td>요청 화면</td><td>반응형·키보드</td><td><span class="status status-pass">PASS</span></td></tr>
+          <tr><th scope="row">백엔드</th><td>상태 검증</td><td>단위 테스트</td><td><span class="status status-pass">PASS</span></td></tr>
+          <tr><th scope="row">배포</th><td>운영 환경</td><td>사람 승인</td><td><span class="status status-hold">HOLD</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
+<script>
+  document.querySelectorAll('[data-message]').forEach(button => button.addEventListener('click', () => { document.querySelector('#notice').textContent = button.dataset.message; }));
+</script>
+</body>
+</html>

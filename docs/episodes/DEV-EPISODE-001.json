@@ -17,7 +17,7 @@
   },
   "intent": {
     "summary": "Align ai-core with measured self-improvement by removing false main claims and making the first real development episode the sole current priority.",
-    "requirement_set_digest": "sha256:bb45684945bb9f26f9f8a1c0ab042abdbab91dfe64a3c4cf6dea97912e4af923",
+    "requirement_set_digest": "sha256:a6a483cfc1e3ecee469117b002fad70f009927d95287f352afbaa3cd29242243",
     "requirements": [
       {
         "id": "REQ-001",
@@ -129,6 +129,18 @@
           "scripts/validate-development-form.mjs",
           "test/validate-development-form.test.mjs"
         ]
+      },
+      {
+        "id": "REQ-012",
+        "text": "define an industry-standard screen design baseline and working samples for buttons, dropdowns and tables",
+        "provenance": "USER_CONFIRMED",
+        "status": "ACTIVE",
+        "evidence_refs": [
+          "design-system/tokens.css",
+          "docs/SCREEN_DESIGN_STANDARD.md",
+          "examples/ui-components.html",
+          "test/ui-components.test.mjs"
+        ]
       }
     ]
   },
@@ -173,9 +185,13 @@
       "scripts/checkpoint-work.mjs",
       "scripts/validate-development-form.mjs",
       "test/checkpoint-work.test.mjs",
-      "test/validate-development-form.test.mjs"
+      "test/validate-development-form.test.mjs",
+      "design-system/tokens.css",
+      "docs/SCREEN_DESIGN_STANDARD.md",
+      "examples/ui-components.html",
+      "test/ui-components.test.mjs"
     ],
-    "rework_loops": 34
+    "rework_loops": 35
   },
   "evidence_state": {
     "proof_revision_matches_subject": null,
@@ -186,10 +202,14 @@
       "gh pr view 19 --json files,commits",
       "git diff --check",
       "node --test test/verify-main-state.test.mjs",
-      "node scripts/verify-main-state.mjs"
+      "node scripts/verify-main-state.mjs",
+      "node --test",
+      "agent-browser a11y --tags wcag2a,wcag2aa",
+      "agent-browser desktop and 390px mobile screenshot verification",
+      "agent-browser button, dropdown, keyboard focus and reduced-motion verification"
     ],
-    "passes": 3,
-    "failures": 23,
+    "passes": 4,
+    "failures": 24,
     "skips": 0,
     "unknowns": 2,
     "independent_review": "PARTIAL",
@@ -208,11 +228,11 @@
     "candidate_reuse_count": 2,
     "reused_capability_count": 1,
     "new_capability_count": 0,
-    "files_touched_count": 25,
-    "rework_loop_count": 34,
+    "files_touched_count": 29,
+    "rework_loop_count": 35,
     "intent_to_first_preview_minutes": null,
-    "acceptance_criteria_total": 11,
-    "criteria_with_current_evidence": 9,
+    "acceptance_criteria_total": 12,
+    "criteria_with_current_evidence": 10,
     "false_completion_events": 1,
     "regression_events": 0,
     "unverified_criteria_count": 2
