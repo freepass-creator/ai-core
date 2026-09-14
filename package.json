@@ -7,6 +7,7 @@
     "test": "node --test",
     "verify": "node scripts/verify-main-state.mjs",
     "form:validate": "node scripts/validate-development-form.mjs",
+    "evolve:evaluate": "node scripts/evaluate-self-evolution.mjs",
     "checkpoint": "node scripts/checkpoint-work.mjs"
   },
   "dependencies": {
