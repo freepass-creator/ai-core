@@ -1,0 +1,26 @@
+name: Main State Consistency
+
+on:
+  pull_request:
+    paths:
+      - README.md
+      - memory/CURRENT.md
+      - memory/RESEARCH_INDEX.md
+      - docs/episodes/**
+      - scripts/verify-main-state.mjs
+      - test/verify-main-state.test.mjs
+  push:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --test test/verify-main-state.test.mjs
+      - run: node scripts/verify-main-state.mjs
