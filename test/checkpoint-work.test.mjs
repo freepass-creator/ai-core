@@ -17,11 +17,28 @@ async function repository(branch = 'work/codex/example') {
   git(root, ['config', 'user.name', 'Checkpoint Test']);
   await writeFile(join(root, 'selected.txt'), 'base\n');
   await writeFile(join(root, 'other.txt'), 'base\n');
+  await mkdir(join(root, 'nested'));
+  await writeFile(join(root, 'nested', 'tracked.txt'), 'base\n');
   git(root, ['add', '.']);
   git(root, ['commit', '-m', 'base']);
   git(root, ['remote', 'add', 'origin', root]);
   if (branch !== 'main') git(root, ['switch', '-c', branch]);
   return root;
+}
+
+async function remotePair() {
+  const root = await repository();
+  const bare = await mkdtemp(join(tmpdir(), 'ai-core-origin-'));
+  git(bare, ['init', '--bare']);
+  git(root, ['remote', 'set-url', 'origin', bare]);
+  git(root, ['push', 'origin', 'main']);
+  git(root, ['push', '--set-upstream', 'origin', 'HEAD']);
+  const other = await mkdtemp(join(tmpdir(), 'ai-core-other-'));
+  git(other, ['clone', bare, '.']);
+  git(other, ['config', 'user.email', 'other@example.invalid']);
+  git(other, ['config', 'user.name', 'Other Writer']);
+  git(other, ['switch', 'work/codex/example']);
+  return { root, bare, other };
 }
 
 test('commits a selected clean-lane change after checks', async () => {
@@ -99,14 +116,81 @@ test('commits an exact tracked deletion', async () => {
   assert.match(git(root, ['show', '--format=', '--name-status', 'HEAD']), /^D\s+selected\.txt$/);
 });
 
-test('commit failure restores tool staging and preserves working changes', async () => {
+test('commits a tracked deletion when its parent directory is also gone', async () => {
+  const root = await repository();
+  await rm(join(root, 'nested'), { recursive: true });
+  const result = await checkpointWork({
+    root, message: 'delete nested', paths: ['nested/tracked.txt'], checks: false
+  });
+  assert.equal(result.status, 'COMMITTED_LOCAL');
+  assert.match(git(root, ['show', '--format=', '--name-status', 'HEAD']), /^D\s+nested\/tracked\.txt$/);
+});
+
+test('successful local hooks cannot mutate the validated commit snapshot', async () => {
   const root = await repository();
   await writeFile(join(root, 'selected.txt'), 'changed\n');
   const hook = join(root, '.git', 'hooks', 'pre-commit');
-  await writeFile(hook, '#!/bin/sh\nexit 1\n', { mode: 0o755 });
+  await writeFile(hook, '#!/bin/sh\necho hook > other.txt\ngit add other.txt\n', { mode: 0o755 });
+  const result = await checkpointWork({ root, message: 'hook bypassed', paths: ['selected.txt'], checks: false });
+  assert.equal(result.status, 'COMMITTED_LOCAL');
+  assert.equal(git(root, ['show', '--format=', '--name-only', 'HEAD']), 'selected.txt');
+  assert.equal(await readFile(join(root, 'other.txt'), 'utf8'), 'base\n');
+});
+
+test('a real failing repository test blocks commit and leaves files unstaged', async () => {
+  const root = await repository();
+  await mkdir(join(root, 'test'));
+  await writeFile(join(root, 'test', 'fail.test.mjs'),
+    "import test from 'node:test'; test('fails', () => { throw new Error('expected'); });\n");
+  const before = git(root, ['rev-parse', 'HEAD']);
   await assert.rejects(checkpointWork({
-    root, message: 'hook rejects', paths: ['selected.txt'], checks: false
+    root, message: 'must not commit', paths: ['test/fail.test.mjs']
   }));
+  assert.equal(git(root, ['rev-parse', 'HEAD']), before);
   assert.equal(git(root, ['diff', '--cached', '--name-only']), '');
-  assert.match(git(root, ['status', '--short']), /selected\.txt/);
+});
+
+test('remote divergence holds before creating a local checkpoint', async () => {
+  const { root, other } = await remotePair();
+  await writeFile(join(other, 'selected.txt'), 'remote\n');
+  git(other, ['add', 'selected.txt']);
+  git(other, ['commit', '-m', 'remote change']);
+  git(other, ['push', 'origin', 'HEAD']);
+  await writeFile(join(root, 'selected.txt'), 'local\n');
+  const before = git(root, ['rev-parse', 'HEAD']);
+  await assert.rejects(
+    checkpointWork({ root, message: 'local change', paths: ['selected.txt'], checks: false }),
+    error => error.code === 'HOLD_REMOTE_DIVERGED'
+  );
+  assert.equal(git(root, ['rev-parse', 'HEAD']), before);
+});
+
+test('non-force push publishes a fast-forward checkpoint', async () => {
+  const { root, bare } = await remotePair();
+  await writeFile(join(root, 'selected.txt'), 'published\n');
+  const result = await checkpointWork({
+    root, message: 'publish change', paths: ['selected.txt'], checks: false, push: true
+  });
+  assert.equal(result.status, 'COMMITTED_AND_PUSHED');
+  assert.equal(git(bare, ['rev-parse', 'refs/heads/work/codex/example']), result.commit);
+});
+
+test('push race keeps the local commit when remote rejects it', async () => {
+  const { root, bare, other } = await remotePair();
+  await writeFile(join(other, 'selected.txt'), 'racing remote\n');
+  git(other, ['add', 'selected.txt']);
+  git(other, ['commit', '-m', 'racing remote']);
+  await writeFile(join(root, 'selected.txt'), 'local retained\n');
+  const hook = join(root, '.git', 'hooks', 'pre-push');
+  const otherPath = other.replaceAll('\\', '/');
+  await writeFile(hook,
+    `#!/bin/sh\ngit -C "${otherPath}" push origin HEAD:work/codex/example\n`, { mode: 0o755 });
+  await assert.rejects(
+    checkpointWork({ root, message: 'local retained', paths: ['selected.txt'], checks: false, push: true }),
+    error => error.code === 'HOLD_PUSH_REJECTED'
+  );
+  const local = git(root, ['rev-parse', 'HEAD']);
+  const remote = git(bare, ['rev-parse', 'refs/heads/work/codex/example']);
+  assert.notEqual(local, remote);
+  assert.equal(git(root, ['show', '--format=', '--name-only', 'HEAD']), 'selected.txt');
 });

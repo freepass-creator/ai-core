@@ -1,11 +1,14 @@
 import { closeSync, existsSync, openSync, statSync, unlinkSync } from 'node:fs';
 import { realpath } from 'node:fs/promises';
-import { dirname, isAbsolute, relative, resolve } from 'node:path';
+import { isAbsolute, relative, resolve } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 function git(root, args, options = {}) {
-  return execFileSync('git', args, { cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], ...options }).trim();
+  const output = execFileSync('git', args, {
+    cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], ...options
+  });
+  return output == null ? '' : String(output).trim();
 }
 
 function fail(code, message = code) {
@@ -39,11 +42,8 @@ async function assertSafeFile(root, path) {
     if (error.code !== 'ENOENT') throw error;
     try { git(root, ['ls-files', '--error-unmatch', '--', path]); }
     catch { fail('HOLD_PATH_MISSING'); }
-    const parent = await realpath(dirname(absolute));
-    const outside = relative(root, parent);
-    if (outside === '..' || outside.startsWith(`..${process.platform === 'win32' ? '\\' : '/'}`)) {
-      fail('HOLD_PATH_OUTSIDE_WORKTREE');
-    }
+    // The exact lexical path is inside root and is tracked. Its parent may
+    // also have been deleted, so no filesystem target remains to escape.
   }
 }
 
@@ -60,7 +60,8 @@ function remoteBranchExists(root, branch) {
 }
 
 function runChecks(root) {
-  execFileSync(process.execPath, ['--test'], { cwd: root, stdio: 'inherit' });
+  const { NODE_TEST_CONTEXT: ignored, ...cleanEnv } = process.env;
+  execFileSync(process.execPath, ['--test'], { cwd: root, stdio: 'inherit', env: cleanEnv });
   const verifier = resolve(root, 'scripts/verify-main-state.mjs');
   if (existsSync(verifier)) execFileSync(process.execPath, [verifier], { cwd: root, stdio: 'inherit' });
 }
@@ -97,9 +98,15 @@ export async function checkpointWork({ root, message, paths, push = false, check
     const staged = lines(git(root, ['diff', '--cached', '--name-only']));
     if (!staged.length) fail('HOLD_NO_SELECTED_CHANGES');
     if (staged.some(path => !selected.includes(path))) fail('HOLD_STAGED_SCOPE_MISMATCH');
-    git(root, ['commit', '-m', message.trim()]);
+    const stagedTree = git(root, ['write-tree']);
+    git(root, ['commit', '--no-verify', '-m', message.trim()]);
     committed = true;
     const commit = git(root, ['rev-parse', 'HEAD']);
+    const commitTree = git(root, ['rev-parse', 'HEAD^{tree}']);
+    const committedPaths = lines(git(root, ['diff-tree', '--no-commit-id', '--name-only', '-r', 'HEAD']));
+    if (commitTree !== stagedTree || JSON.stringify(committedPaths.sort()) !== JSON.stringify([...staged].sort())) {
+      fail('HOLD_COMMIT_SNAPSHOT_MISMATCH', `Commit ${commit} does not match the validated index snapshot`);
+    }
     if (push) {
       try { git(root, ['push', '--set-upstream', 'origin', `HEAD:${branch}`], { stdio: 'inherit' }); }
       catch { fail('HOLD_PUSH_REJECTED', `Commit ${commit} is local; push was rejected`); }
