@@ -13,7 +13,8 @@ Run the first measured real Development Episode. Do not add another framework be
 - Episode: `DEV-EPISODE-001`
 - Trigger: the next suitable real non-production development request
 - Observation design: PR #19 / `experiment/development-episode-pilot-v0.1`
-- Status: `NOT_STARTED`
+- Status: `AWAITING_USER_REVIEW`
+- Observation: `docs/episodes/DEV-EPISODE-001.json`
 - Prohibited shortcut: do not create a fake task or synthetic observation and call it the first episode
 
 Capture raw facts first:

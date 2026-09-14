@@ -1,0 +1,123 @@
+{
+  "episode_id": "DEV-EPISODE-001",
+  "status": "AWAITING_USER_REVIEW",
+  "project": {
+    "id": "ai-core",
+    "repository": "freepass-creator/ai-core",
+    "base_revision": "179352b3d594457dac18485df97146824da3c509",
+    "capsule_revision": null,
+    "authoritative_sources": [
+      "user adversarial review in current task",
+      "main@179352b3d594457dac18485df97146824da3c509",
+      "PR #1",
+      "PR #19"
+    ]
+  },
+  "intent": {
+    "summary": "Align ai-core with measured self-improvement by removing false main claims and making the first real development episode the sole current priority.",
+    "requirement_set_digest": "sha256:7f85eb644f8d8f66754c3289bd66013bfca1b562faa505130b14277c6eaabcd3",
+    "requirements": [
+      {
+        "id": "REQ-001",
+        "text": "main README truthfully reflects the files and executable state of main",
+        "provenance": "USER_CONFIRMED",
+        "status": "ACTIVE",
+        "evidence_refs": ["commit:d9ab1b3"]
+      },
+      {
+        "id": "REQ-002",
+        "text": "DEV-EPISODE-001 is the sole current development priority",
+        "provenance": "USER_CONFIRMED",
+        "status": "ACTIVE",
+        "evidence_refs": ["commit:0d56417"]
+      },
+      {
+        "id": "REQ-003",
+        "text": "PR 1 is the sole implementation evaluation line and PR 17/18 are deferred",
+        "provenance": "USER_CONFIRMED",
+        "status": "ACTIVE",
+        "evidence_refs": ["commit:0d56417"]
+      },
+      {
+        "id": "REQ-004",
+        "text": "PR 19 is described as an observation form and summarizer, not an automatic observer",
+        "provenance": "USER_CONFIRMED",
+        "status": "ACTIVE",
+        "evidence_refs": ["commit:0d56417"]
+      },
+      {
+        "id": "REQ-005",
+        "text": "commit each validated change separately",
+        "provenance": "USER_CONFIRMED",
+        "status": "ACTIVE",
+        "evidence_refs": ["commit:d9ab1b3", "commit:0d56417"]
+      }
+    ]
+  },
+  "capability_resolution": {
+    "searched": true,
+    "candidate_count": 2,
+    "reused_count": 1,
+    "new_count": 0,
+    "decisions": ["REUSE_EXACT", "HOLD"]
+  },
+  "execution": {
+    "executors": ["Codex"],
+    "branch": "fix/main-truthful-entrypoint",
+    "subject_revision": "0d56417f555743894f0e732be283e2b64f937754",
+    "changed_files": [
+      "README.md",
+      "memory/CURRENT.md",
+      "memory/RESEARCH_INDEX.md"
+    ],
+    "rework_loops": 1
+  },
+  "evidence_state": {
+    "proof_revision_matches_subject": true,
+    "commands_run": [
+      "git ls-tree -r --name-only origin/main",
+      "gh pr list --state open",
+      "gh pr view 1 --json files,commits",
+      "gh pr view 19 --json files,commits",
+      "git diff --check"
+    ],
+    "passes": 5,
+    "failures": 0,
+    "skips": 0,
+    "unknowns": 1,
+    "independent_review": "PARTIAL",
+    "false_completion_events": 1
+  },
+  "metrics": {
+    "clarification_question_count": 0,
+    "repeated_information_request_count": 0,
+    "user_correction_count": 1,
+    "user_review_round_count": 1,
+    "repo_orientation_minutes": null,
+    "context_reread_count": 1,
+    "stale_plan_events": 1,
+    "stale_proof_events": 0,
+    "resume_time_minutes": null,
+    "candidate_reuse_count": 2,
+    "reused_capability_count": 1,
+    "new_capability_count": 0,
+    "files_touched_count": 3,
+    "rework_loop_count": 1,
+    "intent_to_first_preview_minutes": null,
+    "acceptance_criteria_total": 5,
+    "criteria_with_current_evidence": 5,
+    "false_completion_events": 1,
+    "regression_events": 0,
+    "unverified_criteria_count": 0
+  },
+  "baseline": {
+    "status": "UNKNOWN",
+    "reference": null,
+    "notes": "No comparable measured development episode exists. No improvement percentage is claimed."
+  },
+  "outcome": {
+    "first_preview_accepted": null,
+    "release_state": "NOT_REQUESTED",
+    "post_completion_defects": 0
+  }
+}
