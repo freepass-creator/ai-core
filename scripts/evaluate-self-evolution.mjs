@@ -6,7 +6,8 @@ import { fileURLToPath } from 'node:url';
 const REQUIRED_TEXT = [
   'candidate_id', 'source_episode_id', 'baseline_episode_id', 'trial_episode_id',
   'scope', 'cause_hypothesis', 'before_behavior', 'after_behavior', 'counterexample',
-  'executable_check', 'rollback', 'expected_benefit', 'possible_harm', 'current_state'
+  'executable_check', 'rollback', 'expected_benefit', 'possible_harm', 'current_state',
+  'candidate_revision', 'registered_at', 'trial_started_at'
 ];
 const SAFE_METRICS = new Set([
   'user_correction_count', 'rework_loop_count', 'false_completion_events',
@@ -29,6 +30,11 @@ export function episodeDigest(episode) {
   return `sha256:${createHash('sha256').update(JSON.stringify(canonical(episode))).digest('hex')}`;
 }
 
+export function candidateDigest(candidate) {
+  const { candidate_digest: ignored, ...content } = candidate ?? {};
+  return `sha256:${createHash('sha256').update(JSON.stringify(canonical(content))).digest('hex')}`;
+}
+
 function isCount(value, { positive = false } = {}) {
   return Number.isInteger(value) && (positive ? value > 0 : value >= 0);
 }
@@ -44,9 +50,17 @@ function candidateProblems(candidate = {}) {
     problems.push('confidence');
   }
   for (const field of ['target_metrics', 'non_application_conditions', 'evidence_refs']) {
-    if (!Array.isArray(candidate[field]) || !candidate[field].length) problems.push(field);
+    if (!Array.isArray(candidate[field]) || !candidate[field].length ||
+        candidate[field].some(value => typeof value !== 'string' || !value.trim())) problems.push(field);
   }
   if (candidate.target_metrics?.some(key => !SAFE_METRICS.has(key))) problems.push('target_metrics');
+  if (candidate.current_state !== 'TRIAL_READY') problems.push('current_state');
+  for (const field of ['candidate_id', 'source_episode_id', 'baseline_episode_id', 'trial_episode_id']) {
+    if (!/^[A-Z0-9][A-Z0-9._-]*$/i.test(candidate[field] ?? '')) problems.push(field);
+  }
+  if (candidate.candidate_digest !== candidateDigest(candidate)) problems.push('candidate_digest');
+  if (!Number.isFinite(Date.parse(candidate.registered_at ?? ''))) problems.push('registered_at');
+  if (!Number.isFinite(Date.parse(candidate.trial_started_at ?? ''))) problems.push('trial_started_at');
   return [...new Set(problems)].sort();
 }
 
@@ -96,26 +110,14 @@ function comparabilityProblems(candidate, baseline, trial) {
   if (Date.parse(trial.comparison?.observed_at) <= Date.parse(baseline.comparison?.observed_at)) {
     problems.push('TRIAL_NOT_LATER_THAN_BASELINE');
   }
+  if (Date.parse(candidate.registered_at) >= Date.parse(candidate.trial_started_at) ||
+      Date.parse(candidate.trial_started_at) > Date.parse(trial.comparison?.observed_at)) {
+    problems.push('CANDIDATE_NOT_REGISTERED_BEFORE_TRIAL');
+  }
   return problems;
 }
 
-function trustProblems(label, episode, trustedEvidence) {
-  if (typeof trustedEvidence?.verifyEpisode !== 'function') return [`${label}_TRUST_ADAPTER_MISSING`];
-  const receipt = trustedEvidence.verifyEpisode(episode);
-  if (!receipt || receipt.revision_exists !== true || receipt.proof_bound !== true ||
-      receipt.review_result !== 'CONFIRMED' || !receipt.evidence_ref) return [`${label}_TRUST_RECEIPT_INVALID`];
-  if (receipt.subject_revision !== episode.execution.subject_revision ||
-      receipt.requirement_set_digest !== episode.intent.requirement_set_digest) {
-    return [`${label}_TRUST_RECEIPT_STALE`];
-  }
-  if (!receipt.author_id || !receipt.reviewer_id || receipt.author_id === receipt.reviewer_id) {
-    return [`${label}_REVIEW_NOT_INDEPENDENT`];
-  }
-  if (receipt.episode_digest !== episodeDigest(episode)) return [`${label}_EPISODE_RECEIPT_STALE`];
-  return [];
-}
-
-export function evaluateSelfEvolution({ candidate, baseline, trial, trustedEvidence }) {
+export function evaluateSelfEvolution({ candidate, baseline, trial }) {
   const incomplete = candidateProblems(candidate);
   if (incomplete.length) return { status: 'HOLD_INCOMPLETE_CANDIDATE', reasons: incomplete, auto_adopted: false };
 
@@ -129,10 +131,6 @@ export function evaluateSelfEvolution({ candidate, baseline, trial, trustedEvide
 
   const comparison = comparabilityProblems(candidate, baseline, trial);
   if (comparison.length) return { status: 'HOLD_NOT_COMPARABLE', reasons: comparison, auto_adopted: false };
-
-  const trust = [...trustProblems('BASELINE', baseline, trustedEvidence),
-    ...trustProblems('TRIAL', trial, trustedEvidence)];
-  if (trust.length) return { status: 'HOLD_UNTRUSTED_EVIDENCE', reasons: trust, auto_adopted: false };
 
   const regressions = [];
   for (const key of SAFETY_COUNTS) if (trial.evidence_state[key] !== 0) regressions.push(key);
@@ -160,8 +158,17 @@ export function evaluateSelfEvolution({ candidate, baseline, trial, trustedEvide
   if (!comparisons.some(item => item.after < item.before)) {
     return { status: 'HOLD_NO_OBSERVED_BENEFIT', reasons: [], comparisons, auto_adopted: false };
   }
-  return { status: 'ADOPTION_CANDIDATE', scope: candidate.scope, comparisons,
-    auto_adopted: false, execution_authorized: false };
+  return {
+    status: 'HOLD_EXTERNAL_ATTESTATION_REQUIRED',
+    provisional_finding: 'OUTCOME_BENEFIT_OBSERVED',
+    scope: candidate.scope,
+    candidate_digest: candidate.candidate_digest,
+    baseline_episode_digest: episodeDigest(baseline),
+    trial_episode_digest: episodeDigest(trial),
+    comparisons,
+    auto_adopted: false,
+    execution_authorized: false
+  };
 }
 
 async function readJson(path) {

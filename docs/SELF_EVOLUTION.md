@@ -43,7 +43,9 @@ A faster result does not win if an earlier dimension worsens. A tie or incompara
 
 No state transition grants operational execution authority. AI Core may prepare a branch, tests, evidence and a recommendation. Merge, deployment, external mutation and other consequential actions retain their existing approval gates.
 
-The local evaluator consumes ordinary JSON as untrusted claims. It may return `ADOPTION_CANDIDATE` only when a trusted adapter independently confirms that both revisions exist, each proof is bound to the stated revision, requirement digest and canonical digest of the complete episode, and reviewer identity differs from author identity. The complete digest binds metrics, safety counts, comparison conditions and outcome so those values cannot be changed while reusing an older receipt. The CLI has no such adapter and therefore cannot promote a candidate by itself.
+The local evaluator consumes ordinary JSON as untrusted claims. It never returns `ADOPTION_CANDIDATE`. Even when the supplied comparison is favorable, its highest result is `HOLD_EXTERNAL_ATTESTATION_REQUIRED` with a provisional finding. A future external verifier would need an allowlisted identity or signature system that binds the candidate before trial and binds both complete episodes, revisions, requirements, metrics, safety counts, comparison conditions, outcomes and reviewer identities. That trust system is not implemented here.
+
+Candidate content is hashed and must include its revision, registration time and trial start time. This detects later mutation but does not prove that registration actually occurred at that time. The external attestation requirement preserves that unknown.
 
 The trial must end with zero unresolved P0/P1 defects, authority violations, evidence-loss events, user-control violations, false-completion events, regressions, verification failures and unverified acceptance criteria. Counts must be non-negative integers and evidence coverage must be complete. A baseline violation cannot normalize the same violation in a trial.
 
