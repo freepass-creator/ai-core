@@ -2,63 +2,132 @@ import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const REQUIRED_CANDIDATE_FIELDS = [
-  'candidate_id', 'source_episode_id', 'scope', 'cause_hypothesis',
-  'before_behavior', 'after_behavior', 'counterexample', 'rollback',
-  'expected_benefit', 'possible_harm'
+const REQUIRED_TEXT = [
+  'candidate_id', 'source_episode_id', 'baseline_episode_id', 'trial_episode_id',
+  'scope', 'cause_hypothesis', 'before_behavior', 'after_behavior', 'counterexample',
+  'executable_check', 'rollback', 'expected_benefit', 'possible_harm', 'current_state'
 ];
-
 const SAFE_METRICS = new Set([
   'user_correction_count', 'rework_loop_count', 'false_completion_events',
   'unverified_criteria_count', 'regression_events'
 ]);
+const SAFETY_COUNTS = [
+  'unresolved_p0', 'unresolved_p1', 'authority_violations',
+  'evidence_loss_events', 'user_control_violations'
+];
 
 function metric(episode, key) {
   const value = episode?.metrics?.[key];
   return Number.isFinite(value) ? value : null;
 }
 
-function evidenceProblems(label, episode) {
-  const problems = [];
+function candidateProblems(candidate = {}) {
+  const problems = REQUIRED_TEXT.filter(field => !String(candidate[field] ?? '').trim());
+  if (!Number.isFinite(candidate.confidence) || candidate.confidence < 0 || candidate.confidence > 1) {
+    problems.push('confidence');
+  }
+  for (const field of ['target_metrics', 'non_application_conditions', 'evidence_refs']) {
+    if (!Array.isArray(candidate[field]) || !candidate[field].length) problems.push(field);
+  }
+  if (candidate.target_metrics?.some(key => !SAFE_METRICS.has(key))) problems.push('target_metrics');
+  return [...new Set(problems)].sort();
+}
+
+function episodeProblems(label, episode) {
   if (!episode) return [`${label}_MISSING`];
+  const problems = [];
   if (episode.status !== 'CLOSED') problems.push(`${label}_NOT_CLOSED`);
   if (!episode.execution?.subject_revision) problems.push(`${label}_SUBJECT_UNBOUND`);
+  if (!episode.intent?.requirement_set_digest) problems.push(`${label}_REQUIREMENTS_UNBOUND`);
   if (episode.evidence_state?.proof_revision_matches_subject !== true) problems.push(`${label}_PROOF_UNBOUND`);
   if (episode.evidence_state?.independent_review !== 'CONFIRMED') problems.push(`${label}_REVIEW_UNCONFIRMED`);
+  if (!Number.isFinite(episode.evidence_state?.failures)) problems.push(`${label}_FAILURES_UNOBSERVED`);
+  for (const key of SAFETY_COUNTS) {
+    if (!Number.isFinite(episode.evidence_state?.[key])) problems.push(`${label}_${key.toUpperCase()}_UNOBSERVED`);
+  }
+  for (const key of ['acceptance_criteria_total', 'criteria_with_current_evidence']) {
+    if (!Number.isFinite(metric(episode, key))) problems.push(`${label}_${key.toUpperCase()}_UNOBSERVED`);
+  }
+  for (const key of ['key', 'requirement_family_digest', 'metric_schema_version', 'observation_window']) {
+    if (!String(episode.comparison?.[key] ?? '').trim()) problems.push(`${label}_COMPARISON_${key.toUpperCase()}_MISSING`);
+  }
+  if (!Number.isFinite(Date.parse(episode.comparison?.observed_at ?? ''))) {
+    problems.push(`${label}_OBSERVED_AT_INVALID`);
+  }
+  if (episode.outcome?.observed !== true || typeof episode.outcome?.success !== 'boolean') {
+    problems.push(`${label}_OUTCOME_UNOBSERVED`);
+  }
   return problems;
 }
 
-export function evaluateSelfEvolution({ candidate, baseline, trial }) {
-  const missing = REQUIRED_CANDIDATE_FIELDS.filter(field => !String(candidate?.[field] ?? '').trim());
-  const targetMetrics = candidate?.target_metrics;
-  if (!Array.isArray(targetMetrics) || !targetMetrics.length ||
-      targetMetrics.some(key => !SAFE_METRICS.has(key))) {
-    missing.push('target_metrics');
+function comparabilityProblems(candidate, baseline, trial) {
+  const problems = [];
+  if (candidate.source_episode_id !== baseline.episode_id ||
+      candidate.baseline_episode_id !== baseline.episode_id ||
+      candidate.trial_episode_id !== trial.episode_id) problems.push('EPISODE_LINK_MISMATCH');
+  if (baseline.episode_id === trial.episode_id) problems.push('SAME_EPISODE_COMPARISON');
+  if (baseline.project?.id !== candidate.scope || trial.project?.id !== candidate.scope) {
+    problems.push('SCOPE_NOT_COMPARABLE');
   }
-  if (missing.length) {
-    return { status: 'HOLD_INCOMPLETE_CANDIDATE', reasons: [...new Set(missing)].sort(), auto_adopted: false };
+  for (const key of ['key', 'requirement_family_digest', 'metric_schema_version', 'observation_window']) {
+    if (baseline.comparison?.[key] !== trial.comparison?.[key]) problems.push(`COMPARISON_${key.toUpperCase()}_MISMATCH`);
   }
+  if (Date.parse(trial.comparison?.observed_at) <= Date.parse(baseline.comparison?.observed_at)) {
+    problems.push('TRIAL_NOT_LATER_THAN_BASELINE');
+  }
+  return problems;
+}
 
-  const evidence = [...evidenceProblems('BASELINE', baseline), ...evidenceProblems('TRIAL', trial)];
-  if (baseline?.project?.id !== trial?.project?.id || baseline?.project?.id !== candidate.scope) {
-    evidence.push('SCOPE_NOT_COMPARABLE');
+function trustProblems(label, episode, trustedEvidence) {
+  if (typeof trustedEvidence?.verifyEpisode !== 'function') return [`${label}_TRUST_ADAPTER_MISSING`];
+  const receipt = trustedEvidence.verifyEpisode(episode);
+  if (!receipt || receipt.revision_exists !== true || receipt.proof_bound !== true ||
+      receipt.review_result !== 'CONFIRMED' || !receipt.evidence_ref) return [`${label}_TRUST_RECEIPT_INVALID`];
+  if (receipt.subject_revision !== episode.execution.subject_revision ||
+      receipt.requirement_set_digest !== episode.intent.requirement_set_digest) {
+    return [`${label}_TRUST_RECEIPT_STALE`];
   }
-  if (evidence.length) {
-    return { status: 'HOLD_INSUFFICIENT_EVIDENCE', reasons: evidence, auto_adopted: false };
+  if (!receipt.author_id || !receipt.reviewer_id || receipt.author_id === receipt.reviewer_id) {
+    return [`${label}_REVIEW_NOT_INDEPENDENT`];
   }
+  return [];
+}
 
-  const guardMetrics = ['false_completion_events', 'unverified_criteria_count', 'regression_events'];
-  const regressions = guardMetrics.filter(key => {
-    const before = metric(baseline, key);
-    const after = metric(trial, key);
-    return before == null || after == null || after > before;
-  });
-  if (trial.evidence_state.failures > baseline.evidence_state.failures) regressions.push('verification_failures');
-  if (regressions.length) {
-    return { status: 'REJECTED_REGRESSION', reasons: regressions, auto_adopted: false };
-  }
+export function evaluateSelfEvolution({ candidate, baseline, trial, trustedEvidence }) {
+  const incomplete = candidateProblems(candidate);
+  if (incomplete.length) return { status: 'HOLD_INCOMPLETE_CANDIDATE', reasons: incomplete, auto_adopted: false };
 
-  const comparisons = targetMetrics.map(key => ({ key, before: metric(baseline, key), after: metric(trial, key) }));
+  const evidence = [...episodeProblems('BASELINE', baseline), ...episodeProblems('TRIAL', trial)];
+  if (evidence.length) return { status: 'HOLD_INSUFFICIENT_EVIDENCE', reasons: evidence, auto_adopted: false };
+
+  const comparison = comparabilityProblems(candidate, baseline, trial);
+  if (comparison.length) return { status: 'HOLD_NOT_COMPARABLE', reasons: comparison, auto_adopted: false };
+
+  const trust = [...trustProblems('BASELINE', baseline, trustedEvidence),
+    ...trustProblems('TRIAL', trial, trustedEvidence)];
+  if (trust.length) return { status: 'HOLD_UNTRUSTED_EVIDENCE', reasons: trust, auto_adopted: false };
+
+  const regressions = [];
+  for (const key of SAFETY_COUNTS) {
+    if (trial.evidence_state[key] > baseline.evidence_state[key] ||
+        (['unresolved_p0', 'unresolved_p1'].includes(key) && trial.evidence_state[key] > 0)) regressions.push(key);
+  }
+  for (const key of ['false_completion_events', 'unverified_criteria_count', 'regression_events']) {
+    if (metric(trial, key) == null || metric(baseline, key) == null || metric(trial, key) > metric(baseline, key)) {
+      regressions.push(key);
+    }
+  }
+  if (trial.evidence_state.failures > baseline.evidence_state.failures || trial.outcome.success !== true) {
+    regressions.push('verification_or_outcome');
+  }
+  const baselineCoverage = metric(baseline, 'criteria_with_current_evidence') / metric(baseline, 'acceptance_criteria_total');
+  const trialCoverage = metric(trial, 'criteria_with_current_evidence') / metric(trial, 'acceptance_criteria_total');
+  if (!Number.isFinite(baselineCoverage) || !Number.isFinite(trialCoverage) || trialCoverage < baselineCoverage) {
+    regressions.push('acceptance_coverage');
+  }
+  if (regressions.length) return { status: 'REJECTED_REGRESSION', reasons: [...new Set(regressions)], auto_adopted: false };
+
+  const comparisons = candidate.target_metrics.map(key => ({ key, before: metric(baseline, key), after: metric(trial, key) }));
   if (comparisons.some(item => item.before == null || item.after == null)) {
     return { status: 'HOLD_INSUFFICIENT_EVIDENCE', reasons: ['TARGET_METRIC_UNOBSERVED'], auto_adopted: false };
   }
@@ -68,14 +137,8 @@ export function evaluateSelfEvolution({ candidate, baseline, trial }) {
   if (!comparisons.some(item => item.after < item.before)) {
     return { status: 'HOLD_NO_OBSERVED_BENEFIT', reasons: [], comparisons, auto_adopted: false };
   }
-
-  return {
-    status: 'ADOPTION_CANDIDATE',
-    scope: candidate.scope,
-    comparisons,
-    auto_adopted: false,
-    execution_authorized: false
-  };
+  return { status: 'ADOPTION_CANDIDATE', scope: candidate.scope, comparisons,
+    auto_adopted: false, execution_authorized: false };
 }
 
 async function readJson(path) {

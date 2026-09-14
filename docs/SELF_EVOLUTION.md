@@ -43,6 +43,8 @@ A faster result does not win if an earlier dimension worsens. A tie or incompara
 
 No state transition grants operational execution authority. AI Core may prepare a branch, tests, evidence and a recommendation. Merge, deployment, external mutation and other consequential actions retain their existing approval gates.
 
+The local evaluator consumes ordinary JSON as untrusted claims. It may return `ADOPTION_CANDIDATE` only when a trusted adapter independently confirms that both revisions exist, each proof is bound to the stated revision and requirement digest, and reviewer identity differs from author identity. The CLI has no such adapter and therefore cannot promote a candidate by itself.
+
 ## Required candidate record
 
 Every proposed evolution must identify:
@@ -56,6 +58,9 @@ Every proposed evolution must identify:
 - rollback method;
 - baseline and future trial episode;
 - current state and evidence references.
+- distinct baseline and trial episode IDs;
+- a shared task/requirement family, observation window and metric schema;
+- ordered observation times and an actual outcome for both episodes.
 
 If any of these is absent, the result is `HOLD_INCOMPLETE_CANDIDATE`.
 
