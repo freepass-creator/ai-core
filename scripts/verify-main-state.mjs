@@ -58,6 +58,16 @@ export function validateMainState({ readme, current, researchIndex, episode, fil
   if (episode.status !== 'CLOSED' && episode.evidence_state?.proof_revision_matches_subject === true) {
     errors.push('open episode must not claim final proof revision alignment');
   }
+  const checkCommands = (episode.evidence_state?.commands_run ?? []).filter(command =>
+    command === 'git diff --check' || command.startsWith('node --test') ||
+    command === 'node scripts/verify-main-state.mjs'
+  );
+  if (episode.evidence_state?.passes > checkCommands.length) {
+    errors.push('pass count includes commands that are not verification checks');
+  }
+  if (episode.status !== 'CLOSED' && episode.outcome?.post_completion_defects != null) {
+    errors.push('open episode must not claim a post-completion defect count');
+  }
   if (episode.metrics?.false_completion_events !== episode.evidence_state?.false_completion_events) {
     errors.push('false completion counts disagree');
   }

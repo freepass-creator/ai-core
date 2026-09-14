@@ -94,7 +94,7 @@
       "node --test test/verify-main-state.test.mjs",
       "node scripts/verify-main-state.mjs"
     ],
-    "passes": 7,
+    "passes": 3,
     "failures": 0,
     "skips": 0,
     "unknowns": 2,
@@ -130,7 +130,6 @@
   },
   "outcome": {
     "first_preview_accepted": null,
-    "release_state": "NOT_REQUESTED",
-    "post_completion_defects": 0
+    "release_state": "NOT_REQUESTED"
   }
 }
