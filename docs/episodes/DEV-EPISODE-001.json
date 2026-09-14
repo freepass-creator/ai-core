@@ -113,7 +113,9 @@
         "evidence_refs": [
           "contracts/development-form.schema.json",
           "docs/STANDARD_DEVELOPMENT_FORM.md",
-          "examples/development-form.json"
+          "examples/development-form.json",
+          "scripts/validate-development-form.mjs",
+          "test/validate-development-form.test.mjs"
         ]
       }
     ]
@@ -152,7 +154,9 @@
       "examples/development-form.json",
       "package.json",
       "scripts/checkpoint-work.mjs",
-      "test/checkpoint-work.test.mjs"
+      "scripts/validate-development-form.mjs",
+      "test/checkpoint-work.test.mjs",
+      "test/validate-development-form.test.mjs"
     ],
     "rework_loops": 22
   },
@@ -187,7 +191,7 @@
     "candidate_reuse_count": 2,
     "reused_capability_count": 1,
     "new_capability_count": 0,
-    "files_touched_count": 18,
+    "files_touched_count": 20,
     "rework_loop_count": 22,
     "intent_to_first_preview_minutes": null,
     "acceptance_criteria_total": 10,

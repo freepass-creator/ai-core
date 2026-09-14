@@ -1,6 +1,6 @@
 # Standard Development Form v1.0
 
-Status: `IMPLEMENTED_CONTRACT / VALIDATOR_PENDING`
+Status: `IMPLEMENTED_CONTRACT_AND_SEMANTIC_VALIDATOR`
 
 This form is the shared contract for Codex, Cursor, Claude, Gemini and a future Dev Control Room. JSON is canonical; a UI or Google document is a view over the same fields.
 
@@ -33,6 +33,12 @@ This form is the shared contract for Codex, Cursor, Claude, Gemini and a future 
 | Close | criteria pass and required outcome evidence exists | request becomes `CLOSED` |
 
 Any failed prerequisite renders the action disabled with its `HOLD` reasons. A button never silently advances more than one boundary.
+
+Validate a form before enabling state-changing buttons:
+
+```powershell
+npm run form:validate -- examples/development-form.json
+```
 
 ## Cross-field invariants
 

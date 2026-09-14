@@ -6,6 +6,7 @@
   "scripts": {
     "test": "node --test",
     "verify": "node scripts/verify-main-state.mjs",
+    "form:validate": "node scripts/validate-development-form.mjs",
     "checkpoint": "node scripts/checkpoint-work.mjs"
   }
 }
