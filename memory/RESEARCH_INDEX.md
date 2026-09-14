@@ -12,6 +12,9 @@
 
 | 주제 | 위치/branch | PR | 상태 | 핵심 |
 |---|---|---:|---|---|
+| v0.4 planning candidate | `feature/orchestrator-v0.1` | #1 | LOCALLY_TESTED_CANDIDATE | 유일한 현재 구현 평가선. 계획·HOLD·proof gate를 제공하지만 실행기나 운영 채택본은 아님 |
+| v0.5 stacked extension | `feature/human-agency-v0.5` | #17 | DEFERRED_CANDIDATE | #1 위에 쌓인 의도·준비 계층. 실제 episode에서 필요성이 관찰되기 전에는 진행하지 않음 |
+| v0.6 stacked extension | `feature/cognitive-runtime-v0.6` | #18 | DEFERRED_CANDIDATE | #17 위에 쌓인 runtime·stewardship 계층. 연구 #9~#11과 개념·파일이 겹치며 현재 채택선이 아님 |
 | Development Runtime | `main/docs/DEVELOPMENT_RUNTIME.md` | — | RESEARCH_CANDIDATE | Project Capsule / Codebase Twin / Change Compiler / Proof Bundle / Preview·Release 자동화 |
 | Development Autonomy + Continuity | `research/development-autonomy-v0.1` | #14 | RESEARCH_CANDIDATE | L0→L6 개발 성숙도 + Project Capsule / Change Packet / Proof Bundle + Living Requirement Graph / Development Episode / stale plan detection / multi-agent write conflict |
 | Engine / Port / Adapter Contracts | `research/engine-adapter-contract-v0.1` | #15 | DESIGN | Engine=업무의미, Port=추상계약, Adapter=provider/project 연결, Connector=transport, Binding Profile=배선, Runtime=실행조정 |
@@ -50,6 +53,9 @@
 ## 중요
 
 - 연구 문서/branch의 존재 자체는 채택/merge/배포를 의미하지 않는다.
+- 구현 계보는 `#1 → #17 → #18`의 stacked branches다. 세 구현을 독립된 현재 상태로 합치지 않는다. 현재 평가 대상은 #1 하나이며 #17/#18은 보류한다.
+- 연구 #9~#11과 구현 #18의 같은 개념·파일은 별도 세계의 후보다. 이름이 같다는 이유로 내용을 합치거나 둘 다 정본으로 취급하지 않는다.
+- PR #19는 관찰 양식과 집계기다. 질문·시간·재사용·회귀를 자동 관측하는 측정기로 설명하지 않는다.
 - Chat이 새 연구를 만들면 이 Index에만 1줄 추가하고 기존 원칙과 중복이면 새 항목을 만들지 않는다.
 - Work가 연구를 구현하려면 현재 Work Packet 범위와 충돌하지 않는지 먼저 확인한다.
 - 현재 사용자 우선순위는 **개발 경험 단순화**다. 이제 우선순위는 연구 추가보다 `DEV-EPISODE-001`의 실제 관찰을 얻는 쪽으로 이동한다.
