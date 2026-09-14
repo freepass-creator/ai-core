@@ -40,13 +40,14 @@ In a target project, declare its real test and build commands as argument arrays
 }
 ```
 
-Then run:
+Keep AI Core cloned at a stable location. From any target repository, invoke its CLI by absolute path and identify the target root explicitly:
 
 ```powershell
-npm run checkpoint -- --config .ai-core/development.json --message "feat: verified change" --path src/example.ts --push
+$AiCore = "C:\dev\ai-core"
+node "$AiCore\scripts\checkpoint-work.mjs" --root . --config .ai-core/development.json --message "feat: verified change" --path src/example.ts --push
 ```
 
-Copy `examples/development.config.json` to `.ai-core/development.json` and replace the example commands with that repository's deterministic checks. Each command is an executable plus literal arguments; shell operators and command interpolation are not supported.
+Copy `examples/development.config.json` to the target repository as `.ai-core/development.json` and replace the example commands with that repository's deterministic checks. `checks` is mandatory and must contain at least one command. Each command is an executable plus literal arguments; shell operators and command interpolation are not supported. On Windows, `npm` and `npx` are routed through their installed JavaScript entrypoints so the same configuration works without `cmd.exe`.
 
 The checkpoint tool:
 

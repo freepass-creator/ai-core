@@ -72,6 +72,24 @@ test('rejects malformed project check commands', async () => {
   );
 });
 
+test('rejects empty project checks instead of creating an unverified commit', async () => {
+  const root = await repository();
+  await writeFile(join(root, 'selected.txt'), 'selected\n');
+  await assert.rejects(
+    checkpointWork({ root, message: 'no checks', paths: ['selected.txt'], checkCommands: [] }),
+    error => error.code === 'HOLD_CHECKS_REQUIRED'
+  );
+});
+
+test('runs npm by its JavaScript entrypoint on Windows', { skip: process.platform !== 'win32' }, async () => {
+  const root = await repository();
+  await writeFile(join(root, 'selected.txt'), 'selected\n');
+  const result = await checkpointWork({
+    root, message: 'windows npm', paths: ['selected.txt'], checkCommands: [['npm', '--version']]
+  });
+  assert.equal(result.status, 'COMMITTED_LOCAL');
+});
+
 test('preserves but refuses unrelated dirty work', async () => {
   const root = await repository();
   await writeFile(join(root, 'selected.txt'), 'selected\n');

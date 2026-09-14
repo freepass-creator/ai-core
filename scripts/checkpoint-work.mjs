@@ -1,6 +1,6 @@
 import { closeSync, existsSync, lstatSync, openSync, readFileSync, statSync, unlinkSync } from 'node:fs';
 import { realpath } from 'node:fs/promises';
-import { isAbsolute, relative, resolve } from 'node:path';
+import { dirname, isAbsolute, join, relative, resolve } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
@@ -81,12 +81,21 @@ function remoteBranchExists(root, branch) {
 
 function runChecks(root, commands) {
   const { NODE_TEST_CONTEXT: ignored, ...cleanEnv } = process.env;
-  if (commands) {
+  if (commands !== undefined) {
+    if (!Array.isArray(commands) || !commands.length) fail('HOLD_CHECKS_REQUIRED');
     for (const command of commands) {
-      if (!Array.isArray(command) || !command.length || command.some(value => typeof value !== 'string')) {
+      if (!Array.isArray(command) || !command.length || command.some(value => typeof value !== 'string') || !command[0].trim()) {
         fail('HOLD_INVALID_CHECK_COMMAND');
       }
-      execFileSync(command[0], command.slice(1), { cwd: root, stdio: 'inherit', env: cleanEnv });
+      let executable = command[0];
+      let args = command.slice(1);
+      if (process.platform === 'win32' && (executable === 'npm' || executable === 'npx')) {
+        const cli = join(dirname(process.execPath), 'node_modules', 'npm', 'bin', `${executable}-cli.js`);
+        if (!existsSync(cli)) fail('HOLD_CHECK_EXECUTABLE_MISSING', cli);
+        args = [cli, ...args];
+        executable = process.execPath;
+      }
+      execFileSync(executable, args, { cwd: root, stdio: 'inherit', env: cleanEnv });
     }
     return;
   }
@@ -168,6 +177,7 @@ function parseArgs(args) {
     else if (args[i] === '--path') result.paths.push(args[++i]);
     else if (args[i] === '--push') result.push = true;
     else if (args[i] === '--config') result.config = args[++i];
+    else if (args[i] === '--root') result.root = args[++i];
     else fail('HOLD_UNKNOWN_ARGUMENT', args[i]);
   }
   return result;
@@ -176,13 +186,15 @@ function parseArgs(args) {
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   try {
     const args = parseArgs(process.argv.slice(2));
+    args.root = resolve(process.cwd(), args.root ?? '.');
     if (args.config) {
-      const configPath = resolve(process.cwd(), args.config);
+      const configPath = resolve(args.root, args.config);
       const config = JSON.parse(readFileSync(configPath, 'utf8'));
+      if (!Array.isArray(config.checks) || !config.checks.length) fail('HOLD_CHECKS_REQUIRED');
       args.checkCommands = config.checks;
       delete args.config;
     }
-    console.log(JSON.stringify(await checkpointWork({ root: process.cwd(), ...args }), null, 2));
+    console.log(JSON.stringify(await checkpointWork(args), null, 2));
   } catch (error) {
     console.error(JSON.stringify({ status: error.code ?? 'HOLD_CHECKPOINT_FAILED', reason: error.message }));
     process.exitCode = 1;

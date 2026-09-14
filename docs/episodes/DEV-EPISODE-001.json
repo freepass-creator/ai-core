@@ -111,7 +111,7 @@
       "scripts/checkpoint-work.mjs",
       "test/checkpoint-work.test.mjs"
     ],
-    "rework_loops": 19
+    "rework_loops": 20
   },
   "evidence_state": {
     "proof_revision_matches_subject": null,
@@ -125,7 +125,7 @@
       "node scripts/verify-main-state.mjs"
     ],
     "passes": 3,
-    "failures": 8,
+    "failures": 9,
     "skips": 0,
     "unknowns": 2,
     "independent_review": "PARTIAL",
@@ -145,7 +145,7 @@
     "reused_capability_count": 1,
     "new_capability_count": 0,
     "files_touched_count": 15,
-    "rework_loop_count": 19,
+    "rework_loop_count": 20,
     "intent_to_first_preview_minutes": null,
     "acceptance_criteria_total": 9,
     "criteria_with_current_evidence": 7,
