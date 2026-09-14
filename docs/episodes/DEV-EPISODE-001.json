@@ -15,7 +15,7 @@
   },
   "intent": {
     "summary": "Align ai-core with measured self-improvement by removing false main claims and making the first real development episode the sole current priority.",
-    "requirement_set_digest": "sha256:7f85eb644f8d8f66754c3289bd66013bfca1b562faa505130b14277c6eaabcd3",
+    "requirement_set_digest": "sha256:0b5f1959d1a6e36aa179901678addcb0e172797bc2d5d1cd65ed9a67b7670b08",
     "requirements": [
       {
         "id": "REQ-001",
@@ -50,7 +50,14 @@
         "text": "commit each validated change separately",
         "provenance": "USER_CONFIRMED",
         "status": "ACTIVE",
-        "evidence_refs": ["commit:d9ab1b3", "commit:0d56417"]
+        "evidence_refs": ["commit:d9ab1b3", "commit:0d56417", "commit:daf67fa"]
+      },
+      {
+        "id": "REQ-006",
+        "text": "prevent recurrence of main documentation, implementation-line and episode-evidence drift with an executable check",
+        "provenance": "USER_CONFIRMED",
+        "status": "ACTIVE",
+        "evidence_refs": ["commit:daf67fa"]
       }
     ]
   },
@@ -64,13 +71,16 @@
   "execution": {
     "executors": ["Codex"],
     "branch": "fix/main-truthful-entrypoint",
-    "subject_revision": "0d56417f555743894f0e732be283e2b64f937754",
+    "subject_revision": "daf67faac3dcb510e7e9b123ed766eff18992317",
     "changed_files": [
       "README.md",
       "memory/CURRENT.md",
-      "memory/RESEARCH_INDEX.md"
+      "memory/RESEARCH_INDEX.md",
+      ".github/workflows/main-state.yml",
+      "scripts/verify-main-state.mjs",
+      "test/verify-main-state.test.mjs"
     ],
-    "rework_loops": 1
+    "rework_loops": 2
   },
   "evidence_state": {
     "proof_revision_matches_subject": true,
@@ -79,9 +89,11 @@
       "gh pr list --state open",
       "gh pr view 1 --json files,commits",
       "gh pr view 19 --json files,commits",
-      "git diff --check"
+      "git diff --check",
+      "node --test test/verify-main-state.test.mjs",
+      "node scripts/verify-main-state.mjs"
     ],
-    "passes": 5,
+    "passes": 7,
     "failures": 0,
     "skips": 0,
     "unknowns": 1,
@@ -92,7 +104,7 @@
     "clarification_question_count": 0,
     "repeated_information_request_count": 0,
     "user_correction_count": 1,
-    "user_review_round_count": 1,
+    "user_review_round_count": 2,
     "repo_orientation_minutes": null,
     "context_reread_count": 1,
     "stale_plan_events": 1,
@@ -101,11 +113,11 @@
     "candidate_reuse_count": 2,
     "reused_capability_count": 1,
     "new_capability_count": 0,
-    "files_touched_count": 3,
-    "rework_loop_count": 1,
+    "files_touched_count": 6,
+    "rework_loop_count": 2,
     "intent_to_first_preview_minutes": null,
-    "acceptance_criteria_total": 5,
-    "criteria_with_current_evidence": 5,
+    "acceptance_criteria_total": 6,
+    "criteria_with_current_evidence": 6,
     "false_completion_events": 1,
     "regression_events": 0,
     "unverified_criteria_count": 0
