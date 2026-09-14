@@ -36,7 +36,7 @@ The checkpoint tool:
 - refuses pre-staged changes, directories, path traversal and linked paths whose real location leaves the worktree;
 - requires the lane to have no dirty paths outside the selected set, so checks run against the exact prospective commit;
 - runs the repository tests and state verifier before committing;
-- fingerprints every selected file before checks and refuses content or deletion-state changes during checks;
+- fingerprints the complete dirty set plus every selected file's content, type, mode and real path before checks, then refuses any change during checks;
 - bypasses mutable local commit hooks, then proves the commit tree equals the validated index tree;
 - fetches first and refuses a branch whose remote tip is not an ancestor;
 - commits only the requested paths;

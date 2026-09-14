@@ -167,6 +167,23 @@ test('a check that mutates a selected file cannot commit unvalidated bytes', asy
   assert.equal(git(root, ['diff', '--cached', '--name-only']), '');
 });
 
+test('a check cannot create an uncommitted dependency that made validation pass', async () => {
+  const root = await repository();
+  await mkdir(join(root, 'test'));
+  await writeFile(join(root, 'test', 'generate.test.mjs'),
+    "import test from 'node:test'; import { writeFile } from 'node:fs/promises'; test('generates', async () => { await writeFile('generated.json', '{}\\n'); });\n");
+  git(root, ['add', 'test/generate.test.mjs']);
+  git(root, ['commit', '-m', 'add generating check']);
+  await writeFile(join(root, 'selected.txt'), 'candidate\n');
+  const before = git(root, ['rev-parse', 'HEAD']);
+  await assert.rejects(
+    checkpointWork({ root, message: 'must include dependencies', paths: ['selected.txt'] }),
+    error => error.code === 'HOLD_SELECTED_CHANGED_DURING_CHECKS'
+  );
+  assert.equal(git(root, ['rev-parse', 'HEAD']), before);
+  assert.equal(git(root, ['diff', '--cached', '--name-only']), '');
+});
+
 test('uses an isolated lock inside a real linked worktree', async () => {
   const primary = await repository('main');
   const linked = await mkdtemp(join(tmpdir(), 'ai-core-linked-'));

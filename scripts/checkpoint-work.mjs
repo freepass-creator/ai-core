@@ -1,4 +1,4 @@
-import { closeSync, existsSync, openSync, statSync, unlinkSync } from 'node:fs';
+import { closeSync, existsSync, lstatSync, openSync, statSync, unlinkSync } from 'node:fs';
 import { realpath } from 'node:fs/promises';
 import { isAbsolute, relative, resolve } from 'node:path';
 import { execFileSync } from 'node:child_process';
@@ -54,12 +54,24 @@ function changedPaths(root) {
   ])];
 }
 
-function selectedSnapshot(root, selected) {
+async function selectedSnapshot(root, selected) {
   return selected.map(path => {
     const absolute = resolve(root, path);
     if (!existsSync(absolute)) return `${path}\0DELETED`;
-    return `${path}\0${git(root, ['hash-object', '--', path])}`;
-  }).join('\n');
+    const metadata = lstatSync(absolute);
+    return { path, absolute, metadata };
+  }).reduce(async (pending, entry) => {
+    const values = await pending;
+    if (typeof entry === 'string') values.push(entry);
+    else values.push([
+      entry.path,
+      entry.metadata.mode,
+      entry.metadata.isSymbolicLink() ? 'symlink' : 'file',
+      await realpath(entry.absolute),
+      git(root, ['hash-object', '--', entry.path])
+    ].join('\0'));
+    return values;
+  }, Promise.resolve([])).then(values => values.join('\n'));
 }
 
 function remoteBranchExists(root, branch) {
@@ -100,9 +112,12 @@ export async function checkpointWork({ root, message, paths, push = false, check
       catch { fail('HOLD_REMOTE_DIVERGED'); }
     }
 
-    const checkedSnapshot = selectedSnapshot(root, selected);
+    const checkedDirty = JSON.stringify([...dirty].sort());
+    const checkedSnapshot = await selectedSnapshot(root, selected);
     if (checks) runChecks(root);
-    if (selectedSnapshot(root, selected) !== checkedSnapshot) {
+    for (const path of selected) await assertSafeFile(root, path);
+    if (JSON.stringify(changedPaths(root).sort()) !== checkedDirty ||
+        await selectedSnapshot(root, selected) !== checkedSnapshot) {
       fail('HOLD_SELECTED_CHANGED_DURING_CHECKS');
     }
     git(root, ['add', '--', ...selected]);
