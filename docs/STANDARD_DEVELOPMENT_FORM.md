@@ -47,7 +47,7 @@ npm run form:validate -- examples/development-form.json
 
 - `READY` cannot coexist with unresolved `unknowns`, unresolved `decisions_required` or unrevisioned authoritative sources.
 - All seven delivery layers must be classified. `UNKNOWN` blocks readiness; included layers require affected references and acceptance-criterion references.
-- UI work requires device coverage and default/loading/empty/error states. UX work requires a complete journey and failure recovery. Data writes require an authority boundary.
+- UI work requires device coverage and a covered or reasoned-not-applicable decision for default/loading/empty/error states. UX work requires a complete journey and failure recovery. API or database work requires a data flow; data writes reference an authoritative source or approved authority boundary. Every quality dimension is required or explicitly not applicable with a reason.
 - Verification `PASS` requires a subject revision, at least one passing check and evidence for every acceptance criterion; evidence IDs and revisions must resolve to that subject revision.
 - Review `PASSED` requires the reviewed revision and a digest-bound receipt whose reviewer and issuer differ from the lane actor, plus no unresolved failing finding. The receipt ID must also be supplied as externally verified context.
 - Authorization `GRANTED` requires a human authorizer, timestamp no later than evaluation time, future expiry, action, target, revision and exact scope. Its authority reference must be supplied as externally verified context; AI actors cannot self-authorize protected execution.

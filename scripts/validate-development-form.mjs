@@ -67,6 +67,9 @@ export function validateDevelopmentForm(form, input) {
   }
 
   const criteria = form.acceptance_criteria ?? [];
+  const verification = form.verification ?? {};
+  const review = form.review ?? {};
+  const release = form.release ?? {};
   if (!criteria.length) add('ACCEPTANCE_CRITERIA_REQUIRED', 'acceptance_criteria');
   const ids = criteria.map(item => item.id);
   if (new Set(ids).size !== ids.length) add('ACCEPTANCE_ID_DUPLICATE', 'acceptance_criteria');
@@ -78,12 +81,15 @@ export function validateDevelopmentForm(form, input) {
     if (item.status === 'IN_SCOPE' && (!item.change?.trim() || !item.affected_refs.length || !item.verification_refs.length || item.verification_refs.some(ref => !ids.includes(ref)))) add('LAYER_PLAN_INCOMPLETE', `delivery.coverage.${item.layer}`);
     if (item.status === 'OUT_OF_SCOPE' && (item.change !== null || item.affected_refs.length || item.verification_refs.length)) add('OUT_OF_SCOPE_HAS_CHANGES', `delivery.coverage.${item.layer}`);
   }
-  if (request.stage === 'READY' && coverage.some(item => item.status === 'UNKNOWN')) add('READY_COVERAGE_UNKNOWN', 'delivery.coverage');
+  const deliveryAdvanced = ['READY','IN_PROGRESS','IMPLEMENTED','CLOSED'].includes(request.stage) || verification.status !== 'NOT_RUN' || review.status === 'PASSED' || release.state !== 'NOT_REQUESTED';
+  if (deliveryAdvanced && coverage.some(item => item.status === 'UNKNOWN')) add('DELIVERY_COVERAGE_UNKNOWN', 'delivery.coverage');
   const journey = form.delivery.journey;
   if (coverage.some(item => item.layer === 'UX' && item.status === 'IN_SCOPE') && (!journey.primary_user?.trim() || !journey.entry_point?.trim() || !journey.steps.length || !journey.success_feedback?.trim() || !journey.failure_recovery?.trim())) add('UX_JOURNEY_INCOMPLETE', 'delivery.journey');
-  if (coverage.some(item => item.layer === 'UI' && item.status === 'IN_SCOPE') && (!journey.surfaces.length || journey.surfaces.some(surface => !surface.devices.length || !['DEFAULT','LOADING','EMPTY','ERROR'].every(state => surface.states.includes(state))))) add('UI_STATES_INCOMPLETE', 'delivery.journey.surfaces');
-  if (form.delivery.data_flow.some(flow => flow.write && !flow.authority?.trim())) add('DATA_WRITE_AUTHORITY_REQUIRED', 'delivery.data_flow');
-  const verification = form.verification ?? {};
+  if (coverage.some(item => item.layer === 'UI' && item.status === 'IN_SCOPE') && (!journey.surfaces.length || journey.surfaces.some(surface => !surface.devices.length || !['DEFAULT','LOADING','EMPTY','ERROR'].every(state => surface.states.includes(state) || surface.state_exclusions.some(exclusion => exclusion.state === state && exclusion.reason.trim()))))) add('UI_STATES_INCOMPLETE', 'delivery.journey.surfaces');
+  const dataLayers = coverage.filter(item => ['API','DATABASE'].includes(item.layer) && item.status === 'IN_SCOPE');
+  if (dataLayers.length && !form.delivery.data_flow.length) add('DATA_FLOW_REQUIRED', 'delivery.data_flow');
+  const authorityRefs = new Set([...sources.map(source => source.ref), form.authorization?.authorized_by?.authority_ref].filter(Boolean));
+  if (form.delivery.data_flow.some(flow => flow.write && (!flow.authority?.trim() || !authorityRefs.has(flow.authority)))) add('DATA_WRITE_AUTHORITY_REQUIRED', 'delivery.data_flow');
   if (verification.status === 'PASS') {
     if (!verification.subject_revision) add('VERIFICATION_REVISION_REQUIRED', 'verification.subject_revision');
     if (!(verification.checks ?? []).some(check => check.status === 'PASS')) add('VERIFICATION_PASS_CHECK_REQUIRED', 'verification.checks');
@@ -98,7 +104,6 @@ export function validateDevelopmentForm(form, input) {
     }
   }
 
-  const review = form.review ?? {};
   if (review.status === 'PASSED') {
     if (new Set(review.receipts.map(receipt => receipt.id)).size !== review.receipts.length) add('REVIEW_RECEIPT_ID_DUPLICATE', 'review.receipts');
     const validReceipts = review.receipts.filter(receipt => receipt.verdict === 'PASS' && receipt.subject_revision === review.subject_revision && receipt.reviewer !== form.lane.actor && review.reviewers.includes(receipt.reviewer) && receipt.issuer !== form.lane.actor && receipt.artifact_digest);
@@ -116,7 +121,6 @@ export function validateDevelopmentForm(form, input) {
     if (!expectedAttestation || !context.trustedAuthorityAttestations.some(attestation => attestation.authority_ref === expectedAttestation.authority_ref && attestation.digest === expectedAttestation.digest)) add('AUTHORITY_ATTESTATION_UNVERIFIED', 'authorization.authorized_by.authority_ref');
   }
 
-  const release = form.release ?? {};
   if (release.state === 'READY') {
     if (!release.requested_action || !release.target?.trim() || !release.revision) add('RELEASE_REQUEST_INCOMPLETE', 'release');
     if (authorization.required && (authorization.action !== release.requested_action || authorization.target !== release.target || authorization.revision !== release.revision)) add('RELEASE_AUTHORIZATION_SCOPE_MISMATCH', 'authorization');
@@ -152,13 +156,14 @@ export function deriveActions(form, context = {}) {
     (form?.request?.decisions_required ?? []).length && 'DECISIONS',
     (!(form?.project?.authoritative_sources ?? []).length || form.project.authoritative_sources.some(source => !source.revision || !source.verified_at)) && 'SOURCES',
     form?.delivery?.coverage?.some(item => item.status === 'UNKNOWN') && 'COVERAGE_UNKNOWN',
-    invalid.some(error => ['COVERAGE_INCOMPLETE','LAYER_PLAN_INCOMPLETE','OUT_OF_SCOPE_HAS_CHANGES','UX_JOURNEY_INCOMPLETE','UI_STATES_INCOMPLETE','DATA_WRITE_AUTHORITY_REQUIRED'].includes(error.code)) && 'DELIVERY_PLAN_INVALID'
+    invalid.some(error => ['COVERAGE_INCOMPLETE','LAYER_PLAN_INCOMPLETE','OUT_OF_SCOPE_HAS_CHANGES','UX_JOURNEY_INCOMPLETE','UI_STATES_INCOMPLETE','DATA_FLOW_REQUIRED','DATA_WRITE_AUTHORITY_REQUIRED'].includes(error.code)) && 'DELIVERY_PLAN_INVALID'
   ].filter(Boolean));
-  set('start_isolated_work', [form?.request?.stage !== 'READY' && 'REQUEST_NOT_READY', !context.laneAvailable && 'LANE_NOT_AVAILABLE'].filter(Boolean));
-  set('run_verification', [!form?.lane?.head_revision && 'IMPLEMENTATION_REVISION_REQUIRED', !context.implementationExists && 'IMPLEMENTATION_NOT_FOUND'].filter(Boolean));
+  const deliveryInvalid = invalid.some(error => ['DELIVERY_COVERAGE_UNKNOWN','COVERAGE_INCOMPLETE','LAYER_PLAN_INCOMPLETE','OUT_OF_SCOPE_HAS_CHANGES','UX_JOURNEY_INCOMPLETE','UI_STATES_INCOMPLETE','DATA_FLOW_REQUIRED','DATA_WRITE_AUTHORITY_REQUIRED'].includes(error.code));
+  set('start_isolated_work', [form?.request?.stage !== 'READY' && 'REQUEST_NOT_READY', !context.laneAvailable && 'LANE_NOT_AVAILABLE', deliveryInvalid && 'DELIVERY_PLAN_INVALID'].filter(Boolean));
+  set('run_verification', [!form?.lane?.head_revision && 'IMPLEMENTATION_REVISION_REQUIRED', !context.implementationExists && 'IMPLEMENTATION_NOT_FOUND', deliveryInvalid && 'DELIVERY_PLAN_INVALID'].filter(Boolean));
   set('request_review', form?.verification?.status === 'PASS' && form.verification.subject_revision === form.lane?.head_revision ? [] : ['CURRENT_REVISION_NOT_VERIFIED']);
   set('request_authorization', form?.authorization?.required && !['PENDING','GRANTED'].includes(form.authorization.status) ? [] : ['AUTHORIZATION_REQUEST_NOT_NEEDED']);
-  set('safe_commit_push', [form?.request?.stage !== 'IN_PROGRESS' && 'WORK_NOT_IN_PROGRESS', !context.checksConfigured && 'CHECKS_NOT_CONFIGURED', !(context.selectedPaths ?? []).length && 'PATHS_NOT_SELECTED'].filter(Boolean));
+  set('safe_commit_push', [form?.request?.stage !== 'IN_PROGRESS' && 'WORK_NOT_IN_PROGRESS', !context.checksConfigured && 'CHECKS_NOT_CONFIGURED', !(context.selectedPaths ?? []).length && 'PATHS_NOT_SELECTED', deliveryInvalid && 'DELIVERY_PLAN_INVALID'].filter(Boolean));
   set('merge_or_deploy', [form?.release?.state !== 'READY' && 'RELEASE_NOT_READY', !form?.release?.requested_action && 'RELEASE_ACTION_REQUIRED', !form?.release?.target?.trim() && 'RELEASE_TARGET_REQUIRED', form?.release?.revision !== form?.verification?.subject_revision && 'RELEASE_REVISION_MISMATCH', form?.verification?.status !== 'PASS' && 'VERIFICATION_REQUIRED', form?.review?.status !== 'PASSED' && 'REVIEW_REQUIRED', invalid.length && 'FORM_OR_GATE_INVALID', form?.authorization?.required && form.authorization.status !== 'GRANTED' && 'AUTHORIZATION_REQUIRED'].filter(Boolean));
   set('observe_outcome', [!released.has(form?.release?.state) && 'RELEASE_REQUIRED', (!form?.release?.revision || !form?.release?.target?.trim() || !form?.release?.released_at) && 'RELEASE_EVIDENCE_REQUIRED', invalid.length && 'FORM_OR_GATE_INVALID'].filter(Boolean));
   set('close', [!form?.acceptance_criteria?.every(item => item.status === 'PASS') && 'CRITERIA_NOT_COMPLETE', form?.release?.state !== 'NOT_REQUESTED' && form?.outcome?.status !== 'SUCCESS' && 'OUTCOME_NOT_PROVEN', invalid.length && 'FORM_OR_GATE_INVALID'].filter(Boolean));

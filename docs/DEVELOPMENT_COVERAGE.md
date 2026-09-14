@@ -12,6 +12,6 @@ Every change starts with seven simple decisions. Select `IN_SCOPE`, `OUT_OF_SCOP
 | UI | Does what the user sees change? | layout, buttons, states, devices | screenshots/visual checks |
 | UX | Does the task flow change? | steps, feedback, recovery | end-to-end journey trace |
 
-The form also captures one primary journey, UI surfaces and their default/loading/empty/error/disabled/success states, data flow, and security/performance/accessibility/observability obligations. `UNKNOWN` is visible work, not an implicit exclusion.
+The form also captures one primary journey, UI surfaces and their state coverage, data flow, and security/performance/accessibility/observability decisions. A UI state can be covered or marked not applicable with a reason. Every quality dimension is either required with details or not applicable with a reason. `UNKNOWN` blocks progression; it is not an implicit exclusion.
 
 Recommended UI is a seven-card coverage screen. Selecting a card reveals only that layer's change, affected references and verification references. This keeps a small change short while preserving full-stack coverage for larger work.
