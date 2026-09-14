@@ -14,4 +14,6 @@ Every change starts with seven simple decisions. Select `IN_SCOPE`, `OUT_OF_SCOP
 
 The form also captures one primary journey, UI surfaces and their state coverage, data flow, and security/performance/accessibility/observability decisions. A UI state can be covered or marked not applicable with a reason. Every quality dimension is either required with details or not applicable with a reason. `UNKNOWN` blocks progression; it is not an implicit exclusion.
 
+A human approval can authorize a data write only when its action is `EXTERNAL_WRITE`, its trusted scope contains both `data:<data name>` and `target:<destination>`, and the flow cites that authority reference. Merge or deploy approval cannot be reused as data-write authority.
+
 Recommended UI is a seven-card coverage screen. Selecting a card reveals only that layer's change, affected references and verification references. This keeps a small change short while preserving full-stack coverage for larger work.
