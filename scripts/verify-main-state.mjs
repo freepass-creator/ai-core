@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { accessSync, constants } from 'node:fs';
 import { execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -8,7 +9,12 @@ function includesAll(text, values) {
   return values.every(value => text.includes(value));
 }
 
-export function validateMainState({ readme, current, researchIndex, episode, fileExists, revisionExists }) {
+function requirementSetDigest(requirements = []) {
+  const normalized = requirements.map(({ id, text, provenance, status }) => ({ id, text, provenance, status }));
+  return `sha256:${createHash('sha256').update(JSON.stringify(normalized)).digest('hex')}`;
+}
+
+export function validateMainState({ readme, current, researchIndex, episode, fileExists, revisionExists, changedFiles }) {
   const errors = [];
   const runtimeExists = fileExists('src/cli.mjs') || fileExists('src/core.mjs');
 
@@ -43,7 +49,12 @@ export function validateMainState({ readme, current, researchIndex, episode, fil
   }
 
   if (episode.episode_id !== 'DEV-EPISODE-001') errors.push('episode id must be DEV-EPISODE-001');
-  if (!revisionExists(episode.execution?.subject_revision)) errors.push('episode subject revision does not exist');
+  if (episode.status === 'CLOSED' && !revisionExists(episode.execution?.subject_revision)) {
+    errors.push('closed episode subject revision does not exist');
+  }
+  if (episode.status !== 'CLOSED' && episode.execution?.subject_revision !== null) {
+    errors.push('open episode must not freeze an incomplete subject revision');
+  }
   if (episode.status !== 'CLOSED' && episode.evidence_state?.proof_revision_matches_subject === true) {
     errors.push('open episode must not claim final proof revision alignment');
   }
@@ -61,6 +72,17 @@ export function validateMainState({ readme, current, researchIndex, episode, fil
     if (requirement.provenance === 'USER_CONFIRMED' && requirement.id === 'REQ-006') {
       errors.push('implementation mechanism cannot be recorded as user-confirmed intent');
     }
+  }
+  if (episode.intent?.requirement_set_digest !== requirementSetDigest(episode.intent?.requirements)) {
+    errors.push('requirement set digest does not match current requirements');
+  }
+  const recordedFiles = [...(episode.execution?.changed_files ?? [])].sort();
+  const actualFiles = [...changedFiles].sort();
+  if (JSON.stringify(recordedFiles) !== JSON.stringify(actualFiles)) {
+    errors.push('episode changed files do not match the repository diff');
+  }
+  if (episode.metrics?.files_touched_count !== recordedFiles.length) {
+    errors.push('files touched count does not match changed files');
   }
   for (const path of episode.execution?.changed_files ?? []) {
     if (!fileExists(path)) errors.push(`episode changed file is missing: ${path}`);
@@ -85,8 +107,14 @@ export async function verifyRepository(root) {
       return true;
     } catch { return false; }
   };
+  const diffTarget = JSON.parse(episodeText).execution?.subject_revision || 'HEAD';
+  const changedFiles = execFileSync(
+    'git', ['diff', '--name-only', `${JSON.parse(episodeText).project.base_revision}...${diffTarget}`],
+    { cwd: root, encoding: 'utf8' }
+  ).trim().split(/\r?\n/).filter(Boolean);
+  const episode = JSON.parse(episodeText);
   return validateMainState({
-    readme, current, researchIndex, episode: JSON.parse(episodeText), fileExists, revisionExists
+    readme, current, researchIndex, episode, fileExists, revisionExists, changedFiles
   });
 }
 

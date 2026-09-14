@@ -9,13 +9,17 @@ const valid = {
   researchIndex: '#1 #17 #18 #19 DEFERRED_CANDIDATE',
   episode: {
     episode_id: 'DEV-EPISODE-001', status: 'AWAITING_USER_REVIEW',
-    execution: { subject_revision: 'abc', changed_files: ['README.md'] },
-    metrics: { false_completion_events: 1, criteria_with_current_evidence: 1, acceptance_criteria_total: 2, unverified_criteria_count: 1 },
+    execution: { subject_revision: null, changed_files: ['README.md'] },
+    metrics: { false_completion_events: 1, criteria_with_current_evidence: 0, acceptance_criteria_total: 1, unverified_criteria_count: 1, files_touched_count: 1 },
     evidence_state: { false_completion_events: 1, proof_revision_matches_subject: null },
-    intent: { requirements: [{ id: 'REQ-006', provenance: 'AI_INFERRED' }] }
+    intent: {
+      requirement_set_digest: 'sha256:ece9590592f3aa1763d223cfdb3806540e031ab1d40943ee76288206837fbdc5',
+      requirements: [{ id: 'REQ-006', text: 'check drift', provenance: 'AI_INFERRED', status: 'HOLD' }]
+    }
   },
   fileExists: path => !['src/cli.mjs', 'src/core.mjs'].includes(path),
-  revisionExists: () => true
+  revisionExists: () => true,
+  changedFiles: ['README.md']
 };
 
 test('current repository state is internally consistent', async () => {
@@ -51,7 +55,8 @@ test('rejects inconsistent episode evidence', () => {
       ...valid.episode,
       metrics: { false_completion_events: 2, criteria_with_current_evidence: 3, acceptance_criteria_total: 2, unverified_criteria_count: 0 },
       evidence_state: { false_completion_events: 1, proof_revision_matches_subject: true },
-      intent: { requirements: [{ id: 'REQ-006', provenance: 'USER_CONFIRMED' }] }
+      execution: { subject_revision: 'stale', changed_files: ['README.md'] },
+      intent: { requirement_set_digest: 'stale', requirements: [{ id: 'REQ-006', text: 'check drift', provenance: 'USER_CONFIRMED', status: 'ACTIVE' }] }
     },
     revisionExists: () => false
   });
@@ -60,4 +65,5 @@ test('rejects inconsistent episode evidence', () => {
   assert.ok(errors.some(error => error.includes('exceed')));
   assert.ok(errors.some(error => error.includes('final proof')));
   assert.ok(errors.some(error => error.includes('user-confirmed')));
+  assert.ok(errors.some(error => error.includes('digest')));
 });

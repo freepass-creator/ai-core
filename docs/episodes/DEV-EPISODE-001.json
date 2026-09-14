@@ -15,7 +15,7 @@
   },
   "intent": {
     "summary": "Align ai-core with measured self-improvement by removing false main claims and making the first real development episode the sole current priority.",
-    "requirement_set_digest": "sha256:0b5f1959d1a6e36aa179901678addcb0e172797bc2d5d1cd65ed9a67b7670b08",
+    "requirement_set_digest": "sha256:c8981677b47ef38cdb7ba75d0e30254f8cb012124c68bf10c58ad07d609aa886",
     "requirements": [
       {
         "id": "REQ-001",
@@ -71,16 +71,17 @@
   "execution": {
     "executors": ["Codex"],
     "branch": "fix/main-truthful-entrypoint",
-    "subject_revision": "daf67faac3dcb510e7e9b123ed766eff18992317",
+    "subject_revision": null,
     "changed_files": [
       "README.md",
       "memory/CURRENT.md",
       "memory/RESEARCH_INDEX.md",
       ".github/workflows/main-state.yml",
       "scripts/verify-main-state.mjs",
-      "test/verify-main-state.test.mjs"
+      "test/verify-main-state.test.mjs",
+      "docs/episodes/DEV-EPISODE-001.json"
     ],
-    "rework_loops": 2
+    "rework_loops": 3
   },
   "evidence_state": {
     "proof_revision_matches_subject": null,
@@ -113,8 +114,8 @@
     "candidate_reuse_count": 2,
     "reused_capability_count": 1,
     "new_capability_count": 0,
-    "files_touched_count": 6,
-    "rework_loop_count": 2,
+    "files_touched_count": 7,
+    "rework_loop_count": 3,
     "intent_to_first_preview_minutes": null,
     "acceptance_criteria_total": 6,
     "criteria_with_current_evidence": 5,
