@@ -9,8 +9,8 @@ const valid = {
   researchIndex: '#1 #17 #18 #19 DEFERRED_CANDIDATE',
   episode: {
     episode_id: 'DEV-EPISODE-001', status: 'AWAITING_USER_REVIEW',
-    execution: { subject_revision: null, changed_files: ['README.md'] },
-    metrics: { false_completion_events: 1, criteria_with_current_evidence: 0, acceptance_criteria_total: 1, unverified_criteria_count: 1, files_touched_count: 1 },
+    execution: { subject_revision: null, changed_files: ['README.md'], rework_loops: 1 },
+    metrics: { false_completion_events: 1, criteria_with_current_evidence: 0, acceptance_criteria_total: 1, unverified_criteria_count: 1, files_touched_count: 1, rework_loop_count: 1 },
     evidence_state: { false_completion_events: 1, proof_revision_matches_subject: null, passes: 0, commands_run: [] },
     intent: {
       requirement_set_digest: 'sha256:ece9590592f3aa1763d223cfdb3806540e031ab1d40943ee76288206837fbdc5',
@@ -83,4 +83,15 @@ test('does not count read commands as checks or invent post-completion observati
   });
   assert.ok(errors.some(error => error.includes('not verification checks')));
   assert.ok(errors.some(error => error.includes('post-completion')));
+});
+
+test('rejects disagreement between execution and metric rework counts', () => {
+  const errors = validateMainState({
+    ...valid,
+    episode: {
+      ...valid.episode,
+      execution: { ...valid.episode.execution, rework_loops: 2 }
+    }
+  });
+  assert.ok(errors.some(error => error.includes('rework counts disagree')));
 });

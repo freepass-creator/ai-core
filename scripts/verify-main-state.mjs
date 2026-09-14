@@ -94,6 +94,9 @@ export function validateMainState({ readme, current, researchIndex, episode, fil
   if (episode.metrics?.files_touched_count !== recordedFiles.length) {
     errors.push('files touched count does not match changed files');
   }
+  if (episode.execution?.rework_loops !== episode.metrics?.rework_loop_count) {
+    errors.push('execution and metric rework counts disagree');
+  }
   for (const path of episode.execution?.changed_files ?? []) {
     if (!fileExists(path)) errors.push(`episode changed file is missing: ${path}`);
   }
