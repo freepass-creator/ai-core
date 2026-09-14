@@ -43,7 +43,9 @@ A faster result does not win if an earlier dimension worsens. A tie or incompara
 
 No state transition grants operational execution authority. AI Core may prepare a branch, tests, evidence and a recommendation. Merge, deployment, external mutation and other consequential actions retain their existing approval gates.
 
-The local evaluator consumes ordinary JSON as untrusted claims. It may return `ADOPTION_CANDIDATE` only when a trusted adapter independently confirms that both revisions exist, each proof is bound to the stated revision and requirement digest, and reviewer identity differs from author identity. The CLI has no such adapter and therefore cannot promote a candidate by itself.
+The local evaluator consumes ordinary JSON as untrusted claims. It may return `ADOPTION_CANDIDATE` only when a trusted adapter independently confirms that both revisions exist, each proof is bound to the stated revision, requirement digest and canonical digest of the complete episode, and reviewer identity differs from author identity. The complete digest binds metrics, safety counts, comparison conditions and outcome so those values cannot be changed while reusing an older receipt. The CLI has no such adapter and therefore cannot promote a candidate by itself.
+
+The trial must end with zero unresolved P0/P1 defects, authority violations, evidence-loss events, user-control violations, false-completion events, regressions, verification failures and unverified acceptance criteria. Counts must be non-negative integers and evidence coverage must be complete. A baseline violation cannot normalize the same violation in a trial.
 
 ## Required candidate record
 
