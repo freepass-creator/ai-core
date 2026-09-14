@@ -191,7 +191,7 @@
       "examples/ui-components.html",
       "test/ui-components.test.mjs"
     ],
-    "rework_loops": 35
+    "rework_loops": 36
   },
   "evidence_state": {
     "proof_revision_matches_subject": null,
@@ -209,7 +209,7 @@
       "agent-browser button, dropdown, keyboard focus and reduced-motion verification"
     ],
     "passes": 4,
-    "failures": 24,
+    "failures": 25,
     "skips": 0,
     "unknowns": 2,
     "independent_review": "PARTIAL",
@@ -229,7 +229,7 @@
     "reused_capability_count": 1,
     "new_capability_count": 0,
     "files_touched_count": 29,
-    "rework_loop_count": 35,
+    "rework_loop_count": 36,
     "intent_to_first_preview_minutes": null,
     "acceptance_criteria_total": 12,
     "criteria_with_current_evidence": 10,
