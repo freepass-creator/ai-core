@@ -34,6 +34,8 @@ This form is the shared contract for Codex, Cursor, Claude, Gemini and a future 
 
 Any failed prerequisite renders the action disabled with its `HOLD` reasons. A button never silently advances more than one boundary.
 
+UI implementations import `deriveActions(form)` from `scripts/validate-development-form.mjs`. The returned map is the canonical enabled state and reason list for every primary button; UI code must not recreate these rules independently.
+
 Validate a form before enabling state-changing buttons:
 
 ```powershell
@@ -42,17 +44,19 @@ npm run form:validate -- examples/development-form.json
 
 ## Cross-field invariants
 
-- `READY` cannot coexist with unresolved `decisions_required` or unrevisioned authoritative sources.
-- Verification `PASS` requires a subject revision, at least one passing check and evidence for every acceptance criterion.
-- Review `PASSED` requires at least one reviewer distinct from the lane actor and no unresolved failing finding.
-- Authorization `GRANTED` requires named authorizer, timestamp and exact scope; AI actors cannot self-authorize protected execution.
+- `READY` cannot coexist with unresolved `unknowns`, unresolved `decisions_required` or unrevisioned authoritative sources.
+- Verification `PASS` requires a subject revision, at least one passing check and evidence for every acceptance criterion; evidence IDs and revisions must resolve to that subject revision.
+- Review `PASSED` requires the reviewed revision, a receipt, at least one reviewer distinct from the lane actor and no unresolved failing finding.
+- Authorization `GRANTED` requires a human authorizer, timestamp, expiry, action, target, revision and exact scope; AI actors cannot self-authorize protected execution.
 - `MERGED` or `DEPLOYED` requires verification of that same revision and any required authorization.
 - Outcome `SUCCESS` requires observation evidence from the released target; tests and reviews are insufficient.
 - Google Workspace sources store file ID, tab/range where relevant, revision or modified time, and minimum disclosed scope. A local pointer is not a verified Workspace source.
 
 ## Four-AI review record
 
-- Gemini: completed read-only review. Its source/revision, minimal disclosure, handoff, acceptance, evidence and separated outcome recommendations are represented.
+- Gemini: completed read-only design advice before implementation. Its source/revision, minimal disclosure, handoff, acceptance, evidence and separated outcome recommendations are represented; it is not implementation approval.
 - Cursor: attempted read-only review; non-interactive process produced no result and was stopped.
 - Claude: attempted read-only review; weekly limit blocked execution.
 - Codex: owns synthesis, implementation and deterministic validation. Missing reviews do not count as agreement.
+
+The review attempts and their limits are recorded in `docs/reviews/STANDARD_FORM_REVIEW.md`.

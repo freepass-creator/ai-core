@@ -137,6 +137,7 @@
     "branch": "fix/main-truthful-entrypoint",
     "subject_revision": null,
     "changed_files": [
+      ".gitignore",
       "README.md",
       "memory/CURRENT.md",
       "memory/RESEARCH_INDEX.md",
@@ -150,15 +151,17 @@
       "docs/CONCURRENT_WORK.md",
       "contracts/development-form.schema.json",
       "docs/STANDARD_DEVELOPMENT_FORM.md",
+      "docs/reviews/STANDARD_FORM_REVIEW.md",
       "examples/development.config.json",
       "examples/development-form.json",
       "package.json",
+      "package-lock.json",
       "scripts/checkpoint-work.mjs",
       "scripts/validate-development-form.mjs",
       "test/checkpoint-work.test.mjs",
       "test/validate-development-form.test.mjs"
     ],
-    "rework_loops": 22
+    "rework_loops": 24
   },
   "evidence_state": {
     "proof_revision_matches_subject": null,
@@ -172,7 +175,7 @@
       "node scripts/verify-main-state.mjs"
     ],
     "passes": 3,
-    "failures": 11,
+    "failures": 13,
     "skips": 0,
     "unknowns": 2,
     "independent_review": "PARTIAL",
@@ -191,8 +194,8 @@
     "candidate_reuse_count": 2,
     "reused_capability_count": 1,
     "new_capability_count": 0,
-    "files_touched_count": 20,
-    "rework_loop_count": 22,
+    "files_touched_count": 23,
+    "rework_loop_count": 24,
     "intent_to_first_preview_minutes": null,
     "acceptance_criteria_total": 10,
     "criteria_with_current_evidence": 8,

@@ -8,5 +8,9 @@
     "verify": "node scripts/verify-main-state.mjs",
     "form:validate": "node scripts/validate-development-form.mjs",
     "checkpoint": "node scripts/checkpoint-work.mjs"
+  },
+  "dependencies": {
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1"
   }
 }

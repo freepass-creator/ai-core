@@ -54,22 +54,28 @@
     "verification": { "$ref": "#/$defs/gate" },
     "review": {
       "type": "object", "additionalProperties": false,
-      "required": ["status", "reviewers", "findings"],
+      "required": ["status", "subject_revision", "reviewers", "receipt_refs", "findings"],
       "properties": {
         "status": { "enum": ["NOT_REQUESTED", "PENDING", "PARTIAL", "PASSED", "FAILED"] },
+        "subject_revision": { "type": ["string", "null"], "pattern": "^[0-9a-f]{40}$" },
         "reviewers": { "type": "array", "items": { "enum": ["CODEX", "CURSOR", "CLAUDE", "GEMINI", "HUMAN"] } },
+        "receipt_refs": { "type": "array", "items": { "type": "string", "minLength": 1 } },
         "findings": { "type": "array", "items": { "$ref": "#/$defs/evidence" } }
       }
     },
     "authorization": {
       "type": "object", "additionalProperties": false,
-      "required": ["required", "status", "scope", "authorized_by", "authorized_at"],
+      "required": ["required", "status", "action", "target", "revision", "scope", "authorized_by", "authorized_at", "expires_at"],
       "properties": {
         "required": { "type": "boolean" },
         "status": { "enum": ["NOT_REQUIRED", "PENDING", "GRANTED", "DENIED", "EXPIRED"] },
+        "action": { "type": ["string", "null"], "enum": [null, "MERGE", "DEPLOY", "EXTERNAL_WRITE"] },
+        "target": { "type": ["string", "null"] },
+        "revision": { "type": ["string", "null"], "pattern": "^[0-9a-f]{40}$" },
         "scope": { "type": "array", "items": { "type": "string" } },
         "authorized_by": { "type": ["string", "null"] },
-        "authorized_at": { "type": ["string", "null"], "format": "date-time" }
+        "authorized_at": { "type": ["string", "null"], "format": "date-time" },
+        "expires_at": { "type": ["string", "null"], "format": "date-time" }
       }
     },
     "release": {
@@ -104,13 +110,25 @@
   "$defs": {
     "source": {
       "type": "object", "additionalProperties": false,
-      "required": ["kind", "ref", "revision", "verified_at"],
+      "required": ["kind", "ref", "revision", "verified_at", "file_id", "tab", "range", "modified_time", "disclosed_scope"],
       "properties": {
         "kind": { "enum": ["GIT", "DOC", "SHEET", "API", "USER_DECISION"] },
         "ref": { "type": "string", "minLength": 1 },
         "revision": { "type": ["string", "null"] },
-        "verified_at": { "type": ["string", "null"], "format": "date-time" }
-      }
+        "verified_at": { "type": ["string", "null"], "format": "date-time" },
+        "file_id": { "type": ["string", "null"] },
+        "tab": { "type": ["string", "null"] },
+        "range": { "type": ["string", "null"] },
+        "modified_time": { "type": ["string", "null"], "format": "date-time" },
+        "disclosed_scope": { "type": ["string", "null"] }
+      },
+      "allOf": [{
+        "if": { "properties": { "kind": { "enum": ["DOC", "SHEET"] } }, "required": ["kind"] },
+        "then": { "properties": { "file_id": { "type": "string", "minLength": 1 }, "modified_time": { "type": "string", "format": "date-time" }, "disclosed_scope": { "type": "string", "minLength": 1 } } }
+      }, {
+        "if": { "properties": { "kind": { "const": "SHEET" } }, "required": ["kind"] },
+        "then": { "properties": { "tab": { "type": "string", "minLength": 1 }, "range": { "type": "string", "minLength": 1 } } }
+      }]
     },
     "criterion": {
       "type": "object", "additionalProperties": false,
@@ -134,13 +152,15 @@
     },
     "evidence": {
       "type": "object", "additionalProperties": false,
-      "required": ["id", "kind", "status", "ref", "revision"],
+      "required": ["id", "kind", "status", "ref", "revision", "target", "observed_at"],
       "properties": {
         "id": { "type": "string", "minLength": 1 },
         "kind": { "enum": ["COMMAND", "TEST", "BUILD", "PREVIEW", "SCREENSHOT", "LOG", "REVIEW", "OBSERVATION"] },
         "status": { "enum": ["PASS", "FAIL", "HOLD", "UNKNOWN"] },
         "ref": { "type": "string", "minLength": 1 },
-        "revision": { "type": ["string", "null"] }
+        "revision": { "type": ["string", "null"] },
+        "target": { "type": ["string", "null"] },
+        "observed_at": { "type": ["string", "null"], "format": "date-time" }
       }
     }
   }
