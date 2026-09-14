@@ -172,12 +172,17 @@ export async function checkpointWork({ root, message, paths, push = false, check
 
 function parseArgs(args) {
   const result = { paths: [], push: false };
+  const valueAfter = index => {
+    const value = args[index + 1];
+    if (!value || value.startsWith('--')) fail('HOLD_ARGUMENT_VALUE_REQUIRED', args[index]);
+    return value;
+  };
   for (let i = 0; i < args.length; i += 1) {
-    if (args[i] === '--message') result.message = args[++i];
-    else if (args[i] === '--path') result.paths.push(args[++i]);
+    if (args[i] === '--message') result.message = valueAfter(i++);
+    else if (args[i] === '--path') result.paths.push(valueAfter(i++));
     else if (args[i] === '--push') result.push = true;
-    else if (args[i] === '--config') result.config = args[++i];
-    else if (args[i] === '--root') result.root = args[++i];
+    else if (args[i] === '--config') result.config = valueAfter(i++);
+    else if (args[i] === '--root') result.root = valueAfter(i++);
     else fail('HOLD_UNKNOWN_ARGUMENT', args[i]);
   }
   return result;

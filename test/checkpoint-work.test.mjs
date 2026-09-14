@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
 import { checkpointWork } from '../scripts/checkpoint-work.mjs';
 
 function git(root, args) {
@@ -40,6 +40,41 @@ async function remotePair() {
   git(other, ['switch', 'work/codex/example']);
   return { root, bare, other };
 }
+
+const checkpointCli = join(process.cwd(), 'scripts', 'checkpoint-work.mjs');
+
+test('CLI rejects a value-less config flag before default checks can run', () => {
+  const result = spawnSync(process.execPath, [checkpointCli, '--config'], { encoding: 'utf8' });
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /HOLD_ARGUMENT_VALUE_REQUIRED/);
+});
+
+test('CLI requires checks in an explicitly supplied config', async () => {
+  const root = await repository();
+  await writeFile(join(root, 'development.json'), '{}\n');
+  const result = spawnSync(process.execPath, [checkpointCli,
+    '--root', root, '--config', 'development.json', '--message', 'blocked', '--path', 'selected.txt'
+  ], { encoding: 'utf8' });
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /HOLD_CHECKS_REQUIRED/);
+});
+
+test('CLI applies an absolute script to the explicit target root', async () => {
+  const root = await repository();
+  await writeFile(join(root, 'selected.txt'), 'CLI target\n');
+  await writeFile(join(root, 'development.json'), JSON.stringify({
+    checks: [[process.execPath, '-e', 'process.exit(0)']]
+  }));
+  git(root, ['add', 'development.json']);
+  git(root, ['commit', '-m', 'configure development checks']);
+  await writeFile(join(root, 'selected.txt'), 'CLI target\n');
+  const result = spawnSync(process.execPath, [checkpointCli,
+    '--root', root, '--config', 'development.json', '--message', 'CLI target', '--path', 'selected.txt'
+  ], { encoding: 'utf8' });
+  assert.equal(result.status, 0, result.stderr);
+  assert.match(result.stdout, /COMMITTED_LOCAL/);
+  assert.equal(git(root, ['show', '--format=', '--name-only', 'HEAD']), 'selected.txt');
+});
 
 test('commits a selected clean-lane change after checks', async () => {
   const root = await repository();
