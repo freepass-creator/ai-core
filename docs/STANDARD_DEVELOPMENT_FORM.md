@@ -34,7 +34,7 @@ This form is the shared contract for Codex, Cursor, Claude, Gemini and a future 
 
 Any failed prerequisite renders the action disabled with its `HOLD` reasons. A button never silently advances more than one boundary.
 
-UI implementations import `deriveActions(form, context)` from `scripts/validate-development-form.mjs`. Context supplies lane availability, implementation existence, configured checks, selected paths, current time, verified review receipt IDs and verified human authority references. Missing external evidence fails closed. The returned map is the canonical enabled state and reason list for every primary button; UI code must not recreate these rules independently.
+UI implementations import `deriveActions(form, context)` from `scripts/validate-development-form.mjs`. Context follows `contracts/development-form-context.schema.json` and supplies lane availability, implementation existence, configured checks, selected paths, current time, full trusted review metadata and canonical human authority attestations. Build those entries with the exported `createTrustedReviewReceipt(receipt)` and `createAuthorityAttestation(authorization)` helpers after external verification. The authority helper sorts scope and selects fields explicitly, so object key order cannot change the digest. Missing external evidence fails closed. UI code must not recreate these rules independently.
 
 Validate a form before enabling state-changing buttons:
 

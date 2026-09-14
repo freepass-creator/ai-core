@@ -14,10 +14,23 @@ const validateStructure = ajv.compile(schema);
 
 function normalizeContext(input) {
   if (input instanceof Date) return { now: input, trustedReviewReceipts: [], trustedAuthorityAttestations: [] };
-  return { now: input?.now ?? new Date(), trustedReviewReceipts: input?.trustedReviewReceipts ?? [], trustedAuthorityAttestations: input?.trustedAuthorityAttestations ?? [] };
+  const now = input?.now instanceof Date ? input.now : new Date(input?.now ?? Date.now());
+  return { now, trustedReviewReceipts: input?.trustedReviewReceipts ?? [], trustedAuthorityAttestations: input?.trustedAuthorityAttestations ?? [] };
 }
 
-const authorityDigest = authorization => `sha256:${createHash('sha256').update(JSON.stringify({ action: authorization.action, target: authorization.target, revision: authorization.revision, scope: authorization.scope, authorized_by: authorization.authorized_by, authorized_at: authorization.authorized_at, expires_at: authorization.expires_at })).digest('hex')}`;
+export function createTrustedReviewReceipt(receipt) {
+  return { id: receipt.id, artifact_digest: receipt.artifact_digest, subject_revision: receipt.subject_revision, reviewer: receipt.reviewer, issuer: receipt.issuer };
+}
+
+export function createAuthorityAttestation(authorization) {
+  const canonical = {
+    action: authorization.action, target: authorization.target, revision: authorization.revision,
+    scope: [...authorization.scope].sort(),
+    authorized_by: { kind: authorization.authorized_by.kind, id: authorization.authorized_by.id, authority_ref: authorization.authorized_by.authority_ref },
+    authorized_at: authorization.authorized_at, expires_at: authorization.expires_at
+  };
+  return { authority_ref: authorization.authorized_by.authority_ref, digest: `sha256:${createHash('sha256').update(JSON.stringify(canonical)).digest('hex')}` };
+}
 
 export function validateDevelopmentForm(form, input) {
   const context = normalizeContext(input);
@@ -70,7 +83,8 @@ export function validateDevelopmentForm(form, input) {
   if (authorization.status === 'GRANTED') {
     if (authorization.authorized_by?.kind !== 'HUMAN' || !authorization.authorized_at || !authorization.expires_at || !authorization.action || !authorization.target?.trim() || !authorization.revision || !(authorization.scope ?? []).length) add('AUTHORIZATION_PROOF_REQUIRED', 'authorization');
     else if (Date.parse(authorization.authorized_at) > now.getTime() || Date.parse(authorization.expires_at) <= Date.parse(authorization.authorized_at) || Date.parse(authorization.expires_at) <= now.getTime()) add('AUTHORIZATION_EXPIRED', 'authorization.expires_at');
-    if (!context.trustedAuthorityAttestations.some(attestation => attestation.authority_ref === authorization.authorized_by?.authority_ref && attestation.digest === authorityDigest(authorization))) add('AUTHORITY_ATTESTATION_UNVERIFIED', 'authorization.authorized_by.authority_ref');
+    const expectedAttestation = authorization.authorized_by?.kind === 'HUMAN' ? createAuthorityAttestation(authorization) : null;
+    if (!expectedAttestation || !context.trustedAuthorityAttestations.some(attestation => attestation.authority_ref === expectedAttestation.authority_ref && attestation.digest === expectedAttestation.digest)) add('AUTHORITY_ATTESTATION_UNVERIFIED', 'authorization.authorized_by.authority_ref');
   }
 
   const release = form.release ?? {};
