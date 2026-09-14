@@ -1,0 +1,25 @@
+name: Development Episode Pilot Verify
+
+on:
+  pull_request:
+    paths:
+      - 'docs/DEVELOPMENT_EPISODE_PILOT.md'
+      - 'docs/WORK_REFERENCE_DEVELOPMENT_EPISODE_PILOT.md'
+      - 'contracts/development-episode-observation.schema.json'
+      - 'src/development-episode-metrics.mjs'
+      - 'test/development-episode-metrics.test.mjs'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Parse observation contract
+        run: node -e "JSON.parse(require('fs').readFileSync('contracts/development-episode-observation.schema.json','utf8')); console.log('contract ok')"
+      - name: Syntax check
+        run: node --check src/development-episode-metrics.mjs
+      - name: Synthetic metrics tests
+        run: node --test test/development-episode-metrics.test.mjs
