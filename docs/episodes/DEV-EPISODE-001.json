@@ -11,75 +11,110 @@
       "main@179352b3d594457dac18485df97146824da3c509",
       "PR #1",
       "PR #19",
-      "user request to define self-learning evolution in current task"
+      "user request to define self-learning evolution in current task",
+      "user request for a four-AI standard development form in current task"
     ]
   },
   "intent": {
     "summary": "Align ai-core with measured self-improvement by removing false main claims and making the first real development episode the sole current priority.",
-    "requirement_set_digest": "sha256:a79ab03bf39818908435093e4650b5b477e2ecd7a1409916f57dc9d8466284c8",
+    "requirement_set_digest": "sha256:e3c18a22d7ebba467ed8903463adbc3c72d6667b531e87b2a2aa30ed665ee7a4",
     "requirements": [
       {
         "id": "REQ-001",
         "text": "main README truthfully reflects the files and executable state of main",
         "provenance": "USER_CONFIRMED",
         "status": "ACTIVE",
-        "evidence_refs": ["commit:d9ab1b3"]
+        "evidence_refs": [
+          "commit:d9ab1b3"
+        ]
       },
       {
         "id": "REQ-002",
         "text": "DEV-EPISODE-001 is the sole current development priority",
         "provenance": "USER_CONFIRMED",
         "status": "ACTIVE",
-        "evidence_refs": ["commit:0d56417"]
+        "evidence_refs": [
+          "commit:0d56417"
+        ]
       },
       {
         "id": "REQ-003",
         "text": "PR 1 is the sole implementation evaluation line and PR 17/18 are deferred",
         "provenance": "USER_CONFIRMED",
         "status": "ACTIVE",
-        "evidence_refs": ["commit:0d56417"]
+        "evidence_refs": [
+          "commit:0d56417"
+        ]
       },
       {
         "id": "REQ-004",
         "text": "PR 19 is described as an observation form and summarizer, not an automatic observer",
         "provenance": "USER_CONFIRMED",
         "status": "ACTIVE",
-        "evidence_refs": ["commit:0d56417"]
+        "evidence_refs": [
+          "commit:0d56417"
+        ]
       },
       {
         "id": "REQ-005",
         "text": "commit each validated change separately",
         "provenance": "USER_CONFIRMED",
         "status": "ACTIVE",
-        "evidence_refs": ["commit:d9ab1b3", "commit:0d56417", "commit:daf67fa"]
+        "evidence_refs": [
+          "commit:d9ab1b3",
+          "commit:0d56417",
+          "commit:daf67fa"
+        ]
       },
       {
         "id": "REQ-006",
         "text": "prevent recurrence of main documentation, implementation-line and episode-evidence drift with an executable check",
         "provenance": "AI_INFERRED",
         "status": "HOLD",
-        "evidence_refs": ["commit:daf67fa"]
+        "evidence_refs": [
+          "commit:daf67fa"
+        ]
       },
       {
         "id": "REQ-007",
         "text": "define how AI Core learns and evolves from real outcomes without self-approving progress",
         "provenance": "USER_CONFIRMED",
         "status": "ACTIVE",
-        "evidence_refs": ["docs/SELF_EVOLUTION.md"]
+        "evidence_refs": [
+          "docs/SELF_EVOLUTION.md"
+        ]
       },
       {
         "id": "REQ-008",
         "text": "make the self-evolution decision reject open, unreviewed, incomparable or regressing evidence",
         "provenance": "AI_INFERRED",
         "status": "HOLD",
-        "evidence_refs": ["scripts/evaluate-self-evolution.mjs", "test/evaluate-self-evolution.test.mjs"]
+        "evidence_refs": [
+          "scripts/evaluate-self-evolution.mjs",
+          "test/evaluate-self-evolution.test.mjs"
+        ]
       },
       {
         "id": "REQ-009",
         "text": "support validated automatic commits while local and GitHub workers operate concurrently without overwriting each other",
         "provenance": "USER_CONFIRMED",
         "status": "ACTIVE",
-        "evidence_refs": ["docs/CONCURRENT_WORK.md", "scripts/checkpoint-work.mjs", "test/checkpoint-work.test.mjs"]
+        "evidence_refs": [
+          "docs/CONCURRENT_WORK.md",
+          "scripts/checkpoint-work.mjs",
+          "test/checkpoint-work.test.mjs"
+        ]
+      },
+      {
+        "id": "REQ-010",
+        "text": "define one standard development form for Codex, Cursor, Claude and Gemini that can drive menus, buttons and evidence gates",
+        "provenance": "USER_CONFIRMED",
+        "status": "ACTIVE",
+        "evidence_refs": [
+          "contracts/development-form.schema.json",
+          "docs/STANDARD_DEVELOPMENT_FORM.md",
+          "examples/development-form.json"
+        ]
       }
     ]
   },
@@ -88,10 +123,15 @@
     "candidate_count": 2,
     "reused_count": 1,
     "new_count": 0,
-    "decisions": ["REUSE_EXACT", "HOLD"]
+    "decisions": [
+      "REUSE_EXACT",
+      "HOLD"
+    ]
   },
   "execution": {
-    "executors": ["Codex"],
+    "executors": [
+      "Codex"
+    ],
     "branch": "fix/main-truthful-entrypoint",
     "subject_revision": null,
     "changed_files": [
@@ -106,7 +146,10 @@
       "scripts/evaluate-self-evolution.mjs",
       "test/evaluate-self-evolution.test.mjs",
       "docs/CONCURRENT_WORK.md",
+      "contracts/development-form.schema.json",
+      "docs/STANDARD_DEVELOPMENT_FORM.md",
       "examples/development.config.json",
+      "examples/development-form.json",
       "package.json",
       "scripts/checkpoint-work.mjs",
       "test/checkpoint-work.test.mjs"
@@ -144,11 +187,11 @@
     "candidate_reuse_count": 2,
     "reused_capability_count": 1,
     "new_capability_count": 0,
-    "files_touched_count": 15,
+    "files_touched_count": 18,
     "rework_loop_count": 22,
     "intent_to_first_preview_minutes": null,
-    "acceptance_criteria_total": 9,
-    "criteria_with_current_evidence": 7,
+    "acceptance_criteria_total": 10,
+    "criteria_with_current_evidence": 8,
     "false_completion_events": 1,
     "regression_events": 0,
     "unverified_criteria_count": 2
