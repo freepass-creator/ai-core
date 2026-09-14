@@ -54,6 +54,14 @@ function changedPaths(root) {
   ])];
 }
 
+function selectedSnapshot(root, selected) {
+  return selected.map(path => {
+    const absolute = resolve(root, path);
+    if (!existsSync(absolute)) return `${path}\0DELETED`;
+    return `${path}\0${git(root, ['hash-object', '--', path])}`;
+  }).join('\n');
+}
+
 function remoteBranchExists(root, branch) {
   try { git(root, ['show-ref', '--verify', '--quiet', `refs/remotes/origin/${branch}`]); return true; }
   catch { return false; }
@@ -92,7 +100,11 @@ export async function checkpointWork({ root, message, paths, push = false, check
       catch { fail('HOLD_REMOTE_DIVERGED'); }
     }
 
+    const checkedSnapshot = selectedSnapshot(root, selected);
     if (checks) runChecks(root);
+    if (selectedSnapshot(root, selected) !== checkedSnapshot) {
+      fail('HOLD_SELECTED_CHANGED_DURING_CHECKS');
+    }
     git(root, ['add', '--', ...selected]);
     stagedByUs = true;
     const staged = lines(git(root, ['diff', '--cached', '--name-only']));

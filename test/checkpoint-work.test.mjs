@@ -150,6 +150,40 @@ test('a real failing repository test blocks commit and leaves files unstaged', a
   assert.equal(git(root, ['diff', '--cached', '--name-only']), '');
 });
 
+test('a check that mutates a selected file cannot commit unvalidated bytes', async () => {
+  const root = await repository();
+  await mkdir(join(root, 'test'));
+  await writeFile(join(root, 'test', 'mutate.test.mjs'),
+    "import test from 'node:test'; import { writeFile } from 'node:fs/promises'; test('mutates', async () => { await writeFile('selected.txt', 'mutated by check\\n'); });\n");
+  git(root, ['add', 'test/mutate.test.mjs']);
+  git(root, ['commit', '-m', 'add mutating check']);
+  await writeFile(join(root, 'selected.txt'), 'candidate\n');
+  const before = git(root, ['rev-parse', 'HEAD']);
+  await assert.rejects(
+    checkpointWork({ root, message: 'must not commit mutation', paths: ['selected.txt'] }),
+    error => error.code === 'HOLD_SELECTED_CHANGED_DURING_CHECKS'
+  );
+  assert.equal(git(root, ['rev-parse', 'HEAD']), before);
+  assert.equal(git(root, ['diff', '--cached', '--name-only']), '');
+});
+
+test('uses an isolated lock inside a real linked worktree', async () => {
+  const primary = await repository('main');
+  const linked = await mkdtemp(join(tmpdir(), 'ai-core-linked-'));
+  await rm(linked, { recursive: true });
+  git(primary, ['worktree', 'add', '-b', 'work/codex/linked', linked]);
+  await writeFile(join(linked, 'selected.txt'), 'linked change\n');
+  const primaryLock = join(primary, '.git', 'ai-core-checkpoint.lock');
+  await writeFile(primaryLock, 'primary lane lock');
+  const result = await checkpointWork({
+    root: linked, message: 'linked checkpoint', paths: ['selected.txt'], checks: false
+  });
+  assert.equal(result.status, 'COMMITTED_LOCAL');
+  const linkedLock = git(linked, ['rev-parse', '--git-path', 'ai-core-checkpoint.lock']);
+  await assert.rejects(readFile(join(linked, linkedLock), 'utf8'), error => error.code === 'ENOENT');
+  assert.equal(await readFile(primaryLock, 'utf8'), 'primary lane lock');
+});
+
 test('remote divergence holds before creating a local checkpoint', async () => {
   const { root, other } = await remotePair();
   await writeFile(join(other, 'selected.txt'), 'remote\n');
