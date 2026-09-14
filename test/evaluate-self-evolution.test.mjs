@@ -70,6 +70,12 @@ test('candidate must be registered before the trial begins', () => {
     'HOLD_NOT_COMPARABLE');
 });
 
+test('candidate cannot be registered before its source baseline was observed', () => {
+  const candidate = makeCandidate({ registered_at: '2026-08-31T23:00:00Z' });
+  assert.equal(evaluateSelfEvolution({ candidate, baseline, trial: improvedTrial }).status,
+    'HOLD_NOT_COMPARABLE');
+});
+
 test('open or incomplete evidence cannot prove evolution', () => {
   const trial = { ...improvedTrial, status: 'AWAITING_USER_REVIEW', outcome: {} };
   assert.equal(evaluateSelfEvolution({ candidate: makeCandidate(), baseline, trial }).status,
@@ -101,6 +107,17 @@ test('negative, fractional or impossible counts are invalid evidence', () => {
       acceptance_criteria_total: 0, criteria_with_current_evidence: 0.5 } };
   assert.equal(evaluateSelfEvolution({ candidate: makeCandidate(), baseline, trial: invalid }).status,
     'HOLD_INSUFFICIENT_EVIDENCE');
+});
+
+test('non-target baseline guard metrics are still required valid evidence', () => {
+  const invalidBaseline = {
+    ...baseline,
+    metrics: { ...baseline.metrics, regression_events: -1 }
+  };
+  const correctionCandidate = makeCandidate({ target_metrics: ['user_correction_count'] });
+  assert.equal(evaluateSelfEvolution({
+    candidate: correctionCandidate, baseline: invalidBaseline, trial: improvedTrial
+  }).status, 'HOLD_INSUFFICIENT_EVIDENCE');
 });
 
 test('no observed target benefit remains HOLD', () => {

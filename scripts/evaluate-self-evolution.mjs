@@ -83,6 +83,9 @@ function episodeProblems(label, episode) {
       metric(episode, 'criteria_with_current_evidence') > metric(episode, 'acceptance_criteria_total')) {
     problems.push(`${label}_CRITERIA_WITH_CURRENT_EVIDENCE_INVALID`);
   }
+  for (const key of ['false_completion_events', 'unverified_criteria_count', 'regression_events']) {
+    if (!isCount(metric(episode, key))) problems.push(`${label}_${key.toUpperCase()}_INVALID`);
+  }
   for (const key of ['key', 'requirement_family_digest', 'metric_schema_version', 'observation_window']) {
     if (!String(episode.comparison?.[key] ?? '').trim()) problems.push(`${label}_COMPARISON_${key.toUpperCase()}_MISSING`);
   }
@@ -110,7 +113,8 @@ function comparabilityProblems(candidate, baseline, trial) {
   if (Date.parse(trial.comparison?.observed_at) <= Date.parse(baseline.comparison?.observed_at)) {
     problems.push('TRIAL_NOT_LATER_THAN_BASELINE');
   }
-  if (Date.parse(candidate.registered_at) >= Date.parse(candidate.trial_started_at) ||
+  if (Date.parse(candidate.registered_at) < Date.parse(baseline.comparison?.observed_at) ||
+      Date.parse(candidate.registered_at) >= Date.parse(candidate.trial_started_at) ||
       Date.parse(candidate.trial_started_at) > Date.parse(trial.comparison?.observed_at)) {
     problems.push('CANDIDATE_NOT_REGISTERED_BEFORE_TRIAL');
   }
