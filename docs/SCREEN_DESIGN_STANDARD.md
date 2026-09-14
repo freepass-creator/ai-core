@@ -45,6 +45,33 @@ Official references:
 - Loading, empty, error and populated states are specified independently.
 - Large datasets define pagination or virtualization, result count and stable row identity.
 
+## Form controls
+
+- Every control has a persistent label. Hints explain format; they do not replace the label.
+- Required, invalid, disabled and read-only states are distinguishable in text or semantics as well as color.
+- Validation runs at a useful boundary, moves focus to the first invalid field and preserves the entered values.
+- Checkbox and radio controls keep their native input semantics. Switches are reserved for settings that take effect immediately.
+
+## Navigation and disclosure
+
+- Current location is exposed with `aria-current` or the component-specific selected state.
+- Tabs follow the APG tab pattern, including one tab stop and Arrow, Home and End keys.
+- Native `details` and `summary` are preferred for simple disclosure.
+- Pagination exposes the current position and disables unavailable directions with a visible reason.
+
+## Feedback and data states
+
+- Inline errors identify the field and correction. Status updates use a polite live region; urgent blocking errors use an alert.
+- Toasts confirm a completed background-safe action and disappear without stealing focus. Critical information stays inline.
+- Loading, empty, error and populated states have distinct messages and actions. Loading indicators honor reduced motion.
+- A retry does not duplicate an already completed write and does not clear recoverable user input.
+
+## Dialog and confirmation
+
+- Use a dialog only when the user must finish or dismiss a focused task before continuing.
+- The dialog has an accessible name and description, receives focus on open, closes with Escape and returns focus to its invoker.
+- Destructive confirmation names the affected object and consequence. Starting a request is not described as successful completion.
+
 ## Responsive baseline
 
 - Start with a single-column mobile layout and enhance at content-driven breakpoints.
@@ -55,3 +82,5 @@ Official references:
 ## Sample
 
 Open `examples/ui-components.html` through a local web server. It demonstrates working button actions plus busy and disabled buttons, a native dropdown and the populated state of a responsive accessible table using the canonical tokens. Loading, empty and error table examples remain required when a product adopts the table component; this first sample does not claim to demonstrate them.
+
+Open `examples/ui-patterns.html` for the next common layer: form validation, radio and checkbox choices, keyboard tabs, disclosure, inline alerts, loading/empty/error/populated data states, pagination, toast feedback and destructive confirmation.

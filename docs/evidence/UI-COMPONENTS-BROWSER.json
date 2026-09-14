@@ -1,11 +1,10 @@
 {
   "receipt_id": "UI-COMPONENTS-BROWSER-001",
-  "observed_at": "2026-09-14T17:01:00+09:00",
+  "observed_at": "2026-09-14T17:13:11+09:00",
   "base_commit": "087f2a9",
   "source_sha256": {
     "design-system/tokens.css": "78d5fdc0bdbe13f422fb14c255d75fc08df42c8cb458b252dddf3564bdb19b96",
-    "docs/SCREEN_DESIGN_STANDARD.md": "967c34eb9ae0995af8f0004466ce2ff5a17f5094b60df2ce7c03f0c06956f422",
-    "examples/ui-components.html": "e88b4a2fa09b55526c2333314f4ab9db61ebce61c086f84b00238269737cccdf"
+    "examples/ui-components.html": "f1ce88c66d6692fd1a7a101b0bb1154796e96b5e38732c96e1102b0b76d4eef5"
   },
   "runner": {
     "name": "agent-browser",
@@ -16,7 +15,7 @@
     "wcag2a_wcag2aa": {
       "violations": 0,
       "incomplete": 0,
-      "passes": 22
+      "passes": 21
     },
     "mobile_viewport_css_px": {
       "width": 390,

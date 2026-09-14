@@ -1,0 +1,52 @@
+{
+  "receipt_id": "UI-PATTERNS-BROWSER-001",
+  "observed_at": "2026-09-14T17:13:15+09:00",
+  "base_commit": "16c2734",
+  "source_sha256": {
+    "design-system/components.css": "e2a3cdecf15eced95410022e63d75f61ab78278d3aae9c43084dd15b9ae4d401",
+    "docs/SCREEN_DESIGN_STANDARD.md": "57b49582492f2d3810ef09f1d1cdefd1ba25206dab12ac527b50921072a51c5a",
+    "examples/ui-patterns.html": "bf1b33fb6eb0bbc3be41ca1a99acab9a03610859dc85cf864d26e83eeaf8bcda",
+    "examples/ui-patterns.js": "d6b9da30197d01c428d4f9f850dc59db4a605bcf4b7a535339237e10fc127958",
+    "design-system/tokens.css": "78d5fdc0bdbe13f422fb14c255d75fc08df42c8cb458b252dddf3564bdb19b96"
+  },
+  "runner": {
+    "name": "agent-browser",
+    "version": "0.37.1",
+    "engine": "chrome"
+  },
+  "results": {
+    "wcag2a_wcag2aa": {
+      "violations": 0,
+      "incomplete": 0,
+      "passes": 24
+    },
+    "mobile_viewport_css_px": {
+      "width": 390,
+      "height": 844
+    },
+    "body_overflow": false,
+    "visible_button_min_height_px": 46,
+    "input_height_px": 44,
+    "invalid_submit": {
+      "focused_id": "name",
+      "status": "입력 내용을 확인하세요.",
+      "field_error": "이름을 입력하세요."
+    },
+    "valid_submit_status": "설정을 저장했습니다.",
+    "keyboard_tab": {
+      "active_id": "tab-checks",
+      "selected": true,
+      "panel_visible": true
+    },
+    "error_state_has_retry": true,
+    "toast_visible": true,
+    "dialog": {
+      "opened": true,
+      "initial_focus_id": "dialog-cancel",
+      "closed": true,
+      "returned_focus_id": "dialog-open"
+    },
+    "reduced_motion_animation_name": "none",
+    "page_errors": 0
+  }
+}
