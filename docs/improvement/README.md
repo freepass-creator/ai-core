@@ -5,7 +5,8 @@ Coordinator: task `01a0a25c-d3c3-7fe1-818f-c30b47fc1310`.
 Worktree: `C:/Users/admin/.codex/worktrees/852a/ai-core`.
 Branch: `codex/self-evolution-evidence`.
 
-Read [CYCLE-001.md](CYCLE-001.md) before resuming. Verify cwd, branch, dirty state,
+Read [CYCLE-001.md](CYCLE-001.md) and [CYCLE-002.md](CYCLE-002.md) before resuming.
+Verify cwd, branch, dirty state,
 remote PR heads and available RAM before the next bounded change. Do not write to
 `C:/dev/ai-core`, the intake/adapter owners' files, or global Codex memory.
 Common ledger, policy evaluator and registry remain PR20 responsibilities.
@@ -15,6 +16,8 @@ Coordinate any common-file changes with the coordinator before editing.
 
 Run `node src/improvement/evaluate-evolution-jsonl.mjs` with UTF-8 JSONL on stdin.
 Each nonblank line is the existing evaluator's `{candidate, baseline, trial}` input.
+One optional UTF-8 BOM at the start of the file is accepted. BOMs within later
+nonblank records are not removed; malformed input still produces HOLD.
 For example, in PowerShell:
 
 ```powershell

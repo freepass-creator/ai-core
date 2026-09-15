@@ -36,8 +36,10 @@ export async function evaluateEvolutionStream(input, output) {
   let lineNumber = 0;
   let failed = false;
   async function* records() {
-    for await (const line of lines) {
+    for await (const rawLine of lines) {
       lineNumber += 1;
+      // Accept one UTF-8 signature only at the beginning of the file.
+      const line = lineNumber === 1 && rawLine.startsWith('\uFEFF') ? rawLine.slice(1) : rawLine;
       // Blank physical lines are ignored but retain their place in provenance.
       if (!line.trim()) continue;
       const record = evaluateEvolutionLine(line, lineNumber);
