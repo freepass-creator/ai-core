@@ -12,6 +12,10 @@ AI Core 작업을 시작할 때 전체 Gmail/전체 Chat/전체 연구 branch를
 
 클로드 등 구현 담당은 [비상 기능 구현 인계서](docs/CLAUDE_EMERGENCY_HANDOFF.md)를 읽고 첫 작업 `EMG-P0`부터 진행한다. [검증 시나리오](docs/EMERGENCY_ACCEPTANCE_TESTS.md)는 통과해야 할 요구사항이지 이미 통과한 결과가 아니다. 운영 쓰기·자동 복구·전역 차단은 이번 문서 인계만으로 허용되지 않는다.
 
+## 본사·자회사 통합을 이어받는 경우
+
+통합 작업 담당은 [그룹 운영 모델](docs/GROUP_OPERATING_MODEL.md)의 확정 방향과 [클로드 통합 인계서](docs/CLAUDE_GROUP_INTEGRATION_HANDOFF.md)를 읽는다. 첫 작업은 `GROUP-P0`: 현황 조사·기존 registry 정리·원형 보존형 비운영 자회사 하나 파일럿이다. 공통 기능은 본사로 정리하되 고유 제품·Git·데이터 SSOT·브랜드·배포는 독립 유지한다. 비상 기능 `EMG-P0`와는 별도 작업이며, 운영 전환·삭제·권한 변경은 이 인계만으로 허용되지 않는다.
+
 ## 기본 진입점
 
 1. `MEMORY.md`
