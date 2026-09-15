@@ -105,8 +105,14 @@ export function createOrderWorkAdapter({ readContext, verifyLedgerText, runContr
       need(input.expected_head === projection.ledger_head, 'LEDGER_HEAD_CHANGED');
       // Inventory is supplied by the future coordinator; an absent inventory is not proof of absence.
       need(Array.isArray(context.usedCommandIds) && Array.isArray(context.usedEventIds), 'ID_INVENTORY_UNAVAILABLE');
+      need(context.usedCommandIds.every(nonempty) && context.usedEventIds.every(identifier)
+        && new Set(context.usedCommandIds).size === context.usedCommandIds.length
+        && new Set(context.usedEventIds).size === context.usedEventIds.length, 'ID_INVENTORY_INVALID');
       need(!context.usedCommandIds.includes(input.command_id), 'COMMAND_ID_DUPLICATE');
-      need(!context.usedEventIds.includes(input.event_id), 'EVENT_ID_DUPLICATE');
+      // Parsing IDs only, after PR20 verified this exact text. No chain/state logic lives here.
+      const ledgerEventIds = context.ledgerText.trim().split(/\r?\n/).filter(Boolean).map(line => JSON.parse(line).event_id);
+      need(ledgerEventIds.every(identifier), 'LEDGER_EVENT_IDS_INVALID');
+      need(!context.usedEventIds.includes(input.event_id) && !ledgerEventIds.includes(input.event_id), 'EVENT_ID_DUPLICATE');
       const action = input.intent === 'REQUEST_EXECUTION_REVIEW' ? projection.control_result.execute : projection.control_result.close;
       need(action.enabled && action.reasons.length === 0, 'CANONICAL_ACTION_BLOCKED');
       return { status: 'PREPARED_NOT_SENT', sent: false, persisted: false,
