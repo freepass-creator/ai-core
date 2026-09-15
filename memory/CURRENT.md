@@ -119,11 +119,18 @@ Current major domain systems are conceptually:
 
 Additional Centers are justified only when independent SSOT/assets/lifecycle/verification needs warrant them; otherwise use a capability/domain pack.
 
-### Repository topology decision
+### Repository topology decision — group headquarters and independent subsidiaries
 
-AI Core is the logical parent/orchestrator, while AIOPS, DevCenter, Design/Doc Center and projects remain physically independent repositories/systems for now.
+User-confirmed on 2026-09-15 (KST): adopt a **group workspace** model.
 
-Physical consolidation should be reconsidered only when independent boundaries are no longer valuable, cross-repository friction is repeatedly greater than isolation benefit, migration avoids duplicate SSOT, and rollback/compatibility are prepared.
+- AI Core is the group headquarters for orders, memory, planning, routing, approvals, evidence and follow-through.
+- DevCenter, shared integrations and shared verification are headquarters/common organizations.
+- ERP, sales, settlement, homepage, legal, content and other products remain independent subsidiaries with their own repositories, SSOT, brand, data, release and deployment boundaries.
+- Local development may co-locate independent repositories under `AI-CORE-GROUP/headquarters` and `AI-CORE-GROUP/subsidiaries`. Co-location does not merge Git histories or project authority.
+- Common capabilities are extracted only after semantic/evidence checks and are adopted by pinned version/revision. Project-specific behavior stays local.
+- New projects start from one versioned corporate project standard while retaining independent product identity.
+
+This supersedes the prior target of logical linkage only. It does **not** adopt a single-product monorepo that mixes every application. See `docs/GROUP_OPERATING_MODEL.md`.
 
 ## Work / Chat collaboration
 
@@ -171,7 +178,7 @@ Retrieve more information when freshness, contradiction, or a critical missing p
 - Do not reread all Gmail by default; GitHub memory/current project sources are the operational start point.
 - Gmail is archive/distribution/provenance, not active common-memory SSOT.
 - Newest research is not automatic operating policy.
-- Logical hierarchy does not require repository nesting.
+- Logical-only linkage is no longer the target topology; use the group workspace while preserving independent subsidiary repositories and authority boundaries.
 - Do not build a giant persistent Codebase Twin before proving semantic capability resolution and demand-driven impact expansion.
 - Do not keep adding development frameworks when the missing evidence is a real episode.
 
