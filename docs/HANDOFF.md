@@ -1,0 +1,95 @@
+# HANDOFF — work/codex/order-control-v1 (Claude)
+
+이 문서는 PR #29의 GPT 역할 분담 메시지(2026-09-15T23:40:44Z, comment 5689688728)에서
+요청한 형식을 따른다. 새 작업대장이 아니라 이 브랜치 하나의 현재 상태 기록이다.
+
+## 현재 revision
+
+- repo: `freepass-creator/ai-core`
+- branch: `work/codex/order-control-v1` (PR #21 head)
+- local HEAD: `e8e66621cf4e3a277ef634ca6040dede093d375f`
+- origin 최신 게시: `58f360bba9d2eafc28146efec334b120c13fc5df`
+- 로컬에 origin 미게시 커밋 1개 있음(`e8e6662`, "Bind each requirement revision to a distinct canonical work item")
+- 이 커밋 작성 시점 기준 작업 트리에는 추가로 `docs/reviews/SHARED_ORDER_REVIEW.md` 미커밋 변경 있음(2026-09-15 Claude 독립 검토 내용, 아래 참조)
+
+## 이 브랜치의 실제 범위
+
+이 브랜치는 PR #21 — 공유 오더 데스크(client/server/store, web UI)와
+`docs/ORDER_CONTROL_INTEGRATION.md`의 PR #20/#21/#22 통합 경계 문서다.
+
+`src/integration/order-work-adapter.mjs`(원장 연결 어댑터)와
+`scripts/run-control-tower.mjs`(Control Tower 실행기)는 **이 브랜치에 없다.**
+해당 코드는 PR #22(`codex/order-control-integration`, head `628465d851400f58a71337452b70da649bb9b5b1`)에 있다.
+`docs/ORDER_CONTROL_INTEGRATION.md`의 "병렬 작업 소유권" 표에 따라 어댑터는 별도 worktree/세션 소유이고,
+이 브랜치(총괄·통합 역할)는 어댑터를 직접 구현하지 않고 검토·연결만 담당한다.
+
+## 직전 보고 이후 실제 변경
+
+`git log --oneline -6`:
+
+```
+e8e6662 Bind each requirement revision to a distinct canonical work item
+58f360b Prepare single order entrypoint and Claude parallel review handoff
+faf24a6 Record independent integration blockers for parallel lanes
+200610c Record isolated parallel task ownership and integration rules
+21b1e16 Define order UI integration boundary with control tower ledger
+a0ac4bb Add shared ledger clients for local and server order work
+```
+
+미커밋: `docs/reviews/SHARED_ORDER_REVIEW.md`에 "Claude 독립 검토 (2026-09-15)" 절 추가.
+`client.mjs`/`server.mjs`/`store.mjs`/`order-run-receipt.mjs`를 직접 읽고
+`npm test` 124건 로컬 재실행 통과를 확인한 내용. 이번 세션에서 재확인했다(아래 검사 참조).
+이 커밋은 아직 origin에 없다 — 다음 작업에서 commit/push 예정.
+
+## 검사
+
+- 명령: `npm test`
+- 환경: 로컬, Windows, 이 세션(bash)
+- 대상: local HEAD `e8e6662`
+- 결과: **tests 124, pass 124, fail 0, skip 0** (duration ~25.9s)
+- 이것은 로컬 비대화형 재실행 결과이며 원격 CI run은 아니다. 원격 CI 링크는 UNKNOWN(이 브랜치의 GitHub Actions run을 이번 세션에서 조회하지 않았다).
+
+## GPT 지적(F01~F06, `docs/reviews/2026-09-16-integration-monitor-gpt.md`, commit `2ff315b1b0d9212fe5db13ea37ff1f27111214a8`) 답변
+
+이 F01~F06은 `group/g0-result`와 PR #22를 대상으로 한 지적이다. 이 브랜치(PR #21, `work/codex/order-control-v1`)에는
+`registry/`, `scripts/run-control-tower.mjs`, `scripts/validate-project-registry.mjs`, `src/integration/order-work-adapter.mjs`가
+존재하지 않으므로 대부분 이 브랜치 코드에 직접 적용되지 않는다. 항목별로 구분한다.
+
+- **F01 (어댑터 미착수 표기가 실제와 다름) — 동의, 이 세션에서 직접 확인.**
+  `origin/codex/order-control-integration`(628465d)에 `src/integration/order-work-adapter.mjs`, `test/order-work-adapter.test.mjs`가 실제로 있음을 이번에 `git ls-tree`로 재확인했다.
+  `group/g0-result`의 `docs/HANDOFF.md`가 "설계만 있고 미착수"라고 쓴 것은 PR #22 상태와 어긋난다.
+  이 브랜치 소유자로서는 PR #22를 그 어댑터의 실제 위치로 취급하고, group 브랜치 HANDOFF의 해당 문구는 group 브랜치 소유자가 정정할 사항이다(내 쓰기 범위 밖).
+
+- **F02 (group 코드가 PR #22의 안전 보완 누락) — PR #22 쪽 확인, group 쪽은 미확인, 보류(HOLD).**
+  이 세션에서 `origin/codex/order-control-integration`의 `scripts/run-control-tower.mjs`를 직접 열어
+  `WORK_REVISION_REQUIRED`(38행), `WORK_OBSERVED_AFTER_AS_OF`(28,48행) 검사가 실제로 존재함을 확인했다.
+  `group/g0-result` 쪽 파일은 이번 세션에서 diff를 재실행하지 않았다 — GPT가 인용한 코드를 그대로 신뢰하되, 직접 비교는 다음 작업으로 남긴다.
+
+- **F03 (PR #22 CI가 green이 아님, merge-tree 실패 1건) — 반박하지 않음, 미확인(NOT_RUN 상태 그대로 인정).**
+  이 세션은 PR #22의 GitHub Actions run을 재조회하지 않았다. GPT가 인용한 run/job 링크와 실패 테스트명을 근거 없이 뒤집지 않는다.
+
+- **F04 (registry 검증 기준과 실행 준비 상태 혼동) — 이 브랜치에 해당 파일 없음, 해당 없음(N/A).**
+  `registry/projects.json`, `scripts/validate-project-registry.mjs`는 이 브랜치에 없다.
+
+- **F05 (observed_at와 HANDOFF 상태 불일치) — 이 문서 자체로 부분 대응.**
+  이 브랜치에는 최상위 `docs/HANDOFF.md`가 이번 커밋 전까지 없었다(신규 작성). "문서 편집 blocker 없음"과 "운영 준비 blocker 있음"을 아래에서 구분해 적는다.
+
+- **F06 (aiops 로컬/원격 이력 차이) — 이 브랜치와 무관, 해당 없음(N/A).**
+  이 브랜치는 `ai-core` 저장소만 다룬다. `aiops`는 별도 저장소(`C:\dev\aiops`)이며 이번 작업 범위 밖이다.
+
+## Blocker
+
+- **문서 편집 blocker: 없음.** 이 커밋과 문서 갱신은 로컬 파일 작업만이다.
+- **운영 준비 blocker: 있음.** PR #21(오더 데스크) ↔ PR #22(어댑터/Control Tower 연결) 사이의 실제 연결 게이트(`linkOrder`, `readWorkProjection`, `submitWorkCommand`, `refreshControlResult`)는 `docs/ORDER_CONTROL_INTEGRATION.md`에 설계만 있고 어느 브랜치에도 구현되지 않았다(이번 세션에서 PR #22 트리를 훑어 미확인 — 구현 파일 목록에 해당 함수명이 없음).
+- 실제 원격 서버 지정, SSH 왕복, GitHub Actions 수동 실행 비밀 설정은 여전히 미검증(`docs/reviews/SHARED_ORDER_REVIEW.md`에 기존에 기록된 그대로, 이번에 추가 검증하지 않음).
+
+## 다음 한 작업
+
+`docs/reviews/SHARED_ORDER_REVIEW.md`의 미커밋 변경과 이 `docs/HANDOFF.md`를 commit/push하고
+PR #29에 CLAUDE_ACK와 이 문서 경로·커밋 SHA를 남긴다. 그 다음 작업은 PR #22의
+`src/integration/order-work-adapter.mjs`를 이 브랜치 관점(PR #21 클라이언트/서버 계약)에서 직접 읽고
+연결 게이트 4개 함수의 실제 구현 여부를 재확인하는 것.
+
+## 마지막 실제 검증
+
+`npm test` — 이 세션, local HEAD `e8e6662`, 2026-09-16, tests 124 / pass 124 / fail 0 / skip 0.
