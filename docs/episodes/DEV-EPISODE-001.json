@@ -221,7 +221,11 @@
       "test/evaluate-control-tower.test.mjs",
       "memory/EMAIL_INDEX.json",
       "memory/LINEAGE.md",
-      "docs/GROUP_OPERATING_MODEL.md"
+      "docs/GROUP_OPERATING_MODEL.md",
+      "contracts/project-registry.schema.json",
+      "examples/project-registry.json",
+      "scripts/validate-project-registry.mjs",
+      "test/validate-project-registry.test.mjs"
     ],
     "rework_loops": 47
   },
@@ -262,7 +266,7 @@
     "candidate_reuse_count": 2,
     "reused_capability_count": 1,
     "new_capability_count": 0,
-    "files_touched_count": 45,
+    "files_touched_count": 49,
     "rework_loop_count": 47,
     "intent_to_first_preview_minutes": null,
     "acceptance_criteria_total": 13,

@@ -40,6 +40,7 @@ npm test
 npm run verify
 npm run form:validate -- examples/development-form.json
 npm run control:evaluate -- examples/control-tower.json
+npm run registry:validate -- examples/project-registry.json
 ```
 
 The evaluator reports whether an item is ready to prepare, execute or close. It never grants execution authority. See [Control Tower](docs/CONTROL_TOWER.md) and [Concurrent Work](docs/CONCURRENT_WORK.md).

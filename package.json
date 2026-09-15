@@ -9,6 +9,7 @@
     "form:validate": "node scripts/validate-development-form.mjs",
     "evolve:evaluate": "node scripts/evaluate-self-evolution.mjs",
     "control:evaluate": "node scripts/evaluate-control-tower.mjs",
+    "registry:validate": "node scripts/validate-project-registry.mjs",
     "checkpoint": "node scripts/checkpoint-work.mjs"
   },
   "dependencies": {
