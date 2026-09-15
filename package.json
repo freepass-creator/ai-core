@@ -10,6 +10,7 @@
     "evolve:evaluate": "node scripts/evaluate-self-evolution.mjs",
     "control:evaluate": "node scripts/evaluate-control-tower.mjs",
     "registry:validate": "node scripts/validate-project-registry.mjs",
+    "ledger:verify": "node scripts/work-ledger.mjs verify",
     "checkpoint": "node scripts/checkpoint-work.mjs"
   },
   "dependencies": {

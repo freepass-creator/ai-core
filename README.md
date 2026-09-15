@@ -45,6 +45,8 @@ npm run registry:validate -- examples/project-registry.json
 
 The evaluator reports whether an item is ready to prepare, execute or close. It never grants execution authority. See [Control Tower](docs/CONTROL_TOWER.md) and [Concurrent Work](docs/CONCURRENT_WORK.md).
 
+Project routing starts from the revision-bound registry. Work state changes use the append-only, optimistic-concurrency ledger described in [Work Ledger](docs/WORK_LEDGER.md).
+
 ## Repository relationships
 
 - `freepass-creator/ai-core`: group headquarters order, memory, coordination and learning
