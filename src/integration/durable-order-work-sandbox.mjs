@@ -20,6 +20,7 @@ const errorCode = error => /^[A-Z][A-Z0-9_]+$/.test(error?.message ?? '') ? erro
 const hold = reason => ({ status: 'HOLD', reason, execution_authorized: false, completion_authorized: false, external_execution: 'NOT_ATTEMPTED' });
 const eventPayload = ({ previous_hash, event_hash, ...event }) => event;
 const eventId = value => typeof value === 'string' && /^[A-Z][A-Z0-9_-]*-[0-9]{3,}$/.test(value);
+const pause = milliseconds => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, milliseconds);
 
 // Reopenable laboratory only: no production path, connection discovery or executor.
 export async function openDurableOrderWorkSandbox({ root = null, registry, asOf, checkpoint = () => {} }) {
@@ -36,13 +37,19 @@ export async function openDurableOrderWorkSandbox({ root = null, registry, asOf,
     catch (error) { if (error.code !== 'ENOENT') throw error; }
   }
   if (reopening) {
-    let probe;
-    try {
-      probe = new DatabaseSync(dbPath, { readOnly: true });
-      const tables = probe.prepare("SELECT name FROM sqlite_master WHERE type='table'").all().map(row => row.name);
-      need(['coordination_commands', 'coordination_bindings', 'coordination_history'].every(name => tables.includes(name)), 'COORDINATION_HISTORY_MISSING');
-    } catch { throw new Error('COORDINATION_HISTORY_MISSING'); }
-    finally { probe?.close(); }
+    let verified = false;
+    for (let attempt = 0; attempt < 8 && !verified; attempt++) {
+      let probe;
+      try {
+        probe = new DatabaseSync(dbPath, { readOnly: true });
+        const tables = probe.prepare("SELECT name FROM sqlite_master WHERE type='table'").all().map(row => row.name);
+        need(['coordination_commands', 'coordination_bindings', 'coordination_history'].every(name => tables.includes(name)), 'COORDINATION_HISTORY_MISSING');
+        verified = true;
+      } catch (error) {
+        if (!/locked|busy/i.test(error?.message ?? '') || attempt === 7) throw new Error('COORDINATION_HISTORY_MISSING');
+        pause(25 * (attempt + 1));
+      } finally { probe?.close(); }
+    }
   }
   const policy = structuredClone(registry);
   let pending = null;

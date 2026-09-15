@@ -24,6 +24,8 @@ The original JSONL ledger remains the only canonical business-state history. SQL
 
 Checkpoint verification: full `npm test` passed 290/290, failed 0, skipped 0. Main-state verifier, module syntax check and diff whitespace check passed. The transaction preflight regression asserts the original `OrderError.code`, not its localized message. Existing UI was not changed in this stage; earlier browser evidence remains scoped to its prior checkpoint.
 
+CI follow-up: a simultaneous-process test exposed a transient read-only SQLite probe failure while another process opened the same initialized database. Reopen now retries only errors explicitly reported as locked/busy, with eight bounded attempts; a genuinely missing database/table or any other error still fails closed as `COORDINATION_HISTORY_MISSING`. The race test passed 12 consecutive focused repetitions after the change. This improves laboratory determinism and does not enable production use.
+
 Risk: high, because this changes a storage boundary. Cursor independently reviewed the design and source. Agreement: atomic mapping/outbox, full payload reconciliation, immutable identity, sticky HOLD and real process tests are necessary. Its ambiguous `persisted` receipt concern was addressed as `coordination_persisted` with a next action.
 
 The suggested concerns about a stale head at prepare and explicit recovery are retained as documented optimistic-concurrency behavior, not silently retried. Creating a new RECEIVED work on revision is the approved requirement, not a same-work revision bug. Original-function tests supply evidence that the in-process pending callback is not the durability mechanism and that append adds only the two hash fields excluded from payload comparison.
