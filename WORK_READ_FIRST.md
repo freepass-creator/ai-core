@@ -14,7 +14,11 @@ AI Core 작업을 시작할 때 전체 Gmail/전체 Chat/전체 연구 branch를
 
 ## 본사·자회사 통합을 이어받는 경우
 
-통합 작업 담당은 [그룹 운영 모델](docs/GROUP_OPERATING_MODEL.md)의 확정 방향과 [클로드 통합 인계서](docs/CLAUDE_GROUP_INTEGRATION_HANDOFF.md)를 읽는다. 첫 작업은 `GROUP-P0`: 현황 조사·기존 registry 정리·원형 보존형 비운영 자회사 하나 파일럿이다. 공통 기능은 본사로 정리하되 고유 제품·Git·데이터 SSOT·브랜드·배포는 독립 유지한다. 비상 기능 `EMG-P0`와는 별도 작업이며, 운영 전환·삭제·권한 변경은 이 인계만으로 허용되지 않는다.
+통합 작업 담당은 [그룹 운영 모델](docs/GROUP_OPERATING_MODEL.md) → [AI Core 그룹 통합 마스터 기획안](docs/AI_CORE_GROUP_MASTER_PLAN.md) → [클로드 통합 인계서](docs/CLAUDE_GROUP_INTEGRATION_HANDOFF.md) 순서로 읽는다.
+
+마스터 기획안은 “어떻게 만들 것인가”에 대한 구현 명세다. 첫 실행은 `GROUP-G0`: 실제 GitHub/로컬 현황과 기존 공통 자산을 inventory하고 `docs/handoffs/GROUP-G0-RESULT.md`를 남기는 것이다. 아직 전체 저장소 이동이나 새 프레임워크 구축부터 시작하지 않는다.
+
+공통 기능은 본사로 정리하되 고유 제품·Git·데이터 SSOT·브랜드·배포는 독립 유지한다. 비상 기능 `EMG-P0`와는 별도 작업이며, 운영 전환·삭제·권한 변경은 이 인계만으로 허용되지 않는다.
 
 ## 기본 진입점
 
