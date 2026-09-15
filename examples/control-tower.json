@@ -11,6 +11,7 @@
   "items": [
     {
       "id": "DEV-001",
+      "project_id": "ai-core",
       "title": "Standard development control tower",
       "intent": {
         "status": "CONFIRMED",

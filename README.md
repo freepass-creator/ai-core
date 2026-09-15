@@ -40,6 +40,7 @@ npm test
 npm run verify
 npm run form:validate -- examples/development-form.json
 npm run control:evaluate -- examples/control-tower.json
+npm run control:run -- examples/project-registry.json examples/control-tower.json examples/work-ledger.jsonl
 npm run registry:validate -- examples/project-registry.json
 ```
 

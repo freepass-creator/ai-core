@@ -60,6 +60,7 @@
       "additionalProperties": false,
       "required": [
         "id",
+        "project_id",
         "title",
         "intent",
         "sources",
@@ -77,6 +78,7 @@
           "type": "string",
           "pattern": "^[A-Z][A-Z0-9_-]*-[0-9]{3,}$"
         },
+        "project_id": { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,62}$" },
         "title": {
           "type": "string",
           "minLength": 1

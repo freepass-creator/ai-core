@@ -23,3 +23,5 @@ For each work item it derives whether the system may prepare, execute or close. 
 ```powershell
 npm run control:evaluate -- examples/control-tower.json
 ```
+
+`scripts/run-control-tower.mjs` composes the registry, snapshot and append-only ledger. Execution readiness is held when the project is absent/inactive, the project or work revision is stale, the work is absent, or its ledger state is not `READY`.
