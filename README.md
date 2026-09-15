@@ -1,32 +1,41 @@
 # AI Core
 
-AIOPS의 업무 기억·운영 제어와 DevCenter의 개발 규격·검증 능력을 복제하지 않고, 필요한 순간에 찾아 조합하는 상위 오케스트레이터.
+AI Core is the group headquarters for user orders, shared memory, planning, routing, approvals, evidence and follow-through.
 
-## 원칙
-- AI Core는 정본을 소유하지 않는다. 정본을 찾고 revision을 고정한다.
-- AI Core는 모든 기능을 새로 만들지 않는다. DevCenter의 검증 자산을 우선 재사용한다.
-- AI 합의보다 사용자 최신 지시·승인 원본·재현·실행 증거를 우선한다.
-- 작성·검증·승인·실행·성과를 분리한다.
-- 개발은 Cloud First. GitHub를 AI 간 개발 SSOT로 쓰고, 실제 repo 실행환경이 필요할 때 Work/Codex를 사용한다. 로컬은 예외다.
-- AI Core 자체가 운영 실행 권한을 만들지 않는다. AIOPS/DevCenter/프로젝트의 기존 승인 게이트를 보존한다.
+The adopted operating target is a **group workspace with independent subsidiaries**:
 
-## v0.1 구현 범위
-실행 가능한 순수 함수 기반 오케스트레이션 코어를 제공한다.
+- headquarters: AI Core, planning, DevCenter, management support and shared services;
+- subsidiaries: ERP, sales, settlement, homepage, legal, content and other independent products;
+- each subsidiary keeps its own repository, SSOT, data, brand, release and deployment boundaries;
+- common capabilities are shared through versioned contracts/packages/templates, not copy-paste or forced uniformity.
 
-`Task → Intent Router → Source Plan → Capability Plan → Execution Route → Work Packet`
+See [Group Operating Model](docs/GROUP_OPERATING_MODEL.md).
 
-현재 GitHub API·Google·배포를 직접 호출하지 않는다. 어댑터는 포인터와 계획만 만든다. 이 제한은 의도적이다.
+## Principles
 
-## 빠른 실행
-```bash
-node src/cli.mjs examples/freepass-product-detail.json
-node --test
-```
+- The user can issue natural-language orders from AI Core sessions/sections without naming repositories or executors each time.
+- AI Core finds the authoritative project/source and pins its revision; it does not create a second SSOT.
+- Reuse existing DevCenter and project capabilities before creating new ones.
+- Separate artifact, verification, authorization, execution and outcome states.
+- GitHub is the durable development/handoff SSOT. The local `AI-CORE-GROUP` workspace is the standard execution layout for co-locating independent repositories.
+- Shared services do not grant new production, live-data, permission, payment, deletion or legal authority.
+- Common standards define quality and collaboration baselines; subsidiary business logic, brand and user experience remain independent.
 
-## 저장소 관계
-- `freepass-creator/aiops`: 업무 의미, 운영 실패, 권한·승인, 회사 SSOT 포인터
-- `freepass-creator/devcenter`: 개발 기준, registry, 공통 부품, 점검·시정·재검사
-- 대상 프로젝트: 실제 코드와 현실 결과
-- `ai-core`: 위 세 계층을 연결하는 판단·계획·학습 계층
+## Current v0.1 implementation
 
-자세한 규칙은 `AGENTS.md`, 계약은 `contracts/`, 구현은 `src/`, 테스트는 `test/`를 본다.
+The current repository provides a read-optimized memory and orchestration design. It does not yet implement the full group workspace/runtime.
+
+Conceptual route:
+
+`Task → Intent Router → Project/Source Resolve → Capability Plan → Execution Route → Work Packet → Proof Bundle`
+
+The next implementation step is the local group workspace, project registry, Project Capsules and one non-production subsidiary pilot defined in `docs/GROUP_OPERATING_MODEL.md`.
+
+## Repository relationships
+
+- `freepass-creator/ai-core`: group headquarters order, memory, coordination and learning
+- `freepass-creator/devcenter`: headquarters development standards, registry, shared assets and verification
+- `freepass-creator/aiops`: source for shared integration candidates plus operations-domain procedures
+- subsidiary repositories: actual product code, project SSOT and real outcomes
+
+Read `WORK_READ_FIRST.md`, then `MEMORY.md`, `memory/CURRENT.md`, the current Work Packet and the target subsidiary's authoritative project sources.
