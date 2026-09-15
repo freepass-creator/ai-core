@@ -2,12 +2,12 @@
 
 > Read-only context for advice or draft work. This pack grants no claim, execution, completion, deployment or sending authority. Verify current canonical state before any action.
 
-- Generated: 2026-09-15T03:16:29.916Z
+- Generated: 2026-09-15T03:20:00.000Z
 - Source: task:01a0a25c-d3c3-7fe1-818f-c30b47fc1310
 - Target: order=UNVERIFIED, work=UNVERIFIED
 - Status: HOLD
 - Purpose: Prepare safe AI Core continuation for Claude Code with repository access and a free chat using one Markdown file
-- Handoff digest: sha256:82a6a4d336976a6a8d155fcf0959ea2df60119d2c334243eff4d05cc636dbc3d
+- Handoff digest: sha256:bae6c747b913409a85b646637041303aa5241deac1db433ce6eb83e7e7c8a8ce
 
 ## Your role
 
@@ -31,13 +31,14 @@ Prepare safe AI Core continuation for Claude Code with repository access and a f
 
 ## Completed
 
-- Source checkpoint 0577201c4e639be607c49512465c784cb454f001 is on draft pull request 22
-- The source checkpoint reported 290 passing tests and successful exact-commit CI
+- Continuation checkpoint 4ee0b9ffe81d55141e4642ca0dc2740589aa582d is on draft pull request 22
+- The exact emergency handoff file at that checkpoint was read back from GitHub with matching content blob
+- The checkpoint passed 21 focused tests and the preceding complete tree passed 299 tests
 
 ## Remaining
 
-- Review the continuation exporter, proposal recovery and one-repository sync preflight
-- Run the full test suite and verify the exact remote commit and handoff file
+- Wait for exact-checkpoint CI and record its result
+- Resolve a canonical order and work mapping before treating any returned proposal as assigned implementation
 
 ## Verification
 
@@ -61,11 +62,11 @@ Explain scope, assumptions, proposed files/changes, tests not run and risks. End
 {
   "schema": "ai-core-ai-proposal/v1",
   "source_ai": "chatgpt-free",
-  "generated_at": "2026-09-15T03:16:29.916Z",
-  "captured_at": "2026-09-15T03:16:29.916Z",
+  "generated_at": "2026-09-15T03:20:00.000Z",
+  "captured_at": "2026-09-15T03:20:00.000Z",
   "target_order_id": null,
   "target_work_id": "WORK-UNVERIFIED",
-  "handoff_digest": "sha256:82a6a4d336976a6a8d155fcf0959ea2df60119d2c334243eff4d05cc636dbc3d",
+  "handoff_digest": "sha256:bae6c747b913409a85b646637041303aa5241deac1db433ce6eb83e7e7c8a8ce",
   "proposal_summary": "Replace with a short proposal summary",
   "proposed_changes": [
     "Replace with proposed files or actions; nothing has been executed"
