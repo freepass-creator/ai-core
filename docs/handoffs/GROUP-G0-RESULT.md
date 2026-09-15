@@ -58,3 +58,16 @@
 ## 다음 한 작업
 
 사용자 확인 필요: 위 "미확인/위험 1"(세 조정 체계 중 본사 표준 선택)과 "추천 파일럿"(freepass-sales) 승인. 승인되면 G1(본사 최소 골격: registry validation + capsule schema 확정)로 진행.
+
+## 추가 — 교차 AI 자문 결과 (2026-09-16, Cursor Agent + Gemini CLI, 읽기전용)
+
+"미확인/위험 1"(세 조정 체계 중 본사 표준 선택)을 Cursor(`--mode ask`)와 Gemini(`--skip-trust`)에 비식별 요약으로 각각 독립 질의했다. 원장·개인정보는 전달하지 않았다.
+
+**결과 — 둘 다 독립적으로 같은 결론:**
+
+- **Control Tower(work ledger, `contracts/`·`scripts/work-ledger.mjs`·`scripts/run-control-tower.mjs`)를 본사 표준으로 채택.** revision-bound 상태기계가 GROUP_OPERATING_MODEL.md의 요구(배정·승인·검증 분리)에 가장 부합한다는 게 공통 근거.
+- `order-control-v1`(SQLite 오더 UI)은 본사 표준이 아니라 **Control Tower로 들어가는 접수(intake) 어댑터**로 위치시킨다.
+- `aiops`(협업판·행위등급 승인)는 본사로 승격하지 않고 **실제 운영 실행 레이어로 유지**하며, 점진적으로 Control Tower와 연결한다. aiops를 그대로 본사로 올리거나 order-control-v1을 본사로 올리면 네 번째 중복이 생긴다는 경고도 둘 다 동일했다.
+- G2 파일럿 `freepass-sales`: **만장일치 동의**. 대안으로는 홈페이지류처럼 더 작고 배포 경계가 단순한 ACTIVE 자회사.
+
+**결정**: 이 교차 검증으로 "본사 표준 선택" 위험 항목을 해소한다. G1(본사 최소 골격)은 Control Tower 기반으로 진행하고, order-control-v1의 어댑터화·aiops 연동은 각각 별도 후속 작업으로 분리한다. 이 결정은 사용자 확인 전까지 PROPOSAL 상태이며 자동 실행되지 않았다.
