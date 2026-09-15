@@ -20,6 +20,22 @@ AI Core 작업을 시작할 때 전체 Gmail/전체 Chat/전체 연구 branch를
 
 공통 기능은 본사로 정리하되 고유 제품·Git·데이터 SSOT·브랜드·배포는 독립 유지한다. 비상 기능 `EMG-P0`와는 별도 작업이며, 운영 전환·삭제·권한 변경은 이 인계만으로 허용되지 않는다.
 
+## 실제 회사 업무를 AI Core로 처리하는 경우
+
+[AI Core 실제 업무 운영 플레이북](docs/AI_CORE_OPERATING_PLAYBOOK.md)을 읽는다. 사용자의 자연어 오더를 `업무 의미 → 프로젝트/정본 → capability → 실행자 → 승인 경계 → 검증 → 결과/후속`으로 연결한다.
+
+첫 구현은 `OPS-P0`: 실제 주요 업무 20~30개와 자연어 오더 fixture를 읽기 전용으로 inventory하고, 각 업무가 올바른 정본·실행 경로·완료조건으로 route 되는지 확인한다. 저장소/시트/AI 이름을 사용자가 매번 지정하게 만드는 것을 기본 UX로 삼지 않는다.
+
+문서·코드가 만들어진 것과 실제 업무가 끝난 것을 구분하고, Work Result가 AI Core로 돌아와 다음 세션이 이어받을 수 있어야 한다.
+
+## 계속 고도화되는 Chat/CIVILIZATION/DEVKIT 연구를 연결하는 경우
+
+[AI Core Evolution Bridge](docs/AI_CORE_EVOLUTION_BRIDGE.md)와 `memory/RESEARCH_INDEX.md`를 읽는다. 연구 버전이나 테스트 수가 늘었다는 이유만으로 운영 규칙으로 승격하지 않는다.
+
+고도화 결과는 `Research/Chat → Candidate → revision 고정 → 작은 실험 → 실제 업무/프로젝트 evidence → ADOPT/HOLD/REJECT → feedback` 순으로 이동한다. 실제 프로젝트의 상세/원본은 해당 프로젝트에 남기고 AI Core에는 공통 후보·증거 포인터·채택 상태만 남긴다.
+
+첫 연결은 `EVO-BRIDGE-P0`: 최신 연구 포인터와 기존 AI Core 연구 후보를 inventory하고 실제 비운영 Episode에서 왕복 검증 가능한 후보 1~3개만 선택한다.
+
 ## 기본 진입점
 
 1. `MEMORY.md`
