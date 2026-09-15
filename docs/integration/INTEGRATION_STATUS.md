@@ -4,7 +4,28 @@ Status: synthetic integration implemented, including a separate temporary durabl
 
 Current checkpoint: see [durable coordination](DURABLE_COORDINATION.md) for atomic mapping/outbox, full-payload reconciliation and real process crash tests. The older volatile sandbox below remains unchanged. No production endpoint uses the new laboratory; the OrderStore hook defaults to unused. Next single action: obtain the missing independent source review against the committed checkpoint. Live migration, authorization and external execution are unapplied.
 
-## Pinned inputs and ownership
+## Conversation-to-history audit — 2026-09-15
+
+The request to preserve instructions, corrections and work history is accepted as a continuity requirement. It is **not yet an automatic end-to-end capture guarantee**. No conversation body or sensitive source has been copied into this repository.
+
+| Stage | Actual observation | Boundary / gap |
+|---|---|---|
+| App conversation | The coordinator's recent instruction and delegation were retrieved through the app's task reader. | Retrievability at this observation is proven; full history coverage, retention, backup and access policy are not independently verified. |
+| Conversation → intake/correction | Original intake store supports request receipts, revisions and events. | No automatic app-conversation consumer was found in inspected `src`, `scripts` and workflows. No source-message-to-real-order mapping was supplied or verified. |
+| Central API | Existing shared checkout connection policy/config produced a successful read-only `meta` response with matching pinned ledger ID. | This integration checkout alone has no endpoint configured. API reachability does not prove that this conversation became an order. No bulk order contents were read. |
+| Assignment / handoff | App delegation was retrieved; common packet code and manual handoff instructions exist. | An app delegation is not a verified central claim or canonical work event. |
+| Result / evidence | Development checkpoints and CI evidence are recorded in this document and related evidence paths. | Per-source-message completion/coverage remains unverified. Temporary durability tests do not prove live capture. |
+| GitHub | Remote integration ref was re-read as `60b82d645fae953f9ec773fc9621711c1a2bd26a`; main as `8c61a6cd6ae25d5cf6ee093062d84ebb1e008f21`. The integration status and durable laboratory documents are in that branch checkpoint. | Branch publication is distinct from main. This observation precedes this audit addition; the new commit must be checked separately. GitHub does not contain all app conversations. |
+
+Existing `docs/context/SESSION_HISTORY.md` ownership remains with the context coordinator in its own checkout; that path is absent from this integration branch at the audit base. Do not create a competing session ledger here. Its current local/committed/remote coverage must be supplied by that owner and read back before use. Existing `WORK_READ_FIRST.md`, context history, OrderStore events, canonical work ledger and GitHub evidence keep their distinct roles.
+
+Prepared follow-up, not deployed: record a minimal instruction/correction summary in the existing context history with source task/message ID, source timestamp, capture timestamp, owner, related order/work/revision if verified, superseded instruction pointer, result and verification references, and coverage boundaries/missing links. Distinguish source time from capture time and app messages from inferred summaries. Do not fabricate missing identifiers. Track local-only, committed and remote-confirmed stages; exact remote commit/path readback is required before saying GitHub stored the record. Raw content remains in its existing restricted source pending retention/access verification; Git ignore alone is not access control. No full transcript, credentials or sensitive attachments are authorized for GitHub publication.
+
+Next bounded action: obtain the context owner's exact checkpoint and the relevant real order ID, if one exists; reconcile only those source references. Automatic capture, redaction enforcement, durable checkpoint/coverage tracking and live write authorization remain design work. The existing manual CI workflow's opt-in `record_result` note is not a conversation synchronization service.
+
+Cursor independently reviewed this anonymized audit plan in read-only ask mode without tools. Agreement: app retrieval, API reachability and source/order binding are separate claims; source ACL/retention and capture coverage remain unverified. Added requirements: record who/when confirmed a binding and the artifact path/hash/commit; explicitly limit the negative consumer finding to inspected code. Other runtime services and unrelated repositories were not searched. Its table grouped app/API readback under remote evidence; this audit retains a separate GitHub ref/object readback requirement because app/API retrieval cannot prove GitHub publication. This documentation review does not satisfy the durable implementation's missing independent high-risk source review.
+
+## Pinned integration inputs
 
 - Dedicated checkout: `C:/Users/admin/.codex/worktrees/1e61/ai-core`, branch `codex/order-control-integration`. Initial tree clean, detached at `8c61a6c`; available RAM about 6.2 GiB of 31.7 GiB. Tests limited to two workers, no concurrent builds.
 - PR20: `b438fca22bd60ac7f6efa1d509c701897e821e76`.
