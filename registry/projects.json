@@ -123,7 +123,8 @@
       "deploy_targets": [],
       "required_approvals": [],
       "known_blockers": [
-        "second checkout at C:\\dev\\sales-mail-automation on branch codex/mail-intake-automation carries 21 commits not on main (SMS promotion workflow, sales UI rework across 19 files, incl. app.js/index.html/rent.html) -- not reviewed or merged, real feature work at risk of being lost/forgotten; npm test at that branch tip FAILS at 검토/추가반례검증.cjs (data-접촉=받음 focus assertion returns undefined) -- confirmed 2026-09-16, do not merge until fixed"
+        "second checkout at C:\\dev\\sales-mail-automation on branch codex/mail-intake-automation carries 21 commits not on main (SMS promotion workflow, sales UI rework across 19 files) -- not reviewed or merged, real feature work at risk of being lost/forgotten",
+        "npm test at that branch tip intermittently fails at 검토/추가반례검증.cjs -- confirmed via bisect (2026-09-16) to be a PRE-EXISTING flaky focus-loss race in 웹/app.js (시트그리기다시 re-render drops focus), present at the branch base already, not introduced by any of the 21 commits. Does not block reviewing/merging those commits; worth fixing separately."
       ]
     },
     {
