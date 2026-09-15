@@ -34,3 +34,18 @@ SQLite와 work ledger 두 저장소 사이에 원자적 트랜잭션이 있다�
 5. 실제 오더의 기존 이력은 보존하고 연결 계획과 대조 결과를 검토한다. 실제 원장 이전·서버 배포는 현재 수행하지 않는다.
 
 현재 상태: 계약 경계와 통합 순서만 기록. 자동 AI 실행, work_id 매핑, 통합 게이트 및 실제 서버 실행은 미구현/미검증이다.
+
+## 병렬 작업 소유권 — 2026-09-15
+
+사용자가 필요한 세션을 열어 병렬 진행하도록 요청했다. 사용자 지시 창구와 최종 통합 담당은 현재 총괄 세션 하나로 유지한다.
+
+| 역할 | 쓰기 소유 범위 | 경계 |
+|---|---|---|
+| 총괄·통합 | 기존 UI/원장 파일 및 package, workflow, README, episodes, 공통 계약의 통합 | 공유 C:/dev/ai-core 폴더의 유일한 쓰기 담당. 배포·실제 원장 이전 제외. |
+| 원장 연결 어댑터 | src/integration/order-work-adapter.mjs, test/order-work-adapter.test.mjs, docs/integration/ORDER_WORK_ADAPTER.md | 전용 worktree. 정본 함수 의존성 주입, 읽기 projection과 명령 준비까지만. |
+| 말로 하는 오더 접수 | src/intake/normalize-order-intent.mjs, test/normalize-order-intent.test.mjs, docs/integration/VOICE_FIRST_INTAKE.md | 전용 worktree. 추출 candidate의 순수 검증/정규화. 실제 음성·LLM·DB 연결 제외. |
+| 독립 계약 검토 | 없음 | 기존 통합 세션은 읽기 전용. 공유 폴더 checkout/merge/commit/push 금지. |
+
+각 구현 세션은 자신의 파일만 커밋하고 정확한 커밋 ID·변경 목록·검증 결과를 총괄에 전달한다. 소유 범위 밖 수정은 총괄에 요청한다. 공통 파일 수정과 최종 병합은 총괄이 순차 수행한다. 각 테스트는 분리된 임시 fixture만 사용하며 실제 오더 DB와 서비스 포트를 공유하지 않는다. 같은 계약을 변경해야 하는 선행 작업이 끝나기 전에는 의존 작업을 통합하지 않는다.
+
+현재 메모리 확인 기준 가용 RAM 약 7.4GB로 구현 두 개와 가벼운 읽기 검토를 시작한다. 대규모 빌드/통합 테스트는 하나씩 실행한다. 추가 독립 작업이 생기면 자원과 소유 범위를 확인한 뒤 세션을 늘린다. 충돌 0을 보증하는 대신 파일 소유권·격리 폴더·순차 통합과 재현 가능한 검증으로 예방한다.
