@@ -66,6 +66,8 @@
         "commitment",
         "allocations",
         "authorization",
+        "subject_revision",
+        "evidence_receipts",
         "verification",
         "execution",
         "outcome"
@@ -139,9 +141,18 @@
                 "DENIED",
                 "EXPIRED"
               ]
-            }
+            },
+            "action": { "type": ["string", "null"] },
+            "target": { "type": ["string", "null"] },
+            "revision": { "type": ["string", "null"], "pattern": "^[0-9a-f]{40}$" },
+            "scope": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+            "authorized_by": { "type": ["string", "null"] },
+            "authorized_at": { "type": ["string", "null"], "format": "date-time" },
+            "expires_at": { "type": ["string", "null"], "format": "date-time" }
           }
         },
+        "subject_revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "evidence_receipts": { "type": "array", "items": { "$ref": "#/$defs/receipt" } },
         "verification": {
           "enum": [
             "NOT_RUN",
@@ -166,6 +177,21 @@
             "UNKNOWN"
           ]
         }
+      }
+    },
+    "receipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "status", "ref", "revision", "target", "observed_at", "digest"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "kind": { "enum": ["VERIFICATION", "EXECUTION", "OUTCOME"] },
+        "status": { "enum": ["PASS", "FAIL"] },
+        "ref": { "type": "string", "minLength": 1 },
+        "revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "target": { "type": ["string", "null"] },
+        "observed_at": { "type": "string", "format": "date-time" },
+        "digest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
       }
     },
     "source": {

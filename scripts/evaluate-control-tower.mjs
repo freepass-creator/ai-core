@@ -57,6 +57,7 @@ export function evaluateControlTower(snapshot) {
     }
     if (!item.commitment.accepted || item.commitment.status !== 'ACTIVE') common.push('COMMITMENT_NOT_ACTIVE');
     if (!item.commitment.owner || !item.commitment.due_at) common.push('COMMITMENT_CONTROL_INCOMPLETE');
+    if (item.commitment.due_at && Date.parse(item.commitment.due_at) <= asOf) warnings.push('COMMITMENT_OVERDUE');
     if (item.commitment.dependencies.some((dependency) => !['SATISFIED', 'NOT_APPLICABLE'].includes(dependency.status))) common.push('DEPENDENCY_UNRESOLVED');
     common.push(...allocationBlockers.get(item.id));
 
@@ -66,10 +67,18 @@ export function evaluateControlTower(snapshot) {
       : item.authorization.status === 'NOT_REQUIRED';
     if (!authorizationConsistent) execute.push('AUTHORIZATION_STATE_INVALID');
     if (item.authorization.required && item.authorization.status !== 'GRANTED') execute.push('AUTHORIZATION_REQUIRED');
+    if (item.authorization.required && item.authorization.status === 'GRANTED') {
+      const authorization = item.authorization;
+      if (!authorization.action || !authorization.target || !authorization.scope?.length || !authorization.authorized_by || !authorization.authorized_at || !authorization.expires_at || authorization.revision !== item.subject_revision) execute.push('AUTHORIZATION_PROOF_INVALID');
+      else if (Date.parse(authorization.authorized_at) > asOf || Date.parse(authorization.expires_at) <= asOf) execute.push('AUTHORIZATION_EXPIRED');
+    }
     const close = [...execute];
-    if (item.verification !== 'PASS') close.push('VERIFICATION_REQUIRED');
-    if (item.execution !== 'CONFIRMED') close.push('EXECUTION_NOT_CONFIRMED');
-    if (item.outcome !== 'SUCCESS') close.push('OUTCOME_NOT_CONFIRMED');
+    const receiptIds = item.evidence_receipts.map((receipt) => receipt.id);
+    if (!unique(receiptIds)) close.push('EVIDENCE_RECEIPT_ID_DUPLICATE');
+    const hasReceipt = (kind) => item.evidence_receipts.some((receipt) => receipt.kind === kind && receipt.status === 'PASS' && receipt.revision === item.subject_revision && Date.parse(receipt.observed_at) <= asOf);
+    if (item.verification !== 'PASS' || !hasReceipt('VERIFICATION')) close.push('VERIFICATION_REQUIRED');
+    if (item.execution !== 'CONFIRMED' || !hasReceipt('EXECUTION')) close.push('EXECUTION_NOT_CONFIRMED');
+    if (item.outcome !== 'SUCCESS' || !hasReceipt('OUTCOME')) close.push('OUTCOME_NOT_CONFIRMED');
     return {
       id: item.id,
       warnings: [...new Set(warnings)],

@@ -14,8 +14,8 @@ For each work item it derives whether the system may prepare, execute or close. 
 - A structurally or semantically invalid snapshot disables every state-changing action.
 - An active commitment needs acceptance, owner and due time.
 - Unsatisfied dependencies and overlapping allocations block execution.
-- Authorization is independent from readiness.
-- Closure requires verification PASS, confirmed execution and observed success.
+- Authorization is independent from readiness and is bound to action, target, revision, scope, issuer and validity window.
+- Closure requires revision-bound verification, execution and outcome receipts; state labels alone are insufficient.
 - A snapshot is an observation input; this evaluator does not monitor providers itself.
 
 ## Run

@@ -5,6 +5,11 @@ import { evaluateControlTower } from '../scripts/evaluate-control-tower.mjs';
 
 const example = JSON.parse(await readFile(new URL('../examples/control-tower.json', import.meta.url)));
 const clone = (value) => structuredClone(value);
+const receipt = (kind, overrides = {}) => ({
+  id: `${kind}-1`, kind, status: 'PASS', ref: `${kind.toLowerCase()}.json`,
+  revision: example.items[0].subject_revision, target: null,
+  observed_at: '2026-09-14T23:59:00Z', digest: `sha256:${'a'.repeat(64)}`, ...overrides,
+});
 
 test('prepared example permits execution but cannot self-authorize or close', () => {
   const evaluation = evaluateControlTower(example);
@@ -95,7 +100,31 @@ test('inconsistent authorization state fails closed', () => {
 test('closure needs the complete evidence chain', () => {
   const input = clone(example);
   Object.assign(input.items[0], { verification: 'PASS', execution: 'CONFIRMED', outcome: 'SUCCESS' });
+  input.items[0].evidence_receipts = [receipt('VERIFICATION'), receipt('EXECUTION'), receipt('OUTCOME')];
   assert.deepEqual(evaluateControlTower(input).items[0].actions.close, { enabled: true, reasons: [] });
+});
+
+test('state labels cannot close work without revision-bound receipts', () => {
+  const input = clone(example);
+  Object.assign(input.items[0], { verification: 'PASS', execution: 'CONFIRMED', outcome: 'SUCCESS' });
+  assert.deepEqual(evaluateControlTower(input).items[0].actions.close.reasons, ['VERIFICATION_REQUIRED', 'EXECUTION_NOT_CONFIRMED', 'OUTCOME_NOT_CONFIRMED']);
+});
+
+test('receipt for another revision cannot prove closure', () => {
+  const input = clone(example);
+  Object.assign(input.items[0], { verification: 'PASS', execution: 'CONFIRMED', outcome: 'SUCCESS' });
+  input.items[0].evidence_receipts = [receipt('VERIFICATION', { revision: 'b'.repeat(40) }), receipt('EXECUTION'), receipt('OUTCOME')];
+  assert.ok(evaluateControlTower(input).items[0].actions.close.reasons.includes('VERIFICATION_REQUIRED'));
+});
+
+test('granted authorization must match revision and validity window', () => {
+  const input = clone(example);
+  input.items[0].authorization = {
+    required: true, status: 'GRANTED', action: 'DEPLOY', target: 'production',
+    revision: 'b'.repeat(40), scope: ['deploy'], authorized_by: 'owner',
+    authorized_at: '2026-09-14T23:00:00Z', expires_at: '2026-09-16T00:00:00Z',
+  };
+  assert.ok(evaluateControlTower(input).items[0].actions.execute.reasons.includes('AUTHORIZATION_PROOF_INVALID'));
 });
 
 test('schema-invalid input fails closed', () => {
