@@ -6,6 +6,7 @@ Worktree: `C:/Users/admin/.codex/worktrees/852a/ai-core`.
 Branch: `codex/self-evolution-evidence`.
 
 Read [CYCLE-001.md](CYCLE-001.md) and [CYCLE-002.md](CYCLE-002.md) before resuming.
+Latest follow-up: [CYCLE-003.md](CYCLE-003.md), direct file input.
 Verify cwd, branch, dirty state,
 remote PR heads and available RAM before the next bounded change. Do not write to
 `C:/dev/ai-core`, the intake/adapter owners' files, or global Codex memory.
@@ -15,6 +16,19 @@ Coordinate any common-file changes with the coordinator before editing.
 ## JSONL evaluation runner
 
 Run `node src/improvement/evaluate-evolution-jsonl.mjs` with UTF-8 JSONL on stdin.
+Alternatively, pass a file directly without a shell pipe or encoding conversion:
+
+```powershell
+node src/improvement/evaluate-evolution-jsonl.mjs --input "C:/path/평가 입력.jsonl"
+```
+
+The file is opened read-only and streamed through the same evaluator. Relative
+paths resolve from the working directory. `--stdin` explicitly selects the default
+stdin mode; combining it with `--input`, repeating options or omitting a path is
+an error. `--input` selects only that file and does not consume piped stdin. A file
+read failure never falls back to stdin. For a filename beginning with `--`, use
+an explicit relative or absolute path such as `./--input.jsonl`.
+
 Each nonblank line is the existing evaluator's `{candidate, baseline, trial}` input.
 One optional UTF-8 BOM at the start of the file is accepted. BOMs within later
 nonblank records are not removed; malformed input still produces HOLD.
