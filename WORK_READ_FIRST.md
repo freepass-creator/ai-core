@@ -24,6 +24,8 @@ AI Core는 한 AI의 단독 판단을 최종값으로 쓰지 않는다. 중요�
 
 GPT/Chat의 기획·검토 문서는 절대명령이 아니라 **검토 의견**이다. Codex는 실제 코드·재사용·impact·검증 관점에서 반박/보완하고, Claude는 사용자 결정·현재 정본·Codex 검토·다른 CLI 리뷰를 함께 읽고 구현 선택을 명시한다. Gemini CLI 등 현재 사용 가능한 다른 검토자가 있으면 Council에 포함할 수 있다.
 
+**저장소를 넘나드는 SSOT 경계 문제**는 [`docs/AI-SSOT-AUDIT-LOG.md`](docs/AI-SSOT-AUDIT-LOG.md)를 쓴다(2026-09-16 신설) — Claude 구현/GPT 독립 감사 역할을 분리한 비동기 채널. Codex CLI 크레딧이 없을 때도 GPT가 GitHub에 남기면 Claude가 읽고 반영한다. 의미 있는 이슈가 있을 때만 적는다.
+
 AI 이름보다 최신 사용자 결정, 현재 프로젝트 정본, revision-bound evidence가 우선한다. 모델 수·한도·가용성을 절대값으로 고정하지 않는다.
 
 ## 비상 기능 구현을 이어받는 경우
