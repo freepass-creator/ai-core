@@ -21,11 +21,14 @@ export function normalizeOrderIntent(candidate, context = {}) {
       || !input.evidence.every((e) => object(e) && Number.isSafeInteger(e.start)
         && Number.isSafeInteger(e.end) && e.start >= 0 && e.end > e.start
         && e.end <= source.text.length && nonempty(e.quote)
+        && (e.message_id === undefined || e.message_id === source.message_id)
         && source.text.slice(e.start, e.end) === e.quote)) {
       add('INVALID_EVIDENCE', field);
       return null;
     }
-    return { value: input.value, evidence: input.evidence.map(({ start, end, quote }) => ({ start, end, quote })) };
+    return { value: input.value, evidence: input.evidence.map(({ start, end, quote, message_id }) => ({
+      start, end, quote, ...(message_id === undefined ? {} : { message_id }),
+    })) };
   };
   const intent = claim(c.intent, 'intent', (v) => ['new', 'resume', 'change', 'status', 'stop'].includes(v));
   if (!intent) add('MISSING_INTENT', 'intent');

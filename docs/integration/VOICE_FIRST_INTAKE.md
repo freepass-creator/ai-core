@@ -13,6 +13,7 @@ Reviewed boundaries: PR20 `fe9315535e31a6edb723562b2b3515fcdf01107e` control-tow
 - `targets`: array of claims whose values are candidate **order IDs**, not work IDs. No current-session or first-match fallback.
 - Optional claims: `request`, `execution_location` (`local`, `server`, `unspecified`), `deadline`, `completion_condition`, `approval`.
 - Every claim is `{ value, evidence: [{ start, end, quote }] }`. Offsets use JavaScript UTF-16 code units with exclusive end. Quotes must exactly match the source range. Request is required for `new` and `change`.
+- Evidence may additionally carry `message_id`; if supplied it must equal `source.message_id` and is retained in output. Legacy evidence without that field remains scoped to the enclosing source. A foreign explicit message ID is rejected even if its quote happens to match.
 - `context.target_snapshot`: `{ ref, revision, order_ids }` from a caller-controlled canonical lookup. Required when targets are supplied. Pass a minimal snapshot, not a DB handle. This module cannot authenticate or assess freshness of that snapshot.
 
 Example extraction from “A 작업 이어서 서버에서 해줘”: use `resume`, target `A`, and location `server`, each with a matching evidence span. Caller-provided canonical snapshot must contain A. This produces `CANDIDATE_VALIDATED` with `execution_authorized: false`. No deadline, completion condition, deployment or permission is inferred. The user supplies speech/text; the host constructs this object.
@@ -32,3 +33,22 @@ The module creates no identifiers or timestamps and retains source text only in 
 ## Bounded verification
 
 Run `node --test test/normalize-order-intent.test.mjs`. Tests cover all five intents, server versus approval, missing/unknown/ambiguous targets, invalid evidence, missing fields, origin confirmation, immutable inputs, deterministic output, literal deadlines and semantic overclaim counterexamples. These tests do not prove an LLM extractor, actual speech/UI flow, live lookup, or integrated execution gate.
+
+## Follow-up counterexamples and required host inputs
+
+| User utterance | Candidate handling |
+|---|---|
+| 아까 하던거 이어줘 | `resume` with A and B stays ambiguous; input order never selects a target. |
+| 서버에서 해줘 | Location alone cannot establish an intent or target, much less deployment approval. |
+| 그건 하지마 | `stop` without a target requires clarification; even a wrong `resume` extraction cannot authorize execution. |
+| 완료는 아니고 검토만 | Missing change details require clarification; a wrong extraction cannot create CLOSED or completion. |
+| 이전 조건 바꿔 | `change` requires a request; supplying generic wording still requires semantic clarification of which condition and replacement. |
+
+The coordinator/adapter must supply these independently of the model:
+
+1. Authenticated original message identity, origin and exact text in `source`. Compare against the received message before calling. If the candidate and its source text/ID are jointly forged to agree, this module cannot discover the forgery. Explicit evidence IDs detect mismatched attribution, not authenticity. No separate trusted-source input has been introduced here.
+2. Minimal canonical order lookup result as `context.target_snapshot` with its query ref, opaque revision and order IDs. Do not substitute model-recalled IDs or another session's snapshot. `revision` is preserved verbatim and is neither a timestamp nor proof of recency. This module has no independent current revision or clock; an internally valid old snapshot can still yield `CANDIDATE_VALIDATED`.
+3. A fresh canonical re-read and revision comparison before adapter action. If the snapshot changed, re-resolve the target and re-evaluate the command. The intake snapshot revision is not automatically a requirement revision, subject Git revision, work-ledger head or order record version. Integration must define those mappings without conflating them.
+4. Semantic confirmation of referents, negation, review-only scope and requested changes, followed by canonical authorization/state gates. Exact source spans can support an incorrect model interpretation. Never use candidate status or `approval_candidate` as permission, and never fall back to the sole surviving target if another target has invalid evidence.
+
+Remaining unverified: source authentication, coordinated source/evidence forgery, live snapshot freshness, referent/negation understanding, and adapter enforcement. These are explicit host integration obligations, not capabilities established by the bounded tests. No external reviewer/API was called during this follow-up under the task's external-API prohibition.
