@@ -1,4 +1,5 @@
 import { createInterface } from 'node:readline';
+import { createReadStream } from 'node:fs';
 import { pipeline } from 'node:stream/promises';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -56,16 +57,24 @@ export async function evaluateEvolutionStream(input, output) {
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  if (process.argv.length !== 2) {
-    console.error('Usage: node src/improvement/evaluate-evolution-jsonl.mjs < input.jsonl');
+  const args = process.argv.slice(2);
+  const useStdin = args.length === 0 || (args.length === 1 && args[0] === '--stdin');
+  const useFile = args.length === 2 && args[0] === '--input' &&
+    args[1].trim().length > 0 && !args[1].startsWith('--');
+  if (!useStdin && !useFile) {
+    console.error('Usage: node src/improvement/evaluate-evolution-jsonl.mjs [--stdin | --input <file.jsonl>]');
     process.exitCode = 2;
   } else {
+    let input;
     try {
-      const result = await evaluateEvolutionStream(process.stdin, process.stdout);
+      input = useFile ? createReadStream(args[1]) : process.stdin;
+      const result = await evaluateEvolutionStream(input, process.stdout);
       process.exitCode = result.input_error ? 2 : 0;
     } catch {
       console.error('Evolution stream I/O failed; output may be partial.');
       process.exitCode = 1;
+    } finally {
+      if (useFile) input?.destroy();
     }
   }
 }

@@ -2,6 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { Readable, Writable } from 'node:stream';
+import { mkdtempSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { evaluateSelfEvolution } from '../scripts/evaluate-self-evolution.mjs';
 import { evaluateEvolutionLine, evaluateEvolutionStream } from '../src/improvement/evaluate-evolution-jsonl.mjs';
 
@@ -107,4 +110,65 @@ test('BOM inside a later nonblank record is not silently repaired', () => {
   const records = child.stdout.trim().split('\n').map(JSON.parse);
   assert.equal(records[1].line, 2);
   assert.equal(records[1].result.status, 'HOLD_INVALID_JSON');
+});
+
+test('named input reuses stdin evaluation for a Unicode path and preserves source bytes', t => {
+  const directory = mkdtempSync(join(tmpdir(), 'ai-core-improvement-'));
+  t.after(() => rmSync(directory, { recursive: true, force: true }));
+  const path = join(directory, '평가 입력.jsonl');
+  const bytes = Buffer.from('\uFEFF{"candidate":{}}\r\n{bad}\r\nnull\r\n{}', 'utf8');
+  writeFileSync(path, bytes);
+  const fromStdin = spawnSync(process.execPath, ['src/improvement/evaluate-evolution-jsonl.mjs'],
+    { input: bytes, encoding: 'utf8' });
+  const fromFile = spawnSync(process.execPath, ['src/improvement/evaluate-evolution-jsonl.mjs', '--input', path],
+    { input: '', encoding: 'utf8' });
+  assert.equal(fromFile.status, 2, fromFile.stderr);
+  assert.equal(fromFile.stderr, '');
+  assert.equal(fromFile.stdout, fromStdin.stdout);
+  assert.deepEqual(readFileSync(path), bytes);
+});
+
+test('named input read failures exit 1 without falling back to stdin', t => {
+  const directory = mkdtempSync(join(tmpdir(), 'ai-core-improvement-'));
+  t.after(() => rmSync(directory, { recursive: true, force: true }));
+  for (const path of [join(directory, 'missing.jsonl'), directory]) {
+    const child = spawnSync(process.execPath, ['src/improvement/evaluate-evolution-jsonl.mjs', '--input', path],
+      { input: '{}\n', encoding: 'utf8' });
+    assert.equal(child.status, 1, child.stderr);
+    assert.equal(child.stdout, '');
+    assert.match(child.stderr, /I\/O failed; output may be partial/);
+  }
+});
+
+test('named input selects only the file and succeeds despite unrelated piped data', t => {
+  const directory = mkdtempSync(join(tmpdir(), 'ai-core-improvement-'));
+  t.after(() => rmSync(directory, { recursive: true, force: true }));
+  const path = join(directory, 'input.jsonl');
+  writeFileSync(path, '{}\n');
+  const child = spawnSync(process.execPath, ['src/improvement/evaluate-evolution-jsonl.mjs', '--input', path],
+    { input: 'malformed stdin', encoding: 'utf8' });
+  assert.equal(child.status, 0, child.stderr);
+  assert.equal(child.stdout.trim().split('\n').length, 1);
+  assert.deepEqual(JSON.parse(child.stdout).result, evaluateSelfEvolution({}));
+  assert.equal(readFileSync(path, 'utf8'), '{}\n');
+});
+
+test('invalid input options fail before evaluation', () => {
+  for (const args of [
+    ['--input'], ['--input', ''], ['--input', '--stdin'], ['--stdin', '--input', 'x'],
+    ['--input', 'x', '--stdin'], ['--input', 'x', '--input', 'y'], ['--unknown']
+  ]) {
+    const child = spawnSync(process.execPath, ['src/improvement/evaluate-evolution-jsonl.mjs', ...args],
+      { input: '{}\n', encoding: 'utf8' });
+    assert.equal(child.status, 2, `${args}: ${child.stderr}`);
+    assert.equal(child.stdout, '');
+    assert.match(child.stderr, /Usage:/);
+  }
+});
+
+test('explicit stdin retains the default successful evaluation', () => {
+  const child = spawnSync(process.execPath, ['src/improvement/evaluate-evolution-jsonl.mjs', '--stdin'],
+    { input: '{}\n', encoding: 'utf8' });
+  assert.equal(child.status, 0, child.stderr);
+  assert.equal(JSON.parse(child.stdout).execution_authorized, false);
 });
