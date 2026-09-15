@@ -6,6 +6,7 @@ const revision = (value) => typeof value === 'string' && /^[0-9a-f]{40}$/.test(v
 const identifier = (value) => typeof value === 'string' && /^[A-Z][A-Z0-9_-]*-[0-9]{3,}$/.test(value);
 const nonempty = (value) => typeof value === 'string' && value.trim() === value && value.length > 0;
 const fields = ['order_id', 'requirement_revision', 'record_version', 'work_id', 'project_id', 'subject_revision'];
+const identityFields = fields.filter(key => key !== 'record_version');
 
 function validateMapping(mapping) {
   need(mapping && Object.keys(mapping).length === fields.length && fields.every(key => Object.hasOwn(mapping, key)), 'MAPPING_INVALID');
@@ -34,19 +35,20 @@ export function createOrderWorkAdapter({ readContext, verifyLedgerText, runContr
     need(order?.id === orderId && positive(order.revision) && positive(order.version), 'ORDER_INVALID');
     need(Array.isArray(mappings), 'MAPPINGS_UNAVAILABLE');
     mappings.forEach(validateMapping);
-    unique(mappings, 'order_id', 'DUPLICATE_ORDER_MAPPING');
+    need(new Set(mappings.map(row => JSON.stringify([row.order_id, row.requirement_revision]))).size === mappings.length, 'DUPLICATE_ORDER_MAPPING');
     unique(mappings, 'work_id', 'DUPLICATE_WORK_MAPPING');
-    const existing = mappings.find(row => row.order_id === orderId);
+    const existing = mappings.find(row => row.order_id === orderId && row.requirement_revision === order.revision);
     if (candidate) {
       validateMapping(candidate);
       need(candidate.order_id === orderId, 'MAPPING_ORDER_MISMATCH');
-      need(!existing || fields.every(key => existing[key] === candidate[key]), 'MAPPING_CONFLICT');
-      need(!mappings.some(row => row.work_id === candidate.work_id && row.order_id !== orderId), 'DUPLICATE_WORK_MAPPING');
+      need(!existing || identityFields.every(key => existing[key] === candidate[key]), 'MAPPING_CONFLICT');
+      need(!mappings.some(row => row.work_id === candidate.work_id
+        && (row.order_id !== orderId || row.requirement_revision !== candidate.requirement_revision)), 'DUPLICATE_WORK_MAPPING');
     }
     const mapping = candidate ?? existing;
-    need(mapping, 'UNLINKED');
+    need(mapping, mappings.some(row => row.order_id === orderId) ? 'REQUIREMENT_REVISION_STALE' : 'UNLINKED');
     need(mapping.requirement_revision === order.revision, 'REQUIREMENT_REVISION_STALE');
-    need(mapping.record_version === order.version, 'RECORD_VERSION_STALE');
+    if (candidate) need(mapping.record_version === order.version, 'RECORD_VERSION_STALE');
     unique(registry?.projects, 'project_id', 'DUPLICATE_OR_INVALID_PROJECTS');
     unique(snapshot?.items, 'id', 'DUPLICATE_OR_INVALID_WORK_ITEMS');
     need(typeof ledgerText === 'string', 'LEDGER_UNAVAILABLE');
@@ -56,6 +58,7 @@ export function createOrderWorkAdapter({ readContext, verifyLedgerText, runContr
     const item = snapshot.items.find(row => row.id === mapping.work_id);
     const work = Object.hasOwn(ledger.work ?? {}, mapping.work_id) ? ledger.work[mapping.work_id] : null;
     need(project && item && work, 'CANONICAL_LINK_MISSING');
+    if (candidate && !existing) need(work.state === 'RECEIVED', 'NEW_LINK_REQUIRES_RECEIVED');
     need(project.status === 'ACTIVE', 'PROJECT_NOT_ACTIVE');
     need(item.project_id === mapping.project_id && work.project_id === mapping.project_id, 'WORK_PROJECT_MISMATCH');
     need([project.head_revision, item.subject_revision, work.subject_revision].every(value => value === mapping.subject_revision), 'SUBJECT_REVISION_STALE');
@@ -68,7 +71,7 @@ export function createOrderWorkAdapter({ readContext, verifyLedgerText, runContr
     need(typeof result.execute?.enabled === 'boolean' && Array.isArray(result.execute.reasons)
       && typeof result.close?.enabled === 'boolean' && Array.isArray(result.close.reasons), 'CONTROL_ACTIONS_INVALID');
     return { context, projection: {
-      status: 'LINKED', mapping: copy(mapping), canonical_state: work.state,
+      status: 'LINKED', mapping: { ...copy(mapping), record_version: order.version }, canonical_state: work.state,
       ledger_head: ledger.head, control_status: control.status, control_result: copy(result),
       execution_authorized: false, completion_authorized: false, sent: false,
     } };

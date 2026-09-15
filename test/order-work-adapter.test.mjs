@@ -1,5 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFile, mkdtemp, rm } from 'node:fs/promises';
+import { join, resolve, sep } from 'node:path';
+import { pathToFileURL } from 'node:url';
+import { execFileSync } from 'node:child_process';
 import { createOrderWorkAdapter } from '../src/integration/order-work-adapter.mjs';
 
 const sha = 'a'.repeat(40);
@@ -42,6 +46,7 @@ test('canonical state is projected despite UI CLOSED and active claim; READY nev
 
 test('link preparation never creates or persists a mapping', async () => {
   const f = fixture(); f.context.mappings = [];
+  f.ledger.work['WORK-001'].state = 'RECEIVED'; f.control.items[0].ledger_state = 'RECEIVED';
   assert.equal((await f.adapter.linkOrder(mapping)).status, 'LINK_PREPARED');
   assert.deepEqual(f.context.mappings, []);
   assert.equal((await f.adapter.readWorkProjection(mapping.order_id)).status, 'UNLINKED');
@@ -52,7 +57,6 @@ for (const [name, mutate, reason] of [
   ['duplicate order ID', f => { f.context.mappings.push({ ...mapping, work_id: 'WORK-002' }); }, 'DUPLICATE_ORDER_MAPPING'],
   ['duplicate work ID', f => { f.context.mappings.push({ ...mapping, order_id: 'another-order' }); }, 'DUPLICATE_WORK_MAPPING'],
   ['requirement changed', f => { f.context.order.revision++; }, 'REQUIREMENT_REVISION_STALE'],
-  ['record changed independently', f => { f.context.order.version++; }, 'RECORD_VERSION_STALE'],
   ['SHA used as record version', f => { f.context.mappings[0].record_version = sha; }, 'MAPPING_REVISION_INVALID'],
   ['project advanced', f => { f.context.registry.projects[0].head_revision = 'c'.repeat(40); }, 'SUBJECT_REVISION_STALE'],
   ['snapshot old commit', f => { f.context.snapshot.items[0].subject_revision = 'c'.repeat(40); }, 'SUBJECT_REVISION_STALE'],
@@ -80,6 +84,27 @@ test('conflicting candidate is rejected without replacing the existing link', as
 test('each refresh reads again and fails closed after requirements change', async () => {
   const f = fixture(); assert.equal((await f.adapter.refreshControlResult(mapping.order_id)).status, 'LINKED');
   f.context.order.revision++; assert.equal((await f.adapter.refreshControlResult(mapping.order_id)).reason, 'REQUIREMENT_REVISION_STALE');
+});
+
+test('record-only change refreshes observation without a new work identity; stale command fails', async () => {
+  const f = fixture(); f.context.order.version++;
+  const projection = await f.adapter.readWorkProjection(mapping.order_id);
+  assert.equal(projection.status, 'LINKED'); assert.equal(projection.mapping.record_version, 8);
+  assert.equal(projection.mapping.work_id, mapping.work_id);
+  assert.equal((await f.adapter.prepareWorkCommand(f.command)).reason, 'COMMAND_MAPPING_STALE');
+  f.command.mapping = projection.mapping;
+  assert.equal((await f.adapter.prepareWorkCommand(f.command)).status, 'PREPARED_NOT_SENT');
+});
+
+test('same work cannot be reused across requirement revisions in full history', async () => {
+  const f = fixture(); f.context.order.revision++;
+  f.context.mappings.push({ ...mapping, requirement_revision: f.context.order.revision });
+  assert.equal((await f.adapter.readWorkProjection(mapping.order_id)).reason, 'DUPLICATE_WORK_MAPPING');
+});
+
+test('new link cannot claim an existing READY work', async () => {
+  const f = fixture(); f.context.mappings = [];
+  assert.equal((await f.adapter.linkOrder(mapping)).reason, 'NEW_LINK_REQUIRES_RECEIVED');
 });
 
 test('command is detached review intent, never sent, persisted, authorized or reserved', async () => {
@@ -119,4 +144,135 @@ test('non-Error reader rejection still returns HOLD', async () => {
   const adapter = createOrderWorkAdapter({ readContext: () => Promise.reject(null), verifyLedgerText() {}, runControlTower() {} });
   const result = await adapter.readWorkProjection(mapping.order_id);
   assert.equal(result.status, 'HOLD'); assert.equal(result.reason, 'ADAPTER_READ_FAILED');
+});
+
+const canonicalCommit = 'b438fca22bd60ac7f6efa1d509c701897e821e76';
+const canonicalCheckout = process.env.ORDER_ADAPTER_PR20_CHECKOUT;
+
+test('pinned PR20 real-contract integration', {
+  skip: canonicalCheckout ? false : 'Set ORDER_ADAPTER_PR20_CHECKOUT to an isolated checkout of the documented PR20 commit',
+  timeout: 15000,
+}, async t => {
+  const root = resolve(canonicalCheckout);
+  assert.equal(execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8', timeout: 5000 }).trim(), canonicalCommit);
+  // Reject edited canonical files: passing against locally patched logic is not evidence.
+  assert.equal(execFileSync('git', ['status', '--porcelain', '--untracked-files=no'], { cwd: root, encoding: 'utf8', timeout: 5000 }).trim(), '');
+  const { verifyLedgerText, appendLedgerEvent } = await import(pathToFileURL(join(root, 'scripts/work-ledger.mjs')));
+  const { runControlTower } = await import(pathToFileURL(join(root, 'scripts/run-control-tower.mjs')));
+  const registryTemplate = JSON.parse(await readFile(join(root, 'examples/project-registry.json'), 'utf8'));
+  const snapshotTemplate = JSON.parse(await readFile(join(root, 'examples/control-tower.json'), 'utf8'));
+  const fixtureRoot = await mkdtemp(join(root, '.adapter-test-'));
+  t.after(async () => {
+    // Only this newly allocated directory inside the specified isolated checkout is removed.
+    assert.ok(resolve(fixtureRoot).startsWith(`${root}${sep}`));
+    await rm(fixtureRoot, { recursive: true });
+  });
+  let count = 0;
+  async function realFixture(subjectRevision = snapshotTemplate.items[0].subject_revision) {
+    const registry = structuredClone(registryTemplate), snapshot = structuredClone(snapshotTemplate);
+    const item = snapshot.items[0];
+    const path = join(fixtureRoot, `ledger-${++count}.jsonl`);
+    const baseEvent = { work_id: item.id, project_id: item.project_id, actor: 'TEST',
+      observed_at: snapshot.as_of, subject_revision: subjectRevision, evidence_refs: [] };
+    let result = await appendLedgerEvent(path, { ...baseEvent, event_id: 'TEST-001', type: 'CREATED', from_state: null, to_state: 'RECEIVED' }, null);
+    for (const [index, [from_state, to_state]] of [['RECEIVED', 'PLANNED'], ['PLANNED', 'IN_PROGRESS'], ['IN_PROGRESS', 'VERIFYING'], ['VERIFYING', 'READY']].entries()) {
+      result = await appendLedgerEvent(path, { ...baseEvent, event_id: `TEST-00${index + 2}`, type: 'TRANSITIONED', from_state, to_state }, result.head);
+    }
+    const link = { ...mapping, work_id: item.id, project_id: item.project_id, subject_revision: item.subject_revision };
+    const context = { order: { id: link.order_id, revision: link.requirement_revision, version: link.record_version, status: 'NEW' },
+      mappings: [link], registry, snapshot, ledgerText: await readFile(path, 'utf8'),
+      usedCommandIds: [], usedEventIds: ['TEST-001', 'TEST-002', 'TEST-003', 'TEST-004', 'TEST-005'] };
+    const adapter = createOrderWorkAdapter({ readContext: () => context, verifyLedgerText, runControlTower });
+    const command = { mapping: structuredClone(link), command_id: 'review-1', event_id: 'REVIEW-001',
+      expected_head: result.head, intent: 'REQUEST_EXECUTION_REVIEW' };
+    return { adapter, context, command, path, baseEvent };
+  }
+
+  await t.test('real READY chain and evaluator prepare a review without authorization', async () => {
+    const f = await realFixture();
+    assert.equal(verifyLedgerText(f.context.ledgerText).status, 'VALID');
+    const result = await f.adapter.prepareWorkCommand(f.command);
+    assert.equal(result.status, 'PREPARED_NOT_SENT');
+    assert.equal(result.execution_authorized, false); assert.equal(result.sent, false);
+  });
+
+  await t.test('canonical null-revision READY gap is blocked by adapter exact revision check', async () => {
+    const f = await realFixture(null);
+    const canonical = runControlTower(f.context);
+    assert.equal(canonical.status, 'READY'); // Pinned upstream counterexample, not an approval.
+    assert.equal(canonical.items[0].execute.enabled, true);
+    assert.equal((await f.adapter.prepareWorkCommand(f.command)).reason, 'SUBJECT_REVISION_STALE');
+  });
+
+  await t.test('new requirements cannot reuse old linked READY', async () => {
+    const f = await realFixture(); f.context.order.revision++; f.context.order.version++;
+    assert.equal(runControlTower(f.context).status, 'READY');
+    assert.equal((await f.adapter.prepareWorkCommand(f.command)).reason, 'REQUIREMENT_REVISION_STALE');
+  });
+
+  await t.test('full mapping history rejects reusing old READY for new requirements', async () => {
+    const f = await realFixture(); f.context.order.revision++; f.context.order.version++;
+    const rebound = { ...f.context.mappings[0], requirement_revision: f.context.order.revision, record_version: f.context.order.version };
+    f.context.mappings.push(rebound); f.command.mapping = structuredClone(rebound);
+    assert.equal((await f.adapter.prepareWorkCommand(f.command)).reason, 'DUPLICATE_WORK_MAPPING');
+  });
+
+  await t.test('new requirement uses a distinct RECEIVED work and preserves historical READY', async () => {
+    const f = await realFixture(); f.context.order.revision++; f.context.order.version++;
+    const old = structuredClone(f.context.mappings[0]);
+    const next = { ...old, work_id: 'DEV-002', requirement_revision: f.context.order.revision, record_version: f.context.order.version };
+    await appendLedgerEvent(f.path, { ...f.baseEvent, work_id: next.work_id, event_id: 'TEST-006',
+      type: 'CREATED', from_state: null, to_state: 'RECEIVED' }, f.command.expected_head);
+    f.context.ledgerText = await readFile(f.path, 'utf8');
+    f.context.snapshot.items = [{ ...f.context.snapshot.items[0], id: next.work_id }];
+    const proposal = await f.adapter.linkOrder(next);
+    assert.equal(proposal.status, 'LINK_PREPARED'); assert.equal(proposal.canonical_state, 'RECEIVED');
+    assert.deepEqual(f.context.mappings, [old]); // Adapter did not persist or remove history.
+    f.context.mappings.push(next); // Simulated coordinator persistence only.
+    f.command.mapping = structuredClone(next); f.command.expected_head = verifyLedgerText(f.context.ledgerText).head;
+    assert.equal((await f.adapter.prepareWorkCommand(f.command)).reason, 'CANONICAL_ACTION_BLOCKED');
+  });
+
+  await t.test('record-only update retains work but rejects stale prepared command', async () => {
+    const f = await realFixture(); f.context.order.version++;
+    const projection = await f.adapter.readWorkProjection(f.command.mapping.order_id);
+    assert.equal(projection.mapping.work_id, f.command.mapping.work_id);
+    assert.equal(projection.mapping.record_version, f.context.order.version);
+    assert.equal((await f.adapter.prepareWorkCommand(f.command)).reason, 'COMMAND_MAPPING_STALE');
+    f.command.mapping = projection.mapping;
+    assert.equal((await f.adapter.prepareWorkCommand(f.command)).status, 'PREPARED_NOT_SENT');
+  });
+
+  await t.test('characterization: remapping new requirements onto old READY is not bound by PR20', async () => {
+    const f = await realFixture();
+    const originalHead = verifyLedgerText(f.context.ledgerText).head;
+    f.context.order.revision++; f.context.order.version++;
+    f.context.mappings[0].requirement_revision = f.context.order.revision;
+    f.context.mappings[0].record_version = f.context.order.version;
+    f.command.mapping = structuredClone(f.context.mappings[0]);
+    assert.equal(verifyLedgerText(f.context.ledgerText).head, originalHead);
+    // Known cross-contract gap: requires coordinator policy, not an invented adapter ledger.
+    assert.equal((await f.adapter.prepareWorkCommand(f.command)).status, 'PREPARED_NOT_SENT');
+  });
+
+  await t.test('UI CLOSED/confirmed cannot override required canonical approval or closure evidence', async () => {
+    const f = await realFixture();
+    f.context.order.status = 'CLOSED'; f.context.order.confirmed = true;
+    f.context.order.closure = { kind: 'USER_ACCEPTED' };
+    f.context.snapshot.items[0].authorization = { required: true, status: 'PENDING' };
+    assert.equal((await f.adapter.prepareWorkCommand(f.command)).reason, 'CANONICAL_ACTION_BLOCKED');
+    f.command.intent = 'REQUEST_CLOSE_REVIEW';
+    assert.equal((await f.adapter.prepareWorkCommand(f.command)).reason, 'CANONICAL_ACTION_BLOCKED');
+    f.command.confirmed = true;
+    assert.equal((await f.adapter.prepareWorkCommand(f.command)).reason, 'COMMAND_FIELDS_INVALID');
+  });
+
+  await t.test('real append changes head; stale command and canonical stale append both fail', async () => {
+    const f = await realFixture();
+    const changed = { ...f.baseEvent, event_id: 'TEST-006', type: 'BLOCKED', from_state: 'READY', to_state: 'BLOCKED' };
+    await appendLedgerEvent(f.path, changed, f.command.expected_head);
+    f.context.ledgerText = await readFile(f.path, 'utf8');
+    assert.equal((await f.adapter.prepareWorkCommand(f.command)).reason, 'LEDGER_HEAD_CHANGED');
+    await assert.rejects(appendLedgerEvent(f.path, changed, f.command.expected_head), /LEDGER_HEAD_CHANGED/);
+  });
 });
