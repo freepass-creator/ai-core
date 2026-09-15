@@ -88,3 +88,94 @@ test('optional claims preserve literal wording; output is detached and determini
 test('new intent with existing target cannot silently become resume', () => {
   assert.ok(codes(normalize({ ...base(), intent: claim('new'), request: claim('초안') }, context)).includes('NEW_WITH_EXISTING_TARGET'));
 });
+
+function extracted(text, intent, ids = []) {
+  const source = { message_id: 'utterance-2', origin: 'user', text };
+  const fromMessage = (value) => ({ value, evidence: [{ message_id: source.message_id, start: 0, end: text.length, quote: text }] });
+  return { source, ...(intent ? { intent: fromMessage(intent) } : {}), targets: ids.map(fromMessage) };
+}
+
+test('requested utterances remain candidates with missing details and semantic gates', () => {
+  const cases = [
+    extracted('아까 하던거 이어줘', 'resume', ['A', 'B']),
+    extracted('서버에서 해줘'),
+    extracted('그건 하지마', 'stop'),
+    extracted('완료는 아니고 검토만', 'change', ['A']),
+    extracted('이전 조건 바꿔', 'change', ['A']),
+  ];
+  for (const c of cases) {
+    const r = normalize(c, context);
+    assert.equal(r.status, 'NEEDS_CLARIFICATION');
+    assert.equal(r.execution_authorized, false);
+    assert.equal(r.authorization_status, 'NOT_EVALUATED');
+    assert.equal(r.semantic_confirmation, 'REQUIRED');
+    assert.equal(r.deadline, null);
+    assert.equal(r.completion_condition, null);
+  }
+  assert.deepEqual(normalize(cases[0], context).targets.map((t) => t.value), ['A', 'B']);
+  assert.ok(codes(normalize(cases[1], context)).includes('MISSING_INTENT'));
+  assert.ok(codes(normalize(cases[2], context)).includes('MISSING_TARGET'));
+  assert.ok(codes(normalize(cases[4], context)).includes('MISSING_REQUEST'));
+});
+
+test('same quote from a different explicit message is rejected, matching attribution retained', () => {
+  const c = extracted('그건 하지마', 'stop', ['A']);
+  assert.equal(normalize(c, context).intent.evidence[0].message_id, 'utterance-2');
+  c.intent.evidence[0].message_id = 'utterance-1';
+  const r = normalize(c, context);
+  assert.equal(r.intent, null);
+  assert.ok(codes(r).includes('INVALID_EVIDENCE'));
+});
+
+test('source edits, offset shifts and cross-message quotes cannot reuse evidence', () => {
+  for (const mutate of [
+    (c) => { c.source.text = '그건 진행해'; },
+    (c) => { c.source.message_id = 'other-message'; },
+    (c) => { c.intent.evidence[0].start = 1; },
+    (c) => { c.intent.evidence[0].quote = '서버에서 해줘'; },
+  ]) {
+    const c = extracted('그건 하지마', 'stop', ['A']);
+    mutate(c);
+    assert.ok(codes(normalize(c, context)).includes('INVALID_EVIDENCE'));
+  }
+});
+
+test('incorrect interpretation of negation or review cannot grant execution or completion', () => {
+  for (const utterance of ['그건 하지마', '완료는 아니고 검토만']) {
+    // Deliberately wrong extractor output. Exact spans alone cannot detect this.
+    const c = extracted(utterance, 'resume', ['A']);
+    c.approval = { ...c.intent, value: 'GRANTED' };
+    c.state = 'CLOSED';
+    c.execution_authorized = true;
+    const r = normalize(c, context);
+    assert.equal(r.status, 'CANDIDATE_VALIDATED');
+    assert.equal(r.semantic_confirmation, 'REQUIRED');
+    assert.equal(r.execution_authorized, false);
+    assert.equal(r.authorization_status, 'NOT_EVALUATED');
+    assert.equal(Object.hasOwn(r, 'state'), false);
+  }
+});
+
+test('old snapshot cannot establish freshness; its revision is preserved, never upgraded', () => {
+  const c = extracted('아까 하던거 이어줘', 'resume', ['A']);
+  const old = { target_snapshot: { ref: 'canonical-query', revision: 'old-r0', order_ids: ['A'] } };
+  const current = { target_snapshot: { ref: 'canonical-query', revision: 'current-r2', order_ids: ['B'] } };
+  const r = normalize(c, old);
+  assert.equal(r.target_snapshot.revision, 'old-r0');
+  assert.equal(r.execution_authorized, false);
+  assert.equal(r.semantic_confirmation, 'REQUIRED');
+  assert.ok(codes(normalize(c, current)).includes('UNKNOWN_TARGET'));
+});
+
+test('target ordering never resolves ambiguity, and invalid extra targets still block', () => {
+  for (const ids of [['A', 'B'], ['B', 'A']]) {
+    const r = normalize(extracted('아까 하던거 이어줘', 'resume', ids), context);
+    assert.equal(r.status, 'NEEDS_CLARIFICATION');
+    assert.deepEqual(r.clarification.choices.map((t) => t.order_id), ids);
+  }
+  const c = extracted('아까 하던거 이어줘', 'resume', ['A', 'B']);
+  c.targets[1].evidence = [];
+  const r = normalize(c, context);
+  assert.equal(r.status, 'NEEDS_CLARIFICATION');
+  assert.equal(r.execution_authorized, false);
+});
