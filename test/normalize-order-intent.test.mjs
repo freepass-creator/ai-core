@@ -179,3 +179,20 @@ test('target ordering never resolves ambiguity, and invalid extra targets still 
   assert.equal(r.status, 'NEEDS_CLARIFICATION');
   assert.equal(r.execution_authorized, false);
 });
+
+test('UTF-16 offsets after emoji are exact, not code-point offsets', () => {
+  const c = extracted('🙂 이어줘', 'resume', ['A']);
+  c.intent.evidence = [{ message_id: c.source.message_id, start: 3, end: 6, quote: '이어줘' }];
+  assert.equal(normalize(c, context).status, 'CANDIDATE_VALIDATED');
+  c.intent.evidence[0].start = 2;
+  c.intent.evidence[0].end = 5;
+  assert.ok(codes(normalize(c, context)).includes('INVALID_EVIDENCE'));
+});
+
+test('visually equivalent Unicode text does not silently normalize source evidence', () => {
+  const c = extracted('e\u0301 이어줘', 'resume', ['A']);
+  c.intent.evidence = [{ message_id: c.source.message_id, start: 0, end: 2, quote: 'e\u0301' }];
+  assert.equal(normalize(c, context).status, 'CANDIDATE_VALIDATED');
+  c.intent.evidence[0].quote = '\u00e9';
+  assert.ok(codes(normalize(c, context)).includes('INVALID_EVIDENCE'));
+});
