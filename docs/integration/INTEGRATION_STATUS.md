@@ -66,3 +66,7 @@ Cursor's actual noninteractive startup returned both pointer paths and rejected 
 Follow-up full validation: `npm test` 267 passed / 0 failed / 0 skipped, main-state verifier PASS, module syntax PASS and diff check PASS. GitHub Main State Consistency passed for the earlier `5282f2d` PR22 head; subsequent head CI is reported separately rather than inheriting that success.
 
 Final branch-wide diff audit also found inherited CRLF line endings reported as whitespace in two JSON files: ORDER-DESK-VERIFICATION and C-DEV inventory. Only CRLF→LF was normalized; parsed JSON equality was checked, content/history unchanged and original bytes remain in the pinned source commits. No whitespace rule was disabled. GitHub CI subsequently passed the `00b2391` follow-up head; the newline-only successor is separately checked.
+
+## Independent file-input follow-up
+
+Accepted `267028c5b79e423ff02ec0a57ddf33fb7c10ad88` as a separate four-file change. Source review confirmed createReadStream feeds the original evaluator, without writes or stdin fallback. Focused original-evaluator/runner suite: 28 PASS; full suite: 272 PASS, 0 failed/skipped. Exact input-byte equality, Unicode/space paths, BOM/CRLF, file errors, conflicting options, explicit stdin and unchanged authorization flags are covered. Successor inventory is 84 files. Durable-coordination work begins only after preserving this checkpoint.
