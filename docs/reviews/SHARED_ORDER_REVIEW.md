@@ -29,3 +29,9 @@ Claude는 주간 사용 한도, Gemini는 작업 공간 신뢰 문제로 추가 
 Cursor의 두 번째 읽기 전용 검토에서는 공유 CLI → 원장 → GitHub 참고 메모 경로에 남은 차단 수준 코드 오류가 없다고 판단했다. 실제 서버·SSH·GitHub 환경 검증은 여전히 별도 미완료다. IPv6 주소 허용과 IPv4 서비스 바인딩 차이, 명시적인 standalone 오용, 잘못된 신규 DB 경로의 빈 파일 생성은 비차단 주의사항으로 남겼다. 운영 연결은 문서의 127.0.0.1 및 원본 절대 DB 경로를 사용한다.
 
 최종 로컬 전체 테스트: 124 통과, 실패·건너뜀 0. 저장소 정합성 검사와 GitHub 워크플로 Bash 구문 검사 통과.
+
+## Claude 독립 검토 (2026-09-15)
+
+`client.mjs`(loopback/스킴/인증정보 없는 endpoint만 허용, 원장 ID 응답 대조), `server.mjs`(Host/Origin 거부, CSP, POST 전용 원장 ID 강제), `store.mjs`(BEGIN IMMEDIATE 트랜잭션과 requestId 다이제스트로 재전송 안전성, claim 시 선행 작업 REPORTED 강제, revise 시 전체 작업 재검증 초기화), `order-run-receipt.mjs`(project→repository 매핑 검사, note 전용 기록으로 완료 처리와 분리)를 직접 읽고 `npm test` 124건을 로컬 재실행해 통과를 확인했다.
+
+Cursor가 남긴 두 차례 검토 내용과 별도로 추가 차단 결함을 찾지 못했다. IPv6/standalone 오용/빈 DB 파일 생성 등 기존에 기록된 비차단 주의사항 판단에 동의한다. 실제 원격 서버 지정·SSH 왕복·GitHub Actions 수동 실행 비밀 설정은 여전히 미검증 상태이며, 이 검토는 그 범위를 대신하지 않는다.
