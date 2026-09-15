@@ -1,6 +1,8 @@
 # Order/control integration — synthetic verification boundary
 
-Status: synthetic integration implemented; durable mapping/outbox and production activation HOLD.
+Status: synthetic integration implemented, including a separate temporary durable coordination laboratory. Production activation and the missing independent high-risk review remain HOLD.
+
+Current checkpoint: see [durable coordination](DURABLE_COORDINATION.md) for atomic mapping/outbox, full-payload reconciliation and real process crash tests. The older volatile sandbox below remains unchanged. No production endpoint uses the new laboratory; the OrderStore hook defaults to unused. Next single action: obtain the missing independent source review against the committed checkpoint. Live migration, authorization and external execution are unapplied.
 
 ## Pinned inputs and ownership
 
@@ -24,7 +26,7 @@ Confirmation is serialized and bound to token + proposal digest. A repeat return
 
 Replayed confirmation receipts refresh their projection; a prior receipt does not freeze current work state. The synthetic evaluation snapshot is an explicit separate input required by the existing PR20 contract, not another work-state ledger. It keeps intent INFERRED/AI_INFERRED until a future canonical evidence workflow establishes provenance. Both nested actions also include the durability HOLD blocker.
 
-Mapping and confirmation receipts are volatile. Every external lab result remains HOLD with `DURABLE_MAPPING_OUTBOX_UNAVAILABLE`, even when its nested read-only projection is LINKED/RECEIVED. Partial writes stay HOLD without blind retry. Restart recovery, durable uniqueness, digest-bound command/event outbox and reconciliation are not implemented. Do not connect this laboratory to real data or infer production readiness.
+In the original `createOrderIntakeSandbox`, mapping and confirmation receipts remain volatile. Its outputs remain HOLD with `DURABLE_MAPPING_OUTBOX_UNAVAILABLE`, even when the nested read-only projection is LINKED/RECEIVED. The separate durable laboratory now tests restart recovery, durable uniqueness and digest-bound reconciliation; it does not replace or production-enable the original sandbox. Do not connect either laboratory to real data or infer production readiness.
 
 HTTP `/api/orders/:id/work` reads an injected trusted projection; absent integration returns HOLD, read failure returns HOLD without a stale projection. Existing UI and CLI acceptance records `USER_ACCEPTED_NOT_CANONICAL`, retains REVIEW, and keeps old events. A requirement revision clears the prior acceptance summary while preserving history. Existing stored CLOSED records are shown as historical intake closure, never canonical business completion. Claim remains an intake lease only.
 

@@ -33,7 +33,10 @@ function digest(value) { return createHash('sha256').update(JSON.stringify(value
 function actor(id) { need(actors.some(a => a.id === id), 'INVALID_ACTOR', '지원하는 AI를 선택하세요.'); return id; }
 
 export class OrderStore {
-  constructor(path = defaultDb, { now = () => Date.now(), leaseMs = 30 * 60 * 1000 } = {}) {
+  #onRequirementSaved;
+  constructor(path = defaultDb, { now = () => Date.now(), leaseMs = 30 * 60 * 1000, onRequirementSaved = null } = {}) {
+    need(onRequirementSaved === null || typeof onRequirementSaved === 'function', 'INVALID_REQUIREMENT_HOOK', '호스트 연결 훅을 확인하세요.');
+    this.#onRequirementSaved = onRequirementSaved;
     this.now = now; this.leaseMs = leaseMs;
     if (path !== ':memory:') mkdirSync(dirname(resolve(path)), { recursive: true });
     this.db = new DatabaseSync(path);
@@ -69,9 +72,16 @@ export class OrderStore {
     } catch (e) { if (this.db.isTransaction) this.db.exec('ROLLBACK'); throw e; }
   }
   save(order, type, by, detail) {
+    if (this.#onRequirementSaved && ['CREATED', 'REVISE'].includes(type)) {
+      need(this.db.isTransaction, 'REQUIREMENT_TRANSACTION_REQUIRED', '요구 연결은 접수 트랜잭션 안에서만 기록합니다.');
+    }
     order.updatedAt = this.stamp();
     this.db.prepare('INSERT OR REPLACE INTO orders VALUES (?,?)').run(order.id, JSON.stringify(order));
     this.db.prepare('INSERT INTO events(order_id,document) VALUES (?,?)').run(order.id, JSON.stringify({ id: randomUUID(), at: order.updatedAt, type, by, version: order.version, revision: order.revision, detail }));
+    if (this.#onRequirementSaved && ['CREATED', 'REVISE'].includes(type)) {
+      const result = this.#onRequirementSaved(structuredClone(order));
+      need(!result?.then, 'ASYNC_REQUIREMENT_HOOK_DENIED', '요구 연결 훅은 동기식이어야 합니다.');
+    }
     return order;
   }
   create(input) {
