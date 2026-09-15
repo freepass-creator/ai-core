@@ -4,13 +4,13 @@ AI Core is the group headquarters for user orders, shared memory, planning, rout
 
 ## 현재 작업: 공통 AI 오더 데스크
 
-통합 기준: PR #20이 공통 작업 원장·정책 평가를 소유하고, PR #21은 자연어 접수·claim UI 계층으로 연결한다. [통합 계약 초안](docs/ORDER_CONTROL_INTEGRATION.md)의 어댑터는 아직 구현되지 않았다. 사용자는 말로만 요청하고 기술 입력은 담당 AI가 처리한다.
+통합 기준: PR #20의 work 원장이 업무 상태의 정본이고 PR #21의 OrderStore는 접수·claim 기록이다. 읽기 어댑터와 임시 DB의 후보→확인→work 연결은 [격리 통합 실험](docs/integration/INTEGRATION_STATUS.md)으로 검증한다. 영속 매핑·outbox는 미완이므로 운영 연결과 실행·최종 완료는 HOLD다. 사용자는 말로만 요청하고 기술 입력은 담당 AI가 처리한다.
 
 2026-09-15 사용자 요청으로 `work/codex/order-control-v1`에 로컬 오더 접수·담당 배정·공통 AI 인계·처리 이력·결과 확인 기능을 구현했다. 저장소는 분리하고 모든 업무 상태와 공통 처리 기능을 AI Core에 모으는 방향이다. 이름은 임시 **이음**이며 사용자와 상의 중이다.
 
-Node.js 24.19 이상에서 `npm run orders:serve -- --db C:\dev\ai-core\.local\orders.sqlite`를 실행하고 `http://127.0.0.1:4318`을 연다. CLI는 `npm run orders -- help`, 검증은 `npm run test:orders`를 사용한다. 사용자가 어떻게 요청하고 다른 AI가 어떻게 이어받는지는 [오더 사용 안내](docs/ORDER_GUIDE.md)에 설명했다.
+Node.js 24.19 이상에서 격리 UI 실험은 `npm run orders:serve -- --standalone --db :memory: --port 4319`로 실행한다. CLI는 `npm run orders -- help`, 검증은 `npm test`를 사용한다. 실제 DB로의 이전이나 운영 서버 연결은 이 실험에 포함되지 않는다.
 
-현재 버전은 **하나의 중앙 원장을 로컬·서버에서 공유하는 수동 인계 도구**다. [공유 실행 안내](docs/SHARED_ORDER_EXECUTION.md)의 SSH 연결과 GitHub 검사 초안을 추가했다. 실제 원격 서버 연결은 대기 중이다. AI 자동 호출·외부 작업 자동 실행·인증된 검토자 증명은 제공하지 않는다. 아래 `main` 설명과 `DEV-EPISODE-001`은 상속한 이전 개발선의 상태이며, 이번 오더 데스크 작업과 별도다.
+현재 UI는 **접수·결과 확인을 기록하는 수동 인계 도구**다. 결과 확인 후에도 REVIEW를 유지하며 정본 CLOSED를 만들지 않는다. [공유 실행 안내](docs/SHARED_ORDER_EXECUTION.md)는 기존 접수 전송 설계 기록이다. 실제 원격 연결·자동 실행·인증된 검토자 증명은 미완이다. 아래 `main` 설명과 `DEV-EPISODE-001`은 상속한 이전 개발선의 기록이다.
 
 The adopted operating target is a **group workspace with independent subsidiaries**:
 

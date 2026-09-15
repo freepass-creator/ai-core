@@ -60,8 +60,10 @@ test('dependency order and completion gate distinguish result claim from user ac
   assert.throws(() => s.mutate(o.id, command(o, 'close', { confirmed: false, revision: o.revision, note: 'unconfirmed' })), fails('CONFIRMATION_REQUIRED'));
   assert.throws(() => s.mutate(o.id, command(o, 'close', { confirmed: true, revision: o.revision, note: 'missing coverage' })), fails('CRITERIA_COVERAGE_REQUIRED'));
   o = s.mutate(o.id, command(o, 'close', { confirmed: true, revision: o.revision, note: '사용자가 근거와 완료 조건 대조', checks: [{ criterion: 0, taskId: 'T2', evidenceIndex: 0 }] }));
-  assert.equal(o.status, 'CLOSED'); assert.equal(o.closure.kind, 'USER_ACCEPTED');
-  assert.throws(() => s.mutate(o.id, command(o, 'note', { note: 'overwrite closed' })), fails('TERMINAL_ORDER'));
+  assert.equal(o.status, 'REVIEW'); assert.equal(o.closure.kind, 'USER_ACCEPTED_NOT_CANONICAL');
+  o = s.mutate(o.id, command(o, 'revise', { intent: '새 요청', criteria: ['새 조건'], reason: '요구 변경' }));
+  assert.equal(o.closure, null);
+  assert.ok(s.events(o.id).some(e => e.type === 'CLOSE'));
 });
 test('empty evidence rejected and cancelled order cannot accept late worker', t => {
   const s = fixture(t); let o = claim(s, s.create(input())); const token = o.tasks[0].lease.token;
@@ -106,6 +108,9 @@ test('HTTP and direct CLI store share truth; cross-origin, bad host and malforme
   const { server, store, url } = await startServer({ dbPath: join(dir, 'orders.sqlite'), port: 0, standalone: true }); t.after(async () => { server.closeAllConnections(); await new Promise(resolve => server.close(resolve)); rmSync(dir, { recursive: true, force: true }); });
   const req = input(); const post = (body, headers = {}) => fetch(`${url}/api/orders`, { method: 'POST', headers: { 'Content-Type': 'application/json', ...headers }, body: JSON.stringify(body) });
   const first = await (await post(req)).json(); assert.equal(store.get(first.id).intent, req.intent);
+  const projection = await (await fetch(`${url}/api/orders/${first.id}/work`)).json();
+  assert.equal(projection.status, 'HOLD'); assert.equal(projection.reason, 'DURABLE_MAPPING_OUTBOX_UNAVAILABLE');
+  assert.equal(projection.execution_authorized, false);
   assert.equal((await (await fetch(`${url}/api/orders`)).json()).length, 1);
   assert.equal((await post(req, { Origin: 'https://untrusted.example' })).status, 403);
   const badHostStatus = await new Promise((resolve, reject) => { const r = request(`${url}/api/meta`, { headers: { Host: 'untrusted.example' } }, res => { res.resume(); resolve(res.statusCode); }); r.on('error', reject); r.end(); });
@@ -121,4 +126,23 @@ test('HTTP and direct CLI store share truth; cross-origin, bad host and malforme
   });
   assert.equal(received.title, unicode.title);
   const page = await fetch(url); assert.match(page.headers.get('content-security-policy'), /frame-ancestors 'none'/); assert.match(await page.text(), /오더 등록/);
+});
+
+test('projection read failure and concurrent intake changes never return stale work state', async t => {
+  let serverFixture;
+  const readWorkProjection = async id => {
+    if (serverFixture.store.get(id).version === 1) throw new Error('read failed');
+    const before = serverFixture.store.get(id);
+    serverFixture.store.mutate(id, command(before, 'note', { note: 'concurrent update' }));
+    return { status: 'LINKED', mapping: { order_id: id, requirement_revision: before.revision, record_version: before.version } };
+  };
+  serverFixture = await startServer({ dbPath: ':memory:', port: 0, standalone: true, readWorkProjection });
+  const { server, store, url } = serverFixture;
+  t.after(async () => { server.closeAllConnections(); await new Promise(resolve => server.close(resolve)); });
+  const order = store.create(input());
+  const read = async () => (await fetch(`${url}/api/orders/${order.id}/work`)).json();
+  assert.equal((await read()).reason, 'CANONICAL_READ_FAILED');
+  store.mutate(order.id, command(order, 'note', { note: 'next read' }));
+  const changed = await read();
+  assert.equal(changed.reason, 'PROJECTION_VERSION_CHANGED'); assert.equal(changed.mapping, undefined);
 });

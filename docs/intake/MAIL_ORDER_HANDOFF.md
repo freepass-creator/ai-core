@@ -2,6 +2,8 @@
 
 **상태: 문서 설계만 작성. 실행 연결·발송 가능 여부·수락 사례는 미구현/미검증.** 자연어 접수 코드 `ba82f26265c5fccebdebf1f9368d584d70f95fb0`는 변경하지 않는다. 새 원장·인증·메일 도구를 정의하지 않는다.
 
+메일 접수 시 먼저 [기존 연결 SSOT](../../memory/TOOL_CONNECTIONS.md)의 Mail connection reuse를 따른다. 기존 경로가 정상인 경우 설치·로그인을 생략하고 해당 연결을 재사용한다. 계정이 모호하거나 연결을 확인하지 못하면 발신자를 임의 선택하지 않는다. 자세한 관찰 범위는 [재사용 안내](MAIL_CONNECTION_REUSE.md)에 기록한다.
+
 ## 기준과 같은 업무의 경계
 
 - PR20 `fe9315535e31a6edb723562b2b3515fcdf01107e`: `contracts/control-tower.schema.json`의 sources/authorization/evidence_receipts 및 `scripts/run-control-tower.mjs`. READY도 `execution_authorized: false`다.

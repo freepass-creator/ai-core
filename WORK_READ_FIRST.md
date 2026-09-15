@@ -2,7 +2,7 @@
 
 AI Core 작업을 시작할 때 전체 Gmail/전체 Chat/전체 연구 branch를 재독하지 않는다.
 
-2026-09-15 최신 작업 방향: 저장소는 분리하고 공통 AI 기능·모든 오더의 처리 상태를 AI Core에 모은다. 현재 오더 데스크는 `docs/ORDER_GUIDE.md`와 `docs/episodes/ORDER-DESK-001.json`을 읽고, `node scripts/orders.mjs list`로 실제 원장을 확인한다. 아래 기억의 이전 우선순위가 최신 사용자 지시를 덮어쓰지 않는다.
+2026-09-15 최신 작업 방향: 저장소는 분리하고 공통 AI 기능·오더 창구를 AI Core에 모은다. 현재 범위는 [통합 상태](docs/integration/INTEGRATION_STATUS.md)와 `docs/episodes/ORDER-DESK-001.json`을 먼저 읽는다. OrderStore는 접수 기록이며 업무 상태 정본은 work 원장이다. 영속 매핑/outbox 미완은 HOLD다. 아래 기억의 이전 우선순위가 최신 사용자 지시를 덮어쓰지 않는다.
 
 ## 기본 진입점
 
@@ -13,6 +13,10 @@ AI Core 작업을 시작할 때 전체 Gmail/전체 Chat/전체 연구 branch를
 3. 현재 Work Packet / 프로젝트 지침
 4. 필요한 경우 `memory/CANONICAL.md`
 5. 차세대 연구가 직접 관련될 때만 `memory/RESEARCH_INDEX.md`
+
+## 메일 작업 진입
+
+메일 요청이면 계정 탐색·설치·로그인 전에 [기존 도구 연결](memory/TOOL_CONNECTIONS.md)의 Mail connection reuse를 읽고 그곳의 기존 프로필과 도구를 재사용한다. 정상 경로·메타데이터가 확인되면 설치/로그인을 반복하지 않는다. 미확인/모호 계정을 기본 발신자로 선택하지 않는다. 검사기와 연결 정보는 발송 승인이 아니며 실제 메일 본문 조회도 요청 범위 안에서만 한다.
 
 ## 상태 경계
 

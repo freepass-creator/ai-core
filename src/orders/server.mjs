@@ -11,7 +11,7 @@ const assets = new Map([
   ['/style.css', ['../../web/orders/style.css', 'text/css; charset=utf-8']],
   ['/tokens.css', ['../../design-system/tokens.css', 'text/css; charset=utf-8']],
 ]);
-export function startServer({ dbPath = defaultDb, port = 4318, expectedLedgerId = null, standalone = false } = {}) {
+export function startServer({ dbPath = defaultDb, port = 4318, expectedLedgerId = null, standalone = false, readWorkProjection = null } = {}) {
   if ((!expectedLedgerId && !standalone) || (expectedLedgerId && standalone)) throw new OrderError('SERVER_MODE_REQUIRED', '공유 원장 ID 또는 명시적인 standalone 모드가 필요합니다.');
   const store = new OrderStore(dbPath);
   const ledgerId = store.ledgerId();
@@ -35,6 +35,22 @@ export function startServer({ dbPath = defaultDb, port = 4318, expectedLedgerId 
       }
       if (req.method === 'GET' && url.pathname === '/api/meta') return json(200, { ...store.settings(), actors, ledgerId, mode: expectedLedgerId ? 'SHARED_PRIVATE_SERVICE' : 'STANDALONE_EXPERIMENT' });
       if (req.method === 'GET' && url.pathname === '/api/orders') return json(200, store.list());
+      const projectionMatch = url.pathname.match(/^\/api\/orders\/(ORD-[a-f0-9-]+)\/work$/);
+      if (req.method === 'GET' && projectionMatch) {
+        const before = store.get(projectionMatch[1]);
+        const unavailable = { status: 'HOLD', reason: 'DURABLE_MAPPING_OUTBOX_UNAVAILABLE', execution_authorized: false, completion_authorized: false, sent: false };
+        if (!readWorkProjection) return json(200, unavailable);
+        try {
+          const result = await readWorkProjection(projectionMatch[1]);
+          const after = store.get(projectionMatch[1]);
+          const mapping = (result?.projection ?? result)?.mapping;
+          if (before.version !== after.version || (mapping && (mapping.order_id !== after.id || mapping.requirement_revision !== after.revision || mapping.record_version !== after.version))) {
+            return json(200, { ...unavailable, reason: 'PROJECTION_VERSION_CHANGED' });
+          }
+          return json(200, result ?? { ...unavailable, reason: 'CANONICAL_READ_FAILED' });
+        }
+        catch { return json(200, { ...unavailable, reason: 'CANONICAL_READ_FAILED' }); }
+      }
       const match = url.pathname.match(/^\/api\/orders\/(ORD-[a-f0-9-]+)(?:\/(packet|check-context))?$/);
       if (req.method === 'GET' && match) return json(200, match[2] === 'packet' ? store.packet(match[1], url.searchParams.get('task')) : match[2] === 'check-context' ? store.checkContext(match[1], url.searchParams.get('task')) : { order: store.get(match[1]), events: store.events(match[1]) });
       if (req.method === 'POST') {

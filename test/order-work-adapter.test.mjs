@@ -2,8 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile, mkdtemp, rm } from 'node:fs/promises';
 import { join, resolve, sep } from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { pathToFileURL, fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
+import { tmpdir } from 'node:os';
 import { createOrderWorkAdapter } from '../src/integration/order-work-adapter.mjs';
 
 const sha = 'a'.repeat(40);
@@ -157,27 +158,27 @@ test('non-Error reader rejection still returns HOLD', async () => {
 const canonicalCommit = 'b438fca22bd60ac7f6efa1d509c701897e821e76';
 const canonicalCheckout = process.env.ORDER_ADAPTER_PR20_CHECKOUT;
 
-test('pinned PR20 real-contract integration', {
-  skip: canonicalCheckout ? false : 'Set ORDER_ADAPTER_PR20_CHECKOUT to an isolated checkout of the documented PR20 commit',
+test('real-contract integration (current tree or explicitly pinned historical PR20)', {
   timeout: 15000,
 }, async t => {
-  const root = resolve(canonicalCheckout);
-  assert.equal(execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8', timeout: 5000 }).trim(), canonicalCommit);
+  const root = canonicalCheckout ? resolve(canonicalCheckout) : resolve(fileURLToPath(new URL('..', import.meta.url)));
+  if (canonicalCheckout) assert.equal(execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8', timeout: 5000 }).trim(), canonicalCommit);
   // Reject edited canonical files: passing against locally patched logic is not evidence.
-  assert.equal(execFileSync('git', ['status', '--porcelain', '--untracked-files=no'], { cwd: root, encoding: 'utf8', timeout: 5000 }).trim(), '');
+  if (canonicalCheckout) assert.equal(execFileSync('git', ['status', '--porcelain', '--untracked-files=no'], { cwd: root, encoding: 'utf8', timeout: 5000 }).trim(), '');
   const { verifyLedgerText, appendLedgerEvent } = await import(pathToFileURL(join(root, 'scripts/work-ledger.mjs')));
   const { runControlTower } = await import(pathToFileURL(join(root, 'scripts/run-control-tower.mjs')));
   const registryTemplate = JSON.parse(await readFile(join(root, 'examples/project-registry.json'), 'utf8'));
   const snapshotTemplate = JSON.parse(await readFile(join(root, 'examples/control-tower.json'), 'utf8'));
-  const fixtureRoot = await mkdtemp(join(root, '.adapter-test-'));
+  const fixtureRoot = await mkdtemp(join(tmpdir(), 'ai-core-adapter-test-'));
   t.after(async () => {
-    // Only this newly allocated directory inside the specified isolated checkout is removed.
-    assert.ok(resolve(fixtureRoot).startsWith(`${root}${sep}`));
+    // Only this newly allocated temporary directory is removed.
+    assert.ok(resolve(fixtureRoot).startsWith(`${resolve(tmpdir())}${sep}`));
     await rm(fixtureRoot, { recursive: true });
   });
   let count = 0;
   async function realFixture(subjectRevision = snapshotTemplate.items[0].subject_revision) {
     const registry = structuredClone(registryTemplate), snapshot = structuredClone(snapshotTemplate);
+    snapshot.as_of = '2026-09-15T01:00:00Z';
     const item = snapshot.items[0];
     const path = join(fixtureRoot, `ledger-${++count}.jsonl`);
     const baseEvent = { work_id: item.id, project_id: item.project_id, actor: 'TEST',
@@ -207,8 +208,8 @@ test('pinned PR20 real-contract integration', {
   await t.test('canonical null-revision READY gap is blocked by adapter exact revision check', async () => {
     const f = await realFixture(null);
     const canonical = runControlTower(f.context);
-    assert.equal(canonical.status, 'READY'); // Pinned upstream counterexample, not an approval.
-    assert.equal(canonical.items[0].execute.enabled, true);
+    assert.equal(canonical.status, canonicalCheckout ? 'READY' : 'HOLD');
+    assert.equal(canonical.items[0].execute.enabled, Boolean(canonicalCheckout));
     assert.equal((await f.adapter.prepareWorkCommand(f.command)).reason, 'SUBJECT_REVISION_STALE');
   });
 
