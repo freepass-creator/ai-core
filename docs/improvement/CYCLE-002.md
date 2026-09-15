@@ -50,3 +50,15 @@ invent episodes, duplicate a workflow, or repeatedly add tests for their own sak
 Next heartbeat: verify integration status, inspect actual failures if supplied,
 and select the next independent improvement only if there is new supporting evidence.
 Rollback: revert this cycle's commit; no data migration is involved.
+
+### Coordinator handoff update — 2026-09-15
+
+The coordinator assigned PR20/21 integration, improvement through `2b14b4e`,
+episode inventory reconciliation and full checks to the separate task named
+`AI Core · 개발 통합 실행`. Its creation was requested; this lane has not verified
+its task ID, actual checkout or completion. Do not keep editing this module in
+parallel with that integration. Report any proposed new change to the coordinator
+first and agree ownership before editing. Keep the existing heartbeat; on resume,
+confirm the integration task's actual status and new canonical revision before
+selecting another evidence-backed independent candidate. This update changes only
+handoff documentation, not the implementation assigned for integration.
