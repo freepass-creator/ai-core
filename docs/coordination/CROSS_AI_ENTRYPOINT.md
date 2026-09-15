@@ -1,5 +1,7 @@
 # 공통 AI 시작·읽기 패킷 — 준비 단계
 
+현재 공용 진입점은 [AI_CONTINUATION.md](AI_CONTINUATION.md)다. 저장소 접근 AI와 private 저장소 접근이 없는 무료 채팅 경로를 그 문서에서 분리하며, 이 문서의 중앙 packet/claim/HOLD 계약을 그대로 재사용한다.
+
 ## 전용 통합 브랜치 반영 — 2026-09-15
 
 `0dad6ac4ffc247afa156a16fb41262f4285f7eee`를 통합하고 WORK_READ_FIRST에 공통 진입 링크를 추가했다. 프로젝트 루트의 CLAUDE.md와 GEMINI.md는 같은 두 공통 문서를 가리키는 최소 포인터다. 기존 공통 문서나 정본 업무 상태를 복제하지 않는다.

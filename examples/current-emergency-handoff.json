@@ -1,0 +1,35 @@
+{
+  "schema": "ai-core-continuation-input/v1",
+  "generated_at": "2026-09-15T03:16:29.916Z",
+  "source_ref": "task:01a0a25c-d3c3-7fe1-818f-c30b47fc1310",
+  "order_id": null,
+  "work_id": null,
+  "status": "HOLD",
+  "purpose": "Prepare safe AI Core continuation for Claude Code with repository access and a free chat using one Markdown file",
+  "decisions": [
+    "Reuse the existing order, work ledger, project registry and read-only packet contracts",
+    "A free chat may analyze, draft checklists and propose patches but cannot claim repository access or execution",
+    "Repository update is limited to a clean non-diverged fast-forward on a registered branch"
+  ],
+  "corrections": [
+    "GitHub contains reviewed minimal context rather than every conversation or sensitive source",
+    "Local files and commits are LOCAL_ONLY until exact remote readback",
+    "The canonical order and work mapping for this request is unverified"
+  ],
+  "completed": [
+    "Source checkpoint 0577201c4e639be607c49512465c784cb454f001 is on draft pull request 22",
+    "The source checkpoint reported 290 passing tests and successful exact-commit CI"
+  ],
+  "remaining": [
+    "Review the continuation exporter, proposal recovery and one-repository sync preflight",
+    "Run the full test suite and verify the exact remote commit and handoff file"
+  ],
+  "verification": [
+    "Current task coverage is partial and no operating database, deployment or external sending is in scope"
+  ],
+  "evidence_refs": [
+    "docs/coordination/CROSS_AI_ENTRYPOINT.md",
+    "docs/integration/INTEGRATION_STATUS.md",
+    "https://github.com/freepass-creator/ai-core/pull/22"
+  ]
+}

@@ -2,6 +2,8 @@
 
 Status: synthetic integration implemented, including a separate temporary durable coordination laboratory. Production activation and the missing independent high-risk review remain HOLD.
 
+Cross-AI continuation checkpoint: `docs/coordination/AI_CONTINUATION.md` separates repository-capable Claude Code from a free chat without private GitHub access. A fail-closed exporter produces one-work `EMERGENCY_HANDOFF.md`; returned Markdown normalizes to a non-authoritative proposal record. Repository preflight pins the existing registry remote/default/registered work branch, fetches one selected branch and only allows a clean, non-diverged fast-forward. No transcript ingestion, public sharing, automatic push, operating write or deployment is added. `docs/coordination/EMERGENCY_HANDOFF.md` is the reviewed minimal current-request pack; its canonical order/work IDs remain UNVERIFIED, so it supports advice/drafts only and stays HOLD.
+
 Current checkpoint: see [durable coordination](DURABLE_COORDINATION.md) for atomic mapping/outbox, full-payload reconciliation and real process crash tests. The older volatile sandbox below remains unchanged. No production endpoint uses the new laboratory; the OrderStore hook defaults to unused. Next single action: obtain the missing independent source review against the committed checkpoint. Live migration, authorization and external execution are unapplied.
 
 ## Conversation-to-history audit — 2026-09-15

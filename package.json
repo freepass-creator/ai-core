@@ -16,6 +16,9 @@
     "registry:validate": "node scripts/validate-project-registry.mjs",
     "ledger:verify": "node scripts/work-ledger.mjs verify",
     "inventory:repos": "node scripts/inventory-repositories.mjs",
+    "handoff:export": "node scripts/ai-continuation-pack.mjs export",
+    "handoff:recover": "node scripts/ai-continuation-pack.mjs recover",
+    "repo:preflight": "node scripts/repo-sync-preflight.mjs",
     "checkpoint": "node scripts/checkpoint-work.mjs"
   },
   "dependencies": {
