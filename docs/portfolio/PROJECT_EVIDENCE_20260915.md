@@ -58,7 +58,18 @@
 | L07 | `README.md`, `WAREHOUSE-INDEX.md` | 후보 자산/검사기 존재에 대한 문서, 의미 자동대조 미구현·최종 검수 HOLD 기록. 실행 run은 열지 않음. |
 | L08 | `README.md` | 창작·로컬 생성기·브라우저 작업 사본·Drive 보관 흐름. 생성 이미지, 개인 설정, 브라우저 데이터, 실제 백업은 열지 않음. |
 | L09 | `README_KO.md` | 로컬 이미지 작업실 목적·독립 기능·제약. 설치/모델/실제 GPU 실행/산출물은 확인하지 않음. |
-| L10 | `package.json`의 name/description, `PLAN.md` 앞부분 | 견적기 역할, ERP가 데이터 소유/견적기는 표시 역할, 미완 항목의 과거 기록. 현재 코드 반영·가격 정책·운영은 미확인. |
+| L10 | `package.json`의 name/description, `PLAN.md` 앞부분; 후속으로 아래 지정 코드 5개 대조 | 견적기 역할과 RTDB 직접 소비 확인. 현코드 재사용 HOLD: RTDB 영구폐기, Firestore parity 미확인. 가격 정책·운영 실상태는 미확인. |
+
+### L10 후속 지정 경로 대조 — 분류 근거 정정
+
+2026-09-15 감사 관찰을 원본으로 재확인했다. 저장소 HEAD는 `c79b8cdc453ef52793081c1d9a51b605b77755dd`이며 아래 5파일의 Git status는 clean이었다. 다른 미커밋 파일이나 데이터로 범위를 넓히지 않았다.
+
+- `C:/dev/sonogong-estimator/src/quote.js:2,14`에서 `loadQuote`를 import·호출하고, `src/firebase/quotes.js:2,38,40,49-50`은 `firebase/database`의 `ref/get/set`으로 견적 조회·저장을 수행한다.
+- `src/firebase/stock.js:4,43,47`은 `firebase/database`의 `ref/set/onValue`로 재고 저장·구독을 수행한다.
+- `src/firebase/vehicles.js:3,14,21,27`은 `firebase/database`의 `ref/get/set/onValue`로 차량 저장·조회·구독을 수행한다.
+- `src/firebase/config.js:4,18`은 `firebase/database`에서 `getDatabase`를 import하고 `db = getDatabase(app)`으로 초기화한다. 설정값·비밀은 보고서에 복사하지 않았다.
+
+따라서 단순 잔여 설명문이 아닌 직접 소비 코드다. **현코드 재사용 HOLD: RTDB 영구폐기, Firestore parity 미확인.** SDK 버전 변경만으로 이 경계가 해결되는 것은 아니다. 앱 실행·DB 접속·배포·마이그레이션·삭제를 하지 않았으며 실제 운영 가동 여부는 여전히 미확인이다. 이 정정은 기존 재개대기 분류에 사용 보류 근거를 추가할 뿐, 저장소 폐기나 보존 원본 삭제를 제안하지 않는다.
 | L11 | `README.md`, `docs/저장소지도.md` 제한된 범위 | 운영 도구함·중앙 승인/재읽기와 기존 현역/보관 기록. 실제 Sheet/Drive/원문/금액은 조회하지 않음. |
 | L12 | `README.md` | 사건지도 구조와 watch-sync 설계 설명. 자동 작업 실제 가동/성공·원격 원본 보존은 미확인. |
 | L13 | `README.md`, `HANDOVER.md` 앞부분 | 인계는 DEMO·ERP 전자계약·남은 외부연동을 기록. 서명/봉인·배포 실동작은 미확인. |
