@@ -18,7 +18,7 @@ function fixture() {
       tasks: [{ status: 'RUNNING', lease: { token: 'not-authorization' } }] },
     mappings: [structuredClone(mapping)], registry: { projects: [{ project_id: mapping.project_id, status: 'ACTIVE', head_revision: sha }] },
     snapshot: { items: [{ id: mapping.work_id, project_id: mapping.project_id, subject_revision: sha }] },
-    ledgerText: 'canonical-input', usedCommandIds: [], usedEventIds: [],
+    ledgerText: '{"event_id":"EXISTING-001"}\n', usedCommandIds: [], usedEventIds: ['EXISTING-001'],
   };
   const ledger = { status: 'VALID', head, work: { 'WORK-001': { state: 'READY', project_id: mapping.project_id, subject_revision: sha } } };
   const control = { status: 'READY', execution_authorized: false, ledger_head: head, items: [{
@@ -124,6 +124,9 @@ for (const [name, mutate, reason] of [
   ['command duplicate', f => { f.context.usedCommandIds.push('command-1'); }, 'COMMAND_ID_DUPLICATE'],
   ['event duplicate', f => { f.context.usedEventIds.push('EVENT-001'); }, 'EVENT_ID_DUPLICATE'],
   ['unknown ID inventory', f => { delete f.context.usedEventIds; }, 'ID_INVENTORY_UNAVAILABLE'],
+  ['malformed ID inventory', f => { f.context.usedCommandIds.push(null); }, 'ID_INVENTORY_INVALID'],
+  ['duplicate inventory entries', f => { f.context.usedEventIds.push('EXISTING-001'); }, 'ID_INVENTORY_INVALID'],
+  ['actual event omitted from inventory', f => { f.context.usedEventIds = []; f.command.event_id = 'EXISTING-001'; }, 'EVENT_ID_DUPLICATE'],
   ['UI close is not close authority', f => { f.command.intent = 'REQUEST_CLOSE_REVIEW'; }, 'CANONICAL_ACTION_BLOCKED'],
   ['claim is not a canonical action', f => { f.command.intent = 'claim'; }, 'INTENT_NOT_SUPPORTED'],
   ['fake approval field', f => { f.command.confirmed = true; }, 'COMMAND_FIELDS_INVALID'],
@@ -138,6 +141,11 @@ test('read failure fails closed and missing dependency is rejected', async () =>
   assert.throws(() => createOrderWorkAdapter({}), /DEPENDENCY_REQUIRED/);
   const adapter = createOrderWorkAdapter({ readContext: () => { throw new Error('READ_UNAVAILABLE'); }, verifyLedgerText() {}, runControlTower() {} });
   assert.equal((await adapter.readWorkProjection(mapping.order_id)).reason, 'READ_UNAVAILABLE');
+});
+
+test('supplemental event list need not repeat every verified ledger ID', async () => {
+  const f = fixture(); f.context.usedEventIds = [];
+  assert.equal((await f.adapter.prepareWorkCommand(f.command)).status, 'PREPARED_NOT_SENT');
 });
 
 test('non-Error reader rejection still returns HOLD', async () => {
@@ -274,5 +282,13 @@ test('pinned PR20 real-contract integration', {
     f.context.ledgerText = await readFile(f.path, 'utf8');
     assert.equal((await f.adapter.prepareWorkCommand(f.command)).reason, 'LEDGER_HEAD_CHANGED');
     await assert.rejects(appendLedgerEvent(f.path, changed, f.command.expected_head), /LEDGER_HEAD_CHANGED/);
+  });
+
+  await t.test('verified ledger IDs defeat an omitted or incomplete supplied event inventory', async () => {
+    const f = await realFixture(); f.context.usedEventIds = [];
+    f.command.event_id = 'TEST-005';
+    assert.equal((await f.adapter.prepareWorkCommand(f.command)).reason, 'EVENT_ID_DUPLICATE');
+    f.command.event_id = 'REVIEW-001';
+    assert.equal((await f.adapter.prepareWorkCommand(f.command)).status, 'PREPARED_NOT_SENT');
   });
 });

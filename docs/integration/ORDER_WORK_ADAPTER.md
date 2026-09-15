@@ -19,7 +19,7 @@
 | order | PR21 `get()` 결과. id, revision, version을 사용한다. |
 | mappings | 삭제되지 않은 과거 요구 버전까지 포함하는 중앙 매핑 전체 이력. 부분 목록이나 요청자가 임의 작성한 목록은 금지한다. |
 | registry, snapshot, ledgerText | 같은 읽기 시점으로 고정한 PR20 정본 입력. |
-| usedCommandIds, usedEventIds | 명령 준비 시 필요한 전체 사용 ID 목록. 이벤트 ID는 검증된 정본에서 읽고 command ID는 미래 조정자가 관리한다. |
+| usedCommandIds, usedEventIds | command ID 전체 목록과 추가 차단용 event ID 목록. 이벤트 ID의 정본은 검증된 ledgerText이며 command ID는 미래 조정자가 관리한다. |
 
 읽기 연결은 일관된 시점을 보장하거나 변경을 감지해 실패해야 한다. 이 어댑터는 DB 잠금이나 여러 저장소의 원자적 읽기를 제공하지 않으며, 오래된 캐시가 모든 입력에서 서로 일치하는 경우 최신 여부를 독립 증명할 수 없다. 통합자는 최신 정본을 읽고 필요한 버전 재조회를 구현해야 한다.
 
@@ -39,13 +39,15 @@ record_version은 불변 연결 정체성이 아닌 낙관적 동시성 관측�
 
 준비는 ID 예약·중복 방지 트랜잭션이 아니다. 같은 명령을 두 클라이언트가 준비할 수 있다. 사용 ID 목록이 빠지면 준비를 차단하고 이미 사용된 ID는 같은 내용이어도 차단한다. 재전송·응답 유실 복구는 미래 조정자의 책임이다. 실제 append 전에 매핑, 요구/레코드 버전, Git 커밋, ledger head, ID 중복, 평가와 필요한 사용자 직전 승인을 다시 확인해야 한다. PR20 `appendLedgerEvent`와 expectedHead로 기록하고 head 충돌 시 재평가해야 한다. 준비 결과만으로 실행하거나 UI 완료를 기록하면 안 된다.
 
+추가 보강: supplied ID 목록의 잘못된 형식·중복 항목을 차단한다. PR20이 VALID로 검증한 같은 ledgerText에서 event_id만 추출하여 실제 중복을 직접 검사한다. supplied usedEventIds는 추가 차단용으로만 사용하므로 정본의 ID가 그 목록에 없어도 중복은 차단되고, 미사용 ID는 준비할 수 있다. 파싱 실패나 잘못된 ID는 HOLD다. 해시·상태 전이는 해석하지 않는다. command ID는 PR20 원장 필드가 아니므로 그 목록의 완전성은 여전히 중앙 조정자가 보장해야 한다.
+
 최상위 control 상태는 전체 snapshot 결과이며 다른 work로 인해 HOLD일 수 있다. 준비 gate는 선택한 work의 PR20 평가 결과를 사용한다. 승인 표시는 항상 false를 유지한다. 실제 UI close/claim 경로를 이 어댑터에 연결하는 작업은 총괄 통합 단계에 남아 있다.
 
 ## 검증
 
 `node --test test/order-work-adapter.test.mjs`는 경계 단위검사를 실행한다. 실제 계약 검사에는 `ORDER_ADAPTER_PR20_CHECKOUT`을 위 SHA의 격리 checkout 절대 경로로 설정한다. 환경변수가 없으면 실제 계약 검사는 명시적으로 SKIP이다. 함수 import 전에 HEAD와 tracked clean 상태를 검사한다. 기존 설치된 ajv/ajv-formats를 읽기 연결하여 사용하며 새 의존성을 설치하지 않는다. 실제 계약 fixture는 정본 appendLedgerEvent로 임시 원장을 생성하고 검사 종료 시 삭제한다. 실제 .local DB나 운영 원장은 읽거나 쓰지 않는다.
 
-2026-09-15 실행: 환경변수를 설정한 Node 검사 48/48 PASS, SKIP 0. 다음 결과를 구분한다.
+2026-09-15 실행: 환경변수를 설정한 Node 검사 최초 48/48 PASS, ID 목록 후속 보강 후 53/53 PASS, SKIP 0. 다음 결과를 구분한다.
 
 - 정본 null subject_revision READY는 runControlTower에서 실행 gate가 열리는 반례가 재현됐다. 어댑터는 `SUBJECT_REVISION_STALE`로 차단한다. 공통 파일은 수정하지 않았다.
 - 요구 변경과 오래된 매핑, 전체 이력에 같은 work_id를 재사용한 경우 차단된다. 새 요구의 별도 RECEIVED work는 연결 준비만 가능하며 실행 준비는 정본 gate에서 차단된다.
