@@ -87,3 +87,24 @@ test('empty input has no evaluation or adoption result', () => {
   assert.equal(child.status, 0, child.stderr);
   assert.equal(child.stdout, '');
 });
+
+test('CLI accepts a single UTF-8 file BOM without asking for a re-save', () => {
+  const child = spawnSync(process.execPath, ['src/improvement/evaluate-evolution-jsonl.mjs'], {
+    input: Buffer.concat([Buffer.from([0xef, 0xbb, 0xbf]), Buffer.from('{"candidate":{}}\r\n')]),
+    encoding: 'utf8'
+  });
+  assert.equal(child.status, 0, child.stderr);
+  const record = JSON.parse(child.stdout);
+  assert.equal(record.line, 1);
+  assert.deepEqual(record.result, evaluateSelfEvolution({ candidate: {} }));
+});
+
+test('BOM inside a later nonblank record is not silently repaired', () => {
+  const child = spawnSync(process.execPath, ['src/improvement/evaluate-evolution-jsonl.mjs'], {
+    input: '{}\n\uFEFF{}\n', encoding: 'utf8'
+  });
+  assert.equal(child.status, 2);
+  const records = child.stdout.trim().split('\n').map(JSON.parse);
+  assert.equal(records[1].line, 2);
+  assert.equal(records[1].result.status, 'HOLD_INVALID_JSON');
+});
