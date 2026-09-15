@@ -60,6 +60,26 @@ This is the compact historical chain. It preserves what changed without repeatin
 - Added portfolio/commitment conflict thinking and human agency as a distinct quality dimension.
 - Research candidate; practical human-outcome improvement not yet proven.
 
+### v11 — `1a09d6748bb338e1` — 반사실 수탁 / Counterfactual Stewardship
+- Added explicit comparison across reuse, adaptation, new build, no-change and evidence-bounded HOLD.
+- The Gmail ZIP and its attached SHA-256 agree; its 109 checks are self-authored synthetic tests, not practical outcome evidence.
+
+### v12 — `1a09e318ad27d927` — Intent Governance
+- Separated the user's request, AI-inferred hypotheses, controlling intent, outcome contract and authority envelope.
+- The Gmail record has no attached package, so its reported local test run cannot be independently reproduced from Gmail alone.
+
+### v13 — `1a09fab69fe4bcee` — Commitment Governance
+- Added acceptance, dependency, owner/due change control, supersession, debt and artifact/verification/outcome closure levels.
+- Research-candidate body only in Gmail; practical follow-through improvement remains unmeasured.
+
+### v14 — `1a0a0efcc0256647` — Portfolio Capacity Governance
+- Added resource windows, overlapping allocation checks, priority change control and explicit accepted tradeoffs.
+- Research-candidate body only in Gmail; calendar, budget and quota reservations were not exercised.
+
+### v15 — `1a0a225305c29d25` — Reality Drift Governance
+- Added observation validity windows, source events, dependency invalidation and fail-closed handling for expired critical evidence.
+- Research-candidate body only in Gmail; stale-decision reduction and freshness-management cost remain unmeasured.
+
 ## DEVKIT implementation line
 
 ### v6.1 — `1a0993e70cb41abd` — 재사용 개발 파일과 v1→v6 발전 비교
@@ -80,6 +100,14 @@ This is the compact historical chain. It preserves what changed without repeatin
 - A current green check is insufficient if a required completion criterion is uncovered or changed.
 - Manual/external verification remains separate from automated PASS.
 - Mail status: LOCALLY_TESTED candidate; not independently validated or operationally adopted.
+
+### v6.5 — `1a09bbcbd9026c7a` — 최소 변경 증명
+- Added capability queries and explicit reuse/adapt/compose/new/HOLD decisions to block unjustified duplicate work.
+- Mail status: LOCALLY_TESTED candidate with self-authored synthetic tests; development-time and rework reduction were not measured.
+
+### v6.6 — `1a09d163d479ff25` — 의미 주장 증거 결속
+- Bound semantic keys, side effects and compatibility claims to provenance, current receipts and derived evidence state.
+- Mail status: LOCALLY_TESTED candidate with self-authored synthetic tests; source truth and reviewer identity were not authenticated.
 
 ## Consolidation mail
 

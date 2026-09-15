@@ -126,6 +126,62 @@
       "title": "[AI AIOPS][CIVILIZATION] v10 — 인간 수탁 운영체제: Direction·Portfolio·Foresight·Agency·Follow-through",
       "summary": "Human Stewardship layer above AI infrastructure; portfolio, foresight, agency, resilience and growth.",
       "status": "RESEARCH_CANDIDATE"
+    },
+    {
+      "message_id": "1a09bbcbd9026c7a",
+      "type": "DEVKIT",
+      "version": "v6.5",
+      "title": "[AI AIOPS][DEVKIT] v6.5 — 최소 변경 증명: 요구사항↔기존능력↔신규코드",
+      "summary": "Capability-first reuse decisions and duplicate implementation blocking; self-authored synthetic evidence only.",
+      "status": "LOCALLY_TESTED_CANDIDATE"
+    },
+    {
+      "message_id": "1a09d163d479ff25",
+      "type": "DEVKIT",
+      "version": "v6.6",
+      "title": "[AI AIOPS][DEVKIT] v6.6 — 의미 주장 증거 결속: Capability Claim↔Receipt↔Evidence State",
+      "summary": "Bind semantic capability claims to current receipts and derived evidence state; self-authored synthetic evidence only.",
+      "status": "LOCALLY_TESTED_CANDIDATE"
+    },
+    {
+      "message_id": "1a09d6748bb338e1",
+      "type": "CIVILIZATION",
+      "version": "v11",
+      "title": "[AI AIOPS][CIVILIZATION] v11 — 반사실 수탁: Goal↔Choice↔Evidence↔Reversal",
+      "summary": "Compare reuse, adaptation, new work, no-change and HOLD choices; attached package hash verified, practical outcomes unmeasured.",
+      "status": "LOCALLY_TESTED_CANDIDATE"
+    },
+    {
+      "message_id": "1a09e318ad27d927",
+      "type": "CIVILIZATION",
+      "version": "v12",
+      "title": "[AI AIOPS][CIVILIZATION] v12 — Intent Governance: Request↔Intent↔Outcome↔Authority",
+      "summary": "Separate explicit request, inferred intent, outcome contract and authority; Gmail message has no attached implementation package.",
+      "status": "RESEARCH_CANDIDATE_BODY_ONLY"
+    },
+    {
+      "message_id": "1a09fab69fe4bcee",
+      "type": "CIVILIZATION",
+      "version": "v13",
+      "title": "[AI AIOPS][CIVILIZATION] v13 — Commitment Governance: Intent↔Promise↔Dependency↔Closure",
+      "summary": "Track accepted commitments, dependencies, owner and due-date drift, supersession, debt and closure evidence; no Gmail attachment.",
+      "status": "RESEARCH_CANDIDATE_BODY_ONLY"
+    },
+    {
+      "message_id": "1a0a0efcc0256647",
+      "type": "CIVILIZATION",
+      "version": "v14",
+      "title": "[AI AIOPS][CIVILIZATION] v14 — Portfolio Capacity Governance: Commitment↔Capacity↔Priority↔Tradeoff",
+      "summary": "Detect overlapping capacity, priority drift and hidden tradeoffs across commitments; no Gmail attachment.",
+      "status": "RESEARCH_CANDIDATE_BODY_ONLY"
+    },
+    {
+      "message_id": "1a0a225305c29d25",
+      "type": "CIVILIZATION",
+      "version": "v15",
+      "title": "[AI AIOPS][CIVILIZATION] v15 — Reality Drift Governance: Observation↔Validity Window↔Dependency↔Invalidation",
+      "summary": "Expire volatile observations and invalidate dependent decisions after change, revocation or outage; no Gmail attachment.",
+      "status": "RESEARCH_CANDIDATE_BODY_ONLY"
     }
   ]
 }

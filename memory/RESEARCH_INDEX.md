@@ -28,6 +28,7 @@
 | Cognitive Runtime | `research/cognitive-runtime-v0.1` | #9 | DESIGN | Goal/World/Decision/Plan Slice |
 | Human Orchestration | `research/human-orchestration-v0.1` | #10 | DESIGN | Intent/Question Value/Domain Pack/Follow-through |
 | Human Stewardship OS | `research/human-stewardship-v0.1` | #11 | RESEARCH_CANDIDATE | Direction/Portfolio/Foresight/Agency |
+| CIVILIZATION v11-v15 mail lineage | `memory/EMAIL_INDEX.json` | — | RESEARCH_CANDIDATE | 선택 비교 → 의도 → 약속 → 포트폴리오 용량 → 현실 변화·증거 무효화. v12-v15는 Gmail 첨부가 없어 본문 기록만 보존 |
 | Chat Research Notebook | `chat/research-notebook` | #12 | RESEARCH_POSITION | AI 본질/인간 주체성/Chat 판단 기록 |
 | Civilization Ledger | `memory/civilization-ledger-v1` | #13 | MEMORY_LAYER | 메일/연구의 중복 제거 장기기억 |
 
