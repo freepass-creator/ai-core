@@ -1,7 +1,8 @@
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
-import { resolve } from 'node:path';
+import { resolve, isAbsolute } from 'node:path';
+import { readConnectionPolicy } from './client.mjs';
 import { OrderStore, OrderError, actors, defaultDb } from './store.mjs';
 
 const assets = new Map([
@@ -10,11 +11,15 @@ const assets = new Map([
   ['/style.css', ['../../web/orders/style.css', 'text/css; charset=utf-8']],
   ['/tokens.css', ['../../design-system/tokens.css', 'text/css; charset=utf-8']],
 ]);
-export function startServer({ dbPath = defaultDb, port = 4318 } = {}) {
+export function startServer({ dbPath = defaultDb, port = 4318, expectedLedgerId = null, standalone = false } = {}) {
+  if ((!expectedLedgerId && !standalone) || (expectedLedgerId && standalone)) throw new OrderError('SERVER_MODE_REQUIRED', '공유 원장 ID 또는 명시적인 standalone 모드가 필요합니다.');
   const store = new OrderStore(dbPath);
+  const ledgerId = store.ledgerId();
+  if (expectedLedgerId && ledgerId !== expectedLedgerId) { store.close(); throw new OrderError('LEDGER_MISMATCH', '지정한 DB는 중앙 원장이 아닙니다. 원본 이관과 원장 ID를 확인하세요.'); }
   const server = createServer(async (req, res) => {
     const json = (status, data) => { res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8' }); res.end(JSON.stringify(data)); };
     try {
+      res.setHeader('X-AI-Core-Ledger-Id', ledgerId);
       const actualPort = server.address().port;
       const hosts = [`127.0.0.1:${actualPort}`, `localhost:${actualPort}`];
       if (!hosts.includes(req.headers.host)) throw new OrderError('HOST_DENIED', '로컬 주소로 접속하세요.', 403);
@@ -22,13 +27,16 @@ export function startServer({ dbPath = defaultDb, port = 4318 } = {}) {
       res.setHeader('Cache-Control', 'no-store'); res.setHeader('X-Content-Type-Options', 'nosniff');
       res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'");
       const url = new URL(req.url, `http://${req.headers.host}`);
+      const expected = req.headers['x-ai-core-expected-ledger'];
+      if (expected && expected !== ledgerId) throw new OrderError('LEDGER_MISMATCH', '요청한 중앙 원장과 현재 원장이 다릅니다.', 409);
+      if (expectedLedgerId && req.method === 'POST' && expected !== ledgerId) throw new OrderError('LEDGER_PIN_REQUIRED', '쓰기 전에 중앙 원장 ID를 확인해야 합니다.', 409);
       if (req.method === 'GET' && assets.has(url.pathname)) {
         const [path, type] = assets.get(url.pathname); res.writeHead(200, { 'Content-Type': type }); res.end(await readFile(new URL(path, import.meta.url))); return;
       }
-      if (req.method === 'GET' && url.pathname === '/api/meta') return json(200, { ...store.settings(), actors, mode: 'LOCAL_MANUAL_HANDOFF' });
+      if (req.method === 'GET' && url.pathname === '/api/meta') return json(200, { ...store.settings(), actors, ledgerId, mode: expectedLedgerId ? 'SHARED_PRIVATE_SERVICE' : 'STANDALONE_EXPERIMENT' });
       if (req.method === 'GET' && url.pathname === '/api/orders') return json(200, store.list());
-      const match = url.pathname.match(/^\/api\/orders\/(ORD-[a-f0-9-]+)(?:\/(packet))?$/);
-      if (req.method === 'GET' && match) return json(200, match[2] ? store.packet(match[1], url.searchParams.get('task')) : { order: store.get(match[1]), events: store.events(match[1]) });
+      const match = url.pathname.match(/^\/api\/orders\/(ORD-[a-f0-9-]+)(?:\/(packet|check-context))?$/);
+      if (req.method === 'GET' && match) return json(200, match[2] === 'packet' ? store.packet(match[1], url.searchParams.get('task')) : match[2] === 'check-context' ? store.checkContext(match[1], url.searchParams.get('task')) : { order: store.get(match[1]), events: store.events(match[1]) });
       if (req.method === 'POST') {
         if (req.headers['content-type']?.split(';')[0] !== 'application/json') throw new OrderError('JSON_REQUIRED', 'JSON 요청만 허용합니다.', 415);
         const chunks = []; let bytes = 0;
@@ -45,7 +53,7 @@ export function startServer({ dbPath = defaultDb, port = 4318 } = {}) {
   });
   server.on('close', () => store.close());
   return new Promise((resolvePromise, reject) => {
-    server.once('error', reject);
+    server.once('error', error => { store.close(); reject(error); });
     server.listen(port, '127.0.0.1', () => resolvePromise({ server, store, url: `http://127.0.0.1:${server.address().port}` }));
   });
 }
@@ -54,7 +62,12 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const option = (key, fallback) => { const index = args.indexOf(key); return index < 0 ? fallback : args[index + 1]; };
   const port = Number(option('--port', 4318));
   if (!Number.isInteger(port) || port < 0 || port > 65535) throw new Error('Invalid port');
-  const { server, url } = await startServer({ dbPath: option('--db', defaultDb), port });
-  console.log(`AI Core order desk: ${url}\nLocal manual handoff; no automatic external execution.`);
+  const standalone = args.includes('--standalone');
+  const dbPath = option('--db', process.env.AI_CORE_ORDERS_DB);
+  if (!standalone && (!dbPath || !isAbsolute(dbPath))) throw new Error('공유 서버는 --db 절대경로 또는 AI_CORE_ORDERS_DB가 필요합니다. 독립 실험만 --standalone을 사용하세요.');
+  const expectedLedgerId = standalone ? null : readConnectionPolicy().ledgerId;
+  if (!standalone && !expectedLedgerId) throw new Error('중앙 원장 ID가 설정되지 않았습니다.');
+  const { server, url } = await startServer({ dbPath: dbPath ?? defaultDb, port, expectedLedgerId, standalone });
+  console.log(`AI Core order desk: ${url}\n${standalone ? 'Standalone experiment' : 'Shared private ledger'}; loopback only, use SSH for remote access.`);
   for (const signal of ['SIGINT', 'SIGTERM']) process.on(signal, () => server.close());
 }

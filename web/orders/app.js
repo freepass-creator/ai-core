@@ -2,7 +2,7 @@ const $ = id => document.getElementById(id);
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const states = { NEW: '접수', ACTIVE: '작업 중', BLOCKED: '인계 대기', EXPIRED: '확보 만료 · 확인 필요', REVIEW: '결과 확인 필요', CLOSED: '완료', CANCELLED: '취소', PENDING: '담당 대기', RUNNING: '작업 확보', REPORTED: '결과 접수' };
 const eventNames = { CREATED: '오더 접수', ASSIGN: '담당 변경', CLAIM: '작업 확보', HEARTBEAT: '작업 확보 연장', REPORT: '결과 접수', BLOCK: '인계 대기', REVISE: '요구 수정', NOTE: '메모', CLOSE: '사용자 완료 확인', CANCEL: '취소' };
-let orders = [], selected = location.hash.startsWith('#ORD-') ? location.hash.slice(1) : '', current, busy = false;
+let orders = [], selected = location.hash.startsWith('#ORD-') ? location.hash.slice(1) : '', current, busy = false, ledgerId = null;
 const time = value => new Date(value).toLocaleString('ko-KR');
 const badge = state => `<span class="badge ${esc(state)}">${esc(states[state] ?? state)}</span>`;
 const splitLines = value => value.split('\n').filter(v => v.trim());
@@ -10,7 +10,8 @@ const expired = t => t.status === 'RUNNING' && t.lease && Date.parse(t.lease.exp
 const visibleStatus = o => o.tasks.some(expired) && !['CLOSED', 'CANCELLED'].includes(o.status) ? 'EXPIRED' : o.status;
 function notify(message, error = false) { $('notice').textContent = message; $('notice').className = error ? 'error' : ''; }
 async function api(path, payload) {
-  const response = await fetch(path, payload ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) } : {});
+  const response = await fetch(path, { ...(payload ? { method: 'POST', body: JSON.stringify(payload) } : {}), headers: { ...(payload ? { 'Content-Type': 'application/json' } : {}), ...(ledgerId ? { 'X-AI-Core-Expected-Ledger': ledgerId } : {}) } });
+  if (ledgerId && response.headers.get('x-ai-core-ledger-id') !== ledgerId) throw new Error('중앙 원장이 변경됐습니다. 연결 대상을 확인하세요.');
   const body = await response.json(); if (!response.ok) throw new Error(body.message ?? `HTTP ${response.status}`); return body;
 }
 async function submit(path, payload) {
@@ -88,7 +89,13 @@ async function afterSave(order, message) {
 }
 async function act(payload) { const saved = await submit(`/api/orders/${current.id}`, { ...payload, version: current.version }); await afterSave(saved, '처리 기록을 저장했습니다.'); }
 async function refresh() {
-  const meta = await api('/api/meta'); $('name').textContent = meta.name; $('provisional').textContent = meta.provisional ? '이름 상의 중' : ''; document.title = `${meta.name} · 오더 데스크`; $('display-name').value = meta.name;
+  const meta = await api('/api/meta');
+  if (!/^ledger-[a-f0-9-]{36}$/.test(meta.ledgerId ?? '')) throw new Error('서버가 원장 식별을 지원하지 않습니다. 같은 GitHub 버전으로 서버를 갱신하세요.');
+  const pinned = localStorage.getItem('order-ledger-id');
+  if (pinned && pinned !== meta.ledgerId) throw new Error('이 주소의 원장이 이전 접속과 다릅니다. 원장 이관·접속 주소를 확인하세요.');
+  ledgerId = meta.ledgerId; localStorage.setItem('order-ledger-id', ledgerId);
+  document.querySelector('.local').textContent = meta.mode === 'SHARED_PRIVATE_SERVICE' ? '공유 원장 연결 · 로컬/서버 공통' : '독립 실험 원장';
+  $('name').textContent = meta.name; $('provisional').textContent = meta.provisional ? '이름 상의 중' : ''; document.title = `${meta.name} · 오더 데스크`; $('display-name').value = meta.name;
   $('actors').innerHTML = meta.actors.map(a => `<div class="actor"><strong>${esc(a.name)}</strong><p>${esc(a.strength)}</p></div>`).join('');
   orders = await api('/api/orders'); renderList(); if (selected) await loadDetail(); $('detail').inert = false;
 }

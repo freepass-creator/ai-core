@@ -103,7 +103,7 @@ test('two processes sharing SQLite deduplicate simultaneous intake', async t => 
 });
 test('HTTP and direct CLI store share truth; cross-origin, bad host and malformed writes fail', async t => {
   const dir = mkdtempSync(join(tmpdir(), 'ai-core-http-'));
-  const { server, store, url } = await startServer({ dbPath: join(dir, 'orders.sqlite'), port: 0 }); t.after(async () => { server.closeAllConnections(); await new Promise(resolve => server.close(resolve)); rmSync(dir, { recursive: true, force: true }); });
+  const { server, store, url } = await startServer({ dbPath: join(dir, 'orders.sqlite'), port: 0, standalone: true }); t.after(async () => { server.closeAllConnections(); await new Promise(resolve => server.close(resolve)); rmSync(dir, { recursive: true, force: true }); });
   const req = input(); const post = (body, headers = {}) => fetch(`${url}/api/orders`, { method: 'POST', headers: { 'Content-Type': 'application/json', ...headers }, body: JSON.stringify(body) });
   const first = await (await post(req)).json(); assert.equal(store.get(first.id).intent, req.intent);
   assert.equal((await (await fetch(`${url}/api/orders`)).json()).length, 1);

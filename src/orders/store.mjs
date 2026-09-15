@@ -43,9 +43,11 @@ export class OrderStore {
       CREATE INDEX IF NOT EXISTS events_order ON events(order_id, sequence);
       CREATE TABLE IF NOT EXISTS receipts (key TEXT PRIMARY KEY, digest TEXT NOT NULL, response TEXT NOT NULL);
       CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL);`);
+    this.db.prepare('INSERT OR IGNORE INTO settings(key,value) VALUES (?,?)').run('ledger-id', `ledger-${randomUUID()}`);
   }
   close() { this.db.close(); }
   stamp() { return new Date(this.now()).toISOString(); }
+  ledgerId() { return this.db.prepare('SELECT value FROM settings WHERE key=?').get('ledger-id').value; }
   settings() { return { name: this.db.prepare('SELECT value FROM settings WHERE key=?').get('name')?.value ?? '이음', provisional: !this.db.prepare('SELECT value FROM settings WHERE key=?').get('name') }; }
   name(value) { value = text(value, '이름', 30); this.db.prepare('INSERT OR REPLACE INTO settings VALUES (?,?)').run('name', value); return this.settings(); }
   list() { return this.db.prepare('SELECT document FROM orders').all().map(r => JSON.parse(r.document)).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)); }
@@ -163,5 +165,10 @@ export class OrderStore {
       instructions: ['중앙 원장에서 최신 오더를 다시 읽고 배정·요구 버전을 확인한다.', '작업 확보(claim)로 실행 토큰을 받은 후 처리한다. 기존 토큰을 인계 자료로 복제하지 않는다.', '기존 승인과 프로젝트 규칙을 따른다. 이 패킷 자체는 외부 발송·운영 변경의 승인이 아니다.', '원문·민감정보 전달 범위를 확인한다. 전체 저장소나 문서를 자동으로 외부 AI에 전달하지 않는다.', '결과 요약과 현재 버전의 근거를 report로 접수한다. 불가능하면 block으로 대기 이유를 남긴다.', '같은 작업의 재전송은 같은 requestId와 정확히 같은 명령을 사용한다. 변경할 때는 새 requestId를 쓴다.'],
       executionMode: 'MANUAL_HANDOFF', automaticExecution: false };
     return packet;
+  }
+  checkContext(id, taskId) {
+    const order = this.get(id), task = order.tasks.find(t => t.id === taskId);
+    need(task, 'TASK_NOT_FOUND', '세부 작업을 찾을 수 없습니다.', 404);
+    return { orderId: order.id, version: order.version, requirementRevision: order.revision, project: order.project, orderStatus: order.status, task: { id: task.id, role: task.role, assigned: task.assigned, status: task.status } };
   }
 }

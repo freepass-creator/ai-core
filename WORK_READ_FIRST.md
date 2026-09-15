@@ -6,6 +6,8 @@ AI Core 작업을 시작할 때 전체 Gmail/전체 Chat/전체 연구 branch를
 
 ## 기본 진입점
 
+로컬·서버 작업은 `docs/SHARED_ORDER_EXECUTION.md`의 중앙 연결을 먼저 확인한다. GitHub에서 코드를 받았다고 별도의 업무 DB를 새로 만들지 않는다. `node scripts/orders.mjs meta`의 원장 ID와 현재 오더 요구 버전을 확인한 뒤 작업한다.
+
 1. `MEMORY.md`
 2. `memory/CURRENT.md`
 3. 현재 Work Packet / 프로젝트 지침

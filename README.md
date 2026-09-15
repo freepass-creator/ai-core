@@ -6,9 +6,9 @@ AI Core는 AIOPS, DevCenter와 대상 프로젝트 사이의 판단·계획·검
 
 2026-09-15 사용자 요청으로 `work/codex/order-control-v1`에 로컬 오더 접수·담당 배정·공통 AI 인계·처리 이력·결과 확인 기능을 구현했다. 저장소는 분리하고 모든 업무 상태와 공통 처리 기능을 AI Core에 모으는 방향이다. 이름은 임시 **이음**이며 사용자와 상의 중이다.
 
-Node.js 24.19 이상에서 `npm run orders:serve`를 실행하고 `http://127.0.0.1:4318`을 연다. CLI는 `npm run orders -- help`, 검증은 `npm run test:orders`를 사용한다. 사용자가 어떻게 요청하고 다른 AI가 어떻게 이어받는지는 [오더 사용 안내](docs/ORDER_GUIDE.md)에 설명했다.
+Node.js 24.19 이상에서 `npm run orders:serve -- --db C:\dev\ai-core\.local\orders.sqlite`를 실행하고 `http://127.0.0.1:4318`을 연다. CLI는 `npm run orders -- help`, 검증은 `npm run test:orders`를 사용한다. 사용자가 어떻게 요청하고 다른 AI가 어떻게 이어받는지는 [오더 사용 안내](docs/ORDER_GUIDE.md)에 설명했다.
 
-첫 버전은 이 PC의 영속 원장을 공유하는 **수동 인계 도구**다. AI 자동 호출·외부 실행·여러 PC 동기화·인증된 검토자 증명은 제공하지 않는다. 아래 `main` 설명과 `DEV-EPISODE-001`은 상속한 이전 개발선의 상태이며, 이번 오더 데스크 작업과 별도다.
+현재 버전은 **하나의 중앙 원장을 로컬·서버에서 공유하는 수동 인계 도구**다. [공유 실행 안내](docs/SHARED_ORDER_EXECUTION.md)의 SSH 연결과 GitHub 검사 초안을 추가했다. 실제 원격 서버 연결은 대기 중이다. AI 자동 호출·외부 작업 자동 실행·인증된 검토자 증명은 제공하지 않는다. 아래 `main` 설명과 `DEV-EPISODE-001`은 상속한 이전 개발선의 상태이며, 이번 오더 데스크 작업과 별도다.
 
 ## 현재 `main` 상태
 
