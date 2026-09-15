@@ -27,6 +27,11 @@ test('current repository state is internally consistent', async () => {
   assert.deepEqual(await verifyRepository(fileURLToPath(new URL('..', import.meta.url))), []);
 });
 
+test('a frozen historical observation must reference an existing commit', () => {
+  const errors = validateMainState({ ...valid, episode: { ...valid.episode, execution: { ...valid.episode.execution, observation_tip: 'missing' } }, revisionExists: () => false });
+  assert.ok(errors.some(e => e.includes('historical observation tip')));
+});
+
 test('rejects the false quickstart that triggered this improvement', () => {
   const errors = validateMainState({ ...valid, readme: `${valid.readme}\n## 빠른 실행` });
   assert.ok(errors.some(error => error.includes('quickstart')));
