@@ -21,6 +21,14 @@ The adopted operating target is a **group workspace with independent subsidiarie
 
 See [Group Operating Model](docs/GROUP_OPERATING_MODEL.md).
 
+## Emergency entrypoint
+
+For suspected data damage, deployment/security incidents, conflicting AI writes or an unresolved source of truth, read the [Emergency Runbook](docs/EMERGENCY_RUNBOOK.md) before continuing the affected work. Record findings with the [Incident Template](docs/INCIDENT_TEMPLATE.md).
+
+Hold affected writes; preserve unrelated healthy services and work. This is a documented response procedure, not an implemented global kill switch or permission to restore data, deploy, revoke credentials or merge branches. Project-specific authority and approval requirements remain in force.
+
+Implementation handoff: [Claude work packet](docs/CLAUDE_EMERGENCY_HANDOFF.md) and [acceptance scenarios](docs/EMERGENCY_ACCEPTANCE_TESTS.md). Start with the offline, advisory-only `EMG-P0` scope. These are specifications, not completed runtime functionality or authorization for live operations.
+
 ## Principles
 
 - The user can issue natural-language orders from AI Core sessions/sections without naming repositories or executors each time.

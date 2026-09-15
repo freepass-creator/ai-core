@@ -1,8 +1,62 @@
 # Work / Codex — Read This First
 
+## 비상 진입점 — 해당 작업을 계속하기 전에
+
+데이터 훼손·배포/보안 사고·AI 동시 수정·정본 불명확이 의심되면 [비상매뉴얼](docs/EMERGENCY_RUNBOOK.md)을 먼저 읽는다. 해당 작업의 추가 쓰기는 보류하고, 정상 서비스와 다른 작업은 보존한다.
+
+[사고 기록 양식](docs/INCIDENT_TEMPLATE.md)에 확인 사실·미확인·승인·실행·검증을 구분한다. 문서 열람은 실제 작업 중지나 복구 실행을 뜻하지 않으며, 대상 프로젝트의 기존 권한·승인 기준을 대체하지 않는다.
+
 AI Core 작업을 시작할 때 전체 Gmail/전체 Chat/전체 연구 branch를 재독하지 않는다.
 
-2026-09-15 최신 작업 방향: 저장소는 분리하고 공통 AI 기능·오더 창구를 AI Core에 모은다. 현재 범위는 [통합 상태](docs/integration/INTEGRATION_STATUS.md)와 `docs/episodes/ORDER-DESK-001.json`을 먼저 읽는다. OrderStore는 접수 기록이며 업무 상태 정본은 work 원장이다. 영속 매핑/outbox 미완은 HOLD다. 아래 기억의 이전 우선순위가 최신 사용자 지시를 덮어쓰지 않는다.
+## 현재 최우선 목표 — AI Core 실제 합병·통합
+
+[AI Core 통합 실행 최우선 지침](docs/AI_CORE_INTEGRATION_EXECUTION_DIRECTIVE.md)을 먼저 읽는다.
+
+현재 목표는 문서/프레임워크를 더 만드는 것이 아니라, **물리적으로 흩어진 AI·개발·업무 자산을 inventory하고 합칠 것은 안전하게 합치고, 별도 프로젝트가 맞는 것은 그룹 작업공간에서 독립 관리하여 AI Core를 실제 업무의 기본 진입점으로 빠르게 사용 가능하게 만드는 것**이다.
+
+첫 실행은 `AI-CORE-MERGE-P0`: 실제 GitHub/로컬 폴더·저장소·SSOT·배포·데이터 경계를 inventory하고 `MERGE_PHYSICAL / COLOCATE_ONLY / EXTRACT_SHARED / KEEP_SEPARATE / RETIRE`로 분류한 뒤, 우선 통합 대상 1~3개와 안전한 실행 순서를 제시한다.
+
+## 중요 구조/통합 작업의 Multi-AI Council
+
+[AI Core Multi-AI Council](docs/AI_CORE_MULTI_AI_COUNCIL.md)과 [AI 협업 프로토콜](docs/AI_COLLABORATION_PROTOCOL.md)을 따른다.
+
+AI Core는 한 AI의 단독 판단을 최종값으로 쓰지 않는다. 중요한 구조·통합·공통화·복구 작업은 가능한 여러 AI/CLI가 동일 정본을 보고 검토하며, 결과를 `CONSENSUS / ADJUSTED_CONSENSUS / HOLD`로 조정한 뒤 움직인다.
+
+GPT/Chat의 기획·검토 문서는 절대명령이 아니라 **검토 의견**이다. Codex는 실제 코드·재사용·impact·검증 관점에서 반박/보완하고, Claude는 사용자 결정·현재 정본·Codex 검토·다른 CLI 리뷰를 함께 읽고 구현 선택을 명시한다. Gemini CLI 등 현재 사용 가능한 다른 검토자가 있으면 Council에 포함할 수 있다.
+
+**저장소를 넘나드는 SSOT 경계 문제**는 [`docs/AI-SSOT-AUDIT-LOG.md`](docs/AI-SSOT-AUDIT-LOG.md)를 쓴다(2026-09-16 신설) — Claude 구현/GPT 독립 감사 역할을 분리한 비동기 채널. Codex CLI 크레딧이 없을 때도 GPT가 GitHub에 남기면 Claude가 읽고 반영한다. 의미 있는 이슈가 있을 때만 적는다.
+
+AI 이름보다 최신 사용자 결정, 현재 프로젝트 정본, revision-bound evidence가 우선한다. 모델 수·한도·가용성을 절대값으로 고정하지 않는다.
+
+## 비상 기능 구현을 이어받는 경우
+
+클로드 등 구현 담당은 [비상 기능 구현 인계서](docs/CLAUDE_EMERGENCY_HANDOFF.md)를 읽고 첫 작업 `EMG-P0`부터 진행한다. [검증 시나리오](docs/EMERGENCY_ACCEPTANCE_TESTS.md)는 통과해야 할 요구사항이지 이미 통과한 결과가 아니다. 운영 쓰기·자동 복구·전역 차단은 이번 문서 인계만으로 허용되지 않는다.
+
+## 본사·자회사 통합을 이어받는 경우
+
+통합 작업 담당은 [그룹 운영 모델](docs/GROUP_OPERATING_MODEL.md) → [AI Core 그룹 통합 마스터 기획안](docs/AI_CORE_GROUP_MASTER_PLAN.md) → [클로드 통합 인계서](docs/CLAUDE_GROUP_INTEGRATION_HANDOFF.md) 순서로 읽는다.
+
+마스터 기획안은 “어떻게 만들 것인가”에 대한 GPT의 구현 기획/검토안이다. 사용자 확정 구조 원칙은 `GROUP_OPERATING_MODEL.md`이고, 실제 구현 전 Multi-AI Council과 대상 프로젝트의 현재 정본을 대조한다.
+
+공통 기능은 본사로 정리하되 고유 제품·Git·데이터 SSOT·브랜드·배포는 독립 유지한다. 비상 기능 `EMG-P0`와는 별도 작업이며, 운영 전환·삭제·권한 변경은 이 인계만으로 허용되지 않는다.
+
+## 실제 회사 업무를 AI Core로 처리하는 경우
+
+[AI Core 실제 업무 운영 플레이북](docs/AI_CORE_OPERATING_PLAYBOOK.md)을 읽는다. 사용자의 자연어 오더를 `업무 의미 → 프로젝트/정본 → capability → 실행자 → 승인 경계 → 검증 → 결과/후속`으로 연결한다.
+
+첫 구현은 `OPS-P0`: 실제 주요 업무 20~30개와 자연어 오더 fixture를 읽기 전용으로 inventory하고, 각 업무가 올바른 정본·실행 경로·완료조건으로 route 되는지 확인한다. 저장소/시트/AI 이름을 사용자가 매번 지정하게 만드는 것을 기본 UX로 삼지 않는다.
+
+문서·코드가 만들어진 것과 실제 업무가 끝난 것을 구분하고, Work Result가 AI Core로 돌아와 다음 세션이 이어받을 수 있어야 한다.
+
+## 계속 고도화되는 Chat/CIVILIZATION/DEVKIT 연구를 연결하는 경우
+
+[AI Core Evolution Bridge](docs/AI_CORE_EVOLUTION_BRIDGE.md)와 `memory/RESEARCH_INDEX.md`를 읽는다. 연구 버전이나 테스트 수가 늘었다는 이유만으로 운영 규칙으로 승격하지 않는다.
+
+고도화 결과는 `Research/Chat → Candidate → revision 고정 → 작은 실험 → 실제 업무/프로젝트 evidence → ADOPT/HOLD/REJECT → feedback` 순으로 이동한다. 실제 프로젝트의 상세/원본은 해당 프로젝트에 남기고 AI Core에는 공통 후보·증거 포인터·채택 상태만 남긴다.
+
+## 로컬·서버 오더 작업(order-control-v1)을 이어받는 경우
+
+2026-09-15 작업 방향: 저장소는 분리하고 공통 AI 기능·오더 창구를 AI Core에 모은다. 현재 범위는 [통합 상태](docs/integration/INTEGRATION_STATUS.md)와 `docs/episodes/ORDER-DESK-001.json`을 먼저 읽는다. OrderStore는 접수 기록이며 업무 상태 정본은 work 원장(Control Tower)이다. 영속 매핑/outbox 미완은 HOLD다.
 
 ## 기본 진입점
 
