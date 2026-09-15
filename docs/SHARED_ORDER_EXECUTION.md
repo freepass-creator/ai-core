@@ -2,6 +2,8 @@
 
 ## 구조
 
+통합 조정: 최종 공통 작업 원장은 PR #20의 work ledger를 사용한다. 아래 중앙 오더 API/SQLite는 PR #21 접수·claim UI 시제품이다. [통합 경계](ORDER_CONTROL_INTEGRATION.md)의 order_id → work_id 어댑터가 필요하며 아직 연결되지 않았다. 사용자는 말로 지시하고 아래 기술 명령은 담당 AI가 수행한다.
+
 GitHub는 코드·리뷰·커밋의 기준이다. 업무 상태는 하나의 중앙 원장에 저장한다. 프로젝트 저장소는 계속 분리한다.
 
 ```mermaid
