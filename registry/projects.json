@@ -13,11 +13,22 @@
       "local_path": "C:\\dev\\ai-core-control-tower",
       "head_revision": "887a7a27c0167dc4e85e0a616a84cc2b580df604",
       "authoritative_sources": [
-        { "kind": "GIT", "ref": "freepass-creator/ai-core", "revision": "887a7a27c0167dc4e85e0a616a84cc2b580df604", "observed_at": "2026-09-16T00:00:00Z" }
+        {
+          "kind": "GIT",
+          "ref": "freepass-creator/ai-core",
+          "revision": "887a7a27c0167dc4e85e0a616a84cc2b580df604",
+          "observed_at": "2026-09-16T00:00:00Z"
+        }
       ],
-      "commands": { "install": "npm ci", "test": "npm test", "build": "npm run verify" },
+      "commands": {
+        "install": "npm ci",
+        "test": "npm test",
+        "build": "npm run verify"
+      },
       "deploy_targets": [],
-      "required_approvals": ["merge-to-main"],
+      "required_approvals": [
+        "merge-to-main"
+      ],
       "known_blockers": [
         "work/codex/order-control-v1 (separate checkout at C:\\dev\\ai-core) and work/codex/control-tower are not yet connected by an adapter",
         "three local checkouts exist for this one repo (ai-core, ai-core-audit, ai-core-control-tower) on different branches; not consolidated"
@@ -34,11 +45,22 @@
       "local_path": "C:\\dev\\aiops",
       "head_revision": "e9070f64fb3533b9036369efe194e3314a2d41f0",
       "authoritative_sources": [
-        { "kind": "GIT", "ref": "freepass-creator/aiops", "revision": "e9070f64fb3533b9036369efe194e3314a2d41f0", "observed_at": "2026-09-16T00:00:00Z" }
+        {
+          "kind": "GIT",
+          "ref": "freepass-creator/aiops",
+          "revision": "e9070f64fb3533b9036369efe194e3314a2d41f0",
+          "observed_at": "2026-09-16T00:00:00Z"
+        }
       ],
-      "commands": { "install": "npm ci", "test": "npm test", "build": null },
+      "commands": {
+        "install": "npm ci",
+        "test": "npm test",
+        "build": null
+      },
       "deploy_targets": [],
-      "required_approvals": ["lib/seungin.mjs 행위등급 (local/drive-add/protected)"],
+      "required_approvals": [
+        "lib/seungin.mjs 행위등급 (local/drive-add/protected)"
+      ],
       "known_blockers": [
         "push blocked: history contains commits >100MB (lib/wonja/자금일보원자.json etc, 2026-09-03), 189 commits ahead of origin/main as of 2026-09-16, needs history surgery -- deferred",
         "no build script; this project has no compile/bundle step",
@@ -56,9 +78,18 @@
       "local_path": "C:\\dev\\devcenter",
       "head_revision": "4ee253fb1b55e285e90073d26ed48706e1d837c9",
       "authoritative_sources": [
-        { "kind": "GIT", "ref": "freepass-creator/devcenter", "revision": "4ee253fb1b55e285e90073d26ed48706e1d837c9", "observed_at": "2026-09-16T00:00:00Z" }
+        {
+          "kind": "GIT",
+          "ref": "freepass-creator/devcenter",
+          "revision": "4ee253fb1b55e285e90073d26ed48706e1d837c9",
+          "observed_at": "2026-09-16T00:00:00Z"
+        }
       ],
-      "commands": { "install": null, "test": null, "build": null },
+      "commands": {
+        "install": null,
+        "test": null,
+        "build": null
+      },
       "deploy_targets": [],
       "required_approvals": [],
       "known_blockers": [
@@ -77,13 +108,22 @@
       "local_path": "C:\\dev\\sales",
       "head_revision": "a00ba8198c8c5a4b3888fe5e43b250e6e656043c",
       "authoritative_sources": [
-        { "kind": "GIT", "ref": "freepass-creator/freepass-sales", "revision": "a00ba8198c8c5a4b3888fe5e43b250e6e656043c", "observed_at": "2026-09-16T00:00:00Z" }
+        {
+          "kind": "GIT",
+          "ref": "freepass-creator/freepass-sales",
+          "revision": "a00ba8198c8c5a4b3888fe5e43b250e6e656043c",
+          "observed_at": "2026-09-16T00:00:00Z"
+        }
       ],
-      "commands": { "install": "npm ci", "test": "npm test", "build": "npm run test:android" },
+      "commands": {
+        "install": "npm ci",
+        "test": "npm test",
+        "build": "npm run test:android"
+      },
       "deploy_targets": [],
       "required_approvals": [],
       "known_blockers": [
-        "second checkout at C:\\dev\\sales-mail-automation on branch codex/mail-intake-automation carries 21 commits not on main (SMS promotion workflow, sales UI rework across 19 files, incl. app.js/index.html/rent.html) -- not reviewed or merged, real feature work at risk of being lost/forgotten"
+        "second checkout at C:\\dev\\sales-mail-automation on branch codex/mail-intake-automation carries 21 commits not on main (SMS promotion workflow, sales UI rework across 19 files, incl. app.js/index.html/rent.html) -- not reviewed or merged, real feature work at risk of being lost/forgotten; npm test at that branch tip FAILS at 검토/추가반례검증.cjs (data-접촉=받음 focus assertion returns undefined) -- confirmed 2026-09-16, do not merge until fixed"
       ]
     },
     {
@@ -97,10 +137,22 @@
       "local_path": "C:\\dev\\freepasserp4",
       "head_revision": "4d962b2db293a8cc193a106008b0270265dcd30d",
       "authoritative_sources": [
-        { "kind": "GIT", "ref": "freepass-creator/freepasserp4", "revision": "4d962b2db293a8cc193a106008b0270265dcd30d", "observed_at": "2026-09-16T00:00:00Z" }
+        {
+          "kind": "GIT",
+          "ref": "freepass-creator/freepasserp4",
+          "revision": "4d962b2db293a8cc193a106008b0270265dcd30d",
+          "observed_at": "2026-09-16T00:00:00Z"
+        }
       ],
-      "commands": { "install": "npm ci", "test": null, "build": "node --max-old-space-size=8192 ./node_modules/next/dist/bin/next build" },
-      "deploy_targets": ["Vercel", "Firebase"],
+      "commands": {
+        "install": "npm ci",
+        "test": null,
+        "build": "node --max-old-space-size=8192 ./node_modules/next/dist/bin/next build"
+      },
+      "deploy_targets": [
+        "Vercel",
+        "Firebase"
+      ],
       "required_approvals": [],
       "known_blockers": [
         "no test script in package.json",
