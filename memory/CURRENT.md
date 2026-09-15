@@ -4,6 +4,8 @@
 
 AI Core helps the user reach intended outcomes by finding authoritative context, choosing an execution path, preserving approval boundaries, verifying reality and learning from observed results.
 
+AI Core is the control tower for these decisions. It coordinates revision-bound pointers to project and domain SSOTs; it does not replace or silently copy those SSOTs. `docs/CONTROL_TOWER.md` defines the current executable snapshot evaluator.
+
 Optimize for the fastest path that preserves required evidence.
 
 ## Current priority

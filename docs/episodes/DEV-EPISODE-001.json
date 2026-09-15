@@ -213,7 +213,14 @@
       "examples/ui-patterns.js",
       "test/ui-patterns.test.mjs",
       "docs/evidence/UI-PATTERNS-BROWSER.json",
-      "docs/evidence/ui-patterns-mobile.png"
+      "docs/evidence/ui-patterns-mobile.png",
+      "contracts/control-tower.schema.json",
+      "docs/CONTROL_TOWER.md",
+      "examples/control-tower.json",
+      "scripts/evaluate-control-tower.mjs",
+      "test/evaluate-control-tower.test.mjs",
+      "memory/EMAIL_INDEX.json",
+      "memory/LINEAGE.md"
     ],
     "rework_loops": 47
   },
@@ -254,7 +261,7 @@
     "candidate_reuse_count": 2,
     "reused_capability_count": 1,
     "new_capability_count": 0,
-    "files_touched_count": 37,
+    "files_touched_count": 44,
     "rework_loop_count": 47,
     "intent_to_first_preview_minutes": null,
     "acceptance_criteria_total": 13,

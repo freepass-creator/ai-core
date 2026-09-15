@@ -1,0 +1,313 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AI Core Control Tower Snapshot",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "as_of",
+    "capacities",
+    "items"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "as_of": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "capacities": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/capacity"
+      }
+    },
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/item"
+      }
+    }
+  },
+  "$defs": {
+    "capacity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resource",
+        "amount",
+        "unit"
+      ],
+      "properties": {
+        "resource": {
+          "type": "string",
+          "minLength": 1
+        },
+        "amount": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "unit": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "intent",
+        "sources",
+        "commitment",
+        "allocations",
+        "authorization",
+        "verification",
+        "execution",
+        "outcome"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Z0-9_-]*-[0-9]{3,}$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "intent": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "provenance"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "CONFIRMED",
+                "INFERRED",
+                "CONFLICTED",
+                "UNKNOWN"
+              ]
+            },
+            "provenance": {
+              "enum": [
+                "USER_CONFIRMED",
+                "SOURCE_DERIVED",
+                "AI_INFERRED"
+              ]
+            }
+          }
+        },
+        "sources": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/source"
+          }
+        },
+        "commitment": {
+          "$ref": "#/$defs/commitment"
+        },
+        "allocations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/allocation"
+          }
+        },
+        "authorization": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "required",
+            "status"
+          ],
+          "properties": {
+            "required": {
+              "type": "boolean"
+            },
+            "status": {
+              "enum": [
+                "NOT_REQUIRED",
+                "PENDING",
+                "GRANTED",
+                "DENIED",
+                "EXPIRED"
+              ]
+            }
+          }
+        },
+        "verification": {
+          "enum": [
+            "NOT_RUN",
+            "PASS",
+            "FAIL",
+            "PARTIAL"
+          ]
+        },
+        "execution": {
+          "enum": [
+            "NOT_STARTED",
+            "PREPARED",
+            "CONFIRMED",
+            "FAILED"
+          ]
+        },
+        "outcome": {
+          "enum": [
+            "NOT_OBSERVED",
+            "SUCCESS",
+            "REGRESSION",
+            "UNKNOWN"
+          ]
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ref",
+        "revision",
+        "observed_at",
+        "valid_until",
+        "status",
+        "severity"
+      ],
+      "properties": {
+        "ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "observed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "valid_until": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "status": {
+          "enum": [
+            "CURRENT",
+            "CHANGED",
+            "REVOKED",
+            "UNAVAILABLE"
+          ]
+        },
+        "severity": {
+          "enum": [
+            "CRITICAL",
+            "MATERIAL",
+            "ADVISORY"
+          ]
+        }
+      }
+    },
+    "commitment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "accepted",
+        "owner",
+        "due_at",
+        "dependencies"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "PROPOSED",
+            "ACTIVE",
+            "WAITING",
+            "CLOSED",
+            "SUPERSEDED"
+          ]
+        },
+        "accepted": {
+          "type": "boolean"
+        },
+        "owner": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "due_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "dependencies": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "status"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "status": {
+                "enum": [
+                  "SATISFIED",
+                  "WAITING",
+                  "BLOCKED",
+                  "NOT_APPLICABLE"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "allocation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resource",
+        "amount",
+        "unit",
+        "start",
+        "end"
+      ],
+      "properties": {
+        "resource": {
+          "type": "string",
+          "minLength": 1
+        },
+        "amount": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "unit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "start": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "end": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}

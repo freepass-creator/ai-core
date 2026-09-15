@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0",
+  "as_of": "2026-09-15T00:00:00Z",
+  "capacities": [
+    {
+      "resource": "codex-lane",
+      "amount": 1,
+      "unit": "lane"
+    }
+  ],
+  "items": [
+    {
+      "id": "DEV-001",
+      "title": "Standard development control tower",
+      "intent": {
+        "status": "CONFIRMED",
+        "provenance": "USER_CONFIRMED"
+      },
+      "sources": [
+        {
+          "ref": "freepass-creator/ai-core",
+          "revision": "7b63024c5dd068d2b34ec009b5a90f4bbe712e15",
+          "observed_at": "2026-09-14T15:06:44Z",
+          "valid_until": "2026-09-16T00:00:00Z",
+          "status": "CURRENT",
+          "severity": "CRITICAL"
+        }
+      ],
+      "commitment": {
+        "status": "ACTIVE",
+        "accepted": true,
+        "owner": "CODEX",
+        "due_at": "2026-09-16T00:00:00Z",
+        "dependencies": []
+      },
+      "allocations": [
+        {
+          "resource": "codex-lane",
+          "amount": 1,
+          "unit": "lane",
+          "start": "2026-09-15T00:00:00Z",
+          "end": "2026-09-16T00:00:00Z"
+        }
+      ],
+      "authorization": {
+        "required": false,
+        "status": "NOT_REQUIRED"
+      },
+      "verification": "NOT_RUN",
+      "execution": "PREPARED",
+      "outcome": "NOT_OBSERVED"
+    }
+  ]
+}

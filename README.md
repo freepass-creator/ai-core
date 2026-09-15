@@ -23,6 +23,7 @@ npm test
 npm run verify
 npm run form:validate -- examples/development-form.json
 npm run evolve:evaluate -- candidate.json baseline.json trial.json
+npm run control:evaluate -- examples/control-tower.json
 ```
 
 안전한 자동 커밋·push는 대상 프로젝트에 검증 명령을 선언한 뒤 `node scripts/checkpoint-work.mjs`로 수행한다. 사용법과 동시 작업 규칙은 `docs/CONCURRENT_WORK.md`를 따른다. 테스트 성공은 해당 revision에서 선언된 검사만 통과했다는 뜻이며, 실제 프로젝트 실행·독립 검증·배포·운영 성과를 증명하지 않는다.
