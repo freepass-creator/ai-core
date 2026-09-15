@@ -1,0 +1,73 @@
+{
+  "subject": "AI Core local manual order desk v1",
+  "branch": "work/codex/order-control-v1",
+  "base_revision": "7b63024c5dd068d2b34ec009b5a90f4bbe712e15",
+  "captured_at": "2026-09-15T00:52:06.6792113Z",
+  "status": "LOCAL_TESTED_REVIEW_PARTIAL",
+  "test_results": {
+    "npm_test": {
+      "passed": 114,
+      "failed": 0,
+      "skipped": 0
+    },
+    "order_tests_after_latest_logic_change": {
+      "passed": 12,
+      "failed": 0
+    },
+    "syntax_check": "web/orders/app.js passed"
+  },
+  "browser": {
+    "tool": "agent-browser 0.37.1",
+    "real_order_id": "ORD-31638d3e-3253-4d04-a6d3-77fdace544ea",
+    "flows": [
+      "empty state",
+      "real order intake",
+      "CLI readback of UI-created order",
+      "restart and restore",
+      "task claim",
+      "design report submission",
+      "dependency unlock",
+      "save succeeded but readback failed",
+      "recovery by selecting an order",
+      "required criterion mapping prevents empty confirmation",
+      "isolated synthetic order completed through browser and API readback; real user order not closed",
+      "common packet carries prior result and contains no lease token"
+    ],
+    "desktop_viewport": [
+      1440,
+      1000
+    ],
+    "mobile_viewport": [
+      390,
+      844
+    ],
+    "mobile_document_width": 390,
+    "axe_wcag2a_wcag2aa_violations_after_fix": 0,
+    "axe_manual_review": "Decorative aria-hidden brand mark: white glyph on #234e48 inspected visually; no information conveyed by the glyph alone.",
+    "screenshots": [
+      "docs/evidence/order-desk-desktop.png",
+      "docs/evidence/order-desk-mobile.png"
+    ]
+  },
+  "independent_review": {
+    "cursor": "Design, code and follow-up reviews completed; identified defects corrected and narrow final recheck found no remaining serious defect",
+    "claude": "Retried on current implementation summary: weekly limit",
+    "gemini": "Retried read-only on current implementation summary: workspace trust blocked; no bypass"
+  },
+  "limitations": [
+    "Local single-user attribution, no authenticated reviewer identity",
+    "Manual AI handoff, no automatic tool execution",
+    "User acceptance is not an external action authorization",
+    "No production deployment, cross-device sync or scheduled execution",
+    "User final acceptance remains pending"
+  ],
+  "source_hashes": {
+    "src/orders/store.mjs": "911F0014D6F8BBD07C4B1452BA18A8A75834B4D9C24A0CBD29EC847BADDFC422",
+    "src/orders/server.mjs": "50933F57DA1834E93409ADB974B4A08C05131D8D85999F304D37EA4B4849DF40",
+    "scripts/orders.mjs": "8A31B85D532BDBE2F8D32809430C4F33F26F38EB3897F4EFA3AFE3EFB9295DCA",
+    "web/orders/index.html": "797DCA5F0A11BE75FDC590CD64C5C768E0162B1B9691C60CFE83E761BDEDDF31",
+    "web/orders/app.js": "86C54DDCDD7D1B79662AF57C9BCAAE3BB63004BE3A66A055BA7C1E06CCBF0C76",
+    "web/orders/style.css": "4DF0DFAE67A08340732DDD1B2AF6385058457BAD46162C710866DBE1AA15BB92",
+    "test/orders.test.mjs": "5A391145CEFD440B88C3996D49128236F8982FB78377FCFFC100E23A9F881091"
+  }
+}

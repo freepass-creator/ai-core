@@ -2,6 +2,8 @@
 
 AI Core 작업을 시작할 때 전체 Gmail/전체 Chat/전체 연구 branch를 재독하지 않는다.
 
+2026-09-15 최신 작업 방향: 저장소는 분리하고 공통 AI 기능·모든 오더의 처리 상태를 AI Core에 모은다. 현재 오더 데스크는 `docs/ORDER_GUIDE.md`와 `docs/episodes/ORDER-DESK-001.json`을 읽고, `node scripts/orders.mjs list`로 실제 원장을 확인한다. 아래 기억의 이전 우선순위가 최신 사용자 지시를 덮어쓰지 않는다.
+
 ## 기본 진입점
 
 1. `MEMORY.md`

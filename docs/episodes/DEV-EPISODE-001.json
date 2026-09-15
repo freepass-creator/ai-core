@@ -175,6 +175,8 @@
       "Codex"
     ],
     "branch": "fix/main-truthful-entrypoint",
+    "observation_tip": "7b63024c5dd068d2b34ec009b5a90f4bbe712e15",
+    "observation_note": "Historical observation frozen when the user started ORDER-DESK-001. This does not close or approve the earlier episode.",
     "subject_revision": null,
     "changed_files": [
       ".gitignore",
