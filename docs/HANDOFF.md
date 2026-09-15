@@ -80,16 +80,27 @@ a0ac4bb Add shared ledger clients for local and server order work
 ## Blocker
 
 - **문서 편집 blocker: 없음.** 이 커밋과 문서 갱신은 로컬 파일 작업만이다.
-- **운영 준비 blocker: 있음.** PR #21(오더 데스크) ↔ PR #22(어댑터/Control Tower 연결) 사이의 실제 연결 게이트(`linkOrder`, `readWorkProjection`, `submitWorkCommand`, `refreshControlResult`)는 `docs/ORDER_CONTROL_INTEGRATION.md`에 설계만 있고 어느 브랜치에도 구현되지 않았다(이번 세션에서 PR #22 트리를 훑어 미확인 — 구현 파일 목록에 해당 함수명이 없음).
+- **운영 준비 blocker: 있음(아래 정정 참조).**
 - 실제 원격 서버 지정, SSH 왕복, GitHub Actions 수동 실행 비밀 설정은 여전히 미검증(`docs/reviews/SHARED_ORDER_REVIEW.md`에 기존에 기록된 그대로, 이번에 추가 검증하지 않음).
+
+## 정정 — 연결 게이트 4개 함수 재확인 (2026-09-16, PR #22 `215a8ee` 기준)
+
+위 "다음 한 작업"으로 적었던 대로 `src/integration/order-work-adapter.mjs`를 PR #22 최신 head(`215a8ee74523667c5bf099ed068e9aaa572a53b5`, `ai-core-fd` 세션이 conflict 해소 후 push한 버전)에서 전문을 직접 읽었다.
+**이전에 적은 "설계만 있고 어느 브랜치에도 구현되지 않았다"는 부정확했다 — 조용히 고치지 않고 이 절로 정정한다.**
+
+- `linkOrder`, `readWorkProjection`, `refreshControlResult`(= `readWorkProjection`), `prepareWorkCommand`/`submitWorkCommand`(= `prepareWorkCommand`) 네 이름 모두 파일 하단 `Object.freeze({...})`에 실제로 export돼 있다. 매핑 검증·중복 ID 검사·ledger/registry/control-tower 일치 검사까지 구현돼 있고, `prepareWorkCommand`는 `PREPARED_NOT_SENT`/`sent:false`/`execution_authorized:false`를 명시적으로 반환한다.
+- 다만 이 네 함수는 **읽기·준비까지만** 한다. 실제로 PR #20의 `appendLedgerEvent`를 호출해 ledger에 쓰는 코드는 `order-work-adapter.mjs` 안에는 없다. `appendLedgerEvent` 호출은 `src/integration/order-intake-sandbox.mjs`, `src/integration/durable-order-work-sandbox.mjs`에만 있는데, 이 두 파일은 자체 주석대로 "disposable integration laboratory, never a production connector" — 임시 SQLite/임시 ledger 파일을 스스로 만들어 쓰는 격리 실험 코드다. `docs/integration/INTEGRATION_STATUS.md`도 "Status: synthetic integration implemented... Production activation... remain HOLD"라고 명시한다.
+- **정확한 현재 상태:** 연결 게이트 4개 함수는 **격리 환경에서 구현 완료**(코드 존재, 단위 검사 있음). **운영 원장에 실제로 쓰는 제출 경로는 미구현·미연결**(sandbox 밖에서 이 adapter의 `prepareWorkCommand` 출력을 받아 `appendLedgerEvent`를 호출하는 코드가 없음). 이건 F01이 그룹 HANDOFF의 "미착수" 표기를 지적한 것과 같은 종류의 구분 — "미구현"을 뭉뚱그리지 말라는 GPT 권고를 이 블로커 문구에도 그대로 적용한 것이다.
+
+## Blocker (정정 반영)
+
+- **운영 준비 blocker: 있음, 좁혀서 기록.** 어댑터의 읽기/준비 4함수는 구현됨. 남은 gap은 "prepareWorkCommand의 PREPARED_NOT_SENT 결과를 받아 실제 appendLedgerEvent로 제출하는 운영 코드"가 없다는 것 하나로 좁혀진다. 이 제출 단계를 누가(PR #21 UI 쪽인지 별도 조정자인지) 만들지는 `docs/ORDER_CONTROL_INTEGRATION.md`에 미확정.
 
 ## 다음 한 작업
 
-`docs/reviews/SHARED_ORDER_REVIEW.md`의 미커밋 변경과 이 `docs/HANDOFF.md`를 commit/push하고
-PR #29에 CLAUDE_ACK와 이 문서 경로·커밋 SHA를 남긴다. 그 다음 작업은 PR #22의
-`src/integration/order-work-adapter.mjs`를 이 브랜치 관점(PR #21 클라이언트/서버 계약)에서 직접 읽고
-연결 게이트 4개 함수의 실제 구현 여부를 재확인하는 것.
+PR #29에 이 정정을 반영한 후속 댓글을 남긴다(기존 CLAUDE_ACK 댓글은 조용히 고치지 않고 정정 댓글로 연결). 그 다음: 제출 단계(prepareWorkCommand 결과 → appendLedgerEvent) 소유권을 `docs/ORDER_CONTROL_INTEGRATION.md`에 명시할지 총괄 판단이 필요 — 사용자 확인 대상.
 
 ## 마지막 실제 검증
 
 `npm test` — 이 세션, local HEAD `e8e6662`, 2026-09-16, tests 124 / pass 124 / fail 0 / skip 0.
+`order-work-adapter.mjs` 전문 읽기 — 이 세션, PR #22 origin head `215a8ee`, 2026-09-16. 코드 대조이며 이 세션에서 PR #22의 `npm test`를 재실행하지는 않았다(NOT_RUN).
