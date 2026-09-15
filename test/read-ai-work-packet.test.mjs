@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readAiWorkPacket } from '../scripts/read-ai-work-packet.mjs';
+import { startServer } from '../src/orders/server.mjs';
+import { RemoteOrderClient } from '../src/orders/client.mjs';
 const orderId = 'ORD-11111111-1111-1111-1111-111111111111', taskId = 'T1';
 function fixture() {
   const packet = { schema: 'ai-core-handoff/v1', orderId, taskId, orderVersion: 2, requirementRevision: 1,
@@ -49,4 +51,19 @@ test('missing client, invalid identity and malformed packet fail without fallbac
   assert.deepEqual((await readAiWorkPacket({ orderId: 'SECRET', taskId })).reasons, ['INVALID_SELECTION']);
   const f = fixture(); f.packet.orderId = 'another-order';
   assert.deepEqual((await readAiWorkPacket({ client: f.client, orderId, taskId })).reasons, ['INVALID_PACKET']);
+});
+
+test('original pinned HTTP client/server preserves read-only HOLD and does not claim', async t => {
+  const { server, store, url } = await startServer({ dbPath: ':memory:', standalone: true, port: 0 });
+  t.after(async () => { server.closeAllConnections(); await new Promise(resolve => server.close(resolve)); });
+  const order = store.create({ requestId: 'synthetic-packet', title: 'Synthetic packet', intent: 'Read existing assignment', project: 'ai-core', criteria: ['HOLD only'] });
+  const client = new RemoteOrderClient({ endpoint: url, ledgerId: store.ledgerId() });
+  const before = store.events(order.id);
+  const packet = await readAiWorkPacket({ client, orderId: order.id, taskId: 'T1' });
+  assert.equal(packet.status, 'HOLD'); assert.equal(packet.order_id, order.id);
+  assert.equal(packet.order_version, order.version); assert.equal(packet.claim_acquired, false);
+  assert.equal(packet.execution_authorized, false); assert.deepEqual(store.events(order.id), before);
+  assert.equal(store.get(order.id).tasks[0].lease, null);
+  const wrong = new RemoteOrderClient({ endpoint: url, ledgerId: 'ledger-11111111-1111-1111-1111-111111111111' });
+  assert.deepEqual((await readAiWorkPacket({ client: wrong, orderId: order.id, taskId: 'T1' })).reasons, ['READ_FAILED']);
 });

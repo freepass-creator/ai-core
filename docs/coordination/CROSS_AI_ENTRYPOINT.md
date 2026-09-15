@@ -1,5 +1,17 @@
 # 공통 AI 시작·읽기 패킷 — 준비 단계
 
+## 전용 통합 브랜치 반영 — 2026-09-15
+
+`0dad6ac4ffc247afa156a16fb41262f4285f7eee`를 통합하고 WORK_READ_FIRST에 공통 진입 링크를 추가했다. 프로젝트 루트의 CLAUDE.md와 GEMINI.md는 같은 두 공통 문서를 가리키는 최소 포인터다. 기존 공통 문서나 정본 업무 상태를 복제하지 않는다.
+
+공식 로딩 지원을 확인한 범위: [Claude 프로젝트 CLAUDE.md](https://code.claude.com/docs/en/memory), [Gemini GEMINI.md](https://geminicli.com/docs/cli/gemini-md/), [Cursor CLI의 프로젝트 CLAUDE.md/AGENTS.md](https://docs.cursor.com/en/cli/using). Cursor는 CLAUDE.md를 공유하므로 별도 .cursor 규칙 복제본을 만들지 않았다. 공식 지원과 이 PC에서 현재 프로세스에 로딩된 사실은 별도 검증이다.
+
+원본 RemoteOrderClient→격리 HTTP 서버→인메모리 OrderStore 경로로 추가 검사했다: 올바른 pinned ID의 두 GET, 잘못된 원장 ID 거절, 조회 전후 이벤트·lease 불변, 항상 HOLD/claim_acquired=false. 6개 패킷 검사 PASS. 이 읽기 모듈에는 claim 호출이나 자동 실행 소비자가 여전히 없다.
+
+실제 Gemini 시작 확인은 untrusted directory로 중단됐다. --skip-trust, 환경 신뢰 우회 또는 전역 설정 변경을 하지 않았다. Claude는 이 작업의 앞선 실제 호출에서 주간 한도가 확인돼 현재 로딩을 PASS로 계산하지 않는다. 아래 소유자 조사·미반영 제안은 반영 전 역사이며, 최종 시작 확인과 남은 범위는 통합 상태 문서에 기록한다.
+
+Cursor 실제 비대화형 ask 시작 검사에서는 추가 파일/명령 도구를 사용하지 않고 이미 받은 프로젝트 지침의 두 포인터 경로를 정확히 반환했다. 합성 HOLD/권한 false/claim false 패킷은 실행을 허용하지 않는다고 답했다. 본문을 읽지 않은 포인터 인지 결과임을 명시했으므로 공통 문서 전체 독해나 실업무 실행의 증거로 확대하지 않는다.
+
 **상태: 문서와 DI 읽기 검증만 구현. 중앙 실행 연결·자동 시작 지침 적용·중복 실행 강제 차단은 미완료.** Claude/Cursor/Gemini 실행, GUI 제어, 운영 원장 쓰기, 새 lease/scheduler/인증, 전역 설정 변경은 하지 않았다.
 
 ## 대조한 정본과 실제 시작 위치

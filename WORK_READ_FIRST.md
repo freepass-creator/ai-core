@@ -6,6 +6,8 @@ AI Core 작업을 시작할 때 전체 Gmail/전체 Chat/전체 연구 branch를
 
 ## 기본 진입점
 
+공통 AI 작업은 [공통 시작·패킷 경계](docs/coordination/CROSS_AI_ENTRYPOINT.md)를 먼저 읽는다. 총괄은 기존 중앙 작업/담당을 조회하고 현재 패킷·실행 위치·소유 파일을 제공한다. 조회 결과는 claim/실행 승인이 아니다. 중앙 연결과 실제 claim이 없으면 HOLD로 보고한다.
+
 로컬·서버 작업은 `docs/SHARED_ORDER_EXECUTION.md`의 중앙 연결을 먼저 확인한다. GitHub에서 코드를 받았다고 별도의 업무 DB를 새로 만들지 않는다. `node scripts/orders.mjs meta`의 원장 ID와 현재 오더 요구 버전을 확인한 뒤 작업한다.
 
 1. `MEMORY.md`
