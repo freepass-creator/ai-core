@@ -48,6 +48,8 @@ The evaluator reports whether an item is ready to prepare, execute or close. It 
 
 Project routing starts from the revision-bound registry. Work state changes use the append-only, optimistic-concurrency ledger described in [Work Ledger](docs/WORK_LEDGER.md).
 
+The repository/task consolidation boundary and refreshable local checkout inventory are documented in [Control Tower Consolidation](docs/CONTROL_TOWER_CONSOLIDATION.md).
+
 ## Repository relationships
 
 - `freepass-creator/ai-core`: group headquarters order, memory, coordination and learning

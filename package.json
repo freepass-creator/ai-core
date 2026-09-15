@@ -12,6 +12,7 @@
     "control:run": "node scripts/run-control-tower.mjs",
     "registry:validate": "node scripts/validate-project-registry.mjs",
     "ledger:verify": "node scripts/work-ledger.mjs verify",
+    "inventory:repos": "node scripts/inventory-repositories.mjs",
     "checkpoint": "node scripts/checkpoint-work.mjs"
   },
   "dependencies": {

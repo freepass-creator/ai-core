@@ -232,7 +232,11 @@
       "test/work-ledger.test.mjs",
       "examples/work-ledger.jsonl",
       "scripts/run-control-tower.mjs",
-      "test/run-control-tower.test.mjs"
+      "test/run-control-tower.test.mjs",
+      "scripts/inventory-repositories.mjs",
+      "test/inventory-repositories.test.mjs",
+      "docs/CONTROL_TOWER_CONSOLIDATION.md",
+      "docs/inventory/C-DEV-2026-09-15.json"
     ],
     "rework_loops": 47
   },
@@ -273,7 +277,7 @@
     "candidate_reuse_count": 2,
     "reused_capability_count": 1,
     "new_capability_count": 0,
-    "files_touched_count": 56,
+    "files_touched_count": 60,
     "rework_loop_count": 47,
     "intent_to_first_preview_minutes": null,
     "acceptance_criteria_total": 13,
