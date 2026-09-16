@@ -8,7 +8,7 @@ CLI 연결 유무와 무관하게 이 세션들이 실제로 돌고 있다. 각�
 | freepasserp4-a0 | freepasserp4 (`.wt-newcar`, PR #265) | 신차/중고차 견적기(`app/estimate` 등) | 손님화면·상품찾기·정산·RTDB컷오버 |
 | freepasserp4-4d | freepasserp4 (`fp-freepass`) | 화이트라벨 채널간판(`lib/whitelabel.ts`) | 지금 유휴, PR232 머지 완료. 다음 요청 대기 |
 | freepasserp4-7e | freepasserp4 | 미확인 — 응답 없음 | — |
-| teamjpkwork-d9 | teamjpkwork + aiops | ERP 화면규격·문지기, aiops 예약작업 관리(`aiops-daily` 재활성화 대표 답 대기 중) | `lib/whitelabel.ts`(9/10 충돌 전례로 단일 세션 전담 권장) |
+| teamjpkwork-d9 | teamjpkwork + aiops | teamjpkwork: `lib/erp/문열기.ts`(API 문지기)·`lib/erp/화면규격.ts`(입체/입체쓰임)·각종 검사기(문지기·각도·대조·설치·동선)·write/actions/Erp 원장반영. aiops: `사건/*.mjs`·`lib/dispatch.mjs`·`scripts/과태료-발송대기-자동전환.mjs`·`scripts/과태료-발송막힘.mjs`. 운영: teamjpkwork 결제계정 재연결 완료, 예약 셋(`aiops-daily` 등) 비활성 후 재활성화 대표 답 대기 | **정정**: `lib/whitelabel.ts`(freepasserp4 소속)는 이 세션 담당 아님 — 읽기만 한 번 했을 뿐 편집한 적 없음. 실제 담당은 freepasserp4-4d |
 | casemap-bb | casemap | 사건 02(컴공 임시주총) — 심문 복기·보정서/사실조회신청서 초안 대기 | 사건 06(임대보증금) |
 | webtoon-studio-6c | webtoon-studio | 배우 얼굴/전신 이미지 생성 파이프라인 | `local-generator/`·`casting-studio/reference-data/`·127.0.0.1:7860 (다른 세션 동시 실행시 OOM) |
 | sales-8f | freepass-sales | 4관점 전수검사(3/4 완료, 코드버그 검사 1개 진행 중) | — |
