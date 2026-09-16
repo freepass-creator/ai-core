@@ -106,9 +106,19 @@ a0ac4bb Add shared ledger clients for local and server order work
 | `.claude/worktrees/agent-ad91bffe5bdedaa2a` | `worktree-agent-ad91bffe5bdedaa2a` | `test/order-work-integration-scenarios.test.mjs` | ORDER_CONTROL_INTEGRATION.md 4단계 8개 시나리오 중 기존 미커버 5개(만료권한/권한부재/응답유실/부분쓰기/두클라이언트 경합) 실제 함수로 신규 검증. npm test 307/306 pass 1 fail(기존 건) |
 | `.claude/worktrees/agent-a0050210a1ace8d23` | `work/order-work-submitter` | `src/integration/order-work-submitter.mjs`, `test/order-work-submitter.test.mjs` | `durable-order-work-sandbox.mjs` outbox 패턴 재사용한 제출 커넥터. 프로세스 kill 크래시 복구 3종 포함 자체 9/9 pass. npm test 309/308 pass 1 fail(기존 건). 명시적으로 여전히 HOLD(비운영) |
 
+## 완료 — PR #37로 통합해 올림 (2026-09-16)
+
+`ai-core-fd`가 PR22에 `688cfb7`(GPT ③안, rebase 없는 episode `changed_files` 정정)을 착지시킨 걸 확인한 뒤, 위 3개 worktree를 병합 시도했으나 각 worktree의 새 파일이 **커밋되지 않고 작업트리에만 있었다**(`git merge`가 전부 "Already up to date" — 착각하지 않도록 기록). 대신 `688cfb7` 기준 새 브랜치 `claude/order-work-submission-gap`를 만들어 5개 파일을 직접 복사·커밋했다.
+
+이 과정에서 추가로 발견: `.claude/worktrees/agent-*/` 디렉터리가 `.gitignore`에 없어서 `verify-main-state.mjs`의 미추적 파일 스캔에 잡혀 검증이 깨졌다 — `.gitignore`에 `.claude/worktrees/` 추가로 해결(이 브랜치엔 반영 안 함, PR #37 쪽에만). `docs/episodes/ORDER-DESK-001.json`의 `changed_files`도 109→114로 갱신(5개 신규 파일), `observed_issues`에 근거 남김.
+
+`npm test` (PR #37 기준, `claude/order-work-submission-gap` @ `688cfb7` 위): **316/316 pass, 0 fail.**
+
+PR #37: https://github.com/freepass-creator/ai-core/pull/37 (base: `codex/order-control-integration`) — `ai-core-fd`/PR22 담당의 리뷰·병합 대기.
+
 ## 다음 한 작업
 
-`ai-core-fd`가 PR22에서 GPT ③안(rebase 없이 episode `changed_files`만 정정 커밋)을 착지시키는 걸 기다린다. 착지하면 위 3개 worktree를 그 새 head로 rebase해서 PR22 담당에게 넘긴다 — 지금 올리면 같은 changed_files 불일치를 또 만든다. 그 전까지 이 3개는 건드리지 않는다(중복 작업 방지).
+PR #37 리뷰·병합 대기. 병합되면 AI-SSOT-AUDIT-LOG의 "order-work-adapter submit 단계 미연결" HOLD를 닫을 수 있다(`ai-core-fd` 확인 필요, 독립 고위험 검토는 별도로 여전히 미완료).
 
 ## 마지막 실제 검증
 
