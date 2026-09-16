@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
-import { combineChangedFiles, validateMainState, verifyRepository } from '../scripts/verify-main-state.mjs';
+import { combineChangedFiles, excludeNestedRepositories, validateMainState, verifyRepository } from '../scripts/verify-main-state.mjs';
 
 const valid = {
   readme: '`main`에는 실행 가능한 오케스트레이터가 없다 WORK_READ_FIRST.md MEMORY.md memory/CURRENT.md memory/RESEARCH_INDEX.md',
@@ -111,5 +111,33 @@ test('open episode comparison includes new untracked files once', () => {
   assert.deepEqual(
     combineChangedFiles(['README.md', 'docs/episode.json'], ['docs/SELF_EVOLUTION.md', 'README.md']),
     ['README.md', 'docs/episode.json', 'docs/SELF_EVOLUTION.md']
+  );
+});
+
+test('untracked scan drops nested checkouts but keeps real work products', async () => {
+  const { mkdtempSync, mkdirSync, writeFileSync } = await import('node:fs');
+  const { tmpdir } = await import('node:os');
+  const { join } = await import('node:path');
+  const root = mkdtempSync(join(tmpdir(), 'untracked-scope-'));
+
+  // A nested checkout: git reports one trailing-slash entry and will not descend,
+  // so nothing inside it can be this episode's work product.
+  mkdirSync(join(root, '.claude/worktrees/agent-1'), { recursive: true });
+  writeFileSync(join(root, '.claude/worktrees/agent-1/.git'), 'gitdir: ../elsewhere\n');
+  // Another tool's nested checkout is treated identically, by shape not by name.
+  mkdirSync(join(root, '.cursor/worktrees/agent-2'), { recursive: true });
+  writeFileSync(join(root, '.cursor/worktrees/agent-2/.git'), 'gitdir: ../elsewhere\n');
+  // A plain untracked directory is not a checkout and must stay counted.
+  mkdirSync(join(root, '.claude/notes'), { recursive: true });
+
+  assert.deepEqual(
+    excludeNestedRepositories(root, [
+      '.claude/worktrees/agent-1/',
+      '.cursor/worktrees/agent-2/',
+      '.claude/notes/',
+      'src/__probe.mjs',
+      'docs/episodes/NEW.json'
+    ]),
+    ['.claude/notes/', 'src/__probe.mjs', 'docs/episodes/NEW.json']
   );
 });

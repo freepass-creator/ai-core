@@ -1,8 +1,8 @@
 import { readFile } from 'node:fs/promises';
-import { accessSync, constants } from 'node:fs';
+import { accessSync, constants, existsSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { resolve } from 'node:path';
+import { resolve, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 function includesAll(text, values) {
@@ -12,6 +12,25 @@ function includesAll(text, values) {
 function requirementSetDigest(requirements = []) {
   const normalized = requirements.map(({ id, text, provenance, status }) => ({ id, text, provenance, status }));
   return `sha256:${createHash('sha256').update(JSON.stringify(normalized)).digest('hex')}`;
+}
+
+// Untracked entries are counted on purpose: an author must not be able to escape
+// the episode's `changed_files` declaration by leaving a produced file unstaged.
+// That contract covers work this working tree authored — and only that.
+//
+// `git ls-files --others` will not descend into a nested repository, so it reports
+// one entry with a trailing slash instead of the files inside. Such an entry is a
+// separate checkout with its own HEAD and history; its contents belong to that
+// checkout, never to this episode. Excluding it narrows the scan by what the path
+// *is*, so no vendor directory has to be named here and any tool's nested
+// checkout is handled the same way.
+export function isNestedRepositoryEntry(root, entry) {
+  if (!entry.endsWith('/')) return false;
+  return existsSync(join(root, entry, '.git'));
+}
+
+export function excludeNestedRepositories(root, entries = []) {
+  return entries.filter(entry => !isNestedRepositoryEntry(root, entry));
 }
 
 export function combineChangedFiles(tracked = [], untracked = []) {
@@ -139,8 +158,8 @@ export async function verifyRepository(root) {
   ).trim().split(/\r?\n/).filter(Boolean);
   const untrackedFiles = (episode.execution?.subject_revision || episode.execution?.observation_tip)
     ? []
-    : execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' })
-      .trim().split(/\r?\n/).filter(Boolean);
+    : excludeNestedRepositories(root, execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' })
+      .trim().split(/\r?\n/).filter(Boolean));
   const changedFiles = combineChangedFiles(trackedFiles, untrackedFiles);
   const errors = validateMainState({
     readme, current, researchIndex, selfEvolution, episode, fileExists, revisionExists, changedFiles
@@ -154,7 +173,7 @@ export async function verifyRepository(root) {
     if (active.base_revision !== episode.execution.observation_tip) errors.push('successor base must match historical observation tip');
     if (active.episode_id !== 'ORDER-DESK-001' || !active.requirements?.length) errors.push('successor episode identity or requirements missing');
     const changedSince = execFileSync('git', ['diff', '--name-only', active.base_revision], { cwd: root, encoding: 'utf8' }).trim().split(/\r?\n/).filter(Boolean);
-    const newFiles = execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim().split(/\r?\n/).filter(Boolean);
+    const newFiles = excludeNestedRepositories(root, execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim().split(/\r?\n/).filter(Boolean));
     const actual = combineChangedFiles(changedSince, newFiles).sort();
     if (JSON.stringify(actual) !== JSON.stringify([...(active.changed_files ?? [])].sort())) errors.push('successor episode changed files do not match repository diff');
     for (const path of active.changed_files ?? []) if (!fileExists(path)) errors.push(`successor changed file missing: ${path}`);
