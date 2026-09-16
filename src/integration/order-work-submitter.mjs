@@ -116,14 +116,28 @@ export async function openOrderWorkSubmitter({ root = null, readContext, verifyL
     CREATE TRIGGER IF NOT EXISTS submission_binding_no_delete BEFORE DELETE ON submission_binding BEGIN SELECT RAISE(ABORT,'SUBMISSION_BINDING_IMMUTABLE'); END;
   `);
   // An outbox owns exactly one ledger for its whole life. The binding is recorded
-  // on first open (immutably, like the command/history tables) and re-checked on
-  // every reopen *before* any ledger read or append, so a reopened root cannot be
-  // redirected at a different ledger and have its dedup history applied to it.
-  // Stored as a name relative to the root, since the ledger is root-contained.
+  // immutably (like the command/history tables) and re-checked on every reopen
+  // *before* any ledger read or append, so a reopened root cannot be redirected at a
+  // different ledger and have its dedup history applied to it. Stored as a name
+  // relative to the root, since the ledger is root-contained.
+  //
+  // "Recorded on first open" is only true for an outbox this version created. An
+  // outbox written *before* the binding table existed (legacy) has no binding row
+  // however much dedup history it already carries, so recording whatever ledger the
+  // current caller named would silently adopt that caller's ledger and apply another
+  // ledger's dedup history to it — the exact repointing the binding exists to stop.
+  // The two are told apart by history, not by the absent row: a genuinely new outbox
+  // has zero submission_commands/submission_history rows, so it binds normally; a
+  // legacy outbox has rows and is refused here (LEDGER_BINDING_REQUIRED), before any
+  // ledger read or append, because its original ledger is unknowable from the DB.
   try {
     const bound = db.prepare('SELECT ledger_name FROM submission_binding WHERE id=1').get();
-    if (!bound) db.prepare('INSERT INTO submission_binding(id,ledger_name) VALUES (1,?)').run(basename(ledger));
-    else need(bound.ledger_name === basename(ledger), 'LEDGER_BINDING_CONFLICT');
+    if (bound) need(bound.ledger_name === basename(ledger), 'LEDGER_BINDING_CONFLICT');
+    else {
+      const used = db.prepare('SELECT (SELECT COUNT(*) FROM submission_commands) + (SELECT COUNT(*) FROM submission_history) AS rows').get();
+      need(used.rows === 0, 'LEDGER_BINDING_REQUIRED');
+      db.prepare('INSERT INTO submission_binding(id,ledger_name) VALUES (1,?)').run(basename(ledger));
+    }
   } catch (error) { db.close(); throw error; } // never leak the handle on a rejected open
   // Reused only to re-verify freshness (readWorkProjection) immediately before append.
   // prepareWorkCommand is deliberately not called again here: its ID-duplication gate

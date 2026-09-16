@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile, writeFile, rm, mkdtemp } from 'node:fs/promises';
 import { symlinkSync } from 'node:fs';
+import { DatabaseSync } from 'node:sqlite';
 import { spawn } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -254,4 +255,38 @@ test('rejects reopening an outbox against a different ledger and leaves the orig
   const reopened = await f.open();
   assert.equal((await reopened.submit(prepared, event)).status, 'LEDGER_APPENDED');
   assert.equal(await readFile(f.ledgerPath, 'utf8'), before);
+});
+
+// Different from the LEDGER_BINDING_CONFLICT test above: there the binding row EXISTS
+// and disagrees. Here it is ABSENT while dedup history exists — an outbox written
+// before the binding table did (legacy). The old code read "no row" as "first open"
+// and bound it to whatever ledger the caller named, so a legacy outbox's dedup history
+// would have been applied to a ledger it never owned. The spy wraps — never replaces —
+// the real appendLedgerEvent, so this asserts the refusal happens before the ledger is
+// reached rather than inferring that from an error code.
+test('refuses a legacy outbox that carries dedup history but no binding, leaving both ledgers byte-identical', async t => {
+  const f = await harness(t);
+  const { prepared, event } = await prepareAndEvent(f, '901');
+  assert.equal((await f.s.submit(prepared, event)).status, 'LEDGER_APPENDED');
+  const originalBytes = await readFile(f.ledgerPath, 'utf8');
+  const dbPath = f.s.dbPath;
+  f.s.close();
+  // Age the outbox back to before the binding table existed. Dropping the table drops
+  // its triggers with it, so reopening recreates an empty one — exactly the shape a
+  // pre-binding outbox presents: dedup history rows, no binding row.
+  const aged = new DatabaseSync(dbPath);
+  aged.exec('DROP TABLE submission_binding');
+  assert.ok(aged.prepare('SELECT COUNT(*) AS n FROM submission_commands').get().n > 0, 'the legacy outbox must still carry dedup history');
+  aged.close();
+  const other = join(f.root, 'legacy-other.jsonl');
+  await writeFile(other, '');
+  let calls = 0;
+  const spied = (...args) => { calls += 1; return appendLedgerEvent(...args); };
+  await assert.rejects(() => f.open({ ledgerPath: other, appendLedgerEvent: spied }), error => error.message === 'LEDGER_BINDING_REQUIRED');
+  assert.equal(calls, 0, 'a legacy outbox must be refused before the ledger writer is reached');
+  assert.equal(await readFile(other, 'utf8'), ''); // never read from or appended to
+  assert.equal(await readFile(f.ledgerPath, 'utf8'), originalBytes); // the old ledger is untouched too
+  // The ledger it actually owned is unknowable from the DB, so even the right name is refused.
+  await assert.rejects(() => f.open(), error => error.message === 'LEDGER_BINDING_REQUIRED');
+  assert.equal(await readFile(f.ledgerPath, 'utf8'), originalBytes);
 });
