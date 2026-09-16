@@ -1,0 +1,27 @@
+# 현재 활성 세션 미션 배정 (2026-09-16)
+
+CLI 연결 유무와 무관하게 이 세션들이 실제로 돌고 있다. 각자 확정된 범위 밖은 건드리지 않는다. 새 세션이 뭘 할지 모르겠으면 여기부터 본다.
+
+| 세션 | 저장소 | 미션 | 안 건드리는 것 |
+|---|---|---|---|
+| freepasserp4-0d | freepasserp4 (`claude/f86-on-gate`, `claude/shop-deposit-rule`) | 하허호 F86 발행엔진 · 판매시트 파이프라인 · 예약 통일 | `lib/server/sales-publish-snapshot.ts`는 export 1개만 추가 예정, 큰 구조변경 없음 |
+| freepasserp4-a0 | freepasserp4 (`.wt-newcar`, PR #265) | 신차/중고차 견적기(`app/estimate` 등) | 손님화면·상품찾기·정산·RTDB컷오버 |
+| freepasserp4-4d | freepasserp4 (`fp-freepass`) | 화이트라벨 채널간판(`lib/whitelabel.ts`) | 지금 유휴, PR232 머지 완료. 다음 요청 대기 |
+| freepasserp4-7e | freepasserp4 | 미확인 — 응답 없음 | — |
+| teamjpkwork-d9 | teamjpkwork + aiops | ERP 화면규격·문지기, aiops 예약작업 관리(`aiops-daily` 재활성화 대표 답 대기 중) | `lib/whitelabel.ts`(9/10 충돌 전례로 단일 세션 전담 권장) |
+| casemap-bb | casemap | 사건 02(컴공 임시주총) — 심문 복기·보정서/사실조회신청서 초안 대기 | 사건 06(임대보증금) |
+| webtoon-studio-6c | webtoon-studio | 배우 얼굴/전신 이미지 생성 파이프라인 | `local-generator/`·`casting-studio/reference-data/`·127.0.0.1:7860 (다른 세션 동시 실행시 OOM) |
+| sales-8f | freepass-sales | 4관점 전수검사(3/4 완료, 코드버그 검사 1개 진행 중) | — |
+| docshub-b0 | docshub | 미확인 — 방금 시작됨 | — |
+| ai-core-88 | ai-core(`C:\dev\ai-core`, PR #21/#29) | order-control-v1 오더 데스크 구현 이어가기 | ai-core-control-tower worktree(이 문서가 있는 곳)는 이 세션(Claude/ai-core-fd)이 전담 |
+| aiops-49 | aiops | 과태료 발송할것 폴더 정리 — 관청명 오타 2건, 사람이 봐야 할 16장 남음. `02_발송할것` 맨 위 옛 공문 이동/폐기 여부가 대표 답 대기 | — |
+| aiops-74 | aiops | 완료(유민 내용증명 16건) — archive 대기, Remote Control 연결로 자동 종료 안 됨 | — |
+| SSOT 작업 / 작업 내용 파악 / 로컬 보조 작업 (cloud) | 미확인 | claude.ai/code에서 별도 실행 중, 이 세션에서 상태만 확인 가능(양방향 메시지 불가) | — |
+
+## 이 세션(ai-core-fd)의 미션
+
+`C:\dev\ai-core-control-tower` worktree 전담. GROUP-G0→G1→AI-CORE-MERGE-P0 진행, Control Tower registry/HANDOFF 배포, PR22 CI 이슈 해결, freepasserp4 3개 브랜치 cherry-pick 준비, 세션 조정 허브 — 사용자가 이 창 하나로 전체 현황 보고받음.
+
+## 갱신 규칙
+
+세션이 끝나거나 범위가 바뀌면 이 표를 그 자리에서 고친다. 새 표를 만들지 않는다.
