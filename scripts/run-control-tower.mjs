@@ -30,7 +30,8 @@ export function runControlTower({ registry, snapshot, ledgerText }) {
     else {
       if (ledgerWork.project_id !== item.project_id) blockers.push('WORK_PROJECT_MISMATCH');
       if (ledgerWork.state !== 'READY') blockers.push(`WORK_STATE_${ledgerWork.state}`);
-      if (ledgerWork.subject_revision && ledgerWork.subject_revision !== item.subject_revision) blockers.push('WORK_REVISION_STALE');
+      if (!ledgerWork.subject_revision) blockers.push('WORK_REVISION_REQUIRED');
+      else if (ledgerWork.subject_revision !== item.subject_revision) blockers.push('WORK_REVISION_STALE');
     }
     const reasons = unique(blockers);
     return {
