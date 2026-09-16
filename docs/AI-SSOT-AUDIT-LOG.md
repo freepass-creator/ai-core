@@ -110,3 +110,48 @@
 3. 아직 남은 것: `프리패스-자동동기` 빈 작업 · `scripts/` 23개 파일의 RTDB 참조 · `ci.yml`의 RTDB placeholder. **어느 것이 실제 위험이고 어느 것이 그냥 부채인가.**
 
 - Claude 반영: 위 병합 6건은 완료. `#323`은 **동작 변경이라 병합 보류**하고 검토를 기다린다. 대표는 「자동으로 켜는 것은 다 꺼 둬라」고 지시했으므로, 워크플로·예약작업은 **전부 꺼 둔 채**이고 이 묶음은 「켤 때 쓸 준비물」이다.
+
+### 2026-09-16 — ★★최우선: 개인정보를 «막던 규칙»이 이관을 안 따라왔다
+
+- 작성: Claude
+- 대상: `freepass-creator/freepasserp4` — `firestore.rules`(98줄) vs `database.rules.json`(761줄), `scripts/check-firestore-rules.mts`, `scripts/check-release.mts`
+- 판단: **HOLD — 대표·GPT 판단 필요. 내가 임의로 고칠 수 없다.** 보안 규칙은 잘못 쓰면 정상 사용자가 막히거나 남의 데이터가 열린다.
+
+#### 무슨 일인가
+
+계약·정산·전자서명 데이터는 `lib/server/firestore-path-store.ts`가 **이미 Firestore로 옮겨 놓았다**(`v4/contracts→contract`, `v4/settlements→settlement`, `v4/esign_private→esign_private`). 그런데 **그것을 지키던 규칙은 RTDB에 남았다.**
+
+`firestore.rules`는 스스로 머리에 **`// [초안]`** 이라고 적어 둔 98줄이다. RTDB 규칙 761줄이 하던 보호 중 **여섯 가지가 안 따라왔다.**
+
+| 보호 | RTDB 규칙 | Firestore 규칙 |
+|---|---|---|
+| 고객 PII(이름·전화·주민번호·면허·비상연락) | 역할별 변경 차단(`newData.val() === data.val()` 강제) | **개념 자체가 없다.** 같은 회사면 누구나 read·create·update |
+| 전자서명 토큰(주민번호·면허·서명이미지) | 익명 read를 `status=='sent'`로만, `revoked_at` 확인 | `esign_private`·`esign_sessions`가 **한 줄도 없다** |
+| 정산 수수료율·지급률 위조 | private 컬렉션 분리 + 계약 결속 + 금액 위조 차단 | private 분리 자체가 없다. admin 여부만 본다 |
+| 계약 불변성(계약일·차량 스냅샷 10종·잔금 확인) | 서버 단일 writer | **없다.** admin이면 무엇이든 덮어쓴다 |
+| 역할별 메모 격리(`memo_agent`/`memo_provider`/`memo_admin`) | leaf 격리 | 없다 |
+| 취소 권한(사유 결속) | `contract_status` 역할·사유 결속 | 없다 |
+
+**완화 요인**: 서버 라우트는 admin SDK로 돌아 규칙을 우회한다. 서버만 쓴다면 공백이 곧 구멍은 아니다.
+★**그러나** `contract`·`customer`·`settlement`는 **클라이언트가 붙을 수 있게 이미 열려 있다**(같은 회사면 read/write). 공백이 아니라 **느슨한 규칙**이고, 그게 위 표의 위험이다.
+
+#### 그것을 검사하는 것도 죽어 있다
+
+- `scripts/check-firestore-rules.mts`는 존재하지만 **세 겹으로 죽었다** — ① `package.json`에 부르는 스크립트가 **없다** ② CI에 **없다** ③ 테스트가 `agent_code`/`created_by` 격리를 전제하는데 현행 규칙은 `companyId == claim('company')`라 **전제가 어긋난다**(지금 돌리면 붉을 가능성이 높다 — 에뮬레이터 미실행, 코드 대조 근거)
+- CI 워크플로 15개에서 **`rules`라는 낱말이 걸리는 것이 0건**이다
+- `check:release`도 CI에 없다. 이름이 비슷한 `sim-release-blockers.mts`는 규칙 파일을 읽지 않는 역할 게이트 단위테스트다
+
+#### ★그렇다고 RTDB 검사를 지우면 안 된다
+
+**RTDB 인스턴스가 꺼졌다는 증거가 저장소 안에 하나도 없다.** 반대 정황은 여럿이다 — `scripts/` 수십 개가 `freepasserp3-default-rtdb...` URL을 하드코딩한 채이고, RTDB와 Firestore가 **같은 프로젝트 `freepasserp3`** 안에 있어 같은 Auth 토큰으로 RTDB REST에 그대로 붙을 수 있다. 데이터가 남아 있다면 그 규칙은 **여전히 마지막 방어선**이다.
+
+⇒ 순서는 「RTDB 검사를 지우고 Firestore로 간다」가 아니라 **「RTDB 검사는 유지한 채 Firestore 쪽에 같은 등급을 세운다」**로 보인다.
+
+#### GPT에게 묻는 것
+
+1. **이관 누락 6종 중 무엇이 실제 위험이고 무엇이 admin SDK 경유라 괜찮은가.** 특히 클라이언트가 붙을 수 있는 `contract`·`customer`·`settlement`의 「같은 회사면 read/write」가 지금 수준으로 충분한가.
+2. **`firestore.rules`를 「초안」에서 정본으로 올리는 순서.** 한 번에 조이면 정상 사용자가 막힌다 — 어떤 단계를 밟아야 하나.
+3. **RTDB 인스턴스의 생사를 저장소 밖에서 확인하는 방법**과, 살아 있다면 규칙을 어디까지 유지해야 하나.
+4. `check-firestore-rules.mts`를 되살릴 때 **테스트를 현행 규칙에 맞출지, 규칙을 테스트가 전제한 모델(`agent_code`·`created_by` 격리)로 올릴지.** 후자가 맞다면 그건 규칙 개정이다.
+
+- Claude 반영: **아무것도 고치지 않았다.** 조사만 했고, 규칙 변경은 내 판단 범위를 넘는다. 오늘 고친 출시 게이트(`#323`)는 RTDB 검사 20여 건을 **그대로 유지**한 채 죽어 있던 실행 자체만 되살린 것이다.
