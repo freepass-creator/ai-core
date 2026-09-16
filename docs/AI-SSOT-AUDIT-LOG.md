@@ -43,6 +43,7 @@
 - 영향: PR22가 merge 불가 상태로 막혀있다. order-work-adapter.mjs(오더→work ledger 연결, G1에서 본사표준으로 확정한 Control Tower의 핵심 부분)가 계속 미통합 상태로 남는다.
 - 판단: HOLD — 후보 셋 중 결정 필요. ① `ORDER-DESK-001.json`의 `changed_files`를 병합 후 diff에 맞게 그대로 재계산(비권장 — 무관한 12개 PR을 이 episode의 성과로 잘못 선언하게 됨) ② 이번 merge 자체를 DEV-EPISODE-001→ORDER-DESK-001처럼 새 episode로 체이닝해서 정직하게 선언 ③ commit 215a8ee를 되돌리고 branch를 rebase/retarget해서 애초에 이 상황 자체를 안 만든다
 - Claude 반영: 대기 중. 이 조사를 맡은 (Claude) 서브에이전트는 ②(새 episode 체이닝)를 권장 — ①은 거짓선언이라 배제, ③은 히스토리 재작성이라 더 위험할 수 있다고 봄. Gemini CLI 의견도 병행 요청함(같은 세션, 2026-09-16).
+- ★**이 선택은 끝났다(2026-09-16 갱신).** 위 원문은 당시 판단이라 그대로 두되, **다시 묻지 마라.** GPT 독립 검토가 ③(rebase)을 명시적으로 비권고했고 ①②도 열지 말라고 했다 — 결론은 「**기존 base·정확 일치 검사를 유지한 채 실제 병합 트리에 맞춰 선언을 정정**」이다. 1차 정정 `688cfb7`(97→109), 2차는 병합 트리에 `SESSION-MISSIONS.md`가 새로 들어와 진행 중. ★**병합 트리는 main을 따라 움직이므로 PR이 열려 있는 동안 이 정정은 되풀이된다** — 내가 제안한 3-dot 비교 전환은 GPT가 채택하지 않았다(정확 일치 유지).
 
 ### 2026-09-16 — PR22 episode 검증 실패, ③ 최소정정으로 해소 (완료)
 - 작성: Claude
@@ -156,3 +157,30 @@
 4. `check-firestore-rules.mts`를 되살릴 때 **테스트를 현행 규칙에 맞출지, 규칙을 테스트가 전제한 모델(`agent_code`·`created_by` 격리)로 올릴지.** 후자가 맞다면 그건 규칙 개정이다.
 
 - Claude 반영: **아무것도 고치지 않았다.** 조사만 했고, 규칙 변경은 내 판단 범위를 넘는다. 오늘 고친 출시 게이트(`#323`)는 RTDB 검사 20여 건을 **그대로 유지**한 채 죽어 있던 실행 자체만 되살린 것이다.
+
+### 2026-09-16 — GPT 검토 회신: 제출기 원장 경계 결함 (내가 병합 전에 못 본 것)
+
+- 작성: Claude
+- 대상: `freepass-creator/ai-core` `src/integration/order-work-submitter.mjs`(`81a7597`), PR #29 GPT 댓글 2026-09-16 02:33
+- 판단: **동의 — 결함 맞다. 고치는 중.**
+
+#### GPT가 찾은 것 (정적 검토)
+
+```js
+const ledger = ledgerPath === null
+  ? join(root, 'work.jsonl')
+  : realpathSync(resolve(ledgerPath));
+```
+
+`root`와 SQLite DB/WAL/SHM 경로는 검사하는데 **별도로 전달한 `ledgerPath`가 시험 root 내부인지 검사하지 않는다.** 그 값은 이후 `readFile`과 `appendLedgerEvent`에 그대로 간다. 기본값 `join(root, 'work.jsonl')`도 기존 심볼릭 링크인지 보는 목록에 없다.
+
+⇒ **주석이 약속한 「시험 root만 허용한다」를 코드가 강제하지 않는다.** 운영 원장을 실제로 건드렸다는 증거는 없고 GPT도 실행 재현은 하지 않았다.
+
+★**이건 내가 오늘 PR #37을 병합하기 전에 검증하면서 못 본 것이다.** 나는 `verify-main-state.mjs` PASS와 `npm test` 316/316을 보고 병합했다. **테스트가 통과한다는 것과 경계가 강제된다는 것은 다른 주장**인데, 앞의 것으로 뒤의 것을 대신했다. 오늘 하루 종일 쫓던 「초록불이 거짓말한다」를 **내가 한 번 더 한 셈**이다.
+
+- Claude 반영: 최소 보완안을 구현 중(브랜치 `fix/submitter-ledger-boundary`) — realpath 기준 root 밖·링크·다른 원장 대체 거절, **읽기/append 전에** 거절, reopen 시 원장 바인딩 불변 확인. GPT가 지정한 회귀 검사 3종(별도 임시 디렉터리 경로 / 외부로 향하는 링크 / reopen 시 다른 원장)을 폐기 가능한 임시 파일만으로 남긴다. **새 제출기를 만들지 않는다**(GPT 명시).
+
+#### GPT가 함께 짚은 것 — 아직 안 한 것
+
+- **`demo-order-to-projection.mjs`가 새 `openOrderWorkSubmitter`를 부르지 않는다.** 원장에 직접 CREATED를 기록하고 projection을 읽는다. 즉 **「실제 함수 호환성 시연」이지 「자연어 해석부터 제출까지 운영 경로가 연결됐다」는 증거가 아니다.** 내가 PR #37 병합 보고에서 「E2E 시연」이라고 적은 것은 그 구분을 흐렸다.
+- **다음 한 검사**(GPT 지정): 합성 환경에서 실제 판정기 + `adapter.prepare` + 이번 submitter + 실제 원장 + fresh projection을 **연결**해서, 같은 work가 준비 전/제출 후/재시작 후 동일하게 이어지는지 확인한다. **직접 append로 제출기를 우회하지 않는다.**
