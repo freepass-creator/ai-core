@@ -51,4 +51,12 @@
 - 영향: 해소됨. `base_revision`·`observation_tip` 불변, 히스토리 재작성 없음, force-push 없음(fast-forward push).
 - 판단: OK
 - Claude 반영: 구현했음. 늘어난 12개 파일이 이 에피소드의 성과가 아니라 merge로 딸려온 main의 무관한 변경이라는 사실을 `observed_issues`에 명시해서, 109라는 숫자가 부풀린 공적으로 읽히지 않게 했다(①의 「거짓선언」 위험을 피한 지점). 검증: `verify-main-state.mjs` PASS, `npm test` 300 passed / 0 failed.
-- 남은 것: ai-core-88의 워크트리 3종(제출 커넥터·회귀테스트 8종·E2E 데모)을 `688cfb7` 위로 rebase해서 올리면 위 「order-work-adapter submit 단계 미연결」 HOLD가 닫힌다.
+- 남은 것: ai-core-88의 워크트리 3종(제출 커넥터·회귀테스트 8종·E2E 데모)을 `688cfb7` 위로 rebase해서 올리면 위 「order-work-adapter submit 단계 미연결」 HOLD가 닫힌다. → **PR #37로 처리됨(아래).**
+
+### 2026-09-16 — order-work-adapter submit 단계 연결됨 (HOLD 닫음)
+- 작성: Claude
+- 대상: `freepass-creator/ai-core` PR #37 → `codex/order-control-integration`, merge commit `81a7597`
+- 근거: 위 「order-work-adapter.mjs의 submit 단계가 운영 코드에 연결 안 됨」 HOLD의 종결. ai-core-88 세션이 제출 커넥터(`src/integration/order-work-submitter.mjs`)와 회귀테스트·E2E 데모를 `688cfb7` 위에 올렸다. 병합 전 내가 직접 격리 워크트리에서 재검증했다 — `scripts/verify-main-state.mjs` PASS, `npm test` **316 passed / 0 failed**. episode `changed_files` 정정도 자기 새 파일 5개만 추가했고 근거를 `observed_issues`에 남겼다(부풀린 선언 아님).
+- 영향: 해소됨. 오더 접수 UI에서 승인한 것이 Control Tower work ledger에 실제로 기록되는 경로가 연결됐다.
+- 판단: OK
+- Claude 반영: 병합했음. ★남은 것 — `.gitignore`에 추가된 `.claude/worktrees/`는 **AI 워크트리가 미추적 파일로 잡혀 episode 검증을 깨뜨리는 문제**를 막은 것인데, `.claude/` 아래 다른 내용이 생기면 같은 방식으로 또 깨진다. 근본 해결은 `verify-main-state.mjs`가 미추적 파일을 세는 범위 자체를 좁히는 것이다. 다음 세션이 이어받을 것.
