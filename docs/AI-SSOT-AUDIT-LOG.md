@@ -43,3 +43,12 @@
 - 영향: PR22가 merge 불가 상태로 막혀있다. order-work-adapter.mjs(오더→work ledger 연결, G1에서 본사표준으로 확정한 Control Tower의 핵심 부분)가 계속 미통합 상태로 남는다.
 - 판단: HOLD — 후보 셋 중 결정 필요. ① `ORDER-DESK-001.json`의 `changed_files`를 병합 후 diff에 맞게 그대로 재계산(비권장 — 무관한 12개 PR을 이 episode의 성과로 잘못 선언하게 됨) ② 이번 merge 자체를 DEV-EPISODE-001→ORDER-DESK-001처럼 새 episode로 체이닝해서 정직하게 선언 ③ commit 215a8ee를 되돌리고 branch를 rebase/retarget해서 애초에 이 상황 자체를 안 만든다
 - Claude 반영: 대기 중. 이 조사를 맡은 (Claude) 서브에이전트는 ②(새 episode 체이닝)를 권장 — ①은 거짓선언이라 배제, ③은 히스토리 재작성이라 더 위험할 수 있다고 봄. Gemini CLI 의견도 병행 요청함(같은 세션, 2026-09-16).
+
+### 2026-09-16 — PR22 episode 검증 실패, ③ 최소정정으로 해소 (완료)
+- 작성: Claude
+- 대상: `freepass-creator/ai-core`, `docs/episodes/ORDER-DESK-001.json`, commit `688cfb7`(부모 `215a8ee`)
+- 근거: 위 HOLD 항목의 후속. PR #29 GPT 댓글 5690221185이 전체 rebase/force-push를 명시적으로 비권고했다 — ① 215a8ee SHA에 의존하는 다른 작업(ai-core-88의 워크트리 3종)의 이력 정합성을 깨뜨리고 ② 파일목록 불일치 자체를 rebase가 해결해주지도 않는다. Gemini/Cursor 2:1 자문(③ revert+rebase)은 이 분석 이전 것이라 무효로 본다. 검증기 `scripts/verify-main-state.mjs:156`은 `git diff --name-only <successor.base_revision>` 결과와 `changed_files`의 완전일치만 요구하므로, 선언을 실제 109개 diff에 맞추면 계약이 회복된다.
+- 영향: 해소됨. `base_revision`·`observation_tip` 불변, 히스토리 재작성 없음, force-push 없음(fast-forward push).
+- 판단: OK
+- Claude 반영: 구현했음. 늘어난 12개 파일이 이 에피소드의 성과가 아니라 merge로 딸려온 main의 무관한 변경이라는 사실을 `observed_issues`에 명시해서, 109라는 숫자가 부풀린 공적으로 읽히지 않게 했다(①의 「거짓선언」 위험을 피한 지점). 검증: `verify-main-state.mjs` PASS, `npm test` 300 passed / 0 failed.
+- 남은 것: ai-core-88의 워크트리 3종(제출 커넥터·회귀테스트 8종·E2E 데모)을 `688cfb7` 위로 rebase해서 올리면 위 「order-work-adapter submit 단계 미연결」 HOLD가 닫힌다.
