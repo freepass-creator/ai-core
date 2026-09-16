@@ -24,4 +24,4 @@ For each work item it derives whether the system may prepare, execute or close. 
 npm run control:evaluate -- examples/control-tower.json
 ```
 
-`scripts/run-control-tower.mjs` composes the registry, snapshot and append-only ledger. Execution readiness is held when the project is absent/inactive, the project or work revision is stale, the work is absent, or its ledger state is not `READY`.
+`scripts/run-control-tower.mjs` composes the registry, snapshot and append-only ledger. Execution readiness is held when the project is absent/inactive, the project or work revision is stale, the work revision is absent, the work is absent, or its ledger state is not `READY`. A `READY` ledger without a subject revision is held rather than accepted; an unspecified revision cannot carry an execution decision. A ledger carrying observations later than the snapshot `as_of` holds both execution and closure for the affected work, because that snapshot cannot represent the state at that time. The boundary is strict, so an observation equal to `as_of` remains valid, and the hold is isolated per `work_id`.
