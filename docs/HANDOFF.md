@@ -94,13 +94,24 @@ a0ac4bb Add shared ledger clients for local and server order work
 
 ## Blocker (정정 반영)
 
-- **운영 준비 blocker: 있음, 좁혀서 기록.** 어댑터의 읽기/준비 4함수는 구현됨. 남은 gap은 "prepareWorkCommand의 PREPARED_NOT_SENT 결과를 받아 실제 appendLedgerEvent로 제출하는 운영 코드"가 없다는 것 하나로 좁혀진다. 이 제출 단계를 누가(PR #21 UI 쪽인지 별도 조정자인지) 만들지는 `docs/ORDER_CONTROL_INTEGRATION.md`에 미확정.
+- **운영 준비 blocker: 프로토타입으로 좁혀짐 (아래 참조).** 어댑터의 읽기/준비 4함수는 구현됨. 제출 gap(prepareWorkCommand → appendLedgerEvent)은 이제 격리 worktree에 프로토타입이 있다 — 다만 PR22 브랜치에 아직 병합되지 않았고 독립 고위험 검토도 안 끝났다.
+
+## 병렬 worktree 3건 프로토타입 완료 (2026-09-16, 이 세션이 백그라운드 Agent 3개로 실행)
+
+모두 `origin/codex/order-control-integration`(PR #22) head `215a8ee` 기준. 전부 로컬에만 있고 push/PR 안 함, PR22 기존 파일은 손대지 않고 새 파일만 추가. `npm test` 전체 재실행 결과는 셋 다 "새로 추가한 파일 무관, 기존에도 나던 episode `changed_files` 불일치 1건" 외 전부 pass — 이 1건은 `ai-core-fd`가 별도로 정정 중인 그 건과 동일.
+
+| worktree | branch | 추가 파일 | 자체 테스트 |
+|---|---|---|---|
+| `.claude/worktrees/agent-ad06b95678028fc9b` | `demo/order-to-projection` | `scripts/demo-order-to-projection.mjs`, `docs/integration/ORDER_TO_PROJECTION_DEMO.md` | 실행 결과 `status=LINKED`, 실제 함수로 자연어 주문→projection 왕복 실증. npm test 300/299 pass 1 fail(기존 건) |
+| `.claude/worktrees/agent-ad91bffe5bdedaa2a` | `worktree-agent-ad91bffe5bdedaa2a` | `test/order-work-integration-scenarios.test.mjs` | ORDER_CONTROL_INTEGRATION.md 4단계 8개 시나리오 중 기존 미커버 5개(만료권한/권한부재/응답유실/부분쓰기/두클라이언트 경합) 실제 함수로 신규 검증. npm test 307/306 pass 1 fail(기존 건) |
+| `.claude/worktrees/agent-a0050210a1ace8d23` | `work/order-work-submitter` | `src/integration/order-work-submitter.mjs`, `test/order-work-submitter.test.mjs` | `durable-order-work-sandbox.mjs` outbox 패턴 재사용한 제출 커넥터. 프로세스 kill 크래시 복구 3종 포함 자체 9/9 pass. npm test 309/308 pass 1 fail(기존 건). 명시적으로 여전히 HOLD(비운영) |
 
 ## 다음 한 작업
 
-PR #29에 이 정정을 반영한 후속 댓글을 남긴다(기존 CLAUDE_ACK 댓글은 조용히 고치지 않고 정정 댓글로 연결). 그 다음: 제출 단계(prepareWorkCommand 결과 → appendLedgerEvent) 소유권을 `docs/ORDER_CONTROL_INTEGRATION.md`에 명시할지 총괄 판단이 필요 — 사용자 확인 대상.
+`ai-core-fd`가 PR22에서 GPT ③안(rebase 없이 episode `changed_files`만 정정 커밋)을 착지시키는 걸 기다린다. 착지하면 위 3개 worktree를 그 새 head로 rebase해서 PR22 담당에게 넘긴다 — 지금 올리면 같은 changed_files 불일치를 또 만든다. 그 전까지 이 3개는 건드리지 않는다(중복 작업 방지).
 
 ## 마지막 실제 검증
 
 `npm test` — 이 세션, local HEAD `e8e6662`, 2026-09-16, tests 124 / pass 124 / fail 0 / skip 0.
+위 3개 worktree 각각의 `npm test`는 위 표 참조 (전부 해당 worktree 안에서 실행, 이 브랜치 HEAD 검사는 아님).
 `order-work-adapter.mjs` 전문 읽기 — 이 세션, PR #22 origin head `215a8ee`, 2026-09-16. 코드 대조이며 이 세션에서 PR #22의 `npm test`를 재실행하지는 않았다(NOT_RUN).
