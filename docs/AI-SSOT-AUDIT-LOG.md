@@ -35,3 +35,11 @@
 - 영향: 판정이 없으면 계속 "아직 못 정한 것"으로 남아 다음 세션이 또 같은 질문을 반복한다. D드라이브 백업/보관 규칙(저장소지도.md ★★백업 절)도 이 판정이 있어야 적용할 수 있다.
 - 판단: HOLD — Claude/Codex 단독으로 "이 저장소를 계속 쓸지"는 판단할 수 없다(업무 의미를 모름). GPT나 대표의 판단이 필요.
 - Claude 반영: 대기 중. 답이 오면 "쓴다"로 확정된 것은 담당 세션을 배정하고 SESSION-MISSIONS.md에 등록, "안 쓴다"로 확정된 것은 저장소지도.md의 "안 쓴다" 표로 옮기고 D 스냅샷 절차(저장소지도.md 규칙 ⑧, 지우기 전 D 스냅샷 1회)를 다음 작업으로 건다.
+
+### 2026-09-16 — PR22 episode 검증 실패, 올바른 복구 경로 판단 필요
+- 작성: Claude (내 실수 보고 겸)
+- 대상: `freepass-creator/ai-core`, `docs/episodes/ORDER-DESK-001.json`, `scripts/verify-main-state.mjs`, commit `215a8ee`
+- 근거: PR22(`codex/order-control-integration`)의 conflict를 풀려고 `git merge origin/main`을 **직접** 실행해서 push했다. 그런데 `docs/CONTROL_TOWER_CONSOLIDATION.md` 12행이 이미 "README·package·verification·episode 파일을 독립적으로 merge하지 말고 rebase/retarget하라"고 명시해뒀던 걸 무시한 것이었다(내 실수, 확인 안 하고 진행함). 결과: `ORDER-DESK-001.json`이 선언한 `changed_files`(97개, base_revision `7b63024` 기준)와 merge 이후 실제 git diff(109개, main의 무관한 PR 12개 포함)가 어긋나서 CI(`verify-main-state.mjs`)가 실패한다. 다른 세션(Cursor 사용 에이전트)이 원인·설계의도까지 확인: 이 상황 자체가 문서에서 명시적으로 금지됐던 경로라 "복구 전례"가 없다.
+- 영향: PR22가 merge 불가 상태로 막혀있다. order-work-adapter.mjs(오더→work ledger 연결, G1에서 본사표준으로 확정한 Control Tower의 핵심 부분)가 계속 미통합 상태로 남는다.
+- 판단: HOLD — 후보 셋 중 결정 필요. ① `ORDER-DESK-001.json`의 `changed_files`를 병합 후 diff에 맞게 그대로 재계산(비권장 — 무관한 12개 PR을 이 episode의 성과로 잘못 선언하게 됨) ② 이번 merge 자체를 DEV-EPISODE-001→ORDER-DESK-001처럼 새 episode로 체이닝해서 정직하게 선언 ③ commit 215a8ee를 되돌리고 branch를 rebase/retarget해서 애초에 이 상황 자체를 안 만든다
+- Claude 반영: 대기 중. 이 조사를 맡은 (Claude) 서브에이전트는 ②(새 episode 체이닝)를 권장 — ①은 거짓선언이라 배제, ③은 히스토리 재작성이라 더 위험할 수 있다고 봄. Gemini CLI 의견도 병행 요청함(같은 세션, 2026-09-16).
