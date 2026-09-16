@@ -64,6 +64,7 @@
     "docs/intake/MAIL_ORDER_HANDOFF.md",
     "docs/integration/DURABLE_COORDINATION.md",
     "docs/integration/INTEGRATION_STATUS.md",
+    "docs/integration/ORDER_TO_PROJECTION_DEMO.md",
     "docs/integration/ORDER_WORK_ADAPTER.md",
     "docs/integration/VOICE_FIRST_INTAKE.md",
     "docs/inventory/C-DEV-2026-09-15.json",
@@ -83,6 +84,7 @@
     "orders.connection.json",
     "package.json",
     "scripts/ai-continuation-pack.mjs",
+    "scripts/demo-order-to-projection.mjs",
     "scripts/evaluate-control-tower.mjs",
     "scripts/inventory-repositories.mjs",
     "scripts/mail-connection-status.mjs",
@@ -99,6 +101,7 @@
     "src/integration/durable-order-work-sandbox.mjs",
     "src/integration/order-intake-sandbox.mjs",
     "src/integration/order-work-adapter.mjs",
+    "src/integration/order-work-submitter.mjs",
     "src/orders/client.mjs",
     "src/orders/server.mjs",
     "src/orders/store.mjs",
@@ -111,6 +114,8 @@
     "test/normalize-order-intent.test.mjs",
     "test/order-intake-integration.test.mjs",
     "test/order-work-adapter.test.mjs",
+    "test/order-work-integration-scenarios.test.mjs",
+    "test/order-work-submitter.test.mjs",
     "test/orders.test.mjs",
     "test/read-ai-work-packet.test.mjs",
     "test/repo-sync-preflight.test.mjs",
@@ -136,6 +141,7 @@
     "Initial event query omitted its bound order ID; regression assertions detected missing event history and the query was corrected.",
     "Initial Windows tests tried removing a database directory before closing handles; teardown order was corrected.",
     "Default node test discovery included preserved research-branch test files; npm test now explicitly targets current test/*.test.mjs. Snapshot original hashes remain intact.",
-    "2026-09-16 정정: origin/main을 이 브랜치에 직접 merge(215a8ee)해서 base_revision 7b63024 이후 diff가 97개에서 109개로 늘었다. 늘어난 12개 파일은 이 에피소드의 성과가 아니라 merge로 딸려 들어온 main의 무관한 변경이다. changed_files는 검증기 계약(실제 diff와 일치)을 지키기 위해 109개로 맞췄으나, 이 에피소드가 실제로 만든 산출물은 아래 requirements/scope 범위로 한정된다."
+    "2026-09-16 정정: origin/main을 이 브랜치에 직접 merge(215a8ee)해서 base_revision 7b63024 이후 diff가 97개에서 109개로 늘었다. 늘어난 12개 파일은 이 에피소드의 성과가 아니라 merge로 딸려 들어온 main의 무관한 변경이다. changed_files는 검증기 계약(실제 diff와 일치)을 지키기 위해 109개로 맞췄으나, 이 에피소드가 실제로 만든 산출물은 아래 requirements/scope 범위로 한정된다.",
+    "2026-09-16 Claude 추가: 세 병렬 worktree(제출 커넥터+테스트, 크로스레인 회귀테스트 5종, 읽기전용 intake→projection 데모) 결과를 이 브랜치(215a8ee 이후 ai-core-fd의 688cfb7 정정 위)로 옮기며 changed_files에 5개 신규 파일을 추가했다. 세 worktree 각각의 상세 결과와 개별 npm test 수치는 work/codex/order-control-v1 브랜치의 docs/HANDOFF.md에 기록돼 있다. 이 5개 파일은 모두 신규 추가이며 기존 파일은 수정하지 않았다."
   ]
 }
