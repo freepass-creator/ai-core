@@ -47,6 +47,18 @@ const pause = milliseconds => Atomics.wait(new Int32Array(new SharedArrayBuffer(
  * real ledger path taken from application config, an HTTP endpoint or a
  * CI/deploy step. Promotion out of HOLD requires the missing independent
  * high-risk source review named in docs/integration/INTEGRATION_STATUS.md.
+ *
+ * Boundary and its limits. The DB, its WAL/SHM siblings and the ledger are all
+ * pinned to that synthetic root, by resolved real path, and rejected before any
+ * ledger read or append; the ledger binding is additionally frozen in the outbox
+ * DB so a reopen cannot repoint it. This is a *path* check, not OS isolation, and
+ * must not be described as one: it does not survive a root whose own contents are
+ * rewritten by another process between check and use (TOCTOU), a bind mount or
+ * hardlink that aliases an out-of-root file under a name inside the root, or any
+ * caller running with privileges to relocate the root itself. Real containment
+ * would need a sandbox/jail at the OS level. Previously this comment promised the
+ * test-root restriction while the code left `ledgerPath` unchecked — keep claims
+ * here no stronger than the `need(...)` calls immediately below actually enforce.
  */
 export async function openOrderWorkSubmitter({ root = null, readContext, verifyLedgerText, runControlTower, appendLedgerEvent, ledgerPath = null, checkpoint = () => {} }) {
   need([readContext, verifyLedgerText, runControlTower, appendLedgerEvent].every(fn => typeof fn === 'function'), 'DEPENDENCY_REQUIRED');
@@ -56,8 +68,15 @@ export async function openOrderWorkSubmitter({ root = null, readContext, verifyL
   root = realpathSync(resolve(root));
   need(dirname(root).toLowerCase() === temp.toLowerCase() && basename(root).startsWith('ai-core-submit-'), 'SYNTHETIC_ROOT_REQUIRED');
   const dbPath = join(root, 'submission.sqlite');
-  const ledger = ledgerPath === null ? join(root, 'work.jsonl') : realpathSync(resolve(ledgerPath));
-  for (const path of [dbPath, `${dbPath}-wal`, `${dbPath}-shm`]) {
+  // The ledger is pinned to the synthetic root this call created or verified: a
+  // caller-supplied ledgerPath may only name a file directly inside that root, so
+  // no real ledger (or any other out-of-root file) can be reached even though the
+  // path is caller-controlled. Checked with `resolve` (not `realpath`) so a ledger
+  // that does not exist yet is still containment-checked; the loop below then
+  // rejects an existing symlink/reparse point whose real target escapes the root.
+  const ledger = ledgerPath === null ? join(root, 'work.jsonl') : resolve(ledgerPath);
+  need(dirname(ledger).toLowerCase() === root.toLowerCase(), 'SYNTHETIC_LEDGER_REQUIRED');
+  for (const path of [dbPath, `${dbPath}-wal`, `${dbPath}-shm`, ledger]) {
     try { need(!lstatSync(path).isSymbolicLink() && dirname(realpathSync(path)).toLowerCase() === root.toLowerCase(), 'SYNTHETIC_PATH_REQUIRED'); }
     catch (error) { if (error.code !== 'ENOENT') throw error; }
   }
@@ -91,7 +110,35 @@ export async function openOrderWorkSubmitter({ root = null, readContext, verifyL
     CREATE TRIGGER IF NOT EXISTS submission_command_no_delete BEFORE DELETE ON submission_commands BEGIN SELECT RAISE(ABORT,'SUBMISSION_COMMAND_IMMUTABLE'); END;
     CREATE TRIGGER IF NOT EXISTS submission_history_no_update BEFORE UPDATE ON submission_history BEGIN SELECT RAISE(ABORT,'SUBMISSION_HISTORY_IMMUTABLE'); END;
     CREATE TRIGGER IF NOT EXISTS submission_history_no_delete BEFORE DELETE ON submission_history BEGIN SELECT RAISE(ABORT,'SUBMISSION_HISTORY_IMMUTABLE'); END;
+    CREATE TABLE IF NOT EXISTS submission_binding (
+      id INTEGER PRIMARY KEY CHECK(id=1), ledger_name TEXT NOT NULL);
+    CREATE TRIGGER IF NOT EXISTS submission_binding_no_rewrite BEFORE UPDATE ON submission_binding BEGIN SELECT RAISE(ABORT,'SUBMISSION_BINDING_IMMUTABLE'); END;
+    CREATE TRIGGER IF NOT EXISTS submission_binding_no_delete BEFORE DELETE ON submission_binding BEGIN SELECT RAISE(ABORT,'SUBMISSION_BINDING_IMMUTABLE'); END;
   `);
+  // An outbox owns exactly one ledger for its whole life. The binding is recorded
+  // immutably (like the command/history tables) and re-checked on every reopen
+  // *before* any ledger read or append, so a reopened root cannot be redirected at a
+  // different ledger and have its dedup history applied to it. Stored as a name
+  // relative to the root, since the ledger is root-contained.
+  //
+  // "Recorded on first open" is only true for an outbox this version created. An
+  // outbox written *before* the binding table existed (legacy) has no binding row
+  // however much dedup history it already carries, so recording whatever ledger the
+  // current caller named would silently adopt that caller's ledger and apply another
+  // ledger's dedup history to it — the exact repointing the binding exists to stop.
+  // The two are told apart by history, not by the absent row: a genuinely new outbox
+  // has zero submission_commands/submission_history rows, so it binds normally; a
+  // legacy outbox has rows and is refused here (LEDGER_BINDING_REQUIRED), before any
+  // ledger read or append, because its original ledger is unknowable from the DB.
+  try {
+    const bound = db.prepare('SELECT ledger_name FROM submission_binding WHERE id=1').get();
+    if (bound) need(bound.ledger_name === basename(ledger), 'LEDGER_BINDING_CONFLICT');
+    else {
+      const used = db.prepare('SELECT (SELECT COUNT(*) FROM submission_commands) + (SELECT COUNT(*) FROM submission_history) AS rows').get();
+      need(used.rows === 0, 'LEDGER_BINDING_REQUIRED');
+      db.prepare('INSERT INTO submission_binding(id,ledger_name) VALUES (1,?)').run(basename(ledger));
+    }
+  } catch (error) { db.close(); throw error; } // never leak the handle on a rejected open
   // Reused only to re-verify freshness (readWorkProjection) immediately before append.
   // prepareWorkCommand is deliberately not called again here: its ID-duplication gate
   // assumes every call is minting a brand-new command, which would reject re-checking

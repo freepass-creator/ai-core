@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile, rm, mkdtemp } from 'node:fs/promises';
+import { readFile, writeFile, rm, mkdtemp } from 'node:fs/promises';
+import { symlinkSync } from 'node:fs';
+import { DatabaseSync } from 'node:sqlite';
 import { spawn } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -189,3 +191,102 @@ for (const point of ['after_outbox_write', 'before_ledger_append', 'after_ledger
     assert.equal(verified.event_count, 2); // seed + exactly one submitted event, never duplicated
   });
 }
+
+// Ledger boundary regression. PR #29 static review found that root and the SQLite
+// DB/WAL/SHM paths were containment-checked but a caller-supplied `ledgerPath` was
+// not: it was only `realpathSync`d and then handed straight to readFile and
+// appendLedgerEvent, so the doc comment's "synthetic root only" promise was not
+// enforced by the code. These three cases check the boundary actually rejects,
+// and that it rejects *before* the ledger is read or appended.
+
+test('rejects a ledger path in a separate temp directory, before any ledger read or append', async t => {
+  const f = await harness(t);
+  const outside = await mkdtemp(join(tmpdir(), 'ai-core-outside-'));
+  t.after(() => rm(outside, { recursive: true, force: true }));
+  const before = await readFile(f.ledgerPath, 'utf8');
+  await assert.rejects(() => f.open({ ledgerPath: join(outside, 'work.jsonl') }),
+    error => error.message === 'SYNTHETIC_LEDGER_REQUIRED');
+  // the outside path must not have been created, read or written at all
+  await assert.rejects(() => readFile(join(outside, 'work.jsonl'), 'utf8'), error => error.code === 'ENOENT');
+  assert.equal(await readFile(f.ledgerPath, 'utf8'), before);
+});
+
+test('rejects a link inside the root that leads to an outside ledger', async t => {
+  const f = await harness(t);
+  const outside = await mkdtemp(join(tmpdir(), 'ai-core-outside-'));
+  t.after(() => rm(outside, { recursive: true, force: true }));
+  await writeFile(join(outside, 'work.jsonl'), 'REAL LEDGER BYTES\n');
+  const before = await readFile(join(outside, 'work.jsonl'), 'utf8');
+  // Prefer a file symlink; on Windows without Developer Mode/admin that is EPERM,
+  // so fall back to a directory junction, which needs no privilege. If neither can
+  // be created this is UNVERIFIED on this machine - that is not the same as "safe".
+  // The link is placed *at the ledger path itself*, directly inside the root, so the
+  // containment check passes on the literal path and only the real-path/symlink loop
+  // can reject it. A link one directory down would be caught by containment alone and
+  // would leave that loop untested.
+  let kind = null;
+  const ledgerPath = join(f.root, 'work-link.jsonl');
+  try { symlinkSync(join(outside, 'work.jsonl'), ledgerPath, 'file'); kind = 'symlink'; }
+  catch (error) {
+    if (error.code !== 'EPERM' && error.code !== 'ENOSYS') throw error;
+    // Junction: a directory reparse point, creatable without privilege on Windows.
+    try { symlinkSync(outside, ledgerPath, 'junction'); kind = 'junction'; }
+    catch (fallback) { if (fallback.code !== 'EPERM' && fallback.code !== 'ENOSYS') throw fallback; }
+  }
+  if (kind === null) { t.skip('neither a file symlink nor a directory junction could be created here'); return; }
+  await assert.rejects(() => f.open({ ledgerPath }), error => error.message === 'SYNTHETIC_PATH_REQUIRED');
+  assert.equal(await readFile(join(outside, 'work.jsonl'), 'utf8'), before);
+});
+
+test('rejects reopening an outbox against a different ledger and leaves the original bytes untouched', async t => {
+  const f = await harness(t);
+  const { prepared, event } = await prepareAndEvent(f, '900');
+  assert.equal((await f.s.submit(prepared, event)).status, 'LEDGER_APPENDED');
+  const before = await readFile(f.ledgerPath, 'utf8');
+  f.s.close();
+  // A second ledger *inside* the same synthetic root: containment alone would allow
+  // it, so only the recorded binding can reject re-pointing this outbox at it.
+  const other = join(f.root, 'other.jsonl');
+  await writeFile(other, '');
+  await assert.rejects(() => f.open({ ledgerPath: other }), error => error.message === 'LEDGER_BINDING_CONFLICT');
+  assert.equal(await readFile(f.ledgerPath, 'utf8'), before);
+  assert.equal(await readFile(other, 'utf8'), ''); // never read from or appended to
+  // the correct binding still reopens and stays replay-safe
+  const reopened = await f.open();
+  assert.equal((await reopened.submit(prepared, event)).status, 'LEDGER_APPENDED');
+  assert.equal(await readFile(f.ledgerPath, 'utf8'), before);
+});
+
+// Different from the LEDGER_BINDING_CONFLICT test above: there the binding row EXISTS
+// and disagrees. Here it is ABSENT while dedup history exists — an outbox written
+// before the binding table did (legacy). The old code read "no row" as "first open"
+// and bound it to whatever ledger the caller named, so a legacy outbox's dedup history
+// would have been applied to a ledger it never owned. The spy wraps — never replaces —
+// the real appendLedgerEvent, so this asserts the refusal happens before the ledger is
+// reached rather than inferring that from an error code.
+test('refuses a legacy outbox that carries dedup history but no binding, leaving both ledgers byte-identical', async t => {
+  const f = await harness(t);
+  const { prepared, event } = await prepareAndEvent(f, '901');
+  assert.equal((await f.s.submit(prepared, event)).status, 'LEDGER_APPENDED');
+  const originalBytes = await readFile(f.ledgerPath, 'utf8');
+  const dbPath = f.s.dbPath;
+  f.s.close();
+  // Age the outbox back to before the binding table existed. Dropping the table drops
+  // its triggers with it, so reopening recreates an empty one — exactly the shape a
+  // pre-binding outbox presents: dedup history rows, no binding row.
+  const aged = new DatabaseSync(dbPath);
+  aged.exec('DROP TABLE submission_binding');
+  assert.ok(aged.prepare('SELECT COUNT(*) AS n FROM submission_commands').get().n > 0, 'the legacy outbox must still carry dedup history');
+  aged.close();
+  const other = join(f.root, 'legacy-other.jsonl');
+  await writeFile(other, '');
+  let calls = 0;
+  const spied = (...args) => { calls += 1; return appendLedgerEvent(...args); };
+  await assert.rejects(() => f.open({ ledgerPath: other, appendLedgerEvent: spied }), error => error.message === 'LEDGER_BINDING_REQUIRED');
+  assert.equal(calls, 0, 'a legacy outbox must be refused before the ledger writer is reached');
+  assert.equal(await readFile(other, 'utf8'), ''); // never read from or appended to
+  assert.equal(await readFile(f.ledgerPath, 'utf8'), originalBytes); // the old ledger is untouched too
+  // The ledger it actually owned is unknowable from the DB, so even the right name is refused.
+  await assert.rejects(() => f.open(), error => error.message === 'LEDGER_BINDING_REQUIRED');
+  assert.equal(await readFile(f.ledgerPath, 'utf8'), originalBytes);
+});
