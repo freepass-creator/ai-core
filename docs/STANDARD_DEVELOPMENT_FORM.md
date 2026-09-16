@@ -1,0 +1,66 @@
+# Standard Development Form v1.0
+
+Status: `IMPLEMENTED_CONTRACT_AND_SEMANTIC_VALIDATOR`
+
+This form is the shared contract for Codex, Cursor, Claude, Gemini and a future Dev Control Room. JSON is canonical; a UI or Google document is a view over the same fields.
+
+## Screen sections
+
+1. **Request** — title, user intent, unknowns and decisions that change implementation.
+2. **Sources** — repository or Workspace source, exact revision and last verification time.
+3. **Scope** — included work, exclusions, affected paths and minimum necessary data scope.
+4. **Acceptance** — independently testable criteria and evidence references.
+5. **Delivery coverage** — frontend, backend, API, database, infrastructure, UI and UX scope with one user journey and data flow.
+6. **Work lane** — one actor, branch, worktree and current revision.
+7. **Proof** — checks and artifacts bound to the subject revision.
+8. **Review** — independent reviewers, findings and unresolved severity.
+9. **Authorization** — whether external execution needs a person, exact scope and expiry state.
+10. **Release and outcome** — merge/deploy state and later real-world observation remain separate.
+11. **Handoff** — compact current truth, next action and blockers.
+
+## Primary buttons
+
+| Button | Enabled only when | Result |
+|---|---|---|
+| Save draft | identity and intent exist | persists without readiness claims |
+| Mark ready | sources have revisions; no decision-required items | request stage becomes `READY` |
+| Start isolated work | ready; owned `work/<actor>/<task>` lane is available | records branch/worktree/head |
+| Run verification | implementation exists at an exact revision | records checks and artifacts |
+| Request review | verification is bound to the current revision | review becomes `PENDING` |
+| Safe commit and push | configured checks pass and exact paths are selected | invokes the checkpoint engine |
+| Request authorization | operation requires merge, deploy, external write or another protected action | records a scoped pending request |
+| Merge or deploy | verification and required review pass; authorization is valid | performs only the approved action |
+| Observe outcome | a released revision and target exist | records field/runtime evidence |
+| Close | criteria pass and required outcome evidence exists | request becomes `CLOSED` |
+
+Any failed prerequisite renders the action disabled with its `HOLD` reasons. A button never silently advances more than one boundary.
+
+UI implementations import `deriveActions(form, context)` from `scripts/validate-development-form.mjs`. Context follows `contracts/development-form-context.schema.json`; fields are supplied as the relevant external facts become available. Serialized context uses an ISO date-time string for `now`; in-process callers may pass a valid `Date`. `validateDevelopmentContext()` runs the schema and rejects invalid time values before action derivation. Context supplies lane availability, implementation existence, configured checks, selected paths, full trusted review metadata and canonical human authority attestations. Build those entries with the exported `createTrustedReviewReceipt(receipt)` and `createAuthorityAttestation(authorization)` helpers after external verification. The authority helper sorts scope and selects fields explicitly, so object key order cannot change the digest. Missing external evidence fails closed. UI code must not recreate these rules independently.
+
+Validate a form before enabling state-changing buttons:
+
+```powershell
+npm run form:validate -- examples/development-form.json
+```
+
+## Cross-field invariants
+
+- `READY` cannot coexist with unresolved `unknowns`, unresolved `decisions_required` or unrevisioned authoritative sources.
+- All seven delivery layers must be classified. `UNKNOWN` blocks readiness; included layers require affected references and acceptance-criterion references.
+- UI work requires device coverage and a covered or reasoned-not-applicable decision for default/loading/empty/error states. UX work requires a complete journey and failure recovery. API or database work requires a data flow; data writes reference an authoritative source or approved authority boundary. Every quality dimension is required or explicitly not applicable with a reason.
+- Verification `PASS` requires a subject revision, at least one passing check and evidence for every acceptance criterion; evidence IDs and revisions must resolve to that subject revision.
+- Review `PASSED` requires the reviewed revision and a digest-bound receipt whose reviewer and issuer differ from the lane actor, plus no unresolved failing finding. The receipt ID must also be supplied as externally verified context.
+- Authorization `GRANTED` requires a human authorizer, timestamp no later than evaluation time, future expiry, action, target, revision and exact scope. Its authority reference must be supplied as externally verified context; AI actors cannot self-authorize protected execution.
+- `MERGED` or `DEPLOYED` requires verification of that same revision and any required authorization.
+- Outcome `SUCCESS` requires observation evidence from the released target; tests and reviews are insufficient.
+- Release records `released_at`; a success observation must be from the same revision and target at or after that time.
+- Google Workspace sources store file ID, tab/range where relevant, revision or modified time, and minimum disclosed scope. A local pointer is not a verified Workspace source.
+
+## Four-AI review record
+
+- Gemini: completed read-only design advice before implementation. Its source/revision, minimal disclosure, handoff, acceptance, evidence and separated outcome recommendations are represented; it is not implementation approval.
+- Cursor: attempted read-only review; non-interactive process produced no result and was stopped.
+- Claude: attempted read-only review; weekly limit blocked execution.
+- Codex: owns synthesis, implementation and deterministic validation. Missing reviews do not count as agreement.
+
+The review attempts and their limits are recorded in `docs/reviews/STANDARD_FORM_REVIEW.md`.

@@ -1,0 +1,103 @@
+{
+  "receipt_id": "UI-PATTERNS-BROWSER-002",
+  "observed_at": "2026-09-14T15:06:02.993Z",
+  "base_commit": "cc3edb5",
+  "source_sha256": {
+    "design-system/components.css": "d054431f333d341db3ea644403a2484dd6f25eb1a035c789a2b915e6a2726233",
+    "docs/SCREEN_DESIGN_STANDARD.md": "57b49582492f2d3810ef09f1d1cdefd1ba25206dab12ac527b50921072a51c5a",
+    "examples/ui-patterns.html": "68a3eb60bd4470a2abf93754aa9da6bdbb244327f9de4478500f5e31991b948d",
+    "examples/ui-patterns.js": "658cbf29ff5510415184b8275bc1a9a9abce013d2d9f468c7d703127f3698d5f",
+    "design-system/tokens.css": "8c199eb4dd1fc5f961f87d7a8f67fa0f7811b28efc2e7453f35570583a7d32b9"
+  },
+  "runner": {
+    "name": "agent-browser",
+    "version": "0.37.1",
+    "engine": "chrome"
+  },
+  "results": {
+    "wcag2a_wcag2aa": {
+      "violations": 0,
+      "incomplete": 1,
+      "passes": 26,
+      "manual_review": {
+        "rule": "color-contrast",
+        "target": "#work-note",
+        "reason": "axe could not determine background because the native textarea was reported partially obscured",
+        "foreground": "rgb(23, 32, 51)",
+        "background": "rgb(255, 255, 255)",
+        "contrast_ratio": 16.28,
+        "result": "PASS"
+      }
+    },
+    "mobile_viewport_css_px": {
+      "width": 390,
+      "height": 844
+    },
+    "body_overflow": false,
+    "visible_button_min_height_px": 44,
+    "input_height_px": 44,
+    "invalid_submit": {
+      "focused_id": "name",
+      "status": "입력 내용을 확인하세요.",
+      "field_error": "이름을 입력하세요."
+    },
+    "valid_submit_status": "설정을 저장했습니다.",
+    "keyboard_tab": {
+      "active_id": "tab-checks",
+      "selected": true,
+      "panel_visible": true
+    },
+    "error_state_has_retry": true,
+    "toast_visible": true,
+    "dialog": {
+      "opened": true,
+      "initial_focus_id": "dialog-cancel",
+      "closed": true,
+      "returned_focus_id": "dialog-open"
+    },
+    "reduced_motion_animation_name": "none",
+    "page_errors": 0,
+    "tab_to_panel_focus_id": "panel-checks",
+    "pagination": {
+      "upper_status": "3 / 3 페이지",
+      "upper_next_disabled": true,
+      "after_previous_status": "2 / 3 페이지"
+    },
+    "dialog_dismissal": {
+      "escape": {
+        "closed": true,
+        "returned_focus_id": "dialog-open"
+      },
+      "backdrop": {
+        "closed": true,
+        "returned_focus_id": "dialog-open"
+      }
+    },
+    "toast_timer_reset": {
+      "visible_after_prior_timer_deadline": true,
+      "text": "샘플에서는 삭제를 실행하지 않습니다."
+    },
+    "workflow": {
+      "draft_persisted": true,
+      "recovered_after_reload": true,
+      "duplicate_save_prevented": true,
+      "busy_state": {
+        "disabled": true,
+        "aria_busy": "true"
+      },
+      "failure_preserved_input": true,
+      "retry_focus_id": "draft-save",
+      "success_revision": "local-demo-r1",
+      "success_receipt_visible": true,
+      "local_draft_cleared_after_success": true,
+      "external_action_disabled_before_success": true,
+      "external_action_enabled_after_success": true,
+      "external_action_executed": false,
+      "reverted_to_saved_state_restores_receipt": true
+    }
+  },
+  "screenshot": {
+    "path": "docs/evidence/ui-patterns-mobile.png",
+    "sha256": "3d7304a4e77d343d9b7c56617dc42ddebf64f696cf215917223daa0348122c51"
+  }
+}

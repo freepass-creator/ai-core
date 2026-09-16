@@ -1,0 +1,624 @@
+{
+  "schema_version": "1.0",
+  "observed_at": "2026-09-15T01:23:45.520Z",
+  "root": "C:\\dev",
+  "checkout_count": 69,
+  "repository_count": 33,
+  "dirty_hold_count": 34,
+  "duplicate_checkout_groups": [
+    {
+      "repository": "https://github.com/freepass-creator/freepasserp4.git",
+      "paths": [
+        "C:\\dev\\.wt-est2",
+        "C:\\dev\\.wt-newcar",
+        "C:\\dev\\.wt-slim",
+        "C:\\dev\\.wt-test",
+        "C:\\dev\\fp-freepass",
+        "C:\\dev\\fp-settle",
+        "C:\\dev\\fp-shop-pr",
+        "C:\\dev\\freepasserp4",
+        "C:\\dev\\freepasserp4-canonical-whitelabel",
+        "C:\\dev\\freepasserp4-deploy-8b40540",
+        "C:\\dev\\freepasserp4-esign-deploy",
+        "C:\\dev\\freepasserp4-esign-hotfix",
+        "C:\\dev\\freepasserp4-icar-age-policy",
+        "C:\\dev\\freepasserp4-mobile-hotfix",
+        "C:\\dev\\freepasserp4-root-redirect",
+        "C:\\dev\\freepasserp4-rtdb-current",
+        "C:\\dev\\freepasserp4-rtdb-cutover",
+        "C:\\dev\\freepasserp4-rtdb-guard",
+        "C:\\dev\\freepasserp4-ui-deploy",
+        "C:\\dev\\freepasserp4-ui-upload",
+        "C:\\dev\\_base",
+        "C:\\dev\\_wt-base",
+        "C:\\dev\\_wt-cs",
+        "C:\\dev\\_wt-devcenter-whitelabel-final",
+        "C:\\dev\\_wt-devcenter-whitelabel-review",
+        "C:\\dev\\_wt-flt",
+        "C:\\dev\\_wt-gate",
+        "C:\\dev\\_wt-pipe",
+        "C:\\dev\\_wt-recheck",
+        "C:\\dev\\_wt-rgn"
+      ]
+    },
+    {
+      "repository": "https://github.com/freepass-creator/ai-core.git",
+      "paths": [
+        "C:\\dev\\ai-core",
+        "C:\\dev\\ai-core-audit",
+        "C:\\dev\\ai-core-control-tower"
+      ]
+    },
+    {
+      "repository": "https://github.com/freepass-creator/freepass-sales.git",
+      "paths": [
+        "C:\\dev\\sales",
+        "C:\\dev\\sales-mail-automation"
+      ]
+    },
+    {
+      "repository": "https://github.com/freepass-creator/teamjpkwork.git",
+      "paths": [
+        "C:\\dev\\teamjpkwork",
+        "C:\\dev\\teamjpkwork-atom-check",
+        "C:\\dev\\worknavi",
+        "C:\\dev\\worknavi-answer-packets",
+        "C:\\dev\\worknavi-security"
+      ]
+    }
+  ],
+  "checkouts": [
+    {
+      "path": "C:\\dev\\-",
+      "repository": "https://github.com/freepass-creator/-.git",
+      "branch": "main",
+      "revision": null,
+      "dirty_entries": 0,
+      "state": "CLEAN"
+    },
+    {
+      "path": "C:\\dev\\.wt-est2",
+      "repository": "https://github.com/freepass-creator/freepasserp4.git",
+      "branch": "feat/quote-preview",
+      "revision": "cc5280b446b646f7e1253e2e86755f7da2065f9f",
+      "dirty_entries": 0,
+      "state": "CLEAN"
+    },
+    {
+      "path": "C:\\dev\\.wt-newcar",
+      "repository": "https://github.com/freepass-creator/freepasserp4.git",
+      "branch": "feat/used-residual-amounts",
+      "revision": "b65b3c43f4116340563063a683ec736d68854c48",
+      "dirty_entries": 0,
+      "state": "CLEAN"
+    },
+    {
+      "path": "C:\\dev\\.wt-slim",
+      "repository": "https://github.com/freepass-creator/freepasserp4.git",
+      "branch": "feat/estimate-slim",
+      "revision": "6867d984ccd665af8d4408899369d3f3c36bb00d",
+      "dirty_entries": 0,
+      "state": "CLEAN"
+    },
+    {
+      "path": "C:\\dev\\.wt-test",
+      "repository": "https://github.com/freepass-creator/freepasserp4.git",
+      "branch": null,
+      "revision": "c4c43a43e86d4cc372db33f42da409589a7bc93d",
+      "dirty_entries": 1,
+      "state": "DIRTY_HOLD"
+    },
+    {
+      "path": "C:\\dev\\ai-core",
+      "repository": "https://github.com/freepass-creator/ai-core.git",
+      "branch": "work/codex/order-control-v1",
+      "revision": "a0ac4bb1234e4c1759769f6e272959cda8f55d1e",
+      "dirty_entries": 0,
+      "state": "CLEAN"
+    },
+    {
+      "path": "C:\\dev\\ai-core-audit",
+      "repository": "https://github.com/freepass-creator/ai-core.git",
+      "branch": "feature/cognitive-runtime-v0.6",
+      "revision": "4178339dec64d44de54bda66b5060af5e220b887",
+      "dirty_entries": 1,
+      "state": "DIRTY_HOLD"
+    },
+    {
+      "path": "C:\\dev\\ai-core-control-tower",
+      "repository": "https://github.com/freepass-creator/ai-core.git",
+      "branch": "work/codex/control-tower",
+      "revision": "fe9315535e31a6edb723562b2b3515fcdf01107e",
+      "dirty_entries": 3,
+      "state": "DIRTY_HOLD"
+    },
+    {
+      "path": "C:\\dev\\aiops",
+      "repository": "https://github.com/freepass-creator/aiops.git",
+      "branch": "main",
+      "revision": "875219b20825650b0390cf4505062ba77b695769",
+      "dirty_entries": 161,
+      "state": "DIRTY_HOLD"
+    },
+    {
+      "path": "C:\\dev\\billincar",
+      "repository": "https://github.com/freepass-creator/billincar.git",
+      "branch": "main",
+      "revision": "b84cd4c035286fca7cd372b9aaa5d99a49561b32",
+      "dirty_entries": 2,
+      "state": "DIRTY_HOLD"
+    },
+    {
+      "path": "C:\\dev\\casemap",
+      "repository": "https://github.com/freepass-creator/casemap-private.git",
+      "branch": "main",
+      "revision": "21ebdeca4f15f090b8f3e32a4b411390d62ea4fc",
+      "dirty_entries": 14,
+      "state": "DIRTY_HOLD"
+    },
+    {
+      "path": "C:\\dev\\chakhandeal",
+      "repository": "https://github.com/freepass-creator/chakhandeal.git",
+      "branch": "cursor/freepass-esign-issue-20260808",
+      "revision": "ce56c92f84dd3813a2a04ec4ee4ba215fc78f333",
+      "dirty_entries": 0,
+      "state": "CLEAN"
+    },
+    {
+      "path": "C:\\dev\\ci_center",
+      "repository": "https://github.com/freepass-creator/ci_center.git",
+      "branch": "main",
+      "revision": "bb341c26fcc401446f2d431e9ff07e4af687a50b",
+      "dirty_entries": 0,
+      "state": "CLEAN"
+    },
+    {
+      "path": "C:\\dev\\devcenter",
+      "repository": "https://github.com/freepass-creator/devcenter.git",
+      "branch": "main",
+      "revision": "4ee253fb1b55e285e90073d26ed48706e1d837c9",
+      "dirty_entries": 100,
+      "state": "DIRTY_HOLD"
+    },
+    {
+      "path": "C:\\dev\\docshub",
+      "repository": "https://github.com/freepass-creator/docshub.git",
+      "branch": "main",
+      "revision": "7fa99a9389fb2161f5fa726451ba0f273429060c",
+      "dirty_entries": 1509,
+      "state": "DIRTY_HOLD"
+    },
+    {
+      "path": "C:\\dev\\fp-freepass",
+      "repository": "https://github.com/freepass-creator/freepasserp4.git",
+      "branch": "feat/mobility-branded-shop",
+      "revision": "cad49ef7618f3046479c778da389a9645f84e4e2",
+      "dirty_entries": 0,
+      "state": "CLEAN"
+    },
+    {
+      "path": "C:\\dev\\fp-settle",
+      "repository": "https://github.com/freepass-creator/freepasserp4.git",
+      "branch": "feat/settlement-firestore-cockpit",
+      "revision": "39381dba75137cec9e2a41572b1ee45d0c333177",
+      "dirty_entries": 0,
+      "state": "CLEAN"
+    },
+    {
+      "path": "C:\\dev\\fp-settlement",
+      "repository": "https://github.com/freepass-creator/fp-settlement.git",
+      "branch": "main",
+      "revision": "0ee4b0bce2d5f152549bec6dca4c0b6c4ab08a20",
+      "dirty_entries": 0,
+      "state": "CLEAN"
+    },
+    {
+      "path": "C:\\dev\\fp-shop-pr",
+      "repository": "https://github.com/freepass-creator/freepasserp4.git",
+      "branch": "fix/guest-fence-client-fallback",
+      "revision": "b968e3fc5dbb7260313a1939d015bb1e8d450c3c",
+      "dirty_entries": 1,
+      "state": "DIRTY_HOLD"
+    },
+    {
+      "path": "C:\\dev\\freeepasserp2",
+      "repository": "https://github.com/freepass-creator/freeepasserp2.git",
+      "branch": "main",
+      "revision": "0c57fe5047fba5d953d1962ee438000aa746a781",
+      "dirty_entries": 1,
+      "state": "DIRTY_HOLD"
+    },
+    {
+      "path": "C:\\dev\\freepasserp",
+      "repository": "https://github.com/freepass-creator/freepasserp.git",
+      "branch": "master",
+      "revision": "33fbc426a42e66621636187a5a2e8b05de7f2d54",
+      "dirty_entries": 1,
+      "state": "DIRTY_HOLD"
+    },
+    {
+      "path": "C:\\dev\\freepasserp3",
+      "repository": "https://github.com/freepass-creator/freepasserp3.git",
+      "branch": "master",
+      "revision": "a4fddcc187a9ad46fdb93260fc43d7058d08cadc",
+      "dirty_entries": 7,
+      "state": "DIRTY_HOLD"
+    },
+    {
+      "path": "C:\\dev\\freepasserp4",
+      "repository": "https://github.com/freepass-creator/freepasserp4.git",
+      "branch": "feat/spring-atom-monitor",
+      "revision": "4d962b2db293a8cc193a106008b0270265dcd30d",
+      "dirty_entries": 62,
+      "state": "DIRTY_HOLD"
+    },
+    {
+      "path": "C:\\dev\\freepasserp4-canonical-whitelabel",
+      "repository": "https://github.com/freepass-creator/freepasserp4.git",
+      "branch": "codex/restore-canonical-whitelabel",
+      "revision": "f1101583a85275223d9d5b5c23cbe7de86f0626a",
+      "dirty_entries": 11,
+      "state": "DIRTY_HOLD"
+    },
+    {
+      "path": "C:\\dev\\freepasserp4-deploy-8b40540",
+      "repository": "https://github.com/freepass-creator/freepasserp4.git",
+      "branch": null,
+      "revision": "9ba129e3acdd54417ed0d46aad835dce4a21f9c1",
+      "dirty_entries": 0,
+      "state": "CLEAN"
+    },
+    {
+      "path": "C:\\dev\\freepasserp4-esign-deploy",
+      "repository": "https://github.com/freepass-creator/freepasserp4.git",
+      "branch": "codex/esign-live-vehicle-input",
+      "revision": "322813b57de10f24a6e62a324e2289f63c1788c1",
+      "dirty_entries": 0,
+      "state": "CLEAN"
+    },
+    {
+      "path": "C:\\dev\\freepasserp4-esign-hotfix",
+      "repository": "https://github.com/freepass-creator/freepasserp4.git",
+      "branch": "codex/esign-public-flow-fix",
+      "revision": "ad9ddd4e2abef8d6f12d9bf21af3a7e1ab017778",
+      "dirty_entries": 0,
+      "state": "CLEAN"
+    },
+    {
+      "path": "C:\\dev\\freepasserp4-icar-age-policy",
+      "repository": "https://github.com/freepass-creator/freepasserp4.git",
+      "branch": "main",
+      "revision": "b1fc29b2cd7a9626df2f7d85195d4e69f69b6baa",
+      "dirty_entries": 0,
+      "state": "CLEAN"
+    },
+    {
+      "path": "C:\\dev\\freepasserp4-mobile-hotfix",
+      "repository": "https://github.com/freepass-creator/freepasserp4.git",
+      "branch": "fix/mobile-web-whitelabel",
+      "revision": "821570882ab91b5b59235970f3c294b57fb3ca74",
+      "dirty_entries": 7,
+      "state": "DIRTY_HOLD"
+    },
+    {
+      "path": "C:\\dev\\freepasserp4-root-redirect",
+      "repository": "https://github.com/freepass-creator/freepasserp4.git",
+      "branch": null,
+      "revision": "62f49aa2a659487c71507ff76dbcc0ef42192d25",
+      "dirty_entries": 0,
+      "state": "CLEAN"
+    },
+    {
+      "path": "C:\\dev\\freepasserp4-rtdb-current",
+      "repository": "https://github.com/freepass-creator/freepasserp4.git",
+      "branch": "codex/rtdb-cutover-current",
+      "revision": "fa0942e42235a673c6c3d2fd62ec1aabce2ff060",
+      "dirty_entries": 2,
+      "state": "DIRTY_HOLD"
+    },
+    {
+      "path": "C:\\dev\\freepasserp4-rtdb-cutover",
+      "repository": "https://github.com/freepass-creator/freepasserp4.git",
+      "branch": "codex/remove-rtdb",
+      "revision": "8760e06e0f855491f403abcae80bf2b4f46ef7d5",
+      "dirty_entries": 0,
+      "state": "CLEAN"
+    },
+    {
+      "path": "C:\\dev\\freepasserp4-rtdb-guard",
+      "repository": "https://github.com/freepass-creator/freepasserp4.git",
+      "branch": "codex/rtdb-cost-guard",
+      "revision": "e786a604f71d2c890afa498bacd7fec58c79dbdf",
+      "dirty_entries": 0,
+      "state": "CLEAN"
+    },
+    {
+      "path": "C:\\dev\\freepasserp4-ui-deploy",
+      "repository": "https://github.com/freepass-creator/freepasserp4.git",
+      "branch": null,
+      "revision": "a466b0aa3fb4ecbb7d08d6e9806e917953b18397",
+      "dirty_entries": 3,
+      "state": "DIRTY_HOLD"
+    },
+    {
+      "path": "C:\\dev\\freepasserp4-ui-upload",
+      "repository": "https://github.com/freepass-creator/freepasserp4.git",
+      "branch": null,
+      "revision": "a466b0aa3fb4ecbb7d08d6e9806e917953b18397",
+      "dirty_entries": 3,
+      "state": "DIRTY_HOLD"
+    },
+    {
+      "path": "C:\\dev\\freepasshomepage",
+      "repository": "https://github.com/freepass-creator/freepasshomepage.git",
+      "branch": "main",
+      "revision": "104a1bdc449ab1b158968b2e085846f428410839",
+      "dirty_entries": 0,
+      "state": "CLEAN"
+    },
+    {
+      "path": "C:\\dev\\freepasspartner",
+      "repository": "https://github.com/freepass-creator/freepasspartner.git",
+      "branch": "main",
+      "revision": "37d2990eacea2ae5a39b485e617453728f2e4ff6",
+      "dirty_entries": 0,
+      "state": "CLEAN"
+    },
+    {
+      "path": "C:\\dev\\gukminchagimpo",
+      "repository": "https://github.com/freepass-creator/gukminchagimpo.git",
+      "branch": "main",
+      "revision": "0e32380725cc2d98c93b5462b282ade52047c45a",
+      "dirty_entries": 0,
+      "state": "CLEAN"
+    },
+    {
+      "path": "C:\\dev\\jpkerp",
+      "repository": "https://github.com/freepass-creator/jpkerp.git",
+      "branch": "master",
+      "revision": "e6de03adbac98a33da7d844fb8fb197ff885e7cb",
+      "dirty_entries": 1,
+      "state": "DIRTY_HOLD"
+    },
+    {
+      "path": "C:\\dev\\jpkerp-v4",
+      "repository": "https://github.com/freepass-creator/jpkerp-v4.git",
+      "branch": "main",
+      "revision": "8e72823454732a0d6bceddf8be646ad3c9cc83ff",
+      "dirty_entries": 0,
+      "state": "CLEAN"
+    },
+    {
+      "path": "C:\\dev\\jpkerp2",
+      "repository": "https://github.com/freepass-creator/jpkerp2.git",
+      "branch": "main",
+      "revision": "6e1e9aee68fd2c3e6d2fd640e670860b60ee1d15",
+      "dirty_entries": 1,
+      "state": "DIRTY_HOLD"
+    },
+    {
+      "path": "C:\\dev\\jpkerp5",
+      "repository": "https://github.com/freepass-creator/jpkerp5.git",
+      "branch": "main",
+      "revision": "13aebe8f9eaad65d9d40c0925b4081b916438b35",
+      "dirty_entries": 3,
+      "state": "DIRTY_HOLD"
+    },
+    {
+      "path": "C:\\dev\\renman",
+      "repository": "https://github.com/freepass-creator/renman.git",
+      "branch": "reborn/2026-08-21",
+      "revision": "adcb74311928feae368aa5aadab084f27792eec9",
+      "dirty_entries": 19,
+      "state": "DIRTY_HOLD"
+    },
+    {
+      "path": "C:\\dev\\renman-v2",
+      "repository": null,
+      "branch": "main",
+      "revision": null,
+      "dirty_entries": 22,
+      "state": "DIRTY_HOLD"
+    },
+    {
+      "path": "C:\\dev\\rentsafe",
+      "repository": "https://github.com/freepass-creator/rentsafe.git",
+      "branch": "main",
+      "revision": "92753b538f46bc565e955be06c78f9947b93c528",
+      "dirty_entries": 0,
+      "state": "CLEAN"
+    },
+    {
+      "path": "C:\\dev\\sales",
+      "repository": "https://github.com/freepass-creator/freepass-sales.git",
+      "branch": "main",
+      "revision": "f89c448836ee0f49f2a8a297225eea4c439cc1c4",
+      "dirty_entries": 38,
+      "state": "DIRTY_HOLD"
+    },
+    {
+      "path": "C:\\dev\\sales-mail-automation",
+      "repository": "https://github.com/freepass-creator/freepass-sales.git",
+      "branch": "codex/mail-intake-automation",
+      "revision": "83f15323af1762542ca75b5283891cd3135d7872",
+      "dirty_entries": 2,
+      "state": "DIRTY_HOLD"
+    },
+    {
+      "path": "C:\\dev\\sonogong-estimator",
+      "repository": "https://github.com/freepass-creator/sonogong-estimator.git",
+      "branch": "main",
+      "revision": "c79b8cdc453ef52793081c1d9a51b605b77755dd",
+      "dirty_entries": 39,
+      "state": "DIRTY_HOLD"
+    },
+    {
+      "path": "C:\\dev\\teamjpk",
+      "repository": "https://github.com/freepass-creator/teamjpk.git",
+      "branch": "main",
+      "revision": "b26cd298f07023dab38ee33b7de7ce95528df29b",
+      "dirty_entries": 0,
+      "state": "CLEAN"
+    },
+    {
+      "path": "C:\\dev\\teamjpkwork",
+      "repository": "https://github.com/freepass-creator/teamjpkwork.git",
+      "branch": "main",
+      "revision": "75bb285a241b68c13acbe532c30d6d91110f8082",
+      "dirty_entries": 19,
+      "state": "DIRTY_HOLD"
+    },
+    {
+      "path": "C:\\dev\\teamjpkwork-atom-check",
+      "repository": "https://github.com/freepass-creator/teamjpkwork.git",
+      "branch": null,
+      "revision": "c6363e07e769c999bd3bf4339de8ca95ca7ebc54",
+      "dirty_entries": 6,
+      "state": "DIRTY_HOLD"
+    },
+    {
+      "path": "C:\\dev\\vehicle-master",
+      "repository": "https://github.com/freepass-creator/vehicle-master.git",
+      "branch": "main",
+      "revision": "233115fb1daf9f17ba58a4fae2c30eaaf99b2e8c",
+      "dirty_entries": 0,
+      "state": "CLEAN"
+    },
+    {
+      "path": "C:\\dev\\webtoon-studio",
+      "repository": "https://github.com/freepass-creator/webtoon-studio.git",
+      "branch": "main",
+      "revision": "09e0c456cf76dd5097e7fcfd06a472b5329a8785",
+      "dirty_entries": 303,
+      "state": "DIRTY_HOLD"
+    },
+    {
+      "path": "C:\\dev\\welrix-proposal",
+      "repository": "https://github.com/freepass-creator/welrix-proposal.git",
+      "branch": "main",
+      "revision": "de8899d8a94be4e25a8d050ff3273c47122c1517",
+      "dirty_entries": 3,
+      "state": "DIRTY_HOLD"
+    },
+    {
+      "path": "C:\\dev\\welrixtable",
+      "repository": "https://github.com/freepass-creator/welrixtable.git",
+      "branch": "main",
+      "revision": "158a155c7c74fc288232717273923c176d9650ca",
+      "dirty_entries": 1,
+      "state": "DIRTY_HOLD"
+    },
+    {
+      "path": "C:\\dev\\workcontrol",
+      "repository": "https://github.com/freepass-creator/workcontrol.git",
+      "branch": "main",
+      "revision": "cbfa6ba4630dd0bcb18feb50f5f3a19009a0cddb",
+      "dirty_entries": 1,
+      "state": "DIRTY_HOLD"
+    },
+    {
+      "path": "C:\\dev\\worknavi",
+      "repository": "https://github.com/freepass-creator/teamjpkwork.git",
+      "branch": "main",
+      "revision": "ad8ac5cb226d18986e016ea0dfa8e9b3227e0868",
+      "dirty_entries": 1,
+      "state": "DIRTY_HOLD"
+    },
+    {
+      "path": "C:\\dev\\worknavi-answer-packets",
+      "repository": "https://github.com/freepass-creator/teamjpkwork.git",
+      "branch": "codex/firestore-answer-packets",
+      "revision": "5b73a588397437240e5a72974ac5682b6de492bd",
+      "dirty_entries": 1,
+      "state": "DIRTY_HOLD"
+    },
+    {
+      "path": "C:\\dev\\worknavi-security",
+      "repository": "https://github.com/freepass-creator/teamjpkwork.git",
+      "branch": "codex/security-failclosed",
+      "revision": "1cfcb8d426f083743086cab682ca483b41e3d511",
+      "dirty_entries": 0,
+      "state": "CLEAN"
+    },
+    {
+      "path": "C:\\dev\\_base",
+      "repository": "https://github.com/freepass-creator/freepasserp4.git",
+      "branch": null,
+      "revision": "ed4dc7bfc7db98cae3953962c4b8d737ab15a012",
+      "dirty_entries": 0,
+      "state": "CLEAN"
+    },
+    {
+      "path": "C:\\dev\\_wt-base",
+      "repository": "https://github.com/freepass-creator/freepasserp4.git",
+      "branch": null,
+      "revision": "d0690e864b65ee0a511da9aeb2c20abbe2cb51cf",
+      "dirty_entries": 0,
+      "state": "CLEAN"
+    },
+    {
+      "path": "C:\\dev\\_wt-cs",
+      "repository": "https://github.com/freepass-creator/freepasserp4.git",
+      "branch": "feat/whitelabel-chashoong",
+      "revision": "e098f0d311bf901f1a417213690dce8a0f075123",
+      "dirty_entries": 0,
+      "state": "CLEAN"
+    },
+    {
+      "path": "C:\\dev\\_wt-devcenter-whitelabel-final",
+      "repository": "https://github.com/freepass-creator/freepasserp4.git",
+      "branch": null,
+      "revision": "3d6f504649b6ab57c02f76d41c64d9dc12c18712",
+      "dirty_entries": 0,
+      "state": "CLEAN"
+    },
+    {
+      "path": "C:\\dev\\_wt-devcenter-whitelabel-review",
+      "repository": "https://github.com/freepass-creator/freepasserp4.git",
+      "branch": null,
+      "revision": "5494d85461e32494bea6f8ac4ee39bf472ccf75c",
+      "dirty_entries": 0,
+      "state": "CLEAN"
+    },
+    {
+      "path": "C:\\dev\\_wt-flt",
+      "repository": "https://github.com/freepass-creator/freepasserp4.git",
+      "branch": "feat/eancar-copy",
+      "revision": "9f5ec6b22d3e6b000d3b3a8e59b8b29cc93b694c",
+      "dirty_entries": 0,
+      "state": "CLEAN"
+    },
+    {
+      "path": "C:\\dev\\_wt-gate",
+      "repository": "https://github.com/freepass-creator/freepasserp4.git",
+      "branch": "docs/whitelabel-map-fix",
+      "revision": "09f41ee3b19d57c0cbdf401c34677adf033f81f1",
+      "dirty_entries": 0,
+      "state": "CLEAN"
+    },
+    {
+      "path": "C:\\dev\\_wt-pipe",
+      "repository": "https://github.com/freepass-creator/freepasserp4.git",
+      "branch": "feat/atom-pipeline",
+      "revision": "95d52c87b3fbf221706a3c76495d43e0e53194bf",
+      "dirty_entries": 0,
+      "state": "CLEAN"
+    },
+    {
+      "path": "C:\\dev\\_wt-recheck",
+      "repository": "https://github.com/freepass-creator/freepasserp4.git",
+      "branch": "fix/ui-gate-ts-files",
+      "revision": "4496d18c4c949c1f4855fe663a61e00cfe28d7a3",
+      "dirty_entries": 0,
+      "state": "CLEAN"
+    },
+    {
+      "path": "C:\\dev\\_wt-rgn",
+      "repository": "https://github.com/freepass-creator/freepasserp4.git",
+      "branch": "fix/won-format",
+      "revision": "5d8794951d08165e2cbec6b5a1657a85b8dac8ba",
+      "dirty_entries": 0,
+      "state": "CLEAN"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "name": "@freepass/ai-core-dev",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "orders": "node scripts/orders.mjs",
+    "orders:serve": "node src/orders/server.mjs",
+    "test:orders": "node --test test/orders.test.mjs",
+    "test": "node --test --test-concurrency=1 test/*.test.mjs",
+    "verify": "node scripts/verify-main-state.mjs",
+    "form:validate": "node scripts/validate-development-form.mjs",
+    "evolve:evaluate": "node scripts/evaluate-self-evolution.mjs",
+    "control:evaluate": "node scripts/evaluate-control-tower.mjs",
+    "control:run": "node scripts/run-control-tower.mjs",
+    "registry:validate": "node scripts/validate-project-registry.mjs",
+    "ledger:verify": "node scripts/work-ledger.mjs verify",
+    "inventory:repos": "node scripts/inventory-repositories.mjs",
+    "handoff:export": "node scripts/ai-continuation-pack.mjs export",
+    "handoff:recover": "node scripts/ai-continuation-pack.mjs recover",
+    "repo:preflight": "node scripts/repo-sync-preflight.mjs",
+    "checkpoint": "node scripts/checkpoint-work.mjs"
+  },
+  "dependencies": {
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1"
+  }
+}

@@ -6,11 +6,17 @@ Build an AI operating system that does more than answer prompts: it should under
 
 The system should optimize for **fastest path that preserves required evidence**, not speed alone.
 
+AI Core is the control tower for these decisions. The current executable evaluator coordinates revision-bound observations and pointers to project/domain SSOTs; it does not copy those SSOTs or grant execution authority. See `docs/CONTROL_TOWER.md`.
+
 ## Current priority — Development first, now moving from design to measured execution
 
 The user has explicitly prioritized development as the first domain to make materially easier. The architecture research is now sufficiently rich that the next priority is **not another large framework**. It is the first measured real Development Episode.
 
 Experiment reference: PR #19 / `experiment/development-episode-pilot-v0.1`.
+
+- Status: `AWAITING_USER_REVIEW`
+- PR #19 provides the observation contract and arithmetic summarizer; it does not observe these facts itself.
+- PR #1 is the only current implementation line to evaluate. PR #17 and PR #18 must not be advanced before measured episode evidence shows their mechanisms are needed.
 
 `DEV-EPISODE-001` starts on the next suitable real non-production development request. Do not invent a fake task merely to exercise the framework.
 

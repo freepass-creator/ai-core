@@ -1,0 +1,8 @@
+{
+  "schema": "ai-core-connection/v1",
+  "mode": "shared-required",
+  "ledgerId": "ledger-66ca4559-852a-43d7-be29-83d2a428d97c",
+  "transport": "ssh-loopback",
+  "endpointEnvironment": "AI_CORE_ORDERS_URL",
+  "projectRepositories": { "ai-core": "freepass-creator/ai-core" }
+}

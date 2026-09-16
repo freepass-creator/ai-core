@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AI Core Project Registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "observed_at", "projects"],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "observed_at": { "type": "string", "format": "date-time" },
+    "projects": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/project" }
+    }
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "ref", "revision", "observed_at"],
+      "properties": {
+        "kind": { "enum": ["GIT", "DOCUMENT", "DATABASE", "SERVICE", "DECISION"] },
+        "ref": { "type": "string", "minLength": 1 },
+        "revision": { "type": "string", "minLength": 1 },
+        "observed_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["project_id", "name", "organization", "status", "mission", "repository", "default_branch", "local_path", "head_revision", "authoritative_sources", "commands", "deploy_targets", "required_approvals", "known_blockers"],
+      "properties": {
+        "project_id": { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,62}$" },
+        "name": { "type": "string", "minLength": 1 },
+        "organization": { "enum": ["HEADQUARTERS", "SUBSIDIARY"] },
+        "status": { "enum": ["ACTIVE", "REFERENCE", "HOLD", "RETIRE"] },
+        "mission": { "type": "string", "minLength": 1 },
+        "repository": { "type": "string", "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$" },
+        "default_branch": { "type": "string", "minLength": 1 },
+        "work_branches": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "local_path": { "type": ["string", "null"] },
+        "head_revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "authoritative_sources": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/source" } },
+        "commands": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["install", "test", "build"],
+          "properties": {
+            "install": { "type": ["string", "null"] },
+            "test": { "type": ["string", "null"] },
+            "build": { "type": ["string", "null"] }
+          }
+        },
+        "deploy_targets": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "required_approvals": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "known_blockers": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      }
+    }
+  }
+}

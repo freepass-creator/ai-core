@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
+  <title>AI Core UI·UX 공통 패턴</title>
+  <link rel="stylesheet" href="../design-system/tokens.css">
+  <link rel="stylesheet" href="../design-system/components.css">
+  <script src="./ui-patterns.js" defer></script>
+</head>
+<body>
+<main class="ui-page ui-stack">
+  <header><h1>UI·UX 공통 패턴</h1><p class="ui-meta">폼, 탐색, 피드백, 데이터 상태, 확인 절차의 실제 동작 샘플입니다.</p></header>
+
+  <section class="ui-card" aria-labelledby="form-title">
+    <h2 id="form-title">폼과 검증</h2>
+    <form id="profile-form" novalidate>
+      <div class="ui-row">
+        <label class="ui-field" for="name">이름 <span class="ui-hint">필수 입력</span><input class="ui-input" id="name" name="name" autocomplete="name" required aria-describedby="name-error"><span class="ui-error" id="name-error"></span></label>
+        <label class="ui-field" for="email">이메일 <span class="ui-hint">example@company.com</span><input class="ui-input" id="email" name="email" type="email" autocomplete="email" required aria-describedby="email-error"><span class="ui-error" id="email-error"></span></label>
+      </div>
+      <fieldset><legend>알림 방식</legend><label class="ui-choice"><input type="radio" name="channel" value="email" checked> 이메일</label><label class="ui-choice"><input type="radio" name="channel" value="sms"> 문자</label></fieldset>
+      <label class="ui-choice"><input type="checkbox" id="terms" required> 처리 기준을 확인했습니다.</label>
+      <div class="ui-row"><button class="ui-button" type="submit">설정 저장</button><button class="ui-button secondary" type="reset">초기화</button></div>
+      <p id="form-status" role="status" aria-live="polite"></p>
+    </form>
+  </section>
+
+  <section class="ui-card" aria-labelledby="tabs-title">
+    <h2 id="tabs-title">탭과 접기</h2>
+    <div class="ui-tabs" role="tablist" aria-label="개발 정보">
+      <button class="ui-tab" id="tab-summary" role="tab" aria-selected="true" aria-controls="panel-summary">요약</button>
+      <button class="ui-tab" id="tab-checks" role="tab" aria-selected="false" aria-controls="panel-checks" tabindex="-1">검증</button>
+      <button class="ui-tab" id="tab-history" role="tab" aria-selected="false" aria-controls="panel-history" tabindex="-1">이력</button>
+    </div>
+    <div class="ui-panel" id="panel-summary" role="tabpanel" aria-labelledby="tab-summary" tabindex="0">현재 변경의 목적과 영향을 먼저 보여줍니다.</div>
+    <div class="ui-panel" id="panel-checks" role="tabpanel" aria-labelledby="tab-checks" tabindex="0" hidden>자동 검사와 사용자 흐름 검증을 분리해 표시합니다.</div>
+    <div class="ui-panel" id="panel-history" role="tabpanel" aria-labelledby="tab-history" tabindex="0" hidden>변경 시각, 작성자, revision과 결과를 보존합니다.</div>
+    <details class="ui-disclosure"><summary>고급 조건 보기</summary><div>자주 쓰지 않는 옵션은 접되, 선택 상태와 접근 가능한 이름을 유지합니다.</div></details>
+  </section>
+
+  <section class="ui-card ui-stack" aria-labelledby="feedback-title">
+    <h2 id="feedback-title">피드백과 데이터 상태</h2>
+    <div class="ui-alert" role="status">초안은 이 기기에 저장되어 있습니다.</div>
+    <div class="ui-row" role="group" aria-label="데이터 상태 선택">
+      <button class="ui-button secondary" type="button" data-state="loading">로딩</button><button class="ui-button secondary" type="button" data-state="empty">빈 상태</button><button class="ui-button secondary" type="button" data-state="error">오류</button><button class="ui-button secondary" type="button" data-state="populated">데이터</button>
+    </div>
+    <div class="ui-state" id="data-state" aria-live="polite"></div>
+    <nav class="ui-pagination" aria-label="결과 페이지"><button class="ui-button secondary" id="page-prev" type="button" disabled aria-describedby="page-status">이전</button><span id="page-status" role="status" aria-live="polite">1 / 3 페이지</span><button class="ui-button secondary" id="page-next" type="button" aria-describedby="page-status">다음</button></nav>
+    <div class="ui-row"><button class="ui-button" id="toast-open" type="button">저장 알림 보기</button><button class="ui-button danger" id="dialog-open" type="button">기록 삭제</button></div>
+  </section>
+
+  <section class="ui-card ui-stack" aria-labelledby="workflow-title">
+    <div><h2 id="workflow-title">임시저장과 실행 경계</h2><p class="ui-meta">입력은 이 브라우저의 작업 키에 보존됩니다. 저장 성공과 외부 실행은 서로 다른 결과입니다.</p></div>
+    <label class="ui-field" for="work-note">작업 메모 <span class="ui-hint">새로고침 후에도 복구되는 초안</span><textarea class="ui-textarea" id="work-note" rows="4"></textarea></label>
+    <label class="ui-choice"><input type="checkbox" id="simulate-save-failure"> 다음 저장을 실패로 시뮬레이션</label>
+    <div class="ui-workflow-actions">
+      <button class="ui-button" id="draft-save" type="button">서버 저장 시뮬레이션</button>
+      <button class="ui-button secondary" id="external-action" type="button" disabled aria-describedby="workflow-status">외부 실행 검토</button>
+    </div>
+    <p class="ui-alert" id="workflow-status" role="status" aria-live="polite">저장된 변경이 없습니다.</p>
+    <dl class="ui-receipt" id="save-receipt" hidden><div><dt>작업 키</dt><dd id="receipt-key"></dd></div><div><dt>revision</dt><dd id="receipt-revision"></dd></div><div><dt>저장 시각</dt><dd id="receipt-time"></dd></div></dl>
+  </section>
+</main>
+
+<div class="ui-toast" id="toast" role="status" aria-live="polite" hidden>변경사항을 저장했습니다.</div>
+<dialog class="ui-dialog" id="confirm-dialog" aria-labelledby="dialog-title" aria-describedby="dialog-description">
+  <div class="ui-dialog-body"><h2 id="dialog-title">기록을 삭제할까요?</h2><p id="dialog-description">삭제하면 목록에서 제거됩니다. 실행 전에 대상과 영향을 다시 확인하세요.</p><div class="ui-dialog-actions"><button class="ui-button secondary" id="dialog-cancel" type="button">취소</button><button class="ui-button danger" id="dialog-confirm" type="button">삭제</button></div></div>
+</dialog>
+</body>
+</html>

@@ -2,6 +2,16 @@
 
 AI Core is the group headquarters for user orders, shared memory, planning, routing, approvals, evidence and follow-through.
 
+## 현재 작업: 공통 AI 오더 데스크
+
+통합 기준: PR #20의 work 원장이 업무 상태의 정본이고 PR #21의 OrderStore는 접수·claim 기록이다. 읽기 어댑터와 임시 DB의 후보→확인→work 연결은 [격리 통합 실험](docs/integration/INTEGRATION_STATUS.md)으로 검증한다. 영속 매핑·outbox는 미완이므로 운영 연결과 실행·최종 완료는 HOLD다. 사용자는 말로만 요청하고 기술 입력은 담당 AI가 처리한다.
+
+2026-09-15 사용자 요청으로 `work/codex/order-control-v1`에 로컬 오더 접수·담당 배정·공통 AI 인계·처리 이력·결과 확인 기능을 구현했다. 저장소는 분리하고 모든 업무 상태와 공통 처리 기능을 AI Core에 모으는 방향이다. 이름은 임시 **이음**이며 사용자와 상의 중이다.
+
+Node.js 24.19 이상에서 격리 UI 실험은 `npm run orders:serve -- --standalone --db :memory: --port 4319`로 실행한다. CLI는 `npm run orders -- help`, 검증은 `npm test`를 사용한다. 실제 DB로의 이전이나 운영 서버 연결은 이 실험에 포함되지 않는다.
+
+현재 UI는 **접수·결과 확인을 기록하는 수동 인계 도구**다. 결과 확인 후에도 REVIEW를 유지하며 정본 CLOSED를 만들지 않는다. [공유 실행 안내](docs/SHARED_ORDER_EXECUTION.md)는 기존 접수 전송 설계 기록이다. 실제 원격 연결·자동 실행·인증된 검토자 증명은 미완이다. 아래 `main` 설명과 `DEV-EPISODE-001`은 상속한 이전 개발선의 기록이다.
+
 The adopted operating target is a **group workspace with independent subsidiaries**:
 
 - headquarters: AI Core, planning, DevCenter, management support and shared services;
@@ -29,15 +39,34 @@ Implementation handoff: [Claude work packet](docs/CLAUDE_EMERGENCY_HANDOFF.md) a
 - Shared services do not grant new production, live-data, permission, payment, deletion or legal authority.
 - Common standards define quality and collaboration baselines; subsidiary business logic, brand and user experience remain independent.
 
-## Current v0.1 implementation
+## Current implementation
 
-The current repository provides a read-optimized memory and orchestration design. It does not yet implement the full group workspace/runtime.
+The repository provides memory, development contracts, safe concurrent checkpoints, UI/UX samples, self-evolution gates and a fail-closed control-tower snapshot evaluator. It does not yet implement the full group workspace/runtime or monitor source systems by itself.
+
+`main`에는 실행 가능한 오케스트레이터가 없다. The evaluator only calculates gates from a supplied snapshot and always keeps execution authority external.
 
 Conceptual route:
 
 `Task → Intent Router → Project/Source Resolve → Capability Plan → Execution Route → Work Packet → Proof Bundle`
 
 The next implementation step is the local group workspace, project registry, Project Capsules and one non-production subsidiary pilot defined in `docs/GROUP_OPERATING_MODEL.md`.
+
+Run the bounded local checks and evaluator:
+
+```powershell
+npm test
+npm run verify
+npm run form:validate -- examples/development-form.json
+npm run control:evaluate -- examples/control-tower.json
+npm run control:run -- examples/project-registry.json examples/control-tower.json examples/work-ledger.jsonl
+npm run registry:validate -- examples/project-registry.json
+```
+
+The evaluator reports whether an item is ready to prepare, execute or close. It never grants execution authority. See [Control Tower](docs/CONTROL_TOWER.md) and [Concurrent Work](docs/CONCURRENT_WORK.md).
+
+Project routing starts from the revision-bound registry. Work state changes use the append-only, optimistic-concurrency ledger described in [Work Ledger](docs/WORK_LEDGER.md).
+
+The repository/task consolidation boundary and refreshable local checkout inventory are documented in [Control Tower Consolidation](docs/CONTROL_TOWER_CONSOLIDATION.md).
 
 ## Repository relationships
 
@@ -46,4 +75,4 @@ The next implementation step is the local group workspace, project registry, Pro
 - `freepass-creator/aiops`: source for shared integration candidates plus operations-domain procedures
 - subsidiary repositories: actual product code, project SSOT and real outcomes
 
-Read `WORK_READ_FIRST.md`, then `MEMORY.md`, `memory/CURRENT.md`, the current Work Packet and the target subsidiary's authoritative project sources.
+Read `WORK_READ_FIRST.md`, then `MEMORY.md`, `memory/CURRENT.md`, `memory/RESEARCH_INDEX.md`, the current Work Packet and the target subsidiary's authoritative project sources.

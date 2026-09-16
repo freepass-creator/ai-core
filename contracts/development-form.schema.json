@@ -1,0 +1,235 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/freepass-creator/ai-core/contracts/development-form.schema.json",
+  "title": "AI Core Standard Development Form",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "change_id", "request", "project", "scope", "delivery", "acceptance_criteria", "lane", "verification", "review", "authorization", "release", "outcome", "handoff"],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "change_id": { "type": "string", "pattern": "^[A-Z][A-Z0-9_-]*-[0-9]{3,}$" },
+    "request": {
+      "type": "object", "additionalProperties": false,
+      "required": ["title", "user_intent", "stage", "unknowns", "decisions_required"],
+      "properties": {
+        "title": { "type": "string", "minLength": 1 },
+        "user_intent": { "type": "string", "minLength": 1 },
+        "stage": { "enum": ["DRAFT", "READY", "IN_PROGRESS", "HOLD", "IMPLEMENTED", "CLOSED"] },
+        "unknowns": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "decisions_required": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "project": {
+      "type": "object", "additionalProperties": false,
+      "required": ["repository", "base_branch", "base_revision", "authoritative_sources", "data_classification"],
+      "properties": {
+        "repository": { "type": "string", "minLength": 1 },
+        "base_branch": { "type": "string", "minLength": 1 },
+        "base_revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "authoritative_sources": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/source" } },
+        "data_classification": { "enum": ["PUBLIC", "INTERNAL", "CONFIDENTIAL", "RESTRICTED"] }
+      }
+    },
+    "scope": {
+      "type": "object", "additionalProperties": false,
+      "required": ["in", "out", "affected_paths", "data_scopes"],
+      "properties": {
+        "in": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+        "out": { "type": "array", "items": { "type": "string" } },
+        "affected_paths": { "type": "array", "items": { "type": "string" } },
+        "data_scopes": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "delivery": {
+      "type": "object", "additionalProperties": false,
+      "required": ["coverage", "journey", "data_flow", "quality"],
+      "properties": {
+        "coverage": { "type": "array", "minItems": 7, "maxItems": 7, "items": { "$ref": "#/$defs/layerCoverage" } },
+        "journey": { "$ref": "#/$defs/userJourney" },
+        "data_flow": { "type": "array", "items": { "$ref": "#/$defs/dataFlow" } },
+        "quality": {
+          "type": "object", "additionalProperties": false,
+          "required": ["security", "performance", "accessibility", "observability"],
+          "properties": {
+            "security": { "$ref": "#/$defs/qualityDecision" },
+            "performance": { "$ref": "#/$defs/qualityDecision" },
+            "accessibility": { "$ref": "#/$defs/qualityDecision" },
+            "observability": { "$ref": "#/$defs/qualityDecision" }
+          }
+        }
+      }
+    },
+    "acceptance_criteria": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/criterion" } },
+    "lane": {
+      "type": "object", "additionalProperties": false,
+      "required": ["actor", "branch", "worktree", "head_revision"],
+      "properties": {
+        "actor": { "enum": ["CODEX", "CURSOR", "CLAUDE", "GEMINI", "HUMAN"] },
+        "branch": { "type": "string", "pattern": "^work/[a-z0-9._-]+/[a-z0-9._-]+$" },
+        "worktree": { "type": "string", "minLength": 1 },
+        "head_revision": { "type": ["string", "null"], "pattern": "^[0-9a-f]{40}$" }
+      }
+    },
+    "verification": { "$ref": "#/$defs/gate" },
+    "review": {
+      "type": "object", "additionalProperties": false,
+      "required": ["status", "subject_revision", "reviewers", "receipts", "findings"],
+      "properties": {
+        "status": { "enum": ["NOT_REQUESTED", "PENDING", "PARTIAL", "PASSED", "FAILED"] },
+        "subject_revision": { "type": ["string", "null"], "pattern": "^[0-9a-f]{40}$" },
+        "reviewers": { "type": "array", "items": { "enum": ["CODEX", "CURSOR", "CLAUDE", "GEMINI", "HUMAN"] } },
+        "receipts": { "type": "array", "items": { "$ref": "#/$defs/reviewReceipt" } },
+        "findings": { "type": "array", "items": { "$ref": "#/$defs/evidence" } }
+      }
+    },
+    "authorization": {
+      "type": "object", "additionalProperties": false,
+      "required": ["required", "status", "action", "target", "revision", "scope", "authorized_by", "authorized_at", "expires_at"],
+      "properties": {
+        "required": { "type": "boolean" },
+        "status": { "enum": ["NOT_REQUIRED", "PENDING", "GRANTED", "DENIED", "EXPIRED"] },
+        "action": { "type": ["string", "null"], "enum": [null, "MERGE", "DEPLOY", "EXTERNAL_WRITE"] },
+        "target": { "type": ["string", "null"] },
+        "revision": { "type": ["string", "null"], "pattern": "^[0-9a-f]{40}$" },
+        "scope": { "type": "array", "items": { "type": "string" } },
+        "authorized_by": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/humanAuthority" }] },
+        "authorized_at": { "type": ["string", "null"], "format": "date-time" },
+        "expires_at": { "type": ["string", "null"], "format": "date-time" }
+      }
+    },
+    "release": {
+      "type": "object", "additionalProperties": false,
+      "required": ["state", "requested_action", "target", "revision", "released_at", "rollback"],
+      "properties": {
+        "state": { "enum": ["NOT_REQUESTED", "READY", "MERGED", "DEPLOYED", "ROLLED_BACK", "HOLD"] },
+        "requested_action": { "type": ["string", "null"], "enum": [null, "MERGE", "DEPLOY"] },
+        "target": { "type": ["string", "null"] },
+        "revision": { "type": ["string", "null"], "pattern": "^[0-9a-f]{40}$" },
+        "released_at": { "type": ["string", "null"], "format": "date-time" },
+        "rollback": { "type": ["string", "null"] }
+      }
+    },
+    "outcome": {
+      "type": "object", "additionalProperties": false,
+      "required": ["status", "observations"],
+      "properties": {
+        "status": { "enum": ["NOT_OBSERVED", "OBSERVING", "SUCCESS", "REGRESSION", "UNKNOWN"] },
+        "observations": { "type": "array", "items": { "$ref": "#/$defs/evidence" } }
+      }
+    },
+    "handoff": {
+      "type": "object", "additionalProperties": false,
+      "required": ["summary", "next_action", "blocked_by", "updated_at"],
+      "properties": {
+        "summary": { "type": "string" },
+        "next_action": { "type": "string" },
+        "blocked_by": { "type": "array", "items": { "type": "string" } },
+        "updated_at": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
+  "$defs": {
+    "layerCoverage": {
+      "type": "object", "additionalProperties": false,
+      "required": ["layer", "status", "change", "affected_refs", "verification_refs"],
+      "properties": {
+        "layer": { "enum": ["FRONTEND", "BACKEND", "API", "DATABASE", "INFRA", "UI", "UX"] },
+        "status": { "enum": ["IN_SCOPE", "OUT_OF_SCOPE", "UNKNOWN"] },
+        "change": { "type": ["string", "null"] },
+        "affected_refs": { "type": "array", "items": { "type": "string" } },
+        "verification_refs": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "userJourney": {
+      "type": "object", "additionalProperties": false,
+      "required": ["primary_user", "entry_point", "steps", "success_feedback", "failure_recovery", "surfaces"],
+      "properties": {
+        "primary_user": { "type": ["string", "null"] }, "entry_point": { "type": ["string", "null"] },
+        "steps": { "type": "array", "items": { "type": "string" } }, "success_feedback": { "type": ["string", "null"] },
+        "failure_recovery": { "type": ["string", "null"] },
+        "surfaces": { "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["name", "devices", "states", "state_exclusions"], "properties": { "name": { "type": "string" }, "devices": { "type": "array", "items": { "enum": ["DESKTOP", "TABLET", "MOBILE"] } }, "states": { "type": "array", "items": { "enum": ["DEFAULT", "LOADING", "EMPTY", "ERROR", "DISABLED", "SUCCESS"] } }, "state_exclusions": { "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["state", "reason"], "properties": { "state": { "enum": ["DEFAULT", "LOADING", "EMPTY", "ERROR", "DISABLED", "SUCCESS"] }, "reason": { "type": "string", "minLength": 1 } } } } } } }
+      }
+    },
+    "dataFlow": {
+      "type": "object", "additionalProperties": false,
+      "required": ["from", "through", "to", "data", "write", "authority"],
+      "properties": { "from": { "type": "string" }, "through": { "type": "string" }, "to": { "type": "string" }, "data": { "type": "string" }, "write": { "type": "boolean" }, "authority": { "type": ["string", "null"] } }
+    },
+    "qualityDecision": {
+      "type": "object", "additionalProperties": false,
+      "required": ["status", "details"],
+      "properties": { "status": { "enum": ["REQUIRED", "NOT_APPLICABLE"] }, "details": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } } }
+    },
+    "humanAuthority": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kind", "id", "authority_ref"],
+      "properties": { "kind": { "const": "HUMAN" }, "id": { "type": "string", "minLength": 1 }, "authority_ref": { "type": "string", "minLength": 1 } }
+    },
+    "reviewReceipt": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "reviewer", "issuer", "subject_revision", "verdict", "reviewed_at", "ref", "artifact_digest"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 }, "reviewer": { "enum": ["CODEX", "CURSOR", "CLAUDE", "GEMINI", "HUMAN"] },
+        "issuer": { "type": "string", "minLength": 1 },
+        "subject_revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" }, "verdict": { "enum": ["PASS", "FAIL", "HOLD"] },
+        "reviewed_at": { "type": "string", "format": "date-time" }, "ref": { "type": "string", "minLength": 1 },
+        "artifact_digest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+      }
+    },
+    "source": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kind", "ref", "revision", "verified_at", "file_id", "tab", "range", "modified_time", "disclosed_scope"],
+      "properties": {
+        "kind": { "enum": ["GIT", "DOC", "SHEET", "API", "USER_DECISION"] },
+        "ref": { "type": "string", "minLength": 1 },
+        "revision": { "type": ["string", "null"] },
+        "verified_at": { "type": ["string", "null"], "format": "date-time" },
+        "file_id": { "type": ["string", "null"] },
+        "tab": { "type": ["string", "null"] },
+        "range": { "type": ["string", "null"] },
+        "modified_time": { "type": ["string", "null"], "format": "date-time" },
+        "disclosed_scope": { "type": ["string", "null"] }
+      },
+      "allOf": [{
+        "if": { "properties": { "kind": { "enum": ["DOC", "SHEET"] } }, "required": ["kind"] },
+        "then": { "properties": { "file_id": { "type": "string", "minLength": 1 }, "modified_time": { "type": "string", "format": "date-time" }, "disclosed_scope": { "type": "string", "minLength": 1 } } }
+      }, {
+        "if": { "properties": { "kind": { "const": "SHEET" } }, "required": ["kind"] },
+        "then": { "properties": { "tab": { "type": "string", "minLength": 1 }, "range": { "type": "string", "minLength": 1 } } }
+      }]
+    },
+    "criterion": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "text", "status", "evidence_refs"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^AC-[0-9]{3,}$" },
+        "text": { "type": "string", "minLength": 1 },
+        "status": { "enum": ["OPEN", "PASS", "FAIL", "HOLD"] },
+        "evidence_refs": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "gate": {
+      "type": "object", "additionalProperties": false,
+      "required": ["status", "subject_revision", "checks", "artifacts"],
+      "properties": {
+        "status": { "enum": ["NOT_RUN", "RUNNING", "PASS", "FAIL", "PARTIAL"] },
+        "subject_revision": { "type": ["string", "null"], "pattern": "^[0-9a-f]{40}$" },
+        "checks": { "type": "array", "items": { "$ref": "#/$defs/evidence" } },
+        "artifacts": { "type": "array", "items": { "$ref": "#/$defs/evidence" } }
+      }
+    },
+    "evidence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "kind", "status", "ref", "revision", "target", "observed_at"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "kind": { "enum": ["COMMAND", "TEST", "BUILD", "PREVIEW", "SCREENSHOT", "LOG", "REVIEW", "OBSERVATION"] },
+        "status": { "enum": ["PASS", "FAIL", "HOLD", "UNKNOWN"] },
+        "ref": { "type": "string", "minLength": 1 },
+        "revision": { "type": ["string", "null"] },
+        "target": { "type": ["string", "null"] },
+        "observed_at": { "type": ["string", "null"], "format": "date-time" }
+      }
+    }
+  }
+}
