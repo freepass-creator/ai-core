@@ -23,9 +23,21 @@
     "contracts/control-tower.schema.json",
     "contracts/project-registry.schema.json",
     "contracts/work-ledger-event.schema.json",
+    "docs/AI-SSOT-AUDIT-LOG.md",
+    "docs/AI_COLLABORATION_PROTOCOL.md",
+    "docs/AI_CORE_EVOLUTION_BRIDGE.md",
+    "docs/AI_CORE_GROUP_MASTER_PLAN.md",
+    "docs/AI_CORE_INTEGRATION_EXECUTION_DIRECTIVE.md",
+    "docs/AI_CORE_MULTI_AI_COUNCIL.md",
+    "docs/AI_CORE_OPERATING_PLAYBOOK.md",
+    "docs/CLAUDE_EMERGENCY_HANDOFF.md",
+    "docs/CLAUDE_GROUP_INTEGRATION_HANDOFF.md",
     "docs/CONTROL_TOWER.md",
     "docs/CONTROL_TOWER_CONSOLIDATION.md",
+    "docs/EMERGENCY_ACCEPTANCE_TESTS.md",
+    "docs/EMERGENCY_RUNBOOK.md",
     "docs/GROUP_OPERATING_MODEL.md",
+    "docs/INCIDENT_TEMPLATE.md",
     "docs/ORDER_CONTROL_DESIGN_DRAFT.md",
     "docs/ORDER_CONTROL_INTEGRATION.md",
     "docs/ORDER_DESK_WORK_RESULT.md",
@@ -123,6 +135,7 @@
     "Pre-existing main-state verification failed because the earlier design draft was untracked outside the previous episode inventory.",
     "Initial event query omitted its bound order ID; regression assertions detected missing event history and the query was corrected.",
     "Initial Windows tests tried removing a database directory before closing handles; teardown order was corrected.",
-    "Default node test discovery included preserved research-branch test files; npm test now explicitly targets current test/*.test.mjs. Snapshot original hashes remain intact."
+    "Default node test discovery included preserved research-branch test files; npm test now explicitly targets current test/*.test.mjs. Snapshot original hashes remain intact.",
+    "2026-09-16 정정: origin/main을 이 브랜치에 직접 merge(215a8ee)해서 base_revision 7b63024 이후 diff가 97개에서 109개로 늘었다. 늘어난 12개 파일은 이 에피소드의 성과가 아니라 merge로 딸려 들어온 main의 무관한 변경이다. changed_files는 검증기 계약(실제 diff와 일치)을 지키기 위해 109개로 맞췄으나, 이 에피소드가 실제로 만든 산출물은 아래 requirements/scope 범위로 한정된다."
   ]
 }
