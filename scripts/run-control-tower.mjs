@@ -17,10 +17,15 @@ export function runControlTower({ registry, snapshot, ledgerText }) {
 
   const projects = new Map(registry.projects.map((project) => [project.project_id, project]));
   const controlById = new Map(controlResult.items.map((item) => [item.id, item]));
+  // Chain order is authoritative; delayed observations need not be monotonic.
+  // A supplied full ledger containing future observations cannot represent as_of.
+  const futureWork = new Set(ledgerText.trim().split(/\r?\n/).filter(Boolean).map(line => JSON.parse(line))
+    .filter(event => Date.parse(event.observed_at) > Date.parse(snapshot.as_of)).map(event => event.work_id));
   const items = snapshot.items.map((item) => {
     const project = projects.get(item.project_id);
     const ledgerWork = ledgerResult.work[item.id];
     const blockers = [...controlById.get(item.id).actions.execute.reasons];
+    if (futureWork.has(item.id)) blockers.push('WORK_OBSERVED_AFTER_AS_OF');
     if (!project) blockers.push('PROJECT_NOT_REGISTERED');
     else {
       if (project.status !== 'ACTIVE') blockers.push(`PROJECT_${project.status}`);
@@ -39,7 +44,9 @@ export function runControlTower({ registry, snapshot, ledgerText }) {
       project_id: item.project_id,
       ledger_state: ledgerWork?.state ?? null,
       execute: { enabled: reasons.length === 0, reasons },
-      close: controlById.get(item.id).actions.close,
+      close: futureWork.has(item.id)
+        ? { enabled: false, reasons: unique([...controlById.get(item.id).actions.close.reasons, 'WORK_OBSERVED_AFTER_AS_OF']) }
+        : controlById.get(item.id).actions.close,
       warnings: controlById.get(item.id).warnings,
     };
   });
