@@ -184,3 +184,42 @@ const ledger = ledgerPath === null
 
 - **`demo-order-to-projection.mjs`가 새 `openOrderWorkSubmitter`를 부르지 않는다.** 원장에 직접 CREATED를 기록하고 projection을 읽는다. 즉 **「실제 함수 호환성 시연」이지 「자연어 해석부터 제출까지 운영 경로가 연결됐다」는 증거가 아니다.** 내가 PR #37 병합 보고에서 「E2E 시연」이라고 적은 것은 그 구분을 흐렸다.
 - **다음 한 검사**(GPT 지정): 합성 환경에서 실제 판정기 + `adapter.prepare` + 이번 submitter + 실제 원장 + fresh projection을 **연결**해서, 같은 work가 준비 전/제출 후/재시작 후 동일하게 이어지는지 확인한다. **직접 append로 제출기를 우회하지 않는다.**
+
+### 2026-09-16 — ★sonogong 견적기: 누구나 견적 «금액 규칙»을 덮어쓸 수 있다 (RTDB 폐기와 무관한 구멍)
+
+- 작성: Claude
+- 대상: `C:\dev\sonogong-estimator` — `database.rules.json:7-9`, `src/firebase/config.js`, `SECURITY-rtdb.md`
+- 판단: **HOLD — 대표 판단 필요. 내가 임의로 못 고친다.**
+
+#### 무엇이 열려 있나
+
+`database.rules.json:7-9`가 `/sonogong/config`·`vehicles`·`stock`에 **무인증 읽기·쓰기를 전면 허용**한다.
+
+`/sonogong/config`에 든 것: **금리 · 수익률 · 대출비율 · 보증금 방식 · 취득세율 · 자동차세 cc단가 · 잔존표 · 운영비.**
+⇒ **로그인 없이 아무나 그 값을 덮어쓰면 전 영업자의 견적 금액이 실시간으로 바뀐다.** `SECURITY-rtdb.md:24-27`이 이미 같은 지적을 적어 두었다.
+
+★**관리자 인증이 PIN + `sessionStorage`뿐이고 Firebase Auth가 없다.** 그래서 규칙을 `auth != null`로 조일 수가 없다 — 인증 주체가 아예 없다. 오늘 내가 하드코딩 PIN(`1234`)을 환경변수로 옮겼는데(`2ffee31`), **그것이 방어선이 아니라는 것이 이 조사로 확인됐다.** Vite는 `VITE_*`를 번들에 넣으므로 브라우저에서 읽힌다.
+
+★**실제 운영 규칙이 이 파일과 같은지 모른다** — `SECURITY-rtdb.md:96`이 「**콘솔이 SSOT이고 리포 파일은 반영되지 않는다**」고 적어 두었다. 콘솔은 접속하지 않았다.
+
+#### 개인정보
+
+`/sonogong/quotes/<id>`에 **고객명 · 고객 전화 · 담당자명 · 담당자 전화**가 들어 있고, 손님이 `quote.html?q=<id>`로 **무인증 단건 읽기**를 한다. 자물쇠는 난수 12자 id 하나다(36^12).
+완화: 목록 읽기는 차단돼 있고, `".write": "!data.exists()"`라 **기존 견적 위조·삭제는 막혀 있다.** 신규 생성만 가능하다.
+
+#### 앞선 판단 정정 둘
+
+- **「홈페이지와 공용」은 현재 코드 기준 사실이 아니다.** `C:\devreepasshomepage`는 firebase 참조 0건이고 파일에 「teamjpk 무관」이라 적혀 있다. `config.js:1` 주석과 `SECURITY-rtdb.md:17`이 같은 주장을 반복할 뿐이다. ★단 저장소 밖 배포본이나 콘솔의 과거 데이터는 **모른다**.
+- **더 나쁜 결합이 따로 있다** — `freepasserp4/lib/domain/estimate/cost-settings.ts:182-215`가 `/sonogong/config` 운영값(대출비율 90%·주차비 0·영업수당 3%)을 2026-09-06에 **손으로 베껴 상수로 박아 두었다.** 값이 갈라지면 **코드는 안 깨지고 숫자만 틀린다** — 두 견적기가 다른 금액을 뱉는다.
+
+#### RTDB 이관은 착수하지 않았다
+
+전역 지침상 이 프로젝트(`teamjpk-b70b7`)도 「Freepass/TeamJPK 전 범위」에 들어가므로 migration debt가 맞다. 그러나 같은 지침이 「전환이 불완전하면 **HOLD로 보고**하며 RTDB로 우회하지 않는다」고 한다. 실측한 걸림돌 넷:
+① `onValue` 실시간 구독 4곳 — `onSnapshot` 대응은 되나 구독 단위·읽기 과금·`flatten` 전제가 바뀐다
+② **CLI 3본이 SDK가 아니라 무인증 REST로 치고, `config.js` 소스를 정규식 파싱해 URL을 얻는다**(`scripts/_rtdb.mjs:10-20`) — Firestore엔 같은 경로가 없어 Admin SDK + 서비스계정으로 다시 써야 한다. **코드 이식이 아니라 운영 절차 변경이다**
+③ 손님 단건 읽기가 무인증 공개이고 **이미 발송된 링크가 살아 있어야** 한다 — 전환기에 양쪽 읽기가 불가피하다
+④ 위 erp4 손복사본
+
+이 저장소는 ERP 화면에 iframe으로 박힌 **라이브 서비스**라 무중단이 전제다.
+
+- Claude 반영: **아무것도 고치지 않았다.** 보안 규칙 변경은 잘못 쓰면 정상 사용자가 막히거나 남의 데이터가 열린다. ★**RTDB 이관보다 「무인증 쓰기 개방」이 먼저**라고 본다 — 폐기 여부와 무관하게 지금 열려 있고, 견적 «금액»이 걸려 있다. 다만 Firebase Auth가 없어 규칙만으로는 못 막으므로 **인증을 무엇으로 둘지가 선행 결정**이다.
