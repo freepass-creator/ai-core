@@ -14,6 +14,7 @@
     "control:evaluate": "node scripts/evaluate-control-tower.mjs",
     "control:run": "node scripts/run-control-tower.mjs",
     "registry:validate": "node scripts/validate-project-registry.mjs",
+    "orders:sources": "node scripts/orders-sources-preflight.mjs",
     "ledger:verify": "node scripts/work-ledger.mjs verify",
     "inventory:repos": "node scripts/inventory-repositories.mjs",
     "handoff:export": "node scripts/ai-continuation-pack.mjs export",
