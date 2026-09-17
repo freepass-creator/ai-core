@@ -16,9 +16,15 @@ const 항목 = (덧 = {}) => ({
   execution: 'NOT_STARTED', outcome: 'NOT_OBSERVED', ...덧,
 });
 
+/** ★승인 확인 — 시험에서는 「그 사건이 원장에 있다」를 흉내낸다.
+ *  실제 배선은 해시체인 원장을 읽어 확인한다(order-work-sources.mjs). */
+const 있다고침 = () => true;
+const 없다고침 = () => false;
+
 const 방향 = (덧 = {}) => ({
   id: 'DIR-001', 무엇: 'ai-core 개발은 main 병합까지 기계가',
   적용: { project_id: 'ai-core' }, 주인: '대표',
+  승인근거: { 원장사건: 'WR-000000001' },
   기한규칙: { 며칠: 7 }, 관측유효: { 시간: 72 },
   허가: { action: 'develop', target: 'ai-core', scope: ['read', 'build', 'test', 'merge-to-main'], 유효시간: 24 },
   벽: ['배포'], 세운이: '대표', 세운때: '2026-09-17T00:00:00Z', 만료: '2027-09-17T00:00:00Z', ...덧,
@@ -39,24 +45,25 @@ test('★방향이 없으면 예전 그대로 막힌다 — 관문은 한 줄도
 });
 
 test('★방향이 있으면 같은 관문을 그대로 통과한다', () => {
-  const r = 방향적용({ 항목: 항목(), 방향들: [방향()], asOf: AS_OF });
+  const r = 방향적용({ 항목: 항목(), 방향들: [방향()], asOf: AS_OF, 승인확인: 있다고침 });
   const 결과 = 실행되나(r.항목);
   assert.equal(결과.상태, 'READY');
   assert.equal(결과.된다, true);
   assert.deepEqual(결과.막는이유, []);
-  assert.equal(r.쓴방향, 'DIR-001/대표');
+  // ★승인 근거 사건까지 붙는다 — 「누가 허락했나」에 「어디 적혀 있나」가 따라온다.
+  assert.equal(r.쓴방향, 'DIR-001/대표@WR-000000001');
 });
 
 test('★방향이 채운 칸마다 «누가 허락했나» 가 남는다', () => {
-  const { 항목: 채운 } = 방향적용({ 항목: 항목(), 방향들: [방향()], asOf: AS_OF });
+  const { 항목: 채운 } = 방향적용({ 항목: 항목(), 방향들: [방향()], asOf: AS_OF, 승인확인: 있다고침 });
   // 누가 허락했나에 답이 없으면 그것은 허가가 아니라 그냥 통과다.
-  assert.equal(채운.authorization.authorized_by, 'DIR-001/대표');
+  assert.match(채운.authorization.authorized_by, /^DIR-001\/대표@WR-/);
   assert.equal(채운.commitment.owner, '대표');
 });
 
 test('★방향은 «적어 놓은 범위» 밖을 허가하지 못한다', () => {
   const 좁은 = 방향({ 허가: { action: 'develop', target: 'ai-core', scope: ['read'], 유효시간: 24 } });
-  const { 항목: 채운 } = 방향적용({ 항목: 항목(), 방향들: [좁은], asOf: AS_OF });
+  const { 항목: 채운 } = 방향적용({ 항목: 항목(), 방향들: [좁은], asOf: AS_OF, 승인확인: 있다고침 });
   assert.deepEqual(채운.authorization.scope, ['read']);
   // 범위를 늘려 주지 않는다 — 방향에 적힌 그대로다.
   assert.ok(!채운.authorization.scope.includes('merge-to-main'));
@@ -64,7 +71,7 @@ test('★방향은 «적어 놓은 범위» 밖을 허가하지 못한다', () =
 
 test('★허가 칸이 없는 방향은 «아무 권한도» 주지 않는다 — 벽까지만 흐른다', () => {
   const 권한없이 = 방향({ 허가: undefined });
-  const { 항목: 채운 } = 방향적용({ 항목: 항목(), 방향들: [권한없이], asOf: AS_OF });
+  const { 항목: 채운 } = 방향적용({ 항목: 항목(), 방향들: [권한없이], asOf: AS_OF, 승인확인: 있다고침 });
   assert.equal(채운.authorization.status, 'PENDING');
   const 결과 = 실행되나(채운);
   assert.equal(결과.된다, false);
@@ -114,10 +121,10 @@ test('★벽은 «사람이 정한 자리» 다 — 실패가 아니다', () => 
 });
 
 test('★관측 유효기간도 방향이 정한다 — 없으면 이미 만료다', () => {
-  const { 항목: 채운 } = 방향적용({ 항목: 항목(), 방향들: [방향()], asOf: AS_OF });
+  const { 항목: 채운 } = 방향적용({ 항목: 항목(), 방향들: [방향()], asOf: AS_OF, 승인확인: 있다고침 });
   assert.notEqual(채운.sources[0].valid_until, 채운.sources[0].observed_at);
   const 기간없이 = 방향({ 관측유효: undefined });
-  const { 항목: 그대로 } = 방향적용({ 항목: 항목(), 방향들: [기간없이], asOf: AS_OF });
+  const { 항목: 그대로 } = 방향적용({ 항목: 항목(), 방향들: [기간없이], asOf: AS_OF, 승인확인: 있다고침 });
   assert.equal(그대로.sources[0].valid_until, 그대로.sources[0].observed_at);
   assert.ok(실행되나(그대로).막는이유.includes('MATERIAL_OBSERVATION_EXPIRED'));
 });
@@ -146,4 +153,38 @@ test('★서명된 실제 방향 파일이 과태료만 맞춘다', async () => 
   }
   assert.equal(맞는가(과, 항목({ project_id: 'aiops', id: 'GWATAERYO-001' })), true);
   assert.equal(맞는가(과, 항목({ project_id: 'aiops', id: 'MISU-001' })), false);
+});
+
+
+test('★★파일에 적힌 서명만으로는 승격하지 못한다 — GPT 가 지적한 경계', () => {
+  // 「direction 파일의 «내용만으로» 사람 승인으로 승격하면 안 된다」
+  // 확인 함수가 아예 없으면 — 부르는 쪽이 아무것도 확인하지 않았다는 뜻이다.
+  const r1 = 방향적용({ 항목: 항목(), 방향들: [방향()], asOf: AS_OF });
+  assert.equal(r1.막힘, 'DIRECTION_APPROVAL_UNVERIFIED');
+  assert.equal(실행되나(r1.항목).된다, false);
+
+  // 확인했는데 «그 사건이 없으면» — 누가 적어 넣기만 한 것이다.
+  const r2 = 방향적용({ 항목: 항목(), 방향들: [방향()], asOf: AS_OF, 승인확인: 없다고침 });
+  assert.equal(r2.막힘, 'DIRECTION_APPROVAL_NOT_FOUND');
+  assert.equal(실행되나(r2.항목).된다, false);
+});
+
+test('★★승인근거를 안 적은 방향은 아무것도 못 준다', () => {
+  const 근거없이 = 방향({ 승인근거: undefined });
+  const r = 방향적용({ 항목: 항목(), 방향들: [근거없이], asOf: AS_OF, 승인확인: 있다고침 });
+  assert.equal(r.막힘, 'DIRECTION_APPROVAL_EVIDENCE_REQUIRED');
+  assert.equal(실행되나(r.항목).된다, false);
+});
+
+test('★확인 함수에 «무엇을 확인하라» 가 전달된다', () => {
+  let 받은 = null;
+  방향적용({ 항목: 항목(), 방향들: [방향()], asOf: AS_OF, 승인확인: (x) => { 받은 = x; return true; } });
+  assert.equal(받은.원장사건, 'WR-000000001');
+  assert.equal(받은.방향.id, 'DIR-001');
+});
+
+test('★승인 출처가 «어느 사건인지»까지 남는다', () => {
+  const { 항목: 채운 } = 방향적용({ 항목: 항목(), 방향들: [방향()], asOf: AS_OF, 승인확인: 있다고침 });
+  // 누가 허락했나 + «그 근거가 어디 적혀 있나» 가 한 줄에 남아야 한다.
+  assert.equal(채운.authorization.authorized_by, 'DIR-001/대표@WR-000000001');
 });
