@@ -214,3 +214,50 @@ test('a server given no ledger path reads the one beside its own database', asyn
   assert.equal(result.status, 'LINKED');
   assert.equal(result.canonical_state, 'RECEIVED');
 });
+
+const BINDING_SCHEMA = `
+  CREATE TABLE IF NOT EXISTS coordination_bindings (
+    order_id TEXT NOT NULL, requirement_revision INTEGER NOT NULL, work_id TEXT UNIQUE NOT NULL,
+    project_id TEXT NOT NULL, subject_revision TEXT NOT NULL, requirement_digest TEXT NOT NULL,
+    created_record_version INTEGER NOT NULL, command_id TEXT UNIQUE NOT NULL, event_id TEXT UNIQUE NOT NULL,
+    PRIMARY KEY(order_id,requirement_revision));`;
+
+test('★with no mapping table at all the server says MISSING, not UNLINKED', async (t) => {
+  const { workSources } = await fixtureRoot(t);
+  const byConvention = { ...workSources };
+  delete byConvention.mappings;
+  const { url, store } = await serve(t, byConvention);
+  const order = store.create(orderInput());
+  const result = await readWork(url, order.id);
+  // Nothing has ever produced a binding in this deployment. "I do not know" is
+  // the only honest answer; UNLINKED would be a conclusion drawn from no data.
+  assert.equal(result.reason, 'WORK_SOURCE_MISSING_MAPPINGS');
+  assert.equal(result.status, 'HOLD');
+});
+
+test('★a binding in the order database reaches LINKED with no mappings path configured', async (t) => {
+  const { workSources } = await fixtureRoot(t);
+  const byConvention = { ...workSources };
+  delete byConvention.mappings;
+  const { url, store } = await serve(t, byConvention);
+  const order = store.create(orderInput());
+
+  store.db.exec(BINDING_SCHEMA);
+  store.db.prepare('INSERT INTO coordination_bindings VALUES (?,?,?,?,?,?,?,?,?)')
+    .run(order.id, order.revision, WORK, PROJECT, SUBJECT, 'digest', order.version, 'CMD-1', 'EVENT-001');
+
+  const result = await readWork(url, order.id);
+  assert.equal(result.status, 'LINKED', JSON.stringify(result));
+  assert.equal(result.mapping.work_id, WORK);
+  assert.equal(result.execution_authorized, false);
+});
+
+test('an empty binding table is honestly UNLINKED, unlike an absent one', async (t) => {
+  const { workSources } = await fixtureRoot(t);
+  const byConvention = { ...workSources };
+  delete byConvention.mappings;
+  const { url, store } = await serve(t, byConvention);
+  const order = store.create(orderInput());
+  store.db.exec(BINDING_SCHEMA);
+  assert.equal((await readWork(url, order.id)).status, 'UNLINKED');
+});

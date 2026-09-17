@@ -21,6 +21,7 @@ import { readFile } from 'node:fs/promises';
 import { resolve, isAbsolute, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createOrderWorkContextReader } from './order-work-context-reader.mjs';
+import { readOrderMappingInventory } from './order-mapping-inventory.mjs';
 import { createOrderWorkAdapter } from './order-work-adapter.mjs';
 import { verifyLedgerText } from '../../scripts/work-ledger.mjs';
 import { runControlTower } from '../../scripts/run-control-tower.mjs';
@@ -31,6 +32,11 @@ const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 // (scripts/run-control-tower.mjs:64), plus the mapping inventory, which has no
 // CLI of its own yet. Names match that usage so operators configure one vocabulary.
 export const SOURCE_KEYS = ['registry', 'snapshot', 'mappings', 'ledger'];
+
+// Sources that have a settled home and therefore need no configured path. Both
+// live with the order store because both are only meaningful about THIS
+// deployment's orders — see order-mapping-inventory.mjs for the mapping case.
+export const CONVENTION_KEYS = ['mappings', 'ledger'];
 
 // ★Where the operating work ledger lives.
 //
@@ -57,11 +63,17 @@ export function resolveWorkSourcePaths(workSources, { ordersDbPath = null } = {}
   if (!workSources || typeof workSources !== 'object' || Array.isArray(workSources)) return null;
   // The ledger is the one source with a settled convention, so it may be left out
   // of configuration. The others have no canonical home yet and must be named.
-  const filled = workSources.ledger || !ordersDbPath
-    ? workSources
-    : { ...workSources, ledger: defaultWorkLedgerPath(ordersDbPath) };
+  const filled = { ...workSources };
+  if (!filled.ledger && ordersDbPath) filled.ledger = defaultWorkLedgerPath(ordersDbPath);
   const paths = {};
   for (const key of SOURCE_KEYS) {
+    // The mapping inventory is not a file at all; it is a table inside the order
+    // database. An explicit path still wins, for an operator who keeps it apart.
+    if (key === 'mappings' && !filled.mappings) {
+      if (!ordersDbPath) return { missing: key };
+      paths.mappings = null;
+      continue;
+    }
     const value = filled[key];
     if (typeof value !== 'string' || value.trim() !== value || !value) return { missing: key };
     paths[key] = isAbsolute(value) ? value : resolve(repoRoot, value);
@@ -91,7 +103,18 @@ export function createWorkProjectionProvider({ store, workSources, ordersDbPath 
 
   return async function readWorkProjection(orderId) {
     let registry, snapshot, mappings;
-    for (const key of ['registry', 'snapshot', 'mappings']) {
+    if (paths.mappings === null) {
+      // Read from the order store's own database. MAPPING_INVENTORY_ABSENT means
+      // nothing has ever produced a binding — which is "I do not know", not "this
+      // order has none". Reporting it as an empty list would make the adapter
+      // answer UNLINKED with total confidence and no evidence.
+      try { mappings = readOrderMappingInventory(store.db); }
+      catch (error) {
+        return hold(error?.message === 'MAPPING_INVENTORY_ABSENT'
+          ? 'WORK_SOURCE_MISSING_MAPPINGS' : 'WORK_SOURCE_UNREADABLE_MAPPINGS');
+      }
+    }
+    for (const key of paths.mappings === null ? ['registry', 'snapshot'] : ['registry', 'snapshot', 'mappings']) {
       try {
         const value = await readJson(key);
         if (key === 'registry') registry = value;

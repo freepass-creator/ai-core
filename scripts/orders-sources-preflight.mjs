@@ -16,7 +16,7 @@ import { validateProjectRegistry } from './validate-project-registry.mjs';
 import { evaluateControlTower } from './evaluate-control-tower.mjs';
 import { verifyLedgerText } from './work-ledger.mjs';
 import { readConnectionPolicy } from '../src/orders/client.mjs';
-import { SOURCE_KEYS, resolveWorkSourcePaths, defaultWorkLedgerPath } from '../src/integration/order-work-sources.mjs';
+import { SOURCE_KEYS, CONVENTION_KEYS, resolveWorkSourcePaths, defaultWorkLedgerPath } from '../src/integration/order-work-sources.mjs';
 import { defaultDb } from '../src/orders/store.mjs';
 
 // The adapter's mapping shape (order-work-adapter.mjs). Duplicated as a shallow
@@ -71,13 +71,21 @@ export async function inspectWorkSources(workSources, { ordersDbPath = null } = 
       sources: SOURCE_KEYS.map(key => ({
         key,
         ...(workSources?.[key] ? { state: 'OK', detail: 'configured' } : bad('UNCONFIGURED',
-          key === 'ledger' ? 'no path, and no order DB to anchor the convention to' : 'no path in workSources')),
+          CONVENTION_KEYS.includes(key) ? 'no path, and no order DB to anchor the convention to' : 'no path in workSources')),
       })),
     };
   }
   const sources = [];
-  for (const key of SOURCE_KEYS) sources.push({ key, path: resolved.paths[key], ...await inspectSource(key, resolved.paths[key]) });
-  return { status: sources.every(source => source.state === 'OK') ? 'READY' : 'HOLD', sources };
+  for (const key of SOURCE_KEYS) {
+    // A null path means the source is read from the order database itself, which
+    // this command cannot open read-only without disturbing a running server.
+    if (resolved.paths[key] === null) {
+      sources.push({ key, state: 'IN_ORDER_DB', detail: `read from ${ordersDbPath ?? 'the order database'} (coordination_bindings)` });
+      continue;
+    }
+    sources.push({ key, path: resolved.paths[key], ...await inspectSource(key, resolved.paths[key]) });
+  }
+  return { status: sources.every(source => ['OK', 'IN_ORDER_DB'].includes(source.state)) ? 'READY' : 'HOLD', sources };
 }
 
 if (process.argv[1]?.endsWith('orders-sources-preflight.mjs')) {
@@ -95,8 +103,10 @@ if (process.argv[1]?.endsWith('orders-sources-preflight.mjs')) {
   }
   if (report.status === 'UNCONFIGURED' && !report.sources.length) {
     console.log('  orders.connection.json has no "workSources" block.');
-    console.log(`  It needs: ${SOURCE_KEYS.filter(key => key !== 'ledger').join(', ')}.`);
-    console.log(`  ledger has a convention and needs no path: ${defaultWorkLedgerPath(ordersDbPath)}`);
+    console.log(`  It needs: ${SOURCE_KEYS.filter(key => !CONVENTION_KEYS.includes(key)).join(', ')}.`);
+    console.log('  These have a convention and need no path:');
+    console.log(`    ledger    ${defaultWorkLedgerPath(ordersDbPath)}`);
+    console.log(`    mappings  coordination_bindings inside ${ordersDbPath}`);
   }
   // Not a failure: an unconfigured desk is a legitimate state, and this command
   // is for reading the situation, not for gating anything.
