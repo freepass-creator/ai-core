@@ -134,12 +134,12 @@ export async function verifyRepository(root) {
   const episode = JSON.parse(episodeText);
   const diffTarget = episode.execution?.subject_revision || episode.execution?.observation_tip || 'HEAD';
   const trackedFiles = execFileSync(
-    'git', ['diff', '--name-only', `${episode.project.base_revision}...${diffTarget}`],
+    'git', ['-c', 'core.quotepath=false', 'diff', '--name-only', `${episode.project.base_revision}...${diffTarget}`],
     { cwd: root, encoding: 'utf8' }
   ).trim().split(/\r?\n/).filter(Boolean);
   const untrackedFiles = (episode.execution?.subject_revision || episode.execution?.observation_tip)
     ? []
-    : execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' })
+    : execFileSync('git', ['-c', 'core.quotepath=false', 'ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' })
       .trim().split(/\r?\n/).filter(Boolean);
   const changedFiles = combineChangedFiles(trackedFiles, untrackedFiles);
   const errors = validateMainState({
@@ -153,8 +153,8 @@ export async function verifyRepository(root) {
     const active = JSON.parse(await read(activePath));
     if (active.base_revision !== episode.execution.observation_tip) errors.push('successor base must match historical observation tip');
     if (active.episode_id !== 'ORDER-DESK-001' || !active.requirements?.length) errors.push('successor episode identity or requirements missing');
-    const changedSince = execFileSync('git', ['diff', '--name-only', active.base_revision], { cwd: root, encoding: 'utf8' }).trim().split(/\r?\n/).filter(Boolean);
-    const newFiles = execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim().split(/\r?\n/).filter(Boolean);
+    const changedSince = execFileSync('git', ['-c', 'core.quotepath=false', 'diff', '--name-only', active.base_revision], { cwd: root, encoding: 'utf8' }).trim().split(/\r?\n/).filter(Boolean);
+    const newFiles = execFileSync('git', ['-c', 'core.quotepath=false', 'ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim().split(/\r?\n/).filter(Boolean);
     const actual = combineChangedFiles(changedSince, newFiles).sort();
     if (JSON.stringify(actual) !== JSON.stringify([...(active.changed_files ?? [])].sort())) errors.push('successor episode changed files do not match repository diff');
     for (const path of active.changed_files ?? []) if (!fileExists(path)) errors.push(`successor changed file missing: ${path}`);
