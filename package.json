@@ -23,7 +23,9 @@
     "handoff:export": "node scripts/ai-continuation-pack.mjs export",
     "handoff:recover": "node scripts/ai-continuation-pack.mjs recover",
     "repo:preflight": "node scripts/repo-sync-preflight.mjs",
-    "checkpoint": "node scripts/checkpoint-work.mjs"
+    "checkpoint": "node scripts/checkpoint-work.mjs",
+    "registry:refresh": "node scripts/registry-refresh.mjs",
+    "control:snapshot": "node scripts/control-snapshot-refresh.mjs"
   },
   "dependencies": {
     "ajv": "8.20.0",
