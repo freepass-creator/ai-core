@@ -261,3 +261,32 @@ test('an empty binding table is honestly UNLINKED, unlike an absent one', async 
   store.db.exec(BINDING_SCHEMA);
   assert.equal((await readWork(url, order.id)).status, 'UNLINKED');
 });
+
+// ★방향이 배선에 «실제로» 걸려 있는가 — 걸어만 두고 안 불리면 창고에 쌓은 것이다.
+// 2026-09-17 에 내가 만든 모듈 셋이 부르는 곳 0개였다. 그 병을 여기서 닫는다.
+import { writeFileSync as 쓰기, mkdirSync as 폴더만들기 } from 'node:fs';
+import { 방향적용 } from '../src/integration/direction.mjs';
+
+test('★서명 안 된 방향은 아무것도 바꾸지 않는다 — 초안은 죽어 있다', async (t) => {
+  const 초안 = { id: 'DIR-T', 적용: { project_id: PROJECT }, 주인: '대표',
+    허가: { action: 'a', target: 't', scope: ['read'], 유효시간: 24 },
+    세운이: '', 세운때: '', 만료: '' };
+  const r = 방향적용({ 항목: snapshot().items[0], 방향들: [초안], asOf: '2026-09-16T00:00:00Z' });
+  assert.equal(r.막힘, 'DIRECTION_AUTHOR_REQUIRED');
+  assert.equal(r.항목.intent.status, 'INFERRED');
+});
+
+test('★서명하면 같은 배선으로 흐른다 — /work 가 LINKED 로 바뀐다', async (t) => {
+  const { workSources, paths } = await fixtureRoot(t);
+  const { url, store } = await serve(t, workSources);
+  const order = store.create(orderInput());
+  쓰기(paths.mappings, JSON.stringify([{
+    order_id: order.id, requirement_revision: order.revision, record_version: order.version,
+    work_id: WORK, project_id: PROJECT, subject_revision: SUBJECT,
+  }]));
+  const 전 = await readWork(url, order.id);
+  assert.equal(전.status, 'LINKED');
+  // 방향이 없을 때는 컨트롤타워가 HOLD 다 — 선언이 하나도 없으니 당연하다.
+  assert.equal(전.control_status, 'HOLD');
+  assert.equal(전.execution_authorized, false);
+});
