@@ -90,6 +90,7 @@
     "memory/TOOL_CONNECTIONS.md",
     "orders.connection.json",
     "package.json",
+    "registry/directions.json",
     "registry/projects.json",
     "scripts/ai-continuation-pack.mjs",
     "scripts/demo-order-to-projection.mjs",
@@ -117,6 +118,7 @@
     "src/integration/order-work-context-reader.mjs",
     "src/integration/order-work-sources.mjs",
     "src/integration/order-work-submitter.mjs",
+    "src/integration/work-recorder.mjs",
     "src/orders/client.mjs",
     "src/orders/server.mjs",
     "src/orders/store.mjs",
@@ -147,6 +149,7 @@
     "test/validate-project-registry.test.mjs",
     "test/verify-main-state.test.mjs",
     "test/work-ledger.test.mjs",
+    "test/work-recorder.test.mjs",
     "web/orders/app.js",
     "web/orders/index.html",
     "web/orders/style.css"
