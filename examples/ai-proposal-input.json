@@ -1,0 +1,12 @@
+{
+  "schema": "ai-core-ai-proposal/v1",
+  "source_ai": "chatgpt-free",
+  "generated_at": "2026-09-15T09:10:00Z",
+  "captured_at": "2026-09-15T09:15:00Z",
+  "target_order_id": null,
+  "target_work_id": "WORK-example",
+  "handoff_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "proposal_summary": "Review this bounded suggestion against the current canonical work",
+  "proposed_changes": ["Add a focused test after the coordinator accepts the proposal"],
+  "evidence_refs": ["docs/coordination/AI_CONTINUATION.md"]
+}

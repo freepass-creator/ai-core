@@ -1,0 +1,99 @@
+name: Shared Order Repository Check
+
+on:
+  workflow_dispatch:
+    inputs:
+      order_id:
+        description: 'Existing central order ID (ORD-...)'
+        required: true
+        type: string
+      task_id:
+        description: 'Existing task ID (T1, T2, ...)'
+        required: true
+        type: string
+      record_result:
+        description: 'Record this repository check as a reference note in the selected order'
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: shared-order-check-${{ inputs.order_id }}
+  cancel-in-progress: false
+
+jobs:
+  check:
+    # Private access is available only to the reviewed default branch.
+    if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    environment: ai-core-private-runner
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.19.0
+      - run: npm ci
+      # Tests run before the private channel is opened and receive no SSH secrets.
+      - id: tests
+        continue-on-error: true
+        run: npm test
+      - name: Connect to the shared ledger and preserve the execution reference
+        env:
+          AI_CORE_SSH_HOST: ${{ vars.AI_CORE_SSH_HOST }}
+          AI_CORE_SSH_USER: ${{ vars.AI_CORE_SSH_USER }}
+          AI_CORE_SSH_PRIVATE_KEY: ${{ secrets.AI_CORE_SSH_PRIVATE_KEY }}
+          AI_CORE_SSH_KNOWN_HOSTS: ${{ secrets.AI_CORE_SSH_KNOWN_HOSTS }}
+          AI_CORE_ORDERS_URL: http://127.0.0.1:4318
+          AI_CORE_ORDER_ID: ${{ inputs.order_id }}
+          AI_CORE_TASK_ID: ${{ inputs.task_id }}
+          AI_CORE_RECORD_RESULT: ${{ inputs.record_result }}
+          AI_CORE_CHECK_STATUS: ${{ steps.tests.outcome }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$AI_CORE_SSH_HOST" =~ ^[A-Za-z0-9][A-Za-z0-9.-]*$ ]] || exit 2
+          [[ "$AI_CORE_SSH_USER" =~ ^[a-z_][a-z0-9_-]*$ ]] || exit 2
+          [[ -n "$AI_CORE_SSH_PRIVATE_KEY" && -n "$AI_CORE_SSH_KNOWN_HOSTS" ]] || exit 2
+          umask 077
+          key="$RUNNER_TEMP/ai-core-key"
+          known="$RUNNER_TEMP/ai-core-known-hosts"
+          printf '%s\n' "$AI_CORE_SSH_PRIVATE_KEY" > "$key"
+          printf '%s\n' "$AI_CORE_SSH_KNOWN_HOSTS" > "$known"
+          unset AI_CORE_SSH_PRIVATE_KEY AI_CORE_SSH_KNOWN_HOSTS
+          control="$RUNNER_TEMP/ai-core-ssh-control"
+          cleanup() {
+            ssh -S "$control" -O exit "$AI_CORE_SSH_USER@$AI_CORE_SSH_HOST" 2>/dev/null || true
+            rm -f -- "$key" "$known" "$control"
+          }
+          trap cleanup EXIT
+          ssh -fNT -M -S "$control" -o BatchMode=yes -o IdentitiesOnly=yes -o ExitOnForwardFailure=yes \
+            -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$known" -i "$key" \
+            -L 127.0.0.1:4318:127.0.0.1:4318 "$AI_CORE_SSH_USER@$AI_CORE_SSH_HOST"
+          ready=false
+          for attempt in 1 2 3 4 5; do
+            ssh -S "$control" -O check "$AI_CORE_SSH_USER@$AI_CORE_SSH_HOST" >/dev/null 2>&1 || exit 3
+            if node scripts/orders.mjs meta >/dev/null; then ready=true; break; fi
+            sleep 2
+          done
+          [[ "$ready" == true ]] || exit 3
+          node scripts/order-run-receipt.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: shared-order-check-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            .local/github-receipt/receipt.json
+            .local/github-receipt/retry-command.json
+          include-hidden-files: true
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Preserve repository test failure
+        if: always() && steps.tests.outcome != 'success'
+        run: exit 1

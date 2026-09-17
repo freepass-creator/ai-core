@@ -1,0 +1,15 @@
+{
+  "schema": "ai-core-continuation-input/v1",
+  "generated_at": "2026-09-15T09:00:00Z",
+  "source_ref": "task:stable-id-message:stable-id",
+  "order_id": null,
+  "work_id": "WORK-example",
+  "status": "HOLD",
+  "purpose": "Review a synthetic bounded AI Core change",
+  "decisions": ["Reuse the existing order and work ledgers"],
+  "corrections": ["Repository context is not execution authority"],
+  "completed": ["Record only evidence that has been independently checked"],
+  "remaining": ["Resolve the verified order and work IDs before implementation"],
+  "verification": ["This example contains no live work assignment"],
+  "evidence_refs": ["docs/coordination/AI_CONTINUATION.md"]
+}

@@ -10,6 +10,7 @@
       "mission": "Route work and preserve revision-bound decisions, evidence and authority boundaries.",
       "repository": "freepass-creator/ai-core",
       "default_branch": "main",
+      "work_branches": ["codex/order-control-integration"],
       "local_path": "C:\\dev\\ai-core-control-tower",
       "head_revision": "e13b0867c8d2a55d3d54a6cac63f3e30584a5ba4",
       "authoritative_sources": [

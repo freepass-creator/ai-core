@@ -56,6 +56,9 @@ export function validateMainState({ readme, current, researchIndex, selfEvolutio
   }
 
   if (episode.episode_id !== 'DEV-EPISODE-001') errors.push('episode id must be DEV-EPISODE-001');
+  if (episode.execution?.observation_tip && !revisionExists(episode.execution.observation_tip)) {
+    errors.push('historical observation tip does not exist');
+  }
   if (episode.status === 'CLOSED' && !revisionExists(episode.execution?.subject_revision)) {
     errors.push('closed episode subject revision does not exist');
   }
@@ -129,19 +132,34 @@ export async function verifyRepository(root) {
     } catch { return false; }
   };
   const episode = JSON.parse(episodeText);
-  const diffTarget = episode.execution?.subject_revision || 'HEAD';
+  const diffTarget = episode.execution?.subject_revision || episode.execution?.observation_tip || 'HEAD';
   const trackedFiles = execFileSync(
     'git', ['diff', '--name-only', `${episode.project.base_revision}...${diffTarget}`],
     { cwd: root, encoding: 'utf8' }
   ).trim().split(/\r?\n/).filter(Boolean);
-  const untrackedFiles = episode.execution?.subject_revision
+  const untrackedFiles = (episode.execution?.subject_revision || episode.execution?.observation_tip)
     ? []
     : execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' })
       .trim().split(/\r?\n/).filter(Boolean);
   const changedFiles = combineChangedFiles(trackedFiles, untrackedFiles);
-  return validateMainState({
+  const errors = validateMainState({
     readme, current, researchIndex, selfEvolution, episode, fileExists, revisionExists, changedFiles
   });
+  if (episode.execution?.observation_tip) {
+    // A historical observation may stop following HEAD only when the next real
+    // episode accounts for all subsequent committed and working-tree changes.
+    const activePath = 'docs/episodes/ORDER-DESK-001.json';
+    if (!fileExists(activePath)) return [...errors, 'historical observation requires an active successor episode'];
+    const active = JSON.parse(await read(activePath));
+    if (active.base_revision !== episode.execution.observation_tip) errors.push('successor base must match historical observation tip');
+    if (active.episode_id !== 'ORDER-DESK-001' || !active.requirements?.length) errors.push('successor episode identity or requirements missing');
+    const changedSince = execFileSync('git', ['diff', '--name-only', active.base_revision], { cwd: root, encoding: 'utf8' }).trim().split(/\r?\n/).filter(Boolean);
+    const newFiles = execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim().split(/\r?\n/).filter(Boolean);
+    const actual = combineChangedFiles(changedSince, newFiles).sort();
+    if (JSON.stringify(actual) !== JSON.stringify([...(active.changed_files ?? [])].sort())) errors.push('successor episode changed files do not match repository diff');
+    for (const path of active.changed_files ?? []) if (!fileExists(path)) errors.push(`successor changed file missing: ${path}`);
+  }
+  return errors;
 }
 
 const invokedPath = process.argv[1] ? resolve(process.argv[1]) : null;
