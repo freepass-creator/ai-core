@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "observed_at": "2026-09-16T00:00:00Z",
+  "observed_at": "2026-09-17T04:40:42Z",
   "projects": [
     {
       "project_id": "ai-core",
@@ -11,13 +11,13 @@
       "repository": "freepass-creator/ai-core",
       "default_branch": "main",
       "local_path": "C:\\dev\\ai-core-control-tower",
-      "head_revision": "887a7a27c0167dc4e85e0a616a84cc2b580df604",
+      "head_revision": "16b8e9f348ce968017502c85e672c2233887a4f9",
       "authoritative_sources": [
         {
           "kind": "GIT",
           "ref": "freepass-creator/ai-core",
-          "revision": "887a7a27c0167dc4e85e0a616a84cc2b580df604",
-          "observed_at": "2026-09-16T00:00:00Z"
+          "revision": "16b8e9f348ce968017502c85e672c2233887a4f9",
+          "observed_at": "2026-09-17T04:40:42Z"
         }
       ],
       "commands": {
@@ -30,8 +30,8 @@
         "merge-to-main"
       ],
       "known_blockers": [
-        "work/codex/order-control-v1 (separate checkout at C:\\dev\\ai-core) and work/codex/control-tower are not yet connected by an adapter",
-        "three local checkouts exist for this one repo (ai-core, ai-core-audit, ai-core-control-tower) on different branches; not consolidated"
+        "resolved 2026-09-17: order-control is connected on main (PR #22/#37/#38/#41) and the server readWorkProjection socket is wired (PR #44). What remains is configuration, not code -- orders.connection.json workSources must name the operating registry/snapshot/mappings/ledger, or /api/orders/:id/work answers WORK_SOURCE_MISSING_<source>",
+        "three local checkouts exist for this one repo on different branches; not consolidated (re-measured 2026-09-17: ai-core=main, ai-core-audit=feature/cognitive-runtime-v0.6, ai-core-control-tower=docs/2026-09-16-review)"
       ]
     },
     {
@@ -43,13 +43,13 @@
       "repository": "freepass-creator/aiops",
       "default_branch": "main",
       "local_path": "C:\\dev\\aiops",
-      "head_revision": "e9070f64fb3533b9036369efe194e3314a2d41f0",
+      "head_revision": "27ed7c085fbdd427c30542370b88f9622a2b1c0c",
       "authoritative_sources": [
         {
           "kind": "GIT",
           "ref": "freepass-creator/aiops",
-          "revision": "e9070f64fb3533b9036369efe194e3314a2d41f0",
-          "observed_at": "2026-09-16T00:00:00Z"
+          "revision": "27ed7c085fbdd427c30542370b88f9622a2b1c0c",
+          "observed_at": "2026-09-17T04:40:42Z"
         }
       ],
       "commands": {
@@ -65,7 +65,7 @@
         "lib/seungin.mjs 행위등급 (local/drive-add/protected)"
       ],
       "known_blockers": [
-        "push blocked: history contains commits >100MB (lib/wonja/자금일보원자.json etc, 2026-09-03), 189 commits ahead of origin/main as of 2026-09-16, needs history surgery -- deferred",
+        "push blocked: history contains commits >100MB (lib/wonja/자금일보원자.json etc, 2026-09-03), 221 commits ahead of origin/main as of 2026-09-17 (was 189 on 2026-09-16), needs history surgery -- deferred",
         "no build script; this project has no compile/bundle step",
         "aiops-daily/aiops-gwataeryo-retry/aiops-gwataeryo-saebyeok scheduled tasks were Disabled since 2026-09-10 (root cause fixed and committed 2026-09-16, tasks not yet re-enabled pending user check)"
       ]
@@ -79,13 +79,13 @@
       "repository": "freepass-creator/devcenter",
       "default_branch": "main",
       "local_path": "C:\\dev\\devcenter",
-      "head_revision": "4ee253fb1b55e285e90073d26ed48706e1d837c9",
+      "head_revision": "1ffe68202fdd38514dcf3b50645705443fcebb35",
       "authoritative_sources": [
         {
           "kind": "GIT",
           "ref": "freepass-creator/devcenter",
-          "revision": "4ee253fb1b55e285e90073d26ed48706e1d837c9",
-          "observed_at": "2026-09-16T00:00:00Z"
+          "revision": "1ffe68202fdd38514dcf3b50645705443fcebb35",
+          "observed_at": "2026-09-17T04:40:42Z"
         }
       ],
       "commands": {
@@ -109,13 +109,13 @@
       "repository": "freepass-creator/freepass-sales",
       "default_branch": "main",
       "local_path": "C:\\dev\\sales",
-      "head_revision": "a00ba8198c8c5a4b3888fe5e43b250e6e656043c",
+      "head_revision": "9de773c5332462acb3722cd1a66c10bfa17bfd3b",
       "authoritative_sources": [
         {
           "kind": "GIT",
           "ref": "freepass-creator/freepass-sales",
-          "revision": "a00ba8198c8c5a4b3888fe5e43b250e6e656043c",
-          "observed_at": "2026-09-16T00:00:00Z"
+          "revision": "9de773c5332462acb3722cd1a66c10bfa17bfd3b",
+          "observed_at": "2026-09-17T04:40:42Z"
         }
       ],
       "commands": {
@@ -139,13 +139,13 @@
       "repository": "freepass-creator/freepasserp4",
       "default_branch": "main",
       "local_path": "C:\\dev\\freepasserp4",
-      "head_revision": "4d962b2db293a8cc193a106008b0270265dcd30d",
+      "head_revision": "d73f44a2ea84280a5849a2c5ff185bd3116ba7c3",
       "authoritative_sources": [
         {
           "kind": "GIT",
           "ref": "freepass-creator/freepasserp4",
-          "revision": "4d962b2db293a8cc193a106008b0270265dcd30d",
-          "observed_at": "2026-09-16T00:00:00Z"
+          "revision": "d73f44a2ea84280a5849a2c5ff185bd3116ba7c3",
+          "observed_at": "2026-09-17T04:40:42Z"
         }
       ],
       "commands": {
