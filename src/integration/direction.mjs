@@ -59,7 +59,20 @@ export function 쓸수있나(방향, asOf) {
 export function 맞는가(방향, 항목) {
   const 적용 = 방향?.적용;
   if (!적용 || typeof 적용 !== 'object' || !Object.keys(적용).length) return false;
-  return Object.entries(적용).every(([키, 값]) => String(항목?.[키] ?? '') === String(값));
+  return Object.entries(적용).every(([키, 값]) => {
+    /** ★`<칸>_시작` 은 그 칸이 이 글자로 «시작하는가» 를 본다 — 2026-09-17
+     *
+     *  왜 필요했나: 대표가 「과태료만 켜라」 했는데, 컨트롤타워 항목에는 «갈래» 칸이
+     *  없다(id·project_id·title 뿐이다). project_id 로만 맞추면 aiops 일 «전부» 가
+     *  걸려 대표가 허락한 것보다 «넓어진다». 그래서 업무 id 앞머리로 좁힌다.
+     *  ★넓히는 장치가 아니라 «좁히는» 장치다. 빈 값은 아무것도 안 맞는다. */
+    if (키.endsWith('_시작')) {
+      const 실제 = String(항목?.[키.slice(0, -3)] ?? '');
+      const 앞 = String(값);
+      return 앞.length > 0 && 실제.startsWith(앞);
+    }
+    return String(항목?.[키] ?? '') === String(값);
+  });
 }
 
 /**
