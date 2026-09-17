@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { resolve, isAbsolute } from 'node:path';
 import { readConnectionPolicy } from './client.mjs';
 import { OrderStore, OrderError, actors, defaultDb } from './store.mjs';
+import { createWorkProjectionProvider } from '../integration/order-work-sources.mjs';
 
 const assets = new Map([
   ['/', ['../../web/orders/index.html', 'text/html; charset=utf-8']],
@@ -11,11 +12,15 @@ const assets = new Map([
   ['/style.css', ['../../web/orders/style.css', 'text/css; charset=utf-8']],
   ['/tokens.css', ['../../design-system/tokens.css', 'text/css; charset=utf-8']],
 ]);
-export function startServer({ dbPath = defaultDb, port = 4318, expectedLedgerId = null, standalone = false, readWorkProjection = null } = {}) {
+export function startServer({ dbPath = defaultDb, port = 4318, expectedLedgerId = null, standalone = false, readWorkProjection = null, workSources = null } = {}) {
   if ((!expectedLedgerId && !standalone) || (expectedLedgerId && standalone)) throw new OrderError('SERVER_MODE_REQUIRED', '공유 원장 ID 또는 명시적인 standalone 모드가 필요합니다.');
   const store = new OrderStore(dbPath);
   const ledgerId = store.ledgerId();
   if (expectedLedgerId && ledgerId !== expectedLedgerId) { store.close(); throw new OrderError('LEDGER_MISMATCH', '지정한 DB는 중앙 원장이 아닙니다. 원본 이관과 원장 ID를 확인하세요.'); }
+  // An explicitly injected provider wins, so tests keep their existing seam.
+  // Otherwise build the read-only provider over THIS server's store, so the order
+  // the adapter re-reads is the same record the endpoint compared versions on.
+  if (!readWorkProjection && workSources) readWorkProjection = createWorkProjectionProvider({ store, workSources });
   const server = createServer(async (req, res) => {
     const json = (status, data) => { res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8' }); res.end(JSON.stringify(data)); };
     try {
@@ -83,7 +88,12 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   if (!standalone && (!dbPath || !isAbsolute(dbPath))) throw new Error('공유 서버는 --db 절대경로 또는 AI_CORE_ORDERS_DB가 필요합니다. 독립 실험만 --standalone을 사용하세요.');
   const expectedLedgerId = standalone ? null : readConnectionPolicy().ledgerId;
   if (!standalone && !expectedLedgerId) throw new Error('중앙 원장 ID가 설정되지 않았습니다.');
-  const { server, url } = await startServer({ dbPath: dbPath ?? defaultDb, port, expectedLedgerId, standalone });
+  // Fill the `readWorkProjection` socket that has been open and empty since it was
+  // added: the endpoint answered HOLD for every order no matter what the canonical
+  // sources said. `workSources` is operator configuration, so an unconfigured
+  // server behaves exactly as before.
+  const { server, url } = await startServer({ dbPath: dbPath ?? defaultDb, port, expectedLedgerId, standalone,
+    workSources: standalone ? null : readConnectionPolicy().workSources ?? null });
   console.log(`AI Core order desk: ${url}\n${standalone ? 'Standalone experiment' : 'Shared private ledger'}; loopback only, use SSH for remote access.`);
   for (const signal of ['SIGINT', 'SIGTERM']) process.on(signal, () => server.close());
 }
