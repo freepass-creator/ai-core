@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import { mkdtemp, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
+import { spawn } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import { appendLedgerEvent, verifyLedgerText } from '../scripts/work-ledger.mjs';
 
 const event = (overrides = {}) => ({
@@ -55,4 +57,27 @@ test('existing lock prevents a concurrent append', async () => {
   const path = join(root, 'ledger.jsonl');
   await writeFile(`${path}.lock`, 'held');
   await assert.rejects(() => appendLedgerEvent(path, event(), null), /LEDGER_LOCKED/);
+});
+
+// The CLI is the thing operators actually run, and its answer for "no file there"
+// used to be indistinguishable from "sound and empty".
+test('★verify CLI separates a ledger that is missing from one that is empty', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'ai-core-ledger-cli-'));
+  const script = fileURLToPath(new URL('../scripts/work-ledger.mjs', import.meta.url));
+  const run = (path) => new Promise((done) => {
+    const child = spawn(process.execPath, [script, 'verify', path], { encoding: 'utf8' });
+    let out = '';
+    child.stdout.on('data', (chunk) => { out += chunk; });
+    child.on('close', (code) => done({ code, out }));
+  });
+
+  const absent = await run(join(root, 'nowhere.jsonl'));
+  assert.equal(absent.code, 1);
+  assert.match(absent.out, /LEDGER_FILE_MISSING/);
+
+  const emptyPath = join(root, 'empty.jsonl');
+  await writeFile(emptyPath, '');
+  const empty = await run(emptyPath);
+  assert.equal(empty.code, 0);
+  assert.match(empty.out, /"status": "VALID"/);
 });

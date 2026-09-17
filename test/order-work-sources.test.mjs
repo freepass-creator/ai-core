@@ -4,12 +4,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash, randomUUID } from 'node:crypto';
-import { mkdtempSync, writeFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, writeFileSync, rmSync, copyFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { startServer } from '../src/orders/server.mjs';
 import { appendLedgerEvent } from '../scripts/work-ledger.mjs';
-import { createWorkProjectionProvider, resolveWorkSourcePaths } from '../src/integration/order-work-sources.mjs';
+import { createWorkProjectionProvider, resolveWorkSourcePaths, defaultWorkLedgerPath } from '../src/integration/order-work-sources.mjs';
 
 const SUBJECT = createHash('sha1').update('order-work-sources-fixture').digest('hex');
 const PROJECT = 'demo-project';
@@ -128,12 +128,14 @@ test('a mapping inventory that is present but not a list is refused, not coerced
 });
 
 test('a partially configured policy names the unconfigured key', async (t) => {
+  // Not `ledger`: that one has a settled convention and is filled from the order
+  // DB's directory. The sources with no canonical home must still be named.
   const { workSources } = await fixtureRoot(t);
   const partial = { ...workSources };
-  delete partial.ledger;
+  delete partial.snapshot;
   const { url, store } = await serve(t, partial);
   const order = store.create(orderInput());
-  assert.equal((await readWork(url, order.id)).reason, 'WORK_SOURCE_UNCONFIGURED_LEDGER');
+  assert.equal((await readWork(url, order.id)).reason, 'WORK_SOURCE_UNCONFIGURED_SNAPSHOT');
 });
 
 test('a complete inventory with no row for this order is honestly UNLINKED', async (t) => {
@@ -167,4 +169,48 @@ test('resolveWorkSourcePaths reports the first unconfigured key and never invent
   assert.equal(resolveWorkSourcePaths(null), null);
   assert.equal(resolveWorkSourcePaths({ registry: 'a.json' }).missing, 'snapshot');
   assert.equal(createWorkProjectionProvider({ store: {}, workSources: null }), null);
+});
+
+test('★the operating ledger defaults to the order store’s own directory', async (t) => {
+  const { workSources, paths, root } = await fixtureRoot(t);
+  const withoutLedger = { ...workSources };
+  delete withoutLedger.ledger;
+
+  // Configured without a ledger, but told where the order DB is: the convention
+  // fills it in, and the resolved path sits beside that DB — never somewhere else.
+  const dbPath = join(root, 'nested', 'orders.sqlite');
+  const resolved = resolveWorkSourcePaths(withoutLedger, { ordersDbPath: dbPath });
+  assert.equal(resolved.paths.ledger, join(root, 'nested', 'work-ledger.jsonl'));
+  assert.equal(defaultWorkLedgerPath(dbPath), resolved.paths.ledger);
+
+  // With no order DB to anchor to, it stays unconfigured rather than guessing.
+  assert.equal(resolveWorkSourcePaths(withoutLedger).missing, 'ledger');
+
+  // An explicitly configured ledger still wins over the convention.
+  assert.equal(resolveWorkSourcePaths(workSources, { ordersDbPath: dbPath }).paths.ledger, paths.ledger);
+});
+
+test('a server given no ledger path reads the one beside its own database', async (t) => {
+  const dir = mkdtempSync(join(tmpdir(), 'ai-core-srv-'));
+  const { workSources, paths } = await fixtureRoot(t);
+  const withoutLedger = { ...workSources };
+  delete withoutLedger.ledger;
+
+  const dbPath = join(dir, 'orders.sqlite');
+  copyFileSync(paths.ledger, join(dir, 'work-ledger.jsonl'));
+  const boot = await startServer({ dbPath, port: 0, standalone: true, workSources: withoutLedger });
+  t.after(async () => {
+    boot.server.closeAllConnections();
+    await new Promise(done => boot.server.close(done));
+    rmSync(dir, { recursive: true, force: true });
+  });
+
+  const order = boot.store.create(orderInput());
+  writeFileSync(paths.mappings, JSON.stringify([{
+    order_id: order.id, requirement_revision: order.revision, record_version: order.version,
+    work_id: WORK, project_id: PROJECT, subject_revision: SUBJECT,
+  }]));
+  const result = await readWork(boot.url, order.id);
+  assert.equal(result.status, 'LINKED');
+  assert.equal(result.canonical_state, 'RECEIVED');
 });

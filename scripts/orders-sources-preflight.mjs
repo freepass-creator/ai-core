@@ -16,7 +16,8 @@ import { validateProjectRegistry } from './validate-project-registry.mjs';
 import { evaluateControlTower } from './evaluate-control-tower.mjs';
 import { verifyLedgerText } from './work-ledger.mjs';
 import { readConnectionPolicy } from '../src/orders/client.mjs';
-import { SOURCE_KEYS, resolveWorkSourcePaths } from '../src/integration/order-work-sources.mjs';
+import { SOURCE_KEYS, resolveWorkSourcePaths, defaultWorkLedgerPath } from '../src/integration/order-work-sources.mjs';
+import { defaultDb } from '../src/orders/store.mjs';
 
 // The adapter's mapping shape (order-work-adapter.mjs). Duplicated as a shallow
 // shape check only: the adapter stays the authority, this just refuses to call a
@@ -61,15 +62,16 @@ async function inspectSource(key, path) {
   return ok(`${value.length} mapping rows`);
 }
 
-export async function inspectWorkSources(workSources) {
-  const resolved = resolveWorkSourcePaths(workSources);
+export async function inspectWorkSources(workSources, { ordersDbPath = null } = {}) {
+  const resolved = resolveWorkSourcePaths(workSources, { ordersDbPath });
   if (!resolved) return { status: 'UNCONFIGURED', sources: [] };
   if (resolved.missing) {
     return {
       status: 'UNCONFIGURED',
       sources: SOURCE_KEYS.map(key => ({
         key,
-        ...(workSources?.[key] ? { state: 'OK', detail: 'configured' } : bad('UNCONFIGURED', 'no path in workSources')),
+        ...(workSources?.[key] ? { state: 'OK', detail: 'configured' } : bad('UNCONFIGURED',
+          key === 'ledger' ? 'no path, and no order DB to anchor the convention to' : 'no path in workSources')),
       })),
     };
   }
@@ -83,14 +85,18 @@ if (process.argv[1]?.endsWith('orders-sources-preflight.mjs')) {
   try { policy = readConnectionPolicy(); }
   catch (error) { console.error(`connection policy unreadable: ${error.message}`); process.exit(2); }
 
-  const report = await inspectWorkSources(policy.workSources ?? null);
+  // The CLI anchors the ledger convention to whichever DB this checkout uses, so
+  // the printed path is the one the server would actually read.
+  const ordersDbPath = process.env.AI_CORE_ORDERS_DB || defaultDb;
+  const report = await inspectWorkSources(policy.workSources ?? null, { ordersDbPath });
   console.log(`order desk work sources: ${report.status}`);
   for (const source of report.sources) {
     console.log(`  ${source.state.padEnd(12)} ${source.key.padEnd(9)} ${source.detail}${source.path ? `\n               ${source.path}` : ''}`);
   }
   if (report.status === 'UNCONFIGURED' && !report.sources.length) {
     console.log('  orders.connection.json has no "workSources" block.');
-    console.log(`  It needs all of: ${SOURCE_KEYS.join(', ')}.`);
+    console.log(`  It needs: ${SOURCE_KEYS.filter(key => key !== 'ledger').join(', ')}.`);
+    console.log(`  ledger has a convention and needs no path: ${defaultWorkLedgerPath(ordersDbPath)}`);
   }
   // Not a failure: an unconfigured desk is a legitimate state, and this command
   // is for reading the situation, not for gating anything.
