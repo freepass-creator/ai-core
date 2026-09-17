@@ -89,6 +89,7 @@
     "memory/TOOL_CONNECTIONS.md",
     "orders.connection.json",
     "package.json",
+    "registry/projects.json",
     "scripts/ai-continuation-pack.mjs",
     "scripts/demo-order-to-projection.mjs",
     "scripts/evaluate-control-tower.mjs",

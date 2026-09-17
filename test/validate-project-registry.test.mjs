@@ -30,6 +30,39 @@ test('active project requires test and build commands', () => {
   assert.ok(codes(input).includes('ACTIVE_PROJECT_CHECKS_INCOMPLETE'));
 });
 
+test('a null command passes only when the registry says why the step does not exist', () => {
+  const input = clone(example);
+  input.projects[0].commands.build = null;
+  // Still a failure with nothing said. A bare null cannot buy its way through.
+  assert.ok(codes(input).includes('ACTIVE_PROJECT_CHECKS_INCOMPLETE'));
+
+  // A reason too short to say anything is not a reason. The schema's minLength
+  // catches it first and returns before the rule runs, so assert the claim that
+  // actually matters — it is refused — not one particular code.
+  input.projects[0].commands_absent_reason = { build: '없음' };
+  assert.equal(validateProjectRegistry(input).status, 'INVALID');
+
+  // A real reason, and only then, passes.
+  input.projects[0].commands_absent_reason = { build: '스크립트 모음이라 빌드 산출물 자체가 없다.' };
+  assert.deepEqual(validateProjectRegistry(input), { status: 'VALID', errors: [] });
+});
+
+test('a reason recorded beside a command that exists is a contradiction', () => {
+  const input = clone(example);
+  input.projects[0].commands_absent_reason = { test: '이 프로젝트에는 테스트 단계가 없다.' };
+  assert.ok(codes(input).includes('ABSENT_REASON_FOR_PRESENT_COMMAND'));
+});
+
+test('a reason for one field does not excuse the other', () => {
+  const input = clone(example);
+  input.projects[0].commands.test = null;
+  input.projects[0].commands.build = null;
+  input.projects[0].commands_absent_reason = { build: '스크립트 모음이라 빌드 산출물 자체가 없다.' };
+  const paths = validateProjectRegistry(input).errors
+    .filter((error) => error.code === 'ACTIVE_PROJECT_CHECKS_INCOMPLETE').map((error) => error.path);
+  assert.deepEqual(paths, ['projects/0/commands/test']);
+});
+
 test('head revision must appear in a git source', () => {
   const input = clone(example);
   input.projects[0].authoritative_sources[0].revision = 'a'.repeat(40);

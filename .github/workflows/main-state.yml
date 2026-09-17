@@ -18,3 +18,7 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: node scripts/verify-main-state.mjs
+      # The registry is a canonical file, so it must be checked like one. It sat
+      # outside CI until 2026-09-17, which is how an INVALID registry could have
+      # been merged and looked fine.
+      - run: npm run registry:validate registry/projects.json

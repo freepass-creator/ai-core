@@ -51,6 +51,16 @@
             "build": { "type": ["string", "null"] }
           }
         },
+        "commands_absent_reason": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Why a command is absent. An ACTIVE project whose test or build command is null must record one here: a step that genuinely does not exist has to stay distinguishable from one that simply has not been established yet.",
+          "properties": {
+            "install": { "type": "string", "minLength": 10 },
+            "test": { "type": "string", "minLength": 10 },
+            "build": { "type": "string", "minLength": 10 }
+          }
+        },
         "deploy_targets": { "type": "array", "items": { "type": "string", "minLength": 1 } },
         "required_approvals": { "type": "array", "items": { "type": "string", "minLength": 1 } },
         "known_blockers": { "type": "array", "items": { "type": "string", "minLength": 1 } }

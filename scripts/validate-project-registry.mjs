@@ -26,8 +26,28 @@ export function validateProjectRegistry(registry) {
       if (set.has(value)) errors.push({ code: `${field.toUpperCase()}_DUPLICATE`, path: `${path}/${field}` });
       set.add(value);
     }
-    if (project.status === 'ACTIVE' && (!project.commands.test || !project.commands.build)) {
-      errors.push({ code: 'ACTIVE_PROJECT_CHECKS_INCOMPLETE', path: `${path}/commands` });
+    // An ACTIVE project must still be verifiable, so a missing test/build is a
+    // failure by default. It passes ONLY when the registry records WHY the step
+    // does not exist. That is deliberately not a loosening: "the step genuinely
+    // does not exist" (aiops builds nothing) and "nobody has established it yet"
+    // look identical as a bare null, and the second must never hide behind the
+    // first. Same shape as the CI checker manifest, where `manual`/`pending`
+    // entries each carry a required reason.
+    if (project.status === 'ACTIVE') {
+      for (const field of ['test', 'build']) {
+        if (project.commands[field]) continue;
+        const reason = project.commands_absent_reason?.[field];
+        if (typeof reason !== 'string' || reason.trim().length < 10) {
+          errors.push({ code: 'ACTIVE_PROJECT_CHECKS_INCOMPLETE', path: `${path}/commands/${field}` });
+        }
+      }
+    }
+    // A reason beside a command that exists is a contradiction: one of the two is
+    // stale, and silently keeping both lets the reason outlive the absence.
+    for (const field of ['install', 'test', 'build']) {
+      if (project.commands[field] && project.commands_absent_reason?.[field]) {
+        errors.push({ code: 'ABSENT_REASON_FOR_PRESENT_COMMAND', path: `${path}/commands_absent_reason/${field}` });
+      }
     }
     if (project.status === 'RETIRE' && project.deploy_targets.length) {
       errors.push({ code: 'RETIRED_PROJECT_HAS_DEPLOY_TARGET', path: `${path}/deploy_targets` });
