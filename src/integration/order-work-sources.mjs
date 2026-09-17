@@ -139,7 +139,8 @@ export function createWorkProjectionProvider({ store, workSources, ordersDbPath 
     if (!Array.isArray(mappings)) return hold('WORK_SOURCE_UNREADABLE_MAPPINGS');
 
     const readLedgerText = () => readFile(paths.ledger, 'utf8');
-    try { await readLedgerText(); }
+    let 원장글 = '';
+    try { 원장글 = await readLedgerText(); }
     catch (error) {
       return hold(error?.code === 'ENOENT' ? 'WORK_SOURCE_MISSING_LEDGER' : 'WORK_SOURCE_UNREADABLE_LEDGER');
     }
@@ -161,7 +162,7 @@ export function createWorkProjectionProvider({ store, workSources, ordersDbPath 
      *    이미 들고 있다(direction.mjs 가 `<방향id>/<세운이>` 로 박는다). */
     const 방향들 = await readJson('directions').then((d) => d?.방향 ?? []).catch(() => []);
     const 입힌스냅샷 = 방향들.length
-      ? { ...snapshot, items: (snapshot?.items ?? []).map((항목) => 방향적용({ 항목, 방향들, asOf: snapshot?.as_of }).항목) }
+      ? { ...snapshot, items: (snapshot?.items ?? []).map((항목) => 방향적용({ 항목, 방향들, asOf: snapshot?.as_of, 승인확인: 원장승인확인(원장글) }).항목) }
       : snapshot;
 
     const adapter = createOrderWorkAdapter({
@@ -170,5 +171,33 @@ export function createWorkProjectionProvider({ store, workSources, ordersDbPath 
       runControlTower,
     });
     return adapter.readWorkProjection(orderId);
+  };
+}
+
+/** ★방향의 «승인근거» 가 정말 원장에 있는지 본다 — direction.mjs 는 이것을 «요구» 만 한다.
+ *
+ *  GPT 검토(2026-09-17): 「세운이:'대표' 는 결국 문자열이고 작성자 진위를 검증할 수 없다.
+ *  direction 파일의 «내용만으로» 사람 승인으로 승격하면 안 된다」 — 맞는 지적이다.
+ *  그 말대로면 파일을 고칠 수 있는 자는 누구나 자기에게 권한을 써 줄 수 있다.
+ *
+ *  그래서 새 인증체계를 만들지 않고 «이미 있는 증명» 을 재사용한다:
+ *    1) 원장이 해시체인 검증을 통과해야 한다 — 지나간 줄을 몰래 못 바꾼다
+ *    2) 방향이 가리킨 event_id 가 그 원장에 «실제로» 있어야 한다
+ *    3) 그 사건에 RECEIVED 증거가 있어야 한다 — 「사람이 말해 준 것」이 승인의 꼴이다
+ *  하나라도 없으면 방향은 «정책 후보» 로만 남고 항목은 손대지 않는다 → HOLD 그대로다.
+ *
+ *  ★여기서만 원장을 읽는다. direction.mjs 는 파일도 원장도 모른다 — 확인의 책임은 배선에 있다.
+ *  ★이것으로 위조가 «불가능» 해지지는 않는다. 원장에 적으려면 work-recorder 를 통과해야
+ *    하고 체인이 이어져야 한다는 것뿐이다. 파일 한 줄보다 비싸게 만든 것이 전부다. */
+export function 원장승인확인(원장글) {
+  if (verifyLedgerText(원장글 ?? '').status !== 'VALID') return () => false;
+  const 사건 = new Map();
+  for (const 줄 of String(원장글 ?? '').split('\n')) {
+    if (!줄.trim()) continue;
+    try { const e = JSON.parse(줄); if (e?.event_id) 사건.set(e.event_id, e); } catch { /* 검증이 이미 봤다 */ }
+  }
+  return ({ 원장사건 }) => {
+    const e = 사건.get(원장사건);
+    return !!e && (e.evidence_refs ?? []).some((r) => String(r).startsWith('RECEIVED:'));
   };
 }

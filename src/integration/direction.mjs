@@ -101,12 +101,36 @@ const 시간뒤 = (기준, 시간) => new Date(when(기준) + Number(시간) * 3
  * untouched when no direction speaks about it — the tower then holds it, which is
  * the correct answer for work nobody has steered.
  */
-export function 방향적용({ 항목, 방향들, asOf }) {
+export function 방향적용({ 항목, 방향들, asOf, 승인확인 = null }) {
   need(항목 && typeof 항목 === 'object', 'ITEM_REQUIRED');
   const 고름 = 방향고르기(방향들, 항목, asOf);
   if (고름.막힘) return { 항목, 막힘: 고름.막힘 };
   const d = 고름.방향;
-  const 표 = `${d.id}/${d.세운이}`;
+
+  /** ★★★문자열만으로는 사람 승인이 되지 않는다 — GPT_REVIEW(2026-09-17)
+   *
+   *  「direction.mjs 자체가 세운이:'대표'는 결국 문자열이고 작성자 진위를 검증할 수
+   *    없다고 «인정하면서», 적용 시 USER_CONFIRMED 와 authorization: GRANTED 를
+   *    만든다. 그러므로 direction 파일의 «내용만으로» 사람 승인으로 승격하면 안 된다」
+   *
+   *  옳은 지적이다. 파일을 고칠 수 있는 누구나 대표의 승인을 «적어 넣을» 수 있었다.
+   *  특히 DIR-ai-core개발·DIR-fp4 의 scope 에는 merge-to-main 까지 들어 있다.
+   *
+   *  ── ★고친 방식: 새 인증체계를 «만들지 않는다»
+   *  GPT 지정대로 «기존 revision-bound evidence» 를 재사용한다. 방향은 자기 승인이
+   *  어느 원장 사건에 적혀 있는지를 가리키고(승인근거.원장사건), 그 사건이 실제로
+   *  해시체인 원장에 있는지는 «부르는 쪽» 이 확인해 승인확인()으로 넘긴다.
+   *
+   *  ★확인이 없거나 실패하면 승격하지 않는다. 방향은 «정책 후보» 로만 남고 항목은
+   *    손대지 않는다 — 그러면 컨트롤타워가 예전처럼 세운다. 안전한 쪽이 기본값이다.
+   *  ★이 모듈은 원장을 «읽지 않는다». 읽으면 순수 함수가 아니게 되고, 무엇을 신뢰
+   *    하는지가 다시 흐려진다. 확인의 책임은 배선에 있고 여기서는 «요구» 만 한다. */
+  const 근거 = d?.승인근거?.원장사건;
+  if (!text(근거)) return { 항목, 막힘: 'DIRECTION_APPROVAL_EVIDENCE_REQUIRED' };
+  if (typeof 승인확인 !== 'function') return { 항목, 막힘: 'DIRECTION_APPROVAL_UNVERIFIED' };
+  if (승인확인({ 방향: d, 원장사건: 근거 }) !== true) return { 항목, 막힘: 'DIRECTION_APPROVAL_NOT_FOUND' };
+
+  const 표 = `${d.id}/${d.세운이}@${근거}`;
 
   // ★intent: the owner confirmed this KIND of work when they wrote the direction.
   //   That is a real user confirmation, just made once instead of per item.

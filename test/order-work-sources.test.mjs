@@ -325,7 +325,7 @@ const 과태료항목 = (id, rev, asOf) => ({
   verification: 'NOT_RUN', execution: 'NOT_STARTED', outcome: 'NOT_OBSERVED',
 });
 
-async function 과태료판(t, workId) {
+async function 과태료판(t, workId, { 승인적기 = true } = {}) {
   const rev = await aiops레비전();
   const asOf = new Date().toISOString().replace(/\.\d+Z$/, 'Z');
   const { readFile } = await import('node:fs/promises');
@@ -337,11 +337,26 @@ async function 과태료판(t, workId) {
   쓰기(paths.registry, await readFile(new URL('../registry/projects.json', import.meta.url), 'utf8'));
   쓰기(paths.snapshot, JSON.stringify({ schema_version: '1.0', as_of: asOf, capacities: [],
     items: [과태료항목(workId, rev, asOf)] }));
-  await appendLedgerEvent(paths.ledger, {
+  const 첫머리 = await appendLedgerEvent(paths.ledger, {
     event_id: 'DIREVENT-001', work_id: workId, project_id: AIOPS, type: 'CREATED',
     from_state: null, to_state: 'RECEIVED', actor: 'TEST', subject_revision: rev,
     observed_at: new Date(Date.parse(asOf) - 3600_000).toISOString().replace(/\.\d+Z$/, 'Z'),
     evidence_refs: [] }, null);
+
+  /** ★★방향의 «승인근거» 를 원장에 적는다 — 이것이 없으면 방향은 정책 후보일 뿐이다.
+   *
+   *  GPT 검토: 「direction 파일의 내용만으로 사람 승인으로 승격하면 안 된다」.
+   *  registry/directions.json 의 DIR-과태료 가 가리키는 사건이 바로 이 줄이고,
+   *  운영에서도 같은 id 로 .local/work-ledger.jsonl 에 적혀 있다.
+   *  ★RECEIVED 증거가 승인의 꼴이다 — 「사람이 말해 준 것」. */
+  if (승인적기) {
+    await appendLedgerEvent(paths.ledger, {
+      event_id: 'DIRAPPROVAL-001', work_id: 'DIRECTION-001', project_id: AIOPS, type: 'CREATED',
+      from_state: null, to_state: 'RECEIVED', actor: 'CLAUDE', subject_revision: rev,
+      observed_at: new Date(Date.parse(asOf) - 1800_000).toISOString().replace(/\.\d+Z$/, 'Z'),
+      evidence_refs: ['RECEIVED:「과태료만 켜라 만료 1년」 @대표 2026-09-17 대화'],
+    }, 첫머리.head);
+  }
   const { url, store } = await serve(t, paths);
   const order = store.create(orderInput());
   쓰기(paths.mappings, JSON.stringify([{ order_id: order.id, requirement_revision: order.revision,
@@ -384,4 +399,18 @@ test('★★같은 프로젝트라도 방향 밖이면 «그대로 막힌다»',
   assert.equal(r.control_status, 'HOLD');
   assert.equal(r.control_result.execute.enabled, false);
   assert.ok(r.control_result.execute.reasons.includes('CONTROLLING_INTENT_UNCONFIRMED'));
+});
+
+test('★★승인근거가 원장에 «없으면» 서명된 방향도 안 선다 — 파일만 고쳐서는 권한이 안 생긴다', async (t) => {
+  /** GPT 검토(2026-09-17)가 가리킨 빈 자리: 세운이:'대표' 는 문자열일 뿐이라
+   *  directions.json 을 고칠 수 있는 자는 누구나 자기에게 권한을 써 줄 수 있었다.
+   *  ★위 판과 «똑같은 서명된 방향» 인데 원장의 승인 사건 한 줄만 뺀다.
+   *    그것만으로 사람 선언이 전부 되살아나야 한다. */
+  const r = await 과태료판(t, 'GWATAERYO-001', { 승인적기: false });
+  assert.equal(r.status, 'LINKED');
+  assert.equal(r.control_status, 'HOLD');
+  const 막는이유 = r.control_result.execute.reasons;
+  for (const 선언 of ['CONTROLLING_INTENT_UNCONFIRMED', 'COMMITMENT_NOT_ACTIVE', 'AUTHORIZATION_REQUIRED']) {
+    assert.ok(막는이유.includes(선언), `승인근거 없이 ${선언} 이 풀렸다: ${막는이유.join(', ')}`);
+  }
 });
