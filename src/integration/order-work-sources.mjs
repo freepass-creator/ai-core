@@ -18,7 +18,7 @@
 // policy file, which is operator-owned configuration.
 
 import { readFile } from 'node:fs/promises';
-import { resolve, isAbsolute, dirname } from 'node:path';
+import { resolve, isAbsolute, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createOrderWorkContextReader } from './order-work-context-reader.mjs';
 import { createOrderWorkAdapter } from './order-work-adapter.mjs';
@@ -32,6 +32,20 @@ const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 // CLI of its own yet. Names match that usage so operators configure one vocabulary.
 export const SOURCE_KEYS = ['registry', 'snapshot', 'mappings', 'ledger'];
 
+// ★Where the operating work ledger lives.
+//
+// It sits BESIDE the order store, not at a path chosen independently, because the
+// two must describe the same deployment. An order record and a ledger event that
+// came from different installations would compose into a projection that looks
+// coherent and is about nothing. Tying the ledger to the DB's own directory makes
+// that mismatch impossible to configure by accident.
+//
+// `.local/` is already gitignored, which is also correct: the ledger is
+// append-only operating data. Committing it would put work history into git and
+// make every parallel session conflict on the same lines.
+export const WORK_LEDGER_FILENAME = 'work-ledger.jsonl';
+export const defaultWorkLedgerPath = (ordersDbPath) => join(dirname(resolve(ordersDbPath)), WORK_LEDGER_FILENAME);
+
 const hold = (reason) => ({
   status: 'HOLD', reason,
   execution_authorized: false, completion_authorized: false, sent: false,
@@ -39,11 +53,16 @@ const hold = (reason) => ({
 
 /** Resolve configured source paths. Relative paths are repo-root relative so a
  *  policy file stays portable; absolute paths are taken as given. */
-export function resolveWorkSourcePaths(workSources) {
+export function resolveWorkSourcePaths(workSources, { ordersDbPath = null } = {}) {
   if (!workSources || typeof workSources !== 'object' || Array.isArray(workSources)) return null;
+  // The ledger is the one source with a settled convention, so it may be left out
+  // of configuration. The others have no canonical home yet and must be named.
+  const filled = workSources.ledger || !ordersDbPath
+    ? workSources
+    : { ...workSources, ledger: defaultWorkLedgerPath(ordersDbPath) };
   const paths = {};
   for (const key of SOURCE_KEYS) {
-    const value = workSources[key];
+    const value = filled[key];
     if (typeof value !== 'string' || value.trim() !== value || !value) return { missing: key };
     paths[key] = isAbsolute(value) ? value : resolve(repoRoot, value);
   }
@@ -57,8 +76,8 @@ export function resolveWorkSourcePaths(workSources) {
  * Returns null when nothing is configured, so the caller keeps the existing
  * "socket is empty" answer instead of this module inventing a different one.
  */
-export function createWorkProjectionProvider({ store, workSources }) {
-  const resolved = resolveWorkSourcePaths(workSources);
+export function createWorkProjectionProvider({ store, workSources, ordersDbPath = null }) {
+  const resolved = resolveWorkSourcePaths(workSources, { ordersDbPath });
   if (!resolved) return null;
   if (resolved.missing) {
     const reason = `WORK_SOURCE_UNCONFIGURED_${resolved.missing.toUpperCase()}`;

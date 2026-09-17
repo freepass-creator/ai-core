@@ -20,7 +20,7 @@ export function startServer({ dbPath = defaultDb, port = 4318, expectedLedgerId 
   // An explicitly injected provider wins, so tests keep their existing seam.
   // Otherwise build the read-only provider over THIS server's store, so the order
   // the adapter re-reads is the same record the endpoint compared versions on.
-  if (!readWorkProjection && workSources) readWorkProjection = createWorkProjectionProvider({ store, workSources });
+  if (!readWorkProjection && workSources) readWorkProjection = createWorkProjectionProvider({ store, workSources, ordersDbPath: dbPath });
   const server = createServer(async (req, res) => {
     const json = (status, data) => { res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8' }); res.end(JSON.stringify(data)); };
     try {

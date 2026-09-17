@@ -95,9 +95,18 @@ export async function appendLedgerEvent(path, event, expectedHead = null) {
 if (process.argv[1]?.endsWith('work-ledger.mjs')) {
   const [command, path, eventPath, expectedHead] = process.argv.slice(2);
   if (command === 'verify' && path) {
-    const text = await readFile(path, 'utf8').catch((error) => error.code === 'ENOENT' ? '' : Promise.reject(error));
-    const result = verifyLedgerText(text); console.log(JSON.stringify(result, null, 2));
-    if (result.status !== 'VALID') process.exitCode = 1;
+    // ★A ledger that is not there is not an empty ledger. Reading ENOENT as ''
+    // made `verify` answer VALID for any path at all, including a typo, so the
+    // command could not tell "this chain is sound" from "I found nothing to read".
+    const text = await readFile(path, 'utf8').catch((error) => error.code === 'ENOENT' ? null : Promise.reject(error));
+    if (text === null) {
+      console.log(JSON.stringify({ status: 'MISSING', head: null, event_count: 0, work: {},
+        errors: [{ code: 'LEDGER_FILE_MISSING', path }] }, null, 2));
+      process.exitCode = 1;
+    } else {
+      const result = verifyLedgerText(text); console.log(JSON.stringify(result, null, 2));
+      if (result.status !== 'VALID') process.exitCode = 1;
+    }
   } else if (command === 'append' && path && eventPath) {
     const event = JSON.parse(await readFile(eventPath, 'utf8'));
     console.log(JSON.stringify(await appendLedgerEvent(path, event, expectedHead === 'null' ? null : expectedHead), null, 2));
