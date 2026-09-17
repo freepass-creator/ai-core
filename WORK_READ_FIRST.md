@@ -56,7 +56,7 @@ AI 이름보다 최신 사용자 결정, 현재 프로젝트 정본, revision-bo
 
 ## 로컬·서버 오더 작업(order-control-v1)을 이어받는 경우
 
-2026-09-15 작업 방향: 저장소는 분리하고 공통 AI 기능·오더 창구를 AI Core에 모은다. 현재 범위는 [통합 상태](docs/integration/INTEGRATION_STATUS.md)와 `docs/episodes/ORDER-DESK-001.json`을 먼저 읽는다. OrderStore는 접수 기록이며 업무 상태 정본은 work 원장(Control Tower)이다. 영속 매핑/outbox 미완은 HOLD다.
+2026-09-15 작업 방향: 저장소는 분리하고 공통 AI 기능·오더 창구를 AI Core에 모은다. 현재 범위는 [통합 상태](docs/integration/INTEGRATION_STATUS.md)와 `docs/episodes/ORDER-DESK-001.json`을 먼저 읽는다. OrderStore는 접수 기록이며 업무 상태 정본은 work 원장(Control Tower)이다. ★submitter 경계(PR37·38)·read-only context reader(PR41)·서버 readWorkProjection 배선은 main 에 들어왔다 — 「영속 매핑/outbox 미완」을 이유로 다시 조사하지 마라. 지금 남은 것은 (a) 운영 registry·snapshot·mappings·ledger 원천을 orders.connection.json 의 workSources 로 «가리키는» 일 (b) 독립 고위험 검토와 운영 활성화다. 원천이 없으면 서버는 WORK_SOURCE_MISSING_<원천> 으로 HOLD 하며, 없는 매핑을 「연결 안 됨」으로 단정하지 않는다.
 
 ## 기본 진입점
 
