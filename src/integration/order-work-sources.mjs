@@ -22,6 +22,7 @@ import { resolve, isAbsolute, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createOrderWorkContextReader } from './order-work-context-reader.mjs';
 import { readOrderMappingInventory } from './order-mapping-inventory.mjs';
+import { 방향적용 } from './direction.mjs';
 import { createOrderWorkAdapter } from './order-work-adapter.mjs';
 import { verifyLedgerText } from '../../scripts/work-ledger.mjs';
 import { runControlTower } from '../../scripts/run-control-tower.mjs';
@@ -37,6 +38,11 @@ export const SOURCE_KEYS = ['registry', 'snapshot', 'mappings', 'ledger'];
 // live with the order store because both are only meaningful about THIS
 // deployment's orders — see order-mapping-inventory.mjs for the mapping case.
 export const CONVENTION_KEYS = ['mappings', 'ledger'];
+
+/** ★방향 파일도 규약으로 둔다 — registry 옆이다.
+ *  방향은 «조직의 결정» 이라 registry(조직의 사실)와 같은 자리에 산다.
+ *  ★없으면 방향이 하나도 없는 것과 같다 — 항목은 손대지 않고 타워가 예전처럼 센다. */
+export const 방향파일 = 'registry/directions.json';
 
 // ★Where the operating work ledger lives.
 //
@@ -99,7 +105,8 @@ export function createWorkProjectionProvider({ store, workSources, ordersDbPath 
 
   // Each read is attempted per request: an operator may place a source while the
   // server runs, and a source that disappears must stop producing answers.
-  const readJson = async (key) => JSON.parse(await readFile(paths[key], 'utf8'));
+  const readJson = async (key) => JSON.parse(await readFile(
+    key === 'directions' ? resolve(repoRoot, 방향파일) : paths[key], 'utf8'));
 
   return async function readWorkProjection(orderId) {
     let registry, snapshot, mappings;
@@ -137,8 +144,28 @@ export function createWorkProjectionProvider({ store, workSources, ordersDbPath 
       return hold(error?.code === 'ENOENT' ? 'WORK_SOURCE_MISSING_LEDGER' : 'WORK_SOURCE_UNREADABLE_LEDGER');
     }
 
+    /** ★★방향을 «여기서» 입힌다 — 2026-09-17
+     *
+     *  대표: 「선언하기 전에는 멈춘다가 아니고 네가 자동으로 흘러가야지.
+     *        그 흘러가는 방향을 내가 설정하는 거고」
+     *
+     *  컨트롤타워는 intent·약정·허가가 채워져야 일을 보낸다. 그걸 «항목마다 사람이»
+     *  선언하면 관문 모델이 되고, 실제로 모든 항목이 영원히 HOLD 였다.
+     *  방향은 그 값을 «갈래마다 한 번» 세운 대표의 결정에서 공급한다.
+     *
+     *  ★관문은 그대로다. 여기서 하는 일은 «입력을 채우는 것» 뿐이고, 판정은 아래
+     *    runControlTower 가 예전과 똑같이 한다.
+     *  ★방향이 없거나(파일 없음) 안 맞으면 항목은 «손대지 않는다» — 그러면 타워가
+     *    예전처럼 세운다. 즉 이 줄을 넣어도 «방향이 서기 전까지는 아무것도 안 바뀐다».
+     *  ★어느 방향이 채웠는지를 쓰지 않고 버린다 — 그건 항목에 남는 authorized_by 가
+     *    이미 들고 있다(direction.mjs 가 `<방향id>/<세운이>` 로 박는다). */
+    const 방향들 = await readJson('directions').then((d) => d?.방향 ?? []).catch(() => []);
+    const 입힌스냅샷 = 방향들.length
+      ? { ...snapshot, items: (snapshot?.items ?? []).map((항목) => 방향적용({ 항목, 방향들, asOf: snapshot?.as_of }).항목) }
+      : snapshot;
+
     const adapter = createOrderWorkAdapter({
-      readContext: createOrderWorkContextReader({ store, registry, snapshot, mappings, readLedgerText }),
+      readContext: createOrderWorkContextReader({ store, registry, snapshot: 입힌스냅샷, mappings, readLedgerText }),
       verifyLedgerText,
       runControlTower,
     });
