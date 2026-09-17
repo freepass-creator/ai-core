@@ -121,3 +121,29 @@ test('★관측 유효기간도 방향이 정한다 — 없으면 이미 만료�
   assert.equal(그대로.sources[0].valid_until, 그대로.sources[0].observed_at);
   assert.ok(실행되나(그대로).막는이유.includes('MATERIAL_OBSERVATION_EXPIRED'));
 });
+
+test('★「_시작」 은 좁히는 장치다 — 넓히지 못한다', () => {
+  const 좁힘 = 방향({ 적용: { project_id: 'ai-core', id_시작: 'GWATAERYO-' } });
+  assert.equal(맞는가(좁힘, 항목({ id: 'GWATAERYO-001' })), true);
+  // 같은 프로젝트라도 앞머리가 다르면 «안 맞는다». 그것이 「과태료만」 이 지켜지는 방식이다.
+  assert.equal(맞는가(좁힘, 항목({ id: 'MISU-001' })), false);
+  // 빈 앞머리로 모든 것을 맞추려 하면 아무것도 안 맞는다.
+  assert.equal(맞는가(방향({ 적용: { id_시작: '' } }), 항목()), false);
+});
+
+test('★서명된 실제 방향 파일이 과태료만 맞춘다', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const f = JSON.parse(await readFile(new URL('../registry/directions.json', import.meta.url)));
+  const 과 = f.방향.find((d) => d.id === 'DIR-과태료');
+  assert.ok(과, 'DIR-과태료 가 있어야 한다');
+  // ★실제 파일은 «지금» 으로 본다. 고정 AS_OF 는 합성 고정물용이라, 서명 시각이 그보다
+  //   뒤면 DIRECTION_FROM_FUTURE 로 보인다 — 그건 결함이 아니라 시험의 시계 문제다.
+  const 지금 = new Date().toISOString().replace(/\.\d+Z$/, 'Z');
+  // ★대표가 서명한 것은 과태료 «하나뿐» 이다. 나머지는 초안으로 남아 아무 권한도 없다.
+  assert.equal(쓸수있나(과, 지금), null);
+  for (const d of f.방향.filter((x) => x.id !== 'DIR-과태료')) {
+    assert.equal(쓸수있나(d, 지금), 'DIRECTION_AUTHOR_REQUIRED');
+  }
+  assert.equal(맞는가(과, 항목({ project_id: 'aiops', id: 'GWATAERYO-001' })), true);
+  assert.equal(맞는가(과, 항목({ project_id: 'aiops', id: 'MISU-001' })), false);
+});
