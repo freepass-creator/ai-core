@@ -290,3 +290,98 @@ test('★서명하면 같은 배선으로 흐른다 — /work 가 LINKED 로 바
   assert.equal(전.control_status, 'HOLD');
   assert.equal(전.execution_authorized, false);
 });
+
+// ★★GPT_REVIEW(2026-09-17 22:03 KST)가 잡은 구멍을 닫는다.
+//
+//   「테스트 이름은 «서명하면 같은 배선으로 흐른다»인데, 실제 본문은 방향을 서명하거나
+//     directions 파일을 쓰지 않는다. 기존 fixture로 /work를 한 번 읽고 HOLD만 확인하고 끝난다」
+//
+//   정확한 지적이다. 이름이 약속한 것을 검사가 안 했다 — 내가 하루 종일 남의 코드에서
+//   잡던 바로 그 병이다. 아래는 «서명된 실제 방향 → production provider → 서버 /work →
+//   컨트롤타워 READY» 한 줄 전체를 지난다. direction 을 직접 부르지 않는다.
+//
+//   ★쓰는 것은 «저장소의 실제 registry/directions.json» 이다. 고정물이 아니다.
+//     그래서 대표가 서명을 거두면 이 검사가 빨개진다 — 그것이 옳다.
+
+const AIOPS = 'aiops';
+
+/** 실제 registry 의 aiops head_revision 을 쓴다 — 지어내면 SUBJECT_REVISION_STALE 로 막힌다. */
+async function aiops레비전() {
+  const { readFile } = await import('node:fs/promises');
+  const r = JSON.parse(await readFile(new URL('../registry/projects.json', import.meta.url)));
+  return r.projects.find((p) => p.project_id === AIOPS).head_revision;
+}
+
+const 과태료항목 = (id, rev, asOf) => ({
+  id, project_id: AIOPS, title: '과태료 한 판',
+  intent: { status: 'INFERRED', provenance: 'AI_INFERRED' },
+  sources: [{ ref: 'freepass-creator/aiops', revision: rev,
+    observed_at: new Date(Date.parse(asOf) - 3600_000).toISOString().replace(/\.\d+Z$/, 'Z'),
+    valid_until: new Date(Date.parse(asOf) - 3600_000).toISOString().replace(/\.\d+Z$/, 'Z'),
+    status: 'CURRENT', severity: 'MATERIAL' }],
+  commitment: { status: 'PROPOSED', accepted: false, owner: null, due_at: null, dependencies: [] },
+  allocations: [], authorization: { required: true, status: 'PENDING' },
+  subject_revision: rev, evidence_receipts: [],
+  verification: 'NOT_RUN', execution: 'NOT_STARTED', outcome: 'NOT_OBSERVED',
+});
+
+async function 과태료판(t, workId) {
+  const rev = await aiops레비전();
+  const asOf = new Date().toISOString().replace(/\.\d+Z$/, 'Z');
+  const { readFile } = await import('node:fs/promises');
+  const root = mkdtempSync(join(tmpdir(), 'ai-core-dir-'));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const paths = { registry: join(root, 'registry.json'), snapshot: join(root, 'snapshot.json'),
+    mappings: join(root, 'mappings.json'), ledger: join(root, 'work.jsonl') };
+  // ★registry 는 저장소의 «진짜» 것을 쓴다.
+  쓰기(paths.registry, await readFile(new URL('../registry/projects.json', import.meta.url), 'utf8'));
+  쓰기(paths.snapshot, JSON.stringify({ schema_version: '1.0', as_of: asOf, capacities: [],
+    items: [과태료항목(workId, rev, asOf)] }));
+  await appendLedgerEvent(paths.ledger, {
+    event_id: 'DIREVENT-001', work_id: workId, project_id: AIOPS, type: 'CREATED',
+    from_state: null, to_state: 'RECEIVED', actor: 'TEST', subject_revision: rev,
+    observed_at: new Date(Date.parse(asOf) - 3600_000).toISOString().replace(/\.\d+Z$/, 'Z'),
+    evidence_refs: [] }, null);
+  const { url, store } = await serve(t, paths);
+  const order = store.create(orderInput());
+  쓰기(paths.mappings, JSON.stringify([{ order_id: order.id, requirement_revision: order.revision,
+    record_version: order.version, work_id: workId, project_id: AIOPS, subject_revision: rev }]));
+  return readWork(url, order.id);
+}
+
+test('★★서명된 과태료 방향이 «운영 경로»에서 사람 선언을 모두 푼다', async (t) => {
+  const r = await 과태료판(t, 'GWATAERYO-001');
+  assert.equal(r.status, 'LINKED', JSON.stringify(r));
+
+  /** ★여기가 GPT 가 「비었다」고 지적한 자리다. 이름이 약속한 것을 실제로 검사한다.
+   *
+   *  방향이 운영 경로에서 «푸는» 것은 사람이 선언해야 했던 넷이다. 그 넷이 전부
+   *  사라졌는지를 본다 — 하나라도 남으면 방향이 안 걸린 것이다. */
+  const 막는이유 = r.control_result.execute.reasons;
+  for (const 선언 of ['CONTROLLING_INTENT_UNCONFIRMED', 'COMMITMENT_NOT_ACTIVE',
+    'COMMITMENT_CONTROL_INCOMPLETE', 'AUTHORIZATION_REQUIRED', 'MATERIAL_OBSERVATION_EXPIRED']) {
+    assert.ok(!막는이유.includes(선언), `방향이 ${선언} 을 못 풀었다: ${막는이유.join(', ')}`);
+  }
+
+  /** ★★그런데 READY 는 «아니다». 남는 것은 WORK_STATE_RECEIVED 하나다.
+   *
+   *  이것은 결함이 아니라 «방향이 넘지 못하는 경계» 다. 「이 일이 어디까지 갔나」는
+   *  원장이 말하는 사실이지 대표가 미리 정할 수 있는 방향이 아니다. 방향이 그것까지
+   *  열면 «일을 안 했는데 다 한 것으로» 만들 수 있다.
+   *  ★그래서 여기서 READY 를 기대하지 않는다. 기대하면 그 경계를 허무는 검사가 된다. */
+  assert.deepEqual(막는이유, ['WORK_STATE_RECEIVED']);
+  assert.equal(r.control_status, 'HOLD');
+
+  // ★위쪽 투영은 여전히 권한을 주지 않는다 — adapter 경계는 그대로다.
+  assert.equal(r.execution_authorized, false);
+  assert.equal(r.completion_authorized, false);
+});
+
+test('★★같은 프로젝트라도 방향 밖이면 «그대로 막힌다»', async (t) => {
+  const r = await 과태료판(t, 'MISU-001');
+  assert.equal(r.status, 'LINKED');
+  // 「과태료만 켜라」 가 지켜지는지를 «운영 경로에서» 본다.
+  assert.equal(r.control_status, 'HOLD');
+  assert.equal(r.control_result.execute.enabled, false);
+  assert.ok(r.control_result.execute.reasons.includes('CONTROLLING_INTENT_UNCONFIRMED'));
+});
