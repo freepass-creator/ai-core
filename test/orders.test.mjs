@@ -41,9 +41,10 @@ test('heartbeat extends owned lease, blocked work can be reassigned, actor misma
   let now = Date.now(); const s = fixture(t, { now: () => now, leaseMs: 1000 }); let o = claim(s, s.create(input())); const token = o.tasks[0].lease.token;
   now += 900; o = s.mutate(o.id, command(o, 'heartbeat', { taskId: 'T1', actor: 'codex', token }));
   now += 200; o = s.mutate(o.id, command(o, 'block', { taskId: 'T1', actor: 'codex', token, reason: '도구 한도' })); assert.equal(o.status, 'BLOCKED');
-  o = s.mutate(o.id, command(o, 'assign', { taskId: 'T1', actor: 'cursor', reason: '코드 검토 인계' }));
+  // codex -> claude 인계. 둘 다 MAIN 이고 실제로 서로 이어받는 갈래다.
+  o = s.mutate(o.id, command(o, 'assign', { taskId: 'T1', actor: 'claude', reason: '코드 검토 인계' }));
   assert.throws(() => claim(s, o), fails('WRONG_ACTOR'));
-  o = claim(s, o, 'T1', 'cursor'); assert.equal(o.tasks[0].assigned, 'cursor');
+  o = claim(s, o, 'T1', 'claude'); assert.equal(o.tasks[0].assigned, 'claude');
 });
 test('revision invalidates reports and claims; historical results survive in events', t => {
   const s = fixture(t); let o = report(s, claim(s, s.create(input()))); assert.equal(o.status, 'REVIEW');

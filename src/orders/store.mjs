@@ -5,14 +5,39 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 export const defaultDb = fileURLToPath(new URL('../../.local/orders.sqlite', import.meta.url));
+/** 누가 일하나 — ★정본
+ *
+ *  ★2026-09-17 대표: 「맡은이 이런 거 이제 없어」 「제미나이 참고역, 클로드·코덱스(GPT)가 메인」
+ *
+ *  그래서 이 표는 «누구에게 일을 나눠 주나» 가 아니라 «누가 어떤 자리에 있나» 다.
+ *  - MAIN     클로드·코덱스. 둘이 같은 오더를 이어서 한다. 일을 «쪼개서 맡기지» 않는다.
+ *  - ADVISORY 제미나이. 물어보는 자리다. 맡기지 않는다.
+ *  ★cursor 는 뺐다 — 지금 갈래에 없다. 남겨 두면 다음 세션이 없는 사람에게 일을 맡긴다.
+ *    (과거 오더의 cursor 기록은 «그때의 사실»이라 지우지 않는다. 아래 keptActors 참고.)
+ */
 export const actors = [
-  { id: 'claude', name: 'Claude', strength: '설계·논리·중요 문안 검토', mode: 'MANUAL_HANDOFF' },
-  { id: 'codex', name: 'Codex', strength: '실행·통합·테스트·결과 확인', mode: 'MANUAL_HANDOFF' },
-  { id: 'cursor', name: 'Cursor', strength: '코드 탐색·구현 검토', mode: 'MANUAL_HANDOFF' },
-  { id: 'gemini', name: 'Gemini', strength: '긴 문맥·표·자료 분석', mode: 'MANUAL_HANDOFF' },
+  { id: 'claude', name: 'Claude', strength: '설계·논리·구현·중요 문안 검토', role: 'MAIN', mode: 'MANUAL_HANDOFF' },
+  { id: 'codex', name: 'Codex (GPT)', strength: '실행·통합·검토·결과 확인', role: 'MAIN', mode: 'MANUAL_HANDOFF' },
+  { id: 'gemini', name: 'Gemini', strength: '긴 문맥·표·자료 분석 — 물어보는 자리', role: 'ADVISORY', mode: 'MANUAL_HANDOFF' },
 ];
+
+/** ★이미 원장에 적힌 행위자는 계속 «읽혀야» 한다.
+ *  cursor 가 맡아 보고한 과거 오더가 실재한다. 그 기록을 못 읽게 만들면
+ *  「그때 누가 했나」가 사라진다. 새 배정에는 못 쓰고, 옛 기록은 그대로 읽힌다. */
+export const keptActors = ['cursor'];
+/** 기본 작업계획 — ★지금 «실제로» 도는 갈래를 적는다
+ *
+ *  ★2026-09-17 정정. 전에는 development 의 검토를 cursor 에게 보냈다. cursor 는 이제
+ *  이 갈래에 없어서, 그대로 두면 오더를 만드는 순간 «없는 사람»에게 검토가 배정된다.
+ *  실제로 검사가 그것을 잡았다(INVALID_ACTOR).
+ *
+ *  검토는 코덱스(GPT)가 받는다 — docs/AI-SSOT-AUDIT-LOG.md 가 그 채널이고 실제로 그렇게 돈다.
+ *  ★여기서 고친 것은 «없는 사람에게 가던 한 자리»뿐이다. document·analysis 의 제미나이
+ *    자리는 그대로 뒀다 — 「참고역」이라는 대표 말과 「자료 분석을 묻는다」는 이 배정은
+ *    어긋나지 않는다. 안 깨진 것을 같이 바꾸지 않는다.
+ */
 const plans = {
-  development: [['design', '설계와 완료 조건', 'claude'], ['execute', '구현과 검증', 'codex'], ['review', '코드 독립 검토', 'cursor']],
+  development: [['design', '설계와 완료 조건', 'claude'], ['execute', '구현과 검증', 'codex'], ['review', '코드 독립 검토', 'codex']],
   document: [['analyze', '자료 분석', 'gemini'], ['design', '논리와 문안 검토', 'claude'], ['execute', '결과물 제작과 확인', 'codex']],
   analysis: [['analyze', '자료 분석', 'gemini'], ['review', '논리와 반례 검토', 'claude'], ['execute', '근거 대조와 결과 정리', 'codex']],
   general: [['execute', '처리와 결과 확인', 'codex']],
@@ -30,6 +55,8 @@ function lines(value, label) {
   return value.map(v => text(v, label, 2000));
 }
 function digest(value) { return createHash('sha256').update(JSON.stringify(value)).digest('hex'); }
+// 새로 맡기는 것은 현재 표에 있는 행위자만. 물러난 행위자(keptActors)는 옛 기록을
+// 읽을 때만 유효하고 새 배정에는 쓰이지 않는다.
 function actor(id) { need(actors.some(a => a.id === id), 'INVALID_ACTOR', '지원하는 AI를 선택하세요.'); return id; }
 
 export class OrderStore {
