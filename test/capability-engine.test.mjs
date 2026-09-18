@@ -99,6 +99,33 @@ test('현재 revision과 scope가 맞고 정본 verifier가 승인한 경우에�
   assert.deepEqual(result.walls, ['관청발송', '문서24업로드']);
 });
 
+test('authority provider가 현재 정본 receipt를 발급하면 caller가 receipt를 직접 만들지 않아도 흐른다', async () => {
+  const fake = fakeRuntime();
+  const aiops = projectRegistry.projects.find(p => p.project_id === 'aiops');
+  const cap = capabilityRegistry.capabilities.find(c => c.id === 'operations.penalty.prepare');
+  let issued = 0;
+  const engine = createCapabilityEngine({
+    capabilityRegistry, projectRegistry, runtime: fake.runtime,
+    authorityProvider: async ({ plan }) => {
+      issued++;
+      return {
+        schema: 'ai-core-authority-receipt/v1', status: 'GRANTED',
+        order_id: plan.order_id, work_id: plan.work_id, capability_id: cap.id, project_id: 'aiops',
+        subject_revision: aiops.head_revision, ledger_head: 'head-current',
+        scopes: [...cap.required_scopes], authorized_by: 'canonical', authorization_action: 'prepare-dispatch',
+        authorization_target: '02_발송할것', authorization_expires_at: '2027-01-01T00:00:00Z',
+      };
+    },
+    verifyAuthority: async ({ authority }) => authority.ledger_head === 'head-current',
+  });
+  const result = await engine.run({
+    text: '과태료 처리해', orderId: 'ORD-001', workId: 'GWATAERYO-001', perform: true,
+  });
+  assert.equal(result.status, 'SUCCEEDED');
+  assert.equal(issued, 1);
+  assert.equal(fake.calls.run, 1);
+});
+
 test('필수 입력 없는 module capability는 실행 전에 HOLD한다', async () => {
   const fake = fakeRuntime();
   const engine = createCapabilityEngine({ capabilityRegistry, projectRegistry, runtime: fake.runtime });
