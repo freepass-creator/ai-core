@@ -8,7 +8,7 @@
     "event_id": { "type": "string", "pattern": "^[A-Z][A-Z0-9_-]*-[0-9]{3,}$" },
     "work_id": { "type": "string", "pattern": "^[A-Z][A-Z0-9_-]*-[0-9]{3,}$" },
     "project_id": { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,62}$" },
-    "type": { "enum": ["CREATED", "TRANSITIONED", "BLOCKED", "RESUMED", "CANCELLED"] },
+    "type": { "enum": ["CREATED", "TRANSITIONED", "BLOCKED", "RESUMED", "CANCELLED", "REOBSERVED"] },
     "from_state": { "type": ["string", "null"], "enum": [null, "RECEIVED", "PLANNED", "IN_PROGRESS", "VERIFYING", "AWAITING_AUTHORIZATION", "READY", "EXECUTED", "OBSERVING", "CLOSED", "BLOCKED", "CANCELLED"] },
     "to_state": { "enum": ["RECEIVED", "PLANNED", "IN_PROGRESS", "VERIFYING", "AWAITING_AUTHORIZATION", "READY", "EXECUTED", "OBSERVING", "CLOSED", "BLOCKED", "CANCELLED"] },
     "actor": { "type": "string", "minLength": 1 },
