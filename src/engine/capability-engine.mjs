@@ -13,7 +13,7 @@ function missingInputs(capability, input) {
 }
 
 function authorityShapeMatches(authority, plan, capability) {
-  if (!authority || authority.status !== 'GRANTED') return false;
+  if (!authority || authority.schema !== 'ai-core-authority-receipt/v1' || authority.status !== 'GRANTED') return false;
   if (authority.order_id !== plan.order_id || authority.work_id !== plan.work_id) return false;
   if (authority.capability_id !== capability.id || authority.project_id !== plan.project_id) return false;
   if (authority.subject_revision !== plan.subject_revision) return false;
@@ -28,6 +28,7 @@ export function createCapabilityEngine({
   builtins = null,
   runtime = createProjectRuntime(),
   verifyAuthority = null,
+  authorityProvider = null,
   readWorkProjection = null,
   clock = Date.now,
 } = {}) {
@@ -120,7 +121,24 @@ export function createCapabilityEngine({
           clock,
         });
       }
-      if (!authorityShapeMatches(authority, preparedPlan, capability)) {
+      let effectiveAuthority = authority;
+      if (!effectiveAuthority && typeof authorityProvider === 'function') {
+        effectiveAuthority = await authorityProvider({
+          plan: structuredClone(preparedPlan),
+          capability: structuredClone(capability),
+        });
+      }
+      if (effectiveAuthority?.status === 'HOLD') {
+        return createWorkResult({
+          plan: preparedPlan,
+          status: 'HOLD',
+          summary: '현재 Control Tower 상태에서 실행 권한 receipt를 만들 수 없습니다.',
+          blockers: [effectiveAuthority.reason ?? 'AUTHORITY_NOT_AVAILABLE'],
+          nextAction: '현재 work 상태·direction·원장 head를 확인합니다.',
+          clock,
+        });
+      }
+      if (!authorityShapeMatches(effectiveAuthority, preparedPlan, capability)) {
         return createWorkResult({
           plan: preparedPlan,
           status: 'HOLD',
@@ -140,7 +158,7 @@ export function createCapabilityEngine({
           clock,
         });
       }
-      const verified = await verifyAuthority({ authority: structuredClone(authority), plan: structuredClone(preparedPlan), capability: structuredClone(capability) });
+      const verified = await verifyAuthority({ authority: structuredClone(effectiveAuthority), plan: structuredClone(preparedPlan), capability: structuredClone(capability) });
       if (verified !== true) {
         return createWorkResult({
           plan: preparedPlan,
@@ -151,7 +169,7 @@ export function createCapabilityEngine({
           clock,
         });
       }
-      preparedPlan = { ...preparedPlan, authorization_source: authority.receipt_id ?? authority.ledger_event_id ?? 'VERIFIED_AUTHORITY' };
+      preparedPlan = { ...preparedPlan, authorization_source: effectiveAuthority.receipt_id ?? effectiveAuthority.ledger_event_id ?? effectiveAuthority.ledger_head };
     }
 
     if (capability.mode === 'LOCAL_MUTATION' && !perform) {
@@ -183,7 +201,7 @@ export function createCapabilityEngine({
         const adapter = builtinAdapters.get?.(capability.adapter.id) ?? builtinAdapters[capability.adapter.id];
         if (!adapter || typeof adapter.invoke !== 'function') throw new Error('BUILTIN_ADAPTER_MISSING');
         if (!adapter.modes.includes(capability.mode)) throw new Error('BUILTIN_ADAPTER_MODE_MISMATCH');
-        result = await adapter.invoke({ plan: preparedPlan, capability, project, input, authority });
+        result = await adapter.invoke({ plan: preparedPlan, capability, project, input, authority: effectiveAuthority ?? authority });
       } else if (capability.adapter.kind === 'PROJECT_MODULE') {
         result = normalizeAdapterResult(await runtime.runModule(capability, project, input));
       } else if (['PROJECT_COMMAND', 'PROJECT_REGISTRY_COMMAND'].includes(capability.adapter.kind)) {
