@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "observed_at": "2026-09-17T23:09:28Z",
+  "observed_at": "2026-09-18T15:30:00Z",
   "projects": [
     {
       "project_id": "ai-core",
@@ -71,6 +71,35 @@
       ]
     },
     {
+      "project_id": "casemap-private",
+      "name": "CaseMap Private",
+      "organization": "SUBSIDIARY",
+      "status": "HOLD",
+      "mission": "Repository discovered and indexed by AI Core; mission and operating boundaries require source review before activation.",
+      "repository": "freepass-creator/casemap-private",
+      "default_branch": "main",
+      "local_path": null,
+      "head_revision": "2b08ada31c863faf1451e6b24b7f28101857e85b",
+      "authoritative_sources": [
+        {
+          "kind": "GIT",
+          "ref": "freepass-creator/casemap-private",
+          "revision": "2b08ada31c863faf1451e6b24b7f28101857e85b",
+          "observed_at": "2026-09-18T15:30:00Z"
+        }
+      ],
+      "commands": {
+        "install": null,
+        "test": null,
+        "build": null
+      },
+      "deploy_targets": [],
+      "required_approvals": [],
+      "known_blockers": [
+        "Discovered in the connected GitHub installation but not yet source-reviewed into an AI Core Project Capsule; execution remains HOLD until commands, SSOT and deployment boundaries are verified."
+      ]
+    },
+    {
       "project_id": "devcenter",
       "name": "DevCenter",
       "organization": "HEADQUARTERS",
@@ -98,6 +127,122 @@
       "known_blockers": [
         "no package.json at repo root; no unified install/test/build entrypoint, scripts run individually (e.g. scripts/inspect-project.mjs)",
         "100 dirty files as of 2026-09-15/16, not inspected this session"
+      ]
+    },
+    {
+      "project_id": "docshub",
+      "name": "DocsHub",
+      "organization": "HEADQUARTERS",
+      "status": "HOLD",
+      "mission": "Repository discovered and indexed by AI Core; mission and operating boundaries require source review before activation.",
+      "repository": "freepass-creator/docshub",
+      "default_branch": "main",
+      "local_path": null,
+      "head_revision": "fbb54727fb7ee497eede2f95563b633b6333c300",
+      "authoritative_sources": [
+        {
+          "kind": "GIT",
+          "ref": "freepass-creator/docshub",
+          "revision": "fbb54727fb7ee497eede2f95563b633b6333c300",
+          "observed_at": "2026-09-18T15:30:00Z"
+        }
+      ],
+      "commands": {
+        "install": null,
+        "test": null,
+        "build": null
+      },
+      "deploy_targets": [],
+      "required_approvals": [],
+      "known_blockers": [
+        "Discovered in the connected GitHub installation but not yet source-reviewed into an AI Core Project Capsule; execution remains HOLD until commands, SSOT and deployment boundaries are verified."
+      ]
+    },
+    {
+      "project_id": "fp-settlement",
+      "name": "FP Settlement",
+      "organization": "SUBSIDIARY",
+      "status": "HOLD",
+      "mission": "Repository discovered and indexed by AI Core; mission and operating boundaries require source review before activation.",
+      "repository": "freepass-creator/fp-settlement",
+      "default_branch": "main",
+      "local_path": null,
+      "head_revision": "b406da67a9cb2b85b5572a7f5d28d350ca84cb58",
+      "authoritative_sources": [
+        {
+          "kind": "GIT",
+          "ref": "freepass-creator/fp-settlement",
+          "revision": "b406da67a9cb2b85b5572a7f5d28d350ca84cb58",
+          "observed_at": "2026-09-18T15:30:00Z"
+        }
+      ],
+      "commands": {
+        "install": null,
+        "test": null,
+        "build": null
+      },
+      "deploy_targets": [],
+      "required_approvals": [],
+      "known_blockers": [
+        "Discovered in the connected GitHub installation but not yet source-reviewed into an AI Core Project Capsule; execution remains HOLD until commands, SSOT and deployment boundaries are verified."
+      ]
+    },
+    {
+      "project_id": "freepass-admin",
+      "name": "Freepass Admin",
+      "organization": "SUBSIDIARY",
+      "status": "HOLD",
+      "mission": "Repository discovered and indexed by AI Core; mission and operating boundaries require source review before activation.",
+      "repository": "freepass-creator/freepass-admin",
+      "default_branch": "main",
+      "local_path": null,
+      "head_revision": "4ed10b866bee4952046f54b17a9167ab5ef85c06",
+      "authoritative_sources": [
+        {
+          "kind": "GIT",
+          "ref": "freepass-creator/freepass-admin",
+          "revision": "4ed10b866bee4952046f54b17a9167ab5ef85c06",
+          "observed_at": "2026-09-18T15:30:00Z"
+        }
+      ],
+      "commands": {
+        "install": null,
+        "test": null,
+        "build": null
+      },
+      "deploy_targets": [],
+      "required_approvals": [],
+      "known_blockers": [
+        "Discovered in the connected GitHub installation but not yet source-reviewed into an AI Core Project Capsule; execution remains HOLD until commands, SSOT and deployment boundaries are verified."
+      ]
+    },
+    {
+      "project_id": "freepass-homepage",
+      "name": "Freepass Homepage",
+      "organization": "SUBSIDIARY",
+      "status": "HOLD",
+      "mission": "Repository discovered and indexed by AI Core; mission and operating boundaries require source review before activation.",
+      "repository": "freepass-creator/freepasshomepage",
+      "default_branch": "main",
+      "local_path": null,
+      "head_revision": "104a1bdc449ab1b158968b2e085846f428410839",
+      "authoritative_sources": [
+        {
+          "kind": "GIT",
+          "ref": "freepass-creator/freepasshomepage",
+          "revision": "104a1bdc449ab1b158968b2e085846f428410839",
+          "observed_at": "2026-09-18T15:30:00Z"
+        }
+      ],
+      "commands": {
+        "install": null,
+        "test": null,
+        "build": null
+      },
+      "deploy_targets": [],
+      "required_approvals": [],
+      "known_blockers": [
+        "Discovered in the connected GitHub installation but not yet source-reviewed into an AI Core Project Capsule; execution remains HOLD until commands, SSOT and deployment boundaries are verified."
       ]
     },
     {
@@ -165,6 +310,93 @@
         "no test script in package.json",
         "checked out on feat/spring-atom-monitor, not default branch",
         "50+ active git worktrees scattered across C:\\dev\\freepasserp4-*, .wt-*, _wt-*, worktrees\\*, fp-*, C:\\tmp\\*, and a Codex-managed worktree -- not inventoried in full, several unmerged branches identified as salvage candidates (fix/sonokong-rent-plate-classification, codex/rtdb-cutover-current) but not verified against current tip"
+      ]
+    },
+    {
+      "project_id": "sonogong-estimator",
+      "name": "Sonogong Estimator",
+      "organization": "SUBSIDIARY",
+      "status": "HOLD",
+      "mission": "Repository discovered and indexed by AI Core; mission and operating boundaries require source review before activation.",
+      "repository": "freepass-creator/sonogong-estimator",
+      "default_branch": "main",
+      "local_path": null,
+      "head_revision": "c79b8cdc453ef52793081c1d9a51b605b77755dd",
+      "authoritative_sources": [
+        {
+          "kind": "GIT",
+          "ref": "freepass-creator/sonogong-estimator",
+          "revision": "c79b8cdc453ef52793081c1d9a51b605b77755dd",
+          "observed_at": "2026-09-18T15:30:00Z"
+        }
+      ],
+      "commands": {
+        "install": null,
+        "test": null,
+        "build": null
+      },
+      "deploy_targets": [],
+      "required_approvals": [],
+      "known_blockers": [
+        "Discovered in the connected GitHub installation but not yet source-reviewed into an AI Core Project Capsule; execution remains HOLD until commands, SSOT and deployment boundaries are verified."
+      ]
+    },
+    {
+      "project_id": "teamjpkwork",
+      "name": "TeamJPK Work",
+      "organization": "SUBSIDIARY",
+      "status": "HOLD",
+      "mission": "Repository discovered and indexed by AI Core; mission and operating boundaries require source review before activation.",
+      "repository": "freepass-creator/teamjpkwork",
+      "default_branch": "main",
+      "local_path": null,
+      "head_revision": "75bb285a241b68c13acbe532c30d6d91110f8082",
+      "authoritative_sources": [
+        {
+          "kind": "GIT",
+          "ref": "freepass-creator/teamjpkwork",
+          "revision": "75bb285a241b68c13acbe532c30d6d91110f8082",
+          "observed_at": "2026-09-18T15:30:00Z"
+        }
+      ],
+      "commands": {
+        "install": null,
+        "test": null,
+        "build": null
+      },
+      "deploy_targets": [],
+      "required_approvals": [],
+      "known_blockers": [
+        "Discovered in the connected GitHub installation but not yet source-reviewed into an AI Core Project Capsule; execution remains HOLD until commands, SSOT and deployment boundaries are verified."
+      ]
+    },
+    {
+      "project_id": "workcontrol",
+      "name": "WorkControl",
+      "organization": "SUBSIDIARY",
+      "status": "HOLD",
+      "mission": "Repository discovered and indexed by AI Core; mission and operating boundaries require source review before activation.",
+      "repository": "freepass-creator/workcontrol",
+      "default_branch": "main",
+      "local_path": null,
+      "head_revision": "b841ad748f39322a150ce3d3fdd5840fc8a7ee0f",
+      "authoritative_sources": [
+        {
+          "kind": "GIT",
+          "ref": "freepass-creator/workcontrol",
+          "revision": "b841ad748f39322a150ce3d3fdd5840fc8a7ee0f",
+          "observed_at": "2026-09-18T15:30:00Z"
+        }
+      ],
+      "commands": {
+        "install": null,
+        "test": null,
+        "build": null
+      },
+      "deploy_targets": [],
+      "required_approvals": [],
+      "known_blockers": [
+        "Discovered in the connected GitHub installation but not yet source-reviewed into an AI Core Project Capsule; execution remains HOLD until commands, SSOT and deployment boundaries are verified."
       ]
     }
   ]
