@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import { DatabaseSync } from 'node:sqlite';
-import { mkdtemp, readFile } from 'node:fs/promises';
-import { realpathSync, lstatSync } from 'node:fs';
+import { mkdir, mkdtemp, readFile } from 'node:fs/promises';
+import { existsSync, realpathSync, lstatSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve, dirname, basename } from 'node:path';
 import { createOrderWorkAdapter } from './order-work-adapter.mjs';
@@ -60,29 +60,45 @@ const pause = milliseconds => Atomics.wait(new Int32Array(new SharedArrayBuffer(
  * test-root restriction while the code left `ledgerPath` unchecked — keep claims
  * here no stronger than the `need(...)` calls immediately below actually enforce.
  */
-export async function openOrderWorkSubmitter({ root = null, readContext, verifyLedgerText, runControlTower, appendLedgerEvent, ledgerPath = null, checkpoint = () => {} }) {
+export async function openOrderWorkSubmitter({
+  root = null, readContext, verifyLedgerText, runControlTower, appendLedgerEvent,
+  ledgerPath = null, checkpoint = () => {}, pathMode = 'synthetic', initialize = false,
+}) {
   need([readContext, verifyLedgerText, runControlTower, appendLedgerEvent].every(fn => typeof fn === 'function'), 'DEPENDENCY_REQUIRED');
+  need(['synthetic', 'trusted'].includes(pathMode), 'PATH_MODE_INVALID');
   const temp = realpathSync(tmpdir());
-  const reopening = root !== null;
-  if (root === null) root = await mkdtemp(join(temp, 'ai-core-submit-'));
-  root = realpathSync(resolve(root));
-  need(dirname(root).toLowerCase() === temp.toLowerCase() && basename(root).startsWith('ai-core-submit-'), 'SYNTHETIC_ROOT_REQUIRED');
-  const dbPath = join(root, 'submission.sqlite');
-  // The ledger is pinned to the synthetic root this call created or verified: a
-  // caller-supplied ledgerPath may only name a file directly inside that root, so
-  // no real ledger (or any other out-of-root file) can be reached even though the
-  // path is caller-controlled. Checked with `resolve` (not `realpath`) so a ledger
-  // that does not exist yet is still containment-checked; the loop below then
-  // rejects an existing symlink/reparse point whose real target escapes the root.
-  const ledger = ledgerPath === null ? join(root, 'work.jsonl') : resolve(ledgerPath);
-  need(dirname(ledger).toLowerCase() === root.toLowerCase(), 'SYNTHETIC_LEDGER_REQUIRED');
-  for (const path of [dbPath, `${dbPath}-wal`, `${dbPath}-shm`, ledger]) {
-    try { need(!lstatSync(path).isSymbolicLink() && dirname(realpathSync(path)).toLowerCase() === root.toLowerCase(), 'SYNTHETIC_PATH_REQUIRED'); }
-    catch (error) { if (error.code !== 'ENOENT') throw error; }
+  const synthetic = pathMode === 'synthetic';
+  let reopening = root !== null;
+
+  if (synthetic) {
+    if (root === null) root = await mkdtemp(join(temp, 'ai-core-submit-'));
+  } else {
+    need(typeof root === 'string' && root.length > 0 && typeof ledgerPath === 'string' && ledgerPath.length > 0, 'TRUSTED_PATH_REQUIRED');
+    if (initialize) await mkdir(resolve(root), { recursive: true });
   }
-  // A caller-supplied root is treated as reopening a previously initialized outbox:
-  // never silently start a fresh, empty outbox over a root that should already own
-  // dedup history. Genuinely new outboxes must be opened with root: null.
+
+  root = realpathSync(resolve(root));
+  if (synthetic) {
+    need(dirname(root).toLowerCase() === temp.toLowerCase() && basename(root).startsWith('ai-core-submit-'), 'SYNTHETIC_ROOT_REQUIRED');
+  }
+
+  const dbPath = join(root, 'submission.sqlite');
+  const ledger = ledgerPath === null ? join(root, 'work.jsonl') : resolve(ledgerPath);
+  need(dirname(ledger).toLowerCase() === root.toLowerCase(), synthetic ? 'SYNTHETIC_LEDGER_REQUIRED' : 'TRUSTED_LEDGER_ROOT_MISMATCH');
+
+  for (const path of [dbPath, `${dbPath}-wal`, `${dbPath}-shm`, ledger]) {
+    try {
+      need(!lstatSync(path).isSymbolicLink() && dirname(realpathSync(path)).toLowerCase() === root.toLowerCase(),
+        synthetic ? 'SYNTHETIC_PATH_REQUIRED' : 'TRUSTED_PATH_REQUIRED');
+    } catch (error) { if (error.code !== 'ENOENT') throw error; }
+  }
+
+  // synthetic caller-supplied root and trusted existing DB are both reopen operations.
+  // trusted initialization is explicit; merely naming a real directory never creates
+  // a fresh outbox silently.
+  if (!synthetic) reopening = existsSync(dbPath);
+  if (!synthetic && !reopening && !initialize) throw new Error('OPERATING_OUTBOX_INITIALIZATION_REQUIRED');
+
   if (reopening) {
     let verified = false;
     for (let attempt = 0; attempt < 8 && !verified; attempt++) {
