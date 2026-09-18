@@ -61,3 +61,15 @@ GWATAERYO-001 (aiops, RECEIVED)  ★UNKNOWN REVISION_NOT_IN_PROJECT (묶음 9407
 
 원장은 덧붙이기만 한다. 고치려면 새 사건으로 정본 리비전(aiops main `8738e446…`)에서 다시
 관측해 적어야 하고, 그것은 **사람이 정할 일**로 남긴다 — 여기서 원장에 쓰지 않았다.
+
+## 운영 투영도 이 관측을 읽는다 (2026-09-18)
+
+운영 투영(`/api/orders/:id/work`)은 프로젝트 head 를 **커밋된** `registry/projects.json` 에서 읽었다.
+그 파일은 저장소가 움직일 때마다 낡았고, 낡은 값이 「프로젝트가 안 움직였다」로 읽혔다.
+
+이제 원장 옆 `landed-observations.json` 이 등록부보다 **더 새로 본** 관측이면 그 head 를 쓴다
+(`새head입히기`). 같은 저장소 · 같은 기본 갈래 · OBSERVED · 40자 SHA 일 때만 섞는다.
+관측이 없으면 예전과 같고, 깨져 있으면 `WORK_SOURCE_UNREADABLE_LANDED` 로 선다.
+
+★그래서 과태료 오더는 이제 정직하게 `SUBJECT_REVISION_STALE` 로 선다 — 묶인 리비전이 main 이 아니었으니
+맞는 답이다. 다시 흐르려면 #67(REOBSERVED)로 정본 head 에서 재관측해야 한다.

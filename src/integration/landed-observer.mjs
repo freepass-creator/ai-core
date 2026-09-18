@@ -139,3 +139,35 @@ export function 최근(관측, { hours = 24, project = null, now = new Date() } 
     works: (관측?.works ?? []).filter((w) => !project || w.project_id === project),
   };
 }
+
+/**
+ * 새head입히기(registry, 관측) -> { registry, 입힘[] }
+ *
+ * ★2026-09-18: 운영 투영은 «커밋된» registry/projects.json 의 head_revision 을 읽었다. 저장소들은
+ *   하루 수십~수백 커밋씩 움직여 그 파일은 늘 낡았고, 낡은 값이 «프로젝트가 안 움직였다» 로 읽혔다.
+ *   게다가 그 값 하나(aiops 9407c3e8)는 형제 폴더의 push 안 된 갈래였다.
+ * ★둘 다 «관측» 이다 — 등록부도 GIT 원천에 observed_at 을 들고 있다. 그래서 새 규칙은 하나다:
+ *   «더 새로 본 쪽을 쓴다». 오늘보다 나빠질 수 없다(관측이 없거나 낡으면 등록부 그대로).
+ * ★섞지 않는다: 같은 저장소 · 같은 기본 갈래 · OBSERVED · 40자 SHA 일 때만 입힌다.
+ * ★입힌 줄은 GIT 원천의 revision·observed_at 도 같이 바꾼다 — 등록부 검증(HEAD_REVISION_NOT_SOURCE_BOUND)이 그대로 선다.
+ */
+export function 새head입히기(registry, 관측) {
+  if (!registry || !Array.isArray(registry.projects) || !관측?.projects) return { registry, 입힘: [] };
+  const 입힘 = [];
+  const projects = registry.projects.map((프) => {
+    const p = 관측.projects[프.project_id];
+    if (p?.status !== 'OBSERVED' || !SHA.test(p.head ?? '') || p.repository !== 프.repository || p.branch !== 프.default_branch) return 프;
+    const 본때 = Date.parse(p.until ?? '');
+    const 등록본때 = Math.max(...(프.authoritative_sources ?? []).filter((s) => s.kind === 'GIT').map((s) => Date.parse(s.observed_at ?? '')).filter(Number.isFinite),
+      Date.parse(registry.observed_at ?? '') || -Infinity);
+    if (!Number.isFinite(본때) || 본때 <= 등록본때) return 프;
+    if (p.head !== 프.head_revision) 입힘.push({ project_id: 프.project_id, from: 프.head_revision ?? null, to: p.head, observed_at: p.until });
+    return { ...프, head_revision: p.head,
+      authoritative_sources: (프.authoritative_sources ?? []).map((s) => (s.kind === 'GIT' ? { ...s, revision: p.head, observed_at: p.until } : s)) };
+  });
+  /** 원천이 등록부보다 늦게 관측됐다고 말할 수 없다(SOURCE_OBSERVED_AFTER_REGISTRY) — 합친 등록부의 시각도 가장 새 관측으로. */
+  const 전 = Date.parse(registry.observed_at ?? '') || -Infinity;
+  const 가장새 = Math.max(전, ...projects.flatMap((프) => (프.authoritative_sources ?? []).map((s) => Date.parse(s.observed_at ?? '')).filter(Number.isFinite)));
+  const observed_at = 가장새 > 전 ? new Date(가장새).toISOString().replace(/\.\d+Z$/, 'Z') : registry.observed_at;
+  return { registry: { ...registry, observed_at, projects }, 입힘 };
+}
