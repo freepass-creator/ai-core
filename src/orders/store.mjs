@@ -59,6 +59,21 @@ function digest(value) { return createHash('sha256').update(JSON.stringify(value
 // 읽을 때만 유효하고 새 배정에는 쓰이지 않는다.
 function actor(id) { need(actors.some(a => a.id === id), 'INVALID_ACTOR', '지원하는 AI를 선택하세요.'); return id; }
 
+function routing(value, project) {
+  if (value == null) return null;
+  need(value && typeof value === 'object' && !Array.isArray(value), 'INVALID_ROUTING', '업무 라우팅 정보를 확인하세요.');
+  const allowed = new Set(['status','work_type_id','capability_id','target_project_id','target_revision','project_status','capability_status','capability_mode','matched_alias','blockers','requirement_revision']);
+  need(Object.keys(value).every((key) => allowed.has(key)), 'INVALID_ROUTING', '업무 라우팅 정보에 허용되지 않은 필드가 있습니다.');
+  need(typeof value.status === 'string' && value.status.length > 0, 'INVALID_ROUTING', '라우팅 상태가 필요합니다.');
+  need(typeof value.work_type_id === 'string' && /^[a-z][a-z0-9-]{1,62}$/.test(value.work_type_id), 'INVALID_ROUTING', '업무 유형을 확인하세요.');
+  need(typeof value.capability_id === 'string' && /^[a-z][a-z0-9.-]{2,80}$/.test(value.capability_id), 'INVALID_ROUTING', 'capability를 확인하세요.');
+  need(value.target_project_id === project, 'INVALID_ROUTING', '라우팅 프로젝트와 오더 프로젝트가 다릅니다.');
+  need(typeof value.target_revision === 'string' && /^[0-9a-f]{40}$/.test(value.target_revision), 'INVALID_ROUTING', '라우팅 revision을 확인하세요.');
+  need(Number.isSafeInteger(value.requirement_revision) && value.requirement_revision > 0, 'INVALID_ROUTING', '라우팅 요구 revision을 확인하세요.');
+  need(Array.isArray(value.blockers) && value.blockers.every((x) => typeof x === 'string' && x.trim()), 'INVALID_ROUTING', '라우팅 blocker를 확인하세요.');
+  return structuredClone(value);
+}
+
 export class OrderStore {
   #onRequirementSaved;
   constructor(path = defaultDb, { now = () => Date.now(), leaseMs = 30 * 60 * 1000, onRequirementSaved = null } = {}) {
@@ -112,14 +127,17 @@ export class OrderStore {
     return order;
   }
   create(input) {
-    const { requestId, title, intent, project, kind = 'general', criteria, source = 'local' } = input;
+    const { requestId, title, intent, project, kind = 'general', criteria, source = 'local', routing: routingInput = null } = input;
     return this.transact(requestId, { action: 'create', ...input }, () => {
       need(Object.hasOwn(plans, kind), 'INVALID_KIND', '작업 종류를 선택하세요.');
-      const order = { id: `ORD-${randomUUID()}`, title: text(title, '제목', 200), intent: text(intent, '요청'), project: text(project, '프로젝트', 300), kind,
-        criteria: lines(criteria, '완료 조건'), source: text(source, '출처', 1000), revision: 1, version: 1, status: 'NEW', createdAt: this.stamp(), updatedAt: this.stamp(),
+      const cleanProject = text(project, '프로젝트', 300);
+      const route = routing(routingInput, cleanProject);
+      const order = { id: `ORD-${randomUUID()}`, title: text(title, '제목', 200), intent: text(intent, '요청'), project: cleanProject, kind,
+        criteria: lines(criteria, '완료 조건'), source: text(source, '출처', 1000), routing: route,
+        revision: 1, version: 1, status: 'NEW', createdAt: this.stamp(), updatedAt: this.stamp(),
         tasks: plans[kind].map(([role, title, assigned], i) => ({ id: `T${i + 1}`, role, title, assigned, status: 'PENDING', attempt: 0, lease: null, report: null, blockedReason: null })),
         closure: null };
-      return this.save(order, 'CREATED', 'user', { intent: order.intent, criteria: order.criteria, source: order.source, plan: order.tasks });
+      return this.save(order, 'CREATED', 'user', { intent: order.intent, criteria: order.criteria, source: order.source, routing: order.routing, plan: order.tasks });
     });
   }
   mutate(id, command) {
@@ -194,7 +212,7 @@ export class OrderStore {
     const history = this.events(id);
     const leaseState = !task.lease ? 'NONE' : Date.parse(task.lease.expiresAt) <= this.now() ? 'EXPIRED' : 'ACTIVE';
     const packet = { schema: 'ai-core-handoff/v1', orderId: id, orderVersion: order.version, requirementRevision: order.revision, taskId, assigned: task.assigned, role: task.role,
-      title: order.title, intent: order.intent, project: order.project, criteria: order.criteria, status: order.status, taskStatus: task.status,
+      title: order.title, intent: order.intent, project: order.project, routing: order.routing ?? null, criteria: order.criteria, status: order.status, taskStatus: task.status,
       previousResults: order.tasks.filter(t => t.report).map(t => ({ taskId: t.id, ...t.report })),
       historicalResults: history.filter(e => e.type === 'REPORT').map(e => ({ eventId: e.id, taskId: e.detail.taskId, requirementRevision: e.revision, current: e.revision === order.revision, ...e.detail.report })),
       blockedReason: task.blockedReason, leaseState, nextAction: leaseState === 'EXPIRED' ? 'RECLAIM_OR_REASSIGN' : task.status === 'REPORTED' ? 'READ_RESULT' : 'CHECK_LATEST_AND_CLAIM',
@@ -207,6 +225,6 @@ export class OrderStore {
   checkContext(id, taskId) {
     const order = this.get(id), task = order.tasks.find(t => t.id === taskId);
     need(task, 'TASK_NOT_FOUND', '세부 작업을 찾을 수 없습니다.', 404);
-    return { orderId: order.id, version: order.version, requirementRevision: order.revision, project: order.project, orderStatus: order.status, task: { id: task.id, role: task.role, assigned: task.assigned, status: task.status } };
+    return { orderId: order.id, version: order.version, requirementRevision: order.revision, project: order.project, routing: order.routing ?? null, orderStatus: order.status, task: { id: task.id, role: task.role, assigned: task.assigned, status: task.status } };
   }
 }
