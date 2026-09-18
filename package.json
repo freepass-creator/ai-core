@@ -32,7 +32,9 @@
     "core:brief": "node scripts/core-brief.mjs",
     "work:reobserve": "node scripts/work-reobserve.mjs",
     "workmap:validate": "node scripts/validate-work-map.mjs",
-    "ops:route": "node scripts/route-work.mjs"
+    "ops:route": "node scripts/route-work.mjs",
+    "capability:validate": "node scripts/validate-capability-registry.mjs",
+    "core:capability": "node scripts/core-capability.mjs"
   },
   "dependencies": {
     "ajv": "8.20.0",
