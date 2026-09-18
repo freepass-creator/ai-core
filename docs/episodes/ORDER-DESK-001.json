@@ -138,6 +138,7 @@
     "src/engine/capability-router.mjs",
     "src/engine/control-tower-authority.mjs",
     "src/engine/direction-registry.mjs",
+    "src/engine/execution-receipt.mjs",
     "src/engine/operating-engine.mjs",
     "src/engine/project-runtime.mjs",
     "src/engine/result-envelope.mjs",
@@ -171,6 +172,7 @@
     "test/direction.test.mjs",
     "test/durable-order-work.test.mjs",
     "test/evaluate-control-tower.test.mjs",
+    "test/execution-receipt.test.mjs",
     "test/improvement-evolution-jsonl.test.mjs",
     "test/inventory-repositories.test.mjs",
     "test/landed-observer.test.mjs",
@@ -189,6 +191,7 @@
     "test/order-work-submitter.test.mjs",
     "test/orders-sources-preflight.test.mjs",
     "test/orders.test.mjs",
+    "test/project-runtime-receipt.test.mjs",
     "test/project-runtime.test.mjs",
     "test/projection-observed-head.test.mjs",
     "test/read-ai-work-packet.test.mjs",
@@ -226,6 +229,7 @@
     "2026-09-16 Claude 추가: 이 갈래가 만든 신규 파일 둘을 선언에 넣었다 — src/integration/order-work-context-reader.mjs 와 그 시험. 앞선 SESSION-MISSIONS.md 항목과 달리 이것은 main 에서 상속된 것이 아니라 «이 에피소드가 실제로 만든 산출물»이다. 계약 맞추기가 아니라 정직한 기재다. reader 는 append·submit 을 인자로 받지 않아 read-only 가 타입 수준에서 강제되고, 운영 registry/snapshot/ledger 경로는 정하지 않고 인자로만 받는다(미정). base_revision·비교 방식·검증기는 건드리지 않았다.",
     "2026-09-18 Capability Engine v1: natural-language routing, capability registry, project command/module runtime, shared Work Result envelope and authority-gated EXTERNAL_MUTATION execution were added on top of the existing Order/Work/Control Tower layers. This adds no blanket production authority; external effects still require a trusted verifier bound to the current project/work revision.",
     "2026-09-18 Capability Engine follow-up: external execution authority is now re-verified against the real Control Tower inputs (mapping, ledger head, snapshot authorization scope and execute gate), routing is locked by 20 representative natural-language fixtures, and direction registry activation/scope/wall rules are schema+CI validated.",
-    "2026-09-18 Operating Engine wiring: projection and external authority now share one trusted work-source context. Canonical authority receipts are issued only when the current Control Tower execute gate is READY, then revalidated immediately before external capability execution."
+    "2026-09-18 Operating Engine wiring: projection and external authority now share one trusted work-source context. Canonical authority receipts are issued only when the current Control Tower execute gate is READY, then revalidated immediately before external capability execution.",
+    "2026-09-18 External command receipt hardening: EXTERNAL_MUTATION PROJECT_COMMAND capabilities now require a new terminal JSON receipt contract; process exit 0 without a new verified receipt remains HOLD. AIOps penalty uses its existing gwataeryo-run-manifest/v1 as the receipt."
   ]
 }
