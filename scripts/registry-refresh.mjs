@@ -41,24 +41,34 @@ export function registryRefresh(등록부, { observe = 원격보기, now = new D
   const 이제 = now.toISOString().replace(/\.\d+Z$/, 'Z');
   const 바뀜 = [];
   const 모름 = [];
+  const 관측 = [];
   for (const 프 of 등록부.projects ?? []) {
     if (!프.repository || !프.default_branch) { 모름.push({ project_id: 프.project_id, reason: 'CANONICAL_REF_UNDECLARED' }); continue; }
     let rev = null;
     try { rev = observe(프.repository, 프.default_branch); } catch { rev = null; }
     if (typeof rev !== 'string' || !SHA.test(rev)) { 모름.push({ project_id: 프.project_id, reason: 'REMOTE_UNOBSERVED' }); continue; }
+    관측.push({ 프, rev });
     if (프.head_revision !== rev) 바뀜.push({ project_id: 프.project_id, from: 프.head_revision ?? null, to: rev });
+  }
+
+  /** ★부분 관측을 canonical registry에 쓰지 않는다.
+   * A는 새 head를 봤고 B는 못 본 상태에서 A만 갱신하면 source.observed_at이
+   * top-level observed_at보다 새로워져 INVALID가 되거나, 한 파일 안에 서로 다른
+   * 관측 시점이 섞인다. UNKNOWN 하나라도 있으면 입력 객체를 한 글자도 안 바꾼다. */
+  if (모름.length) return { 바뀜, 모름 };
+
+  for (const { 프, rev } of 관측) {
     프.head_revision = rev;
     for (const 원천 of 프.authoritative_sources ?? []) {
       if (원천.kind === 'GIT') { 원천.revision = rev; 원천.observed_at = 이제; }
     }
   }
-  /** 하나라도 못 봤으면 등록부 전체를 「지금 관측했다」고 말하지 않는다. */
-  if (!모름.length) 등록부.observed_at = 이제;
+  등록부.observed_at = 이제;
   return { 바뀜, 모름 };
 }
 
-/** 낡음이 모름보다 먼저다 — 둘 다면 «고칠 것이 있다» 가 더 급하다. */
-export const 끝값 = ({ 바뀜, 모름 }) => (바뀜.length ? 1 : 모름.length ? 2 : 0);
+/** UNKNOWN이 하나라도 있으면 stale보다 우선한다 — 관측 자체가 불완전한 상태다. */
+export const 끝값 = ({ 바뀜, 모름 }) => (모름.length ? 2 : 바뀜.length ? 1 : 0);
 
 async function main(인) {
   const 볼까만 = 인.includes('--check');
@@ -70,9 +80,14 @@ async function main(인) {
   if (!결과.바뀜.length) console.log('낡은 것 없음');
   for (const m of 결과.모름) console.log(`★UNKNOWN ${m.project_id}: ${m.reason} — «그대로 뒀다»`);
   if (!볼까만) {
+    if (결과.모름.length) {
+      console.log(`★안 적었다: UNKNOWN ${결과.모름.length}개 — canonical registry는 원래 bytes를 유지한다`);
+      process.exitCode = 2;
+      return;
+    }
     await writeFile(길, `${JSON.stringify(등록부, null, 2)}\n`, 'utf8');
     console.log(`적었다: ${길}`);
-    process.exitCode = 결과.모름.length ? 2 : 0;
+    process.exitCode = 0;
     return;
   }
   process.exitCode = 끝값(결과);
