@@ -104,4 +104,48 @@ test('requirement revision change invalidates stored routing until explicit rero
   assert.equal(plan.reason,'ROUTING_REQUIREMENT_STALE');
   assert.equal(plan.routed_requirement_revision,1);
   assert.equal(plan.current_requirement_revision,2);
+
+  const rerouteResponse=await fetch(`${url}/api/orders/${order.id}/reroute`,{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({requestId:randomUUID(),version:revised.version}),
+  });
+  assert.equal(rerouteResponse.status,200);
+  const rerouted=await rerouteResponse.json();
+  assert.equal(rerouted.project,'freepasserp4');
+  assert.equal(rerouted.routing.requirement_revision,2);
+  assert.equal(rerouted.routing.work_type_id,'erp-product');
+  assert.equal(rerouted.routing.capability_id,'erp.product');
+  assert.equal(rerouted.routing.status,'HOLD_CAPABILITY_HOLD');
+
+  const reroutedPlan=await (await fetch(`${url}/api/orders/${order.id}/capability`)).json();
+  assert.equal(reroutedPlan.status,'HOLD');
+  assert.equal(reroutedPlan.reason,'CAPABILITY_NOT_ACTIVE');
+  assert.equal(reroutedPlan.capability_id,'erp.product');
+
+  const events=store.events(order.id);
+  assert.equal(events.at(-1).type,'REROUTE');
+  assert.equal(events.at(-1).detail.routing.requirement_revision,2);
+});
+
+
+test('reroute is rejected once an order has active work',async(t)=>{
+  const {server,store,url}=await startServer({dbPath:':memory:',port:0,standalone:true,routingConfig});
+  t.after(async()=>{server.closeAllConnections();await new Promise(r=>server.close(r));});
+
+  const response=await fetch(url+'/api/orders',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(input()),
+  });
+  const order=await response.json();
+  const claimed=store.mutate(order.id,{
+    requestId:randomUUID(),version:order.version,action:'claim',taskId:'T1',actor:'codex',
+  });
+
+  const reroute=await fetch(`${url}/api/orders/${order.id}/reroute`,{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({requestId:randomUUID(),version:claimed.version}),
+  });
+  assert.equal(reroute.status,409);
+  const body=await reroute.json();
+  assert.equal(body.error,'ROUTING_REQUIRES_IDLE_ORDER');
 });
