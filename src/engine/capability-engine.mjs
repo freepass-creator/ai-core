@@ -29,6 +29,7 @@ export function createCapabilityEngine({
   runtime = createProjectRuntime(),
   verifyAuthority = null,
   authorityProvider = null,
+  executorIdentity = null,
   readWorkProjection = null,
   clock = Date.now,
 } = {}) {
@@ -203,7 +204,11 @@ export function createCapabilityEngine({
         if (!adapter.modes.includes(capability.mode)) throw new Error('BUILTIN_ADAPTER_MODE_MISMATCH');
         result = await adapter.invoke({ plan: preparedPlan, capability, project, input, authority: effectiveAuthority ?? authority });
       } else if (capability.adapter.kind === 'PROJECT_MODULE') {
-        result = normalizeAdapterResult(await runtime.runModule(capability, project, input));
+        result = normalizeAdapterResult(await runtime.runModule(capability, project, input, {
+          plan: preparedPlan,
+          authority: effectiveAuthority ?? authority,
+          executorIdentity,
+        }));
       } else if (['PROJECT_COMMAND', 'PROJECT_REGISTRY_COMMAND'].includes(capability.adapter.kind)) {
         result = normalizeAdapterResult(await runtime.runCommand(capability, project));
       } else {
