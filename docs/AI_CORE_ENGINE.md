@@ -94,3 +94,7 @@ npm run core:capability -- run "freepasserp4 테스트 돌려" --perform
 - 제품별 wall
 
 따라서 코드 생성, 검증, 외부 실행, 현실 결과를 하나의 DONE으로 섞지 않는다.
+
+## 외부 실행 결과 확정
+
+`EXTERNAL_MUTATION + PROJECT_COMMAND`는 프로세스 종료코드만으로 성공을 선언할 수 없다. capability registry에 `NEW_JSON_TERMINAL_RECEIPT` 계약을 두고 실행 전후 파일 집합을 비교한 뒤 새 receipt를 다시 읽는다. schema와 terminal state가 맞아야 하며, receipt가 없거나 모호하거나 non-terminal이면 HOLD다. 현재 AIOps 과태료는 기존 `gwataeryo-run-manifest/v1`을 그대로 사용한다.
