@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createCapabilityEngine } from './capability-engine.mjs';
-import { createControlTowerAuthorityVerifier } from './control-tower-authority.mjs';
+import { createControlTowerAuthorityBridge } from './control-tower-authority.mjs';
 import { createWorkProjectionProvider, createWorkSourceContextProvider } from '../integration/order-work-sources.mjs';
 import { verifyLedgerText } from '../../scripts/work-ledger.mjs';
 import { runControlTower } from '../../scripts/run-control-tower.mjs';
@@ -34,8 +34,8 @@ export async function openOperatingCapabilityEngine({
 
   const readContext = createWorkSourceContextProvider({ store, workSources, ordersDbPath });
   const readWorkProjection = createWorkProjectionProvider({ store, workSources, ordersDbPath });
-  const verifyAuthority = readContext
-    ? createControlTowerAuthorityVerifier({ readContext, verifyLedgerText, runControlTower })
+  const authorityBridge = readContext
+    ? createControlTowerAuthorityBridge({ readContext, verifyLedgerText, runControlTower })
     : null;
 
   const engine = createCapabilityEngine({
@@ -44,13 +44,15 @@ export async function openOperatingCapabilityEngine({
     ...(runtime ? { runtime } : {}),
     ...(clock ? { clock } : {}),
     readWorkProjection,
-    verifyAuthority,
+    verifyAuthority: authorityBridge?.verify ?? null,
+    authorityProvider: authorityBridge?.issue ?? null,
   });
 
   return Object.freeze({
     engine,
     readWorkProjection,
-    verifyAuthority,
+    verifyAuthority: authorityBridge?.verify ?? null,
+    issueAuthority: authorityBridge?.issue ?? null,
     capabilityRegistry: caps,
     projectRegistry: projects,
     source_mode: readContext ? 'TRUSTED_WORK_SOURCES' : 'ROUTING_ONLY',
