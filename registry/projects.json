@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "observed_at": "2026-09-18T15:30:00Z",
+  "observed_at": "2026-09-18T16:50:26Z",
   "projects": [
     {
       "project_id": "ai-core",
@@ -43,13 +43,13 @@
       "repository": "freepass-creator/aiops",
       "default_branch": "main",
       "local_path": "C:\\dev\\aiops",
-      "head_revision": "9407c3e85161449c715bbbc3b12480c3a3d4a283",
+      "head_revision": "4e59a1a1fe54400bb32197d224339c299ab495c5",
       "authoritative_sources": [
         {
           "kind": "GIT",
           "ref": "freepass-creator/aiops",
-          "revision": "9407c3e85161449c715bbbc3b12480c3a3d4a283",
-          "observed_at": "2026-09-17T23:09:28Z"
+          "revision": "4e59a1a1fe54400bb32197d224339c299ab495c5",
+          "observed_at": "2026-09-18T16:50:26Z"
         }
       ],
       "commands": {
@@ -67,7 +67,8 @@
       "known_blockers": [
         "push blocked: history contains commits >100MB (lib/wonja/자금일보원자.json etc, 2026-09-03), 221 commits ahead of origin/main as of 2026-09-17 (was 189 on 2026-09-16), needs history surgery -- deferred",
         "no build script; this project has no compile/bundle step",
-        "aiops-daily/aiops-gwataeryo-retry/aiops-gwataeryo-saebyeok scheduled tasks were Disabled since 2026-09-10 (root cause fixed and committed 2026-09-16, tasks not yet re-enabled pending user check)"
+        "aiops-daily/aiops-gwataeryo-retry/aiops-gwataeryo-saebyeok scheduled tasks were Disabled since 2026-09-10 (root cause fixed and committed 2026-09-16, tasks not yet re-enabled pending user check)",
+        "2026-09-19: penalty change-charge review digest binding and reviewed-package auto-transition merged to main at 4e59a1a1; actual Windows Task Scheduler Enabled/LastRun/LastTaskResult remains operationally unverified from GitHub."
       ]
     },
     {
