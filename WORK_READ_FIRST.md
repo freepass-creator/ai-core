@@ -8,6 +8,18 @@
 
 AI Core 작업을 시작할 때 전체 Gmail/전체 Chat/전체 연구 branch를 재독하지 않는다.
 
+## 현재 구조 문서 우선순위
+
+통합 관련 문서를 읽을 때 아래 순서를 현재 정본으로 취급한다.
+
+1. `WORK_READ_FIRST.md` — 현재 최우선 목표와 진입점.
+2. `docs/AI_CORE_INTEGRATION_EXECUTION_DIRECTIVE.md` — 지금 실제로 무엇을 합치고/연결할지 실행 기준.
+3. `docs/GROUP_OPERATING_MODEL.md` — 본사·센터·자회사 구조 SSOT.
+4. `docs/AI_CORE_OPERATING_PLAYBOOK.md` — 실제 회사 업무를 AI Core에서 처리하는 방식.
+5. `docs/CONTROL_TOWER.md` + `docs/WORK_LEDGER.md` — 현재 업무 상태/판정 런타임.
+
+`GROUP-G0-RESULT.md`, `CONTROL_TOWER_CONSOLIDATION.md`, `docs/integration/INTEGRATION_STATUS.md`와 과거 handoff/audit 문서는 **시점별 evidence/history**다. 현재 상태가 위 정본과 충돌하면 최신 정본과 현재 revision-bound evidence를 우선한다.
+
 ## 현재 최우선 목표 — AI Core 실제 합병·통합
 
 [AI Core 통합 실행 최우선 지침](docs/AI_CORE_INTEGRATION_EXECUTION_DIRECTIVE.md)을 먼저 읽는다.
@@ -44,7 +56,7 @@ AI 이름보다 최신 사용자 결정, 현재 프로젝트 정본, revision-bo
 
 [AI Core 실제 업무 운영 플레이북](docs/AI_CORE_OPERATING_PLAYBOOK.md)을 읽는다. 사용자의 자연어 오더를 `업무 의미 → 프로젝트/정본 → capability → 실행자 → 승인 경계 → 검증 → 결과/후속`으로 연결한다.
 
-첫 구현은 `OPS-P0`: 실제 주요 업무 20~30개와 자연어 오더 fixture를 읽기 전용으로 inventory하고, 각 업무가 올바른 정본·실행 경로·완료조건으로 route 되는지 확인한다. 저장소/시트/AI 이름을 사용자가 매번 지정하게 만드는 것을 기본 UX로 삼지 않는다.
+OPS-P0의 읽기 전용 1차 구현은 `registry/work-map.json` + `src/routing/work-router.mjs`에 있다. `npm run workmap:validate`로 project registry 연결을 검사하고, `npm run ops:route -- "과태료 처리해"`처럼 자연어 오더를 project/capability/승인경계/완료조건으로 resolve한다. 대상 project가 HOLD/REFERENCE/RETIRE이면 실행 가능한 것처럼 꾸미지 않고 fail-closed로 멈춘다.
 
 문서·코드가 만들어진 것과 실제 업무가 끝난 것을 구분하고, Work Result가 AI Core로 돌아와 다음 세션이 이어받을 수 있어야 한다.
 
