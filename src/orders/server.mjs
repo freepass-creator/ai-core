@@ -13,12 +13,30 @@ async function defaultRoutingConfig() {
     defaultRoutingConfigPromise = Promise.all([
       readFile(new URL('../../registry/work-map.json', import.meta.url), 'utf8'),
       readFile(new URL('../../registry/projects.json', import.meta.url), 'utf8'),
-    ]).then(([workMap, projectRegistry]) => ({
+      readFile(new URL('../../registry/capabilities.json', import.meta.url), 'utf8'),
+    ]).then(([workMap, projectRegistry, capabilityRegistry]) => ({
       workMap: JSON.parse(workMap),
       projectRegistry: JSON.parse(projectRegistry),
+      capabilityRegistry: JSON.parse(capabilityRegistry),
     }));
   }
   return defaultRoutingConfigPromise;
+}
+
+function routingSnapshot(routed) {
+  return {
+    status: routed.status,
+    work_type_id: routed.work_type_id,
+    capability_id: routed.capability_id,
+    target_project_id: routed.target_project_id,
+    target_revision: routed.target_revision,
+    project_status: routed.project_status ?? null,
+    capability_status: routed.capability_status ?? null,
+    capability_mode: routed.capability_mode ?? null,
+    matched_alias: routed.matched_alias ?? null,
+    blockers: [...(routed.blockers ?? (routed.reason ? [routed.reason] : []))],
+    requirement_revision: 1,
+  };
 }
 
 const assets = new Map([
@@ -58,7 +76,7 @@ export function startServer({ dbPath = defaultDb, port = 4318, expectedLedgerId 
         const query = url.searchParams.get('q') ?? '';
         if (query.length > 1000) throw new OrderError('QUERY_TOO_LARGE', '업무 요청이 너무 깁니다.', 413);
         const config = routingConfig ?? await defaultRoutingConfig();
-        const validation = validateWorkMap(config.workMap, config.projectRegistry);
+        const validation = validateWorkMap(config.workMap, config.projectRegistry, config.capabilityRegistry);
         if (validation.status !== 'VALID') return json(503, { status: 'HOLD', reason: 'WORK_MAP_INVALID', errors: validation.errors });
         return json(200, routeWork(query, config));
       }
@@ -91,13 +109,15 @@ export function startServer({ dbPath = defaultDb, port = 4318, expectedLedgerId 
         if (url.pathname === '/api/orders') {
           if (typeof data.project !== 'string' || !data.project.trim()) {
             const config = routingConfig ?? await defaultRoutingConfig();
-            const validation = validateWorkMap(config.workMap, config.projectRegistry);
+            const validation = validateWorkMap(config.workMap, config.projectRegistry, config.capabilityRegistry);
             if (validation.status !== 'VALID') throw new OrderError('WORK_MAP_INVALID', '업무 지도를 확인해야 합니다.', 503);
             const routed = routeWork(`${data.title ?? ''} ${data.intent ?? ''}`, config);
-            if (routed.status !== 'RESOLVED') {
-              throw new OrderError('PROJECT_ROUTE_HOLD', `대상 프로젝트를 자동 확정하지 못했습니다: ${routed.status}`, 409);
+            if (['UNKNOWN','AMBIGUOUS','HOLD_PROJECT_UNKNOWN','HOLD_CAPABILITY_UNKNOWN'].includes(routed.status) || !routed.target_project_id || !routed.capability_id || !routed.target_revision) {
+              throw new OrderError('PROJECT_ROUTE_HOLD', `업무 경로를 확정하지 못했습니다: ${routed.status}`, 409);
             }
-            data = { ...data, project: routed.target_project_id };
+            /** 접수와 실행을 분리한다. project/capability가 HOLD여도 분류가 확정되면 오더는 남긴다.
+             * 실제 실행 가능 여부는 routing.status와 Capability Engine이 fail-closed로 판단한다. */
+            data = { ...data, project: routed.target_project_id, routing: routingSnapshot(routed) };
           }
           return json(200, store.create(data));
         }
