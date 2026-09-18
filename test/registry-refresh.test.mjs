@@ -69,12 +69,14 @@ test('④ 진짜 낡은 등록부 — 고치고, 원천까지 묶고, 검증기�
   assert.equal(끝값(registryRefresh(등록부, { now: NOW, observe: () => 새것 })), 0, '고친 뒤 다시 보면 낡은 것 없음');
 });
 
-test('일부만 못 보면 본 것만 고치고 등록부 전체의 observed_at 은 그대로 둔다', async () => {
+test('일부만 못 보면 canonical registry를 한 글자도 부분 갱신하지 않는다', async () => {
   const 등록부 = await 진짜등록부();
-  const 전시각 = 등록부.observed_at;
+  const 전 = structuredClone(등록부);
   const 못볼것 = 등록부.projects[1].repository;
   const 결과 = registryRefresh(등록부, { now: NOW, observe: (repo) => (repo === 못볼것 ? null : 'c'.repeat(40)) });
   assert.equal(결과.모름.length, 1);
-  assert.equal(등록부.observed_at, 전시각);
-  assert.equal(끝값(결과), 1, '낡음이 모름보다 먼저 보고된다');
+  assert.ok(결과.바뀜.length > 0, '관측된 stale 후보는 보고하되');
+  assert.deepEqual(등록부, 전, 'UNKNOWN이 하나라도 있으면 canonical bytes 의미는 그대로여야 한다');
+  assert.equal(끝값(결과), 2, 'mixed stale+UNKNOWN은 관측 불완전이 우선이다');
+  assert.equal(validateProjectRegistry(등록부).status, 'VALID');
 });
