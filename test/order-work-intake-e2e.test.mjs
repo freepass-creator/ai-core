@@ -151,7 +151,7 @@ test('project head drift blocks Work creation before binding or ledger write',as
   const result=await (await f.post(`/api/orders/${order.id}/work-intake`)).json();
   assert.equal(result.status,'HOLD');
   assert.equal(result.reason,'ROUTE_REVISION_STALE');
-  assert.equal(f.store.db.prepare('SELECT COUNT(*) AS n FROM coordination_bindings').get().n,0);
-  assert.equal(f.store.db.prepare('SELECT COUNT(*) AS n FROM work_intake_outbox').get().n,0);
+  const tables=f.store.db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name IN ('coordination_bindings','work_intake_outbox')").all();
+  assert.deepEqual(tables,[],'route validation must fail before producer tables are created');
   assert.equal(existsSync(f.ledgerPath),false);
 });
