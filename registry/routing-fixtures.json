@@ -1,0 +1,103 @@
+{
+  "schema": "ai-core-routing-fixtures/v1",
+  "cases": [
+    {
+      "text": "오늘 내가 볼 거 뭐 있어?",
+      "capability_id": "core.brief",
+      "project_id": "ai-core"
+    },
+    {
+      "text": "AI Core 브리핑 해줘",
+      "capability_id": "core.brief",
+      "project_id": "ai-core"
+    },
+    {
+      "text": "진행 중 현황 봐줘",
+      "capability_id": "core.brief",
+      "project_id": "ai-core"
+    },
+    {
+      "text": "이 오더 어디까지 왔어",
+      "capability_id": "work.projection",
+      "project_id": "ai-core"
+    },
+    {
+      "text": "오더 상태 보여줘",
+      "capability_id": "work.projection",
+      "project_id": "ai-core"
+    },
+    {
+      "text": "freepasserp4 테스트 돌려",
+      "capability_id": "project.verify",
+      "project_id": "freepasserp4"
+    },
+    {
+      "text": "freepass-sales 회귀 검사해",
+      "capability_id": "project.verify",
+      "project_id": "freepass-sales"
+    },
+    {
+      "text": "aiops npm test 해",
+      "capability_id": "project.verify",
+      "project_id": "aiops"
+    },
+    {
+      "text": "freepasserp4 빌드 해",
+      "capability_id": "project.build",
+      "project_id": "freepasserp4"
+    },
+    {
+      "text": "freepass-sales build 해",
+      "capability_id": "project.build",
+      "project_id": "freepass-sales"
+    },
+    {
+      "text": "과태료 처리해",
+      "capability_id": "operations.penalty.prepare",
+      "project_id": "aiops"
+    },
+    {
+      "text": "통행료 변경부과 준비해",
+      "capability_id": "operations.penalty.prepare",
+      "project_id": "aiops"
+    },
+    {
+      "text": "과태료 실행기록 검증해",
+      "capability_id": "operations.penalty.audit",
+      "project_id": "aiops"
+    },
+    {
+      "text": "과태료 감사만 해",
+      "capability_id": "operations.penalty.audit",
+      "project_id": "aiops"
+    },
+    {
+      "text": "운영 감시 돌려",
+      "capability_id": "operations.watch",
+      "project_id": "ai-core"
+    },
+    {
+      "text": "운영 회차 이상 봐",
+      "capability_id": "operations.watch",
+      "project_id": "ai-core"
+    },
+    {
+      "text": "최근 커밋 관측해",
+      "capability_id": "work.observe",
+      "project_id": "ai-core"
+    },
+    {
+      "text": "프로젝트 움직임 봐",
+      "capability_id": "work.observe",
+      "project_id": "ai-core"
+    },
+    {
+      "text": "거래처에 메일 보내",
+      "status": "NO_MATCH"
+    },
+    {
+      "text": "고객 계약서 만들어",
+      "status": "NO_MATCH"
+    }
+  ]
+}
