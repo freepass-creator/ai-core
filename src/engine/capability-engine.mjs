@@ -14,10 +14,11 @@ function missingInputs(capability, input) {
 
 function authorityShapeMatches(authority, plan, capability) {
   if (!authority || authority.status !== 'GRANTED') return false;
+  if (authority.order_id !== plan.order_id || authority.work_id !== plan.work_id) return false;
   if (authority.capability_id !== capability.id || authority.project_id !== plan.project_id) return false;
   if (authority.subject_revision !== plan.subject_revision) return false;
   if (plan.work_id && authority.work_id !== plan.work_id) return false;
-  if (!Array.isArray(authority.scopes)) return false;
+  if (!Array.isArray(authority.scopes) || typeof authority.ledger_head !== 'string' || !authority.ledger_head) return false;
   return capability.required_scopes.every(scope => authority.scopes.includes(scope));
 }
 
@@ -35,7 +36,7 @@ export function createCapabilityEngine({
   const projects = projectIndex(projectRegistry);
   const builtinAdapters = builtins ?? createDefaultBuiltins({ readWorkProjection });
 
-  function plan({ text, projectHint = null, workId = null } = {}) {
+  function plan({ text, projectHint = null, orderId = null, workId = null } = {}) {
     const routed = routeCapability({ text, projectHint, capabilityRegistry, projectRegistry });
     if (routed.status !== 'ROUTED') return { status: 'HOLD', reason: routed.status, route: routed };
     const capability = capabilities.get(routed.capability_id);
@@ -47,6 +48,7 @@ export function createCapabilityEngine({
       capability_id: capability.id,
       project_id: project.project_id,
       subject_revision: project.head_revision,
+      order_id: nonempty(orderId) ? orderId : null,
       work_id: nonempty(workId) ? workId : null,
       mode: capability.mode,
       adapter: structuredClone(capability.adapter),
@@ -59,8 +61,8 @@ export function createCapabilityEngine({
     };
   }
 
-  async function run({ text, projectHint = null, workId = null, input = {}, perform = false, authority = null } = {}) {
-    let preparedPlan = plan({ text, projectHint, workId });
+  async function run({ text, projectHint = null, orderId = null, workId = null, input = {}, perform = false, authority = null } = {}) {
+    let preparedPlan = plan({ text, projectHint, orderId, workId });
     if (preparedPlan.status !== 'PLANNED') {
       return createWorkResult({
         plan: preparedPlan.route ? { capability_id: preparedPlan.route.capability_id ?? null, project_id: preparedPlan.route.project_id ?? null } : null,
@@ -105,6 +107,16 @@ export function createCapabilityEngine({
           },
           performed: false,
           nextAction: 'Control Tower의 현재 revision 승인 receipt를 확인한 뒤 실행합니다.',
+          clock,
+        });
+      }
+      if (!preparedPlan.order_id || !preparedPlan.work_id) {
+        return createWorkResult({
+          plan: preparedPlan,
+          status: 'HOLD',
+          summary: '외부 변경은 정본 order/work 문맥 없이 실행할 수 없습니다.',
+          blockers: ['EXECUTION_CONTEXT_REQUIRED'],
+          nextAction: '현재 order_id와 work_id를 정본 projection에서 확인합니다.',
           clock,
         });
       }
