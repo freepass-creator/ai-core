@@ -148,6 +148,7 @@
     "src/integration/direction.mjs",
     "src/integration/durable-order-work-sandbox.mjs",
     "src/integration/landed-observer.mjs",
+    "src/integration/operating-order-work-submitter.mjs",
     "src/integration/ops-watch.mjs",
     "src/integration/order-intake-sandbox.mjs",
     "src/integration/order-mapping-inventory.mjs",
@@ -179,6 +180,7 @@
     "test/mail-connection-status.test.mjs",
     "test/normalize-order-intent.test.mjs",
     "test/operating-engine.test.mjs",
+    "test/operating-order-work-submitter.test.mjs",
     "test/ops-watch.test.mjs",
     "test/order-intake-integration.test.mjs",
     "test/order-mapping-inventory.test.mjs",
@@ -230,6 +232,7 @@
     "2026-09-18 Capability Engine v1: natural-language routing, capability registry, project command/module runtime, shared Work Result envelope and authority-gated EXTERNAL_MUTATION execution were added on top of the existing Order/Work/Control Tower layers. This adds no blanket production authority; external effects still require a trusted verifier bound to the current project/work revision.",
     "2026-09-18 Capability Engine follow-up: external execution authority is now re-verified against the real Control Tower inputs (mapping, ledger head, snapshot authorization scope and execute gate), routing is locked by 20 representative natural-language fixtures, and direction registry activation/scope/wall rules are schema+CI validated.",
     "2026-09-18 Operating Engine wiring: projection and external authority now share one trusted work-source context. Canonical authority receipts are issued only when the current Control Tower execute gate is READY, then revalidated immediately before external capability execution.",
-    "2026-09-18 External command receipt hardening: EXTERNAL_MUTATION PROJECT_COMMAND capabilities now require a new terminal JSON receipt contract; process exit 0 without a new verified receipt remains HOLD. AIOps penalty uses its existing gwataeryo-run-manifest/v1 as the receipt."
+    "2026-09-18 External command receipt hardening: EXTERNAL_MUTATION PROJECT_COMMAND capabilities now require a new terminal JSON receipt contract; process exit 0 without a new verified receipt remains HOLD. AIOps penalty uses its existing gwataeryo-run-manifest/v1 as the receipt.",
+    "2026-09-18 Durable operating outbox: the existing digest-bound submitter now has a separate trusted path mode plus an operating factory. It is default-disabled, requires explicit first initialization, resolves the canonical work ledger from the same workSources as projection, and immutably binds outbox DB to absolute root/ledger paths. No production activation was performed."
   ]
 }
