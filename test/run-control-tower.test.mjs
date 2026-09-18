@@ -17,8 +17,17 @@ async function readyLedger(revision = snapshot.items[0].subject_revision) {
   const root = await mkdtemp(join(tmpdir(), 'control-run-'));
   const path = join(root, 'ledger.jsonl');
   let result = await appendLedgerEvent(path, created, null);
+  let next = 2;
+  if (revision) {
+    result = await appendLedgerEvent(path, {
+      ...created, event_id: 'EVENT-002', type: 'REOBSERVED',
+      from_state: 'RECEIVED', to_state: 'RECEIVED', subject_revision: revision,
+      evidence_refs: ['MEASURED:fixture revision bound @test'],
+    }, result.head);
+    next = 3;
+  }
   for (const [index, [from_state, to_state]] of [['RECEIVED', 'PLANNED'], ['PLANNED', 'IN_PROGRESS'], ['IN_PROGRESS', 'VERIFYING'], ['VERIFYING', 'READY']].entries()) {
-    result = await appendLedgerEvent(path, { ...created, event_id: `EVENT-00${index + 2}`, type: 'TRANSITIONED', from_state, to_state, subject_revision: revision }, result.head);
+    result = await appendLedgerEvent(path, { ...created, event_id: `EVENT-00${index + next}`, type: 'TRANSITIONED', from_state, to_state, subject_revision: revision }, result.head);
   }
   return readFile(path, 'utf8');
 }
@@ -65,11 +74,11 @@ test('delayed observations follow chain order; unrelated future work does not bl
   const { verifyLedgerText } = await import('../scripts/work-ledger.mjs');
   await writeFile(path, await readyLedger());
   let head = verifyLedgerText(await readFile(path, 'utf8')).head;
-  for (const [index, from_state, to_state] of [[6, 'READY', 'BLOCKED'], [7, 'BLOCKED', 'READY']]) {
+  for (const [index, from_state, to_state] of [[7, 'READY', 'BLOCKED'], [8, 'BLOCKED', 'READY']]) {
     head = (await appendLedgerEvent(path, { ...created, event_id: `EVENT-00${index}`, type: 'TRANSITIONED', from_state, to_state,
       subject_revision: snapshot.items[0].subject_revision, observed_at: '2026-09-15T00:30:00Z' }, head)).head;
   }
-  await appendLedgerEvent(path, { ...created, event_id: 'EVENT-008', work_id: 'OTHER-001', observed_at: '2026-09-16T00:00:00Z' }, head);
+  await appendLedgerEvent(path, { ...created, event_id: 'EVENT-009', work_id: 'OTHER-001', observed_at: '2026-09-16T00:00:00Z' }, head);
   assert.equal(runControlTower({ registry, snapshot, ledgerText: await readFile(path, 'utf8') }).status, 'READY');
 });
 
