@@ -1,5 +1,8 @@
 # Shared Work UI v2 — AI Core pilot
 
+> 공통 규격 정본: `freepass-creator/devcenter/design/patterns/SHARED-WORK-UI-V2.md`, `design/components/SHARED-WORK-UI-V2.md`, `design/tokens/shared-work-ui-v2.css`  
+> 이 문서는 AI Core 파일럿의 적용 기록이며 별도 디자인 SSOT가 아니다.
+
 기준: 2026-09-18  
 파일럿: `web/orders`
 
