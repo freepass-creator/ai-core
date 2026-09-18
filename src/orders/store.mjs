@@ -184,6 +184,12 @@ export class OrderStore {
       } else if (action === 'reroute') {
         need(order.tasks.every(t => t.status === 'PENDING' && !t.lease && !t.report),
           'ROUTING_REQUIRES_IDLE_ORDER', '진행 중이거나 결과가 있는 오더는 업무 경로를 바꿀 수 없습니다.', 409);
+        const bindingTable = this.db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='coordination_bindings'").get();
+        const bound = bindingTable ? this.db.prepare(
+          'SELECT work_id FROM coordination_bindings WHERE order_id=? AND requirement_revision=?'
+        ).get(order.id, order.revision) : null;
+        need(!bound, 'ROUTING_REQUIRES_UNBOUND_REQUIREMENT',
+          '이미 Work에 묶인 요구는 같은 revision에서 경로를 바꿀 수 없습니다. 요구를 revise한 뒤 다시 라우팅하세요.', 409);
         const targetProject = text(command.routing?.target_project_id, '라우팅 프로젝트', 300);
         const nextRouting = routing(command.routing, targetProject);
         need(nextRouting.requirement_revision === order.revision, 'ROUTING_REQUIREMENT_STALE', '현재 요구 revision 기준 라우팅이 필요합니다.', 409);
