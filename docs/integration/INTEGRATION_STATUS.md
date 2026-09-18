@@ -97,3 +97,10 @@ Final branch-wide diff audit also found inherited CRLF line endings reported as 
 ## Independent file-input follow-up
 
 Accepted `267028c5b79e423ff02ec0a57ddf33fb7c10ad88` as a separate four-file change. Source review confirmed createReadStream feeds the original evaluator, without writes or stdin fallback. Focused original-evaluator/runner suite: 28 PASS; full suite: 272 PASS, 0 failed/skipped. Exact input-byte equality, Unicode/space paths, BOM/CRLF, file errors, conflicting options, explicit stdin and unchanged authorization flags are covered. Successor inventory is 84 files. Durable-coordination work begins only after preserving this checkpoint.
+
+
+## Capability/operating execution checkpoint — 2026-09-18
+
+A revision-bound Capability Engine and a controlled operating durable-outbox path now exist in code. Natural-language routing resolves project/capability without inventing unknown capabilities; external mutations require current Control Tower authority and project revision, and project-specific executors remain responsible for their own concurrency/receipt rules. The first real engine integration is AIOps penalty processing: AI Core calls the AIOps lease-bound adapter, which reuses the existing penalty engine and only returns success after a new terminal run manifest is observed.
+
+The durable order/work submitter is no longer structurally limited to OS-temp fixtures: `trusted` mode and `openOperatingOrderWorkSubmitter()` wire the same proven outbox/reconciliation logic to the configured canonical ledger, with default OFF, explicit initialization and immutable absolute location binding. **No operating activation or data migration was performed by this change.** Independent review of the new trusted-path promotion and a read-only preflight/recovery exercise against the actual configured `.local` files remain activation gates.
