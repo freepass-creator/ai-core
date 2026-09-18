@@ -113,6 +113,12 @@ test('HTTP and direct CLI store share truth; cross-origin, bad host and malforme
   assert.equal(projection.status, 'HOLD'); assert.equal(projection.reason, 'DURABLE_MAPPING_OUTBOX_UNAVAILABLE');
   assert.equal(projection.execution_authorized, false);
   assert.equal((await (await fetch(`${url}/api/orders`)).json()).length, 1);
+  const routed = await (await fetch(`${url}/api/route?q=${encodeURIComponent('과태료 처리해')}`)).json();
+  assert.equal(routed.status, 'RESOLVED'); assert.equal(routed.work_type_id, 'penalty-processing'); assert.equal(routed.target_project_id, 'aiops');
+  const heldRoute = await (await fetch(`${url}/api/route?q=${encodeURIComponent('보고서 만들어')}`)).json();
+  assert.equal(heldRoute.status, 'HOLD_PROJECT_HOLD'); assert.equal(heldRoute.target_project_id, 'docshub');
+  const unknownRoute = await (await fetch(`${url}/api/route?q=${encodeURIComponent('달에서 감자 키우기')}`)).json();
+  assert.equal(unknownRoute.status, 'UNKNOWN');
   assert.equal((await post(req, { Origin: 'https://untrusted.example' })).status, 403);
   const badHostStatus = await new Promise((resolve, reject) => { const r = request(`${url}/api/meta`, { headers: { Host: 'untrusted.example' } }, res => { res.resume(); resolve(res.statusCode); }); r.on('error', reject); r.end(); });
   assert.equal(badHostStatus, 403);
