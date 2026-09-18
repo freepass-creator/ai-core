@@ -163,6 +163,7 @@
     "test/order-work-submitter.test.mjs",
     "test/orders-sources-preflight.test.mjs",
     "test/orders.test.mjs",
+    "test/projection-observed-head.test.mjs",
     "test/read-ai-work-packet.test.mjs",
     "test/registry-refresh.test.mjs",
     "test/repo-sync-preflight.test.mjs",

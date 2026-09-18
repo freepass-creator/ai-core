@@ -26,6 +26,7 @@ import { 방향적용 } from './direction.mjs';
 import { createOrderWorkAdapter } from './order-work-adapter.mjs';
 import { verifyLedgerText } from '../../scripts/work-ledger.mjs';
 import { runControlTower } from '../../scripts/run-control-tower.mjs';
+import { 관측파일자리, 새head입히기 } from './landed-observer.mjs';
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 
@@ -144,6 +145,14 @@ export function createWorkProjectionProvider({ store, workSources, ordersDbPath 
     catch (error) {
       return hold(error?.code === 'ENOENT' ? 'WORK_SOURCE_MISSING_LEDGER' : 'WORK_SOURCE_UNREADABLE_LEDGER');
     }
+
+    /** ★프로젝트 head 는 «더 새로 본» 관측을 쓴다 — 2026-09-18
+     *  work:observe 가 원장 옆에 둔 원격 관측이 등록부보다 새것이면 그 head 를 입힌다.
+     *  없으면 예전과 같다(등록부 그대로). 깨져 있으면 모르는 척 넘기지 않고 선다. */
+    let 관측 = null;
+    try { 관측 = JSON.parse(await readFile(관측파일자리(paths.ledger), 'utf8')); }
+    catch (error) { if (error?.code !== 'ENOENT') return hold('WORK_SOURCE_UNREADABLE_LANDED'); }
+    registry = 새head입히기(registry, 관측).registry;
 
     /** ★★방향을 «여기서» 입힌다 — 2026-09-17
      *
