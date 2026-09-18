@@ -1,0 +1,185 @@
+{
+  "schema_version": "1.0",
+  "observed_at": "2026-09-18T12:30:00Z",
+  "capabilities": [
+    {
+      "id": "core.brief",
+      "title": "AI Core 전체 브리핑",
+      "status": "ACTIVE",
+      "domains": ["general", "operations", "development"],
+      "projects": ["ai-core"],
+      "mode": "READ_ONLY",
+      "priority": 90,
+      "match": {
+        "any": ["오늘", "브리핑", "현황", "뭐 있어", "볼 거", "대표 몫", "진행 중", "이상"],
+        "all": [],
+        "none": [],
+        "min_score": 2
+      },
+      "adapter": { "kind": "BUILTIN", "id": "core.brief" },
+      "inputs": [],
+      "required_scopes": [],
+      "walls": [],
+      "result_contract": "ai-core-work-result/v1"
+    },
+    {
+      "id": "work.projection",
+      "title": "오더와 정본 Work 현재 상태 읽기",
+      "status": "ACTIVE",
+      "domains": ["general", "development", "operations"],
+      "projects": ["ai-core"],
+      "mode": "READ_ONLY",
+      "priority": 88,
+      "match": {
+        "any": ["오더 상태", "work 상태", "투영", "어디까지", "진행 상황", "오더 어디까지"],
+        "all": [],
+        "none": [],
+        "min_score": 2
+      },
+      "adapter": { "kind": "BUILTIN", "id": "work.projection" },
+      "inputs": [{ "name": "order_id", "required": true }],
+      "required_scopes": [],
+      "walls": [],
+      "result_contract": "ai-core-work-result/v1"
+    },
+    {
+      "id": "project.verify",
+      "title": "프로젝트 정본 테스트 실행",
+      "status": "ACTIVE",
+      "domains": ["development"],
+      "projects": ["*"],
+      "mode": "LOCAL_MUTATION",
+      "priority": 80,
+      "match": {
+        "any": ["테스트", "검증", "회귀검사", "회귀 검사", "npm test", "테스트 돌려"],
+        "all": [],
+        "none": ["배포"],
+        "min_score": 2
+      },
+      "adapter": { "kind": "PROJECT_REGISTRY_COMMAND", "command_key": "test" },
+      "inputs": [],
+      "required_scopes": [],
+      "walls": ["배포", "외부전송", "운영데이터변경"],
+      "result_contract": "ai-core-work-result/v1"
+    },
+    {
+      "id": "project.build",
+      "title": "프로젝트 정본 빌드 실행",
+      "status": "ACTIVE",
+      "domains": ["development"],
+      "projects": ["*"],
+      "mode": "LOCAL_MUTATION",
+      "priority": 78,
+      "match": {
+        "any": ["빌드", "build", "컴파일"],
+        "all": [],
+        "none": ["배포"],
+        "min_score": 2
+      },
+      "adapter": { "kind": "PROJECT_REGISTRY_COMMAND", "command_key": "build" },
+      "inputs": [],
+      "required_scopes": [],
+      "walls": ["배포", "외부전송", "운영데이터변경"],
+      "result_contract": "ai-core-work-result/v1"
+    },
+    {
+      "id": "operations.penalty.prepare",
+      "title": "과태료 변경부과 서류 준비 엔진",
+      "status": "ACTIVE",
+      "domains": ["operations", "finance"],
+      "projects": ["aiops"],
+      "mode": "EXTERNAL_MUTATION",
+      "priority": 100,
+      "match": {
+        "any": ["과태료", "통행료", "고지서", "변경부과"],
+        "all": [],
+        "none": ["감사만", "실행기록 검증", "기록 검증"],
+        "min_score": 2
+      },
+      "adapter": {
+        "kind": "PROJECT_COMMAND",
+        "argv": ["node", "wonja/gwataeryo-engine.mjs", "--한다"]
+      },
+      "inputs": [],
+      "required_scopes": ["split", "read", "match-contract", "build-document", "group-by-corporation", "shrink"],
+      "walls": ["관청발송", "문서24업로드"],
+      "result_contract": "ai-core-work-result/v1"
+    },
+    {
+      "id": "operations.penalty.audit",
+      "title": "과태료 실행기록 AI Core 감사",
+      "status": "ACTIVE",
+      "domains": ["operations", "finance", "analysis"],
+      "projects": ["aiops"],
+      "mode": "READ_ONLY",
+      "priority": 96,
+      "match": {
+        "any": ["과태료 감사", "과태료 검증", "실행기록 검증", "기록 검증"],
+        "all": [],
+        "none": [],
+        "min_score": 2
+      },
+      "adapter": {
+        "kind": "PROJECT_MODULE",
+        "entrypoint": "lib/gwataeryo-ai-core-adapter.mjs",
+        "export": "buildAiCorePenaltyAuditEnvelope"
+      },
+      "inputs": [
+        { "name": "manifest", "required": true },
+        { "name": "basis", "required": true },
+        { "name": "expectedBasis", "required": true },
+        { "name": "evidence", "required": true },
+        { "name": "reservation", "required": false }
+      ],
+      "required_scopes": [],
+      "walls": ["관청발송", "문서24업로드"],
+      "result_contract": "ai-core-work-result/v1"
+    },
+    {
+      "id": "operations.watch",
+      "title": "운영 회차 건강성 관측",
+      "status": "ACTIVE",
+      "domains": ["operations"],
+      "projects": ["ai-core"],
+      "mode": "LOCAL_MUTATION",
+      "priority": 84,
+      "match": {
+        "any": ["운영 감시", "운영 이상", "운영 회차", "감시 돌려", "ops watch"],
+        "all": [],
+        "none": [],
+        "min_score": 2
+      },
+      "adapter": {
+        "kind": "PROJECT_COMMAND",
+        "argv": ["node", "scripts/ops-watch.mjs"]
+      },
+      "inputs": [],
+      "required_scopes": [],
+      "walls": ["예약작업켜기", "운영데이터변경"],
+      "result_contract": "ai-core-work-result/v1"
+    },
+    {
+      "id": "work.observe",
+      "title": "그룹 프로젝트 최근 변경 관측",
+      "status": "ACTIVE",
+      "domains": ["development", "general"],
+      "projects": ["ai-core"],
+      "mode": "LOCAL_MUTATION",
+      "priority": 82,
+      "match": {
+        "any": ["최근 커밋", "올라간 일", "프로젝트 움직임", "최근 작업 관측", "work observe"],
+        "all": [],
+        "none": [],
+        "min_score": 2
+      },
+      "adapter": {
+        "kind": "PROJECT_COMMAND",
+        "argv": ["node", "scripts/work-observe.mjs"]
+      },
+      "inputs": [],
+      "required_scopes": [],
+      "walls": ["외부전송", "배포"],
+      "result_contract": "ai-core-work-result/v1"
+    }
+  ]
+}
