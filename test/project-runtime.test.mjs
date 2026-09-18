@@ -47,3 +47,24 @@ test('PROJECT_MODULE은 프로젝트 루트 밖을 읽지 못한다', async () =
   const capability = { id: 'x', title: 'x', mode: 'READ_ONLY', adapter: { kind: 'PROJECT_MODULE', entrypoint: '../outside.mjs', export: 'run' } };
   await assert.rejects(runtime.runModule(capability, project, {}), /PROJECT_MODULE_PATH_ESCAPE/);
 });
+
+
+test('PROJECT_MODULE은 input과 canonical execution context를 분리해 전달한다', async () => {
+  let received = null;
+  const runtime = createProjectRuntime({
+    readHead: async () => 'a'.repeat(40),
+    importModule: async () => ({
+      execute: async (input, context) => {
+        received = { input, context };
+        return { status:'SUCCEEDED', summary:'ok', evidence:['READ:test'], artifacts:[], checks:[{name:'x',status:'PASS'}], blockers:[], external_effect:true };
+      },
+    }),
+  });
+  const project = { project_id:'aiops', status:'ACTIVE', local_path:resolve('/tmp/aiops'), head_revision:'a'.repeat(40) };
+  const capability = { id:'x', title:'x', mode:'EXTERNAL_MUTATION', adapter:{kind:'PROJECT_MODULE',entrypoint:'lib/x.mjs',export:'execute'} };
+  const context = { plan:{work_id:'WORK-001'}, authority:{status:'GRANTED'}, executorIdentity:'codex' };
+  const out = await runtime.runModule(capability, project, {}, context);
+  assert.equal(out.status,'SUCCEEDED');
+  assert.equal(received.context.executorIdentity,'codex');
+  assert.equal(received.context.plan.work_id,'WORK-001');
+});
