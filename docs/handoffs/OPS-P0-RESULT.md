@@ -24,6 +24,12 @@ branch: `work/ops-p0-router`
 - `scripts/route-work.mjs`
   - 사용: `npm run ops:route -- "ERP 상품 상세 고쳐"`
 
+- Order intake routed fallback
+  - `POST /api/orders`에서 project가 비어 있으면 title+intent를 같은 Work Map으로 resolve.
+  - ACTIVE project면 project_id를 자동 주입해 기존 OrderStore로 접수.
+  - HOLD/UNKNOWN/AMBIGUOUS이면 `PROJECT_ROUTE_HOLD` 409로 fail-closed.
+  - 사용자가 project를 명시하면 자동 라우팅으로 덮어쓰지 않는다.
+
 - `scripts/validate-work-map.mjs`
   - 사용: `npm run workmap:validate`
 
@@ -37,7 +43,7 @@ branch: `work/ops-p0-router`
 
 이 기능은 기존 Control Tower/work ledger를 대체하지 않는다.
 
-`natural language request → Work Map resolve → existing project/capability → Control Tower/work packet`
+`natural language request → Work Map resolve → routed order intake → existing project/capability → Control Tower/work packet`
 
 중 첫 번째 resolve 단계만 구현한다. 운영 실행은 기존 승인·claim·ledger 경계를 그대로 사용한다.
 
