@@ -31,15 +31,15 @@ function bindForm(form, fn) { if (form) form.addEventListener('submit', e => { e
 function renderList() {
   const query = $('search').value.toLowerCase(), filter = $('filter').value;
   const filtered = orders.filter(o => `${o.title} ${o.project} ${o.id}`.toLowerCase().includes(query) && (filter === 'all' || (filter === 'open' ? !['CLOSED', 'CANCELLED'].includes(o.status) : filter === 'BLOCKED' ? ['BLOCKED', 'EXPIRED'].includes(visibleStatus(o)) : visibleStatus(o) === filter)));
-  $('orders').innerHTML = filtered.length ? filtered.map(o => `<button class="order-card ${o.id === selected ? 'selected' : ''}" data-order="${esc(o.id)}" ${o.id === selected ? 'aria-current="true"' : ''}>${badge(visibleStatus(o))}<strong>${esc(o.title)}</strong><span class="muted small">${esc(o.project)} · ${time(o.updatedAt)}</span></button>`).join('') : '<p class="muted">표시할 오더가 없습니다. 새 오더를 등록해보세요.</p>';
-  $('orders').querySelectorAll('[data-order]').forEach(b => b.addEventListener('click', () => guarded(async () => { selected = b.dataset.order; history.replaceState(null, '', `#${selected}`); await loadDetail(); renderList(); })));
+  $('orders').innerHTML = filtered.length ? filtered.map(o => `<button class="order-card ${o.id === selected ? 'selected' : ''}" data-order="${esc(o.id)}" ${o.id === selected ? 'aria-current="true"' : ''}><span class="order-main"><span class="order-title">${esc(o.title)}</span><span class="order-meta">${esc(o.project)} · ${time(o.updatedAt)}</span></span><span class="order-status">${badge(visibleStatus(o))}<span aria-hidden="true">›</span></span></button>`).join('') : '<p class="muted loading-copy">표시할 오더가 없습니다. 새 오더를 등록해보세요.</p>';
+  $('orders').querySelectorAll('[data-order]').forEach(b => b.addEventListener('click', () => guarded(async () => { selected = b.dataset.order; history.replaceState(null, '', `#${selected}`); await loadDetail(); document.body.classList.add('detail-open'); renderList(); })));
   const values = [['전체 오더', orders.length], ['작업 중', orders.filter(o => ['NEW', 'ACTIVE'].includes(visibleStatus(o))).length], ['인계·확인 필요', orders.filter(o => ['BLOCKED', 'EXPIRED', 'REVIEW'].includes(visibleStatus(o))).length], ['이전 접수 종료', orders.filter(o => o.status === 'CLOSED').length]];
   $('stats').innerHTML = values.map(([label, count]) => `<div class="stat"><span>${label}</span><strong>${count}</strong></div>`).join('');
 }
 function taskHtml(t, index, order) {
   const terminal = ['CLOSED', 'CANCELLED'].includes(order.status), active = t.lease && Date.parse(t.lease.expiresAt) > Date.now();
   const dependency = order.tasks.slice(0, index).every(p => p.status === 'REPORTED');
-  return `<article class="task" data-task="${esc(t.id)}"><div class="task-top"><div><h3>${index + 1}. ${esc(t.title)}</h3><span class="small muted">${esc(t.assigned)} · ${t.attempt}회 작업 확보</span></div>${badge(expired(t) ? 'EXPIRED' : t.status)}</div>
+  return `<article class="task" data-task="${esc(t.id)}"><div class="task-top"><div><h3>${index + 1}. ${esc(t.title)}</h3><span><span class="ai-label" title="AI 담당">${esc(t.assigned)}</span><span class="small muted"> · ${t.attempt}회 작업 확보</span></span></div>${badge(expired(t) ? 'EXPIRED' : t.status)}</div>
     ${active ? `<p class="small muted">작업 확보 만료: ${time(t.lease.expiresAt)} · AI 자동 실행 상태가 아닙니다.</p>` : t.status === 'RUNNING' ? '<p class="small muted">작업 확보가 만료됐습니다. 재확보하거나 담당을 바꿀 수 있습니다.</p>' : ''}
     ${t.blockedReason ? `<p class="result">대기 이유: ${esc(t.blockedReason)}</p>` : ''}
     ${t.report ? `<p class="result">${esc(t.report.summary)}</p><ul class="evidence">${t.report.evidence.map(v => `<li>${esc(v)}</li>`).join('')}</ul><p class="small muted">담당자 기록 · 요구 버전 ${t.report.revision} · 독립 검증 자동 판정 아님</p>` : ''}
@@ -61,11 +61,17 @@ async function loadDetail() {
   const next = o.status === 'REVIEW' ? '모든 결과가 접수됐습니다. 근거와 완료 조건을 확인하세요.' : terminal ? '종료된 오더입니다. 기록과 인계 자료를 확인할 수 있습니다.' : expired(nextTask) ? '작업 확보가 만료됐습니다. 실제 처리 여부를 확인한 뒤 다시 확보하거나 담당을 바꾸세요.' : `${nextTask.assigned} · ${nextTask.title}${nextTask.blockedReason ? ` — ${nextTask.blockedReason}` : ' 작업을 이어가세요.'}`;
   const proofOptions = o.tasks.flatMap(t => (t.report?.evidence ?? []).map((e, i) => `<option value="${t.id}:${i}">${esc(t.title)} · ${esc(e)}</option>`)).join('');
   const checksHtml = o.criteria.map((c, i) => `<label>${i + 1}. ${esc(c)}<select name="proof-${i}" required><option value="">이 조건을 확인한 근거 선택</option>${proofOptions}</select></label>`).join('');
-  $('detail').innerHTML = `<div class="order-heading"><div>${badge(visibleStatus(o))}<h2>${esc(o.title)}</h2><div class="id">${esc(o.id)}</div></div></div><p class="small muted">${esc(o.project)} · 요구 버전 ${o.revision}</p><div class="intent">${esc(o.intent)}</div><h3>완료 조건</h3><ul class="criteria">${o.criteria.map(c => `<li>${esc(c)}</li>`).join('')}</ul><div class="next"><strong>다음 행동</strong><p>${esc(next)}</p></div><section class="task" aria-label="정본 업무 상태"><h3>정본 업무 상태</h3><p>${esc(canonicalLabel)}</p><p class="small muted">${work.status === 'HOLD' ? '연결 검증 대기 · 실행·최종 완료 보류' : '정본 조회 결과'}</p></section><h3>함께 처리할 작업</h3>${o.tasks.map((t, i) => taskHtml(t, i, o)).join('')}
+  $('detail').innerHTML = `<button class="back-mobile" id="detail-back" aria-label="오더 목록으로 돌아가기">←</button><div class="order-heading"><div>${badge(visibleStatus(o))}<h2>${esc(o.title)}</h2><div class="id">${esc(o.id)}</div></div></div><p class="small muted">${esc(o.project)} · 요구 버전 ${o.revision}</p><div class="intent">${esc(o.intent)}</div><h3>완료 조건</h3><ul class="criteria">${o.criteria.map(c => `<li>${esc(c)}</li>`).join('')}</ul><div class="next"><strong>다음 행동</strong><p>${esc(next)}</p></div><section class="task" aria-label="정본 업무 상태"><h3>정본 업무 상태</h3><p>${esc(canonicalLabel)}</p><p class="small muted">${work.status === 'HOLD' ? '연결 검증 대기 · 실행·최종 완료 보류' : '정본 조회 결과'}</p></section><h3>함께 처리할 작업</h3>${o.tasks.map((t, i) => taskHtml(t, i, o)).join('')}
     ${o.status === 'REVIEW' ? `<section class="task"><h3>최종 결과 확인</h3><form id="close-form">${checksHtml}<label><input class="check" type="checkbox" name="confirmed" required> 현재 완료 조건과 각 결과의 근거를 확인했습니다.</label><label>확인 메모<textarea name="note" required rows="2"></textarea></label><button type="submit">결과 확인 기록</button></form><p class="small muted">사용자 확인 기록입니다. 외부 실행 승인이나 자동 검증 인증을 만들지 않습니다.</p></section>` : ''}
     ${o.closure ? `<p class="intent">결과 확인: ${esc(o.closure.note)}</p>` : ''}
     ${!terminal ? '<details><summary>메모 추가</summary><form id="note-form"><label>판단·다음 행동·참고사항<textarea name="note" required rows="3"></textarea></label><button class="secondary">메모 저장</button></form></details><details><summary>요구사항 수정</summary><p class="small muted">수정하면 모든 작업을 다시 확인합니다. 이전 결과는 이력에 보존됩니다.</p><form id="revise-form"><label>현재 요청<textarea name="intent" required rows="3"></textarea></label><label>완료 조건<textarea name="criteria" required rows="3"></textarea></label><label>수정 이유<input name="reason" required></label><button class="secondary">요구 수정</button></form></details><details><summary>오더 취소</summary><form id="cancel-form"><label>취소 이유<input name="reason" required></label><button class="danger">오더 취소</button></form><p class="small muted">이미 외부에서 실행한 일은 취소되지 않습니다.</p></details>' : ''}
     <details open><summary>처리 이력 · ${events.length}건</summary><ol class="timeline">${events.slice().reverse().map(e => `<li><strong>${esc(eventNames[e.type] ?? e.type)}</strong> · ${esc(e.by)}<div class="time">${time(e.at)} · 요구 버전 ${e.revision}</div><p>${esc(e.detail.note ?? e.detail.reason ?? e.detail.report?.summary ?? e.detail.intent ?? (e.detail.taskId ? `${e.detail.taskId}${e.detail.to ? ` → ${e.detail.to}` : ''}` : ''))}</p></li>`).join('')}</ol></details>`;
+  $('detail-back')?.addEventListener('click', () => {
+    document.body.classList.remove('detail-open');
+    selected = ''; current = null;
+    history.replaceState(null, '', location.pathname + location.search);
+    renderList();
+  });
   for (const el of $('detail').querySelectorAll('[data-task]')) {
     const t = o.tasks.find(t => t.id === el.dataset.task);
     for (const b of el.querySelectorAll('[data-action]')) b.addEventListener('click', () => guarded(async () => {
@@ -103,14 +109,41 @@ async function refresh() {
   document.querySelector('.local').textContent = meta.mode === 'SHARED_PRIVATE_SERVICE' ? '공유 접수 기록 · 업무 상태 별도 확인' : '독립 실험 접수 기록';
   $('name').textContent = meta.name; $('provisional').textContent = meta.provisional ? '이름 상의 중' : ''; document.title = `${meta.name} · 오더 데스크`; $('display-name').value = meta.name;
   $('actors').innerHTML = meta.actors.map(a => `<div class="actor"><strong>${esc(a.name)}</strong><p>${esc(a.strength)}</p></div>`).join('');
-  orders = await api('/api/orders'); renderList(); if (selected) await loadDetail(); $('detail').inert = false;
+  orders = await api('/api/orders'); renderList(); if (selected) { await loadDetail(); if (matchMedia('(max-width:720px)').matches) document.body.classList.add('detail-open'); } $('detail').inert = false;
 }
 $('order-form').addEventListener('input', () => localStorage.setItem('order-draft', JSON.stringify(Object.fromEntries(new FormData($('order-form'))))));
 try { const draft = JSON.parse(localStorage.getItem('order-draft')); if (draft) for (const [key, value] of Object.entries(draft)) if ($('order-form').elements[key]) $('order-form').elements[key].value = value; } catch { /* malformed local draft */ }
 bindForm($('order-form'), async data => {
-  const o = await submit('/api/orders', { ...data, criteria: splitLines(data.criteria), source: 'local-web' }); selected = o.id; history.replaceState(null, '', `#${selected}`); $('order-form').reset(); localStorage.removeItem('order-draft'); await afterSave(o, '오더가 등록됐습니다. 담당과 다음 행동을 확인하세요.'); $('detail').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const o = await submit('/api/orders', { ...data, criteria: splitLines(data.criteria), source: 'local-web' });
+  selected = o.id; history.replaceState(null, '', `#${selected}`);
+  $('order-form').reset(); localStorage.removeItem('order-draft');
+  if ($('new-order')?.open) $('new-order').close();
+  document.body.classList.add('detail-open');
+  await afterSave(o, '오더가 등록됐습니다. 담당과 다음 행동을 확인하세요.');
+  $('detail').scrollIntoView({ behavior: 'smooth', block: 'start' });
 });
 bindForm($('name-form'), async () => { await api('/api/name', { name: $('display-name').value }); await refresh(); notify('표시 이름을 저장했습니다.'); });
 $('refresh').addEventListener('click', () => guarded(async () => { await refresh(); notify('최신 기록을 불러왔습니다.'); }));
 $('search').addEventListener('input', renderList); $('filter').addEventListener('change', renderList);
+
+const newOrderDialog = $('new-order');
+function openNewOrder() {
+  if (!newOrderDialog) return;
+  if (typeof newOrderDialog.showModal === 'function') newOrderDialog.showModal();
+  else newOrderDialog.setAttribute('open', '');
+  requestAnimationFrame(() => $('title')?.focus());
+}
+$('new-order-open')?.addEventListener('click', openNewOrder);
+document.querySelector('a[href="#new-order"]')?.addEventListener('click', e => { e.preventDefault(); openNewOrder(); });
+$('new-order-cancel')?.addEventListener('click', () => newOrderDialog?.close());
+newOrderDialog?.addEventListener('click', e => { if (e.target === newOrderDialog) newOrderDialog.close(); });
+
+document.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+    e.preventDefault(); $('search')?.focus(); $('search')?.select();
+  }
+  if (e.key === 'Escape' && document.body.classList.contains('detail-open') && !newOrderDialog?.open) {
+    document.body.classList.remove('detail-open');
+  }
+});
 guarded(refresh);
