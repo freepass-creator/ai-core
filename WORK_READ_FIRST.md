@@ -42,6 +42,9 @@ AI 이름보다 최신 사용자 결정, 현재 프로젝트 정본, revision-bo
 
 ## 실제 회사 업무를 AI Core로 처리하는 경우
 
+기능 실행 경로를 만들거나 연결할 때는 [AI Core Capability Engine](docs/AI_CORE_ENGINE.md)을 함께 읽는다. 새 업무별 실행기를 AI Core에 복제하지 말고 `registry/capabilities.json`에 capability를 등록해 기존 프로젝트 engine/adapter로 route한다. `EXTERNAL_MUTATION`은 Control Tower의 현재 revision 승인 검증 없이는 실행되지 않아야 한다.
+
+
 [AI Core 실제 업무 운영 플레이북](docs/AI_CORE_OPERATING_PLAYBOOK.md)을 읽는다. 사용자의 자연어 오더를 `업무 의미 → 프로젝트/정본 → capability → 실행자 → 승인 경계 → 검증 → 결과/후속`으로 연결한다.
 
 첫 구현은 `OPS-P0`: 실제 주요 업무 20~30개와 자연어 오더 fixture를 읽기 전용으로 inventory하고, 각 업무가 올바른 정본·실행 경로·완료조건으로 route 되는지 확인한다. 저장소/시트/AI 이름을 사용자가 매번 지정하게 만드는 것을 기본 UX로 삼지 않는다.
