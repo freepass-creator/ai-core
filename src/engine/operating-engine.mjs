@@ -26,6 +26,7 @@ export async function openOperatingCapabilityEngine({
   projectRegistry = null,
   runtime,
   clock,
+  executorIdentity = process.env.AI_CORE_EXECUTOR ?? null,
 } = {}) {
   const [caps, projects] = await Promise.all([
     capabilityRegistry ? Promise.resolve(capabilityRegistry) : readJson('registry/capabilities.json'),
@@ -44,6 +45,7 @@ export async function openOperatingCapabilityEngine({
     ...(runtime ? { runtime } : {}),
     ...(clock ? { clock } : {}),
     readWorkProjection,
+    executorIdentity,
     verifyAuthority: authorityBridge?.verify ?? null,
     authorityProvider: authorityBridge?.issue ?? null,
   });
