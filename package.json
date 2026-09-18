@@ -25,7 +25,9 @@
     "repo:preflight": "node scripts/repo-sync-preflight.mjs",
     "checkpoint": "node scripts/checkpoint-work.mjs",
     "registry:refresh": "node scripts/registry-refresh.mjs",
-    "control:snapshot": "node scripts/control-snapshot-refresh.mjs"
+    "control:snapshot": "node scripts/control-snapshot-refresh.mjs",
+    "work:observe": "node scripts/work-observe.mjs",
+    "work:recent": "node scripts/work-recent.mjs"
   },
   "dependencies": {
     "ajv": "8.20.0",
