@@ -22,6 +22,7 @@
     "WORK_READ_FIRST.md",
     "contracts/capability-registry.schema.json",
     "contracts/control-tower.schema.json",
+    "contracts/direction-registry.schema.json",
     "contracts/project-registry.schema.json",
     "contracts/work-ledger-event.schema.json",
     "docs/AI-SSOT-AUDIT-LOG.md",
@@ -101,6 +102,7 @@
     "registry/directions.json",
     "registry/operations.json",
     "registry/projects.json",
+    "registry/routing-fixtures.json",
     "scripts/ai-continuation-pack.mjs",
     "scripts/control-snapshot-refresh.mjs",
     "scripts/core-brief.mjs",
@@ -121,6 +123,7 @@
     "scripts/repo-sync-preflight.mjs",
     "scripts/run-control-tower.mjs",
     "scripts/validate-capability-registry.mjs",
+    "scripts/validate-directions.mjs",
     "scripts/validate-project-registry.mjs",
     "scripts/verify-main-state.mjs",
     "scripts/work-ledger.mjs",
@@ -133,6 +136,8 @@
     "src/engine/capability-engine.mjs",
     "src/engine/capability-registry.mjs",
     "src/engine/capability-router.mjs",
+    "src/engine/control-tower-authority.mjs",
+    "src/engine/direction-registry.mjs",
     "src/engine/project-runtime.mjs",
     "src/engine/result-envelope.mjs",
     "src/improvement/evaluate-evolution-jsonl.mjs",
@@ -157,8 +162,11 @@
     "test/capability-engine.test.mjs",
     "test/capability-registry.test.mjs",
     "test/capability-router.test.mjs",
+    "test/capability-routing-fixtures.test.mjs",
+    "test/control-tower-authority.test.mjs",
     "test/core-brief.test.mjs",
     "test/derive-control-snapshot.test.mjs",
+    "test/direction-registry.test.mjs",
     "test/direction.test.mjs",
     "test/durable-order-work.test.mjs",
     "test/evaluate-control-tower.test.mjs",
@@ -214,6 +222,7 @@
     "2026-09-16 Claude 추가(PR #38 경계 봉쇄 lane): fix/submitter-ledger-boundary(2946444)와 feat/submitter-real-path-check(d49e329)를 origin/codex/order-control-integration(7da6821) 위로 rebase하면서 base_revision 7b63024 기준 실제 diff가 115개에서 116개로 늘었다. 집합 차분을 실측한 결과 누락 1개(test/order-work-submitter-real-path.test.mjs), 과잉 0개였다. 이 한 개는 main에서 상속된 파일이 아니라 이 lane이 실제로 새로 만든 검사 파일이다 — 제출기가 스텁이 아닌 진짜 judge 경로를 타는지 확인하는 테스트로, d49e329가 추가했다. 따라서 선언 추가는 계약 맞추기가 아니라 이 에피소드 산출물의 정직한 기재다. base_revision과 2-dot 정확일치 비교 방식, 검증기 스크립트는 건드리지 않았다.",
     "2026-09-16 Claude 추가(PR #38 legacy outbox 구멍): GPT 독립 검토가 같은 무늬의 잔여 결함을 찾았다 — order-work-submitter.mjs의 binding 기록이 \"binding 행이 없으면 first open\"으로 단정해, binding 테이블이 생기기 «전»에 만들어진 outbox(제출 이력은 있으나 binding 행이 없는 legacy DB)를 다른 원장으로 열면 그 원장에 옛 원장의 중복제거 이력이 적용됐다. 주석이 약속한 \"first open\"을 코드가 구별하지 않은 것이다. 판별 신호를 submission_commands+submission_history 행 수(0이면 진짜 신규)로 잡아 legacy는 원장 읽기·append 이전에 LEDGER_BINDING_REQUIRED로 거절하고 SQLite 핸들을 닫도록 고쳤으며, 주석을 그 사실에 맞춰 다시 썼다. 회귀 검사 1개를 기존 test/order-work-submitter.test.mjs에 추가했다(새 파일을 만들지 않았으므로 changed_files 선언은 바뀌지 않는다). 그 검사는 기존 LEDGER_BINDING_CONFLICT 검사와 달리 binding 행이 «없는» 경우를 다루며, 실제 appendLedgerEvent를 감싼 spy로 원장에 닿기 전에 막혔음을 단언한다. base_revision·비교 방식·검증기는 건드리지 않았다.",
     "2026-09-16 Claude 추가: 이 갈래가 만든 신규 파일 둘을 선언에 넣었다 — src/integration/order-work-context-reader.mjs 와 그 시험. 앞선 SESSION-MISSIONS.md 항목과 달리 이것은 main 에서 상속된 것이 아니라 «이 에피소드가 실제로 만든 산출물»이다. 계약 맞추기가 아니라 정직한 기재다. reader 는 append·submit 을 인자로 받지 않아 read-only 가 타입 수준에서 강제되고, 운영 registry/snapshot/ledger 경로는 정하지 않고 인자로만 받는다(미정). base_revision·비교 방식·검증기는 건드리지 않았다.",
-    "2026-09-18 Capability Engine v1: natural-language routing, capability registry, project command/module runtime, shared Work Result envelope and authority-gated EXTERNAL_MUTATION execution were added on top of the existing Order/Work/Control Tower layers. This adds no blanket production authority; external effects still require a trusted verifier bound to the current project/work revision."
+    "2026-09-18 Capability Engine v1: natural-language routing, capability registry, project command/module runtime, shared Work Result envelope and authority-gated EXTERNAL_MUTATION execution were added on top of the existing Order/Work/Control Tower layers. This adds no blanket production authority; external effects still require a trusted verifier bound to the current project/work revision.",
+    "2026-09-18 Capability Engine follow-up: external execution authority is now re-verified against the real Control Tower inputs (mapping, ledger head, snapshot authorization scope and execute gate), routing is locked by 20 representative natural-language fixtures, and direction registry activation/scope/wall rules are schema+CI validated."
   ]
 }
