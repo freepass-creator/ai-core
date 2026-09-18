@@ -33,7 +33,8 @@
     "work:reobserve": "node scripts/work-reobserve.mjs",
     "capability:validate": "node scripts/validate-capability-registry.mjs",
     "core:route": "node scripts/core-route.mjs",
-    "core:capability": "node scripts/core-capability.mjs"
+    "core:capability": "node scripts/core-capability.mjs",
+    "direction:validate": "node scripts/validate-directions.mjs"
   },
   "dependencies": {
     "ajv": "8.20.0",
