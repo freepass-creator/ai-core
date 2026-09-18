@@ -158,7 +158,8 @@ export function createOrderWorkIntakeCoordinator({store,workSources,ordersDbPath
     need(!oldBinding,'EXISTING_BINDING_NOT_OWNED_BY_INTAKE');
 
     const current=await ledger();
-    const workId=numericId('WORK',`${order.id}|${order.revision}`);
+    const prefix=/^[A-Z][A-Z0-9_]{1,31}$/.test(String(r.work_id_prefix ?? '')) ? r.work_id_prefix : 'WORK';
+    const workId=numericId(prefix,`${order.id}|${order.revision}`);
     const eventId=numericId('INTAKEEVENT',`${order.id}|${order.revision}|created`);
     need(!current.work[workId],'WORK_ID_ALREADY_REGISTERED');
     const event={
