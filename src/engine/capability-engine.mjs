@@ -77,6 +77,7 @@ export function createCapabilityEngine({
 
     const capability = capabilities.get(preparedPlan.capability_id);
     const project = projects.get(preparedPlan.project_id);
+    let effectiveAuthority = authority;
     const missing = missingInputs(capability, input);
     if (missing.length) {
       return createWorkResult({
@@ -121,7 +122,6 @@ export function createCapabilityEngine({
           clock,
         });
       }
-      let effectiveAuthority = authority;
       if (!effectiveAuthority && typeof authorityProvider === 'function') {
         effectiveAuthority = await authorityProvider({
           plan: structuredClone(preparedPlan),
