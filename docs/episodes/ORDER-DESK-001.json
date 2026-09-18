@@ -121,6 +121,7 @@
     "scripts/work-observe.mjs",
     "scripts/work-recent.mjs",
     "scripts/work-record.mjs",
+    "scripts/work-reobserve.mjs",
     "src/improvement/evaluate-evolution-jsonl.mjs",
     "src/intake/normalize-order-intent.mjs",
     "src/integration/core-brief.mjs",
@@ -171,6 +172,7 @@
     "test/verify-main-state.test.mjs",
     "test/work-ledger.test.mjs",
     "test/work-recorder.test.mjs",
+    "test/work-reobserve.test.mjs",
     "web/orders/app.js",
     "web/orders/index.html",
     "web/orders/style.css"

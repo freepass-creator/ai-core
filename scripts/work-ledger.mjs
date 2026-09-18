@@ -19,6 +19,7 @@ const transitions = new Map([
   ['OBSERVING', ['CLOSED', 'BLOCKED']],
   ['BLOCKED', ['PLANNED', 'IN_PROGRESS', 'VERIFYING', 'AWAITING_AUTHORIZATION', 'READY', 'OBSERVING', 'CANCELLED']],
 ]);
+export const REOBSERVABLE = ['RECEIVED', 'PLANNED', 'IN_PROGRESS'];
 
 function canonical(value) {
   if (Array.isArray(value)) return value.map(canonical);
@@ -51,13 +52,28 @@ export function verifyLedgerText(text) {
     const prior = workStates.get(event.work_id);
     if (event.type === 'CREATED') {
       if (prior || event.from_state !== null || event.to_state !== 'RECEIVED') errors.push({ code: 'CREATE_STATE_INVALID', line });
+    } else if (event.type === 'REOBSERVED') {
+      // ★2026-09-18: the subject moves (aiops 7, fp4 204 commits a day) but a work
+      // item could only follow it by changing state. REOBSERVED carries the work to a
+      // new revision WITHOUT moving it: same state, new revision, evidence required.
+      // Only before verification — a verified/authorized item must not ride onto code
+      // nobody verified; that path stays through BLOCKED -> VERIFYING.
+      if (!prior || event.from_state !== prior.state || event.to_state !== prior.state) errors.push({ code: 'FROM_STATE_MISMATCH', line });
+      if (!REOBSERVABLE.includes(prior?.state)) errors.push({ code: 'REOBSERVE_STATE_NOT_ALLOWED', line });
+      if (!event.subject_revision || event.subject_revision === prior?.subject_revision) errors.push({ code: 'REOBSERVE_REVISION_UNCHANGED', line });
+      if (!event.evidence_refs?.length) errors.push({ code: 'REOBSERVE_EVIDENCE_REQUIRED', line });
+      if (prior?.project_id !== event.project_id) errors.push({ code: 'PROJECT_CHANGED', line });
     } else {
       if (!prior || event.from_state !== prior.state) errors.push({ code: 'FROM_STATE_MISMATCH', line });
       if (!transitions.get(event.from_state)?.includes(event.to_state)) errors.push({ code: 'TRANSITION_NOT_ALLOWED', line });
       if (prior?.project_id !== event.project_id) errors.push({ code: 'PROJECT_CHANGED', line });
     }
     if (event.to_state === 'CLOSED' && (!event.subject_revision || !event.evidence_refs.length)) errors.push({ code: 'CLOSURE_EVIDENCE_REQUIRED', line });
-    workStates.set(event.work_id, { state: event.to_state, project_id: event.project_id, subject_revision: event.subject_revision });
+    // `revisions` — every revision this work was ever observed at, in chain order.
+    // A binding made at an earlier revision stays valid only if it is in here.
+    const revisions = [...(prior?.revisions ?? [])];
+    if (event.subject_revision && revisions.at(-1) !== event.subject_revision) revisions.push(event.subject_revision);
+    workStates.set(event.work_id, { state: event.to_state, project_id: event.project_id, subject_revision: event.subject_revision, revisions });
     head = storedHash;
   }
   return { status: errors.length ? 'INVALID' : 'VALID', head, event_count: events.length, work: Object.fromEntries(workStates), errors };

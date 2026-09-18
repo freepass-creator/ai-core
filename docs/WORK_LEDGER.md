@@ -32,3 +32,34 @@ history into git and make every parallel session conflict on the same lines.
 exits 1 — **a ledger that is not there is not an empty ledger.** Until 2026-09-17
 it read the absent file as `''` and answered `VALID`, so any path at all, a typo
 included, came back green. An empty file is still `VALID`; that part istrue and unchanged.
+
+## `REOBSERVED` — the subject moved, the work follows with evidence (2026-09-18)
+
+A work item is observed against one subject revision. The subject does not wait:
+on 2026-09-18 aiops landed 7 commits and freepasserp4 204 in a day. Until then a
+work item could follow only by changing state, and an order↔work binding — which is
+immutable and made once — went `SUBJECT_REVISION_STALE` for good on the first commit.
+
+`REOBSERVED` carries a work item to a new revision **without moving it**:
+
+- `from_state` = `to_state` = the current state; a new, different 40-hex `subject_revision`
+- `evidence_refs` required (the recorder uses `work:observe`'s measured compare)
+- only in `RECEIVED` / `PLANNED` / `IN_PROGRESS` — a verified or authorized item must
+  not ride onto code nobody verified; that path stays `BLOCKED → VERIFYING`
+- `verify` now also returns `work[id].revisions` — every revision the item was observed at
+
+The projection adapter then checks two things instead of one: registry head,
+snapshot and ledger agree on the **current** revision, and the binding's revision is
+in the item's own `revisions`. A **new** binding must still be made at the current
+revision. The binding itself is untouched — it pins identity, not a revision forever.
+
+```
+npm run work:observe                              measure what landed
+npm run work:reobserve                            show what would be written (default)
+npm run work:reobserve -- --work <ID> --write     append REOBSERVED
+npm run control:snapshot                          the snapshot follows the ledger
+```
+
+★Readers older than this change reject a ledger that contains `REOBSERVED`
+(`EVENT_SCHEMA_INVALID`). Do not append one to an operating ledger until every
+reader of that ledger runs this version.

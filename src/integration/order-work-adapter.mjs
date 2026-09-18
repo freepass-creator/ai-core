@@ -61,7 +61,14 @@ export function createOrderWorkAdapter({ readContext, verifyLedgerText, runContr
     if (candidate && !existing) need(work.state === 'RECEIVED', 'NEW_LINK_REQUIRES_RECEIVED');
     need(project.status === 'ACTIVE', 'PROJECT_NOT_ACTIVE');
     need(item.project_id === mapping.project_id && work.project_id === mapping.project_id, 'WORK_PROJECT_MISMATCH');
-    need([project.head_revision, item.subject_revision, work.subject_revision].every(value => value === mapping.subject_revision), 'SUBJECT_REVISION_STALE');
+    // Registry head, snapshot and ledger must all describe the SAME current revision.
+    need(revision(work.subject_revision) && [project.head_revision, item.subject_revision].every(value => value === work.subject_revision), 'SUBJECT_REVISION_STALE');
+    // The binding pins identity (this order <-> that work), made at one revision. It
+    // stays valid after the subject moves only if the ledger itself carried the work
+    // there — the bound revision must be in the work's own history. A new link must
+    // be made at the current revision.
+    need(candidate ? mapping.subject_revision === work.subject_revision
+      : (work.revisions ?? [work.subject_revision]).includes(mapping.subject_revision), 'SUBJECT_REVISION_STALE');
     const control = await runControlTower({ registry, snapshot, ledgerText });
     need(['READY', 'HOLD'].includes(control?.status) && control.execution_authorized === false, 'CONTROL_INVALID');
     need(control.ledger_head === ledger.head && nonempty(ledger.head), 'LEDGER_HEAD_MISMATCH');
