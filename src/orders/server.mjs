@@ -7,6 +7,7 @@ import { OrderStore, OrderError, actors, defaultDb } from './store.mjs';
 import { createWorkProjectionProvider } from '../integration/order-work-sources.mjs';
 import { routeWork, validateWorkMap } from '../routing/work-router.mjs';
 import { createCapabilityEngine } from '../engine/capability-engine.mjs';
+import { createOrderWorkIntakeCoordinator } from '../integration/order-work-intake-coordinator.mjs';
 
 let defaultRoutingConfigPromise;
 async function defaultRoutingConfig() {
@@ -82,6 +83,7 @@ export function startServer({ dbPath = defaultDb, port = 4318, expectedLedgerId 
   // Otherwise build the read-only provider over THIS server's store, so the order
   // the adapter re-reads is the same record the endpoint compared versions on.
   if (!readWorkProjection && workSources) readWorkProjection = createWorkProjectionProvider({ store, workSources, ordersDbPath: dbPath });
+  const workIntake = workSources ? createOrderWorkIntakeCoordinator({ store, workSources, ordersDbPath: dbPath }) : null;
   const server = createServer(async (req, res) => {
     const json = (status, data) => { res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8' }); res.end(JSON.stringify(data)); };
     try {
@@ -136,6 +138,7 @@ export function startServer({ dbPath = defaultDb, port = 4318, expectedLedgerId 
         catch { return json(200, { ...unavailable, reason: 'CANONICAL_READ_FAILED' }); }
       }
       const rerouteMatch = url.pathname.match(/^\/api\/orders\/(ORD-[a-f0-9-]+)\/reroute$/);
+      const workIntakeMatch = url.pathname.match(/^\/api\/orders\/(ORD-[a-f0-9-]+)\/work-intake$/);
       const match = url.pathname.match(/^\/api\/orders\/(ORD-[a-f0-9-]+)(?:\/(packet|check-context))?$/);
       if (req.method === 'GET' && match) return json(200, match[2] === 'packet' ? store.packet(match[1], url.searchParams.get('task')) : match[2] === 'check-context' ? store.checkContext(match[1], url.searchParams.get('task')) : { order: store.get(match[1]), events: store.events(match[1]) });
       if (req.method === 'POST') {
@@ -159,6 +162,16 @@ export function startServer({ dbPath = defaultDb, port = 4318, expectedLedgerId 
             data = { ...data, project: routed.target_project_id, routing: routingSnapshot(routed) };
           }
           return json(200, store.create(data));
+        }
+        if (workIntakeMatch) {
+          if (!workIntake) return json(200, { status:'HOLD', reason:'WORK_SOURCES_UNCONFIGURED', execution_authorized:false, completion_authorized:false });
+          const result = await workIntake.intake(workIntakeMatch[1]);
+          let projection = null;
+          if (result.status === 'WORK_LINKED' && readWorkProjection) {
+            try { projection = await readWorkProjection(workIntakeMatch[1]); }
+            catch { projection = { status:'HOLD', reason:'CANONICAL_READ_FAILED', execution_authorized:false, completion_authorized:false, sent:false }; }
+          }
+          return json(200, { ...result, projection });
         }
         if (rerouteMatch) {
           const order = store.get(rerouteMatch[1]);
