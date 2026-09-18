@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "observed_at": "2026-09-18T17:30:00Z",
+  "observed_at": "2026-09-18T18:30:00Z",
   "capabilities": [
     {
       "id": "core.brief",
@@ -134,7 +134,8 @@
         "관청발송",
         "문서24업로드"
       ],
-      "result_contract": "ai-core-work-result/v1"
+      "result_contract": "ai-core-work-result/v1",
+      "work_id_prefix": "GWATAERYO"
     },
     {
       "id": "operations.penalty.audit",
