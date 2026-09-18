@@ -34,6 +34,7 @@ export function validateCapabilityRegistryReferences(registry, projectRegistry) 
     need(!(capability.projects.includes('*') && capability.projects.length > 1), 'CAPABILITY_WILDCARD_MIXED');
     for (const projectId of capability.projects) if (projectId !== '*') need(projects.has(projectId), 'CAPABILITY_PROJECT_UNKNOWN');
     need(capability.result_contract === 'ai-core-work-result/v1', 'CAPABILITY_RESULT_CONTRACT_INVALID');
+    need(capability.work_id_prefix == null || /^[A-Z][A-Z0-9_]{1,31}$/.test(capability.work_id_prefix), 'CAPABILITY_WORK_ID_PREFIX_INVALID');
     need(Array.isArray(capability.inputs) && Array.isArray(capability.required_scopes) && Array.isArray(capability.walls), 'CAPABILITY_BOUNDARY_INVALID');
 
     if (capability.status === 'ACTIVE') {
