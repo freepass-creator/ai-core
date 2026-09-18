@@ -4,17 +4,17 @@
     {
       "query": "AI 코어 전체 통합 이어서 해",
       "expected_work_type_id": "ai-core-integration",
-      "expected_status": "RESOLVED"
+      "expected_status": "HOLD_CAPABILITY_HOLD"
     },
     {
       "query": "이 프로젝트 레지스트리에 편입해",
       "expected_work_type_id": "project-registry",
-      "expected_status": "RESOLVED"
+      "expected_status": "HOLD_CAPABILITY_HOLD"
     },
     {
       "query": "사업기획안 이어서 정리해",
       "expected_work_type_id": "business-planning",
-      "expected_status": "RESOLVED"
+      "expected_status": "HOLD_CAPABILITY_HOLD"
     },
     {
       "query": "공통 디자인 시스템 고도화해",
@@ -34,17 +34,17 @@
     {
       "query": "고객 통화 앱 고쳐",
       "expected_work_type_id": "sales-calls",
-      "expected_status": "RESOLVED"
+      "expected_status": "HOLD_CAPABILITY_HOLD"
     },
     {
       "query": "고객 조회 개선해",
       "expected_work_type_id": "sales-customer-search",
-      "expected_status": "RESOLVED"
+      "expected_status": "HOLD_CAPABILITY_HOLD"
     },
     {
       "query": "프로모션 문자 수정해",
       "expected_work_type_id": "sales-promotion",
-      "expected_status": "RESOLVED"
+      "expected_status": "HOLD_CAPABILITY_HOLD"
     },
     {
       "query": "견적기 고쳐",
@@ -54,17 +54,17 @@
     {
       "query": "ERP 상품 상세 고쳐",
       "expected_work_type_id": "erp-product",
-      "expected_status": "RESOLVED"
+      "expected_status": "HOLD_CAPABILITY_HOLD"
     },
     {
       "query": "계약 접수 화면 고쳐",
       "expected_work_type_id": "erp-contract",
-      "expected_status": "RESOLVED"
+      "expected_status": "HOLD_CAPABILITY_HOLD"
     },
     {
       "query": "ERP 정산 화면 봐줘",
       "expected_work_type_id": "erp-settlement",
-      "expected_status": "RESOLVED"
+      "expected_status": "HOLD_CAPABILITY_HOLD"
     },
     {
       "query": "정산 시스템 고도화해",
@@ -79,17 +79,17 @@
     {
       "query": "자금 현황 확인해",
       "expected_work_type_id": "cash-status",
-      "expected_status": "RESOLVED"
+      "expected_status": "HOLD_CAPABILITY_HOLD"
     },
     {
       "query": "미수 확인해",
       "expected_work_type_id": "receivables",
-      "expected_status": "RESOLVED"
+      "expected_status": "HOLD_CAPABILITY_HOLD"
     },
     {
       "query": "보험 업무 봐줘",
       "expected_work_type_id": "insurance-operations",
-      "expected_status": "RESOLVED"
+      "expected_status": "HOLD_CAPABILITY_HOLD"
     },
     {
       "query": "운영 스케줄 작업 확인해",

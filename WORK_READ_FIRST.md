@@ -56,7 +56,9 @@ AI 이름보다 최신 사용자 결정, 현재 프로젝트 정본, revision-bo
 
 [AI Core 실제 업무 운영 플레이북](docs/AI_CORE_OPERATING_PLAYBOOK.md)을 읽는다. 사용자의 자연어 오더를 `업무 의미 → 프로젝트/정본 → capability → 실행자 → 승인 경계 → 검증 → 결과/후속`으로 연결한다.
 
-OPS-P0의 읽기 전용 1차 구현은 `registry/work-map.json` + `src/routing/work-router.mjs`에 있다. `npm run workmap:validate`로 project registry 연결을 검사하고, `npm run ops:route -- "과태료 처리해"`처럼 자연어 오더를 project/capability/승인경계/완료조건으로 resolve한다. 대상 project가 HOLD/REFERENCE/RETIRE이면 실행 가능한 것처럼 꾸미지 않고 fail-closed로 멈춘다.
+OPS-P0의 분류 정본은 `registry/work-map.json` + `src/routing/work-router.mjs`다. `npm run workmap:validate`로 project/capability 연결을 검사하고, `npm run ops:route -- "과태료 처리해"`처럼 자연어 오더를 work type → project → canonical `capability_id` → 승인경계/완료조건으로 resolve한다.
+
+실행 정본은 `registry/capabilities.json` + `src/engine/capability-engine.mjs`다. **Work Map은 “무슨 업무인가”, Capability Registry는 “실제로 무엇을 실행할 수 있는가”만 소유하며 자연어 라우팅을 두 벌 두지 않는다.** `npm run capability:validate`와 `npm run core:capability -- plan|run "<요청>"`을 사용한다. ACTIVE capability만 실행 후보이며 HOLD/REFERENCE는 이유를 남기고 fail-closed다. project/capability가 HOLD여도 업무 분류가 확정되면 오더 접수 자체는 남기고, 최초 `work_type_id / capability_id / target_revision`을 routing provenance로 보존한다.
 
 문서·코드가 만들어진 것과 실제 업무가 끝난 것을 구분하고, Work Result가 AI Core로 돌아와 다음 세션이 이어받을 수 있어야 한다.
 

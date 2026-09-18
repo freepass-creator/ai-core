@@ -28,7 +28,7 @@
           "domain",
           "aliases",
           "target_project_id",
-          "capability",
+          "capability_id",
           "approval_boundary",
           "completion_condition",
           "source_pointers"
@@ -69,10 +69,6 @@
             "type": "string",
             "pattern": "^[a-z][a-z0-9-]{1,62}$"
           },
-          "capability": {
-            "type": "string",
-            "minLength": 1
-          },
           "approval_boundary": {
             "enum": [
               "NONE",
@@ -94,6 +90,10 @@
               "type": "string",
               "minLength": 1
             }
+          },
+          "capability_id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9.-]{2,80}$"
           }
         }
       }
