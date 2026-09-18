@@ -18,6 +18,7 @@ export function createWorkResult({
   const allBlockers = [...new Set([...(blockers ?? []), ...(result.blockers ?? [])])];
   return {
     schema: WORK_RESULT_SCHEMA,
+    order_id: plan?.order_id ?? null,
     work_id: plan?.work_id ?? null,
     project_id: plan?.project_id ?? null,
     capability_id: plan?.capability_id ?? null,
