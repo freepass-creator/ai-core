@@ -91,7 +91,7 @@ test('canonical authorization에 없는 scope를 요구하면 receipt 자체를 
 
 test('Control Tower execute가 HOLD면 receipt를 만들지 않는다', async () => {
   const f = await fixture();
-  f.context.snapshot.items[0].commitment.status = 'PENDING';
+  f.context.snapshot.items[0].commitment.accepted = false;
   const bridge = bridgeFor(f);
   const receipt = await bridge.issue({ plan: f.plan, capability: f.capability });
   assert.equal(receipt.status, 'HOLD');
