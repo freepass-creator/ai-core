@@ -80,12 +80,15 @@ export function createProjectRuntime({
     const fn = module?.[capability.adapter.export];
     need(typeof fn === 'function', 'PROJECT_MODULE_EXPORT_MISSING');
     const data = await fn(input);
+    if (data && ['SUCCEEDED', 'HOLD', 'FAILED'].includes(data.status)) return data;
+    const auditHold = data?.recordAuditVerdict === 'HOLD';
     return {
-      status: 'SUCCEEDED',
-      summary: `${capability.title} 완료`,
+      status: auditHold ? 'HOLD' : 'SUCCEEDED',
+      summary: auditHold ? `${capability.title} 결과가 HOLD입니다.` : `${capability.title} 완료`,
       data,
       evidence: [`READ: ${capability.adapter.entrypoint}#${capability.adapter.export} @${project.project_id}:${subjectRevision}`],
-      checks: [{ name: capability.id, status: 'PASS' }],
+      checks: [{ name: capability.id, status: auditHold ? 'FAIL' : 'PASS' }],
+      blockers: auditHold ? [...(data?.findings ?? ['PROJECT_MODULE_AUDIT_HOLD'])] : [],
       external_effect: false,
     };
   }
