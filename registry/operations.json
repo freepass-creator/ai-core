@@ -13,16 +13,23 @@
       "근거": [
         "대표(2026-09-18 13시경, 카톡 원격 세션 경유): 「freepasserp5 상품 SSOT 갱신을 이제 코어 고도화가 담당한다 — 시트와 ERP 에 정보가 제대로·끊김 없이 가게」",
         "대표(2026-09-18, 이 대화): 감시부터 «시작해»",
-        "창: freepasserp4 main .github/workflows/erp5-ssot-refresh.yml — cron '5 0-10 * * 1-6' = 월~토 KST 09:05~19:05 매시",
+        "창: freepasserp4 main .github/workflows/erp5-ssot-refresh.yml — cron '17 0-10 * * 1-6' = 월~토 KST 09:17~19:17 매시 (2026-09-18 freepasserp4#410 로 :05 → :17, 정각 무렵 예약 누락 회피)",
         "실측 2026-09-18: 예약 회차가 하루 11번이어야 하는데 09-15 3 · 09-16 1 · 09-17 1(23:47, 창 밖) · 09-18 09:05 회차가 12:53 에 옴"
       ],
       "project_id": "freepasserp4",
       "repository": "freepass-creator/freepasserp4",
       "workflow": "erp5-ssot-refresh.yml",
       "창": {
-        "요일": [1, 2, 3, 4, 5, 6],
-        "시작": "09:05",
-        "끝": "19:05",
+        "요일": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "시작": "09:17",
+        "끝": "19:17",
         "간격분": 60,
         "시간대차분": 540
       },

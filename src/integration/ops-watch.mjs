@@ -107,5 +107,10 @@ export function 판정({ op, runs, publication, now = new Date() }) {
   return { ...결과, status: 가장, 이유 };
 }
 
-/** 사람에게 알릴 것인가 — OFF_HOURS·OK 는 조용하다. UNKNOWN 도 알린다: 못 보는 것도 멈춘 것만큼 문제다. */
-export const 알릴까 = (판) => !['OK', 'OFF_HOURS'].includes(판.status);
+/**
+ * 사람에게 알릴 것인가 — «우리 몫» 의 진짜 문제에만 운다.
+ *   운다: UNKNOWN(못 봄) · LATE(안 옴) · STALE_PUBLICATION · 자료가 안 바뀐 FAILED
+ *   안 운다: OK · OFF_HOURS · 자료는 들어갔고 회차 뒤 검사만 빨강인 FAILED
+ * ★거짓 빨간불이 매 회차 울리면 진짜 빨간불을 아무도 안 믿는다(aiops 2026-09-02 「경보는 내 몫에만」).
+ */
+export const 알릴까 = (판) => 판.이유.some((이) => (이.code === 'LAST_RUN_FAILED' ? 이.자료반영 !== true : true));
