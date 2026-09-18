@@ -16,6 +16,7 @@
 
   --primary:#3d6b8e;
   --primary-hover:#315a79;
+  --on-primary:#ffffff;
   --primary-soft:#e9eef2;
   --primary-line:#b6c8d5;
   --success:#45775d;
@@ -88,6 +89,7 @@
     --ink-3:#7d868f;
     --primary:#6f9fc0;
     --primary-hover:#87b3d1;
+    --on-primary:#0d1a22;
     --primary-soft:#22303a;
     --primary-line:#3d5b70;
     --success:#72ab8d; --success-soft:#1c2a24;
