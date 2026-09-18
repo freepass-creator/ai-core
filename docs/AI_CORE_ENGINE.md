@@ -37,6 +37,8 @@ Drive/Sheet/운영 데이터 등 외부 효과가 생길 수 있는 작업이다
 3. receipt scope가 capability의 `required_scopes` 전체 포함
 4. 신뢰 배선으로 주입된 `verifyAuthority`가 true를 반환
 
+운영 factory는 caller가 receipt를 직접 조립하게 하지 않는다. 동일한 trusted work context에서 Control Tower가 현재 execute READY인 경우에만 `ai-core-authority-receipt/v1`을 발급하고, 실행 직전에 같은 원장 head와 scope를 다시 검증한다.
+
 capability adapter나 프로젝트 코드가 스스로 실행 권한을 만들 수 없다. adapter 결과에 `execution_authorized:true`가 있으면 계약 위반으로 거절한다.
 
 ## Adapter 종류
@@ -62,6 +64,10 @@ shell 메타문자(`&& | > < ;`)가 포함된 registry command는 실행하지 �
 | operations.penalty.prepare | aiops | EXTERNAL_MUTATION | `wonja/gwataeryo-engine.mjs --한다` |
 
 과태료의 벽은 `관청발송`, `문서24업로드`다. capability engine은 이 벽을 없애지 않는다.
+
+## 운영 배선
+
+`openOperatingCapabilityEngine()`이 capability/project registry, work projection, Control Tower authority issue/verify를 한 번에 묶는다. projection과 authority는 `createWorkSourceContextProvider()`라는 같은 trusted source reader를 사용하므로 서로 다른 registry/snapshot/ledger를 보지 않는다. workSources가 없으면 routing만 살아 있고 projection/외부 실행은 fail-closed다.
 
 ## 명령
 
