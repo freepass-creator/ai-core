@@ -192,7 +192,25 @@
           "node",
           "wonja/gwataeryo-engine.mjs",
           "--한다"
-        ]
+        ],
+        "receipt": {
+          "kind": "NEW_JSON_TERMINAL_RECEIPT",
+          "directory": "tmp/과태료",
+          "prefix": "실행기록-",
+          "suffix": ".json",
+          "schema_field": "schema",
+          "schema_value": "gwataeryo-run-manifest/v1",
+          "state_field": "state",
+          "success_states": [
+            "COMPLETED"
+          ],
+          "hold_states": [
+            "COMPLETED_WITH_HOLD"
+          ],
+          "failure_states": [
+            "FAILED"
+          ]
+        }
       },
       "inputs": [],
       "required_scopes": [
