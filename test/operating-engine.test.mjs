@@ -9,6 +9,7 @@ test('workSources가 없으면 routing은 살아 있고 운영 projection/author
   assert.equal(operating.source_mode, 'ROUTING_ONLY');
   assert.equal(operating.readWorkProjection, null);
   assert.equal(operating.verifyAuthority, null);
+  assert.equal(operating.issueAuthority, null);
   const plan = operating.engine.plan({ text: 'freepasserp4 테스트 돌려' });
   assert.equal(plan.status, 'PLANNED');
   assert.equal(plan.capability_id, 'project.verify');
@@ -24,7 +25,7 @@ test('외부 변경은 운영 source가 없으면 perform을 요구해도 fail-c
   const aiops = operating.projectRegistry.projects.find(p => p.project_id === 'aiops');
   const cap = operating.capabilityRegistry.capabilities.find(c => c.id === 'operations.penalty.prepare');
   const authority = {
-    status: 'GRANTED', order_id: 'ORD-001', work_id: 'GWATAERYO-001',
+    schema: 'ai-core-authority-receipt/v1', status: 'GRANTED', order_id: 'ORD-001', work_id: 'GWATAERYO-001',
     capability_id: cap.id, project_id: 'aiops', subject_revision: aiops.head_revision,
     ledger_head: 'fake-head', scopes: [...cap.required_scopes],
   };
