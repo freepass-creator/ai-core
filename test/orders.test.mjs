@@ -114,7 +114,7 @@ test('HTTP and direct CLI store share truth; cross-origin, bad host and malforme
   assert.equal(projection.execution_authorized, false);
   assert.equal((await (await fetch(`${url}/api/orders`)).json()).length, 1);
   const routed = await (await fetch(`${url}/api/route?q=${encodeURIComponent('과태료 처리해')}`)).json();
-  assert.equal(routed.status, 'RESOLVED'); assert.equal(routed.work_type_id, 'penalty-processing'); assert.equal(routed.target_project_id, 'aiops');
+  assert.equal(routed.status, 'RESOLVED'); assert.equal(routed.work_type_id, 'penalty-processing'); assert.equal(routed.target_project_id, 'aiops'); assert.equal(routed.capability_id, 'operations.penalty.prepare');
   const heldRoute = await (await fetch(`${url}/api/route?q=${encodeURIComponent('보고서 만들어')}`)).json();
   assert.equal(heldRoute.status, 'HOLD_PROJECT_HOLD'); assert.equal(heldRoute.target_project_id, 'docshub');
   const unknownRoute = await (await fetch(`${url}/api/route?q=${encodeURIComponent('달에서 감자 키우기')}`)).json();
@@ -125,11 +125,21 @@ test('HTTP and direct CLI store share truth; cross-origin, bad host and malforme
   assert.equal(routedOrderResponse.status, 200);
   const routedOrder = await routedOrderResponse.json();
   assert.equal(routedOrder.project, 'aiops');
+  assert.equal(routedOrder.routing.work_type_id, 'penalty-processing');
+  assert.equal(routedOrder.routing.capability_id, 'operations.penalty.prepare');
+  assert.equal(routedOrder.routing.target_revision, routed.target_revision);
+  assert.equal(routedOrder.routing.requirement_revision, 1);
+  const routedEvents = store.events(routedOrder.id);
+  assert.equal(routedEvents[0].detail.routing.capability_id, 'operations.penalty.prepare');
 
   const heldIntake = input({ requestId: randomUUID(), title: '보고서 제작', intent: '보고서 만들어', project: '' });
   const heldOrderResponse = await post(heldIntake);
-  assert.equal(heldOrderResponse.status, 409);
-  assert.equal((await heldOrderResponse.json()).error, 'PROJECT_ROUTE_HOLD');
+  assert.equal(heldOrderResponse.status, 200);
+  const heldOrder = await heldOrderResponse.json();
+  assert.equal(heldOrder.project, 'docshub');
+  assert.equal(heldOrder.routing.status, 'HOLD_PROJECT_HOLD');
+  assert.equal(heldOrder.routing.capability_id, 'docs.production');
+  assert.ok(heldOrder.routing.blockers.length > 0);
 
   const explicitProject = input({ requestId: randomUUID(), title: '과태료 참고', intent: '과태료 처리해', project: 'manual-project' });
   const explicitOrder = await (await post(explicitProject)).json();
