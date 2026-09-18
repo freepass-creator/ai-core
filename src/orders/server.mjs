@@ -6,6 +6,7 @@ import { readConnectionPolicy } from './client.mjs';
 import { OrderStore, OrderError, actors, defaultDb } from './store.mjs';
 import { createWorkProjectionProvider } from '../integration/order-work-sources.mjs';
 import { routeWork, validateWorkMap } from '../routing/work-router.mjs';
+import { createCapabilityEngine } from '../engine/capability-engine.mjs';
 
 let defaultRoutingConfigPromise;
 async function defaultRoutingConfig() {
@@ -21,6 +22,33 @@ async function defaultRoutingConfig() {
     }));
   }
   return defaultRoutingConfigPromise;
+}
+
+function storedCapabilityRoute(order) {
+  const r = order?.routing;
+  if (!r) return null;
+  return {
+    status: r.status,
+    work_type_id: r.work_type_id,
+    capability_id: r.capability_id,
+    target_project_id: r.target_project_id,
+    target_revision: r.target_revision,
+  };
+}
+
+function capabilityPlan(order, config, { readWorkProjection = null } = {}) {
+  if (!order?.routing) return { status:'HOLD', reason:'ROUTING_PROVENANCE_REQUIRED', order_id:order?.id ?? null };
+  if (order.routing.requirement_revision !== order.revision) {
+    return { status:'HOLD', reason:'ROUTING_REQUIREMENT_STALE', order_id:order.id,
+      routed_requirement_revision:order.routing.requirement_revision, current_requirement_revision:order.revision };
+  }
+  const route = storedCapabilityRoute(order);
+  const engine = createCapabilityEngine({
+    capabilityRegistry: config.capabilityRegistry,
+    projectRegistry: config.projectRegistry,
+    readWorkProjection,
+  });
+  return engine.plan({ route, orderId: order.id });
 }
 
 function routingSnapshot(routed) {
@@ -81,6 +109,16 @@ export function startServer({ dbPath = defaultDb, port = 4318, expectedLedgerId 
         return json(200, routeWork(query, config));
       }
       if (req.method === 'GET' && url.pathname === '/api/orders') return json(200, store.list());
+
+      const capabilityMatch = url.pathname.match(/^\/api\/orders\/(ORD-[a-f0-9-]+)\/capability$/);
+      if (req.method === 'GET' && capabilityMatch) {
+        const order = store.get(capabilityMatch[1]);
+        const config = routingConfig ?? await defaultRoutingConfig();
+        const validation = validateWorkMap(config.workMap, config.projectRegistry, config.capabilityRegistry);
+        if (validation.status !== 'VALID') return json(503, { status:'HOLD', reason:'WORK_MAP_INVALID', errors:validation.errors });
+        return json(200, capabilityPlan(order, config, { readWorkProjection }));
+      }
+
       const projectionMatch = url.pathname.match(/^\/api\/orders\/(ORD-[a-f0-9-]+)\/work$/);
       if (req.method === 'GET' && projectionMatch) {
         const before = store.get(projectionMatch[1]);
