@@ -64,6 +64,23 @@
               "type": "array",
               "minItems": 1,
               "items": { "type": "string", "minLength": 1 }
+            },
+            "receipt": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["kind", "directory", "prefix", "suffix", "schema_field", "schema_value", "state_field", "success_states", "hold_states", "failure_states"],
+              "properties": {
+                "kind": { "const": "NEW_JSON_TERMINAL_RECEIPT" },
+                "directory": { "type": "string", "minLength": 1 },
+                "prefix": { "type": "string", "minLength": 1 },
+                "suffix": { "type": "string", "minLength": 1 },
+                "schema_field": { "type": "string", "minLength": 1 },
+                "schema_value": { "type": "string", "minLength": 1 },
+                "state_field": { "type": "string", "minLength": 1 },
+                "success_states": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+                "hold_states": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+                "failure_states": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }
+              }
             }
           }
         },
