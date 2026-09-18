@@ -30,7 +30,10 @@
     "work:recent": "node scripts/work-recent.mjs",
     "ops:watch": "node scripts/ops-watch.mjs",
     "core:brief": "node scripts/core-brief.mjs",
-    "work:reobserve": "node scripts/work-reobserve.mjs"
+    "work:reobserve": "node scripts/work-reobserve.mjs",
+    "capability:validate": "node scripts/validate-capability-registry.mjs",
+    "core:route": "node scripts/core-route.mjs",
+    "core:capability": "node scripts/core-capability.mjs"
   },
   "dependencies": {
     "ajv": "8.20.0",
