@@ -6,6 +6,7 @@ import { readConnectionPolicy } from './client.mjs';
 import { OrderStore, OrderError, actors, defaultDb } from './store.mjs';
 import { createWorkProjectionProvider } from '../integration/order-work-sources.mjs';
 import { routeWork, validateWorkMap } from '../routing/work-router.mjs';
+import { createCapabilityEngine } from '../engine/capability-engine.mjs';
 
 let defaultRoutingConfigPromise;
 async function defaultRoutingConfig() {
@@ -21,6 +22,33 @@ async function defaultRoutingConfig() {
     }));
   }
   return defaultRoutingConfigPromise;
+}
+
+function storedCapabilityRoute(order) {
+  const r = order?.routing;
+  if (!r) return null;
+  return {
+    status: r.status,
+    work_type_id: r.work_type_id,
+    capability_id: r.capability_id,
+    target_project_id: r.target_project_id,
+    target_revision: r.target_revision,
+  };
+}
+
+function capabilityPlan(order, config, { readWorkProjection = null } = {}) {
+  if (!order?.routing) return { status:'HOLD', reason:'ROUTING_PROVENANCE_REQUIRED', order_id:order?.id ?? null };
+  if (order.routing.requirement_revision !== order.revision) {
+    return { status:'HOLD', reason:'ROUTING_REQUIREMENT_STALE', order_id:order.id,
+      routed_requirement_revision:order.routing.requirement_revision, current_requirement_revision:order.revision };
+  }
+  const route = storedCapabilityRoute(order);
+  const engine = createCapabilityEngine({
+    capabilityRegistry: config.capabilityRegistry,
+    projectRegistry: config.projectRegistry,
+    readWorkProjection,
+  });
+  return engine.plan({ route, orderId: order.id });
 }
 
 function routingSnapshot(routed) {
@@ -81,6 +109,16 @@ export function startServer({ dbPath = defaultDb, port = 4318, expectedLedgerId 
         return json(200, routeWork(query, config));
       }
       if (req.method === 'GET' && url.pathname === '/api/orders') return json(200, store.list());
+
+      const capabilityMatch = url.pathname.match(/^\/api\/orders\/(ORD-[a-f0-9-]+)\/capability$/);
+      if (req.method === 'GET' && capabilityMatch) {
+        const order = store.get(capabilityMatch[1]);
+        const config = routingConfig ?? await defaultRoutingConfig();
+        const validation = validateWorkMap(config.workMap, config.projectRegistry, config.capabilityRegistry);
+        if (validation.status !== 'VALID') return json(503, { status:'HOLD', reason:'WORK_MAP_INVALID', errors:validation.errors });
+        return json(200, capabilityPlan(order, config, { readWorkProjection }));
+      }
+
       const projectionMatch = url.pathname.match(/^\/api\/orders\/(ORD-[a-f0-9-]+)\/work$/);
       if (req.method === 'GET' && projectionMatch) {
         const before = store.get(projectionMatch[1]);
@@ -97,6 +135,7 @@ export function startServer({ dbPath = defaultDb, port = 4318, expectedLedgerId 
         }
         catch { return json(200, { ...unavailable, reason: 'CANONICAL_READ_FAILED' }); }
       }
+      const rerouteMatch = url.pathname.match(/^\/api\/orders\/(ORD-[a-f0-9-]+)\/reroute$/);
       const match = url.pathname.match(/^\/api\/orders\/(ORD-[a-f0-9-]+)(?:\/(packet|check-context))?$/);
       if (req.method === 'GET' && match) return json(200, match[2] === 'packet' ? store.packet(match[1], url.searchParams.get('task')) : match[2] === 'check-context' ? store.checkContext(match[1], url.searchParams.get('task')) : { order: store.get(match[1]), events: store.events(match[1]) });
       if (req.method === 'POST') {
@@ -120,6 +159,24 @@ export function startServer({ dbPath = defaultDb, port = 4318, expectedLedgerId 
             data = { ...data, project: routed.target_project_id, routing: routingSnapshot(routed) };
           }
           return json(200, store.create(data));
+        }
+        if (rerouteMatch) {
+          const order = store.get(rerouteMatch[1]);
+          const config = routingConfig ?? await defaultRoutingConfig();
+          const validation = validateWorkMap(config.workMap, config.projectRegistry, config.capabilityRegistry);
+          if (validation.status !== 'VALID') throw new OrderError('WORK_MAP_INVALID', '업무 지도를 확인해야 합니다.', 503);
+          const routed = routeWork(`${order.title} ${order.intent}`, config);
+          if (['UNKNOWN','AMBIGUOUS','HOLD_PROJECT_UNKNOWN','HOLD_CAPABILITY_UNKNOWN'].includes(routed.status)
+              || !routed.target_project_id || !routed.capability_id || !routed.target_revision) {
+            throw new OrderError('PROJECT_ROUTE_HOLD', `업무 경로를 다시 확정하지 못했습니다: ${routed.status}`, 409);
+          }
+          const snapshot = { ...routingSnapshot(routed), requirement_revision: order.revision };
+          return json(200, store.mutate(order.id, {
+            requestId: data.requestId,
+            version: data.version,
+            action: 'reroute',
+            routing: snapshot,
+          }));
         }
         if (match && !match[2]) return json(200, store.mutate(match[1], data));
         if (url.pathname === '/api/name') return json(200, store.name(data.name));

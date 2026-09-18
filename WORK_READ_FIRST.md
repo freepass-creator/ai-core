@@ -60,6 +60,8 @@ OPS-P0의 분류 정본은 `registry/work-map.json` + `src/routing/work-router.m
 
 실행 정본은 `registry/capabilities.json` + `src/engine/capability-engine.mjs`다. **Work Map은 “무슨 업무인가”, Capability Registry는 “실제로 무엇을 실행할 수 있는가”만 소유하며 자연어 라우팅을 두 벌 두지 않는다.** `npm run capability:validate`와 `npm run core:capability -- plan|run "<요청>"`을 사용한다. ACTIVE capability만 실행 후보이며 HOLD/REFERENCE는 이유를 남기고 fail-closed다. project/capability가 HOLD여도 업무 분류가 확정되면 오더 접수 자체는 남기고, 최초 `work_type_id / capability_id / target_revision`을 routing provenance로 보존한다.
 
+저장된 오더는 `GET /api/orders/:id/capability`에서 **최초 routing provenance를 다시 자연어 해석하지 않고** Capability Engine 계획으로 연결한다. 요구 revision이 바뀌면 옛 route는 `ROUTING_REQUIREMENT_STALE`로 멈춘다. 새 요구를 다시 분류하려면 `POST /api/orders/:id/reroute`를 명시적으로 호출하며, 진행 중 claim/report가 있는 오더는 reroute하지 않는다.
+
 문서·코드가 만들어진 것과 실제 업무가 끝난 것을 구분하고, Work Result가 AI Core로 돌아와 다음 세션이 이어받을 수 있어야 한다.
 
 ## 계속 고도화되는 Chat/CIVILIZATION/DEVKIT 연구를 연결하는 경우
