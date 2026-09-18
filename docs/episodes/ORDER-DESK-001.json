@@ -161,6 +161,7 @@
     "test/shared-orders.test.mjs",
     "test/validate-project-registry.test.mjs",
     "test/verify-main-state.test.mjs",
+    "test/work-ledger-revision.test.mjs",
     "test/work-ledger.test.mjs",
     "test/work-recorder.test.mjs",
     "test/work-reobserve.test.mjs",

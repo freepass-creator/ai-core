@@ -63,3 +63,42 @@ npm run control:snapshot                          the snapshot follows the ledge
 ★Readers older than this change reject a ledger that contains `REOBSERVED`
 (`EVENT_SCHEMA_INVALID`). Do not append one to an operating ledger until every
 reader of that ledger runs this version.
+
+## The verified revision is frozen (2026-09-18)
+
+Every event carries its own `subject_revision`, and until 2026-09-18 the verifier
+never compared it with the previous one. `VERIFYING(A) → READY(B) → EXECUTED(C)`
+was `VALID`, so the ledger could not tell that the code executed was not the code
+verified. `REOBSERVED` stops before `VERIFYING` so it does not widen this. The plain
+transitions stayed open.
+
+The rule: **the revision an item enters `VERIFYING` at binds every later step**
+until the item re-enters `VERIFYING` or goes back to `RECEIVED` / `PLANNED` /
+`IN_PROGRESS`.
+
+- Any event from a verified item into `AWAITING_AUTHORIZATION`, `READY`, `EXECUTED`,
+  `OBSERVING`, `CLOSED`, `BLOCKED` or `CANCELLED` must carry that same revision, or it
+  fails with `REVISION_CHANGED_AFTER_VERIFICATION`. A `null` revision is a change too.
+- The check applies to every event type, not only `TRANSITIONED`. The verifier does
+  not tie `type` to the state move, so a check on `TRANSITIONED` alone could be
+  bypassed by labelling the same move `RESUMED`.
+- `BLOCKED` keeps the verified revision, so `READY(A) → BLOCKED(B) → READY(B)` is
+  closed at its first step.
+- An item that was never verified cannot reach `AWAITING_AUTHORIZATION` / `READY` /
+  `OBSERVING` through `BLOCKED`: `VERIFICATION_SKIPPED`. Before this, `IN_PROGRESS(A) →
+  BLOCKED(B) → READY(B)` put READY on a revision nobody verified. Going back to
+  `IN_PROGRESS` voids an earlier verification, even at the same revision.
+
+There are two ways to change the revision: re-verify (`BLOCKED → VERIFYING` at the new
+revision), or void the verification (`VERIFYING → IN_PROGRESS`), carry the item with
+`REOBSERVED` and its evidence, and verify again. Steps before verification are outside this rule.
+Revisions may still move there without evidence. The operating ledger's
+`RECEIVED(null) → PLANNED(c72e…)` is one such move and stays `VALID`.
+
+The frozen revision is internal to `verify`. Its output shape is unchanged. A writer
+must pass the same `subject_revision` on each step after verification. `work-recorder`
+defaults an omitted revision to `null`, so it rejects such a step with this code before
+anything is written.
+
+Known limit: the revision after `EXECUTED` is the verified one, not a merge commit
+the execution produced. A landed commit belongs in `evidence_refs`.

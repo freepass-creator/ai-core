@@ -20,6 +20,9 @@ const transitions = new Map([
   ['BLOCKED', ['PLANNED', 'IN_PROGRESS', 'VERIFYING', 'AWAITING_AUTHORIZATION', 'READY', 'OBSERVING', 'CANCELLED']],
 ]);
 export const REOBSERVABLE = ['RECEIVED', 'PLANNED', 'IN_PROGRESS'];
+// States that claim "this revision was verified". Reachable only from VERIFYING,
+// from each other, or from BLOCKED.
+const VERIFIED_PATH = ['AWAITING_AUTHORIZATION', 'READY', 'EXECUTED', 'OBSERVING', 'CLOSED'];
 
 function canonical(value) {
   if (Array.isArray(value)) return value.map(canonical);
@@ -38,6 +41,9 @@ export function verifyLedgerText(text) {
     try { return JSON.parse(line); } catch { errors.push({ code: 'LEDGER_JSON_INVALID', line: index + 1 }); return null; }
   }).filter(Boolean) : [];
   const workStates = new Map();
+  // work_id -> the revision it last entered VERIFYING at. Absent = never verified,
+  // or the verification was voided by going back to RECEIVED/PLANNED/IN_PROGRESS.
+  const verifiedAt = new Map();
   const eventIds = new Set();
   let head = null;
   for (const [index, event] of events.entries()) {
@@ -67,7 +73,25 @@ export function verifyLedgerText(text) {
       if (!prior || event.from_state !== prior.state) errors.push({ code: 'FROM_STATE_MISMATCH', line });
       if (!transitions.get(event.from_state)?.includes(event.to_state)) errors.push({ code: 'TRANSITION_NOT_ALLOWED', line });
       if (prior?.project_id !== event.project_id) errors.push({ code: 'PROJECT_CHANGED', line });
+      // ★2026-09-18: every event carries its own subject_revision, so without this a
+      // step could swap it silently — VERIFYING(A) -> READY(B), READY(B) -> EXECUTED(C).
+      // Once verified, the revision is frozen until the item re-enters VERIFYING
+      // (BLOCKED -> VERIFYING is re-verification) or verification is voided by going
+      // back to IN_PROGRESS/PLANNED. Checked for every event type here, not only
+      // TRANSITIONED: the type label is not tied to the state move, so a check keyed on
+      // it would be bypassed by labelling the same move RESUMED.
+      if (event.to_state !== 'VERIFYING' && !REOBSERVABLE.includes(event.to_state)) {
+        if (verifiedAt.has(event.work_id)) {
+          if (event.subject_revision !== verifiedAt.get(event.work_id)) errors.push({ code: 'REVISION_CHANGED_AFTER_VERIFICATION', line });
+        } else if (VERIFIED_PATH.includes(event.to_state)) {
+          // BLOCKED -> READY/AWAITING_AUTHORIZATION/OBSERVING for an item blocked
+          // before it was ever verified: READY at a revision nobody verified.
+          errors.push({ code: 'VERIFICATION_SKIPPED', line });
+        }
+      }
     }
+    if (event.to_state === 'VERIFYING') verifiedAt.set(event.work_id, event.subject_revision);
+    else if (REOBSERVABLE.includes(event.to_state)) verifiedAt.delete(event.work_id);
     if (event.to_state === 'CLOSED' && (!event.subject_revision || !event.evidence_refs.length)) errors.push({ code: 'CLOSURE_EVIDENCE_REQUIRED', line });
     // `revisions` — every revision this work was ever observed at, in chain order.
     // A binding made at an earlier revision stays valid only if it is in here.
