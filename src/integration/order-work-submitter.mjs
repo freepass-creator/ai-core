@@ -130,6 +130,10 @@ export async function openOrderWorkSubmitter({
       id INTEGER PRIMARY KEY CHECK(id=1), ledger_name TEXT NOT NULL);
     CREATE TRIGGER IF NOT EXISTS submission_binding_no_rewrite BEFORE UPDATE ON submission_binding BEGIN SELECT RAISE(ABORT,'SUBMISSION_BINDING_IMMUTABLE'); END;
     CREATE TRIGGER IF NOT EXISTS submission_binding_no_delete BEFORE DELETE ON submission_binding BEGIN SELECT RAISE(ABORT,'SUBMISSION_BINDING_IMMUTABLE'); END;
+    CREATE TABLE IF NOT EXISTS submission_location_binding (
+      id INTEGER PRIMARY KEY CHECK(id=1), root_path TEXT NOT NULL, ledger_path TEXT NOT NULL);
+    CREATE TRIGGER IF NOT EXISTS submission_location_no_rewrite BEFORE UPDATE ON submission_location_binding BEGIN SELECT RAISE(ABORT,'SUBMISSION_LOCATION_IMMUTABLE'); END;
+    CREATE TRIGGER IF NOT EXISTS submission_location_no_delete BEFORE DELETE ON submission_location_binding BEGIN SELECT RAISE(ABORT,'SUBMISSION_LOCATION_IMMUTABLE'); END;
   `);
   // An outbox owns exactly one ledger for its whole life. The binding is recorded
   // immutably (like the command/history tables) and re-checked on every reopen
@@ -155,6 +159,21 @@ export async function openOrderWorkSubmitter({
       db.prepare('INSERT INTO submission_binding(id,ledger_name) VALUES (1,?)').run(basename(ledger));
     }
   } catch (error) { db.close(); throw error; } // never leak the handle on a rejected open
+
+  // Absolute location binding matters in trusted operating mode: copying an outbox DB
+  // to another directory with the same ledger basename must not silently repoint its
+  // dedup history. Synthetic roots get the same binding so behavior is uniform.
+  try {
+    const location = db.prepare('SELECT root_path,ledger_path FROM submission_location_binding WHERE id=1').get();
+    if (location) {
+      need(location.root_path === root && location.ledger_path === ledger, 'OUTBOX_LOCATION_BINDING_CONFLICT');
+    } else {
+      const used = db.prepare('SELECT (SELECT COUNT(*) FROM submission_commands) + (SELECT COUNT(*) FROM submission_history) AS rows').get();
+      need(used.rows === 0, 'OUTBOX_LOCATION_BINDING_REQUIRED');
+      db.prepare('INSERT INTO submission_location_binding(id,root_path,ledger_path) VALUES (1,?,?)').run(root, ledger);
+    }
+  } catch (error) { db.close(); throw error; }
+
   // Reused only to re-verify freshness (readWorkProjection) immediately before append.
   // prepareWorkCommand is deliberately not called again here: its ID-duplication gate
   // assumes every call is minting a brand-new command, which would reject re-checking
