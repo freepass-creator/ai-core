@@ -189,6 +189,7 @@
     "test/shared-orders.test.mjs",
     "test/validate-project-registry.test.mjs",
     "test/verify-main-state.test.mjs",
+    "test/work-ledger-revision.test.mjs",
     "test/work-ledger.test.mjs",
     "test/work-recorder.test.mjs",
     "test/work-reobserve.test.mjs",
@@ -218,6 +219,7 @@
     "2026-09-16 Claude 추가: 이 갈래가 만든 신규 파일 둘을 선언에 넣었다 — src/integration/order-work-context-reader.mjs 와 그 시험. 앞선 SESSION-MISSIONS.md 항목과 달리 이것은 main 에서 상속된 것이 아니라 «이 에피소드가 실제로 만든 산출물»이다. 계약 맞추기가 아니라 정직한 기재다. reader 는 append·submit 을 인자로 받지 않아 read-only 가 타입 수준에서 강제되고, 운영 registry/snapshot/ledger 경로는 정하지 않고 인자로만 받는다(미정). base_revision·비교 방식·검증기는 건드리지 않았다.",
     "2026-09-19 GPT update: OPS-P0 work-map/router and related project-registry/routed-intake files were added on top of the active successor line. `changed_files` was regenerated from the exact Git diff against `base_revision` so the main-state verifier sees the complete current successor diff; this inventory update does not broaden the episode's stated scope or claim the inherited files as new OPS-P0 output.",
     "2026-09-19 GPT audit follow-up: registry-refresh mixed UNKNOWN partial-write and work-reobserve REVISION_NOT_IN_PROJECT auto-recovery boundaries were fixed on `fix/audit-freshness-boundaries`; CURRENT/SESSION-MISSIONS were marked with current freshness context. changed_files was regenerated from the exact diff against base_revision for verifier parity.",
-    "2026-09-19 capability convergence P0: Work Map now owns natural-language work classification and points to canonical capability_id; Capability Registry owns executable/HOLD capabilities; Capability Engine consumes explicit Work Map routes; routed orders preserve work_type/capability/target revision; project runtime blocks dirty tracked worktrees. changed_files regenerated from exact diff against base_revision."
+    "2026-09-19 capability convergence P0: Work Map now owns natural-language work classification and points to canonical capability_id; Capability Registry owns executable/HOLD capabilities; Capability Engine consumes explicit Work Map routes; routed orders preserve work_type/capability/target revision; project runtime blocks dirty tracked worktrees. changed_files regenerated from exact diff against base_revision.",
+    "2026-09-19 revision continuity P0: new ledger appends may change subject_revision only through evidence-backed REOBSERVED; verified revisions are frozen through the post-verification path; historical plain-transition revision attachments remain readable but are excluded from proven revisions history. Exact changed_files regenerated for verifier parity."
   ]
 }
