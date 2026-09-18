@@ -60,7 +60,9 @@ OPS-P0의 분류 정본은 `registry/work-map.json` + `src/routing/work-router.m
 
 실행 정본은 `registry/capabilities.json` + `src/engine/capability-engine.mjs`다. **Work Map은 “무슨 업무인가”, Capability Registry는 “실제로 무엇을 실행할 수 있는가”만 소유하며 자연어 라우팅을 두 벌 두지 않는다.** `npm run capability:validate`와 `npm run core:capability -- plan|run "<요청>"`을 사용한다. ACTIVE capability만 실행 후보이며 HOLD/REFERENCE는 이유를 남기고 fail-closed다. project/capability가 HOLD여도 업무 분류가 확정되면 오더 접수 자체는 남기고, 최초 `work_type_id / capability_id / target_revision`을 routing provenance로 보존한다.
 
-저장된 오더는 `GET /api/orders/:id/capability`에서 **최초 routing provenance를 다시 자연어 해석하지 않고** Capability Engine 계획으로 연결한다. 요구 revision이 바뀌면 옛 route는 `ROUTING_REQUIREMENT_STALE`로 멈춘다. 새 요구를 다시 분류하려면 `POST /api/orders/:id/reroute`를 명시적으로 호출하며, 진행 중 claim/report가 있는 오더는 reroute하지 않는다.
+저장된 오더는 `GET /api/orders/:id/capability`에서 **최초 routing provenance를 다시 자연어 해석하지 않고** Capability Engine 계획으로 연결한다. 요구 revision이 바뀌면 옛 route는 `ROUTING_REQUIREMENT_STALE`로 멈춘다. 새 요구를 다시 분류하려면 `POST /api/orders/:id/reroute`를 명시적으로 호출하며, 진행 중 claim/report가 있거나 같은 requirement가 이미 Work에 묶였으면 reroute하지 않는다.
+
+`POST /api/orders/:id/work-intake`는 확정된 route를 내부 Work로 올리는 durable coordinator다. 기존 Order DB 안에 immutable binding/outbox를 먼저 기록하고, canonical work ledger에 `CREATED/RECEIVED`를 append한 뒤 control snapshot에 **권한 없는 skeleton item**만 추가한다. 같은 order/revision은 동일 work/event ID로 수렴하고 중간 실패는 다음 호출에서 reconcile한다. 이 단계는 실행·배포·외부 전송 권한을 만들지 않는다.
 
 문서·코드가 만들어진 것과 실제 업무가 끝난 것을 구분하고, Work Result가 AI Core로 돌아와 다음 세션이 이어받을 수 있어야 한다.
 
@@ -72,7 +74,7 @@ OPS-P0의 분류 정본은 `registry/work-map.json` + `src/routing/work-router.m
 
 ## 로컬·서버 오더 작업(order-control-v1)을 이어받는 경우
 
-2026-09-15 작업 방향: 저장소는 분리하고 공통 AI 기능·오더 창구를 AI Core에 모은다. 현재 범위는 [통합 상태](docs/integration/INTEGRATION_STATUS.md)와 `docs/episodes/ORDER-DESK-001.json`을 먼저 읽는다. OrderStore는 접수 기록이며 업무 상태 정본은 work 원장(Control Tower)이다. ★submitter 경계(PR37·38)·read-only context reader(PR41)·서버 readWorkProjection 배선은 main 에 들어왔다 — 「영속 매핑/outbox 미완」을 이유로 다시 조사하지 마라. 지금 남은 것은 (a) 운영 registry·snapshot·mappings·ledger 원천을 orders.connection.json 의 workSources 로 «가리키는» 일 (b) 독립 고위험 검토와 운영 활성화다. 원천이 없으면 서버는 WORK_SOURCE_MISSING_<원천> 으로 HOLD 하며, 없는 매핑을 「연결 안 됨」으로 단정하지 않는다.
+2026-09-15 작업 방향: 저장소는 분리하고 공통 AI 기능·오더 창구를 AI Core에 모은다. 현재 범위는 [통합 상태](docs/integration/INTEGRATION_STATUS.md)와 `docs/episodes/ORDER-DESK-001.json`을 먼저 읽는다. OrderStore는 접수 기록이며 업무 상태 정본은 work 원장(Control Tower)이다. submitter 경계·read-only context reader·서버 readWorkProjection 배선에 더해, routed order를 **durable outbox → work ledger RECEIVED → snapshot skeleton → immutable binding**으로 연결하는 work-intake 경로가 있다. 지금 남은 것은 (a) 실제 운영 `orders.connection.json`의 workSources를 현재 설치의 registry/snapshot/ledger에 정확히 고정 (b) Work가 READY/authority 경계를 통과했을 때 canonical Capability Engine 실행과 Result 회수 연결 (c) 독립 고위험 검토와 운영 활성화다. 원천이 없으면 서버는 `WORK_SOURCE_MISSING_<원천>`으로 HOLD 하며, 없는 매핑을 「연결 안 됨」으로 단정하지 않는다.
 
 ## 기본 진입점
 
