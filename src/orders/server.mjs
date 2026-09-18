@@ -34,6 +34,7 @@ function storedCapabilityRoute(order) {
     capability_id: r.capability_id,
     target_project_id: r.target_project_id,
     target_revision: r.target_revision,
+    work_id_prefix: r.work_id_prefix ?? 'WORK',
   };
 }
 
@@ -62,6 +63,7 @@ function routingSnapshot(routed) {
     project_status: routed.project_status ?? null,
     capability_status: routed.capability_status ?? null,
     capability_mode: routed.capability_mode ?? null,
+    work_id_prefix: routed.work_id_prefix ?? 'WORK',
     matched_alias: routed.matched_alias ?? null,
     blockers: [...(routed.blockers ?? (routed.reason ? [routed.reason] : []))],
     requirement_revision: 1,
