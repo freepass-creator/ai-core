@@ -122,7 +122,7 @@ export function createProjectRuntime({
     };
   }
 
-  async function runModule(capability, project, input) {
+  async function runModule(capability, project, input, executionContext = {}) {
     const subjectRevision = await assertProject(project);
     const entry = resolve(project.local_path, capability.adapter.entrypoint);
     const rel = relative(project.local_path, entry);
@@ -130,7 +130,7 @@ export function createProjectRuntime({
     const module = await importModule(entry);
     const fn = module?.[capability.adapter.export];
     need(typeof fn === 'function', 'PROJECT_MODULE_EXPORT_MISSING');
-    const data = await fn(input);
+    const data = await fn(input, structuredClone(executionContext));
     if (data && ['SUCCEEDED', 'HOLD', 'FAILED'].includes(data.status)) return data;
     const auditHold = data?.recordAuditVerdict === 'HOLD';
     return {
