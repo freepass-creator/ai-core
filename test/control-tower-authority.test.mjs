@@ -52,7 +52,7 @@ async function fixture() {
   };
   const capability = { id: 'test.external', required_scopes: ['read', 'build'] };
   const authority = {
-    status: 'GRANTED', order_id: orderId, work_id: item.id, project_id: item.project_id,
+    schema: 'ai-core-authority-receipt/v1', status: 'GRANTED', order_id: orderId, work_id: item.id, project_id: item.project_id,
     capability_id: capability.id, subject_revision: item.subject_revision,
     ledger_head: result.head, scopes: ['read', 'build'],
   };
