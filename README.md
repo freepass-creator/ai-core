@@ -41,6 +41,9 @@ Implementation handoff: [Claude work packet](docs/CLAUDE_EMERGENCY_HANDOFF.md) a
 
 ## Current implementation
 
+**Capability Engine v1** now provides a revision-bound capability registry, deterministic natural-language routing, project command/module adapters, fail-closed authority checks for external mutations and a common `ai-core-work-result/v1` return envelope. It composes the existing Order/Work/Control Tower/Direction layers rather than replacing their SSOT. See [AI Core Capability Engine](docs/AI_CORE_ENGINE.md).
+
+
 The repository provides memory, development contracts, safe concurrent checkpoints, UI/UX samples, self-evolution gates and a fail-closed control-tower snapshot evaluator. It does not yet implement the full group workspace/runtime or monitor source systems by itself.
 
 `main`에는 실행 가능한 오케스트레이터가 없다. The evaluator only calculates gates from a supplied snapshot and always keeps execution authority external.
