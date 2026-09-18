@@ -37,14 +37,18 @@ export function 재관측안(관측, ledgerText, { now = new Date(), 최대나�
     const 비교 = (관측.works ?? []).find((x) => x.work_id === id);
     /** 비교가 이번 관측의 head·묶인 리비전과 맞아야 증거다. 다른 때의 비교를 끌어다 쓰지 않는다. */
     if (!비교 || 비교.head !== 프.head || 비교.bound !== (w.subject_revision ?? null)) return 건너('COMPARISON_MISSING');
+    /** 처음부터 이 프로젝트에 없던 revision은 «낡아진 정본»이 아니다.
+     * 그 binding의 project/revision identity provenance를 다시 세우기 전에는
+     * 자동 REOBSERVED로 새 head에 옮기지 않는다. */
+    if (비교.status === 'UNKNOWN' && 비교.reason === 'REVISION_NOT_IN_PROJECT') {
+      return 건너('REVISION_NOT_IN_PROJECT_REQUIRES_REBIND');
+    }
     const 어디서 = `gh api repos/${프.repository}/compare (landed-observations ${관측.as_of})`;
     const 짧게 = (r) => (r ? r.slice(0, 8) : 'null');
     let 무엇;
     if (비교.status === 'BEHIND_HEAD' || 비교.status === 'DIVERGED') {
       const 파일 = 비교.files.slice(0, 3).join(', ') + (비교.files_total > 3 ? ` 외 ${비교.files_total - 3}` : '');
       무엇 = `${짧게(비교.bound)}...${짧게(프.head)} ${비교.status} 커밋 ${비교.ahead_by} · 파일 ${비교.files_total}${파일 ? ` (${파일})` : ''}`;
-    } else if (비교.status === 'UNKNOWN' && 비교.reason === 'REVISION_NOT_IN_PROJECT') {
-      무엇 = `묶인 리비전 ${짧게(비교.bound)} 이 ${프.repository} ${프.branch} 에 없다 — 지금 head ${짧게(프.head)} 에서 다시 본다`;
     } else if (비교.status === 'UNBOUND') {
       무엇 = `리비전에 안 묶였던 일감을 ${프.repository} ${프.branch} head ${짧게(프.head)} 에서 본다`;
     } else {
