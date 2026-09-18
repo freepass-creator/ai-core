@@ -104,6 +104,7 @@ export function routeWork(queryValue, { workMap, projectRegistry, capabilityRegi
     target_project_id: work.target_project_id, target_repository: project.repository,
     target_revision: project.head_revision, project_status: project.status,
     capability_id: capability.id, capability_status: capability.status, capability_mode: capability.mode,
+    work_id_prefix: capability.work_id_prefix ?? 'WORK',
     approval_boundary: work.approval_boundary, completion_condition: work.completion_condition,
     source_pointers: work.source_pointers,
   };
