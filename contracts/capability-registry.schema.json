@@ -19,7 +19,7 @@
       "additionalProperties": false,
       "required": ["name", "required"],
       "properties": {
-        "name": { "type": "string", "pattern": "^[a-z][a-z0-9_]{1,63}$" },
+        "name": { "type": "string", "pattern": "^[a-z][A-Za-z0-9_]{1,63}$" },
         "required": { "type": "boolean" }
       }
     },
