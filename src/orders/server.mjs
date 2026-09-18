@@ -88,7 +88,19 @@ export function startServer({ dbPath = defaultDb, port = 4318, expectedLedgerId 
         const body = Buffer.concat(chunks).toString('utf8');
         let data; try { data = JSON.parse(body); } catch { throw new OrderError('INVALID_JSON', '요청 형식을 확인하세요.'); }
         if (!data || typeof data !== 'object' || Array.isArray(data)) throw new OrderError('INVALID_INPUT', '객체가 필요합니다.');
-        if (url.pathname === '/api/orders') return json(200, store.create(data));
+        if (url.pathname === '/api/orders') {
+          if (typeof data.project !== 'string' || !data.project.trim()) {
+            const config = routingConfig ?? await defaultRoutingConfig();
+            const validation = validateWorkMap(config.workMap, config.projectRegistry);
+            if (validation.status !== 'VALID') throw new OrderError('WORK_MAP_INVALID', '업무 지도를 확인해야 합니다.', 503);
+            const routed = routeWork(`${data.title ?? ''} ${data.intent ?? ''}`, config);
+            if (routed.status !== 'RESOLVED') {
+              throw new OrderError('PROJECT_ROUTE_HOLD', `대상 프로젝트를 자동 확정하지 못했습니다: ${routed.status}`, 409);
+            }
+            data = { ...data, project: routed.target_project_id };
+          }
+          return json(200, store.create(data));
+        }
         if (match && !match[2]) return json(200, store.mutate(match[1], data));
         if (url.pathname === '/api/name') return json(200, store.name(data.name));
       }
