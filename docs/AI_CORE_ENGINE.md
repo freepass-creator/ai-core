@@ -61,7 +61,7 @@ shell 메타문자(`&& | > < ;`)가 포함된 registry command는 실행하지 �
 | operations.watch | ai-core | LOCAL_MUTATION | `scripts/ops-watch.mjs` |
 | work.observe | ai-core | LOCAL_MUTATION | `scripts/work-observe.mjs` |
 | operations.penalty.audit | aiops | READ_ONLY | `lib/gwataeryo-ai-core-adapter.mjs` |
-| operations.penalty.prepare | aiops | EXTERNAL_MUTATION | `wonja/gwataeryo-engine.mjs --한다` |
+| operations.penalty.prepare | aiops | EXTERNAL_MUTATION | AIOps `lib/gwataeryo-ai-core-executor.mjs` → lease → 기존 엔진 → terminal manifest |
 
 과태료의 벽은 `관청발송`, `문서24업로드`다. capability engine은 이 벽을 없애지 않는다.
 
@@ -98,3 +98,7 @@ npm run core:capability -- run "freepasserp4 테스트 돌려" --perform
 ## 외부 실행 결과 확정
 
 `EXTERNAL_MUTATION + PROJECT_COMMAND`는 프로세스 종료코드만으로 성공을 선언할 수 없다. capability registry에 `NEW_JSON_TERMINAL_RECEIPT` 계약을 두고 실행 전후 파일 집합을 비교한 뒤 새 receipt를 다시 읽는다. schema와 terminal state가 맞아야 하며, receipt가 없거나 모호하거나 non-terminal이면 HOLD다. 현재 AIOps 과태료는 기존 `gwataeryo-run-manifest/v1`을 그대로 사용한다.
+
+### AIOps 과태료 실제 실행
+
+과태료 capability는 AI Core가 raw command를 직접 실행하지 않는다. AIOps main의 `executeAiCorePenalty`를 revision 확인 뒤 호출한다. 이 어댑터는 `AI_CORE_EXECUTOR=codex|claude` 또는 운영 factory의 명시 executor identity를 요구하고, AIOps의 기존 drive/firestore/sheet lease 안에서 기존 엔진을 실행한 뒤 새 `gwataeryo-run-manifest/v1`을 재조회한다. `COMPLETED`만 성공이며 `COMPLETED_WITH_HOLD`와 manifest 부재는 성공으로 승격하지 않는다. 관청발송·문서24 업로드 wall은 그대로다.
