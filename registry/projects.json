@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "observed_at": "2026-09-18T12:33:00Z",
+  "observed_at": "2026-09-18T13:16:00Z",
   "projects": [
     {
       "project_id": "ai-core",
@@ -43,13 +43,13 @@
       "repository": "freepass-creator/aiops",
       "default_branch": "main",
       "local_path": "C:\\dev\\aiops",
-      "head_revision": "8738e446d43bc4bb7f75ecbc36be9249765837f6",
+      "head_revision": "6f9fd321bd955140c7d508ecde7069665066029c",
       "authoritative_sources": [
         {
           "kind": "GIT",
           "ref": "freepass-creator/aiops",
-          "revision": "8738e446d43bc4bb7f75ecbc36be9249765837f6",
-          "observed_at": "2026-09-18T12:33:00Z"
+          "revision": "6f9fd321bd955140c7d508ecde7069665066029c",
+          "observed_at": "2026-09-18T13:16:00Z"
         }
       ],
       "commands": {
