@@ -27,6 +27,11 @@ export function validateCapabilityRegistryReferences(registry, projectRegistry) 
     need(capability.adapter && nonempty(capability.adapter.kind), 'CAPABILITY_ADAPTER_INVALID');
     if (capability.mode !== 'EXTERNAL_MUTATION') {
       need(capability.required_scopes.length === 0, 'NON_EXTERNAL_CAPABILITY_MUST_NOT_REQUIRE_AUTH_SCOPE');
+    } else {
+      need(capability.required_scopes.length > 0, 'EXTERNAL_CAPABILITY_SCOPE_REQUIRED');
+      if (capability.adapter.kind === 'PROJECT_COMMAND') {
+        need(capability.adapter.receipt?.kind === 'NEW_JSON_TERMINAL_RECEIPT', 'EXTERNAL_COMMAND_RECEIPT_REQUIRED');
+      }
     }
   }
   return { status: 'VALID', capability_count: registry.capabilities.length, project_count: projects.size };
