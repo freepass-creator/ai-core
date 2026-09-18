@@ -54,7 +54,7 @@ test('외부 변경은 승인 receipt가 없으면 실행하지 않는다', asyn
   const engine = createCapabilityEngine({ capabilityRegistry, projectRegistry, runtime: fake.runtime });
   const result = await engine.run({ text: '과태료 처리해', perform: true });
   assert.equal(result.status, 'HOLD');
-  assert.ok(result.blockers.includes('AUTHORITY_RECEIPT_INVALID'));
+  assert.ok(result.blockers.includes('EXECUTION_CONTEXT_REQUIRED'));
   assert.equal(fake.calls.run, 0);
 });
 
@@ -63,11 +63,13 @@ test('모양만 맞는 승인도 신뢰 verifier가 없으면 실행하지 않�
   const aiops = projectRegistry.projects.find(p => p.project_id === 'aiops');
   const cap = capabilityRegistry.capabilities.find(c => c.id === 'operations.penalty.prepare');
   const authority = {
-    status: 'GRANTED', capability_id: cap.id, project_id: 'aiops',
-    subject_revision: aiops.head_revision, scopes: [...cap.required_scopes], receipt_id: 'AUTH-001',
+    status: 'GRANTED', order_id: 'ORD-001', work_id: 'GWATAERYO-001',
+    capability_id: cap.id, project_id: 'aiops',
+    subject_revision: aiops.head_revision, ledger_head: 'head-001',
+    scopes: [...cap.required_scopes], receipt_id: 'AUTH-001',
   };
   const engine = createCapabilityEngine({ capabilityRegistry, projectRegistry, runtime: fake.runtime });
-  const result = await engine.run({ text: '과태료 처리해', perform: true, authority });
+  const result = await engine.run({ text: '과태료 처리해', orderId: 'ORD-001', workId: 'GWATAERYO-001', perform: true, authority });
   assert.equal(result.status, 'HOLD');
   assert.ok(result.blockers.includes('AUTHORITY_VERIFIER_REQUIRED'));
   assert.equal(fake.calls.run, 0);
@@ -78,15 +80,17 @@ test('현재 revision과 scope가 맞고 정본 verifier가 승인한 경우에�
   const aiops = projectRegistry.projects.find(p => p.project_id === 'aiops');
   const cap = capabilityRegistry.capabilities.find(c => c.id === 'operations.penalty.prepare');
   const authority = {
-    status: 'GRANTED', capability_id: cap.id, project_id: 'aiops',
-    subject_revision: aiops.head_revision, scopes: [...cap.required_scopes], receipt_id: 'AUTH-001',
+    status: 'GRANTED', order_id: 'ORD-001', work_id: 'GWATAERYO-001',
+    capability_id: cap.id, project_id: 'aiops',
+    subject_revision: aiops.head_revision, ledger_head: 'head-001',
+    scopes: [...cap.required_scopes], receipt_id: 'AUTH-001',
   };
   let verified = 0;
   const engine = createCapabilityEngine({
     capabilityRegistry, projectRegistry, runtime: fake.runtime,
     verifyAuthority: async () => { verified++; return true; },
   });
-  const result = await engine.run({ text: '과태료 처리해', perform: true, authority });
+  const result = await engine.run({ text: '과태료 처리해', orderId: 'ORD-001', workId: 'GWATAERYO-001', perform: true, authority });
   assert.equal(result.status, 'SUCCEEDED');
   assert.equal(result.execution.external_effect, true);
   assert.equal(result.execution.authorization_source, 'AUTH-001');
