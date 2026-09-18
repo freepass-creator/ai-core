@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AI Core Work Map",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "observed_at",
+    "work_types"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "work_types": {
+      "type": "array",
+      "minItems": 20,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "work_type_id",
+          "name",
+          "domain",
+          "aliases",
+          "target_project_id",
+          "capability",
+          "approval_boundary",
+          "completion_condition",
+          "source_pointers"
+        ],
+        "properties": {
+          "work_type_id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{1,62}$"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "domain": {
+            "enum": [
+              "development",
+              "design",
+              "sales",
+              "operations",
+              "finance",
+              "document",
+              "business",
+              "legal",
+              "website",
+              "settlement"
+            ]
+          },
+          "aliases": {
+            "type": "array",
+            "minItems": 2,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "target_project_id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{1,62}$"
+          },
+          "capability": {
+            "type": "string",
+            "minLength": 1
+          },
+          "approval_boundary": {
+            "enum": [
+              "NONE",
+              "READ_ONLY",
+              "PROJECT_RULES",
+              "MERGE_APPROVAL",
+              "USER_APPROVAL_FOR_EXTERNAL_WRITE"
+            ]
+          },
+          "completion_condition": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source_pointers": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    }
+  }
+}

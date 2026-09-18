@@ -5,6 +5,21 @@ import { resolve, isAbsolute } from 'node:path';
 import { readConnectionPolicy } from './client.mjs';
 import { OrderStore, OrderError, actors, defaultDb } from './store.mjs';
 import { createWorkProjectionProvider } from '../integration/order-work-sources.mjs';
+import { routeWork, validateWorkMap } from '../routing/work-router.mjs';
+
+let defaultRoutingConfigPromise;
+async function defaultRoutingConfig() {
+  if (!defaultRoutingConfigPromise) {
+    defaultRoutingConfigPromise = Promise.all([
+      readFile(new URL('../../registry/work-map.json', import.meta.url), 'utf8'),
+      readFile(new URL('../../registry/projects.json', import.meta.url), 'utf8'),
+    ]).then(([workMap, projectRegistry]) => ({
+      workMap: JSON.parse(workMap),
+      projectRegistry: JSON.parse(projectRegistry),
+    }));
+  }
+  return defaultRoutingConfigPromise;
+}
 
 const assets = new Map([
   ['/', ['../../web/orders/index.html', 'text/html; charset=utf-8']],
@@ -12,7 +27,7 @@ const assets = new Map([
   ['/style.css', ['../../web/orders/style.css', 'text/css; charset=utf-8']],
   ['/tokens.css', ['../../design-system/tokens.css', 'text/css; charset=utf-8']],
 ]);
-export function startServer({ dbPath = defaultDb, port = 4318, expectedLedgerId = null, standalone = false, readWorkProjection = null, workSources = null } = {}) {
+export function startServer({ dbPath = defaultDb, port = 4318, expectedLedgerId = null, standalone = false, readWorkProjection = null, workSources = null, routingConfig = null } = {}) {
   if ((!expectedLedgerId && !standalone) || (expectedLedgerId && standalone)) throw new OrderError('SERVER_MODE_REQUIRED', '공유 원장 ID 또는 명시적인 standalone 모드가 필요합니다.');
   const store = new OrderStore(dbPath);
   const ledgerId = store.ledgerId();
@@ -39,6 +54,14 @@ export function startServer({ dbPath = defaultDb, port = 4318, expectedLedgerId 
         const [path, type] = assets.get(url.pathname); res.writeHead(200, { 'Content-Type': type }); res.end(await readFile(new URL(path, import.meta.url))); return;
       }
       if (req.method === 'GET' && url.pathname === '/api/meta') return json(200, { ...store.settings(), actors, ledgerId, mode: expectedLedgerId ? 'SHARED_PRIVATE_SERVICE' : 'STANDALONE_EXPERIMENT' });
+      if (req.method === 'GET' && url.pathname === '/api/route') {
+        const query = url.searchParams.get('q') ?? '';
+        if (query.length > 1000) throw new OrderError('QUERY_TOO_LARGE', '업무 요청이 너무 깁니다.', 413);
+        const config = routingConfig ?? await defaultRoutingConfig();
+        const validation = validateWorkMap(config.workMap, config.projectRegistry);
+        if (validation.status !== 'VALID') return json(503, { status: 'HOLD', reason: 'WORK_MAP_INVALID', errors: validation.errors });
+        return json(200, routeWork(query, config));
+      }
       if (req.method === 'GET' && url.pathname === '/api/orders') return json(200, store.list());
       const projectionMatch = url.pathname.match(/^\/api\/orders\/(ORD-[a-f0-9-]+)\/work$/);
       if (req.method === 'GET' && projectionMatch) {
@@ -65,7 +88,19 @@ export function startServer({ dbPath = defaultDb, port = 4318, expectedLedgerId 
         const body = Buffer.concat(chunks).toString('utf8');
         let data; try { data = JSON.parse(body); } catch { throw new OrderError('INVALID_JSON', '요청 형식을 확인하세요.'); }
         if (!data || typeof data !== 'object' || Array.isArray(data)) throw new OrderError('INVALID_INPUT', '객체가 필요합니다.');
-        if (url.pathname === '/api/orders') return json(200, store.create(data));
+        if (url.pathname === '/api/orders') {
+          if (typeof data.project !== 'string' || !data.project.trim()) {
+            const config = routingConfig ?? await defaultRoutingConfig();
+            const validation = validateWorkMap(config.workMap, config.projectRegistry);
+            if (validation.status !== 'VALID') throw new OrderError('WORK_MAP_INVALID', '업무 지도를 확인해야 합니다.', 503);
+            const routed = routeWork(`${data.title ?? ''} ${data.intent ?? ''}`, config);
+            if (routed.status !== 'RESOLVED') {
+              throw new OrderError('PROJECT_ROUTE_HOLD', `대상 프로젝트를 자동 확정하지 못했습니다: ${routed.status}`, 409);
+            }
+            data = { ...data, project: routed.target_project_id };
+          }
+          return json(200, store.create(data));
+        }
         if (match && !match[2]) return json(200, store.mutate(match[1], data));
         if (url.pathname === '/api/name') return json(200, store.name(data.name));
       }
