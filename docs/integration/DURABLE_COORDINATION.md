@@ -35,3 +35,16 @@ Claude's actual invocation failed on its weekly usage limit. Gemini's actual inv
 ## Next single action
 
 Obtain the missing independent source review against this exact checkpoint before considering any production design. Continue only read-only review or explicitly authorized temporary-fixture work; real connection/migration requires a separately verified target, recovery plan and user approval.
+
+
+## Controlled operating wiring — 2026-09-18
+
+The durable submitter now has two explicit path policies instead of a laboratory-only hard-code:
+
+- `synthetic` remains the default and preserves the existing OS-temp containment tests.
+- `trusted` accepts a real configured root only when the caller explicitly selects that mode. A new trusted outbox is never created by merely naming a directory; first creation requires `initialize:true`.
+- `openOperatingOrderWorkSubmitter()` does not invent paths. It resolves the canonical ledger from the same `workSources`/orders DB convention used by the live work projection and places `submission.sqlite` beside that ledger.
+- An immutable absolute `submission_location_binding` records both root and ledger path. Reopening against another path fails closed even when the ledger basename matches.
+- The operating factory defaults to `enabled:false`. This change adds an operating-capable code path; it does **not** activate or migrate the current service.
+
+Existing digest-bound commands, event uniqueness, reconcile-after-lost-response, sticky HOLD, expected-head revalidation and crash/restart behavior are reused unchanged. Production activation remains a separate operational decision and still requires an independent review of this new trusted-path change plus an observed recovery/preflight on the actual configured files.
