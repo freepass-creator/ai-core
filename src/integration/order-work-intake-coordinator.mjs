@@ -170,7 +170,12 @@ export function createOrderWorkIntakeCoordinator({store,workSources,ordersDbPath
         .run(order.id,order.revision,workId,r.target_project_id,r.target_revision,requirementDigest(order),order.version,commandId,eventId);
       history(commandId,'PREPARED',current.head,null);
       store.db.exec('COMMIT');
-    }catch(e){if(store.db.isTransaction)store.db.exec('ROLLBACK');throw e;}
+    }catch(e){
+      if(store.db.isTransaction)store.db.exec('ROLLBACK');
+      const raced=rowByOrder(order.id,order.revision);
+      if(raced) return readRow(raced.command_id);
+      throw e;
+    }
     return readRow(commandId);
   }
 
