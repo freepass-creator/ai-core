@@ -62,11 +62,12 @@ function actor(id) { need(actors.some(a => a.id === id), 'INVALID_ACTOR', '지�
 function routing(value, project) {
   if (value == null) return null;
   need(value && typeof value === 'object' && !Array.isArray(value), 'INVALID_ROUTING', '업무 라우팅 정보를 확인하세요.');
-  const allowed = new Set(['status','work_type_id','capability_id','target_project_id','target_revision','project_status','capability_status','capability_mode','matched_alias','blockers','requirement_revision']);
+  const allowed = new Set(['status','work_type_id','capability_id','target_project_id','target_revision','project_status','capability_status','capability_mode','work_id_prefix','matched_alias','blockers','requirement_revision']);
   need(Object.keys(value).every((key) => allowed.has(key)), 'INVALID_ROUTING', '업무 라우팅 정보에 허용되지 않은 필드가 있습니다.');
   need(typeof value.status === 'string' && value.status.length > 0, 'INVALID_ROUTING', '라우팅 상태가 필요합니다.');
   need(typeof value.work_type_id === 'string' && /^[a-z][a-z0-9-]{1,62}$/.test(value.work_type_id), 'INVALID_ROUTING', '업무 유형을 확인하세요.');
   need(typeof value.capability_id === 'string' && /^[a-z][a-z0-9.-]{2,80}$/.test(value.capability_id), 'INVALID_ROUTING', 'capability를 확인하세요.');
+  need(typeof value.work_id_prefix === 'string' && /^[A-Z][A-Z0-9_]{1,31}$/.test(value.work_id_prefix), 'INVALID_ROUTING', 'Work family를 확인하세요.');
   need(value.target_project_id === project, 'INVALID_ROUTING', '라우팅 프로젝트와 오더 프로젝트가 다릅니다.');
   need(typeof value.target_revision === 'string' && /^[0-9a-f]{40}$/.test(value.target_revision), 'INVALID_ROUTING', '라우팅 revision을 확인하세요.');
   need(Number.isSafeInteger(value.requirement_revision) && value.requirement_revision > 0, 'INVALID_ROUTING', '라우팅 요구 revision을 확인하세요.');
