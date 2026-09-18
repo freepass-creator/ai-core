@@ -63,7 +63,7 @@ test('모양만 맞는 승인도 신뢰 verifier가 없으면 실행하지 않�
   const aiops = projectRegistry.projects.find(p => p.project_id === 'aiops');
   const cap = capabilityRegistry.capabilities.find(c => c.id === 'operations.penalty.prepare');
   const authority = {
-    status: 'GRANTED', order_id: 'ORD-001', work_id: 'GWATAERYO-001',
+    schema: 'ai-core-authority-receipt/v1', status: 'GRANTED', order_id: 'ORD-001', work_id: 'GWATAERYO-001',
     capability_id: cap.id, project_id: 'aiops',
     subject_revision: aiops.head_revision, ledger_head: 'head-001',
     scopes: [...cap.required_scopes], receipt_id: 'AUTH-001',
@@ -80,7 +80,7 @@ test('현재 revision과 scope가 맞고 정본 verifier가 승인한 경우에�
   const aiops = projectRegistry.projects.find(p => p.project_id === 'aiops');
   const cap = capabilityRegistry.capabilities.find(c => c.id === 'operations.penalty.prepare');
   const authority = {
-    status: 'GRANTED', order_id: 'ORD-001', work_id: 'GWATAERYO-001',
+    schema: 'ai-core-authority-receipt/v1', status: 'GRANTED', order_id: 'ORD-001', work_id: 'GWATAERYO-001',
     capability_id: cap.id, project_id: 'aiops',
     subject_revision: aiops.head_revision, ledger_head: 'head-001',
     scopes: [...cap.required_scopes], receipt_id: 'AUTH-001',
