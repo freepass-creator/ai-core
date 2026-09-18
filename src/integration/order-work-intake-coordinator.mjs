@@ -14,7 +14,7 @@ const eventPayload=({previous_hash,event_hash,...event})=>event;
 const hold=(reason,extra={})=>({status:'HOLD',reason,execution_authorized:false,completion_authorized:false,...extra});
 const iso=clock=>new Date(clock()).toISOString().replace(/\.\d+Z$/,'Z');
 const numericId=(prefix,value)=>`${prefix}-${BigInt('0x'+createHash('sha256').update(value).digest('hex')).toString(10)}`;
-const RETRYABLE=new Set(['LEDGER_HEAD_CHANGED','LEDGER_LOCKED','SNAPSHOT_LOCKED']);
+const RETRYABLE=new Set(['LEDGER_HEAD_CHANGED','LEDGER_LOCKED','SNAPSHOT_LOCKED','LEDGER_APPEND_NOT_OBSERVED','WORK_INTAKE_VERSION_CHANGED']);
 
 const OUTBOX_SCHEMA=`
 CREATE TABLE IF NOT EXISTS work_intake_outbox (
@@ -248,21 +248,28 @@ export function createOrderWorkIntakeCoordinator({store,workSources,ordersDbPath
   }
 
   async function intake(orderId){
-    try{
-      let row=await prepare(orderId);
-      if(row.state==='HOLD') return receipt(row);
-      const reconciled=await reconcileLedger(row); row=reconciled.row;
-      row=await ensureSnapshot(row,reconciled.current);
-      return receipt(row);
-    }catch(error){
-      const reason=/^[A-Z][A-Z0-9_]+$/.test(error?.message??'')?error.message:'WORK_INTAKE_FAILED';
-      const order=(()=>{try{return store.get(orderId);}catch{return null;}})();
-      const existing=order?rowByOrder(order.id,order.revision):null;
-      if(existing&&!RETRYABLE.has(reason)){
-        try{state(readRow(existing.command_id),'HOLD',{head:existing.observed_head,reason});}catch{}
+    for(let attempt=0;attempt<3;attempt++){
+      try{
+        let row=await prepare(orderId);
+        if(row.state==='HOLD') return receipt(row);
+        const reconciled=await reconcileLedger(row); row=reconciled.row;
+        row=await ensureSnapshot(row,reconciled.current);
+        return receipt(row);
+      }catch(error){
+        const reason=/^[A-Z][A-Z0-9_]+$/.test(error?.message??'')?error.message:'WORK_INTAKE_FAILED';
+        const order=(()=>{try{return store.get(orderId);}catch{return null;}})();
+        const existing=order?rowByOrder(order.id,order.revision):null;
+        if(RETRYABLE.has(reason)&&attempt<2){
+          await new Promise(r=>setTimeout(r,10*(attempt+1)));
+          continue;
+        }
+        if(existing&&!RETRYABLE.has(reason)){
+          try{state(readRow(existing.command_id),'HOLD',{head:existing.observed_head,reason});}catch{}
+        }
+        return hold(reason,{order_id:orderId});
       }
-      return hold(reason,{order_id:orderId});
     }
+    return hold('WORK_INTAKE_RETRY_EXHAUSTED',{order_id:orderId});
   }
 
   return {intake,receipt,readOutbox:(orderId,revision)=>{const row=rowByOrder(orderId,revision);return row?receipt(readRow(row.command_id)):null;}};
