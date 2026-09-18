@@ -20,6 +20,7 @@ const transitions = new Map([
   ['BLOCKED', ['PLANNED', 'IN_PROGRESS', 'VERIFYING', 'AWAITING_AUTHORIZATION', 'READY', 'OBSERVING', 'CANCELLED']],
 ]);
 export const REOBSERVABLE = ['RECEIVED', 'PLANNED', 'IN_PROGRESS'];
+const VERIFIED_PATH = ['AWAITING_AUTHORIZATION', 'READY', 'EXECUTED', 'OBSERVING', 'CLOSED'];
 
 function canonical(value) {
   if (Array.isArray(value)) return value.map(canonical);
@@ -38,6 +39,7 @@ export function verifyLedgerText(text) {
     try { return JSON.parse(line); } catch { errors.push({ code: 'LEDGER_JSON_INVALID', line: index + 1 }); return null; }
   }).filter(Boolean) : [];
   const workStates = new Map();
+  const verifiedAt = new Map();
   const eventIds = new Set();
   let head = null;
   for (const [index, event] of events.entries()) {
@@ -67,12 +69,26 @@ export function verifyLedgerText(text) {
       if (!prior || event.from_state !== prior.state) errors.push({ code: 'FROM_STATE_MISMATCH', line });
       if (!transitions.get(event.from_state)?.includes(event.to_state)) errors.push({ code: 'TRANSITION_NOT_ALLOWED', line });
       if (prior?.project_id !== event.project_id) errors.push({ code: 'PROJECT_CHANGED', line });
+
+      if (event.to_state !== 'VERIFYING' && !REOBSERVABLE.includes(event.to_state)) {
+        if (verifiedAt.has(event.work_id)) {
+          if (event.subject_revision !== verifiedAt.get(event.work_id)) errors.push({ code: 'REVISION_CHANGED_AFTER_VERIFICATION', line });
+        } else if (VERIFIED_PATH.includes(event.to_state)) {
+          errors.push({ code: 'VERIFICATION_SKIPPED', line });
+        }
+      }
     }
+    if (event.to_state === 'VERIFYING') verifiedAt.set(event.work_id, event.subject_revision);
+    else if (REOBSERVABLE.includes(event.to_state)) verifiedAt.delete(event.work_id);
+
     if (event.to_state === 'CLOSED' && (!event.subject_revision || !event.evidence_refs.length)) errors.push({ code: 'CLOSURE_EVIDENCE_REQUIRED', line });
-    // `revisions` — every revision this work was ever observed at, in chain order.
-    // A binding made at an earlier revision stays valid only if it is in here.
+
+    // Proven revision history is stricter than the raw current field.
+    // Historical ledgers may contain a plain transition that first attached a revision.
+    // Keep those ledgers readable, but do NOT treat such a revision as evidence-backed history.
+    // New writes are blocked in appendLedgerEvent below; only CREATED/REOBSERVED can add a revision.
     const revisions = [...(prior?.revisions ?? [])];
-    if (event.subject_revision && revisions.at(-1) !== event.subject_revision) revisions.push(event.subject_revision);
+    if ((event.type === 'CREATED' || event.type === 'REOBSERVED') && event.subject_revision && revisions.at(-1) !== event.subject_revision) revisions.push(event.subject_revision);
     workStates.set(event.work_id, { state: event.to_state, project_id: event.project_id, subject_revision: event.subject_revision, revisions });
     head = storedHash;
   }
@@ -94,6 +110,13 @@ export async function appendLedgerEvent(path, event, expectedHead = null) {
     const current = verifyLedgerText(text);
     if (current.status !== 'VALID') throw new Error('LEDGER_INVALID');
     if (current.head !== expectedHead) throw new Error('LEDGER_HEAD_CHANGED');
+
+    const prior = current.work?.[event.work_id] ?? null;
+    if (prior && event.type !== 'REOBSERVED' && event.type !== 'CREATED'
+      && event.subject_revision !== prior.subject_revision) {
+      throw new Error('REVISION_CHANGE_REQUIRES_REOBSERVED');
+    }
+
     const record = { ...event, previous_hash: current.head };
     record.event_hash = eventHash(record);
     const candidateText = `${text.trim()}${text.trim() ? '\n' : ''}${JSON.stringify(record)}\n`;
