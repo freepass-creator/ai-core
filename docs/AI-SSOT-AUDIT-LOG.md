@@ -287,3 +287,32 @@ registry 검증기가 ACTIVE 프로젝트에 test·build 를 요구했는데, ai
 
 - `registry/projects.json` 의 `head_revision` 은 병합 즉시 다시 낡는다(자기 저장소를 기록하므로 구조적으로 한 커밋 뒤처진다). `observed_at` 이 붙어 거짓은 아니나, 이 설계가 옳은지는 판단 못 했다
 - devcenter 의 「dirty 100 파일」 blocker 는 이번에 재측정하지 않았다
+
+
+### 2026-09-19 — GPT 재점검: MD 고도화 흔적 재수렴 + 감사 경계 두 건 코드로 닫음
+
+- 작성: GPT
+- 기준: `ai-core main@3bac0c2fb1cd5f8eaabbace9e70c5a5290afcd78`
+- 구현 branch: `fix/audit-freshness-boundaries`
+- 판단: **두 감사 결함은 현재 main에도 남아 있었고 최소 수정으로 닫는 중. Capability 정본 분기는 별도 HOLD.**
+
+#### 확인한 것
+
+1. `memory/CURRENT.md`는 2026-09-14, `SESSION-MISSIONS.md`는 2026-09-16 스냅샷이라 현재 통합 main보다 뒤처져 있었다. 둘은 삭제하지 않고 최신 운영 checkpoint/시점 경고를 추가했다.
+2. `registry-refresh.mjs`는 A 프로젝트 관측 성공 + B 프로젝트 UNKNOWN일 때 A만 갱신한 객체를 파일에 쓸 수 있었다. source의 새 observed_at과 옛 top-level observed_at이 섞여 INVALID registry를 만들 수 있는 PR #29 지적이 실제 코드에 남아 있었다.
+3. `work-reobserve.mjs`는 `UNKNOWN + REVISION_NOT_IN_PROJECT`도 PROPOSE로 올려, 애초 target repository에 존재하지 않았던 binding revision을 현재 head로 자동 옮길 수 있었다.
+4. main의 OPS-P0 Work Map/routed intake는 실제 진전이지만 `capability` 값은 자유 문자열이고, 미병합 PR #72에는 별도 capability registry/router/runtime이 있다. 두 층을 각각 정본으로 키우면 split-brain이다.
+
+#### 이번 최소 수정
+
+- registry refresh: 모든 project canonical ref를 관측한 뒤 **UNKNOWN이 1개라도 있으면 입력 registry와 파일 bytes를 갱신하지 않는다**. check exit는 UNKNOWN(2)이 stale(1)보다 우선.
+- work reobserve: `REVISION_NOT_IN_PROJECT`는 `REVISION_NOT_IN_PROJECT_REQUIRES_REBIND`로 SKIP/HOLD. 정상 once-valid `BEHIND_HEAD/DIVERGED`만 기존 REOBSERVED 경로 유지.
+- 두 반례를 기존 테스트에 추가.
+- CURRENT/SESSION-MISSIONS에 최신 시점 경계만 추가하고 기존 연구/역사 문서는 보존.
+
+#### 아직 HOLD
+
+- PR #72 Capability Engine은 기존 AIOps capability 재사용 방향은 맞지만, 마지막 독립 감사 기준 merge-tree CI 빨강과 dirty working tree 실행 경계가 남아 있다.
+- main Work Map의 `capability`를 향후 canonical capability_id에 검증 연결하고, routed intake의 최초 routing provenance(work_type/capability/target revision)를 재시작 뒤 복원할 수 있게 만드는 일은 아직 하지 않았다.
+- PR #69 revision freeze는 별도 stacked 후보이며 현재 main에 병합되지 않았다.
+

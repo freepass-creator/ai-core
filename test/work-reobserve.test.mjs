@@ -157,6 +157,7 @@ test('★공급자 — 낡은 관측·못 본 프로젝트·검증 뒤·다른 �
   assert.equal(한(관측({ work: { head: C } })).reason, 'COMPARISON_MISSING', '다른 head 를 잰 비교는 증거가 아니다');
   assert.equal(한({ ...관측(), works: [] }).reason, 'COMPARISON_MISSING');
   assert.equal(한(관측({ work: { status: 'UNKNOWN', reason: 'REMOTE_UNOBSERVED' } })).reason, 'COMPARISON_UNKNOWN_REMOTE_UNOBSERVED');
+  assert.equal(한(관측({ work: { status: 'UNKNOWN', reason: 'REVISION_NOT_IN_PROJECT' } })).reason, 'REVISION_NOT_IN_PROJECT_REQUIRES_REBIND');
   assert.equal(재관측안(관측(), 글, { now: 지금, work: 'NOPE-001' })[0].reason, 'WORK_NOT_IN_LEDGER');
   const 검증 = (await 원장만들기(mkdtempSync(join(tmpdir(), 'reobs-')), [만들, 옮김('RECEIVED', 'PLANNED'), 옮김('PLANNED', 'IN_PROGRESS'), 옮김('IN_PROGRESS', 'VERIFYING')])).글;
   assert.equal(재관측안(관측(), 검증, { now: 지금 })[0].reason, 'STATE_NOT_REOBSERVABLE');
@@ -171,7 +172,8 @@ test('공급자 — 제안은 잰 것을 그대로 증거로 싣고, 기록기�
   assert.equal(안.증거[0].갈래, 'MEASURED');
   assert.match(안.증거[0].무엇, /BEHIND_HEAD 커밋 3 · 파일 4 \(a\.mjs, b\.mjs, c\.mjs 외 1\)/);
   const [없음] = 재관측안(관측({ work: { status: 'UNKNOWN', reason: 'REVISION_NOT_IN_PROJECT' } }), 글, { now: 지금 });
-  assert.match(없음.증거[0].무엇, /묶인 리비전 .* 이 demo-org\/demo-project main 에 없다/);
+  assert.deepEqual({ status: 없음.status, reason: 없음.reason },
+    { status: 'SKIP', reason: 'REVISION_NOT_IN_PROJECT_REQUIRES_REBIND' });
 
   await createWorkRecorder({ ledgerPath: 길, actor: 'AI_CORE_REOBSERVER' }).적는다({ work_id: WORK, project_id: PROJECT,
     type: 'REOBSERVED', subject_revision: 안.to, 무엇: '다시 본다', 증거: 안.증거 });

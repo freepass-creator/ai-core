@@ -1,5 +1,11 @@
 # Current Memory — 2026-09-14
 
+> **Operational checkpoint — 2026-09-19**  
+> 아래 2026-09-14 Development Episode 연구 문단은 연구/검증 계보를 위해 유지한다. 현재 실행 우선순위는 `WORK_READ_FIRST.md`의 **AI Core 실제 통합**이다.  
+> main 기준으로 project registry, Control Tower/work ledger, landed observation, REOBSERVED, core brief, ops watch, 회사 업무 Work Map 24종과 project 생략 routed intake까지 들어왔다. 자연어 요청은 project/capability 후보를 resolve할 수 있지만, 실제 capability 실행 정본은 아직 하나로 수렴하지 않았다. PR #72 Capability Engine은 별도 후보이며 main Work Map과 중복되는 routing/capability 층을 통합 검토해야 한다.  
+> 운영 AIOps 과태료는 별도 저장소 main에서 검토 digest/발송대기 전환/health check까지 진전했으나 Windows Task Scheduler의 실제 상태는 로컬 관측 전까지 UNKNOWN이다.  
+> 현재 열린 감사 경계: `registry-refresh` mixed UNKNOWN은 canonical partial write 금지, `REVISION_NOT_IN_PROJECT`는 자동 REOBSERVED 금지, capability 정본 분기 금지. 최신 사실은 target repo/revision-bound evidence가 우선한다.
+
 ## Mission
 
 Build an AI operating system that does more than answer prompts: it should understand the user's intended outcome, identify decision-changing gaps, reuse existing knowledge/capabilities, choose the right executor, verify reality, follow through, and learn from outcomes.
