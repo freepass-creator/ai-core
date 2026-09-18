@@ -181,6 +181,18 @@ export class OrderStore {
         order.intent = text(command.intent, '수정 요청'); order.criteria = lines(command.criteria, '완료 조건'); order.revision++; order.closure = null;
         detail = { reason: text(command.reason, '수정 이유', 2000), intent: order.intent, criteria: order.criteria };
         for (const t of order.tasks) { t.status = 'PENDING'; t.lease = null; t.report = null; t.blockedReason = null; }
+      } else if (action === 'reroute') {
+        need(order.tasks.every(t => t.status === 'PENDING' && !t.lease && !t.report),
+          'ROUTING_REQUIRES_IDLE_ORDER', '진행 중이거나 결과가 있는 오더는 업무 경로를 바꿀 수 없습니다.', 409);
+        const targetProject = text(command.routing?.target_project_id, '라우팅 프로젝트', 300);
+        const nextRouting = routing(command.routing, targetProject);
+        need(nextRouting.requirement_revision === order.revision, 'ROUTING_REQUIREMENT_STALE', '현재 요구 revision 기준 라우팅이 필요합니다.', 409);
+        const previous = order.routing ? structuredClone(order.routing) : null;
+        const previousProject = order.project;
+        order.project = targetProject;
+        order.routing = nextRouting;
+        by = 'ai-core-router';
+        detail = { fromProject: previousProject, toProject: targetProject, previous, routing: nextRouting };
       } else if (action === 'note') {
         detail = { note: text(command.note, '메모') };
       } else if (action === 'close') {
