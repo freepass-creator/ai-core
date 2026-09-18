@@ -70,17 +70,25 @@ export function createOrderWorkIntakeCoordinator({store,workSources,ordersDbPath
   const {paths}=resolved;
   if(paths.mappings!==null) return {intake:async()=>hold('OPERATING_MAPPING_CONVENTION_REQUIRED')};
 
-  store.db.exec(BINDING_SCHEMA);
-  store.db.exec(OUTBOX_SCHEMA);
+  let initialized=false;
+  const hasTable=name=>Boolean(store.db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name=?").get(name));
+  const ensureTables=()=>{
+    if(initialized) return;
+    store.db.exec(BINDING_SCHEMA);
+    store.db.exec(OUTBOX_SCHEMA);
+    initialized=true;
+  };
 
   const history=(id,state,head,reason)=>store.db.prepare(
     'INSERT INTO work_intake_history(command_id,state,head,reason,observed_at) VALUES (?,?,?,?,?)'
   ).run(id,state,head,reason,iso(clock));
 
-  const rowById=id=>store.db.prepare('SELECT * FROM work_intake_outbox WHERE command_id=?').get(id);
-  const rowByOrder=(id,revision)=>store.db.prepare(
-    'SELECT * FROM work_intake_outbox WHERE order_id=? AND requirement_revision=?'
-  ).get(id,revision);
+  const rowById=id=>hasTable('work_intake_outbox')
+    ? store.db.prepare('SELECT * FROM work_intake_outbox WHERE command_id=?').get(id)
+    : null;
+  const rowByOrder=(id,revision)=>hasTable('work_intake_outbox')
+    ? store.db.prepare('SELECT * FROM work_intake_outbox WHERE order_id=? AND requirement_revision=?').get(id,revision)
+    : null;
 
   function readRow(id){
     const row=rowById(id); need(row,'WORK_INTAKE_COMMAND_MISSING');
@@ -137,6 +145,9 @@ export function createOrderWorkIntakeCoordinator({store,workSources,ordersDbPath
   async function prepare(orderId){
     const order=store.get(orderId), reg=await registry();
     const {r}=currentRoute(order,reg);
+    /** 서버 시작만으로 mapping inventory를 «생성했다»고 만들지 않는다.
+     * 실제 work-intake가 현재 route 검증을 통과한 뒤에만 producer schema를 만든다. */
+    ensureTables();
     const commandId=`work-intake:${order.id}:${order.revision}`;
     const existing=rowByOrder(order.id,order.revision);
     if(existing) return readRow(existing.command_id);
