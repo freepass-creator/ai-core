@@ -1,54 +1,83 @@
-// registry/projects.json 의 «관측» 을 지금 체크아웃에서 다시 읽는다.
+// registry/projects.json 의 «관측» 을 정본 원격에서 다시 읽는다.
 //
 // ★2026-09-18: 다섯 프로젝트 head_revision 이 «전부» 낡아 있었다. 그래서 진짜 오더를
 //   묶으려는 첫 시도가 SUBJECT_REVISION_STALE 로 막혔다. 손으로 고치면 또 낡는다.
+//
+// ★2026-09-18 정정(GPT_REVIEW 08:30, PR #29): 처음 판은 `../<project_id>` 형제 폴더의
+//   HEAD 를 읽었다. 그 폴더가 다른 갈래·낡은 체크아웃이면 그 SHA 가 «정본» 으로 찍혔고,
+//   ai-core 는 registry 의 local_path(ai-core-control-tower)와 다른 폴더를 읽고 있었다.
+//   이제 registry 의 repository + default_branch 로 «원격 ref 를 직접» 본다
+//   (#48 에서 손으로 하던 git ls-remote 를 코드로). 로컬 체크아웃은 보지 않는다.
 //
 // ★세지 않는다 — 읽는다. git 이 말하는 것만 적고, 아무것도 지어내지 않는다.
 //   mission·벽·required_approvals 같은 «사람이 선언한 것» 은 손대지 않는다.
 //
 //   node scripts/registry-refresh.mjs            고치고 무엇이 바뀌었는지 찍는다
-//   node scripts/registry-refresh.mjs --check    안 고치고 낡았는지만 본다 (낡았으면 exit 1)
+//   node scripts/registry-refresh.mjs --check    안 고치고 본다
+//     exit 0 전부 관측했고 낡은 것 없음 · 1 낡은 것 있음 · 2 못 본 것 있음(UNKNOWN)
+//
+// ★CI 에는 걸지 않는다. 다른 저장소가 앞서 나갈 때마다 ai-core 가 빨개지고,
+//   hosted runner 는 비공개 저장소를 볼 자격이 없어 늘 UNKNOWN 이다. 묶기 직전에 돌린다.
 
 import { readFile, writeFile } from 'node:fs/promises';
 import { execFileSync } from 'node:child_process';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const 뿌리 = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const 인 = process.argv.slice(2);
-const 볼까만 = 인.includes('--check');
-const 길 = 인.find((x) => !x.startsWith('--')) ?? join(뿌리, 'registry', 'projects.json');
-/** 체크아웃이 어디 있나 — ai-core 옆에 형제로 둔다는 것이 이 장치의 규약이다. */
-const 옆에 = (id) => resolve(뿌리, '..', id);
+const SHA = /^[0-9a-f]{40}$/;
 
-const 리비전 = (곳) => {
-  try {
-    return execFileSync('git', ['-C', 곳, 'rev-parse', 'HEAD'],
-      { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim();
-  } catch { return null; }
+/** 원격의 그 갈래가 지금 가리키는 SHA. 못 보면 던진다 — 「없다」가 아니라 「모른다」. */
+export const 원격보기 = (repository, branch) => {
+  const out = execFileSync('git', ['ls-remote', '--exit-code', `https://github.com/${repository}.git`, `refs/heads/${branch}`],
+    { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], timeout: 30_000, env: { ...process.env, GIT_TERMINAL_PROMPT: '0' } });
+  return out.trim().split(/\s+/)[0];
 };
 
-const 이제 = new Date().toISOString().replace(/\.\d+Z$/, 'Z');
-const 등록부 = JSON.parse(await readFile(길, 'utf8'));
-const 바뀜 = [];
-const 못봄 = [];
-
-for (const 프 of 등록부.projects ?? []) {
-  const rev = 리비전(옆에(프.project_id));
-  /** ★못 찾으면 «건드리지 않는다». 지우거나 null 로 덮으면 「없다」고 말하는 것이 되는데,
-   *  실제로는 「이 장치에 체크아웃이 없다」일 뿐이다. 그 둘은 다르다. */
-  if (!rev) { 못봄.push(프.project_id); continue; }
-  if (프.head_revision !== rev) 바뀜.push(`${프.project_id}: ${String(프.head_revision).slice(0, 8)} → ${rev.slice(0, 8)}`);
-  프.head_revision = rev;
-  for (const 원천 of 프.authoritative_sources ?? []) {
-    if (원천.kind === 'GIT') { 원천.revision = rev; 원천.observed_at = 이제; }
+/**
+ * 등록부를 제자리에서 고친다. 관측한 것만 적고, 못 본 것은 «건드리지 않는다».
+ * 지우거나 null 로 덮으면 「없다」고 말하는 것이 되는데, 실제로는 「못 봤다」일 뿐이다.
+ */
+export function registryRefresh(등록부, { observe = 원격보기, now = new Date() } = {}) {
+  const 이제 = now.toISOString().replace(/\.\d+Z$/, 'Z');
+  const 바뀜 = [];
+  const 모름 = [];
+  for (const 프 of 등록부.projects ?? []) {
+    if (!프.repository || !프.default_branch) { 모름.push({ project_id: 프.project_id, reason: 'CANONICAL_REF_UNDECLARED' }); continue; }
+    let rev = null;
+    try { rev = observe(프.repository, 프.default_branch); } catch { rev = null; }
+    if (typeof rev !== 'string' || !SHA.test(rev)) { 모름.push({ project_id: 프.project_id, reason: 'REMOTE_UNOBSERVED' }); continue; }
+    if (프.head_revision !== rev) 바뀜.push({ project_id: 프.project_id, from: 프.head_revision ?? null, to: rev });
+    프.head_revision = rev;
+    for (const 원천 of 프.authoritative_sources ?? []) {
+      if (원천.kind === 'GIT') { 원천.revision = rev; 원천.observed_at = 이제; }
+    }
   }
+  /** 하나라도 못 봤으면 등록부 전체를 「지금 관측했다」고 말하지 않는다. */
+  if (!모름.length) 등록부.observed_at = 이제;
+  return { 바뀜, 모름 };
 }
 
-if (바뀜.length) console.log(바뀜.join('\n')); else console.log('낡은 것 없음');
-if (못봄.length) console.log(`★체크아웃을 못 찾아 «그대로 둔 것»: ${못봄.join(', ')}`);
+/** 낡음이 모름보다 먼저다 — 둘 다면 «고칠 것이 있다» 가 더 급하다. */
+export const 끝값 = ({ 바뀜, 모름 }) => (바뀜.length ? 1 : 모름.length ? 2 : 0);
 
-if (볼까만) process.exit(바뀜.length ? 1 : 0);
-등록부.observed_at = 이제;
-await writeFile(길, `${JSON.stringify(등록부, null, 2)}\n`, 'utf8');
-console.log(`적었다: ${길}`);
+async function main(인) {
+  const 볼까만 = 인.includes('--check');
+  const 뿌리 = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+  const 길 = 인.find((x) => !x.startsWith('--')) ?? join(뿌리, 'registry', 'projects.json');
+  const 등록부 = JSON.parse((await readFile(길, 'utf8')).replace(/^﻿/, ''));
+  const 결과 = registryRefresh(등록부);
+  for (const b of 결과.바뀜) console.log(`${볼까만 ? '낡음' : '고침'} ${b.project_id}: ${String(b.from).slice(0, 8)} → ${b.to.slice(0, 8)}`);
+  if (!결과.바뀜.length) console.log('낡은 것 없음');
+  for (const m of 결과.모름) console.log(`★UNKNOWN ${m.project_id}: ${m.reason} — «그대로 뒀다»`);
+  if (!볼까만) {
+    await writeFile(길, `${JSON.stringify(등록부, null, 2)}\n`, 'utf8');
+    console.log(`적었다: ${길}`);
+    process.exitCode = 결과.모름.length ? 2 : 0;
+    return;
+  }
+  process.exitCode = 끝값(결과);
+}
+
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  main(process.argv.slice(2)).catch((e) => { console.error(e.message); process.exitCode = 3; });
+}

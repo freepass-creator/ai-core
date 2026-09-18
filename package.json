@@ -26,6 +26,8 @@
     "checkpoint": "node scripts/checkpoint-work.mjs",
     "registry:refresh": "node scripts/registry-refresh.mjs",
     "control:snapshot": "node scripts/control-snapshot-refresh.mjs",
+    "work:observe": "node scripts/work-observe.mjs",
+    "work:recent": "node scripts/work-recent.mjs",
     "ops:watch": "node scripts/ops-watch.mjs"
   },
   "dependencies": {
