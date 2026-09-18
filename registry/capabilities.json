@@ -187,30 +187,9 @@
         "min_score": 2
       },
       "adapter": {
-        "kind": "PROJECT_COMMAND",
-        "argv": [
-          "node",
-          "wonja/gwataeryo-engine.mjs",
-          "--한다"
-        ],
-        "receipt": {
-          "kind": "NEW_JSON_TERMINAL_RECEIPT",
-          "directory": "tmp/과태료",
-          "prefix": "실행기록-",
-          "suffix": ".json",
-          "schema_field": "schema",
-          "schema_value": "gwataeryo-run-manifest/v1",
-          "state_field": "state",
-          "success_states": [
-            "COMPLETED"
-          ],
-          "hold_states": [
-            "COMPLETED_WITH_HOLD"
-          ],
-          "failure_states": [
-            "FAILED"
-          ]
-        }
+        "kind": "PROJECT_MODULE",
+        "entrypoint": "lib/gwataeryo-ai-core-executor.mjs",
+        "export": "executeAiCorePenalty"
       },
       "inputs": [],
       "required_scopes": [
