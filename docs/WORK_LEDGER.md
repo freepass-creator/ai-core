@@ -63,3 +63,16 @@ npm run control:snapshot                          the snapshot follows the ledge
 ★Readers older than this change reject a ledger that contains `REOBSERVED`
 (`EVENT_SCHEMA_INVALID`). Do not append one to an operating ledger until every
 reader of that ledger runs this version.
+
+
+## Revision continuity — 2026-09-19
+
+새로 쓰는 사건에서 `subject_revision`을 바꾸는 유일한 경로는 `REOBSERVED`다.
+
+- 일반 상태 전이는 직전 `subject_revision`을 그대로 유지해야 한다.
+- 새 revision을 관측하려면 상태를 `RECEIVED / PLANNED / IN_PROGRESS` 중 하나에 둔 채 `REOBSERVED + evidence_refs`를 기록한다.
+- `VERIFYING`에 들어간 뒤에는 그 revision이 READY/EXECUTED/OBSERVING/CLOSED 경로를 묶는다.
+- 검증 뒤 revision을 바꾸려면 IN_PROGRESS로 돌아가 기존 검증을 버리고, REOBSERVED로 새 revision을 증거와 함께 기록한 뒤 다시 VERIFYING한다.
+- 과거 원장에 존재하는 일반 전이 기반 revision 부착은 읽기 호환을 위해 INVALID로 만들지 않지만, `revisions` 증거 이력에는 넣지 않는다. 따라서 새 binding provenance로 사용할 수 없다.
+
+이 경계는 기존 원장을 다시 쓰거나 수정하지 않는다.
