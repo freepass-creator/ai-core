@@ -119,6 +119,22 @@ test('HTTP and direct CLI store share truth; cross-origin, bad host and malforme
   assert.equal(heldRoute.status, 'HOLD_PROJECT_HOLD'); assert.equal(heldRoute.target_project_id, 'docshub');
   const unknownRoute = await (await fetch(`${url}/api/route?q=${encodeURIComponent('달에서 감자 키우기')}`)).json();
   assert.equal(unknownRoute.status, 'UNKNOWN');
+
+  const routedIntake = input({ requestId: randomUUID(), title: '과태료 처리', intent: '과태료 처리해', project: '' });
+  const routedOrderResponse = await post(routedIntake);
+  assert.equal(routedOrderResponse.status, 200);
+  const routedOrder = await routedOrderResponse.json();
+  assert.equal(routedOrder.project, 'aiops');
+
+  const heldIntake = input({ requestId: randomUUID(), title: '보고서 제작', intent: '보고서 만들어', project: '' });
+  const heldOrderResponse = await post(heldIntake);
+  assert.equal(heldOrderResponse.status, 409);
+  assert.equal((await heldOrderResponse.json()).error, 'PROJECT_ROUTE_HOLD');
+
+  const explicitProject = input({ requestId: randomUUID(), title: '과태료 참고', intent: '과태료 처리해', project: 'manual-project' });
+  const explicitOrder = await (await post(explicitProject)).json();
+  assert.equal(explicitOrder.project, 'manual-project');
+
   assert.equal((await post(req, { Origin: 'https://untrusted.example' })).status, 403);
   const badHostStatus = await new Promise((resolve, reject) => { const r = request(`${url}/api/meta`, { headers: { Host: 'untrusted.example' } }, res => { res.resume(); resolve(res.statusCode); }); r.on('error', reject); r.end(); });
   assert.equal(badHostStatus, 403);
