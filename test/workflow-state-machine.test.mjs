@@ -335,3 +335,48 @@ test('hold and resume are first-class transitions and failure policy returns bou
   });
   assert.equal(engine.resolveFailure({ transition_id: 'prepare', attempt: 3, error_code: 'TEMPORARY' }).action, 'HOLD');
 });
+
+
+test('available actions expose stable eligibility reasons for UI without duplicating workflow rules', () => {
+  const engine = createWorkflowEngine(machine());
+  const projection = { entity_id: 'contract-1', revision: 0, states: { lifecycle: 'RECEIVED' } };
+
+  const blocked = engine.availableActions(projection, { facts: { 'contract.exists': false } });
+  const prepare = blocked.find(item => item.transition_id === 'prepare');
+  assert.equal(prepare.eligible, false);
+  assert.ok(prepare.reasons.includes('PERMISSION_MISSING:contract.prepare'));
+  assert.ok(prepare.reasons.includes('GUARD_FAILED:contract-present'));
+
+  const allowed = engine.availableActions(projection, {
+    permissions: ['contract.prepare'],
+    facts: { 'contract.exists': true }
+  }).find(item => item.transition_id === 'prepare');
+  assert.equal(allowed.eligible, true);
+  assert.deepEqual(allowed.reasons, []);
+});
+
+test('automation inspects the same transition contract and does not create a second state machine', () => {
+  const engine = createWorkflowEngine(machine());
+  const projection = { entity_id: 'contract-1', revision: 2, states: { lifecycle: 'ON_HOLD' } };
+  const due = engine.dueAutomations(projection, 'test.contract.held', {
+    permissions: ['contract.resume']
+  });
+  assert.equal(due.length, 1);
+  assert.equal(due[0].transition_id, 'resume');
+  assert.equal(due[0].inspection.eligible, true);
+});
+
+test('validator rejects invalid hold targets and non-explicit approval roles', () => {
+  const broken = structuredClone(machine());
+  broken.transitions[0].approval = { policy: 'ALL', required_roles: [], separation_of_duties: false };
+  broken.transitions[2].to = 'READY';
+  const result = validateWorkflowRegistry({
+    schema_version: '1.0.0',
+    registry_version: '1.0.0',
+    primitives: [],
+    workflows: [broken]
+  });
+  assert.equal(result.status, 'INVALID');
+  assert.ok(result.errors.some(item => item.code === 'APPROVAL_ROLES_REQUIRED'));
+  assert.ok(result.errors.some(item => item.code === 'HOLD_TARGET_REQUIRED'));
+});
