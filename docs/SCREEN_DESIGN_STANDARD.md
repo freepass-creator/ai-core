@@ -28,6 +28,19 @@ Official references:
 - Every custom button has default, hover, focus-visible, active, disabled and busy behavior.
 - Icon-only buttons require an accessible name.
 
+## Action placement
+
+**Top is informational; bottom is actionable.**
+
+- App/page headers are display-only by default: brand, page title, context, progress and non-interactive status may appear there.
+- Do not place task CTAs such as Save, Submit, Share, Send, Reset, Complete, Preview or Export in the top app/page header.
+- Primary and secondary task actions belong in a bottom action area: a sticky/fixed footer on mobile and an anchored bottom action bar on desktop.
+- Dialog task actions also belong in the dialog footer rather than the dialog header. The header carries the dialog title and passive options only.
+- Direct-selection controls that are the content itself (vehicle, model, trim, option, row, radio, checkbox, dropdown) remain where the choice is presented; they are not treated as page CTAs.
+- Back/Next/Complete navigation in a stepped flow uses the bottom action area. For single-choice auto-advance steps, selection itself advances and a redundant Next button is omitted.
+- When an action cannot fit safely, prefer overflow or a secondary bottom sheet/menu from the bottom action area rather than moving the action into the top header.
+- Products may deviate only when a platform convention or safety/accessibility requirement makes bottom placement materially worse; document the exception.
+
 ## Dropdown
 
 - Prefer native `select` for a short single-choice list.
