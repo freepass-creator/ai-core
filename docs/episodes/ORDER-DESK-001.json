@@ -27,6 +27,7 @@
     "contracts/project-registry.schema.json",
     "contracts/work-ledger-event.schema.json",
     "contracts/work-map.schema.json",
+    "contracts/workflow.schema.json",
     "docs/AI-SSOT-AUDIT-LOG.md",
     "docs/AI_COLLABORATION_PROTOCOL.md",
     "docs/AI_CORE_EVOLUTION_BRIDGE.md",
@@ -108,6 +109,10 @@
     "docs/reviews/ORDER_DESK_REVIEW.md",
     "docs/reviews/SHARED_ORDER_REVIEW.md",
     "docs/shared-services/SHARED_RELEASE_GATE.md",
+    "docs/workflow/CURRENT_WORKFLOW_AUDIT_2026-09-19.md",
+    "docs/workflow/MIGRATION_GUIDE.md",
+    "docs/workflow/STATE_MACHINE_SPECIFICATION.md",
+    "docs/workflow/WORKFLOW_CONSTITUTION.md",
     "examples/ai-continuation-input.json",
     "examples/ai-proposal-input.json",
     "examples/control-tower.json",
@@ -127,6 +132,7 @@
     "registry/projects.json",
     "registry/work-map.json",
     "registry/work-routing-fixtures.json",
+    "registry/workflows.json",
     "scripts/ai-continuation-pack.mjs",
     "scripts/control-snapshot-refresh.mjs",
     "scripts/core-brief.mjs",
@@ -151,6 +157,7 @@
     "scripts/validate-directions.mjs",
     "scripts/validate-project-registry.mjs",
     "scripts/validate-work-map.mjs",
+    "scripts/validate-workflows.mjs",
     "scripts/verify-main-state.mjs",
     "scripts/work-ledger.mjs",
     "scripts/work-observe.mjs",
@@ -190,6 +197,7 @@
     "src/orders/server.mjs",
     "src/orders/store.mjs",
     "src/routing/work-router.mjs",
+    "src/workflow/engine.mjs",
     "test/ai-continuation-pack.test.mjs",
     "test/capability-convergence.test.mjs",
     "test/capability-execution-api.test.mjs",
@@ -240,6 +248,7 @@
     "test/work-recorder.test.mjs",
     "test/work-reobserve.test.mjs",
     "test/work-router.test.mjs",
+    "test/workflow-state-machine.test.mjs",
     "web/orders/app.js",
     "web/orders/index.html",
     "web/orders/style.css"
@@ -286,6 +295,7 @@
     "2026-09-19 A-session Build/Deploy/Governance survey: ERP4/Admin/Sales/AIOps/AI Core/DevCenter patterns and SemVer/SLSA/SSDF/SBOM references were distilled into non-canonical input for CI gates, production proof, versioning, migration, deprecation, exceptions and rollback.",
     "2026-09-19 A-session promotion matrix: research findings were classified by evidence maturity and routed to C/D/Security/QA/Governance; only canonical sessions may promote COMMON_ADOPTED.",
     "2026-09-19 A-session second-evidence pass: stable error codes (Admin + Estimate branch) and exact-subject approval (AIOps + AI Core) were upgraded to CROSS_PROJECT_VERIFIED; production revision proof remains single-project verified because Estimate production observation is HOLD.",
-    "2026-09-19 A-session hold/resume pass: AIOps defer-until and Sales next-contact queue semantics provide independent second-project evidence, upgrading workflow.hold-resume to CROSS_PROJECT_VERIFIED."
+    "2026-09-19 A-session hold/resume pass: AIOps defer-until and Sales next-contact queue semantics provide independent second-project evidence, upgrading workflow.hold-resume to CROSS_PROJECT_VERIFIED.",
+    "2026-09-19 D-session Workflow Standard v1: added the common workflow schema/registry/engine/validator/tests and D workflow docs on an isolated branch; active successor changed_files was regenerated from the exact base_revision diff for verifier parity. Existing Work Ledger remains authoritative pending SHADOW parity."
   ]
 }
