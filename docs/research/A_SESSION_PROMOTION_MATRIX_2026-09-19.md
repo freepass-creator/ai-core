@@ -276,7 +276,7 @@ A 세션이 조사한 내용을 B·C·D·Security·QA·Governance 세션이 다�
 
 | Candidate | 축 | Evidence | 실제 근거 | 넘길 세션 | 다음 단계 |
 |---|---|---|---|---|---|
-| `ui.client-release-freshness` | UI/UX / Client Runtime | PROJECT_VERIFIED | freepasserp3 | B | SECOND_PROJECT_REQUIRED |
+| `ui.client-release-freshness` | UI/UX / Client Runtime | CROSS_PROJECT_VERIFIED | freepasserp3, freepasserp4 | B | COMMON_ADOPTED_CANDIDATE |
 
 - 근거: `freepasserp3@5344a5001a6d62d686c79090a250c9aa21b470c3`, current observed head `8d8b7a559272a37823f879b77099b3bc17bf5a16`.
 - 장시간 열린 SPA가 배포 뒤에도 구버전 JS를 계속 실행하던 실제 문제를 stable build-version readback + periodic/visibility freshness check로 해결.
@@ -332,3 +332,13 @@ A 세션이 조사한 내용을 B·C·D·Security·QA·Governance 세션이 다�
 - Destination: **D primary / C secondary**
 - This is negative evidence supporting the need for `workflow.compensated-multiwrite`, not positive second-project implementation.
 - Detail: `docs/research/A_SESSION_GAP_JPKERP_SILENT_RECONCILIATION_PARTIAL_WRITE_2026-09-19.md`.
+
+
+### ERP4 second evidence — `ui.client-release-freshness`
+
+- **PROJECT_VERIFIED → CROSS_PROJECT_VERIFIED**
+- FreePassERP3: static `build-version.txt` baseline + polling/visibility drift detection.
+- FreePassERP4: client build stamp vs dynamic `/api/version` server stamp + focus/online/visibility checks + active-input deferral + same-stamp reload guard.
+- FreePass Sales SW cache versioning is supporting adjacent evidence but is not counted as the exact second implementation.
+- Phase 1 closeout freeze: research branch only; B canonical adoption remains pending.
+- Detail: `docs/research/A_SESSION_DISCOVERY_ERP4_CLIENT_RELEASE_FRESHNESS_SECOND_EVIDENCE_2026-09-19.md`.
