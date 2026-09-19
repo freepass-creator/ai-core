@@ -18,6 +18,10 @@ AI Core 작업을 시작할 때 전체 Gmail/전체 Chat/전체 연구 branch를
 4. `docs/AI_CORE_OPERATING_PLAYBOOK.md` — 실제 회사 업무를 AI Core에서 처리하는 방식.
 5. `docs/CONTROL_TOWER.md` + `docs/WORK_LEDGER.md` — 현재 업무 상태/판정 런타임.
 
+### A/B/C/D 세션 공통 미션
+
+[AI Core Session Operating Directive](docs/coordination/AI_CORE_SESSION_OPERATING_DIRECTIVE_2026-09-19.md)를 함께 읽는다. **AI Core 고도화는 기존 문서/Repo 정리에 한정하지 않는다.** A는 revision-bound 조사·역수입/Gap 발굴을 맡고, B/C/D는 각자 UI/UX Platform, Core Contract Platform, Workflow Platform의 부족한 기능을 직접 설계·구현·검증한다. Order 세션은 전체 우선순위와 충돌 조정, 다음 오더를 담당한다. 실행 가능한 영역은 문서에서 멈추지 말고 code/schema/registry/validator/test/migration까지 연결한다.
+
 `GROUP-G0-RESULT.md`, `CONTROL_TOWER_CONSOLIDATION.md`, `docs/integration/INTEGRATION_STATUS.md`와 과거 handoff/audit 문서는 **시점별 evidence/history**다. 현재 상태가 위 정본과 충돌하면 최신 정본과 현재 revision-bound evidence를 우선한다.
 
 ## 현재 최우선 목표 — AI Core 실제 합병·통합
