@@ -207,13 +207,15 @@
     {
       "id": "workflow.hold-resume",
       "axis": "Workflow",
-      "evidence_level": "PROJECT_VERIFIED",
+      "evidence_level": "CROSS_PROJECT_VERIFIED",
       "projects": [
-        "aiops"
+        "aiops",
+        "freepass-sales"
       ],
       "target_session": "D",
       "finding": "보류는 완료가 아니며 resume_at 필요",
-      "next_gate": "SECOND_PROJECT_REQUIRED"
+      "next_gate": "COMMON_ADOPTED_CANDIDATE",
+      "evidence_note": "AIOps hold requires a revisit date and suppresses reappearance until then; Sales stores 다음연락일 and only re-enters callback/priority queues when the date is due or overdue."
     },
     {
       "id": "workflow.obligation-pair",

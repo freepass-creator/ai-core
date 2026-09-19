@@ -132,3 +132,13 @@ A 세션이 조사한 내용을 B·C·D·Security·QA·Governance 세션이 다�
   - Estimate에는 `/api/version` 구현과 contract/CI 근거가 있으나 실제 production serving revision 관측은 HOLD이므로 두 번째 운영증거로 세지 않는다.
 
 이 재검사는 “비슷해 보인다”가 아니라 현재 source/revision의 실행계약을 읽고 올린 것이다.
+
+
+### `workflow.hold-resume` 재검사 승격
+
+**PROJECT_VERIFIED → CROSS_PROJECT_VERIFIED**
+
+- AIOps: 보류 시 다시 볼 날짜를 받고 그 전까지 업무를 다시 띄우지 않는다.
+- FreePass Sales: `나중에`/재통화 흐름이 `다음연락일`을 보존하고, 날짜가 오늘까지 도래한 대상만 다시걸사람 큐로 올린다. 진행중 목록도 경과/오늘 약속을 우선한다.
+
+따라서 공통 의미는 특정 앱의 “보류” 라벨이 아니라 **defer until / resume at** 계약으로 잡을 수 있다.
