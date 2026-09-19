@@ -99,6 +99,7 @@
     "docs/research/DATA_SSOT_CROSS_REPO_FINDINGS_2026-09-19.md",
     "docs/research/ENGINE_ADAPTER_CROSS_REPO_FINDINGS_2026-09-19.md",
     "docs/research/GLOBAL_PRODUCT_STANDARD_EVIDENCE_2026-09-19.md",
+    "docs/research/OBSERVABILITY_QA_CROSS_REPO_FINDINGS_2026-09-19.md",
     "docs/research/WORKFLOW_STATE_MACHINE_CROSS_REPO_FINDINGS_2026-09-19.md",
     "docs/research/global-product-standard-evidence.v1.json",
     "docs/reviews/ORDER_DESK_REVIEW.md",
@@ -277,6 +278,7 @@
     "2026-09-19 A-session Engine/Adapter survey: Admin/ERP4/Welrix/AIOps/JPK patterns and anti-patterns were distilled as non-canonical input for Core Contract.",
     "2026-09-19 A-session API/Event/Error survey: RFC 9110, RFC 9457, JSON Schema, OpenAPI and CloudEvents were mapped against current project APIs/events/errors as non-canonical input.",
     "2026-09-19 A-session Workflow survey: Admin/Sales/ERP4/JPK/AIOps workflow patterns were distilled into non-canonical input covering fact-vs-state, multi-axis state, guards/evidence, idempotent transitions, obligations, hold/resume and recovery.",
-    "2026-09-19 A-session Auth/Security/Audit survey: ERP4/Admin/AIOps/Sales/JPK patterns were distilled into non-canonical input covering role-org-scope-action authz, risk-class approvals, exact-subject binding, PII-safe audit and security release gates."
+    "2026-09-19 A-session Auth/Security/Audit survey: ERP4/Admin/AIOps/Sales/JPK patterns were distilled into non-canonical input covering role-org-scope-action authz, risk-class approvals, exact-subject binding, PII-safe audit and security release gates.",
+    "2026-09-19 A-session Observability/QA survey: ERP4/Sales/JPK/AIOps patterns were distilled into non-canonical input for telemetry context, freshness, pipeline status, layered proof, negative controls, job heartbeat and production revision readback."
   ]
 }
