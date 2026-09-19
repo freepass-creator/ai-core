@@ -13,8 +13,7 @@
     "target",
     "stages",
     "commit_policy",
-    "receipt_required",
-    "partial_failure_policy"
+    "receipt_required"
   ],
   "properties": {
     "schema_version": {
