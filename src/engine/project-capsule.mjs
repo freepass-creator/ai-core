@@ -1,6 +1,8 @@
+import { createHash } from 'node:crypto';
 const need=(condition,code)=>{if(!condition) throw new Error(code);};
 const nonempty=value=>typeof value==='string'&&value.trim()===value&&value.length>0;
 const sha=value=>typeof value==='string'&&/^[0-9a-f]{40}$/.test(value);
+const sha256=value=>createHash('sha256').update(String(value)).digest('hex');
 const cleanPaths=paths=>[...new Set((paths??[]).filter(nonempty).map(x=>x.replaceAll('\\','/').replace(/^\.\//,'')))].sort();
 const has=(paths,name)=>paths.includes(name);
 const any=(paths,predicate)=>paths.some(predicate);
@@ -73,6 +75,8 @@ export function buildProjectCapsule(observation){
   need(paths.length>0,'PROJECT_TREE_EMPTY');
   const pkg=observation.package_json??null;
   if(pkg!==null) need(pkg&&typeof pkg==='object'&&!Array.isArray(pkg),'PACKAGE_JSON_INVALID');
+  const readmeText=observation.readme_text??null;
+  if(readmeText!==null) need(typeof readmeText==='string'&&readmeText.length>0,'README_INVALID');
   const manager=packageManager(paths);
   const scripts=pkg?.scripts??{};
   const kind=classify(paths,pkg);
@@ -89,6 +93,7 @@ export function buildProjectCapsule(observation){
 
   const blockers=[];
   if(!has(paths,'README.md')) blockers.push('README_MISSING');
+  else if(readmeText===null) blockers.push('README_UNREAD');
   if(kind==='UNKNOWN') blockers.push('PROJECT_KIND_UNKNOWN');
   if(kind==='NODE_APP'&&!pkg) blockers.push('PACKAGE_JSON_MISSING');
   if(kind==='NODE_APP'&&!test&&!build) blockers.push('NO_TEST_OR_BUILD_ENTRYPOINT');
@@ -97,9 +102,12 @@ export function buildProjectCapsule(observation){
   const deliveryInfo=delivery(paths,pkg);
   const evidenceRefs=[
     `GIT:${repository}@${subject_revision}`,
-    ...['README.md','package.json','package-lock.json','pnpm-lock.yaml','yarn.lock','vercel.json','firebase.json','.env.example']
-      .filter(p=>has(paths,p)).map(p=>`READ:${repository}/${p}@${subject_revision}`),
-    ...deliveryInfo.workflows.map(p=>`READ:${repository}/${p}@${subject_revision}`),
+    ...(readmeText===null?[]:[`READ:${repository}/README.md@${subject_revision}#sha256:${sha256(readmeText)}`]),
+    ...(pkg===null?[]:[`READ:${repository}/package.json@${subject_revision}#sha256:${sha256(JSON.stringify(pkg))}`]),
+    ...['package-lock.json','pnpm-lock.yaml','yarn.lock','vercel.json','firebase.json','.env.example']
+      .filter(p=>has(paths,p)).map(p=>`EXISTS:${repository}/${p}@${subject_revision}`),
+    ...instructions(paths).filter(p=>p!=='README.md').map(p=>`EXISTS:${repository}/${p}@${subject_revision}`),
+    ...deliveryInfo.workflows.map(p=>`EXISTS:${repository}/${p}@${subject_revision}`),
   ];
 
   return {
