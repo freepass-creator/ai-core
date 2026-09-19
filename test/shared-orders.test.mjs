@@ -22,7 +22,15 @@ async function central(t) {
 }
 function clonedClient(dir, name, ledgerId) {
   const root = join(dir, name); mkdirSync(root);
-  for (const path of ['scripts/orders.mjs', 'src/orders/client.mjs', 'src/orders/store.mjs']) {
+  for (const path of [
+    'scripts/orders.mjs',
+    'src/orders/client.mjs',
+    'src/orders/store.mjs',
+    'src/workflow/engine.mjs',
+    'src/workflow/order-task-shadow.mjs',
+    'src/workflow/registry.mjs',
+    'registry/workflows.json',
+  ]) {
     const to = join(root, path); mkdirSync(dirname(to), { recursive: true }); copyFileSync(fileURLToPath(new URL(`../${path}`, import.meta.url)), to);
   }
   writeFileSync(join(root, 'orders.connection.json'), JSON.stringify({ schema: 'ai-core-connection/v1', mode: 'shared-required', transport: 'ssh-loopback', ledgerId }));
