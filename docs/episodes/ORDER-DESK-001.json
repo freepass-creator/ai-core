@@ -28,6 +28,7 @@
     "contracts/work-ledger-event.schema.json",
     "contracts/work-map.schema.json",
     "contracts/workflow-bridge.schema.json",
+    "contracts/workflow-recovery-policy.schema.json",
     "contracts/workflow.schema.json",
     "docs/AI-SSOT-AUDIT-LOG.md",
     "docs/AI_COLLABORATION_PROTOCOL.md",
@@ -98,8 +99,10 @@
     "docs/inventory/C-DEV-2026-09-15.json",
     "docs/research/API_EVENT_ERROR_STANDARD_FINDINGS_2026-09-19.md",
     "docs/research/AUTH_SECURITY_AUDIT_CROSS_REPO_FINDINGS_2026-09-19.md",
+    "docs/research/A_SESSION_DISCOVERY_DEVCENTER_PROOF_INPUT_BINDING_2026-09-19.md",
     "docs/research/A_SESSION_DISCOVERY_ERP4_RECOVERY_SLOT_REPLAY_2026-09-19.md",
     "docs/research/A_SESSION_DISCOVERY_FP_SETTLEMENT_UI_CONFORMANCE_2026-09-19.md",
+    "docs/research/A_SESSION_GAP_DEVCENTER_REGISTRY_REVISION_BINDING_2026-09-19.md",
     "docs/research/A_SESSION_GAP_VEHICLE_MASTER_IDENTITY_PROVENANCE_2026-09-19.md",
     "docs/research/A_SESSION_PROMOTION_MATRIX_2026-09-19.md",
     "docs/research/BUILD_DEPLOY_GOVERNANCE_CROSS_REPO_FINDINGS_2026-09-19.md",
@@ -137,6 +140,7 @@
     "registry/work-map.json",
     "registry/work-routing-fixtures.json",
     "registry/workflow-bridges.json",
+    "registry/workflow-recovery-policies.json",
     "registry/workflows.json",
     "scripts/ai-continuation-pack.mjs",
     "scripts/control-snapshot-refresh.mjs",
@@ -163,6 +167,7 @@
     "scripts/validate-project-registry.mjs",
     "scripts/validate-work-map.mjs",
     "scripts/validate-workflow-bridges.mjs",
+    "scripts/validate-workflow-recovery-policies.mjs",
     "scripts/validate-workflows.mjs",
     "scripts/verify-main-state.mjs",
     "scripts/work-ledger.mjs",
@@ -262,6 +267,7 @@
     "test/workflow-capability-execution-parity.test.mjs",
     "test/workflow-ledger-parity.test.mjs",
     "test/workflow-order-task-parity.test.mjs",
+    "test/workflow-recovery-policy.test.mjs",
     "test/workflow-state-machine.test.mjs",
     "web/orders/app.js",
     "web/orders/index.html",
@@ -327,6 +333,7 @@
     "2026-09-19 D-session runtime migration verification: feature/parity/shared-clone/bridge tests all passed after fixture refresh; successor changed_files was regenerated once more from the exact base revision to include the fixture commit.",
     "2026-09-19 parallel-main inventory sync: PR merge-tree verification identified A-session ERP4 recovery-slot replay research added on main after D branch creation; recorded the inherited path in successor changed_files without modifying A-session content.",
     "2026-09-19 successor inventory canonicalization: changed_files regenerated as current-main verified successor inventory plus complete PR #93 net changed-file set, avoiding GitHub compare 250-file truncation.",
-    "2026-09-19 successor inventory final source: base→current-main actual compare file set plus complete PR #93 net changed-file set; this also captures parallel A-session files not yet reflected in main's episode document."
+    "2026-09-19 successor inventory final source: base→current-main actual compare file set plus complete PR #93 net changed-file set; this also captures parallel A-session files not yet reflected in main's episode document.",
+    "2026-09-19 D recovery pilot: ERP4 recovery replay evidence re-verified at source, workflow.recovery-slot-no-replay registered as PROJECT_VERIFIED PILOT with machine schema/validator/negative tests/CI; common adoption remains blocked on C identity binding and second-project evidence."
   ]
 }
