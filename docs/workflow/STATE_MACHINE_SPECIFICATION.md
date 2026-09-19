@@ -384,3 +384,35 @@ Migration sequence:
 8. promote only after revision-bound evidence
 
 This v1 therefore introduces the common contract without silently changing current ledger authority.
+
+
+## Work Ledger SHADOW parity checkpoint
+
+`registry/workflows.json` now contains `ai-core.work-lifecycle@0.1.0` with `adoption_status=SHADOW`.
+
+It models the current Work Ledger state graph without taking authority away from `scripts/work-ledger.mjs`.
+
+The SHADOW includes:
+
+- all current Work Ledger states
+- all 30 normal transition pairs
+- 3 same-state REOBSERVE transitions for RECEIVED / PLANNED / IN_PROGRESS
+- project identity preservation
+- normal-transition subject revision immutability
+- verification-presence vs verified-revision-value separation
+- verified-path gating
+- evidence + non-null revision closure rules
+- BLOCKED behavior both before and after verification
+
+Source authority is machine-pinned to:
+
+- repository
+- audited source revision
+- exact Git blob SHA for `scripts/work-ledger.mjs`
+- exact Git blob SHA for `contracts/work-ledger-event.schema.json`
+
+A SHADOW workflow without source authority is invalid.
+
+The parity test suite compares the current Ledger and D SHADOW against the same candidate transitions, including the full 11×11 state-pair matrix. If the source blobs change, the source-lock test fails until the SHADOW is re-audited.
+
+This is a migration gate, not a replacement switch.
