@@ -50,10 +50,27 @@ export function validateUiUxRegistrySemantics(registry) {
     'integration.sync',
     'integration.import',
     'integration.export',
-    'system.localization'
+    'system.localization',
+    'system.locale-formatting',
+    'system.bidi',
+    'system.text-expansion',
+    'system.motion-preference',
+    'system.contrast-preference',
+    'system.reflow-orientation',
+    'system.input-method'
   ];
   for (const id of requiredFeatureIds) {
     if (!ids.has(id)) throw new Error('UIUX_BASELINE_FEATURE_MISSING:' + id);
+  }
+
+  const i18nVerification = new Set(registry.profiles?.I18N?.verification ?? []);
+  for (const check of ['rtl-sample','mixed-bidi','locale-number-date-currency-unit','long-labels']) {
+    if (!i18nVerification.has(check)) throw new Error('UIUX_I18N_VERIFICATION_MISSING:' + check);
+  }
+
+  const responsiveVerification = new Set(registry.profiles?.RESPONSIVE?.verification ?? []);
+  for (const check of ['200%-zoom','400%-reflow','virtual-keyboard','portrait-landscape']) {
+    if (!responsiveVerification.has(check)) throw new Error('UIUX_RESPONSIVE_VERIFICATION_MISSING:' + check);
   }
 
   return {
