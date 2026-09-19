@@ -84,6 +84,10 @@ test('완료 결과는 민감할 수 있는 outcome.data를 버린 안전 receip
   const events=f.store.events(f.order.id).filter(event=>event.type==='CAPABILITY_RESULT');
   assert.equal(events.length,1);
   assert.equal(events[0].detail.request_id,'exec-1');
+  assert.equal(events[0].detail.workflow_id,'ai-core.capability-execution');
+  assert.equal(events[0].detail.workflow_version,'0.1.0');
+  assert.equal(events[0].detail.workflow_transition_id,'capability-execution.complete');
+  assert.equal(events[0].detail.workflow_event_type,'ai-core.capability-execution.resulted');
   assert.equal(events[0].detail.status,'SUCCEEDED');
 });
 
@@ -95,6 +99,10 @@ test('응답 유실 뒤 terminal receipt를 찾으면 재실행 없이 결과를
   assert.equal(recovered.status,'RESULT');assert.equal(recovered.reconciled,true);
   assert.equal(recovered.result.status,'SUCCEEDED');
   assert.deepEqual(recovered.result.artifact_refs,['tmp/과태료/실행기록-recovered.json']);
+  const event=f.store.events(f.order.id).filter(item=>item.type==='CAPABILITY_RESULT').at(-1);
+  assert.equal(event.detail.workflow_id,'ai-core.capability-execution');
+  assert.equal(event.detail.workflow_transition_id,'capability-execution.reconcile-terminal');
+  assert.equal(event.detail.workflow_event_type,'ai-core.capability-execution.reconciled');
 });
 
 test('terminal receipt가 없으면 UNKNOWN으로 닫고 절대 재실행 판정을 하지 않는다',async t=>{
