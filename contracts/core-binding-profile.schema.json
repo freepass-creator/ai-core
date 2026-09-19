@@ -35,7 +35,7 @@
     },
     "engine_bindings": {
       "type": "array",
-      "minItems": 1,
+      "minItems": 0,
       "items": {
         "type": "object",
         "additionalProperties": false,
@@ -145,5 +145,28 @@
         }
       }
     }
-  }
+  },
+  "allOf": [
+    {
+      "anyOf": [
+        {
+          "properties": {
+            "engine_bindings": {
+              "minItems": 1
+            }
+          }
+        },
+        {
+          "required": [
+            "service_bindings"
+          ],
+          "properties": {
+            "service_bindings": {
+              "minItems": 1
+            }
+          }
+        }
+      ]
+    }
+  ]
 }
