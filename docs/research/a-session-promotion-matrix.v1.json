@@ -1,0 +1,381 @@
+{
+  "schema_version": "1.0",
+  "status": "RESEARCH_ROUTING_INDEX_NOT_CANONICAL",
+  "observed_at": "2026-09-19",
+  "evidence_levels": [
+    "PROPOSED",
+    "PLATFORM_CONSENSUS",
+    "PROJECT_VERIFIED",
+    "CROSS_PROJECT_VERIFIED",
+    "COMMON_ADOPTED"
+  ],
+  "candidates": [
+    {
+      "id": "data.canonical-owner-writer",
+      "axis": "Data/SSOT",
+      "evidence_level": "CROSS_PROJECT_VERIFIED",
+      "projects": [
+        "freepasserp4",
+        "aiops"
+      ],
+      "target_session": "C",
+      "finding": "Canonical owner/writer와 downstream projection 분리",
+      "next_gate": "COMMON_ADOPTED_CANDIDATE"
+    },
+    {
+      "id": "data.stable-identity",
+      "axis": "Data/SSOT",
+      "evidence_level": "CROSS_PROJECT_VERIFIED",
+      "projects": [
+        "freepasserp4",
+        "freepass-sales",
+        "jpkerp5"
+      ],
+      "target_session": "C",
+      "finding": "행/표시명 대신 stable identity, 변경 이력/continuity",
+      "next_gate": "COMMON_ADOPTED_CANDIDATE"
+    },
+    {
+      "id": "data.snapshot-revision",
+      "axis": "Data/SSOT",
+      "evidence_level": "CROSS_PROJECT_VERIFIED",
+      "projects": [
+        "freepass-admin",
+        "freepasserp4",
+        "welrixtable"
+      ],
+      "target_session": "C",
+      "finding": "당시 본 값과 source/product revision 보존",
+      "next_gate": "COMMON_ADOPTED_CANDIDATE"
+    },
+    {
+      "id": "data.source-provenance",
+      "axis": "Data/SSOT",
+      "evidence_level": "CROSS_PROJECT_VERIFIED",
+      "projects": [
+        "freepasserp4",
+        "aiops"
+      ],
+      "target_session": "C",
+      "finding": "raw/evidence와 normalized value 연결",
+      "next_gate": "COMMON_ADOPTED_CANDIDATE"
+    },
+    {
+      "id": "data.current-vs-history",
+      "axis": "Data/SSOT",
+      "evidence_level": "CROSS_PROJECT_VERIFIED",
+      "projects": [
+        "freepass-admin",
+        "aiops",
+        "freepasserp4"
+      ],
+      "target_session": "C/D",
+      "finding": "현재 projection과 append-only history 분리",
+      "next_gate": "COMMON_ADOPTED_CANDIDATE"
+    },
+    {
+      "id": "engine.boundary",
+      "axis": "Engine/Adapter",
+      "evidence_level": "CROSS_PROJECT_VERIFIED",
+      "projects": [
+        "freepass-admin",
+        "freepasserp4",
+        "welrixtable"
+      ],
+      "target_session": "C",
+      "finding": "Engine meaning / Adapter translation / Connector transport",
+      "next_gate": "COMMON_ADOPTED_CANDIDATE"
+    },
+    {
+      "id": "engine.repository-idempotency",
+      "axis": "Engine/Adapter",
+      "evidence_level": "CROSS_PROJECT_VERIFIED",
+      "projects": [
+        "freepass-admin",
+        "freepass-sales"
+      ],
+      "target_session": "C",
+      "finding": "UI disabled가 아닌 storage/service 경계 중복 방지",
+      "next_gate": "COMMON_ADOPTED_CANDIDATE"
+    },
+    {
+      "id": "engine.fail-closed-provider",
+      "axis": "Engine/Adapter",
+      "evidence_level": "CROSS_PROJECT_VERIFIED",
+      "projects": [
+        "welrixtable",
+        "freepass-sales",
+        "freepasserp4"
+      ],
+      "target_session": "C",
+      "finding": "authoritative source 오류를 임의 fallback으로 숨기지 않음",
+      "next_gate": "COMMON_ADOPTED_CANDIDATE"
+    },
+    {
+      "id": "api.problem-details",
+      "axis": "API/Error",
+      "evidence_level": "PROPOSED",
+      "projects": [],
+      "target_session": "C",
+      "finding": "RFC 9457 호환 error envelope",
+      "next_gate": "RESEARCH_REQUIRED"
+    },
+    {
+      "id": "api.stable-error-code",
+      "axis": "API/Error",
+      "evidence_level": "PROJECT_VERIFIED",
+      "projects": [
+        "freepass-admin"
+      ],
+      "target_session": "C",
+      "finding": "machine code와 user message 분리; JPK는 문자열 반례",
+      "next_gate": "SECOND_PROJECT_REQUIRED"
+    },
+    {
+      "id": "api.idempotency-key",
+      "axis": "API/Error",
+      "evidence_level": "CROSS_PROJECT_VERIFIED",
+      "projects": [
+        "freepass-admin",
+        "freepasserp4"
+      ],
+      "target_session": "C",
+      "finding": "same key 재시도와 충돌 정책",
+      "next_gate": "COMMON_ADOPTED_CANDIDATE"
+    },
+    {
+      "id": "event.append-only-correction",
+      "axis": "Event",
+      "evidence_level": "CROSS_PROJECT_VERIFIED",
+      "projects": [
+        "aiops",
+        "freepass-admin",
+        "freepasserp4"
+      ],
+      "target_session": "C/D",
+      "finding": "이벤트 수정 대신 append/correction",
+      "next_gate": "COMMON_ADOPTED_CANDIDATE"
+    },
+    {
+      "id": "event.cloudevents-envelope",
+      "axis": "Event",
+      "evidence_level": "PROPOSED",
+      "projects": [],
+      "target_session": "C",
+      "finding": "CloudEvents 1.0.x 기반 transport envelope",
+      "next_gate": "RESEARCH_REQUIRED"
+    },
+    {
+      "id": "workflow.fact-vs-state",
+      "axis": "Workflow",
+      "evidence_level": "CROSS_PROJECT_VERIFIED",
+      "projects": [
+        "freepass-admin",
+        "jpkerp5",
+        "aiops"
+      ],
+      "target_session": "D",
+      "finding": "사실·상태·파생상태·표시상태 분리",
+      "next_gate": "COMMON_ADOPTED_CANDIDATE"
+    },
+    {
+      "id": "workflow.guard-vs-evidence",
+      "axis": "Workflow",
+      "evidence_level": "CROSS_PROJECT_VERIFIED",
+      "projects": [
+        "jpkerp5",
+        "aiops"
+      ],
+      "target_session": "D",
+      "finding": "전이 가능조건과 완료 증거 분리",
+      "next_gate": "COMMON_ADOPTED_CANDIDATE"
+    },
+    {
+      "id": "workflow.launch-vs-completion",
+      "axis": "Workflow",
+      "evidence_level": "CROSS_PROJECT_VERIFIED",
+      "projects": [
+        "freepass-sales",
+        "aiops"
+      ],
+      "target_session": "D",
+      "finding": "앱 실행/사람 주장/시스템 확인/완료 분리",
+      "next_gate": "COMMON_ADOPTED_CANDIDATE"
+    },
+    {
+      "id": "workflow.hold-resume",
+      "axis": "Workflow",
+      "evidence_level": "PROJECT_VERIFIED",
+      "projects": [
+        "aiops"
+      ],
+      "target_session": "D",
+      "finding": "보류는 완료가 아니며 resume_at 필요",
+      "next_gate": "SECOND_PROJECT_REQUIRED"
+    },
+    {
+      "id": "workflow.obligation-pair",
+      "axis": "Workflow",
+      "evidence_level": "PROJECT_VERIFIED",
+      "projects": [
+        "aiops"
+      ],
+      "target_session": "D",
+      "finding": "opening event + due + closing event = obligation",
+      "next_gate": "SECOND_PROJECT_REQUIRED"
+    },
+    {
+      "id": "security.role-org-scope-action",
+      "axis": "Security",
+      "evidence_level": "PROJECT_VERIFIED",
+      "projects": [
+        "freepasserp4"
+      ],
+      "target_session": "Security",
+      "finding": "role×org×scope×action authorization",
+      "next_gate": "SECOND_PROJECT_REQUIRED"
+    },
+    {
+      "id": "security.exact-subject-approval",
+      "axis": "Security",
+      "evidence_level": "PROJECT_VERIFIED",
+      "projects": [
+        "aiops"
+      ],
+      "target_session": "Security",
+      "finding": "plan/artifact/target/command digest에 승인 결속",
+      "next_gate": "SECOND_PROJECT_REQUIRED"
+    },
+    {
+      "id": "security.audit-pii-scrub",
+      "axis": "Security",
+      "evidence_level": "PROJECT_VERIFIED",
+      "projects": [
+        "freepasserp4"
+      ],
+      "target_session": "Security",
+      "finding": "감사로그 PII 값 복제 금지/마스킹",
+      "next_gate": "SECOND_PROJECT_REQUIRED"
+    },
+    {
+      "id": "security.rules-negative-tests",
+      "axis": "Security",
+      "evidence_level": "CROSS_PROJECT_VERIFIED",
+      "projects": [
+        "freepasserp4",
+        "freepass-sales"
+      ],
+      "target_session": "Security/QA",
+      "finding": "allow뿐 아니라 deny/overwrite/delete 반례검증",
+      "next_gate": "COMMON_ADOPTED_CANDIDATE"
+    },
+    {
+      "id": "qa.negative-control",
+      "axis": "Observability/QA",
+      "evidence_level": "CROSS_PROJECT_VERIFIED",
+      "projects": [
+        "freepasserp4",
+        "freepass-sales"
+      ],
+      "target_session": "QA",
+      "finding": "검사기가 known-bad를 실제로 실패시키는지 검증",
+      "next_gate": "COMMON_ADOPTED_CANDIDATE"
+    },
+    {
+      "id": "qa.proof-levels",
+      "axis": "Observability/QA",
+      "evidence_level": "CROSS_PROJECT_VERIFIED",
+      "projects": [
+        "freepasserp4",
+        "freepass-admin",
+        "freepass-sales"
+      ],
+      "target_session": "QA",
+      "finding": "unit/emulator/preview/production evidence를 구분",
+      "next_gate": "COMMON_ADOPTED_CANDIDATE"
+    },
+    {
+      "id": "obs.freshness-first-class",
+      "axis": "Observability/QA",
+      "evidence_level": "CROSS_PROJECT_VERIFIED",
+      "projects": [
+        "freepasserp4",
+        "aiops"
+      ],
+      "target_session": "QA",
+      "finding": "존재와 최신성을 분리, observed/refreshed/stale",
+      "next_gate": "COMMON_ADOPTED_CANDIDATE"
+    },
+    {
+      "id": "obs.otel-semantics",
+      "axis": "Observability/QA",
+      "evidence_level": "PROPOSED",
+      "projects": [],
+      "target_session": "QA",
+      "finding": "OpenTelemetry semantic conventions adoption",
+      "next_gate": "RESEARCH_REQUIRED"
+    },
+    {
+      "id": "release.production-revision-proof",
+      "axis": "Build/Deploy",
+      "evidence_level": "PROJECT_VERIFIED",
+      "projects": [
+        "freepasserp4"
+      ],
+      "target_session": "Governance",
+      "finding": "main/deploy READY와 production serving revision 분리",
+      "next_gate": "SECOND_PROJECT_REQUIRED"
+    },
+    {
+      "id": "governance.capability-pin",
+      "axis": "Governance",
+      "evidence_level": "CROSS_PROJECT_VERIFIED",
+      "projects": [
+        "ai-core",
+        "freepasserp4",
+        "freepass-admin"
+      ],
+      "target_session": "Governance",
+      "finding": "공통자산 latest 자동추종 금지, revision/version pin",
+      "next_gate": "COMMON_ADOPTED_CANDIDATE"
+    },
+    {
+      "id": "governance.checker-manifest",
+      "axis": "Governance",
+      "evidence_level": "PROJECT_VERIFIED",
+      "projects": [
+        "freepasserp4"
+      ],
+      "target_session": "Governance/QA",
+      "finding": "CI required/manual checker inventory와 workflow 연결 검증",
+      "next_gate": "SECOND_PROJECT_REQUIRED"
+    },
+    {
+      "id": "governance.semver",
+      "axis": "Governance",
+      "evidence_level": "PLATFORM_CONSENSUS",
+      "projects": [],
+      "target_session": "Governance",
+      "finding": "공개 공통 capability/package version에 SemVer 2.0.0",
+      "next_gate": "PILOT_REQUIRED"
+    },
+    {
+      "id": "governance.slsa-provenance",
+      "axis": "Governance",
+      "evidence_level": "PROPOSED",
+      "projects": [],
+      "target_session": "Governance/Security",
+      "finding": "SLSA 1.2 기반 build/source provenance 단계적 채택",
+      "next_gate": "RISK_PROFILE_PILOT"
+    },
+    {
+      "id": "governance.sbom",
+      "axis": "Governance",
+      "evidence_level": "PROPOSED",
+      "projects": [],
+      "target_session": "Governance/Security",
+      "finding": "CycloneDX/SPDX SBOM profile",
+      "next_gate": "RISK_PROFILE_PILOT"
+    }
+  ]
+}
