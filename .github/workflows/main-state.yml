@@ -26,3 +26,4 @@ jobs:
       - run: npm run direction:validate
       - run: npm run workmap:validate
       - run: npm run workflow:validate
+      - run: npm run workflow:bridge:validate
