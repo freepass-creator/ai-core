@@ -95,33 +95,28 @@ export function resolveWorkSourcePaths(workSources, { ordersDbPath = null } = {}
  * Returns null when nothing is configured, so the caller keeps the existing
  * "socket is empty" answer instead of this module inventing a different one.
  */
-export function createWorkProjectionProvider({ store, workSources, ordersDbPath = null }) {
+export function createWorkSourceContextProvider({ store, workSources, ordersDbPath = null }) {
   const resolved = resolveWorkSourcePaths(workSources, { ordersDbPath });
   if (!resolved) return null;
   if (resolved.missing) {
     const reason = `WORK_SOURCE_UNCONFIGURED_${resolved.missing.toUpperCase()}`;
-    return async () => hold(reason);
+    return async () => { throw new Error(reason); };
   }
   const { paths } = resolved;
 
-  // Each read is attempted per request: an operator may place a source while the
-  // server runs, and a source that disappears must stop producing answers.
   const readJson = async (key) => JSON.parse(await readFile(
     key === 'directions' ? resolve(repoRoot, 방향파일) : paths[key], 'utf8'));
 
-  return async function readWorkProjection(orderId) {
+  return async function readTrustedWorkContext(orderId) {
     let registry, snapshot, mappings;
     if (paths.mappings === null) {
-      // Read from the order store's own database. MAPPING_INVENTORY_ABSENT means
-      // nothing has ever produced a binding — which is "I do not know", not "this
-      // order has none". Reporting it as an empty list would make the adapter
-      // answer UNLINKED with total confidence and no evidence.
       try { mappings = readOrderMappingInventory(store.db); }
       catch (error) {
-        return hold(error?.message === 'MAPPING_INVENTORY_ABSENT'
+        throw new Error(error?.message === 'MAPPING_INVENTORY_ABSENT'
           ? 'WORK_SOURCE_MISSING_MAPPINGS' : 'WORK_SOURCE_UNREADABLE_MAPPINGS');
       }
     }
+
     for (const key of paths.mappings === null ? ['registry', 'snapshot'] : ['registry', 'snapshot', 'mappings']) {
       try {
         const value = await readJson(key);
@@ -129,56 +124,51 @@ export function createWorkProjectionProvider({ store, workSources, ordersDbPath 
         else if (key === 'snapshot') snapshot = value;
         else mappings = value;
       } catch (error) {
-        // ENOENT and a malformed file are different facts; keep them distinct.
-        return hold(error?.code === 'ENOENT'
+        throw new Error(error?.code === 'ENOENT'
           ? `WORK_SOURCE_MISSING_${key.toUpperCase()}`
           : `WORK_SOURCE_UNREADABLE_${key.toUpperCase()}`);
       }
     }
-    // ★The adapter reports UNLINKED from an inventory with no matching row. A
-    // non-array here would otherwise be coerced into that same silence.
-    if (!Array.isArray(mappings)) return hold('WORK_SOURCE_UNREADABLE_MAPPINGS');
+    if (!Array.isArray(mappings)) throw new Error('WORK_SOURCE_UNREADABLE_MAPPINGS');
 
     const readLedgerText = () => readFile(paths.ledger, 'utf8');
     let 원장글 = '';
     try { 원장글 = await readLedgerText(); }
     catch (error) {
-      return hold(error?.code === 'ENOENT' ? 'WORK_SOURCE_MISSING_LEDGER' : 'WORK_SOURCE_UNREADABLE_LEDGER');
+      throw new Error(error?.code === 'ENOENT' ? 'WORK_SOURCE_MISSING_LEDGER' : 'WORK_SOURCE_UNREADABLE_LEDGER');
     }
 
-    /** ★프로젝트 head 는 «더 새로 본» 관측을 쓴다 — 2026-09-18
-     *  work:observe 가 원장 옆에 둔 원격 관측이 등록부보다 새것이면 그 head 를 입힌다.
-     *  없으면 예전과 같다(등록부 그대로). 깨져 있으면 모르는 척 넘기지 않고 선다. */
     let 관측 = null;
     try { 관측 = JSON.parse(await readFile(관측파일자리(paths.ledger), 'utf8')); }
-    catch (error) { if (error?.code !== 'ENOENT') return hold('WORK_SOURCE_UNREADABLE_LANDED'); }
+    catch (error) { if (error?.code !== 'ENOENT') throw new Error('WORK_SOURCE_UNREADABLE_LANDED'); }
     registry = 새head입히기(registry, 관측).registry;
 
-    /** ★★방향을 «여기서» 입힌다 — 2026-09-17
-     *
-     *  대표: 「선언하기 전에는 멈춘다가 아니고 네가 자동으로 흘러가야지.
-     *        그 흘러가는 방향을 내가 설정하는 거고」
-     *
-     *  컨트롤타워는 intent·약정·허가가 채워져야 일을 보낸다. 그걸 «항목마다 사람이»
-     *  선언하면 관문 모델이 되고, 실제로 모든 항목이 영원히 HOLD 였다.
-     *  방향은 그 값을 «갈래마다 한 번» 세운 대표의 결정에서 공급한다.
-     *
-     *  ★관문은 그대로다. 여기서 하는 일은 «입력을 채우는 것» 뿐이고, 판정은 아래
-     *    runControlTower 가 예전과 똑같이 한다.
-     *  ★방향이 없거나(파일 없음) 안 맞으면 항목은 «손대지 않는다» — 그러면 타워가
-     *    예전처럼 세운다. 즉 이 줄을 넣어도 «방향이 서기 전까지는 아무것도 안 바뀐다».
-     *  ★어느 방향이 채웠는지를 쓰지 않고 버린다 — 그건 항목에 남는 authorized_by 가
-     *    이미 들고 있다(direction.mjs 가 `<방향id>/<세운이>` 로 박는다). */
     const 방향들 = await readJson('directions').then((d) => d?.방향 ?? []).catch(() => []);
     const 입힌스냅샷 = 방향들.length
-      ? { ...snapshot, items: (snapshot?.items ?? []).map((항목) => 방향적용({ 항목, 방향들, asOf: snapshot?.as_of, 승인확인: 원장승인확인(원장글) }).항목) }
+      ? { ...snapshot, items: (snapshot?.items ?? []).map((항목) => 방향적용({
+          항목, 방향들, asOf: snapshot?.as_of, 승인확인: 원장승인확인(원장글),
+        }).항목) }
       : snapshot;
 
-    const adapter = createOrderWorkAdapter({
-      readContext: createOrderWorkContextReader({ store, registry, snapshot: 입힌스냅샷, mappings, readLedgerText }),
-      verifyLedgerText,
-      runControlTower,
+    const reader = createOrderWorkContextReader({
+      store, registry, snapshot: 입힌스냅샷, mappings, readLedgerText,
     });
+    return reader(orderId);
+  };
+}
+
+/**
+ * createWorkProjectionProvider({ store, workSources })
+ *   -> async readWorkProjection(orderId)
+ *
+ * Projection과 authority verifier가 같은 trusted context provider를 공유한다.
+ * 운영 source를 두 번 구현하지 않는다.
+ */
+export function createWorkProjectionProvider({ store, workSources, ordersDbPath = null }) {
+  const readContext = createWorkSourceContextProvider({ store, workSources, ordersDbPath });
+  if (!readContext) return null;
+  const adapter = createOrderWorkAdapter({ readContext, verifyLedgerText, runControlTower });
+  return async function readWorkProjection(orderId) {
     return adapter.readWorkProjection(orderId);
   };
 }
