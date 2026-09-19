@@ -113,8 +113,8 @@ test('같은 실행 requestId에 다른 input을 보내면 중복 실행 대신 
   const first=await f.post(path,{requestId:'exec-conflict',perform:true,input:{a:1}});
   assert.equal(first.status,200);
   const second=await f.post(path,{requestId:'exec-conflict',perform:true,input:{a:2}});
-  assert.equal(second.status,500);
+  assert.equal(second.status,409);
   const body=await second.json();
-  assert.equal(body.error,'INTERNAL_ERROR');
+  assert.equal(body.error,'CAPABILITY_EXECUTION_IDEMPOTENCY_CONFLICT');
   assert.equal(f.runs,1);
 });
