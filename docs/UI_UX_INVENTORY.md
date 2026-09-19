@@ -1,4 +1,8 @@
-# UI/UX Common Inventory v1.0
+# UI/UX Common Inventory v1.1
+
+**Canonical common-feature SSOT:** `registry/ui-ux-features.json` validated by `contracts/ui-ux-feature-registry.schema.json` and `npm run uiux:validate`.
+
+This document is an inventory/readable summary. If it conflicts with the registry or `docs/SCREEN_DESIGN_STANDARD.md`, the registry plus the normative screen standard wins.
 
 This inventory separates reusable interaction contracts from product-specific visual choices. A product reuses behavior, semantics, states and verification rules while keeping its own brand, density and workflow priorities.
 
@@ -48,3 +52,17 @@ Brand colors, corner shape, content density, icon family, tone of voice, domain 
 4. Dialog and confirmation.
 5. Draft, save, retry and leave-while-saving workflow.
 6. Automated consumer verification and per-product exception registry.
+
+
+## Registry adoption gate
+
+A reusable function is not complete merely because a component exists. Before reuse across products it must have:
+
+- a stable feature ID in `registry/ui-ux-features.json`;
+- required states and failure behavior;
+- keyboard/touch/accessibility verification;
+- mobile/desktop behavior;
+- localization/direction behavior where applicable;
+- engine or adapter binding when runtime execution is involved.
+
+Product-specific visual decisions stay in product profiles. Common interaction semantics do not fork locally.
