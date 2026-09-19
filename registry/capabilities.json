@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "observed_at": "2026-09-19T03:45:00Z",
+  "observed_at": "2026-09-19T03:42:00Z",
   "capabilities": [
     {
       "id": "core.brief",
@@ -543,7 +543,7 @@
     {
       "id": "finance.cash-status",
       "title": "자금 현황/자금일보",
-      "status": "HOLD",
+      "status": "ACTIVE",
       "domains": [
         "finance"
       ],
@@ -552,16 +552,25 @@
       ],
       "mode": "READ_ONLY",
       "priority": 82,
-      "inputs": [],
+      "inputs": [
+        {
+          "name": "days",
+          "required": false
+        }
+      ],
       "required_scopes": [],
       "walls": [],
       "result_contract": "ai-core-work-result/v1",
-      "hold_reason": "AIOps 자금 정본 reader를 안전한 비식별 결과 계약으로 아직 노출하지 않았다."
+      "adapter": {
+        "kind": "PROJECT_MODULE",
+        "entrypoint": "lib/ai-core-finance-adapters.mjs",
+        "export": "aiCoreCashStatus"
+      }
     },
     {
       "id": "finance.receivables",
       "title": "미수/수납 대조",
-      "status": "HOLD",
+      "status": "ACTIVE",
       "domains": [
         "finance"
       ],
@@ -574,7 +583,11 @@
       "required_scopes": [],
       "walls": [],
       "result_contract": "ai-core-work-result/v1",
-      "hold_reason": "미수/수납 정본 대조 reader와 write boundary를 capability로 아직 분리하지 않았다."
+      "adapter": {
+        "kind": "PROJECT_MODULE",
+        "entrypoint": "lib/ai-core-finance-adapters.mjs",
+        "export": "aiCoreReceivables"
+      }
     },
     {
       "id": "operations.insurance",

@@ -79,12 +79,12 @@
     {
       "query": "자금 현황 확인해",
       "expected_work_type_id": "cash-status",
-      "expected_status": "HOLD_CAPABILITY_HOLD"
+      "expected_status": "RESOLVED"
     },
     {
       "query": "미수 확인해",
       "expected_work_type_id": "receivables",
-      "expected_status": "HOLD_CAPABILITY_HOLD"
+      "expected_status": "RESOLVED"
     },
     {
       "query": "보험 업무 봐줘",
