@@ -27,7 +27,7 @@ function clonedClient(dir, name, ledgerId) {
     'src/orders/client.mjs',
     'src/orders/store.mjs',
     'src/workflow/engine.mjs',
-    'src/workflow/order-task-shadow.mjs',
+    'src/workflow/order-task-runtime.mjs',
     'src/workflow/registry.mjs',
     'registry/workflows.json',
   ]) {
