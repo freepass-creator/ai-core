@@ -3,6 +3,10 @@
 > User-confirmed operating direction — 2026-09-19 KST  
 > This directive is a cross-session mission boundary for AI Core. It does not replace project SSOT, authority gates, or revision-bound evidence.
 
+## Current Order
+
+Before broadening into other repositories, execute [AI Core Phase 1 Closeout Order](AI_CORE_PHASE1_CLOSEOUT_ORDER_2026-09-19.md). A/B/C/D should perform gap-to-exit review and finish only the minimum blockers required for `BASELINE_LOCKED`; non-blocking enhancements move to Phase 2.
+
 ## 0. Core intent
 
 AI Core work is **not** a documentation clean-up project and **not** only a reverse-import exercise.
