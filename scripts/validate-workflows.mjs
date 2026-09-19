@@ -45,6 +45,15 @@ export function validateWorkflowRegistry(registry) {
 
   registry.workflows.forEach((workflow, wi) => {
     const base = `/workflows/${wi}`;
+    if (workflow.adoption_status === 'SHADOW' && !workflow.source_authority) {
+      errors.push(error('SHADOW_SOURCE_AUTHORITY_REQUIRED', base));
+    }
+    if (workflow.source_authority) {
+      const paths = workflow.source_authority.files.map(item => item.path);
+      for (const pathValue of duplicates(paths)) {
+        errors.push(error('SHADOW_SOURCE_PATH_DUPLICATE', `${base}/source_authority/files`, { path: pathValue }));
+      }
+    }
     const axisIds = workflow.state_axes.map(axis => axis.axis_id);
     for (const id of duplicates(axisIds)) errors.push(error('AXIS_ID_DUPLICATE', `${base}/state_axes`, { axis_id: id }));
 
@@ -125,6 +134,11 @@ export function validateWorkflowRegistry(registry) {
       if (transition.purpose === 'RESUME') {
         const sources = transition.from.map(id => axis.states.get(id)?.kind);
         if (!sources.every(kind => kind === 'HOLD')) errors.push(error('RESUME_SOURCE_MUST_BE_HOLD', path));
+      }
+      if (transition.purpose === 'REOBSERVE') {
+        if (transition.from.length !== 1 || transition.from[0] !== transition.to) {
+          errors.push(error('REOBSERVE_MUST_PRESERVE_STATE', path));
+        }
       }
 
       for (const stateId of transition.from) {
