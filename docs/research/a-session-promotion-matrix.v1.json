@@ -452,6 +452,18 @@
       "finding": "served build identity를 장시간 실행 중인 client가 주기/visibility 복귀 시점에 대조해 stale-client 상태를 감지하고 dirty/risk에 맞는 update UX로 전환",
       "next_gate": "COMMON_ADOPTED_CANDIDATE",
       "evidence_note": "FreePassERP3 uses a generated static build-version baseline with polling/visibility drift detection. FreePassERP4 independently compares a client build stamp to a no-store server deployment stamp, checks focus/online/visibility/interval, defers reload while actively editing, and prevents same-stamp reload loops. FreePass Sales service-worker cache versioning is adjacent evidence only."
+    },
+    {
+      "id": "workflow.restartable-rollback-run",
+      "axis": "Workflow/Rollback",
+      "evidence_level": "PROJECT_VERIFIED",
+      "projects": [
+        "freepasserp4"
+      ],
+      "target_session": "D",
+      "finding": "forward run의 before/after snapshot·digest·revision을 보존하고 current-state CAS와 domain guards를 재검증한 뒤 rollback을 persisted phases로 수행해 중간 실패 시 재개 가능한 run rollback contract",
+      "next_gate": "SECOND_PROJECT_REQUIRED",
+      "evidence_note": "ERP4 IronRentcar rollback stores exact pre/post images and digests, requires explicit revision/digest confirmation, blocks concurrent/locked target drift, persists rollback_products_restored before partner/control restore, resumes from that state, audits each phase and prevents double rollback."
     }
   ]
 }
