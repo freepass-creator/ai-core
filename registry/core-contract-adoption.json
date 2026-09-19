@@ -7,7 +7,7 @@
       "repository": "freepass-creator/freepasserp4",
       "source_ref": "main",
       "subject_revision": "2d9fd07075aae7d6d64687fabbf61126e166c34c",
-      "phase": "INVENTORY",
+      "phase": "SHADOW",
       "assessments": [
         {
           "contract_id": "core.types.v1",
@@ -123,12 +123,16 @@
         {
           "contract_id": "core.source-registry.v1",
           "classification": "CORE_MATCH",
-          "binding_state": "NONE",
+          "binding_state": "SHADOW",
           "priority": "P0",
           "evidence_refs": [
             "freepass-creator/freepasserp4@2d9fd07075aae7d6d64687fabbf61126e166c34c:docs/ERP5-FIRESTORE-SSOT.md"
           ],
-          "action": "Encode the documented single ERP5 owner/writer, source priorities, freshness and no-silent-fallback rules."
+          "action": "Encode the documented single ERP5 owner/writer, source priorities, freshness and no-silent-fallback rules.",
+          "artifact_refs": [
+            "registry/adoption/freepasserp4-products.source-registry.json",
+            "test/core-contract-cross-project-adoption.test.mjs"
+          ]
         },
         {
           "contract_id": "core.snapshot.v1",
@@ -764,7 +768,7 @@
       "repository": "freepass-creator/freepass-estimate",
       "source_ref": "work/ui-baseline",
       "subject_revision": "8df0fdfe5ce72ffbc17b3adffcc881c37164ed3a",
-      "phase": "INVENTORY",
+      "phase": "SHADOW",
       "assessments": [
         {
           "contract_id": "core.types.v1",
@@ -796,7 +800,11 @@
           "evidence_refs": [
             "freepass-creator/freepass-estimate@8df0fdfe5ce72ffbc17b3adffcc881c37164ed3a:apps/new/src/lib/quote/execution-result.js"
           ],
-          "action": "Quote execution SUCCEEDED/HOLD/FAILED with provider/revision/evidence closely matches Core adapter result; add shadow binding."
+          "action": "Quote execution SUCCEEDED/HOLD/FAILED with provider/revision/evidence closely matches Core adapter result; add shadow binding.",
+          "artifact_refs": [
+            "registry/adoption/freepass-estimate-quote-execution.fixture.json",
+            "test/core-contract-cross-project-adoption.test.mjs"
+          ]
         },
         {
           "contract_id": "core.api-page.v1",
