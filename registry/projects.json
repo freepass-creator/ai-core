@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "observed_at": "2026-09-19T10:32:15Z",
+  "observed_at": "2026-09-19T10:35:12Z",
   "projects": [
     {
       "project_id": "ai-core",
@@ -197,13 +197,13 @@
       "repository": "freepass-creator/freepass-admin",
       "default_branch": "main",
       "local_path": null,
-      "head_revision": "a62d7c06cc257c9df167f6869bf3921d7eaec35b",
+      "head_revision": "fb85037969a6c2f4596350b9c66303025be6f19d",
       "authoritative_sources": [
         {
           "kind": "GIT",
           "ref": "freepass-creator/freepass-admin",
-          "revision": "a62d7c06cc257c9df167f6869bf3921d7eaec35b",
-          "observed_at": "2026-09-19T10:32:15Z"
+          "revision": "fb85037969a6c2f4596350b9c66303025be6f19d",
+          "observed_at": "2026-09-19T10:35:12Z"
         }
       ],
       "commands": {
@@ -218,7 +218,7 @@
         "production-deployment"
       ],
       "known_blockers": [
-        "Verified backend baseline at f8eb1bfd8337aad4a12948f18e668e3ee19ad3fc: npm ci, typecheck, test and build PASS in GitHub Actions run 35437615280.",
+        "Verified backend code baseline at 3f1812c6968f57494c1e8204e7a67d54e1c1f3ea: npm ci, typecheck, test and build PASS in GitHub Actions run 35437766677. Current repository head adds only control/evidence documents after that code baseline.",
         "Production persistence adapter is not implemented/verified; current file repository proves atomic semantics only inside one Node process.",
         "Production auth/permission binding is not implemented/verified; ActorProvider contract exists but no approved production adapter is bound.",
         "Production audit retention/sink, runtime smoke, deployment target and rollback remain unverified.",
