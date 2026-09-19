@@ -3,7 +3,7 @@ import { createHash, randomUUID } from 'node:crypto';
 import { mkdirSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createOrderTaskShadow } from '../workflow/order-task-shadow.mjs';
+import { createOrderTaskRuntime } from '../workflow/order-task-runtime.mjs';
 import { getWorkflow } from '../workflow/registry.mjs';
 
 export const defaultDb = fileURLToPath(new URL('../../.local/orders.sqlite', import.meta.url));
@@ -82,7 +82,7 @@ export class OrderStore {
     need(onRequirementSaved === null || typeof onRequirementSaved === 'function', 'INVALID_REQUIREMENT_HOOK', '호스트 연결 훅을 확인하세요.');
     this.#onRequirementSaved = onRequirementSaved;
     this.now = now; this.leaseMs = leaseMs;
-    this.taskWorkflow = createOrderTaskShadow(getWorkflow('ai-core.order-task-lifecycle'), {
+    this.taskWorkflow = createOrderTaskRuntime(getWorkflow('ai-core.order-task-lifecycle'), {
       actorIds: actors.map(item => item.id),
       now: () => this.now(),
     });
