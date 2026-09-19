@@ -225,3 +225,37 @@ AI Core가 일부 중앙 문서만 앞서가고 실제 프로젝트 저장소의
 - `freepasspartner`: inspected as outreach/proposal/queue tooling; no B/C/D common mechanism met the current promotion threshold.
 - `billincar`: useful as a derived deployment/product variant, but not counted as independent evidence from JPKERP lineage.
 - `rentsafe`: useful historical evidence, but Chakhandeal lineage overlap requires independence review before cross-project counting.
+
+
+## A-session continuation — TeamJPK / Gimpo / early ERP lineage
+
+### TeamJPK → B accessibility backport
+- Current head: `b26cd298f07023dab38ee33b7de7ce95528df29b`.
+- Current viewport still disables user zoom with `maximum-scale=1, user-scalable=no`; commit `dffbc055...` explicitly locked pinch zoom.
+- Continuous/decorative animation also lacks reduced-motion handling.
+- Direction: **Core > Project**; migrate to zoom-enabled responsive behavior + reduced-motion profile.
+
+### Gukmincha Gimpo → D supporting evidence
+- Current head: `0e32380725cc2d98c93b5462b282ade52047c45a`.
+- Independently reinforces `workflow.fact-vs-state`.
+- Stall status is derived from Lease + Billing + date + config facts; the Map/index is a read projection, not canonical truth.
+- Candidate stays `CROSS_PROJECT_VERIFIED`; this adds a distinct property/parking domain.
+
+### JPKERP → D/C backport gap
+- Current head: `e6de03adbac98a33da7d844fb8fb197ff885e7cb`.
+- Event save persists first; downstream payment reconciliation exceptions are swallowed.
+- Reconciliation updates multiple billing rows sequentially and writes event back-reference last, so partial financial state can remain without a surfaced result.
+- Direction: **Core > Project**.
+- Migration: explicit reconciliation lifecycle/result + idempotent retry + transaction/outbox/compensation + failure-injection tests.
+- Negative evidence for `workflow.compensated-multiwrite`; not positive second-project evidence.
+
+### Early ERP lineage independence
+- `jpkerp2` event modules inspected here are byte-identical to `jpkerp`:
+  - `lib/event-meta.ts@5c0c9185...`
+  - `lib/firebase/events.ts@943e0fff...`
+- Therefore JPKERP/JPKERP2 are not counted as two independent projects for those patterns.
+
+### No promotion this pass
+- `freeepasserp2`, `freepasserp`, and `ci_center` were scanned for deltas/preserved patterns.
+- Their observed useful UI/component/catalog/brand patterns are already represented by newer project evidence or do not meet current B/C/D promotion gates.
+- `welrix-proposal` and `mewcar-jbwoori-proposal` remain document/proposal-specific evidence; no new B/C/D common contract was promoted in this pass.
