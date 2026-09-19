@@ -250,14 +250,22 @@ export function startServer({
           const capability = config.capabilityRegistry.capabilities.find(item => item.id === plan.capability_id);
           if (!capability) return json(409, { status:'HOLD', reason:'CAPABILITY_NOT_REGISTERED' });
 
-          const reserved = await execution.reserve({
-            requestId:data.requestId,
-            orderId:order.id,
-            workId,
-            capability,
-            input:data.input ?? {},
-            perform:true,
-          });
+          let reserved;
+          try {
+            reserved = await execution.reserve({
+              requestId:data.requestId,
+              orderId:order.id,
+              workId,
+              capability,
+              input:data.input ?? {},
+              perform:true,
+            });
+          } catch (error) {
+            if (error?.message === 'CAPABILITY_EXECUTION_IDEMPOTENCY_CONFLICT') {
+              throw new OrderError('CAPABILITY_EXECUTION_IDEMPOTENCY_CONFLICT', '같은 실행 requestId에 다른 내용이 들어왔습니다.', 409);
+            }
+            throw error;
+          }
           if (reserved.replay) {
             if (reserved.status === 'RESULT' && reserved.result) return json(200, reserved.result);
             const reconciled = await execution.reconcile(data.requestId, capability);
