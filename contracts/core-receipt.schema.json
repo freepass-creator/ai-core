@@ -191,6 +191,19 @@
         }
       },
       "description": "Observed execution/delivery milestones. Milestone names do not define business workflow state."
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": {
+        "type": [
+          "string",
+          "number",
+          "integer",
+          "boolean",
+          "null"
+        ]
+      },
+      "description": "Optional operation metrics. Project-specific raw payloads must not be copied here; only compact non-sensitive measurements."
     }
   }
 }
