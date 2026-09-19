@@ -145,6 +145,34 @@
       "path": "contracts/core-data-pipeline.schema.json",
       "status": "CANONICAL",
       "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
+    },
+    {
+      "id": "core.contract-registry.v1",
+      "domain": "DATA",
+      "path": "contracts/core-contract-registry.schema.json",
+      "status": "CANONICAL",
+      "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
+    },
+    {
+      "id": "core.error-code-registry.v1",
+      "domain": "ERROR",
+      "path": "contracts/core-error-code-registry.schema.json",
+      "status": "CANONICAL",
+      "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
+    },
+    {
+      "id": "core.event-type-registry.v1",
+      "domain": "EVENT",
+      "path": "contracts/core-event-type-registry.schema.json",
+      "status": "CANONICAL",
+      "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
+    },
+    {
+      "id": "core.code-set.v1",
+      "domain": "CODE",
+      "path": "contracts/core-code-set.schema.json",
+      "status": "CANONICAL",
+      "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
     }
   ]
 }
