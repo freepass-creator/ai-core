@@ -35,9 +35,10 @@ export function validateDataPipeline(pipeline){
   need(Array.isArray(pipeline.stages)&&pipeline.stages.length>0,'PIPELINE_STAGES_REQUIRED');
   need(new Set(pipeline.stages).size===pipeline.stages.length,'PIPELINE_STAGE_DUPLICATE');
   need(pipeline.receipt_required===true,'PIPELINE_RECEIPT_REQUIRED');
-  need(['NOT_APPLICABLE','FAIL_BEFORE_COMMIT','ROLLBACK_REQUIRED','ALLOW_PARTIAL_WITH_RECEIPT'].includes(pipeline.partial_failure_policy),'PIPELINE_PARTIAL_FAILURE_POLICY_INVALID');
-  if(pipeline.commit_policy==='BEST_EFFORT_BATCH') need(pipeline.partial_failure_policy==='ALLOW_PARTIAL_WITH_RECEIPT','BEST_EFFORT_BATCH_REQUIRES_PARTIAL_RECEIPT');
-  if(['ATOMIC','TRANSACTIONAL_BATCH'].includes(pipeline.commit_policy)) need(pipeline.partial_failure_policy!=='ALLOW_PARTIAL_WITH_RECEIPT','ATOMIC_PIPELINE_CANNOT_ALLOW_PARTIAL');
+  const partialFailurePolicy=pipeline.partial_failure_policy??'NOT_APPLICABLE';
+  need(['NOT_APPLICABLE','FAIL_BEFORE_COMMIT','ROLLBACK_REQUIRED','ALLOW_PARTIAL_WITH_RECEIPT'].includes(partialFailurePolicy),'PIPELINE_PARTIAL_FAILURE_POLICY_INVALID');
+  if(pipeline.commit_policy==='BEST_EFFORT_BATCH') need(partialFailurePolicy==='ALLOW_PARTIAL_WITH_RECEIPT','BEST_EFFORT_BATCH_REQUIRES_PARTIAL_RECEIPT');
+  if(['ATOMIC','TRANSACTIONAL_BATCH'].includes(pipeline.commit_policy)) need(partialFailurePolicy!=='ALLOW_PARTIAL_WITH_RECEIPT','ATOMIC_PIPELINE_CANNOT_ALLOW_PARTIAL');
 
   if(pipeline.direction==='IMPORT'){
     for(const stage of ['RAW_SNAPSHOT','PARSE','NORMALIZE','VALIDATE','COMMIT']){
