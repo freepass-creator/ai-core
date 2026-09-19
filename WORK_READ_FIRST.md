@@ -52,6 +52,12 @@ AI 이름보다 최신 사용자 결정, 현재 프로젝트 정본, revision-bo
 
 공통 기능은 본사로 정리하되 고유 제품·Git·데이터 SSOT·브랜드·배포는 독립 유지한다. 비상 기능 `EMG-P0`와는 별도 작업이며, 운영 전환·삭제·권한 변경은 이 인계만으로 허용되지 않는다.
 
+## UI/UX 공통 기능 규격을 작업하는 경우
+
+공통 UI/UX는 `docs/SCREEN_DESIGN_STANDARD.md` + `registry/ui-ux-features.json`을 먼저 읽는다. Registry가 기능별 상태·행동·검증 정본이고 `contracts/ui-ux-feature-registry.schema.json`이 기계 계약이다. `npm run uiux:validate`가 통과하지 않는 공통 기능 규격 변경은 채택하지 않는다.
+
+프로젝트별 브랜드·밀도·아이콘·도메인 문구는 제품 profile이 소유하지만, 공통 feature ID의 상태명·완료 의미·실패/재시도·접근성·엔진/어댑터 경계는 로컬에서 임의 분기하지 않는다. 새 공통 기능은 먼저 Registry에 등록하거나 만료가 있는 예외를 남긴다.
+
 ## 실제 회사 업무를 AI Core로 처리하는 경우
 
 [AI Core 실제 업무 운영 플레이북](docs/AI_CORE_OPERATING_PLAYBOOK.md)을 읽는다. 사용자의 자연어 오더를 `업무 의미 → 프로젝트/정본 → capability → 실행자 → 승인 경계 → 검증 → 결과/후속`으로 연결한다.
