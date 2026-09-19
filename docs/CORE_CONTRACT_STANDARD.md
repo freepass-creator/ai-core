@@ -200,3 +200,83 @@ breaking change는 새 `/vN` contract를 만든다.
 - `test/core-contract-standard.test.mjs`
 
 A 세션의 cross-repo 문서는 evidence input이며 canonical authority가 아니다. C가 근거 revision을 확인하고 일반화한 뒤 위 artifact로 승격해야 정본이 된다.
+
+
+## 11. SSOT Source Priority
+
+SSOT를 선언하는 프로젝트는 `core-source-registry/v1`을 사용한다.
+
+필수 의미:
+- subject type별 canonical owner / writer
+- source role
+- 명시적 priority
+- authoritative 여부
+- freshness policy
+- stale 시 HOLD / REJECT / warning 정책
+- fallback policy
+
+**silent fallback은 금지**한다. 복구 소스를 쓰려면 명시적 activation과 evidence가 필요하다.
+
+## 12. Snapshot / Request / Query
+
+- `core-snapshot/v1`: 당시 subject revision, source revision, payload digest를 고정한다.
+- `core-request-context/v1`: request/correlation/actor/expected revision/idempotency를 묶는다.
+- `core-query/v1`: search/filter/sort/cursor/limit을 구조화한다.
+
+필터 문자열이나 provider query 문법을 canonical API에 그대로 노출하지 않는다. Provider query translation은 Adapter가 책임진다.
+
+## 13. Parser / Normalizer / Mapper
+
+`core-transformer-contract/v1`은 Parser, Normalizer, Mapper를 각각 versioned capability로 선언한다.
+
+각 transformer는 다음을 고정한다.
+- input/output contract
+- implementation source + revision
+- deterministic 여부
+- issue code
+- verification profile
+
+Raw를 바로 Business Model에 쓰거나 Parser와 업무판정을 한 함수에 섞는 것을 금지한다.
+
+## 14. Import / Export
+
+`core-data-pipeline-contract/v1`을 사용한다.
+
+Import 기본 경로:
+```
+RAW_SNAPSHOT -> PARSE -> NORMALIZE -> VALIDATE -> [IDENTITY_RESOLVE] -> [REVIEW] -> COMMIT
+```
+
+Export 기본 경로:
+```
+PROJECT -> [PRIVACY_FILTER] -> SERIALIZE -> [DELIVER]
+```
+
+Import는 validate 이전 commit을 허용하지 않고, Export는 canonical store를 수정하는 COMMIT 단계를 허용하지 않는다. 모든 pipeline은 receipt를 요구한다.
+
+## 15. Event Type Registry
+
+Event instance와 Event type contract를 분리한다.
+
+- instance: `core-event/v1`
+- type definition: `core-event-type-contract/v1`
+- registry: `registry/core-event-types.json`
+
+Event type은 producer, payload schema, consumers, duplicate policy, replay policy, retention을 선언해야 한다. 프로젝트가 새 event name을 즉흥 생성하기 전에 registry contract를 거친다.
+
+## 16. Enum / Code
+
+공통 code lifecycle 형식은 `core-code-set/v1`이다.
+
+- code는 stable machine value
+- display label은 계약 identity가 아니다
+- deprecate/retire/replacement를 명시
+- `open_enum=true`이면 consumer는 미래 unknown code를 안전하게 처리해야 한다.
+
+업무 Workflow state의 실제 code 내용과 transition 의미는 D가 소유한다. C는 code의 wire/schema lifecycle만 소유한다.
+
+## 17. Generic Result
+
+기존 `ai-core-work-result/v1`은 현재 Work runtime의 도메인 결과로 유지한다. 신규 공통 integration에서는 `core-result/v1`을 사용하고, 중요한 side effect는 별도 `core-receipt/v1`을 연결한다.
+
+즉 Result는 **무슨 결과가 나왔는가**, Receipt는 **그 결과를 만들기 위해 실제 무엇을 실행했는가**를 증명한다.
