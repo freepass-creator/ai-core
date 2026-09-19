@@ -458,8 +458,7 @@
         "sales"
       ],
       "projects": [
-        "freepass-estimate",
-        "welrixtable"
+        "freepass-estimate"
       ],
       "mode": "READ_ONLY",
       "priority": 74,
@@ -467,7 +466,7 @@
       "required_scopes": [],
       "walls": [],
       "result_contract": "ai-core-work-result/v1",
-      "hold_reason": "FreePass Estimate owns the canonical estimator product/domain. Welrix Table is registered as the current executable new-car quote/reference runtime; AI Core execution remains HOLD until the canonical Estimate implementation is merged/reobserved and production proof is bound."
+      "hold_reason": "FreePass Estimate is the sole canonical estimator product/domain target. Execution remains HOLD because the verified implementation is still on work/ui-baseline rather than default main, and no production deployment/revision is observable in the connected Vercel team."
     },
     {
       "id": "erp.product",
