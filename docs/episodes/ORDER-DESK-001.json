@@ -60,6 +60,7 @@
     "docs/coordination/FREEPASS_ADMIN_BACKEND_LEARNING.md",
     "docs/coordination/FREEPASS_SALES_RUNTIME_LEARNING.md",
     "docs/coordination/FREEPASS_SELF_QUOTE_ENGINE_ADAPTER_LEARNING.md",
+    "docs/coordination/REPOSITORY_BACKFILL_AUDIT_2026-09-19.md",
     "docs/coordination/RETURN_PACKET.md",
     "docs/episodes/DEV-EPISODE-001.json",
     "docs/episodes/ORDER-DESK-001.json",
@@ -261,6 +262,7 @@
     "2026-09-19 Project Capsule P0: added a read-only GitHub source-review inspector and core.project-inspect capability. It reads repository metadata/tree and package.json only, never .env contents, produces revision-bound evidence and blockers, and deliberately does not mutate registry/projects.json or auto-activate HOLD projects.",
     "2026-09-19 finance capabilities: finance.cash-status and finance.receivables now route to AIOps lib/ai-core-finance-adapters.mjs at revision c37a4227. The adapters are read-only, expose no customer/vehicle detail for aggregate receivable answers, and HOLD stale or missing canonical sources.",
     "2026-09-19 shared release gate: added production-proof and recovery guidance. Project-specific deploy targets/commands remain owned by each project; AI Core only owns the common release evidence boundary.",
-    "2026-09-19 evidence-integrity repair: the historical UI-PATTERNS-BROWSER-002 receipt no longer claims the later Screen Design Standard as a browser-executed source; a fresh browser receipt is explicitly required for current normative conformance. Active successor changed_files was regenerated from the exact base_revision diff plus that receipt change."
+    "2026-09-19 evidence-integrity repair: the historical UI-PATTERNS-BROWSER-002 receipt no longer claims the later Screen Design Standard as a browser-executed source; a fresh browser receipt is explicitly required for current normative conformance. Active successor changed_files was regenerated from the exact base_revision diff plus that receipt change.",
+    "2026-09-19 repository-backfill audit: all 36 connected repositories were freshness-screened; Mewcar, Welrix Table and the Mewcar-JB Woori proposal were added with distinct ACTIVE/REFERENCE authority roles, while unreviewed older repositories remain discovered but unpromoted. changed_files was regenerated against the active base revision."
   ]
 }

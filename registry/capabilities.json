@@ -458,7 +458,8 @@
         "sales"
       ],
       "projects": [
-        "freepass-estimate"
+        "freepass-estimate",
+        "welrixtable"
       ],
       "mode": "READ_ONLY",
       "priority": 74,
@@ -466,7 +467,7 @@
       "required_scopes": [],
       "walls": [],
       "result_contract": "ai-core-work-result/v1",
-      "hold_reason": "FreePass Estimate is the canonical estimator SSOT, but its canonical implementation is still on work/ui-baseline while main remains the initialization commit; execution stays HOLD until merge/reobservation and production proof."
+      "hold_reason": "FreePass Estimate owns the canonical estimator product/domain. Welrix Table is registered as the current executable new-car quote/reference runtime; AI Core execution remains HOLD until the canonical Estimate implementation is merged/reobserved and production proof is bound."
     },
     {
       "id": "erp.product",
@@ -696,6 +697,24 @@
       "walls": [],
       "result_contract": "ai-core-work-result/v1",
       "hold_reason": "TeamJPK Work 프로젝트가 HOLD이며 project capsule/source-review가 끝나지 않았다."
+    },
+    {
+      "id": "business.mewcar-subscription",
+      "title": "뮤카 자동차 구독사업",
+      "status": "HOLD",
+      "domains": [
+        "business"
+      ],
+      "projects": [
+        "mewcar"
+      ],
+      "mode": "READ_ONLY",
+      "priority": 78,
+      "inputs": [],
+      "required_scopes": [],
+      "walls": [],
+      "result_contract": "ai-core-work-result/v1",
+      "hold_reason": "Mewcar is registered as the business-content/decision SSOT, but AI Core has not yet formalized a revision-bound business-planning reader/result adapter for this project. Track and route the work; do not claim execution from document presence."
     }
   ]
 }

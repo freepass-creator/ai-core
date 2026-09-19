@@ -450,6 +450,115 @@
       "known_blockers": [
         "Discovered in the connected GitHub installation but not yet source-reviewed into an AI Core Project Capsule; execution remains HOLD until commands, SSOT and deployment boundaries are verified."
       ]
+    },
+    {
+      "project_id": "mewcar",
+      "name": "Mewcar Automobile Subscription",
+      "organization": "SUBSIDIARY",
+      "status": "ACTIVE",
+      "mission": "Business-content and decision SSOT for the Mewcar automobile-subscription launch: planning, preparation, operating manuals, decisions and evidence pointers. Final formatted documents remain a DocsHub responsibility.",
+      "repository": "freepass-creator/mewcar",
+      "default_branch": "main",
+      "local_path": "C:\\dev\\mewcar",
+      "head_revision": "232f0fee0f0004a1e525444b9ddeb61d04e286f5",
+      "authoritative_sources": [
+        {
+          "kind": "GIT",
+          "ref": "freepass-creator/mewcar",
+          "revision": "232f0fee0f0004a1e525444b9ddeb61d04e286f5",
+          "observed_at": "2026-09-19T10:42:23Z"
+        }
+      ],
+      "commands": {
+        "install": null,
+        "test": null,
+        "build": null
+      },
+      "commands_absent_reason": {
+        "install": "Business-content repository; there is no package/runtime installation step.",
+        "test": "Business SSOT and manuals do not expose an executable automated-test entrypoint.",
+        "build": "Final formatted document production is owned by DocsHub; this repository has no build artifact."
+      },
+      "deploy_targets": [],
+      "required_approvals": [
+        "external-send",
+        "contract-finalization",
+        "legal-or-corporate-action"
+      ],
+      "known_blockers": [
+        "Git intentionally excludes private call recordings/transcripts and personal-detail material; Git source review cannot prove those local-only sources.",
+        "Business decisions and implementation completion must remain distinct: planning/manual presence is not evidence of legal setup, launch, contract approval or external execution."
+      ]
+    },
+    {
+      "project_id": "welrixtable",
+      "name": "Welrix Table / New-car Quote Runtime",
+      "organization": "SUBSIDIARY",
+      "status": "ACTIVE",
+      "mission": "Current executable new-car quote/reference runtime with provider-bound Welrix calculation, quote-contract validation and mobile UI evidence while FreePass Estimate assumes long-term product/domain ownership.",
+      "repository": "freepass-creator/welrixtable",
+      "default_branch": "main",
+      "local_path": null,
+      "head_revision": "56affca1fc4e419000afe3e42f8821e5458d2071",
+      "authoritative_sources": [
+        {
+          "kind": "GIT",
+          "ref": "freepass-creator/welrixtable",
+          "revision": "56affca1fc4e419000afe3e42f8821e5458d2071",
+          "observed_at": "2026-09-19T10:42:23Z"
+        }
+      ],
+      "commands": {
+        "install": "npm ci",
+        "test": "npm run check:quote-contract",
+        "build": "npm run build"
+      },
+      "deploy_targets": [],
+      "required_approvals": [
+        "provider-contract-change",
+        "production-deployment"
+      ],
+      "known_blockers": [
+        "Long-term estimator product/domain authority is FreePass Estimate; do not promote Welrix Table back into the shared product authority merely because executable new-car evidence currently lives here.",
+        "Live provider parity is a separate external check (`npm run check:welrix-live`) and must not be inferred from offline contract validation."
+      ]
+    },
+    {
+      "project_id": "mewcar-jbwoori-proposal",
+      "name": "Mewcar JB Woori Proposal",
+      "organization": "SUBSIDIARY",
+      "status": "REFERENCE",
+      "mission": "Dedicated JB Woori Capital residual-value-guarantee proposal manuscript, decision log, handoff and editable deliverable history for Mewcar.",
+      "repository": "freepass-creator/mewcar-jbwoori-proposal",
+      "default_branch": "main",
+      "local_path": null,
+      "head_revision": "d3a69e8aa3ee19132112e1440a551c3d25bd5a4f",
+      "authoritative_sources": [
+        {
+          "kind": "GIT",
+          "ref": "freepass-creator/mewcar-jbwoori-proposal",
+          "revision": "d3a69e8aa3ee19132112e1440a551c3d25bd5a4f",
+          "observed_at": "2026-09-19T10:42:23Z"
+        }
+      ],
+      "commands": {
+        "install": null,
+        "test": null,
+        "build": null
+      },
+      "commands_absent_reason": {
+        "install": "Proposal/reference repository; no package installation is required for source review.",
+        "test": "No canonical automated test entrypoint is defined for this proposal manuscript repository.",
+        "build": "Stored deliverables and manuscript sources are references; no canonical build command is declared."
+      },
+      "deploy_targets": [],
+      "required_approvals": [
+        "external-distribution"
+      ],
+      "known_blockers": [
+        "This repository is proposal-specific and must not override Mewcar business facts/decisions; use freepass-creator/mewcar as the business-content SSOT.",
+        "Internal-review deliverables do not prove external approval or delivery."
+      ]
     }
   ]
 }

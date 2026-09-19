@@ -482,6 +482,27 @@
         "freepass-creator/teamjpkwork"
       ],
       "capability_id": "business.teamjpkwork"
+    },
+    {
+      "work_type_id": "mewcar-subscription",
+      "name": "뮤카 자동차 구독사업",
+      "domain": "business",
+      "aliases": [
+        "뮤카 구독",
+        "뮤카 자동차 구독",
+        "뮤카 구독사업",
+        "자동차 구독사업",
+        "뮤카 사업기획"
+      ],
+      "target_project_id": "mewcar",
+      "approval_boundary": "PROJECT_RULES",
+      "completion_condition": "Mewcar 정본의 결정·준비상태·미확정·다음 행동이 revision-bound source pointer와 함께 정리된다.",
+      "source_pointers": [
+        "registry/projects.json",
+        "freepass-creator/mewcar",
+        "freepass-creator/mewcar/PROJECT_READ_FIRST.md"
+      ],
+      "capability_id": "business.mewcar-subscription"
     }
   ]
 }
