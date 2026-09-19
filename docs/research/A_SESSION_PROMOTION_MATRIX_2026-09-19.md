@@ -276,7 +276,7 @@ A 세션이 조사한 내용을 B·C·D·Security·QA·Governance 세션이 다�
 
 | Candidate | 축 | Evidence | 실제 근거 | 넘길 세션 | 다음 단계 |
 |---|---|---|---|---|---|
-| `ui.client-release-freshness` | UI/UX / Client Runtime | PROJECT_VERIFIED | freepasserp3 | B | SECOND_PROJECT_REQUIRED |
+| `ui.client-release-freshness` | UI/UX / Client Runtime | CROSS_PROJECT_VERIFIED | freepasserp3, freepasserp4 | B | COMMON_ADOPTED_CANDIDATE |
 
 - 근거: `freepasserp3@5344a5001a6d62d686c79090a250c9aa21b470c3`, current observed head `8d8b7a559272a37823f879b77099b3bc17bf5a16`.
 - 장시간 열린 SPA가 배포 뒤에도 구버전 JS를 계속 실행하던 실제 문제를 stable build-version readback + periodic/visibility freshness check로 해결.
@@ -332,3 +332,33 @@ A 세션이 조사한 내용을 B·C·D·Security·QA·Governance 세션이 다�
 - Destination: **D primary / C secondary**
 - This is negative evidence supporting the need for `workflow.compensated-multiwrite`, not positive second-project implementation.
 - Detail: `docs/research/A_SESSION_GAP_JPKERP_SILENT_RECONCILIATION_PARTIAL_WRITE_2026-09-19.md`.
+
+
+### ERP4 second evidence — `ui.client-release-freshness`
+
+- **PROJECT_VERIFIED → CROSS_PROJECT_VERIFIED**
+- ERP3: static build-version baseline + polling/visibility drift detection.
+- ERP4: client build stamp vs dynamic server stamp + focus/online/visibility + active-input deferral + same-stamp reload guard.
+- Sales SW cache versioning remains adjacent evidence only.
+- B canonical adoption remains closeout HOLD.
+- Detail: `docs/research/A_SESSION_DISCOVERY_ERP4_CLIENT_RELEASE_FRESHNESS_SECOND_EVIDENCE_2026-09-19.md`.
+
+
+## 2026-09-19 ERP4 restartable rollback run delta
+
+| Candidate | 축 | Evidence | 실제 근거 | 넘길 세션 | 다음 단계 |
+|---|---|---|---|---|---|
+| `workflow.restartable-rollback-run` | Workflow / Rollback | PROJECT_VERIFIED | freepasserp4 | D | SECOND_PROJECT_REQUIRED |
+
+- forward run preimage/postimage + digest + CAS + persisted rollback phases + resume + audit.
+- Renman automatic compensation과 exact same implementation으로 세지 않는다.
+- Detail: `docs/research/A_SESSION_DISCOVERY_ERP4_RESTARTABLE_ROLLBACK_RUN_2026-09-19.md`.
+
+
+## C canonical v1 landed — A comparison baseline change
+
+- AI Core main merged C Core Contract Standard v1 at `87a0fbb2da93046cdbc45140b8d8c3e9e7a67ae9`.
+- From this revision onward, C-axis `Core > Project` gaps are compared against landed canonical contracts, not research prose.
+- Canonical families now include stable opaque identity, provenance, transformer, source registry, snapshot, request/query, data-pipeline, result, receipt, event/error and compatibility contracts.
+- Existing A backports such as Vehicle Master identity/provenance, FreePassERP3 normalization review gate, JPKERP-v4 server-ACK mutation and JPKERP reconciliation now have a concrete canonical C target.
+- `registry/phase1-closeout.json` is stale until Order refreshes it against post-merge main/CI.
