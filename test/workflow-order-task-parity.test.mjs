@@ -45,8 +45,8 @@ function parity(store, shadow, order, cmd, label) {
   return { expected, observed };
 }
 
-test('Order Task SHADOW is pinned to the exact OrderStore source blob', () => {
-  assert.equal(workflow.adoption_status, 'SHADOW');
+test('Canonical Order Task workflow is pinned to the exact OrderStore integration blob', () => {
+  assert.equal(workflow.adoption_status, 'CANONICAL');
   assert.equal(workflow.source_authority.files.length, 1);
   const source = workflow.source_authority.files[0];
   const actualBlob = execFileSync('git', ['hash-object', source.path], {
