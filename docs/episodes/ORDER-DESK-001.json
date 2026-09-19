@@ -420,6 +420,7 @@
     "2026-09-19 successor inventory canonicalization: changed_files regenerated as current-main verified successor inventory plus complete PR #93 net changed-file set, avoiding GitHub compare 250-file truncation.",
     "2026-09-19 successor inventory final source: base→current-main actual compare file set plus complete PR #93 net changed-file set; this also captures parallel A-session files not yet reflected in main's episode document.",
     "2026-09-19 D recovery pilot: ERP4 recovery replay evidence re-verified at source, workflow.recovery-slot-no-replay registered as PROJECT_VERIFIED PILOT with machine schema/validator/negative tests/CI; common adoption remains blocked on C identity binding and second-project evidence.",
-    "2026-09-19 Order D closeout integration: Workflow Standard branch was reconciled with canonical C-enabled main; recovery negative fixture was corrected without weakening the recovery invariant, and exact changed_files will be rebuilt from the merged tree."
+    "2026-09-19 Order D closeout integration: Workflow Standard branch was reconciled with canonical C-enabled main; recovery negative fixture was corrected without weakening the recovery invariant, and exact changed_files will be rebuilt from the merged tree.",
+    "2026-09-19 Order D closeout: changed_files rebuilt from full recursive Git tree diff 7b63024c5dd0..51535e95bc88 after Workflow merge with canonical main."
   ]
 }
