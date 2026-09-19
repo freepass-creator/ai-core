@@ -462,3 +462,54 @@ Parent Order status remains a derived aggregate:
 The current close action records `USER_ACCEPTED_NOT_CANONICAL` and leaves the parent in REVIEW. D preserves that distinction rather than manufacturing canonical completion.
 
 The SHADOW is source-pinned to the exact `src/orders/store.mjs` Git blob and parity-tested against the real OrderStore.
+
+
+## Capability Execution SHADOW parity checkpoint
+
+`ai-core.capability-execution@0.1.0` is registered as SHADOW.
+
+Persistent coordination lifecycle:
+
+- RESERVED
+- RESULT
+
+Important distinction:
+
+- reconciliation `HOLD / EXECUTION_OUTCOME_UNKNOWN` is not a stored lifecycle state
+- when no authoritative terminal receipt exists, the persistent request remains RESERVED
+- a terminal receipt may reconcile to a RESULT whose result status is SUCCEEDED, FAILED or HOLD
+- result status is a Result/Fact semantic, not another hidden lifecycle state
+
+The SHADOW preserves:
+
+- durable request-id reservation
+- same request/same payload replay
+- same request/different payload conflict
+- safe receipt persistence that drops `outcome.data`
+- exact result context/capability/revision error codes
+- identical-result replay after RESULT
+- conflicting-result rejection
+- reconcile-before-retry
+- terminal receipt success/failure/hold mapping
+
+Source authority is pinned to the exact coordinator and receipt-reader blobs.
+
+## Cross-machine Bridge Registry
+
+`registry/workflow-bridges.json` defines the current explicit relationships among the three AI Core machines.
+
+Current SHADOW bridges:
+
+1. parent Order REVISE -> all child Task `order-task.invalidate` in the same transaction
+2. child Task lifecycle -> derived parent `order.status`
+3. Capability RESULT -> Work evidence feed only
+4. Reconciled Capability RESULT -> Work evidence feed only
+
+For both Capability-to-Work bridges:
+
+- dispatch mode is NONE
+- no Work command is named
+- direct transition is forbidden
+- existing Control Tower / Work Ledger authority remains required
+
+This prevents a capability receipt from becoming an accidental Work completion event.
