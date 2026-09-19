@@ -1,4 +1,4 @@
-# Screen Design Standard v1.0
+# Screen Design Standard v1.1
 
 ## Normative baseline
 
@@ -90,7 +90,7 @@ Official references:
 - Start with a single-column mobile layout and enhance at content-driven breakpoints.
 - At 640px and below, form controls and primary task buttons fill available width in the sample.
 - Do not depend on hover. Touch, keyboard and pointer paths must reach the same action.
-- Test at mobile and desktop widths, 200% zoom, keyboard-only operation and reduced-motion preference.
+- Test at mobile and desktop widths, 200% zoom, 400% reflow for ordinary one-dimensional content, portrait/landscape changes, keyboard-only operation, virtual-keyboard overlap and reduced-motion preference.
 
 ## Sample
 
@@ -120,11 +120,52 @@ This does not mean every product has identical colors or spacing. It means that,
 
 ### Internationalization and direction
 
-- Store canonical values separately from localized presentation for dates, times, numbers and currency.
-- Declare language and text direction explicitly. Do not infer text direction solely from locale or language.
-- Layout must support LTR and RTL, long translated labels and locale-specific formatting without changing business behavior.
-- Do not build translated sentences by concatenating fragments whose word order may differ by language.
-- Keyboard, focus, state, failure and completion semantics do not change with locale.
+Internationalization is a behavioral contract, not a translation-only task. The minimum machine-readable baseline is represented by `system.localization`, `system.locale-formatting`, `system.bidi`, `system.text-expansion`, `system.motion-preference`, `system.contrast-preference`, `system.reflow-orientation` and `system.input-method`.
+
+#### Locale and value semantics
+
+- Store canonical values separately from localized presentation for dates, times, numbers, percentages, currency and units.
+- Treat language, region, script, calendar, numbering system, hour cycle, time zone and currency as distinct concerns when the product allows them to vary.
+- Use platform internationalization APIs or CLDR-derived locale data; do not hand-build decimal/group separators, date order, currency placement, plural forms or unit strings.
+- Currency code and time zone are explicit wherever omitting them could change business meaning.
+- Parsing and display are round-trip tested for representative locales; `null`, zero and empty input remain distinct domain values.
+
+#### Direction and mixed content
+
+- Declare content language and text direction explicitly. Do not infer direction solely from locale or language.
+- Use logical start/end layout semantics so LTR and RTL share one component contract instead of separate implementations.
+- Isolate user-entered or external identifiers, phone numbers, email addresses, URLs and other mixed-direction values when they can reorder surrounding text.
+- Do not mirror every icon or visual automatically. Directional meaning determines mirroring; brand marks and direction-invariant symbols remain unchanged.
+
+#### Text expansion and reflow
+
+- Layout must support long translated labels and multiline helper/error text without hiding required actions or meaning.
+- Critical actions are not truncated solely to preserve a fixed width. Prefer wrapping, adaptive layout or an explicit exception.
+- Ordinary one-dimensional content reflows at high zoom/text scaling instead of requiring both horizontal and vertical scrolling.
+- Sticky bottom actions, headers and overlays must not cover focused fields or validation messages after reflow or when the virtual keyboard is open.
+
+#### User preferences and input methods
+
+- Reduced-motion preference removes or simplifies non-essential animation without removing status, hierarchy or completion meaning.
+- High-contrast or forced-color environments preserve focus, selection, errors and control boundaries without relying on authored color alone.
+- Touch, pointer, keyboard and assistive input reach the same business outcome unless the task intrinsically requires a modality.
+- IME composition is preserved. Intermediate composition events must not trigger destructive validation, submission or auto-advance.
+
+#### Minimum representative verification matrix
+
+The matrix is a conformance probe, not a list of supported market locales:
+
+| Probe | What it catches |
+|---|---|
+| `ko-KR` | CJK density, Korean copy, local date/number conventions |
+| `en-US` | baseline Latin LTR behavior |
+| `de-DE` | long labels and comma-decimal formatting |
+| `ar-SA` RTL sample | RTL layout, bidi isolation and mirrored directional affordances |
+| `hi-IN` numbering sample | non-Western grouping/numbering assumptions |
+| long-label synthetic copy | text expansion and multiline actions |
+| 200% zoom + 400% reflow | zoom, sticky regions and reading/task order |
+| reduced-motion + forced-color/high-contrast | user preference resilience |
+| virtual keyboard + IME composition | mobile input and composition safety |
 
 Official references:
 
@@ -132,6 +173,9 @@ Official references:
 - https://www.w3.org/WAI/ARIA/apg/
 - https://www.w3.org/International/docs/bp-html-bidi/
 - https://www.w3.org/International/articles/lang-bidi-use-cases/
+- https://cldr.unicode.org/
+- https://www.unicode.org/reports/tr35/
+- https://developer.apple.com/design/human-interface-guidelines/inclusion
 
 ### Engine and adapter presentation contracts
 
