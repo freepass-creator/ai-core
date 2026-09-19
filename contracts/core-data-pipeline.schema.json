@@ -13,7 +13,8 @@
     "target",
     "stages",
     "commit_policy",
-    "receipt_required"
+    "receipt_required",
+    "partial_failure_policy"
   ],
   "properties": {
     "schema_version": {
@@ -66,12 +67,23 @@
       "enum": [
         "ATOMIC",
         "TRANSACTIONAL_BATCH",
+        "BEST_EFFORT_BATCH",
         "APPEND_ONLY",
         "READ_ONLY"
       ]
     },
     "receipt_required": {
       "const": true
+    },
+    "partial_failure_policy": {
+      "type": "string",
+      "enum": [
+        "NOT_APPLICABLE",
+        "FAIL_BEFORE_COMMIT",
+        "ROLLBACK_REQUIRED",
+        "ALLOW_PARTIAL_WITH_RECEIPT"
+      ],
+      "description": "Declares what happens when a multi-item/batch write cannot complete as one atomic unit."
     }
   }
 }
