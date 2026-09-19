@@ -36,8 +36,8 @@ A 세션이 조사한 내용을 B·C·D·Security·QA·Governance 세션이 다�
 | `event.append-only-correction` | Event | CROSS_PROJECT_VERIFIED | aiops, freepass-admin, freepasserp4 | C/D | COMMON_ADOPTED_CANDIDATE |
 | `event.cloudevents-envelope` | Event | PROPOSED | 외부 기준 | C | RESEARCH_REQUIRED |
 | `workflow.fact-vs-state` | Workflow | CROSS_PROJECT_VERIFIED | freepass-admin, jpkerp5, aiops | D | COMMON_ADOPTED_CANDIDATE |
-| `workflow.guard-vs-evidence` | Workflow | CROSS_PROJECT_VERIFIED | jpkerp5, aiops | D | COMMON_ADOPTED_CANDIDATE |
-| `workflow.launch-vs-completion` | Workflow | CROSS_PROJECT_VERIFIED | freepass-sales, aiops | D | COMMON_ADOPTED_CANDIDATE |
+| `workflow.guard-vs-evidence` | Workflow | CROSS_PROJECT_VERIFIED | jpkerp5, aiops, workcontrol | D | COMMON_ADOPTED_CANDIDATE |
+| `workflow.launch-vs-completion` | Workflow | CROSS_PROJECT_VERIFIED | freepass-sales, aiops, workcontrol | D | COMMON_ADOPTED_CANDIDATE |
 | `workflow.hold-resume` | Workflow | PROJECT_VERIFIED | aiops | D | SECOND_PROJECT_REQUIRED |
 | `workflow.obligation-pair` | Workflow | PROJECT_VERIFIED | aiops | D | SECOND_PROJECT_REQUIRED |
 | `security.role-org-scope-action` | Security | PROJECT_VERIFIED | freepasserp4 | Security | SECOND_PROJECT_REQUIRED |
@@ -214,3 +214,21 @@ A 세션이 조사한 내용을 B·C·D·Security·QA·Governance 세션이 다�
 - Project-local values, classic-theme texture, depth rules and badge semantics are not proposed as global defaults.
 - B can evaluate this mechanism as `COMMON_ADOPTED_CANDIDATE`.
 - Detail: `docs/research/A_SESSION_DISCOVERY_TEAMJPKWORK_UI_CONFORMANCE_SECOND_EVIDENCE_2026-09-19.md`.
+
+
+### WorkControl evidence-backed closure
+
+- `workcontrol@b841ad748f39322a150ce3d3fdd5840fc8a7ee0f` adds independent supporting evidence to:
+  - `workflow.guard-vs-evidence`
+  - `workflow.launch-vs-completion`
+- Human/UI `완료` is not treated as verified completion; `proof.mjs` checks receipts such as money received or vehicle returned.
+- `workflow.obligation-pair` is **not promoted**: due exists in the specification, but the inspected recovery runtime does not prove due/timeout enforcement as part of the obligation lifecycle.
+- Detail: `docs/research/A_SESSION_DISCOVERY_WORKCONTROL_EVIDENCE_CLOSURE_2026-09-19.md`.
+
+
+### Sonogong production proof HOLD
+
+- `sonogong-estimator` has a strong live-bundle/commit readback mechanism in code.
+- Historical docs claim a live Vercel deployment, but the currently connected Vercel team exposes **0 projects**, so the current production target/revision cannot be independently resolved.
+- `release.production-revision-proof` therefore remains **PROJECT_VERIFIED** from ERP4 only.
+- Detail: `docs/research/A_SESSION_HOLD_SONOGONG_DEPLOYMENT_PROOF_2026-09-19.md`.
