@@ -81,3 +81,73 @@ test('receipt preserves input/output digests, executor revision and evidence',()
   const bad=structuredClone(receipt); bad.input.digest='abc';
   assert.equal(validate(bad),false);
 });
+
+
+test('snapshot pins subject and source revisions with immutable payload digest',()=>{
+  const validate=schema('https://schemas.freepass.ai/core/snapshot/v1');
+  const snapshot={
+    schema_version:'core-snapshot/v1',snapshot_id:'snap_001',subject_type:'quote',subject_id:'quote_001',
+    subject_revision:'r7',source_revision:'catalog-r12',created_at:'2026-09-19T12:30:00Z',
+    payload:{monthly_rent:500000},payload_digest:'sha256:'+'c'.repeat(64)
+  };
+  assert.equal(validate(snapshot),true);
+  const broken={...snapshot}; delete broken.subject_revision;
+  assert.equal(validate(broken),false);
+});
+
+test('request idempotency binds key to semantic payload digest and expected revision',()=>{
+  const validate=schema('https://schemas.freepass.ai/core/request-context/v1');
+  const ctx={
+    schema_version:'core-request-context/v1',request_id:'req_001',correlation_id:'corr_005',
+    actor:{actor_id:'service:freepass-sales',actor_type:'SERVICE'},expected_revision:'r3',
+    idempotency:{mode:'REQUIRED',key:'idem_001',semantic_payload_digest:'sha256:'+'d'.repeat(64)}
+  };
+  assert.equal(validate(ctx),true);
+  const broken=structuredClone(ctx); delete broken.idempotency.semantic_payload_digest;
+  assert.equal(validate(broken),false);
+});
+
+test('query contract keeps filters and sort structured and cursor pagination bounded',()=>{
+  const validate=schema('https://schemas.freepass.ai/core/query/v1');
+  const query={
+    schema_version:'core-query/v1',search:'ev3',
+    filters:[{field:'vehicle.availability',operator:'EQ',value:'AVAILABLE'}],
+    sort:[{field:'created_at',direction:'DESC'}],
+    page:{cursor:null,limit:100}
+  };
+  assert.equal(validate(query),true);
+  const broken=structuredClone(query); broken.page.limit=1000;
+  assert.equal(validate(broken),false);
+});
+
+test('event type contract declares consumers duplicate handling and replay policy',()=>{
+  const validate=schema('https://schemas.freepass.ai/core/event-type/v1');
+  const type={
+    schema_version:'core-event-type-contract/v1',event_type:'freepass.quote.created',event_version:'v1',
+    producer:'freepass-sales',payload_schema:'quote-created-payload/v1',consumers:['analytics'],
+    duplicate_policy:'IDEMPOTENT_BY_EVENT_ID',replay_policy:'REPLAYABLE',retention:{minimum_days:30}
+  };
+  assert.equal(validate(type),true);
+  const broken={...type,duplicate_policy:'IGNORE_SOMETIMES'};
+  assert.equal(validate(broken),false);
+});
+
+test('generic result distinguishes successful data from structured failure',()=>{
+  const validate=schema('https://schemas.freepass.ai/core/result/v1');
+  assert.equal(validate({
+    schema_version:'core-result/v1',status:'SUCCEEDED',data:{id:'x'},error:null,
+    meta:{correlation_id:'corr_006',generated_at:'2026-09-19T12:31:00Z',receipt_ref:'receipt:x'}
+  }),true);
+  assert.equal(validate({
+    schema_version:'core-result/v1',status:'FAILED',data:null,error:null,
+    meta:{correlation_id:'corr_007',generated_at:'2026-09-19T12:31:00Z',receipt_ref:null}
+  }),false);
+});
+
+test('code-set contract separates code lifecycle from mutable display labels',()=>{
+  const validate=schema('https://schemas.freepass.ai/core/code-set/v1');
+  assert.equal(validate({
+    schema_version:'core-code-set/v1',set_id:'vehicle.condition',version:'v1',owner:'vehicle-domain',
+    open_enum:true,values:[{code:'NORMAL',status:'ACTIVE',deprecated_since:null,replacement_code:null}]
+  }),true);
+});
