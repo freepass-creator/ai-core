@@ -40,7 +40,8 @@ function machine() {
       { event_type: 'test.contract.completed', meaning: 'Completion verified' },
       { event_type: 'test.contract.held', meaning: 'Work held' },
       { event_type: 'test.contract.resumed', meaning: 'Work resumed' },
-      { event_type: 'test.contract.cancelled', meaning: 'Work cancelled' }
+      { event_type: 'test.contract.cancelled', meaning: 'Work cancelled' },
+      { event_type: 'test.contract.failed', meaning: 'Completion failure escalated' }
     ],
     transitions: [
       {
@@ -218,10 +219,11 @@ test('same idempotency key with same intent replays, different intent conflicts'
     transition_id: 'prepare',
     command_id: 'prepare',
     entity_id: 'contract-1',
+    intent_fingerprint: first.intent_fingerprint,
     result: first
   }];
   const replay = engine.decide({
-    projection,
+    projection: { entity_id: 'contract-1', revision: 1, states: { lifecycle: 'READY' } },
     transition_id: 'prepare',
     command_id: 'prepare',
     actor: { actor_id: 'user-1' },
@@ -233,6 +235,7 @@ test('same idempotency key with same intent replays, different intent conflicts'
     history
   });
   assert.equal(replay.replayed, true);
+  assert.equal(replay.intent_fingerprint, first.intent_fingerprint);
 
   assert.throws(() => engine.decide({
     projection,
@@ -243,6 +246,7 @@ test('same idempotency key with same intent replays, different intent conflicts'
     permissions: ['contract.cancel'],
     expected_revision: 0,
     idempotency_key: 'same-key',
+    command_payload: { reason_code: 'CUSTOMER_REQUEST' },
     history
   }), error => error.code === 'IDEMPOTENCY_CONFLICT');
 });
