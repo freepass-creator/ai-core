@@ -59,7 +59,8 @@
           "SERIALIZE",
           "DELIVER"
         ]
-      }
+      },
+      "uniqueItems": true
     },
     "commit_policy": {
       "enum": [
