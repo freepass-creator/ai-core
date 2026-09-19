@@ -5,6 +5,7 @@
 > main 기준으로 project registry, Control Tower/work ledger, landed observation, REOBSERVED, core brief, ops watch, 회사 업무 Work Map 24종과 project 생략 routed intake까지 들어왔다. 자연어 요청은 project/capability 후보를 resolve할 수 있지만, 실제 capability 실행 정본은 아직 하나로 수렴하지 않았다. PR #72 Capability Engine은 별도 후보이며 main Work Map과 중복되는 routing/capability 층을 통합 검토해야 한다.  
 > 운영 AIOps 과태료는 별도 저장소 main에서 검토 digest/발송대기 전환/health check까지 진전했으나 Windows Task Scheduler의 실제 상태는 로컬 관측 전까지 UNKNOWN이다.  
 > 현재 열린 감사 경계: `registry-refresh` mixed UNKNOWN은 canonical partial write 금지, `REVISION_NOT_IN_PROJECT`는 자동 REOBSERVED 금지, capability 정본 분기 금지. 최신 사실은 target repo/revision-bound evidence가 우선한다.
+> FreePass Admin의 실제 `Domain → Service → Port → Adapter/Repository` 구현은 현재 AI Core/DevCenter의 백엔드 추상화보다 구체적인 학습 사례다. 공통 승격 전 교차 프로젝트 검증을 전제로 `docs/coordination/FREEPASS_ADMIN_BACKEND_LEARNING.md`를 backend architecture learning candidate로 읽는다.
 
 ## Mission
 
