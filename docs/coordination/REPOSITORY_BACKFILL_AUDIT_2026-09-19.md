@@ -131,3 +131,24 @@ AI Core가 일부 중앙 문서만 앞서가고 실제 프로젝트 저장소의
 - DevCenter `registry.json` source locators are not entry-level revision/hash bound.
 - AI Core central project registry is also stale for DevCenter: recorded `132189799a...`, observed actual head `6a838a28...`.
 - The one-commit delta only extends `standards/backend/FREEPASS-ADMIN-PILOT.md`; no runtime code drift was found in that delta.
+
+
+## A-session continuation — TeamJPKWork / WorkControl / Sonogong
+
+### TeamJPKWork → B promotion
+- `ui.machine-conformance-gate` receives its second independent project implementation.
+- Evidence: `teamjpkwork@75bb285a241b68c13acbe532c30d6d91110f8082` plus FP Settlement first evidence.
+- Promotion: `PROJECT_VERIFIED → CROSS_PROJECT_VERIFIED`.
+- Route: B / `COMMON_ADOPTED_CANDIDATE`.
+- Local design values and theme-specific rules remain project/profile-specific.
+
+### WorkControl → D supporting evidence
+- Human/UI completion claims are independently checked against business evidence.
+- Adds a third project to `workflow.guard-vs-evidence` and `workflow.launch-vs-completion`.
+- `workflow.obligation-pair` is not promoted because due/timeout enforcement was not proven in the inspected runtime.
+
+### Sonogong Estimator → production-proof HOLD
+- Repository contains live-bundle feature-marker and app-commit verification mechanics.
+- Historical handoff says the Vercel site was live, but the currently connected Vercel team exposes zero projects.
+- Current production target/revision cannot be independently resolved.
+- `release.production-revision-proof` evidence level remains unchanged; Sonogong is not counted as second production proof.
