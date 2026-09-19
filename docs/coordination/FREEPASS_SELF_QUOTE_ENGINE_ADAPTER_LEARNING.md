@@ -3,8 +3,8 @@
 - 상태: `VERIFIED_PROJECT_PATTERN / LEARNING_CANDIDATE / DO_NOT_AUTO-PROMOTE`
 - 현재 Domain SSOT: `freepass-creator/freepass-estimate`
 - 현재 검증 브랜치: `work/ui-baseline`
-- 검증 revision: `b4488dae5ab38b9e211806766902c4c359091d02`
-- 검증 증거: GitHub Actions `New-car baseline CI` run `35437900025` = SUCCESS
+- 검증 revision: `b04af7302406f606b93f3ec45dca64bd625c6c68`
+- 검증 증거: GitHub Actions `New-car baseline CI` run `35438072361` = SUCCESS
 - 역사적 이관 원천: `freepass-creator/welrixtable`
 - 중고차 역사적 참고: `freepass-creator/sonogong-estimator`
 - 학습 대상: AI Core / DevCenter
@@ -326,9 +326,14 @@ Verification Contract Revision
 
 CI 파일이 존재한다고 최신 요구를 증명하는 것은 아니다.
 
-AI Core 학습 후보:
+AI Core 학습 후보에서 실제 구현으로 진전:
+- `verification-manifest.json`이 canonical contract ID와 checker를 명시적으로 연결
+- `check-verification-manifest.mjs`가 contract symbol이 checker에서 실제로 참조되는지 검사
+- mobile navigation checker가 과거 `.m-header .m-act` selector 재등장을 금지
+- acceptance criteria 변경 시 stale selector/test drift를 CI에서 조기 차단
+
+AI Core 공통화 후보:
 - source/code revision뿐 아니라 verification contract provenance 추적
-- acceptance criteria 변경 시 stale selector/test 탐지
 - proof bundle에 어떤 계약을 검증했는지 포함
 
 ## 16. Accessibility — AI Core에서 Estimate가 채택한 것
@@ -364,6 +369,7 @@ AI Core Screen Design Standard에서 비파괴적으로 우선 채택:
 ### Evidence / Provenance
 - quote runtime proof contract
 - share snapshot provenance contract
+- verification manifest freshness
 - release revision proof contract
 
 ### Delivery
@@ -372,7 +378,7 @@ AI Core Screen Design Standard에서 비파괴적으로 우선 채택:
 - preview build artifact
 
 최신 verified run:
-- `35437900025` — SUCCESS
+- `35438072361` — SUCCESS
 
 ## 18. AI Core Project Registry / Routing 반영
 
@@ -439,7 +445,7 @@ AI Core는 패턴·계약·evidence 방식만 학습한다.
 2. timeout/retry/circuit-breaker 공통 정책
 3. provider health contract
 4. customer-visible error vs internal diagnostic 분리
-5. verification-contract stale detection 자동화
+5. verification-manifest 패턴이 다른 실제 프로젝트에서도 유효한지 검증
 6. 중고 provider가 같은 canonical Quote contract를 재사용하는지 검증
 7. production URL revision proof
 8. work branch → main canonical promotion
@@ -465,7 +471,7 @@ FreePass Estimate:
 - `apps/new/scripts/check-quote-execution-contract.mjs`
 - `apps/new/scripts/check-share-snapshot-contract.mjs`
 - `apps/new/scripts/e2e-mobile-ux.mjs`
-- verified revision: `b4488dae5ab38b9e211806766902c4c359091d02`
+- verified revision: `b04af7302406f606b93f3ec45dca64bd625c6c68`
 
 Historical lineage:
 - `freepass-creator/welrixtable`
