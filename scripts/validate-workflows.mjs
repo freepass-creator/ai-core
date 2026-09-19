@@ -107,6 +107,17 @@ export function validateWorkflowRegistry(registry) {
       for (const guardId of transition.guards) if (!guards.has(guardId)) errors.push(error('TRANSITION_GUARD_UNKNOWN', path, { guard_id: guardId }));
       for (const evidenceId of transition.required_evidence) if (!evidence.has(evidenceId)) errors.push(error('TRANSITION_EVIDENCE_UNKNOWN', path, { evidence_id: evidenceId }));
 
+      if (transition.approval.policy === 'NONE' && transition.approval.required_roles.length > 0) {
+        errors.push(error('APPROVAL_NONE_WITH_ROLES', path));
+      }
+      if (transition.approval.policy !== 'NONE' && transition.approval.required_roles.length === 0) {
+        errors.push(error('APPROVAL_ROLES_REQUIRED', path));
+      }
+      if (!transition.manual_override.allowed
+        && (transition.manual_override.permissions.length > 0 || transition.manual_override.can_bypass.length > 0)) {
+        errors.push(error('DISABLED_OVERRIDE_HAS_BYPASS', path));
+      }
+
       const target = axis.states.get(transition.to);
       if (transition.purpose === 'HOLD' && target?.kind !== 'HOLD') errors.push(error('HOLD_TARGET_REQUIRED', path, { to: transition.to }));
       if (transition.purpose === 'CANCEL' && target?.kind !== 'CANCELLED') errors.push(error('CANCEL_TARGET_REQUIRED', path, { to: transition.to }));
@@ -138,6 +149,31 @@ export function validateWorkflowRegistry(registry) {
       if (transition.failure.on_exhausted === 'COMPENSATE'
         && !(transition.failure.compensation_transition_id || transition.compensation_transition_id)) {
         errors.push(error('COMPENSATION_REQUIRED_ON_EXHAUSTED', path));
+      }
+      if (transition.failure.failure_state && !axis.states.has(transition.failure.failure_state)) {
+        errors.push(error('FAILURE_STATE_UNKNOWN', path, { state_id: transition.failure.failure_state }));
+      }
+      if (transition.failure.on_exhausted === 'HOLD' && transition.failure.failure_state
+        && axis.states.get(transition.failure.failure_state)?.kind !== 'HOLD') {
+        errors.push(error('HOLD_FAILURE_STATE_REQUIRED', path, { state_id: transition.failure.failure_state }));
+      }
+      if (transition.failure.on_exhausted === 'FAIL' && transition.failure.failure_state
+        && axis.states.get(transition.failure.failure_state)?.kind !== 'FAILURE') {
+        errors.push(error('FAIL_FAILURE_STATE_REQUIRED', path, { state_id: transition.failure.failure_state }));
+      }
+      if (transition.failure.escalation_event_type && !events.has(transition.failure.escalation_event_type)) {
+        errors.push(error('FAILURE_ESCALATION_EVENT_UNKNOWN', path, { event_type: transition.failure.escalation_event_type }));
+      }
+      if (transition.timeout?.action === 'TRANSITION') {
+        if (!transition.timeout.transition_id || !transitions.has(transition.timeout.transition_id)) {
+          errors.push(error('TIMEOUT_TRANSITION_UNKNOWN', path, { transition_id: transition.timeout?.transition_id ?? null }));
+        }
+      }
+      if (transition.sla?.breach_event_type && !events.has(transition.sla.breach_event_type)) {
+        errors.push(error('SLA_BREACH_EVENT_UNKNOWN', path, { event_type: transition.sla.breach_event_type }));
+      }
+      if (transition.sla?.escalation_transition_id && !transitions.has(transition.sla.escalation_transition_id)) {
+        errors.push(error('SLA_ESCALATION_TRANSITION_UNKNOWN', path, { transition_id: transition.sla.escalation_transition_id }));
       }
     });
 
