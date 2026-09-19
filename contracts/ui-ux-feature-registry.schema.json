@@ -165,6 +165,35 @@
         },
         "verification": {
           "$ref": "#/$defs/stringList"
+        },
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/evidence"
+          }
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "level",
+        "refs"
+      ],
+      "properties": {
+        "level": {
+          "enum": [
+            "NORMATIVE",
+            "PLATFORM_CONSENSUS",
+            "CROSS_PROJECT_VERIFIED",
+            "PROJECT_VERIFIED",
+            "PROPOSED"
+          ]
+        },
+        "refs": {
+          "$ref": "#/$defs/stringList"
         }
       }
     }
