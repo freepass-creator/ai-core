@@ -22,7 +22,7 @@ AI Core 작업을 시작할 때 전체 Gmail/전체 Chat/전체 연구 branch를
 
 ## AI Core 전체 고도화 지도
 
-여러 세션/AI가 병렬로 AI Core의 공통 표준을 고도화할 때는 [`docs/AI_CORE_MASTER_MAP.md`](docs/AI_CORE_MASTER_MAP.md)를 작업 지도으로 사용한다. 세부 역할은 `docs/lanes/`에 분리되어 있다. 이 지도는 구조·runtime SSOT를 대체하지 않고, 조사 → UI/UX → Core Contract → Workflow → Security → Quality/Release → Governance의 의존성과 승격 상태를 조정한다.
+여러 세션/AI가 병렬로 AI Core의 공통 표준을 고도화할 때는 [`docs/AI_CORE_MASTER_MAP.md`](docs/AI_CORE_MASTER_MAP.md)를 구조·의존성 지도로 사용한다. 실제 세션 명칭·ACTIVE/HOLD·담당 상태의 정본은 `docs/handoffs/SESSION-MISSIONS.md` 하나만 사용한다. `docs/lanes/`는 재사용 가능한 역할/완료조건 명세이며 별도 세션 정본이 아니다.
 
 ## 현재 최우선 목표 — AI Core 실제 합병·통합
 
