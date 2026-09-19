@@ -51,6 +51,12 @@
       "retryable": false
     },
     {
+      "code": "CANCELLED",
+      "category": "USER",
+      "default_http_status": 409,
+      "retryable": false
+    },
+    {
       "code": "RATE_LIMITED",
       "category": "SYSTEM",
       "default_http_status": 429,
