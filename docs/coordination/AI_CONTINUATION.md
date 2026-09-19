@@ -4,7 +4,7 @@ This is the single start point for an AI that needs to continue or advise on AI 
 
 ## If you can read this repository
 
-1. Read `WORK_READ_FIRST.md`, then `docs/coordination/CROSS_AI_ENTRYPOINT.md`.
+1. Read `WORK_READ_FIRST.md`, then `docs/coordination/AI_CORE_SESSION_OPERATING_DIRECTIVE_2026-09-19.md`, then `docs/coordination/CROSS_AI_ENTRYPOINT.md`. If assigned an Order/A/B/C/D role, follow that role's ownership and implementation mandate from the session directive.
 2. Read `docs/integration/INTEGRATION_STATUS.md` for the current integration checkpoint and its unresolved items. Treat owner-reported facts and remote-verified facts separately.
    Then run `npm run core:brief -- --refresh --env-file C:\dev\freepasserp.com\.env.local` — one screen: operations watch, what landed in the last 24h, ledger work and revision drift, live/draft directions, and what is waiting on the owner. `npm run work:recent` shows the landed commits in detail and what arrived after each ledger work's bound revision. Read these instead of re-surveying; UNKNOWN means «not observed», never «nothing happened». See `docs/integration/LANDED_OBSERVATIONS.md` and `docs/integration/OPS_WATCH.md`.
 3. Obtain the coordinator's current scoped packet. Re-read the canonical order/work state before choosing implementation work. A repository clone, role name, packet, proposal or intake claim grants no execution authority.

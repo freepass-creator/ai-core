@@ -107,3 +107,169 @@ AI Core가 일부 중앙 문서만 앞서가고 실제 프로젝트 저장소의
 - Mewcar / Welrix Table / Mewcar-JB우리 Proposal 중앙 발견성 추가
 - Mewcar 자연어 업무 route 추가(실행 권한은 HOLD)
 - 견적 capability에 Welrix runtime/reference project 연결
+
+
+## A-session continuation — DevCenter / FP Settlement / Vehicle Master
+
+### FP Settlement → B candidate
+- `ui.machine-conformance-gate`
+- Project-verified machine UI conformance using rendered-selector scope, last-effective CSS evaluation and CI failure on semantic token/role drift.
+- Project-specific retro styling remains local.
+
+### Vehicle Master → C backport gap
+- Core is ahead on immutable identity and revision-level provenance.
+- Existing exported IDs are documented as stable external keys but leaf IDs are derived from mutable semantic/display values.
+- Direct replacement is HIGH breaking risk; migration must preserve current IDs as aliases during canonical-ID cutover.
+
+### DevCenter → C candidate
+- `result.proof-input-digest-binding`
+- DevCenter binds evidence to source + checker/fixture input digests and invalidates PASS when either source or test implementation changes.
+- AI Core already has broader revision-bound proof policy; this candidate supplies the missing executable specialization.
+- Second-project exact proof was searched in ERP4/Sales/Admin/AIOps and was **not** established. ERP4's checker-manifest known-bad mechanism is adjacent QA evidence, not the same proof-input binding contract. Evidence level remains PROJECT_VERIFIED.
+
+### DevCenter → C backport gap
+- DevCenter `registry.json` source locators are not entry-level revision/hash bound.
+- AI Core central project registry is also stale for DevCenter: recorded `132189799a...`, observed actual head `6a838a28...`.
+- The one-commit delta only extends `standards/backend/FREEPASS-ADMIN-PILOT.md`; no runtime code drift was found in that delta.
+
+
+## A-session continuation — TeamJPKWork / WorkControl / Sonogong
+
+### TeamJPKWork → B promotion
+- `ui.machine-conformance-gate` receives its second independent project implementation.
+- Evidence: `teamjpkwork@75bb285a241b68c13acbe532c30d6d91110f8082` plus FP Settlement first evidence.
+- Promotion: `PROJECT_VERIFIED → CROSS_PROJECT_VERIFIED`.
+- Route: B / `COMMON_ADOPTED_CANDIDATE`.
+- Local design values and theme-specific rules remain project/profile-specific.
+
+### WorkControl → D supporting evidence
+- Human/UI completion claims are independently checked against business evidence.
+- Adds a third project to `workflow.guard-vs-evidence` and `workflow.launch-vs-completion`.
+- `workflow.obligation-pair` is not promoted because due/timeout enforcement was not proven in the inspected runtime.
+
+### Sonogong Estimator → production-proof HOLD
+- Repository contains live-bundle feature-marker and app-commit verification mechanics.
+- Historical handoff says the Vercel site was live, but the currently connected Vercel team exposes zero projects.
+- Current production target/revision cannot be independently resolved.
+- `release.production-revision-proof` evidence level remains unchanged; Sonogong is not counted as second production proof.
+
+
+## A-session continuation — Mewcar / Homepage / Renman / Chakhandeal
+
+### Mewcar → C backport gap
+- Project content SSOT is strong: four-file canonical set, explicit assertion maturity (`확정/대표 의견/내부안/미정`), history retention, planning vs legal execution separation.
+- Gap: `PROJECT_READ_FIRST.md` still opens with the older 2026-09-16 canonical route while the 2026-09-18 `정본/README.md` supersedes it with the four-file canonical set.
+- Direction: **Core > Project** for canonical-entrypoint/supersession discipline.
+- Migration: repoint entrypoint → preserve old docs as source/history → explicit supersession verification.
+
+### FreePass Homepage → B backport gap
+- Current head: `5f0152c26ac1f106a5f5aee46a3e0020d653c8f5`.
+- Smooth scroll, reveal transitions, marquee, count-up and continuous canvas animation are present.
+- No reduced-motion branch was found.
+- Direction: **Core > Project**; AI Core B standard already requires reduced-motion behavior.
+- No new B standard candidate created.
+
+### Renman → D candidate
+- New candidate: `workflow.compensated-multiwrite`.
+- Evidence: `renman@262e06de09db94a116fa377ea2f5dbe024bb086b`.
+- Multi-write failure compensates already-applied effects in reverse order using domain-owned undo patches.
+- Compensation failure is not swallowed; remaining partial state is surfaced explicitly.
+- Evidence level: `PROJECT_VERIFIED`; second exact project required.
+
+### Chakhandeal → no promotion / implementation HOLD
+- Identity-token subject binding, PII vault and e-contract read-through are real code/test evidence.
+- But Phase 4 `consent_grants` remains design-only:
+  - `hasValidConsentGrant` is still a `return false` stub.
+  - planned `tests/phase4-grant.test.js` is absent.
+- Therefore granular consent-grant behavior is **not** counted as project-verified.
+- This is retained as a negative promotion-control example: spec/brief presence is not implementation evidence.
+
+### DocsHub / FreePass Homepage promotion decision
+- DocsHub was inspected but no new B/C/D common mechanism met the promotion threshold.
+- Homepage produced a backport accessibility gap, not a reverse-import candidate.
+
+
+## A-session continuation — FreePassERP3 / JPKERP-v4 / legacy lineage
+
+### FreePassERP3 → C backport gap
+- Current head: `8d8b7a559272a37823f879b77099b3bc17bf5a16`.
+- `ssot-snap.js` explicitly forces unknown/nonexistent trims to the nearest existing SSOT trim.
+- Weak trim similarity (<0.2) can remain an info-only `트림추정` while overall `confidence` still returns `high` if no hard-review flag exists.
+- Direction: **Core > Project**.
+- Migration: preserve raw facts, separate normalized candidate, REVIEW_REQUIRED/UNRESOLVED gate, bind source master revision.
+
+### JPKERP-v4 → C backport gap
+- Current head: `8e72823454732a0d6bceddf8be646ad3c9cc83ff`.
+- Shared keyed RTDB store mutates local cache/listeners before server ACK.
+- Failed server write only alerts/logs; local state is not rolled back/reconciled and caller receives no awaitable result.
+- Direction: **Core > Project**.
+- Migration: server-acknowledged mutation result + pending/confirmed/failed + rollback/reconciliation.
+
+### FreePassERP3 → B candidate
+- New candidate: `ui.client-release-freshness`.
+- Evidence: introducing commit `5344a5001a6d62d686c79090a250c9aa21b470c3`; current version watcher is actually started from `src/app.js`.
+- Real failure addressed: a long-lived SPA tab kept executing old JS after a deployment because old hashed chunks still loaded successfully.
+- Generalized mechanism: served build identity → stale-client detection → safe update UX.
+- Evidence: `PROJECT_VERIFIED`, second independent project required.
+
+### Evidence independence / lineage control
+- `billincar` must **not** be treated as an independent second implementation merely because it is a separate repository.
+  - commit `68d1c16c322f027037ebeac14749f1f9de3989d0`: “billincar 클론 초기화”.
+  - current Billincar and JPKERP-v4 still share identical implementation blobs at common paths (e.g. `lib/dedup.ts`, audit/store utilities).
+- `rentsafe` and `chakhandeal` are not GitHub-declared forks, but their current trees have 92 common file paths and 52 byte-identical blobs at the same paths.
+  - therefore they are treated as **lineage-overlap / independence-unproven** for A-session cross-project evidence.
+  - do not use them together to satisfy `SECOND_PROJECT_REQUIRED` unless the specific candidate implementations are shown to be independently evolved and materially distinct.
+- This prevents cloned/forked code from falsely upgrading `PROJECT_VERIFIED → CROSS_PROJECT_VERIFIED`.
+
+### No promotion this pass
+- `freepasspartner`: inspected as outreach/proposal/queue tooling; no B/C/D common mechanism met the current promotion threshold.
+- `billincar`: useful as a derived deployment/product variant, but not counted as independent evidence from JPKERP lineage.
+- `rentsafe`: useful historical evidence, but Chakhandeal lineage overlap requires independence review before cross-project counting.
+
+
+## A-session continuation — TeamJPK / Gimpo / early ERP lineage
+
+### TeamJPK → B accessibility backport
+- Current head: `b26cd298f07023dab38ee33b7de7ce95528df29b`.
+- Current viewport still disables user zoom with `maximum-scale=1, user-scalable=no`; commit `dffbc055...` explicitly locked pinch zoom.
+- Continuous/decorative animation also lacks reduced-motion handling.
+- Direction: **Core > Project**; migrate to zoom-enabled responsive behavior + reduced-motion profile.
+
+### Gukmincha Gimpo → D supporting evidence
+- Current head: `0e32380725cc2d98c93b5462b282ade52047c45a`.
+- Independently reinforces `workflow.fact-vs-state`.
+- Stall status is derived from Lease + Billing + date + config facts; the Map/index is a read projection, not canonical truth.
+- Candidate stays `CROSS_PROJECT_VERIFIED`; this adds a distinct property/parking domain.
+
+### JPKERP → D/C backport gap
+- Current head: `e6de03adbac98a33da7d844fb8fb197ff885e7cb`.
+- Event save persists first; downstream payment reconciliation exceptions are swallowed.
+- Reconciliation updates multiple billing rows sequentially and writes event back-reference last, so partial financial state can remain without a surfaced result.
+- Direction: **Core > Project**.
+- Migration: explicit reconciliation lifecycle/result + idempotent retry + transaction/outbox/compensation + failure-injection tests.
+- Negative evidence for `workflow.compensated-multiwrite`; not positive second-project evidence.
+
+### Early ERP lineage independence
+- `jpkerp2` event modules inspected here are byte-identical to `jpkerp`:
+  - `lib/event-meta.ts@5c0c9185...`
+  - `lib/firebase/events.ts@943e0fff...`
+- Therefore JPKERP/JPKERP2 are not counted as two independent projects for those patterns.
+
+### No promotion this pass
+- `freeepasserp2`, `freepasserp`, and `ci_center` were scanned for deltas/preserved patterns.
+- Their observed useful UI/component/catalog/brand patterns are already represented by newer project evidence or do not meet current B/C/D promotion gates.
+- `welrix-proposal` and `mewcar-jbwoori-proposal` remain document/proposal-specific evidence; no new B/C/D common contract was promoted in this pass.
+
+
+## A-session repository coverage registry
+
+- Machine index: `docs/research/a-session-repo-coverage.v1.json`
+- Human guide: `docs/research/A_SESSION_REPO_COVERAGE_2026-09-19.md`
+- Connected repositories covered: **36**
+  - CORE_BASELINE 1
+  - DEEP_EVIDENCE 22
+  - SAMPLED_NO_PROMOTION 9
+  - LINEAGE_OVERLAP 3
+  - MINIMAL_NO_TECH_ASSET 1
+- Future default: compare current HEAD to stored observed HEAD and audit only revision deltas unless deployment/runtime/external evidence changed.
+- AI Core itself is a self-reference exception: current HEAD is resolved at audit start rather than stored in its own coverage registry.
