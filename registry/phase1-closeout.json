@@ -1,0 +1,83 @@
+{
+  "schema_version": "1.0",
+  "phase": "PHASE_1",
+  "status": "HOLD",
+  "observed_revision": "7387015ae0ba57ba0d317aa2a38110073ddbea3d",
+  "ci": {
+    "run_id": 35444397189,
+    "head_sha": "7387015ae0ba57ba0d317aa2a38110073ddbea3d",
+    "conclusion": "failure"
+  },
+  "gates": {
+    "ownership_linked": true,
+    "executable_baseline": false,
+    "registry_linkage": false,
+    "revision_evidence": true,
+    "validation_green": false,
+    "no_false_completion": true
+  },
+  "lanes": [
+    {
+      "id": "A",
+      "owner": "Repo Intelligence / Reverse Import",
+      "status": "REVIEW",
+      "blockers": [
+        "Phase 1 exit return packet has not yet been recorded against the closeout order."
+      ],
+      "evidence": [
+        { "path": "docs/coordination/REPOSITORY_BACKFILL_AUDIT_2026-09-19.md" },
+        { "path": "docs/research/A_SESSION_PROMOTION_MATRIX_2026-09-19.md" },
+        { "path": "docs/research/a-session-promotion-matrix.v1.json" }
+      ]
+    },
+    {
+      "id": "B",
+      "owner": "Global UI/UX Platform",
+      "status": "HOLD",
+      "blockers": [
+        "Order has not yet verified a B-owned machine validation path and Feature Registry linkage for the Phase 1 scope.",
+        "B must return a Phase 1 gap-to-exit packet separating baseline blockers from Phase 2 enhancements."
+      ],
+      "evidence": [
+        { "path": "docs/SCREEN_DESIGN_STANDARD.md" },
+        { "path": "docs/FREEPASS_PRODUCT_UI_PROFILE.md" },
+        { "path": "design-system/tokens.css" },
+        { "path": "design-system/components.css" }
+      ]
+    },
+    {
+      "id": "C",
+      "owner": "Core Contract Platform",
+      "status": "REVIEW",
+      "blockers": [
+        "C must return Phase 1 gap-to-exit evidence covering the full contract baseline, not only currently implemented capability contracts."
+      ],
+      "evidence": [
+        { "path": "contracts/capability-registry.schema.json" },
+        { "path": "src/engine/adapter-contract.mjs" },
+        { "path": "src/engine/capability-engine.mjs" },
+        { "path": "src/engine/execution-receipt.mjs" }
+      ]
+    },
+    {
+      "id": "D",
+      "owner": "Workflow Platform",
+      "status": "HOLD",
+      "blockers": [
+        "Order inspection has not found a generic workflow registry plus transition validator/test/simulator on main.",
+        "D must decide whether current Control Tower/work-ledger primitives satisfy part of the baseline or a dedicated workflow layer must land."
+      ],
+      "evidence": [
+        { "path": "docs/CONTROL_TOWER.md" },
+        { "path": "contracts/work-ledger-event.schema.json" },
+        { "path": "docs/research/WORKFLOW_STATE_MACHINE_CROSS_REPO_FINDINGS_2026-09-19.md" }
+      ]
+    }
+  ],
+  "deferrable": [
+    "Production activation of capabilities that are correctly HOLD.",
+    "Migration of every subsidiary repository.",
+    "Implementation of every provider-specific adapter.",
+    "Phase 2 enhancements that do not block a new project from starting on the common baseline."
+  ]
+}
