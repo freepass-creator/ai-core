@@ -36,7 +36,7 @@ A-session cross-repo evidence에서 일반화:
 ## 구현된 P0
 
 - 23 canonical schemas in `registry/core-contracts.json`
-- exact-head CI: 562 tests, 561 passed, 0 failed, 1 skipped
+- exact-head CI: 569 tests, 568 passed, 0 failed, 1 skipped
 - `contracts:validate`: VALID / 23 contracts / 13 error codes / 0 concrete event types registered yet
 - canonical error-code registry
 - canonical event-type registry
@@ -44,6 +44,7 @@ A-session cross-repo evidence에서 일반화:
 - semantic SSOT source/pipeline validators
 - Engine/Adapter binding resolver
 - legacy adapter shadow bridge
+- real builtin adoption proof: `core.brief` SUCCEEDED + `work.projection` HOLD are executed through the existing adapter runtime and validated as `core-adapter-result/v1` shadow projections
 - CI `contracts:validate`
 - breaking-change compatibility gate (`contracts:compat`)
 - contract tests
