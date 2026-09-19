@@ -39,6 +39,12 @@ export function createGitHubProjectInspector({gh=defaultGh,clock=Date.now}={}){
       need(text!==null,'PACKAGE_JSON_UNREADABLE');
       try{packageJson=JSON.parse(text);}catch{throw new Error('PACKAGE_JSON_INVALID');}
     }
+    let readmeText=null;
+    if(treePaths.includes('README.md')){
+      const payload=await gh([`repos/${repository}/contents/README.md?ref=${revision}`]);
+      readmeText=decodeContent(payload);
+      need(readmeText!==null&&readmeText.length>0,'README_UNREADABLE');
+    }
     return buildProjectCapsule({
       project_id,
       repository,
@@ -47,6 +53,7 @@ export function createGitHubProjectInspector({gh=defaultGh,clock=Date.now}={}){
       observed_at:new Date(clock()).toISOString(),
       tree_paths:treePaths,
       package_json:packageJson,
+      readme_text:readmeText,
     });
   };
 }
