@@ -101,6 +101,8 @@ AI Core의 사용자 경험은 복잡한 조직도를 그대로 노출하지 않
 
 기본 경로: `AI Core → Project Resolve → DevCenter capability reuse → branch/worktree → build/test/preview → Proof Bundle → 필요 시 release`.
 
+배포/릴리스 공통 판정은 `docs/shared-services/SHARED_RELEASE_GATE.md`를 따른다. `merge`·`deployment READY`·`production observation`을 같은 완료 상태로 합치지 않는다.
+
 ### 2.6 문서/커뮤니케이션
 
 - 보고서/제안서
