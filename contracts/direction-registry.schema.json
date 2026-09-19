@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AI Core Direction Registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "무엇", "★읽기전에", "방향"],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "무엇": { "type": "string", "minLength": 1 },
+    "★읽기전에": { "type": "array", "items": { "type": "string" } },
+    "방향": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/direction" }
+    }
+  },
+  "$defs": {
+    "emptyOrDate": {
+      "oneOf": [
+        { "const": "" },
+        { "type": "string", "format": "date-time" }
+      ]
+    },
+    "direction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "무엇", "근거", "적용", "주인", "기한규칙", "관측유효", "허가", "벽", "세운이", "세운때", "만료"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^DIR-.+" },
+        "무엇": { "type": "string", "minLength": 1 },
+        "근거": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "적용": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": { "type": "string", "minLength": 1 }
+        },
+        "주인": { "type": "string", "minLength": 1 },
+        "기한규칙": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["며칠"],
+          "properties": { "며칠": { "type": "number", "exclusiveMinimum": 0 } }
+        },
+        "관측유효": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["시간"],
+          "properties": { "시간": { "type": "number", "exclusiveMinimum": 0 } }
+        },
+        "허가": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["action", "target", "scope", "유효시간"],
+          "properties": {
+            "action": { "type": "string", "minLength": 1 },
+            "target": { "type": "string", "minLength": 1 },
+            "scope": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+            "유효시간": { "type": "number", "exclusiveMinimum": 0 }
+          }
+        },
+        "벽": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "세운이": { "type": "string" },
+        "세운때": { "$ref": "#/$defs/emptyOrDate" },
+        "만료": { "$ref": "#/$defs/emptyOrDate" },
+        "승인근거": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["원장사건", "무엇"],
+          "properties": {
+            "원장사건": { "type": "string", "pattern": "^[A-Z][A-Z0-9_-]*-[0-9]{3,}$" },
+            "무엇": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    }
+  }
+}
