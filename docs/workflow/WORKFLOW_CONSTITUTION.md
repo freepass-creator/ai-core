@@ -46,6 +46,8 @@ A supplies revision-bound evidence. A does not declare D canonical rules.
 18. Multi-aggregate effects declare transaction/outbox/compensation/reconciliation semantics.
 19. Manual override never bypasses concurrency, idempotency or audit, and may bypass only explicitly listed guards/evidence.
 20. Common primitives and domain workflows are distinct. A project state sequence is not automatically a company-wide state sequence.
+21. Business lifecycle state and execution/coordination state are separate axes or separate machines. OUTBOXED, RESERVED, lease ACTIVE, delivery SENT, etc. must not silently become business completion.
+22. Parent aggregate status may be derived from child workflows; derived aggregate status is not independently writable unless the domain explicitly declares an authoritative transition.
 
 ## 3. Adopted primitives
 
