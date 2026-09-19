@@ -258,3 +258,15 @@ A 세션이 조사한 내용을 B·C·D·Security·QA·Governance 세션이 다�
 - Migration: CSS `prefers-reduced-motion` + JS motion guard/static fallback.
 - Destination: **B / Accessibility**
 - Detail: `docs/research/A_SESSION_GAP_FREEPASSHOMEPAGE_REDUCED_MOTION_2026-09-19.md`.
+
+
+## 2026-09-19 Renman compensated multi-write delta
+
+| Candidate | 축 | Evidence | 실제 근거 | 넘길 세션 | 다음 단계 |
+|---|---|---|---|---|---|
+| `workflow.compensated-multiwrite` | Workflow / Compensation | PROJECT_VERIFIED | renman | D | SECOND_PROJECT_REQUIRED |
+
+- 근거: `renman@262e06de09db94a116fa377ea2f5dbe024bb086b`, `lib/commit.ts@e9b3e6d0...`, `tests/commit-compensated.test.ts@3d9038a5...`.
+- 핵심: multi-write 후속 실패 시 **이미 성공한 효과만 역순 보상**, 각 op이 domain-specific undo를 소유, 보상 자체 실패는 반쪽 상태로 명시적 승격.
+- AIOps/ERP4/Admin/Sales에서 exact second-project implementation은 확인하지 못했다.
+- 상세: `docs/research/A_SESSION_DISCOVERY_RENMAN_COMPENSATED_MULTIWRITE_2026-09-19.md`.
