@@ -47,6 +47,19 @@ export function validateCapabilityRegistryReferences(registry, projectRegistry) 
     if (capability.mode !== 'EXTERNAL_MUTATION') {
       need(capability.required_scopes.length === 0, 'NON_EXTERNAL_CAPABILITY_MUST_NOT_REQUIRE_AUTH_SCOPE');
     }
+    if (capability.receipt) {
+      need(capability.status === 'ACTIVE', 'RECEIPT_CAPABILITY_MUST_BE_ACTIVE');
+      const dir = capability.receipt.directory;
+      need(typeof dir === 'string' && dir.length > 0 && !dir.startsWith('/') && !/^[A-Za-z]:[\\/]/.test(dir)
+        && !dir.split(/[\\/]/).includes('..'), 'RECEIPT_DIRECTORY_UNSAFE');
+      const states = [
+        ...(capability.receipt.success_states ?? []),
+        ...(capability.receipt.hold_states ?? []),
+        ...(capability.receipt.failure_states ?? []),
+      ];
+      need(states.length > 0 && new Set(states).size === states.length, 'RECEIPT_STATES_OVERLAP');
+      need(!/[\\/]/.test(capability.receipt.prefix ?? '') && !/[\\/]/.test(capability.receipt.suffix ?? ''), 'RECEIPT_FILENAME_PATTERN_UNSAFE');
+    }
   }
   return { status:'VALID', capability_count:caps.size, project_count:projects.size };
 }
