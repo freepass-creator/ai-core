@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "observed_at": "2026-09-19T03:42:00Z",
+  "observed_at": "2026-09-19T10:33:00Z",
   "capabilities": [
     {
       "id": "core.brief",
@@ -410,7 +410,7 @@
       "required_scopes": [],
       "walls": [],
       "result_contract": "ai-core-work-result/v1",
-      "hold_reason": "Sales 운영 데이터 쓰기 경계와 통화 실행 adapter가 아직 AI Core capability로 연결되지 않았다."
+      "hold_reason": "FreePass Sales defines server-authoritative lead/call state and append-only call records, but AI Core has no approved write/call execution adapter. Launching the phone app is not a completed call result."
     },
     {
       "id": "sales.customer-search",
@@ -448,7 +448,7 @@
         "외부문자발송"
       ],
       "result_contract": "ai-core-work-result/v1",
-      "hold_reason": "외부 문자 발송은 사용자 승인과 채널 adapter가 필요하며 아직 연결되지 않았다."
+      "hold_reason": "FreePass Sales distinguishes message-app launch from confirmed send state and keeps shared promotion state in Firestore. AI Core still lacks an approved external-message adapter and completion proof contract."
     },
     {
       "id": "sales.vehicle-estimator",
@@ -458,7 +458,7 @@
         "sales"
       ],
       "projects": [
-        "sonogong-estimator"
+        "freepass-estimate"
       ],
       "mode": "READ_ONLY",
       "priority": 74,
@@ -466,7 +466,7 @@
       "required_scopes": [],
       "walls": [],
       "result_contract": "ai-core-work-result/v1",
-      "hold_reason": "견적기가 HOLD이며 산식/설정 보안 경계 source-review가 끝나지 않았다."
+      "hold_reason": "FreePass Estimate is now the estimator product/domain authority, but its observed main contains only README.md. Executable new-car quote contract/adapter evidence is still in welrixtable; do not route runtime execution to FreePass Estimate until implementation and tests migrate."
     },
     {
       "id": "erp.product",
@@ -484,7 +484,7 @@
       "required_scopes": [],
       "walls": [],
       "result_contract": "ai-core-work-result/v1",
-      "hold_reason": "ERP 상품 변경은 프로젝트별 Work Packet/검증 profile로 수행되며 아직 단일 capability adapter가 없다."
+      "hold_reason": "ERP4 MAIN Product Browse is stability-locked at 2d9fd07075aae7d6d64687fabbf61126e166c34c with check:erp4-main and same-price-row query integrity. AI Core still has no generic mutation adapter; project-local changes must preserve those locked contracts."
     },
     {
       "id": "erp.contract",

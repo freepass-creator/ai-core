@@ -8,6 +8,11 @@
 > FreePass Admin의 `Domain → Service → Port → Adapter/Repository` 구현은 2026-09-19에 actor/audit, 4단계 진행, Snapshot deep clone, 원자 create/mutate, typed error, immutable Snapshot/identity, append-only history까지 강화됐고 `3f1812c...`에서 npm ci/typecheck/test/build PASS(run 35437766677)를 확보했다. DevCenter에는 `standards/backend/FREEPASS-ADMIN-PILOT.md` candidate로 등록했으며, 두 번째 실제 프로젝트 검증 전에는 전사 표준으로 승격하지 않는다. 상세는 `docs/coordination/FREEPASS_ADMIN_BACKEND_LEARNING.md`를 읽는다.
 > FreePass Estimate의 `one UI → normalized QuoteRequest → configured authoritative provider`, provider별 변환의 adapter 격리, fail-closed 외부 계산, auto/manual navigation state contract는 실제 제품에서 AI Core의 일반 Engine/Adapter 연구보다 더 구체적인 학습 사례다. 또한 구현 revision보다 검증 계약이 뒤처진 E2E drift가 실제로 발견되었다. 자동 승격하지 말고 `docs/coordination/FREEPASS_SELF_QUOTE_ENGINE_ADAPTER_LEARNING.md`를 cross-project learning candidate로 읽는다.
 
+> **Cross-project backfill — 2026-09-19**
+> AI Core project registry was stale for DevCenter, FreePass Homepage, FreePass Sales and ERP4; observed heads were refreshed, and FreePass Estimate was added as the estimator product/domain authority. Estimate authority and implementation evidence are now explicitly separated: Estimate main is README-only at `d29daa37...`, while current executable new-car Quote contract/Adapter evidence remains in Welrix Table at `56affca1...`.
+> FreePass Sales is now a learning source for server-truth vs local-recovery, external-action vs confirmed-completion, append-only evidence, work-key idempotency and selection continuity. ERP4 is a learning source for stability-lock lifecycle, auth/product-boundary separation, canonical-source-only rules and same-price-row query integrity. AIOps shared-candidate infrastructure is catalogued for contract extraction before any code move.
+> FreePass product UI common profile is now `docs/FREEPASS_PRODUCT_UI_PROFILE.md`; the global accessibility baseline remains `docs/SCREEN_DESIGN_STANDARD.md`.
+
 ## Mission
 
 Build an AI operating system that does more than answer prompts: it should understand the user's intended outcome, identify decision-changing gaps, reuse existing knowledge/capabilities, choose the right executor, verify reality, follow through, and learn from outcomes.
