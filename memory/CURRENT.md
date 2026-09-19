@@ -6,6 +6,7 @@
 > 운영 AIOps 과태료는 별도 저장소 main에서 검토 digest/발송대기 전환/health check까지 진전했으나 Windows Task Scheduler의 실제 상태는 로컬 관측 전까지 UNKNOWN이다.  
 > 현재 열린 감사 경계: `registry-refresh` mixed UNKNOWN은 canonical partial write 금지, `REVISION_NOT_IN_PROJECT`는 자동 REOBSERVED 금지, capability 정본 분기 금지. 최신 사실은 target repo/revision-bound evidence가 우선한다.
 > FreePass Admin의 실제 `Domain → Service → Port → Adapter/Repository` 구현은 현재 AI Core/DevCenter의 백엔드 추상화보다 구체적인 학습 사례다. 공통 승격 전 교차 프로젝트 검증을 전제로 `docs/coordination/FREEPASS_ADMIN_BACKEND_LEARNING.md`를 backend architecture learning candidate로 읽는다.
+> FreePass Estimate의 `one UI → normalized QuoteRequest → configured authoritative provider`, provider별 변환의 adapter 격리, fail-closed 외부 계산, auto/manual navigation state contract는 실제 제품에서 AI Core의 일반 Engine/Adapter 연구보다 더 구체적인 학습 사례다. 또한 구현 revision보다 검증 계약이 뒤처진 E2E drift가 실제로 발견되었다. 자동 승격하지 말고 `docs/coordination/FREEPASS_ESTIMATE_LEARNING.md`를 cross-project learning candidate로 읽는다.
 
 ## Mission
 
