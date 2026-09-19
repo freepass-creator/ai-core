@@ -342,3 +342,16 @@ A 세션이 조사한 내용을 B·C·D·Security·QA·Governance 세션이 다�
 - FreePass Sales SW cache versioning is supporting adjacent evidence but is not counted as the exact second implementation.
 - Phase 1 closeout freeze: research branch only; B canonical adoption remains pending.
 - Detail: `docs/research/A_SESSION_DISCOVERY_ERP4_CLIENT_RELEASE_FRESHNESS_SECOND_EVIDENCE_2026-09-19.md`.
+
+
+## 2026-09-19 ERP4 restartable rollback run delta
+
+| Candidate | 축 | Evidence | 실제 근거 | 넘길 세션 | 다음 단계 |
+|---|---|---|---|---|---|
+| `workflow.restartable-rollback-run` | Workflow / Rollback | PROJECT_VERIFIED | freepasserp4 | D | SECOND_PROJECT_REQUIRED |
+
+- 근거: `freepasserp4@44a67ced...`, rollback domain `d99bd80f...`, route `68f2dc72...`, simulation `b77e4ea3...`.
+- 핵심: forward run preimage/postimage + digest + CAS + 단계별 rollback state + 중간 실패 재개 + audit.
+- Renman `workflow.compensated-multiwrite`와 같은 exact 구현으로 세지 않는다. 자동 failure compensation과 명시적 restartable rollback은 트리거/계약이 다르다.
+- Phase 1 closeout freeze: research branch only.
+- 상세: `docs/research/A_SESSION_DISCOVERY_ERP4_RESTARTABLE_ROLLBACK_RUN_2026-09-19.md`.
