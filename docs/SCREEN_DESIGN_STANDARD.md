@@ -97,3 +97,50 @@ Official references:
 Open `examples/ui-components.html` through a local web server. It demonstrates working button actions plus busy and disabled buttons, a native dropdown and the populated state of a responsive accessible table using the canonical tokens. Loading, empty and error table examples remain required when a product adopts the table component; this first sample does not claim to demonstrate them.
 
 Open `examples/ui-patterns.html` for the next common layer: form validation, radio and checkbox choices, keyboard tabs, disclosure, inline alerts, loading/empty/error/populated data states, pagination, toast feedback and destructive confirmation.
+
+
+## Universal feature registry
+
+The machine-readable SSOT for reusable interaction behavior is `registry/ui-ux-features.json`. Its grammar is `contracts/ui-ux-feature-registry.schema.json`.
+
+Normative hierarchy:
+
+1. This document defines the human-readable universal interaction/accessibility baseline.
+2. `registry/ui-ux-features.json` enumerates each common feature by stable ID and fixes its states, behaviors, shared profiles and verification requirements.
+3. Product profiles such as `docs/FREEPASS_PRODUCT_UI_PROFILE.md` may select brand, density, icon family, domain copy and business priority, but may not fork the common feature semantics.
+4. A new reusable feature is not a local standard until it has a registry entry or a documented temporary exception.
+
+Run `npm run uiux:validate` before adopting or modifying common UI/UX behavior.
+
+### Global consistency rule
+
+A feature ID means the same thing in every product, country, team and implementation language. Visual presentation may adapt, but state names, completion meaning, failure/retry semantics, accessibility behavior and data-safety boundaries remain invariant.
+
+This does not mean every product has identical colors or spacing. It means that, for example, `form.file-upload`, `workflow.explicit-save`, `integration.engine-job` and `integration.adapter-connection` have one shared behavioral contract wherever they appear.
+
+### Internationalization and direction
+
+- Store canonical values separately from localized presentation for dates, times, numbers and currency.
+- Declare language and text direction explicitly. Do not infer text direction solely from locale or language.
+- Layout must support LTR and RTL, long translated labels and locale-specific formatting without changing business behavior.
+- Do not build translated sentences by concatenating fragments whose word order may differ by language.
+- Keyboard, focus, state, failure and completion semantics do not change with locale.
+
+Official references:
+
+- https://www.w3.org/TR/WCAG22/
+- https://www.w3.org/WAI/ARIA/apg/
+- https://www.w3.org/International/docs/bp-html-bidi/
+- https://www.w3.org/International/articles/lang-bidi-use-cases/
+
+### Engine and adapter presentation contracts
+
+Long-running engine work uses explicit states: `queued → running → partial|succeeded|failed|cancelled`. A request being accepted or started is never rendered as completed. Job identity, retry eligibility, progress/result and completion receipt are observable.
+
+Adapters use explicit health states: `disconnected → connecting → connected`, with `syncing`, `degraded` and `error` as distinct observable conditions. The UI exposes source identity and last successful synchronization when that affects trust.
+
+External actions such as phone, SMS, email or third-party deep links distinguish `launched` from verified completion. Opening another app is not a success receipt.
+
+### Exception contract
+
+Product-specific exceptions must identify the feature ID, product, reason, owner, verification evidence and expiry/review date. Accessibility, data integrity, authority and completion-proof requirements are not waived by visual preference. Temporary exceptions never become a second standard by copy-paste.
