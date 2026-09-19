@@ -201,9 +201,9 @@ Completed additionally:
 
 Still not completed:
 
-- replacing the hard-coded Work Ledger transition map with registry-backed execution
+- extending registry-backed Work lifecycle from state-graph lookup into full generic D-engine decision execution
 - replacing OrderStore imperative task transition branches with D engine authority
 - replacing Capability Execution imperative state branches with D engine authority
 - migrating business-project domain workflows into the registry
 
-Therefore all three current SHADOW models remain comparison gates; existing runtime authorities remain unchanged.
+Therefore Order/Task and Capability Execution remain SHADOW comparison gates. The Work lifecycle state graph is now CANONICAL in D Registry, while Work Ledger remains the canonical append-only history/evidence executor.
