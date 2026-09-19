@@ -2,7 +2,7 @@
 
 기준 revision: `444066bea9ac00e4cf4ba539c7b5344154bd407e`
 
-상태: **P0 IMPLEMENTED ON PR #94 / CI VERIFICATION IN PROGRESS**
+상태: **P0 IMPLEMENTED ON PR #94 / EXACT-HEAD CI PASS**
 
 ## 감사 결론
 
@@ -36,6 +36,8 @@ A-session cross-repo evidence에서 일반화:
 ## 구현된 P0
 
 - 23 canonical schemas in `registry/core-contracts.json`
+- exact-head CI: 562 tests, 561 passed, 0 failed, 1 skipped
+- `contracts:validate`: VALID / 23 contracts / 13 error codes / 0 concrete event types registered yet
 - canonical error-code registry
 - canonical event-type registry
 - AJV Draft 2020-12 validator
