@@ -38,7 +38,8 @@
         "COMMAND",
         "READ",
         "WRITE",
-        "SINK"
+        "SINK",
+        "MIXED"
       ]
     },
     "input_schema": {
