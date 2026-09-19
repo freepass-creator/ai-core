@@ -386,13 +386,13 @@ Migration sequence:
 This v1 therefore introduces the common contract without silently changing current ledger authority.
 
 
-## Work Ledger SHADOW parity checkpoint
+## Work Ledger canonical runtime + parity checkpoint
 
 `registry/workflows.json` now contains `ai-core.work-lifecycle@0.1.0` with `adoption_status=CANONICAL`.
 
 `scripts/work-ledger.mjs` now consumes this Registry graph directly. D owns the lifecycle state graph; Work Ledger retains append-only event/hash/revision/evidence history authority.
 
-The SHADOW includes:
+The canonical Registry model includes:
 
 - all current Work Ledger states
 - all 30 normal transition pairs
@@ -413,14 +413,14 @@ Source authority is machine-pinned to:
 
 A SHADOW workflow without source authority is invalid.
 
-The parity test suite compares the current Ledger and D SHADOW against the same candidate transitions, including the full 11×11 state-pair matrix. If the source blobs change, the source-lock test fails until the SHADOW is re-audited.
+The parity test suite compares Work Ledger behavior and the D Registry model against the same candidate transitions, including the full 11×11 state-pair matrix. Source drift fails until the integration provenance is refreshed and parity is re-audited.
 
 This checkpoint completed the first runtime migration: the hard-coded Work Ledger transition map was removed. Frozen legacy-matrix tests and the full parity suite protect behavior during the authority split.
 
 
-## Order / Task SHADOW parity checkpoint
+## Order / Task canonical runtime + parity checkpoint
 
-`registry/workflows.json` contains `ai-core.order-task-lifecycle@0.1.0` as SHADOW.
+`registry/workflows.json` contains `ai-core.order-task-lifecycle@0.1.0` as CANONICAL.
 
 The machine extracts the child-task lifecycle currently embedded in `OrderStore.mutate()`:
 
@@ -439,7 +439,7 @@ Explicit transitions cover:
 - block
 - parent-revision invalidation back to PENDING
 
-The SHADOW intentionally does **not** model heartbeat as a business transition. Heartbeat is an audited lease fact update that preserves RUNNING.
+The canonical workflow intentionally does **not** model heartbeat as a business transition. Heartbeat is an audited lease fact update that preserves RUNNING.
 
 Guards mirror current OrderStore behavior for:
 
@@ -461,12 +461,12 @@ Parent Order status remains a derived aggregate:
 
 The current close action records `USER_ACCEPTED_NOT_CANONICAL` and leaves the parent in REVIEW. D preserves that distinction rather than manufacturing canonical completion.
 
-The SHADOW is source-pinned to the exact `src/orders/store.mjs` Git blob and parity-tested against the real OrderStore.
+OrderStore consumes the canonical workflow through `src/workflow/order-task-runtime.mjs`. Integration provenance is source-pinned to the exact `src/orders/store.mjs` Git blob and parity-tested against the real store.
 
 
-## Capability Execution SHADOW parity checkpoint
+## Capability Execution canonical runtime + parity checkpoint
 
-`ai-core.capability-execution@0.1.0` is registered as SHADOW.
+`ai-core.capability-execution@0.1.0` is registered as CANONICAL.
 
 Persistent coordination lifecycle:
 
@@ -480,7 +480,7 @@ Important distinction:
 - a terminal receipt may reconcile to a RESULT whose result status is SUCCEEDED, FAILED or HOLD
 - result status is a Result/Fact semantic, not another hidden lifecycle state
 
-The SHADOW preserves:
+The canonical workflow preserves:
 
 - durable request-id reservation
 - same request/same payload replay
