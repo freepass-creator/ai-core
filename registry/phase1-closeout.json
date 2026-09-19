@@ -2,18 +2,18 @@
   "schema_version": "1.0",
   "phase": "PHASE_1",
   "status": "HOLD",
-  "observed_revision": "7387015ae0ba57ba0d317aa2a38110073ddbea3d",
+  "observed_revision": "462afc69da83b1f9074b25d1d8b2d6d60abc79ba",
   "ci": {
-    "run_id": 35444397189,
-    "head_sha": "7387015ae0ba57ba0d317aa2a38110073ddbea3d",
-    "conclusion": "failure"
+    "run_id": 35444588930,
+    "head_sha": "462afc69da83b1f9074b25d1d8b2d6d60abc79ba",
+    "conclusion": "success"
   },
   "gates": {
     "ownership_linked": true,
     "executable_baseline": false,
     "registry_linkage": false,
     "revision_evidence": true,
-    "validation_green": false,
+    "validation_green": true,
     "no_false_completion": true
   },
   "lanes": [
@@ -25,9 +25,15 @@
         "Phase 1 exit return packet has not yet been recorded against the closeout order."
       ],
       "evidence": [
-        { "path": "docs/coordination/REPOSITORY_BACKFILL_AUDIT_2026-09-19.md" },
-        { "path": "docs/research/A_SESSION_PROMOTION_MATRIX_2026-09-19.md" },
-        { "path": "docs/research/a-session-promotion-matrix.v1.json" }
+        {
+          "path": "docs/coordination/REPOSITORY_BACKFILL_AUDIT_2026-09-19.md"
+        },
+        {
+          "path": "docs/research/A_SESSION_PROMOTION_MATRIX_2026-09-19.md"
+        },
+        {
+          "path": "docs/research/a-session-promotion-matrix.v1.json"
+        }
       ]
     },
     {
@@ -39,10 +45,23 @@
         "B must return a Phase 1 gap-to-exit packet separating baseline blockers from Phase 2 enhancements."
       ],
       "evidence": [
-        { "path": "docs/SCREEN_DESIGN_STANDARD.md" },
-        { "path": "docs/FREEPASS_PRODUCT_UI_PROFILE.md" },
-        { "path": "design-system/tokens.css" },
-        { "path": "design-system/components.css" }
+        {
+          "path": "docs/SCREEN_DESIGN_STANDARD.md"
+        },
+        {
+          "path": "docs/FREEPASS_PRODUCT_UI_PROFILE.md"
+        },
+        {
+          "path": "design-system/tokens.css"
+        },
+        {
+          "path": "design-system/components.css"
+        },
+        {
+          "path": "docs/UI_UX_CONSTITUTION.md",
+          "revision": "f72254485a2001b2631520ef6be60aa24d9f8dca",
+          "note": "B4 candidate chain is CI-green but remains outside main; root PR #92 must be synchronized before Phase 1 PASS."
+        }
       ]
     },
     {
@@ -53,10 +72,23 @@
         "C must return Phase 1 gap-to-exit evidence covering the full contract baseline, not only currently implemented capability contracts."
       ],
       "evidence": [
-        { "path": "contracts/capability-registry.schema.json" },
-        { "path": "src/engine/adapter-contract.mjs" },
-        { "path": "src/engine/capability-engine.mjs" },
-        { "path": "src/engine/execution-receipt.mjs" }
+        {
+          "path": "contracts/capability-registry.schema.json"
+        },
+        {
+          "path": "src/engine/adapter-contract.mjs"
+        },
+        {
+          "path": "src/engine/capability-engine.mjs"
+        },
+        {
+          "path": "src/engine/execution-receipt.mjs"
+        },
+        {
+          "path": "docs/CORE_CONTRACT_STANDARD.md",
+          "revision": "681dd6d6c083d6fcdaf151110bcab761d286d3b8",
+          "note": "C adoption chain is CI-green but remains outside main; PR #94/#96 must be synchronized before Phase 1 PASS."
+        }
       ]
     },
     {
@@ -68,9 +100,20 @@
         "D must decide whether current Control Tower/work-ledger primitives satisfy part of the baseline or a dedicated workflow layer must land."
       ],
       "evidence": [
-        { "path": "docs/CONTROL_TOWER.md" },
-        { "path": "contracts/work-ledger-event.schema.json" },
-        { "path": "docs/research/WORKFLOW_STATE_MACHINE_CROSS_REPO_FINDINGS_2026-09-19.md" }
+        {
+          "path": "docs/CONTROL_TOWER.md"
+        },
+        {
+          "path": "contracts/work-ledger-event.schema.json"
+        },
+        {
+          "path": "docs/research/WORKFLOW_STATE_MACHINE_CROSS_REPO_FINDINGS_2026-09-19.md"
+        },
+        {
+          "path": "docs/workflow/WORKFLOW_CONSTITUTION.md",
+          "revision": "6c9a295330db9a11fa8d1320e0af4b980fef2d32",
+          "note": "D candidate branch exists but CI run 35443899282 is red on recovery-policy reconciliation."
+        }
       ]
     }
   ],
