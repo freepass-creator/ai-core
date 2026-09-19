@@ -320,6 +320,7 @@
     "2026-09-19 D-session Capability Execution runtime migration: RESERVED→RESULT persistence now requires D Workflow Engine approval; direct completion and terminal-receipt reconciliation emit distinct workflow transition/event metadata while preserving existing stable error/idempotency/safe-receipt behavior.",
     "2026-09-19 D-session Order Task runtime migration: assign/claim/report/block/revision invalidation now require D Workflow Engine approval and use engine to_state; parent Order status now comes from D derived projection logic while existing stable validation errors and storage/event behavior remain.",
     "2026-09-19 D-session provenance refresh: workflow-bridges source pins now match the migrated OrderStore and Capability Execution coordinator runtime blobs.",
-    "2026-09-19 shared-orders fixture refresh: cloned checkout tests now copy Order runtime workflow dependencies and registry/workflows.json after OrderStore became D-engine dependent."
+    "2026-09-19 shared-orders fixture refresh: cloned checkout tests now copy Order runtime workflow dependencies and registry/workflows.json after OrderStore became D-engine dependent.",
+    "2026-09-19 D-session runtime migration verification: feature/parity/shared-clone/bridge tests all passed after fixture refresh; successor changed_files was regenerated once more from the exact base revision to include the fixture commit."
   ]
 }
