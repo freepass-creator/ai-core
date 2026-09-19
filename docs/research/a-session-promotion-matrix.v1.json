@@ -382,6 +382,18 @@
       "target_session": "Governance/Security",
       "finding": "CycloneDX/SPDX SBOM profile",
       "next_gate": "RISK_PROFILE_PILOT"
+    },
+    {
+      "id": "workflow.recovery-slot-no-replay",
+      "axis": "Workflow/Recovery",
+      "evidence_level": "PROJECT_VERIFIED",
+      "projects": [
+        "freepasserp4"
+      ],
+      "target_session": "D/C",
+      "finding": "logical execution identity를 native/fallback/downstream 경로 전체에 공유하고, 성공 증거를 recovery eligibility 전에 대사하며 recovery cursor를 monotonic no-replay로 유지",
+      "next_gate": "SECOND_PROJECT_REQUIRED",
+      "evidence_note": "freepasserp4 audit 76 at 1cf94b788a204777109cf2031b1f518fbcd99b01: native settlement 35434637121 and downstream ERP5 35434667030 succeeded, yet fallback settlement 35439018911 and downstream ERP5 35439046831 replayed the same logical 18:05 slot. No duplicate rows/data corruption are claimed. AIOps requestKey/lease/run-manifest is adjacent evidence only and is not counted as a second exact implementation."
     }
   ]
 }
