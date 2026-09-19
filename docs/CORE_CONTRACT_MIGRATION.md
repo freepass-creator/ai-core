@@ -114,3 +114,12 @@ canonical read owner를 Core contract 쪽으로 전환한다. 이 시점에도 w
 - 중요한 write에 receipt/evidence 존재
 - migration 이후 legacy fallback이 default path가 아님
 - contract tests가 CI에서 통과
+
+## 현재 Shadow Pilot
+
+AI Core 자체의 실제 builtin 두 경로를 첫 pilot으로 사용한다.
+
+- `core.brief`: 실제 SUCCEEDED 결과를 canonical adapter result로 shadow projection
+- `work.projection`: provider가 없을 때 실제 HOLD/blocker 의미를 canonical issues로 shadow projection
+
+두 경로 모두 기존 runtime authority와 `ai-core-work-result/v1`을 변경하지 않고 비교 검증한다. 이 pilot이 통과해야 다음 프로젝트 adapter를 동일 방식으로 migration한다.
