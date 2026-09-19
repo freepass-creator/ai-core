@@ -2738,6 +2738,11 @@
       "evidence_requirements": [],
       "commands": [
         {
+          "command_id": "capability-execution.reserve",
+          "intent": "Durably reserve execution identity before any effect",
+          "idempotency_required": true
+        },
+        {
           "command_id": "capability-execution.complete",
           "intent": "Persist a safe capability execution result",
           "idempotency_required": true
@@ -2749,6 +2754,10 @@
         }
       ],
       "events": [
+        {
+          "event_type": "ai-core.capability-execution.reserved",
+          "meaning": "Execution identity was durably reserved in initial RESERVED state."
+        },
         {
           "event_type": "ai-core.capability-execution.resulted",
           "meaning": "A safe durable capability result was persisted."
