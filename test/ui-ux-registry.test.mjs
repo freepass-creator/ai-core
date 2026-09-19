@@ -10,7 +10,7 @@ const registry = JSON.parse(
 test('universal UI/UX registry covers the required common feature families', () => {
   const result = validateUiUxRegistrySemantics(registry);
   assert.equal(result.status, 'VALID');
-  assert.ok(result.count >= 40);
+  assert.ok(result.count >= 84);
   assert.equal(result.families, 9);
   assert.ok(result.profiles >= 8);
 });
@@ -35,4 +35,21 @@ test('all feature profiles must resolve to a canonical shared profile', () => {
   const broken = structuredClone(registry);
   broken.features.find((item) => item.id === 'form.file-upload').profiles.push('LOCAL_MAGIC');
   assert.throws(() => validateUiUxRegistrySemantics(broken), /UIUX_UNKNOWN_PROFILE/);
+});
+
+
+test('globalization baseline features are mandatory', () => {
+  const broken = structuredClone(registry);
+  broken.features = broken.features.filter((item) => item.id !== 'system.bidi');
+  assert.throws(() => validateUiUxRegistrySemantics(broken), /UIUX_BASELINE_FEATURE_MISSING:system\.bidi/);
+});
+
+test('globalization verification matrix cannot silently regress', () => {
+  const brokenI18n = structuredClone(registry);
+  brokenI18n.profiles.I18N.verification = brokenI18n.profiles.I18N.verification.filter((item) => item !== 'mixed-bidi');
+  assert.throws(() => validateUiUxRegistrySemantics(brokenI18n), /UIUX_I18N_VERIFICATION_MISSING:mixed-bidi/);
+
+  const brokenResponsive = structuredClone(registry);
+  brokenResponsive.profiles.RESPONSIVE.verification = brokenResponsive.profiles.RESPONSIVE.verification.filter((item) => item !== '400%-reflow');
+  assert.throws(() => validateUiUxRegistrySemantics(brokenResponsive), /UIUX_RESPONSIVE_VERIFICATION_MISSING:400%-reflow/);
 });
