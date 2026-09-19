@@ -425,6 +425,18 @@
       "finding": "proof를 subject revision뿐 아니라 source/checker/fixture input digest와 결속하고 검증 중 입력 변경 또는 checker 변경 시 stale 처리",
       "next_gate": "SECOND_PROJECT_REQUIRED",
       "evidence_note": "DevCenter verify-acceptance snapshots sourceDigest before/after and card-audit stores exact input SHA256 set. Regression explicitly verifies source change and test implementation change invalidate prior evidence."
+    },
+    {
+      "id": "workflow.compensated-multiwrite",
+      "axis": "Workflow/Compensation",
+      "evidence_level": "PROJECT_VERIFIED",
+      "projects": [
+        "renman"
+      ],
+      "target_session": "D",
+      "finding": "multi-effect sequential write에서 후속 실패 시 이미 적용된 effect만 domain-specific undo로 역순 보상하고, 보상 실패 시 partial state를 숨기지 않고 명시적으로 escalation",
+      "next_gate": "SECOND_PROJECT_REQUIRED",
+      "evidence_note": "Renman commitAllCompensated at lib/commit.ts and commit-compensated tests verify reverse-order compensation, skip-without-undo semantics, audit-path compensation and explicit partial-state error when compensation itself fails."
     }
   ]
 }
