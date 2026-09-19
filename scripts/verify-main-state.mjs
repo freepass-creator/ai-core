@@ -156,7 +156,14 @@ export async function verifyRepository(root) {
     const changedSince = execFileSync('git', ['-c', 'core.quotepath=false', 'diff', '--name-only', active.base_revision], { cwd: root, encoding: 'utf8' }).trim().split(/\r?\n/).filter(Boolean);
     const newFiles = execFileSync('git', ['-c', 'core.quotepath=false', 'ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim().split(/\r?\n/).filter(Boolean);
     const actual = combineChangedFiles(changedSince, newFiles).sort();
-    if (JSON.stringify(actual) !== JSON.stringify([...(active.changed_files ?? [])].sort())) errors.push('successor episode changed files do not match repository diff');
+    const recorded = [...(active.changed_files ?? [])].sort();
+    if (JSON.stringify(actual) !== JSON.stringify(recorded)) {
+      const actualSet = new Set(actual);
+      const recordedSet = new Set(recorded);
+      const missing = actual.filter(path => !recordedSet.has(path));
+      const extra = recorded.filter(path => !actualSet.has(path));
+      errors.push(`successor episode changed files do not match repository diff; missing=[${missing.join(',')}]; extra=[${extra.join(',')}]`);
+    }
     for (const path of active.changed_files ?? []) if (!fileExists(path)) errors.push(`successor changed file missing: ${path}`);
   }
   return errors;
