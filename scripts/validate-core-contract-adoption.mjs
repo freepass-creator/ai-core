@@ -53,6 +53,14 @@ for(const entry of adoption.entries??[]){
     if(item.classification==='LEGACY_RETIRED'&&item.binding_state!=='RETIRED'){
       errors.push({code:'ADOPTION_RETIRED_BINDING_INVALID',project_id:entry.project_id,contract_id:item.contract_id});
     }
+    if(item.binding_state!=='NONE'&&(!Array.isArray(item.artifact_refs)||item.artifact_refs.length===0)){
+      errors.push({code:'ADOPTION_BINDING_ARTIFACT_REQUIRED',project_id:entry.project_id,contract_id:item.contract_id,binding_state:item.binding_state});
+    }
+    for(const artifact of item.artifact_refs??[]){
+      if(!artifact.startsWith('registry/adoption/')&&!artifact.startsWith('test/')){
+        errors.push({code:'ADOPTION_ARTIFACT_PATH_INVALID',project_id:entry.project_id,contract_id:item.contract_id,artifact});
+      }
+    }
 
     for(const ref of item.evidence_refs??[]){
       const prefix=entry.repository+'@'+entry.subject_revision+':';
