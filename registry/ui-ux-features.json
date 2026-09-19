@@ -1,6 +1,6 @@
 {
   "contract": "ai-core-ui-ux-feature-registry/v1",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "normative_source": "docs/SCREEN_DESIGN_STANDARD.md",
   "global_rules": {
     "invariants": [
@@ -24,7 +24,11 @@
       "Support both LTR and RTL layouts; direction is a script or content property and is not inferred solely from locale.",
       "Use locale-aware date, time, number and currency presentation while keeping canonical stored values locale-neutral.",
       "Do not concatenate translated UI sentences from fragments where word order may vary.",
-      "Allow long labels and translated text to wrap without losing action meaning."
+      "Allow long labels and translated text to wrap without losing action meaning.",
+      "Treat language, region, script, calendar, numbering system, hour cycle, time zone and currency as distinct concerns; do not collapse them into one locale string when the product lets them vary.",
+      "Use locale data or platform internationalization APIs for presentation; do not hand-build separators, date order, currency placement, plural forms or unit formatting.",
+      "Bidirectional and mixed-direction content must preserve reading order and isolate user or external values from surrounding UI text.",
+      "Localization conformance includes text expansion, alternate numbering systems, alternate calendars, reduced motion, high-contrast or forced-color modes, zoom/reflow and input-method variation."
     ],
     "exceptions": [
       "Exception must identify feature id, product, reason, owner, verification evidence and expiry or review date.",
@@ -112,14 +116,21 @@
     "I18N": {
       "rules": [
         "Behavioral IDs and state machines are locale-neutral; human copy is localized separately.",
-        "Language and text direction are explicit metadata; direction is not inferred solely from language.",
-        "Dates, times, numbers, currency, names and addresses use locale-aware formatting/parsing without hard-coded separators."
+        "Language and text direction are explicit metadata; direction is not inferred solely from language or region.",
+        "Dates, times, numbers, currency, percentages and units use locale-aware formatting/parsing while canonical values remain locale-neutral.",
+        "Language, region, script, calendar, numbering system, hour cycle, time zone and currency remain independently representable when product requirements allow them to vary.",
+        "Use platform internationalization APIs or CLDR-derived locale data rather than hard-coded separators, symbol placement or sentence fragments.",
+        "Mixed-direction external or user-entered values are isolated so they cannot reorder surrounding labels or actions."
       ],
       "verification": [
         "ko-KR",
         "en-US",
-        "rtl-sample",
-        "long-labels"
+        "de-DE",
+        "ar-SA-rtl",
+        "hi-IN-numbering",
+        "long-labels",
+        "mixed-bidi",
+        "locale-number-date-currency-unit"
       ]
     },
     "ENGINE": {
@@ -154,7 +165,8 @@
       "rules": [
         "Mobile is not a scaled desktop; hierarchy and task order stay stable while layout adapts.",
         "No essential action depends on hover.",
-        "Sticky/fixed UI must not obscure focused content and must account for safe-area and virtual keyboard."
+        "Sticky/fixed UI must not obscure focused content and must account for safe-area and virtual keyboard.",
+        "Reflow preserves reading order and task priority under zoom, text scaling, portrait/landscape changes and narrow viewports."
       ],
       "verification": [
         "360",
@@ -163,7 +175,9 @@
         "1280",
         "1440",
         "200%-zoom",
-        "virtual-keyboard"
+        "virtual-keyboard",
+        "400%-reflow",
+        "portrait-landscape"
       ]
     }
   },
@@ -2267,6 +2281,197 @@
         "keyboard-or-equivalent",
         "mobile-desktop",
         "failure-path"
+      ]
+    },
+    {
+      "id": "system.locale-formatting",
+      "family": "system",
+      "title": "Locale-aware value formatting",
+      "kind": "pattern",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "I18N"
+      ],
+      "required_states": [
+        "default-locale",
+        "alternate-locale",
+        "custom-preference"
+      ],
+      "rules": [
+        "Canonical date, time, number, money, percentage and unit values remain locale-neutral; only presentation and parsing are localized.",
+        "Currency code, time zone, calendar, hour cycle and numbering system are explicit when ambiguity would change meaning.",
+        "Use platform internationalization APIs or CLDR-derived data instead of hand-coded separators, symbol placement, date order or unit strings."
+      ],
+      "verification": [
+        "semantic-contract",
+        "locale-matrix",
+        "round-trip-parsing",
+        "failure-path"
+      ]
+    },
+    {
+      "id": "system.bidi",
+      "family": "system",
+      "title": "Bidirectional and mixed-direction text",
+      "kind": "pattern",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "I18N",
+        "RESPONSIVE"
+      ],
+      "required_states": [
+        "ltr",
+        "rtl",
+        "mixed-content"
+      ],
+      "rules": [
+        "Use logical start/end layout semantics so direction changes do not require a second component implementation.",
+        "Isolate user-entered, identifier, phone, email, URL and external-source values when their direction may differ from surrounding UI.",
+        "Mirroring is semantic rather than blanket visual reversal; brand marks, media controls and direction-invariant symbols are not mirrored automatically."
+      ],
+      "verification": [
+        "semantic-contract",
+        "rtl-layout",
+        "mixed-bidi",
+        "mobile-desktop"
+      ]
+    },
+    {
+      "id": "system.text-expansion",
+      "family": "system",
+      "title": "Localized text expansion",
+      "kind": "pattern",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "I18N",
+        "RESPONSIVE"
+      ],
+      "required_states": [
+        "nominal",
+        "expanded",
+        "multiline"
+      ],
+      "rules": [
+        "Translated labels, helper text and errors may expand or wrap without hiding required meaning or actions.",
+        "Critical labels are not truncated solely to preserve a fixed component width; use wrapping, adaptive layout or a documented exception.",
+        "Layout remains usable when representative localized copy is substantially longer than the source language."
+      ],
+      "verification": [
+        "semantic-contract",
+        "long-labels",
+        "multiline-actions",
+        "mobile-desktop"
+      ]
+    },
+    {
+      "id": "system.motion-preference",
+      "family": "system",
+      "title": "Motion preference",
+      "kind": "pattern",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "RESPONSIVE"
+      ],
+      "required_states": [
+        "full-motion",
+        "reduced-motion"
+      ],
+      "rules": [
+        "Honor the platform reduced-motion preference for non-essential animation and large motion effects.",
+        "State, progress, hierarchy and completion meaning remain understandable when motion is reduced or removed.",
+        "Animation is never the only channel for status or instruction."
+      ],
+      "verification": [
+        "semantic-contract",
+        "reduced-motion",
+        "failure-path",
+        "mobile-desktop"
+      ]
+    },
+    {
+      "id": "system.contrast-preference",
+      "family": "system",
+      "title": "Contrast and forced-color preference",
+      "kind": "pattern",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "CONTROL",
+        "RESPONSIVE"
+      ],
+      "required_states": [
+        "standard",
+        "high-contrast",
+        "forced-colors"
+      ],
+      "rules": [
+        "Controls, focus, selection, errors and status remain distinguishable in high-contrast or forced-color environments.",
+        "Do not rely on authored background images, subtle shadows or color alone for required boundaries or meaning.",
+        "System color substitution must not erase focus indicators or interactive affordances."
+      ],
+      "verification": [
+        "semantic-contract",
+        "high-contrast",
+        "forced-colors",
+        "focus-visible"
+      ]
+    },
+    {
+      "id": "system.reflow-orientation",
+      "family": "system",
+      "title": "Zoom, reflow and orientation",
+      "kind": "pattern",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "RESPONSIVE",
+        "I18N"
+      ],
+      "required_states": [
+        "portrait",
+        "landscape",
+        "zoomed",
+        "reflowed"
+      ],
+      "rules": [
+        "Reading order and task order remain stable when viewport orientation or layout width changes.",
+        "At high zoom or text scaling, ordinary one-dimensional content reflows instead of requiring both horizontal and vertical scrolling.",
+        "Sticky or fixed regions do not cover focused controls, validation messages or the primary action after reflow."
+      ],
+      "verification": [
+        "semantic-contract",
+        "200%-zoom",
+        "400%-reflow",
+        "portrait-landscape"
+      ]
+    },
+    {
+      "id": "system.input-method",
+      "family": "system",
+      "title": "Input method independence",
+      "kind": "pattern",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "CONTROL",
+        "FORM",
+        "RESPONSIVE",
+        "I18N"
+      ],
+      "required_states": [
+        "touch",
+        "pointer",
+        "keyboard",
+        "assistive",
+        "ime-composition"
+      ],
+      "rules": [
+        "Touch, pointer, keyboard and assistive input can reach the same business outcome unless the task intrinsically requires a specific modality.",
+        "Text input preserves IME composition and does not submit, validate destructively or auto-advance on intermediate composition events.",
+        "Virtual keyboard, handwriting, dictation or voice input must not hide the focused field or bottom action boundary."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "ime-composition",
+        "virtual-keyboard"
       ]
     }
   ]
