@@ -110,6 +110,29 @@
           "const": true
         }
       }
+    },
+    "authority_scope": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "dimension",
+          "value"
+        ],
+        "properties": {
+          "dimension": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_.-]*$"
+          },
+          "value": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "description": "Optional context that narrows where the single canonical authority applies, e.g. project/environment/channel/profile."
     }
   }
 }

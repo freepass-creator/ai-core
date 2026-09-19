@@ -39,7 +39,7 @@ test('import pipeline preserves raw snapshot and validates before atomic commit'
     schema_version:'core-data-pipeline-contract/v1',pipeline_id:'vehicle.import',direction:'IMPORT',version:'1.0.0',
     source:'supplier-sheet',target:'vehicle-master',
     stages:['RAW_SNAPSHOT','PARSE','NORMALIZE','VALIDATE','IDENTITY_RESOLVE','REVIEW','COMMIT'],
-    commit_policy:'ATOMIC',receipt_required:true
+    commit_policy:'ATOMIC',partial_failure_policy:'FAIL_BEFORE_COMMIT',receipt_required:true
   };
   assert.equal(validateDataPipeline(pipeline).status,'VALID');
   const broken={...pipeline,stages:['PARSE','RAW_SNAPSHOT','NORMALIZE','VALIDATE','COMMIT']};
@@ -51,9 +51,32 @@ test('export pipeline projects before serialization and cannot commit canonical 
     schema_version:'core-data-pipeline-contract/v1',pipeline_id:'catalog.export',direction:'EXPORT',version:'1.0.0',
     source:'vehicle-master',target:'public-catalog',
     stages:['PROJECT','PRIVACY_FILTER','SERIALIZE','DELIVER'],
-    commit_policy:'READ_ONLY',receipt_required:true
+    commit_policy:'READ_ONLY',partial_failure_policy:'NOT_APPLICABLE',receipt_required:true
   };
   assert.equal(validateDataPipeline(pipeline).status,'VALID');
   const broken={...pipeline,stages:['PROJECT','COMMIT','SERIALIZE']};
   assert.throws(()=>validateDataPipeline(broken),/EXPORT_COMMIT_FORBIDDEN/);
+});
+
+
+test('best-effort batch must expose partial failure through a receipt',()=>{
+  const pipeline={
+    schema_version:'core-data-pipeline-contract/v1',pipeline_id:'supplier.inventory.refresh',direction:'IMPORT',version:'1.0.0',
+    source:'supplier-registry',target:'erp5-products',
+    stages:['RAW_SNAPSHOT','PARSE','NORMALIZE','VALIDATE','IDENTITY_RESOLVE','COMMIT'],
+    commit_policy:'BEST_EFFORT_BATCH',partial_failure_policy:'ALLOW_PARTIAL_WITH_RECEIPT',receipt_required:true
+  };
+  assert.equal(validateDataPipeline(pipeline).status,'VALID');
+  assert.throws(()=>validateDataPipeline({...pipeline,partial_failure_policy:'FAIL_BEFORE_COMMIT'}),/BEST_EFFORT_BATCH_REQUIRES_PARTIAL_RECEIPT/);
+});
+
+
+test('legacy atomic pipeline without partial_failure_policy remains v1 compatible',()=>{
+  const pipeline={
+    schema_version:'core-data-pipeline-contract/v1',pipeline_id:'legacy.import',direction:'IMPORT',version:'1.0.0',
+    source:'source',target:'target',
+    stages:['RAW_SNAPSHOT','PARSE','NORMALIZE','VALIDATE','COMMIT'],
+    commit_policy:'ATOMIC',receipt_required:true
+  };
+  assert.equal(validateDataPipeline(pipeline).status,'VALID');
 });

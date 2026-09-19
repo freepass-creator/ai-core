@@ -35,7 +35,7 @@
     },
     "engine_bindings": {
       "type": "array",
-      "minItems": 1,
+      "minItems": 0,
       "items": {
         "type": "object",
         "additionalProperties": false,
@@ -101,6 +101,72 @@
         "FAILED",
         "STALE"
       ]
+    },
+    "service_bindings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "service_id",
+          "service_version",
+          "ports"
+        ],
+        "properties": {
+          "service_id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]*(\\.[a-z][a-z0-9_-]*)+$"
+          },
+          "service_version": {
+            "type": "string",
+            "minLength": 1
+          },
+          "ports": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "port_id",
+                "adapter_id"
+              ],
+              "properties": {
+                "port_id": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9_-]*(\\.[a-z][a-z0-9_-]*)+$"
+                },
+                "adapter_id": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9_-]*(\\.[a-z][a-z0-9_-]*)+$"
+                }
+              }
+            }
+          }
+        }
+      }
     }
-  }
+  },
+  "allOf": [
+    {
+      "anyOf": [
+        {
+          "properties": {
+            "engine_bindings": {
+              "minItems": 1
+            }
+          }
+        },
+        {
+          "required": [
+            "service_bindings"
+          ],
+          "properties": {
+            "service_bindings": {
+              "minItems": 1
+            }
+          }
+        }
+      ]
+    }
+  ]
 }

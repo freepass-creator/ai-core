@@ -39,7 +39,8 @@
     "project:inspect": "node scripts/project-capsule.mjs",
     "closeout:validate": "node scripts/validate-phase1-closeout.mjs",
     "contracts:validate": "node scripts/validate-core-contracts.mjs",
-    "contracts:compat": "node scripts/check-contract-compatibility.mjs"
+    "contracts:compat": "node scripts/check-contract-compatibility.mjs",
+    "contracts:adoption": "node scripts/validate-core-contract-adoption.mjs"
   },
   "dependencies": {
     "ajv": "8.20.0",

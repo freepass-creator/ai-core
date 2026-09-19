@@ -173,6 +173,20 @@
       "path": "contracts/core-code-set.schema.json",
       "status": "CANONICAL",
       "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
+    },
+    {
+      "id": "core.contract-adoption.v1",
+      "domain": "DATA",
+      "path": "contracts/core-contract-adoption.schema.json",
+      "status": "CANONICAL",
+      "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
+    },
+    {
+      "id": "core.application-service.v1",
+      "domain": "ENGINE_ADAPTER",
+      "path": "contracts/core-application-service.schema.json",
+      "status": "CANONICAL",
+      "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
     }
   ]
 }

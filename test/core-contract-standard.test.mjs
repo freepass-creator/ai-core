@@ -151,3 +151,69 @@ test('code-set contract separates code lifecycle from mutable display labels',()
     open_enum:true,values:[{code:'NORMAL',status:'ACTIVE',deprecated_since:null,replacement_code:null}]
   }),true);
 });
+
+
+test('receipt accepts compact operation metrics without project-specific schema pollution',()=>{
+  const validate=schema('https://schemas.freepass.ai/core/receipt/v1');
+  const receipt={
+    schema_version:'core-receipt/v1',receipt_id:'rcpt_batch_001',operation_id:'op_batch_001',operation_kind:'inventory.refresh',
+    actor:'system:scheduler',executor:'erp5-refresh',correlation_id:'corr_batch_001',status:'PARTIAL',reason_code:'SUPPLIER_BATCH_PARTIAL',
+    input:{digest:'sha256:'+'e'.repeat(64),refs:['source-registry:v1']},
+    output:{digest:'sha256:'+'f'.repeat(64),refs:['erp5:products']},source_revision:'git:abc',
+    started_at:'2026-09-19T12:00:00Z',ended_at:'2026-09-19T12:01:00Z',evidence_refs:['run:1'],
+    metrics:{phase:'APPLY',supplier_success:22,supplier_failed:2,supplier_total:24},
+    reproducibility:{deterministic:false,executor_version:'abc',environment_revision:'run:1',command_ref:'inventory.refresh'}
+  };
+  assert.equal(validate(receipt),true);
+});
+
+
+test('application service contract keeps orchestration separate from domain engine',()=>{
+  const validate=schema('https://schemas.freepass.ai/core/application-service/v1');
+  const service={
+    schema_version:'core-application-service-contract/v1',
+    service_id:'freepass.application.submit',version:'1.0.0',
+    source:{locator:'src/services/applications.ts',revision:'git:abc'},
+    use_cases:[
+      {
+        name:'submit',input_contract:'SubmitApplicationInput',output_contract:'SubmitResult',
+        side_effects:true,idempotency:'REQUIRED',actor_requirement:'REQUIRED',
+        transaction_boundary:'REPOSITORY_ATOMIC',error_codes:['NOT_FOUND','VERSION_MISMATCH']
+      },
+      {
+        name:'cancel',input_contract:'CancelInput',output_contract:'CancelResult',
+        side_effects:true,idempotency:'SUPPORTED',actor_requirement:'REQUIRED',
+        transaction_boundary:'REPOSITORY_ATOMIC',error_codes:['NOT_FOUND','CANCELLED']
+      }
+    ],
+    required_ports:[
+      {port_id:'application.repository',port_version:'v1'},
+      {port_id:'product.repository',port_version:'v1'},
+      {port_id:'actor.provider',port_version:'v1'}
+    ],
+    verification_profile:['service-unit','repository-contract']
+  };
+  assert.equal(validate(service),true);
+});
+
+
+test('mixed repository port and service-only binding profile are valid',()=>{
+  const port=schema('https://schemas.freepass.ai/core/port/v1');
+  assert.equal(port({
+    schema_version:'core-port-contract/v1',port_id:'application.repository',port_version:'v1',
+    semantics:'Atomic application persistence and lookup',direction:'MIXED',
+    input_schema:null,output_schema:null,side_effects:true,idempotency:'REQUIRED',
+    error_codes:['NOT_FOUND','CONFLICT','PERSISTENCE_ERROR']
+  }),true);
+
+  const binding=schema('https://schemas.freepass.ai/core/binding-profile/v1');
+  assert.equal(binding({
+    schema_version:'core-binding-profile/v1',profile_id:'freepass-admin.dev',project_id:'freepass-admin',
+    environment:'development',subject_revision:'git:abc',engine_bindings:[],
+    service_bindings:[{
+      service_id:'freepass.application.service',service_version:'1.0.0',
+      ports:[{port_id:'application.repository',adapter_id:'freepass-admin.file-application'}]
+    }],
+    config_refs:[],secret_refs:[],verification_state:'PARTIAL'
+  }),true);
+});
