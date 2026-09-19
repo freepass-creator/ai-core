@@ -197,6 +197,7 @@
     "src/orders/server.mjs",
     "src/orders/store.mjs",
     "src/routing/work-router.mjs",
+    "src/workflow/capability-execution-shadow.mjs",
     "src/workflow/engine.mjs",
     "src/workflow/order-task-shadow.mjs",
     "src/workflow/work-ledger-shadow.mjs",
@@ -250,6 +251,7 @@
     "test/work-recorder.test.mjs",
     "test/work-reobserve.test.mjs",
     "test/work-router.test.mjs",
+    "test/workflow-capability-execution-parity.test.mjs",
     "test/workflow-ledger-parity.test.mjs",
     "test/workflow-order-task-parity.test.mjs",
     "test/workflow-state-machine.test.mjs",
@@ -303,6 +305,7 @@
     "2026-09-19 D-session Workflow Standard v1: added the common workflow schema/registry/engine/validator/tests and D workflow docs on an isolated branch; active successor changed_files was regenerated from the exact base_revision diff for verifier parity. Existing Work Ledger remains authoritative pending SHADOW parity.",
     "2026-09-19 D-session Work Ledger SHADOW parity: registered ai-core.work-lifecycle as SHADOW, added REOBSERVE support and a shadow adapter/parity suite covering the full state-pair matrix plus verification-context, revision-drift and closure-evidence edge cases. Existing scripts/work-ledger.mjs remains authoritative.",
     "2026-09-19 D-session shadow provenance lock: SHADOW workflows now identify their source authority revision/files; ai-core.work-lifecycle pins the current Work Ledger and event-schema blob SHAs, and tests fail if those source blobs drift without refreshing parity.",
-    "2026-09-19 D-session Order/Task SHADOW: registered ai-core.order-task-lifecycle, separated heartbeat as lease FACT_UPDATE, modeled claim/reclaim/block/report/assignment and requirement-revision invalidation, and added OrderStore parity tests plus derived aggregate-status checks."
+    "2026-09-19 D-session Order/Task SHADOW: registered ai-core.order-task-lifecycle, separated heartbeat as lease FACT_UPDATE, modeled claim/reclaim/block/report/assignment and requirement-revision invalidation, and added OrderStore parity tests plus derived aggregate-status checks.",
+    "2026-09-19 D-session Capability Execution SHADOW: registered ai-core.capability-execution, separated persistent RESERVED/RESULT from reconciliation HOLD projection, added source-pinned shadow adapter and parity tests for reserve idempotency, stable result errors, safe receipt persistence and terminal-receipt reconciliation."
   ]
 }
