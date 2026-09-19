@@ -151,3 +151,18 @@ test('code-set contract separates code lifecycle from mutable display labels',()
     open_enum:true,values:[{code:'NORMAL',status:'ACTIVE',deprecated_since:null,replacement_code:null}]
   }),true);
 });
+
+
+test('receipt accepts compact operation metrics without project-specific schema pollution',()=>{
+  const validate=schema('https://schemas.freepass.ai/core/receipt/v1');
+  const receipt={
+    schema_version:'core-receipt/v1',receipt_id:'rcpt_batch_001',operation_id:'op_batch_001',operation_kind:'inventory.refresh',
+    actor:'system:scheduler',executor:'erp5-refresh',correlation_id:'corr_batch_001',status:'PARTIAL',reason_code:'SUPPLIER_BATCH_PARTIAL',
+    input:{digest:'sha256:'+'e'.repeat(64),refs:['source-registry:v1']},
+    output:{digest:'sha256:'+'f'.repeat(64),refs:['erp5:products']},source_revision:'git:abc',
+    started_at:'2026-09-19T12:00:00Z',ended_at:'2026-09-19T12:01:00Z',evidence_refs:['run:1'],
+    metrics:{phase:'APPLY',supplier_success:22,supplier_failed:2,supplier_total:24},
+    reproducibility:{deterministic:false,executor_version:'abc',environment_revision:'run:1',command_ref:'inventory.refresh'}
+  };
+  assert.equal(validate(receipt),true);
+});
