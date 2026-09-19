@@ -200,14 +200,20 @@
         "견적기",
         "견적 계산",
         "차량 견적",
-        "렌트 견적"
+        "렌트 견적",
+        "셀프견적",
+        "셀프 견적",
+        "프리패스 견적",
+        "신차 견적",
+        "중고 견적"
       ],
-      "target_project_id": "sonogong-estimator",
+      "target_project_id": "freepass-estimate",
       "approval_boundary": "PROJECT_RULES",
       "completion_condition": "계산 로직과 UI 변경이 기존 산식 회귀검사를 통과한다.",
       "source_pointers": [
         "registry/projects.json",
-        "freepass-creator/sonogong-estimator"
+        "freepass-creator/freepass-estimate",
+        "docs/coordination/FREEPASS_SELF_QUOTE_ENGINE_ADAPTER_LEARNING.md"
       ],
       "capability_id": "sales.vehicle-estimator"
     },
