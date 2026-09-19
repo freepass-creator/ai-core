@@ -6,7 +6,8 @@
     "unchanged_head": "Skip full re-audit unless deployment/runtime/external evidence changed.",
     "changed_head": "Inspect commit delta and only affected contracts/patterns first.",
     "cross_project_evidence": "Do not count clones, forks, copied modules, or lineage-overlap as independent without candidate-level independence proof.",
-    "promotion": "Spec/docs alone do not satisfy implementation evidence; require code/test/runtime evidence appropriate to the claim."
+    "promotion": "Spec/docs alone do not satisfy implementation evidence; require code/test/runtime evidence appropriate to the claim.",
+    "ai_core_self_reference": "AI Core itself is excluded from stored-head equality because updating this registry changes AI Core HEAD."
   },
   "states": {
     "CORE_BASELINE": "AI Core comparison baseline.",
@@ -28,11 +29,11 @@
     {
       "repository": "freepass-creator/ai-core",
       "default_branch": "main",
-      "observed_head": "d9487ca691f047c4ded3945a205919c46d7a706b",
+      "observed_head": null,
       "audit_state": "CORE_BASELINE",
       "independence": "SELF",
       "findings": [],
-      "note": null
+      "note": "SELF reference exception: do not persist AI Core head in this registry. Resolve current AI Core HEAD at audit start; registry updates mutate that HEAD."
     },
     {
       "repository": "freepass-creator/aiops",
