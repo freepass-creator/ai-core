@@ -212,3 +212,18 @@ Still not completed:
 - expand Work lifecycle from registry graph authority toward full generic D-engine decision execution without weakening Ledger evidence rules
 - migrate business-project domain workflows into the Registry
 - validate domain bridges across FreePass Sales / ERP / Admin / Self Quote and other projects
+
+
+### Recovery no-replay pilot gate
+
+`workflow.recovery-slot-no-replay` is PROJECT_VERIFIED from FreePass ERP4 and is intentionally PILOT.
+
+Promotion gate:
+
+1. C defines/binds the common logical execution identity shared across native/fallback/downstream paths.
+2. A/D obtain an independent second-project implementation or failure case.
+3. Native-success and recovery-history reconciliation are proven in that second project.
+4. Ambiguous outcome remains HOLD/reconcile-first.
+5. Negative tests prove successful logical work cannot be replayed by another execution path.
+
+Until all gates pass, projects may adopt the pilot explicitly, but D must not claim it as company-wide common behavior.
