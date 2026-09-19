@@ -45,6 +45,7 @@ A-session cross-repo evidence에서 일반화:
 - Engine/Adapter binding resolver
 - legacy adapter shadow bridge
 - CI `contracts:validate`
+- breaking-change compatibility gate (`contracts:compat`)
 - contract tests
 - canonical standard + migration guide
 
@@ -60,7 +61,6 @@ C event/code schemas가 D workflow content를 소유하지 않는다.
 
 P0 merge 이후 별도 작업으로 남길 것:
 - OpenAPI document generation/lint integration
-- contract diff checker for breaking-change detection
 - generated TypeScript types from canonical schemas
 - cross-repo adoption dashboard
 - concrete event-type registrations as projects migrate
