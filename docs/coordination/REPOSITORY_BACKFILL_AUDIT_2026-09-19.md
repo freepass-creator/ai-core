@@ -152,3 +152,38 @@ AI Core가 일부 중앙 문서만 앞서가고 실제 프로젝트 저장소의
 - Historical handoff says the Vercel site was live, but the currently connected Vercel team exposes zero projects.
 - Current production target/revision cannot be independently resolved.
 - `release.production-revision-proof` evidence level remains unchanged; Sonogong is not counted as second production proof.
+
+
+## A-session continuation — Mewcar / Homepage / Renman / Chakhandeal
+
+### Mewcar → C backport gap
+- Project content SSOT is strong: four-file canonical set, explicit assertion maturity (`확정/대표 의견/내부안/미정`), history retention, planning vs legal execution separation.
+- Gap: `PROJECT_READ_FIRST.md` still opens with the older 2026-09-16 canonical route while the 2026-09-18 `정본/README.md` supersedes it with the four-file canonical set.
+- Direction: **Core > Project** for canonical-entrypoint/supersession discipline.
+- Migration: repoint entrypoint → preserve old docs as source/history → explicit supersession verification.
+
+### FreePass Homepage → B backport gap
+- Current head: `5f0152c26ac1f106a5f5aee46a3e0020d653c8f5`.
+- Smooth scroll, reveal transitions, marquee, count-up and continuous canvas animation are present.
+- No reduced-motion branch was found.
+- Direction: **Core > Project**; AI Core B standard already requires reduced-motion behavior.
+- No new B standard candidate created.
+
+### Renman → D candidate
+- New candidate: `workflow.compensated-multiwrite`.
+- Evidence: `renman@262e06de09db94a116fa377ea2f5dbe024bb086b`.
+- Multi-write failure compensates already-applied effects in reverse order using domain-owned undo patches.
+- Compensation failure is not swallowed; remaining partial state is surfaced explicitly.
+- Evidence level: `PROJECT_VERIFIED`; second exact project required.
+
+### Chakhandeal → no promotion / implementation HOLD
+- Identity-token subject binding, PII vault and e-contract read-through are real code/test evidence.
+- But Phase 4 `consent_grants` remains design-only:
+  - `hasValidConsentGrant` is still a `return false` stub.
+  - planned `tests/phase4-grant.test.js` is absent.
+- Therefore granular consent-grant behavior is **not** counted as project-verified.
+- This is retained as a negative promotion-control example: spec/brief presence is not implementation evidence.
+
+### DocsHub / FreePass Homepage promotion decision
+- DocsHub was inspected but no new B/C/D common mechanism met the promotion threshold.
+- Homepage produced a backport accessibility gap, not a reverse-import candidate.
