@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "observed_at": "2026-09-19T10:35:12Z",
+  "observed_at": "2026-09-19T10:35:29Z",
   "projects": [
     {
       "project_id": "ai-core",
@@ -223,6 +223,49 @@
         "Production auth/permission binding is not implemented/verified; ActorProvider contract exists but no approved production adapter is bound.",
         "Production audit retention/sink, runtime smoke, deployment target and rollback remain unverified.",
         "UI/UX redesign remains intentionally HOLD until the AI Core/DevCenter common UI/UX standard is finalized."
+      ]
+    },
+    {
+      "project_id": "freepass-estimate",
+      "name": "FreePass Estimate",
+      "organization": "SUBSIDIARY",
+      "status": "HOLD",
+      "mission": "Canonical FreePass estimator/domain SSOT for new-car and used-car quote UI/UX, provider-neutral quote contracts, calculation-provider routing, sharing snapshots and estimator regression evidence.",
+      "repository": "freepass-creator/freepass-estimate",
+      "default_branch": "main",
+      "work_branches": [
+        "work/ui-baseline"
+      ],
+      "local_path": null,
+      "head_revision": "d29daa37119bece0f3d1c9ddb38437de0175b11b",
+      "authoritative_sources": [
+        {
+          "kind": "GIT",
+          "ref": "freepass-creator/freepass-estimate#main",
+          "revision": "d29daa37119bece0f3d1c9ddb38437de0175b11b",
+          "observed_at": "2026-09-19T10:35:29Z"
+        },
+        {
+          "kind": "GIT",
+          "ref": "freepass-creator/freepass-estimate#work/ui-baseline",
+          "revision": "4a3462441aea92ffc89092396c9c6a1a08e5fcd9",
+          "observed_at": "2026-09-19T10:35:29Z"
+        }
+      ],
+      "commands": {
+        "install": "npm --prefix apps/new ci",
+        "test": "npm --prefix apps/new run verify",
+        "build": "npm --prefix apps/new run build"
+      },
+      "deploy_targets": [],
+      "required_approvals": [
+        "merge-canonical-work-to-main",
+        "production-deployment"
+      ],
+      "known_blockers": [
+        "Canonical estimator implementation is still on work/ui-baseline while default main remains the initialization commit. AI Core must not treat main as the current product implementation until merge/reobservation.",
+        "Production deployment target and live production revision are not yet registered/observed in AI Core. /api/version exists on the work branch, but production proof remains HOLD until the real production URL is observed.",
+        "FreePass Standard new-car regression is 532/535; the remaining three Hyundai NEXO cases intentionally fail closed because hydrogen cost policy is not yet approved."
       ]
     },
     {
