@@ -11,7 +11,7 @@
     "Discuss a name with the user; keep the display name configurable.",
     "Use GitHub code from both local and server workers, sharing a single durable order ledger."
   ],
-  "scope": "Order/Work E2E + Capability Engine operating loop: trusted Control Tower authority bridge, direction registry validation, durable idempotent capability execution receipts and explicit server/CLI execution gate. External execution remains default-off and revision-bound.",
+  "scope": "Operating capability loop plus read-only Project Capsule source-review: revision-bound GitHub repository inspection for commands, delivery evidence, instructions and blockers without automatic registry activation.",
   "changed_files": [
     ".github/workflows/main-state.yml",
     ".github/workflows/shared-order-check.yml",
@@ -23,6 +23,7 @@
     "contracts/capability-registry.schema.json",
     "contracts/control-tower.schema.json",
     "contracts/direction-registry.schema.json",
+    "contracts/project-capsule.schema.json",
     "contracts/project-registry.schema.json",
     "contracts/work-ledger-event.schema.json",
     "contracts/work-map.schema.json",
@@ -119,6 +120,7 @@
     "scripts/orders-bind.mjs",
     "scripts/orders-sources-preflight.mjs",
     "scripts/orders.mjs",
+    "scripts/project-capsule.mjs",
     "scripts/read-ai-work-packet.mjs",
     "scripts/registry-refresh.mjs",
     "scripts/repo-sync-preflight.mjs",
@@ -142,7 +144,9 @@
     "src/engine/control-tower-authority.mjs",
     "src/engine/direction-registry.mjs",
     "src/engine/execution-receipt.mjs",
+    "src/engine/github-project-inspector.mjs",
     "src/engine/operating-engine.mjs",
+    "src/engine/project-capsule.mjs",
     "src/engine/project-runtime.mjs",
     "src/engine/result-envelope.mjs",
     "src/improvement/evaluate-evolution-jsonl.mjs",
@@ -178,6 +182,7 @@
     "test/durable-order-work.test.mjs",
     "test/evaluate-control-tower.test.mjs",
     "test/execution-receipt.test.mjs",
+    "test/github-project-inspector.test.mjs",
     "test/improvement-evolution-jsonl.test.mjs",
     "test/inventory-repositories.test.mjs",
     "test/landed-observer.test.mjs",
@@ -198,6 +203,7 @@
     "test/order-work-submitter.test.mjs",
     "test/orders-sources-preflight.test.mjs",
     "test/orders.test.mjs",
+    "test/project-capsule.test.mjs",
     "test/projection-observed-head.test.mjs",
     "test/read-ai-work-packet.test.mjs",
     "test/registry-refresh.test.mjs",
@@ -240,6 +246,7 @@
     "2026-09-19 revision continuity P0: new ledger appends may change subject_revision only through evidence-backed REOBSERVED; verified revisions are frozen through the post-verification path; historical plain-transition revision attachments remain readable but are excluded from proven revisions history. Exact changed_files regenerated for verifier parity.",
     "2026-09-19 routed-order E2E P0: stored routing provenance now feeds the canonical Capability Engine plan without reinterpreting natural language; requirement revisions invalidate stale routing; explicit reroute is available only while the order is idle and records a REROUTE event. No capability execution or external mutation is performed by this endpoint.",
     "2026-09-19 order-work intake P0: routed orders can now durably create an internal RECEIVED Work using the existing Order DB for immutable binding/outbox, append to the canonical ledger, add an authorization-free snapshot skeleton, and reconcile repeated/concurrent calls to one identity. Bound requirements cannot reroute in place; a revised requirement receives a new Work identity. This path grants no execution or external authority.",
-    "2026-09-19 operating capability loop: capability execution is now reserved by requestId before effects, retries reconcile terminal receipts instead of blindly re-executing, durable safe result receipts return to OrderStore history, and external mutation authority is issued/verified only from the same trusted Work sources and Control Tower state. Server execution stays default OFF."
+    "2026-09-19 operating capability loop: capability execution is now reserved by requestId before effects, retries reconcile terminal receipts instead of blindly re-executing, durable safe result receipts return to OrderStore history, and external mutation authority is issued/verified only from the same trusted Work sources and Control Tower state. Server execution stays default OFF.",
+    "2026-09-19 Project Capsule P0: added a read-only GitHub source-review inspector and core.project-inspect capability. It reads repository metadata/tree and package.json only, never .env contents, produces revision-bound evidence and blockers, and deliberately does not mutate registry/projects.json or auto-activate HOLD projects."
   ]
 }
