@@ -2627,11 +2627,11 @@
       "description": "Shadow model of capability execution coordination. RESERVED/RESULT are persistent coordination states; reconcile HOLD is a projection, not a stored business state.",
       "source_authority": {
         "repository": "freepass-creator/ai-core",
-        "revision": "444066bea9ac00e4cf4ba539c7b5344154bd407e",
+        "revision": "81ea6d0edfb2581edc73696e30b911168d18a6ab",
         "files": [
           {
             "path": "src/engine/capability-execution-coordinator.mjs",
-            "blob_sha": "8517c60ede8f0166ffcfc35f7e29dc0c221262c4"
+            "blob_sha": "6c0b3e893bbb44bb1707eeca4a47839d50ba15dd"
           },
           {
             "path": "src/engine/execution-receipt.mjs",
