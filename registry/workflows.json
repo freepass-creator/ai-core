@@ -203,6 +203,11 @@
           "fact_id": "work.verified_revision",
           "type": "string",
           "description": "Revision captured when entering VERIFYING."
+        },
+        {
+          "fact_id": "work.verification_captured",
+          "type": "boolean",
+          "description": "Whether VERIFYING captured a verification revision, including a null revision value."
         }
       ],
       "guards": [
@@ -235,6 +240,11 @@
           "guard_id": "work.evidence-present",
           "kind": "CUSTOM",
           "description": "Candidate ledger event must contain at least one evidence reference."
+        },
+        {
+          "guard_id": "work.subject-revision-present",
+          "kind": "CUSTOM",
+          "description": "Candidate subject revision must be a non-null 40-hex revision."
         }
       ],
       "evidence_requirements": [],
@@ -1375,7 +1385,8 @@
             "work.subject-revision-same",
             "work.verified-revision-compatible",
             "work.verified-revision-present",
-            "work.evidence-present"
+            "work.evidence-present",
+            "work.subject-revision-present"
           ],
           "required_evidence": [],
           "permissions": [],
