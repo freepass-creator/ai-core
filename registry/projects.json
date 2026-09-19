@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "observed_at": "2026-09-19T10:37:10Z",
+  "observed_at": "2026-09-19T10:41:03Z",
   "projects": [
     {
       "project_id": "ai-core",
@@ -248,8 +248,8 @@
         {
           "kind": "GIT",
           "ref": "freepass-creator/freepass-estimate#work/ui-baseline",
-          "revision": "b4488dae5ab38b9e211806766902c4c359091d02",
-          "observed_at": "2026-09-19T10:37:10Z"
+          "revision": "b04af7302406f606b93f3ec45dca64bd625c6c68",
+          "observed_at": "2026-09-19T10:41:03Z"
         }
       ],
       "commands": {
@@ -263,7 +263,7 @@
         "production-deployment"
       ],
       "known_blockers": [
-        "Canonical estimator implementation is still on work/ui-baseline while default main remains the initialization commit. AI Core must not treat main as the current product implementation until merge/reobservation.",
+        "Canonical estimator implementation is verified on work/ui-baseline at b04af7302406f606b93f3ec45dca64bd625c6c68 (CI 35438072361) while default main remains the initialization commit. AI Core must not treat main as the current product implementation until merge/reobservation.",
         "Production deployment target and live production revision are not yet registered/observed in AI Core. /api/version exists on the work branch, but production proof remains HOLD until the real production URL is observed.",
         "FreePass Standard new-car regression is 532/535; the remaining three Hyundai NEXO cases intentionally fail closed because hydrogen cost policy is not yet approved."
       ]
