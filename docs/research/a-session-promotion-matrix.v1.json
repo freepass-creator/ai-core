@@ -406,6 +406,18 @@
       "finding": "semantic UI role/token constraints를 실제 사용 selector와 effective CSS 기준으로 검사하고 off-grid 값을 CI에서 실패시키는 conformance gate",
       "next_gate": "SECOND_PROJECT_REQUIRED",
       "evidence_note": "fp-settlement b1e833df... combines brick/pad/head/groove gates; source checkers filter to rendered classes and evaluate the last effective rule. Retro groove aesthetics and project pixel values remain local and are not proposed as global defaults."
+    },
+    {
+      "id": "result.proof-input-digest-binding",
+      "axis": "Result/Receipt/Evidence",
+      "evidence_level": "PROJECT_VERIFIED",
+      "projects": [
+        "devcenter"
+      ],
+      "target_session": "C",
+      "finding": "proof를 subject revision뿐 아니라 source/checker/fixture input digest와 결속하고 검증 중 입력 변경 또는 checker 변경 시 stale 처리",
+      "next_gate": "SECOND_PROJECT_REQUIRED",
+      "evidence_note": "DevCenter verify-acceptance snapshots sourceDigest before/after and card-audit stores exact input SHA256 set. Regression explicitly verifies source change and test implementation change invalidate prior evidence."
     }
   ]
 }
