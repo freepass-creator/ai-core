@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "observed_at": "2026-09-18T17:45:00Z",
+  "observed_at": "2026-09-19T03:45:00Z",
   "work_types": [
     {
       "work_type_id": "ai-core-integration",
@@ -39,6 +39,25 @@
         "contracts/project-registry.schema.json"
       ],
       "capability_id": "core.project-registry"
+    },
+    {
+      "work_type_id": "project-source-review",
+      "name": "프로젝트 Source Review",
+      "domain": "development",
+      "aliases": [
+        "프로젝트 검토",
+        "저장소 검토",
+        "source review",
+        "프로젝트 캡슐"
+      ],
+      "target_project_id": "ai-core",
+      "approval_boundary": "READ_ONLY",
+      "completion_condition": "대상 repository의 현재 revision에서 명령·배포·운영지침·데이터 경계 증거가 capsule로 정리되고 blocker가 명시된다.",
+      "source_pointers": [
+        "registry/projects.json",
+        "contracts/project-capsule.schema.json"
+      ],
+      "capability_id": "core.project-inspect"
     },
     {
       "work_type_id": "business-planning",
