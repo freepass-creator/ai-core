@@ -312,6 +312,7 @@
     "2026-09-19 D-session Order/Task SHADOW: registered ai-core.order-task-lifecycle, separated heartbeat as lease FACT_UPDATE, modeled claim/reclaim/block/report/assignment and requirement-revision invalidation, and added OrderStore parity tests plus derived aggregate-status checks.",
     "2026-09-19 D-session Capability Execution SHADOW: registered ai-core.capability-execution, separated persistent RESERVED/RESULT from reconciliation HOLD projection, added source-pinned shadow adapter and parity tests for reserve idempotency, stable result errors, safe receipt persistence and terminal-receipt reconciliation.",
     "2026-09-19 D-session Workflow Bridge Registry: added machine-readable cross-machine links for parent-revision child invalidation, derived Order status, and capability-result evidence feeds into Work; evidence feeds explicitly forbid automatic Work transition.",
-    "2026-09-19 D-session Bridge validation: added workflow-bridge schema, semantic validator, negative tests and CI gate; SHADOW bridges are source-pinned and target workflow/command references are checked."
+    "2026-09-19 D-session Bridge validation: added workflow-bridge schema, semantic validator, negative tests and CI gate; SHADOW bridges are source-pinned and target workflow/command references are checked.",
+    "2026-09-19 D-session runtime migration begins: next step moves the Work Ledger state graph from a hard-coded transition map to registry-backed ai-core.work-lifecycle while preserving ledger hash/revision/evidence authority."
   ]
 }
