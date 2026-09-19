@@ -178,14 +178,18 @@ Completed:
 
 - Work Ledger exact state graph registered as `ai-core.work-lifecycle` SHADOW
 - REOBSERVE modeled explicitly without making it a global adopted primitive
-- full state-pair parity regression implemented
+- full Work Ledger state-pair parity regression implemented
 - verification-context and closure edge cases covered
-- SHADOW source authority pinned to exact source blobs
+- Work Ledger SHADOW source authority pinned to exact source blobs
+- OrderStore child-task lifecycle registered as `ai-core.order-task-lifecycle` SHADOW
+- claim/reclaim, blocked resume, assignment, report, block and parent-revision invalidation parity implemented
+- heartbeat classified as lease FACT_UPDATE rather than business transition
+- parent Order NEW/ACTIVE/BLOCKED/REVIEW projection reproduced as a derived aggregate
+- Order Task SHADOW source authority pinned to exact OrderStore blob
 
 Still not completed:
 
 - replacing the hard-coded Work Ledger transition map
-- Order/Task coordination SHADOW model
 - Capability execution coordination SHADOW model
 - cross-machine Command/Event bridge
 - project-by-project migration
