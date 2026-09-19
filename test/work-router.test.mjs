@@ -20,6 +20,9 @@ test('natural-language fixtures resolve to the expected work type and current pr
       assert.equal(result.work_type_id, fixture.expected_work_type_id);
       assert.equal(result.status, fixture.expected_status);
       assert.ok(result.target_project_id);
+      if (fixture.expected_target_project_id) {
+        assert.equal(result.target_project_id, fixture.expected_target_project_id);
+      }
     });
   }
 });
