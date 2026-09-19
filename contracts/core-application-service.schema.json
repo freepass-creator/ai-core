@@ -11,11 +11,6 @@
     "source",
     "use_cases",
     "required_ports",
-    "side_effects",
-    "idempotency",
-    "actor_requirement",
-    "transaction_boundary",
-    "error_codes",
     "verification_profile"
   ],
   "properties": {
@@ -56,7 +51,12 @@
         "required": [
           "name",
           "input_contract",
-          "output_contract"
+          "output_contract",
+          "side_effects",
+          "idempotency",
+          "actor_requirement",
+          "transaction_boundary",
+          "error_codes"
         ],
         "properties": {
           "name": {
@@ -74,6 +74,39 @@
               "string",
               "null"
             ]
+          },
+          "side_effects": {
+            "type": "boolean"
+          },
+          "idempotency": {
+            "enum": [
+              "REQUIRED",
+              "SUPPORTED",
+              "NOT_APPLICABLE"
+            ]
+          },
+          "actor_requirement": {
+            "enum": [
+              "REQUIRED",
+              "OPTIONAL",
+              "NONE"
+            ]
+          },
+          "transaction_boundary": {
+            "enum": [
+              "REPOSITORY_ATOMIC",
+              "ORCHESTRATED",
+              "READ_ONLY",
+              "NONE"
+            ]
+          },
+          "error_codes": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Z][A-Z0-9_]*$"
+            }
           }
         }
       }
@@ -100,39 +133,6 @@
         }
       }
     },
-    "side_effects": {
-      "type": "boolean"
-    },
-    "idempotency": {
-      "enum": [
-        "REQUIRED",
-        "SUPPORTED",
-        "NOT_APPLICABLE"
-      ]
-    },
-    "actor_requirement": {
-      "enum": [
-        "REQUIRED",
-        "OPTIONAL",
-        "NONE"
-      ]
-    },
-    "transaction_boundary": {
-      "enum": [
-        "REPOSITORY_ATOMIC",
-        "ORCHESTRATED",
-        "READ_ONLY",
-        "NONE"
-      ]
-    },
-    "error_codes": {
-      "type": "array",
-      "uniqueItems": true,
-      "items": {
-        "type": "string",
-        "pattern": "^[A-Z][A-Z0-9_]*$"
-      }
-    },
     "verification_profile": {
       "type": "array",
       "minItems": 1,
@@ -143,22 +143,5 @@
       }
     }
   },
-  "allOf": [
-    {
-      "if": {
-        "properties": {
-          "side_effects": {
-            "const": true
-          }
-        }
-      },
-      "then": {
-        "properties": {
-          "required_ports": {
-            "minItems": 1
-          }
-        }
-      }
-    }
-  ]
+  "allOf": []
 }
