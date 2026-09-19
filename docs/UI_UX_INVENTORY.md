@@ -66,6 +66,8 @@ A reusable function is not complete merely because a component exists. Before re
 - keyboard/touch/accessibility verification;
 - mobile/desktop behavior;
 - localization/direction behavior where applicable;
-- engine or adapter binding when runtime execution is involved.
+- engine or adapter binding when runtime execution is involved;
+- evidence provenance for System-family standards;
+- logical-direction CSS and safe-area handling when the common implementation owns layout behavior.
 
 Product-specific visual decisions stay in product profiles. Common interaction semantics do not fork locally.
