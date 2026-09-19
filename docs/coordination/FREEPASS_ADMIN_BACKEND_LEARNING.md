@@ -340,6 +340,99 @@ DevCenter:
 - `capabilities/IMPROVEMENTS.md`
 - `registry.json`
 
+## 11. 2026-09-19 실제 구현·검증 결과
+
+FreePass Admin에서 학습 후보였던 일부 항목을 실제 코드로 고도화하고 CI로 검증했다.
+
+기준 revision:
+`f8eb1bfd8337aad4a12948f18e668e3ee19ad3fc`
+
+검증:
+- GitHub Actions run `35437615280`
+- `npm ci` PASS
+- `npm run typecheck` PASS
+- `npm test` PASS
+- `npm run build` PASS
+
+실제로 반영된 항목:
+
+1. **4개 진행 사실**
+   - 계약서
+   - 필수서류
+   - 잔금
+   - 인도
+
+2. **Snapshot deep clone**
+   - MULTI_SELECT 배열 참조 공유 제거
+   - 원 상품 변경이 기존 Application Snapshot에 전파되지 않는 회귀테스트 추가
+
+3. **Actor boundary**
+   - `ActorRef`
+   - `ActorProvider`
+   - Service에서 상태변경 actor를 요구
+
+4. **최소 audit history**
+   - APPLICATION_CREATED
+   - APPLICATION_PROGRESS_CHANGED
+   - APPLICATION_CANCELLED
+   - actor / occurredAt / delta 또는 reason 저장
+
+5. **원자 접수 생성 계약**
+   - submissionId 중복검사
+   - 사람이 읽는 접수번호 sequence 발번
+   - Application 생성/저장
+   를 Repository `createSequenced` 경계로 통합
+
+6. **원자 aggregate mutation**
+   - 진행변경/취소를 `get → update`로 분리하지 않고 Repository `mutate` 경계 안에서 처리
+   - 동시에 서로 다른 진행값 변경 시 lost update 방지 테스트 추가
+
+7. **위험한 우회 API 제거**
+   - ApplicationRepository에서 비원자 `create/update/countByDatePrefix` write path 제거
+   - Service가 atomic create/mutate만 사용하도록 contract 자체를 좁힘
+
+8. **동시성 회귀검증**
+   - 서로 다른 20개 접수 동시 생성
+   - applicationNumber 중복 0
+   - 같은 submissionId 동시 재시도는 생성 1건
+   - 서로 다른 진행 변경 동시 실행 시 둘 다 보존
+
+## 12. DevCenter 반영 상태
+
+DevCenter에 다음 candidate를 등록했다.
+
+- `standards/backend/FREEPASS-ADMIN-PILOT.md`
+- registry scope: `dev.backend.boundary.freepass_admin_candidate`
+
+상태는 여전히 `CANDIDATE / SECOND-PROJECT-EVIDENCE_REQUIRED`다.
+
+즉 FreePass Admin 한 프로젝트의 성공을 곧바로 전사 표준으로 선언하지 않는다.
+다음 검증 대상은 FreePass Sales 등 두 번째 실제 프로젝트이며, 동일한 Domain/Service/Port/Adapter/Repository 의미가 맞는지 교차 검증한다.
+
+## 13. 현재 남은 경계
+
+이번 고도화로 내부 코드/개발 저장소 수준에서 해결된 것과 운영 연결 문제를 분리한다.
+
+### 해결/검증됨
+- Domain/Service/Port/Adapter/Repository 기본 경계
+- Application progress 4 facts
+- Snapshot deep clone
+- repository-level idempotency
+- single-process atomic sequence/create
+- single-process atomic aggregate mutation
+- actor contract
+- aggregate audit history
+- typecheck/unit/build CI gate
+
+### 운영 연결이 있어야 검증 가능
+- 실제 Firestore/운영 persistence Adapter transaction
+- 멀티 인스턴스 동시성
+- 실제 관리자 Auth/Permission binding
+- production audit retention/sink
+- production runtime smoke/deployment/rollback
+
+이 남은 항목은 문서 미완성이 아니라 **외부 운영 바인딩 증거가 필요한 경계**로 취급한다.
+
 ## 11. 핵심 한 줄
 
 > AI Core는 통제와 학습·버전·증거를 소유하고, DevCenter는 공통 개발 패턴을 소유하며, FreePass는 실제 업무 의미와 Domain Engine을 소유한다. FreePass Admin에서 먼저 검증된 Domain/Service/Port/Adapter/Repository 구조는 DevCenter의 차기 Backend Architecture Standard 후보로 학습한다.
