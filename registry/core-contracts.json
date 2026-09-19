@@ -61,6 +61,34 @@
       "path": "contracts/core-receipt.schema.json",
       "status": "CANONICAL",
       "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
+    },
+    {
+      "id": "core.port.v1",
+      "domain": "ENGINE_ADAPTER",
+      "path": "contracts/core-port.schema.json",
+      "status": "CANONICAL",
+      "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
+    },
+    {
+      "id": "core.engine.v1",
+      "domain": "ENGINE_ADAPTER",
+      "path": "contracts/core-engine.schema.json",
+      "status": "CANONICAL",
+      "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
+    },
+    {
+      "id": "core.adapter.v1",
+      "domain": "ENGINE_ADAPTER",
+      "path": "contracts/core-adapter.schema.json",
+      "status": "CANONICAL",
+      "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
+    },
+    {
+      "id": "core.binding-profile.v1",
+      "domain": "ENGINE_ADAPTER",
+      "path": "contracts/core-binding-profile.schema.json",
+      "status": "CANONICAL",
+      "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
     }
   ]
 }
