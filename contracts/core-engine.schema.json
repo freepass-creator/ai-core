@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.freepass.ai/core/engine/v1",
+  "title": "AI Core Engine Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "engine_id",
+    "version",
+    "source",
+    "inputs",
+    "outputs",
+    "invariants",
+    "required_ports",
+    "effect_model",
+    "error_codes",
+    "verification_profile"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "core-engine-contract/v1"
+    },
+    "engine_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]*(\\.[a-z][a-z0-9_-]*)+$"
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "locator",
+        "revision"
+      ],
+      "properties": {
+        "locator": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "$ref": "https://schemas.freepass.ai/core/types/v1#/$defs/revision"
+        }
+      }
+    },
+    "inputs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "outputs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "invariants": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "required_ports": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "port_id",
+          "port_version"
+        ],
+        "properties": {
+          "port_id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]*(\\.[a-z][a-z0-9_-]*)+$"
+          },
+          "port_version": {
+            "type": "string",
+            "pattern": "^v[1-9][0-9]*$"
+          }
+        }
+      }
+    },
+    "effect_model": {
+      "enum": [
+        "PURE",
+        "PORT_MEDIATED"
+      ]
+    },
+    "error_codes": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Z][A-Z0-9_]*$"
+      }
+    },
+    "verification_profile": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "effect_model": {
+            "const": "PORT_MEDIATED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "required_ports": {
+            "minItems": 1
+          }
+        }
+      }
+    }
+  ]
+}
