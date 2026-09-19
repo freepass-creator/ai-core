@@ -53,3 +53,10 @@ test('globalization verification matrix cannot silently regress', () => {
   brokenResponsive.profiles.RESPONSIVE.verification = brokenResponsive.profiles.RESPONSIVE.verification.filter((item) => item !== '400%-reflow');
   assert.throws(() => validateUiUxRegistrySemantics(brokenResponsive), /UIUX_RESPONSIVE_VERIFICATION_MISSING:400%-reflow/);
 });
+
+
+test('system standards require evidence provenance', () => {
+  const broken = structuredClone(registry);
+  delete broken.features.find((item) => item.id === 'system.locale-formatting').evidence;
+  assert.throws(() => validateUiUxRegistrySemantics(broken), /UIUX_SYSTEM_EVIDENCE_REQUIRED:system\.locale-formatting/);
+});
