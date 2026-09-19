@@ -136,6 +136,7 @@
     "docs/research/A_SESSION_GAP_DEVCENTER_REGISTRY_REVISION_BINDING_2026-09-19.md",
     "docs/research/A_SESSION_GAP_FREEPASSERP3_APPROXIMATE_CANONICALIZATION_2026-09-19.md",
     "docs/research/A_SESSION_GAP_FREEPASSHOMEPAGE_REDUCED_MOTION_2026-09-19.md",
+    "docs/research/A_SESSION_GAP_JPKERP_SILENT_RECONCILIATION_PARTIAL_WRITE_2026-09-19.md",
     "docs/research/A_SESSION_GAP_JPKERP_V4_SERVER_ACK_MUTATION_2026-09-19.md",
     "docs/research/A_SESSION_GAP_MEWCAR_CANONICAL_ENTRYPOINT_SUPERSESSION_2026-09-19.md",
     "docs/research/A_SESSION_GAP_TEAMJPK_ACCESSIBILITY_ZOOM_MOTION_2026-09-19.md",
@@ -143,6 +144,7 @@
     "docs/research/A_SESSION_HOLD_CHAKHANDEAL_CONSENT_GRANT_2026-09-19.md",
     "docs/research/A_SESSION_HOLD_SONOGONG_DEPLOYMENT_PROOF_2026-09-19.md",
     "docs/research/A_SESSION_PROMOTION_MATRIX_2026-09-19.md",
+    "docs/research/A_SESSION_REPO_COVERAGE_2026-09-19.md",
     "docs/research/BUILD_DEPLOY_GOVERNANCE_CROSS_REPO_FINDINGS_2026-09-19.md",
     "docs/research/DATA_SSOT_CROSS_REPO_FINDINGS_2026-09-19.md",
     "docs/research/ENGINE_ADAPTER_CROSS_REPO_FINDINGS_2026-09-19.md",
@@ -150,6 +152,7 @@
     "docs/research/OBSERVABILITY_QA_CROSS_REPO_FINDINGS_2026-09-19.md",
     "docs/research/WORKFLOW_STATE_MACHINE_CROSS_REPO_FINDINGS_2026-09-19.md",
     "docs/research/a-session-promotion-matrix.v1.json",
+    "docs/research/a-session-repo-coverage.v1.json",
     "docs/research/global-product-standard-evidence.v1.json",
     "docs/reviews/ORDER_DESK_REVIEW.md",
     "docs/reviews/SHARED_ORDER_REVIEW.md",
@@ -358,6 +361,7 @@
     "2026-09-19 C-session P0 completion: source-priority, snapshot, request-idempotency, query, transformer, generic result, event-type, import/export, enum/code contracts plus migration bridge/guide were added. changed_files was regenerated again from the exact base_revision diff for verifier parity only.",
     "2026-09-19 C-session schema evolution follow-up: added automated same-major breaking-change detection and CI contracts:compat. changed_files was regenerated from the exact base_revision diff for verifier parity.",
     "2026-09-19 C-session adoption proof: real core.brief and work.projection builtin adapter results are executed through the existing runtime and shadow-projected into core-adapter-result/v1 at the audited source revision. This adds adoption evidence without changing runtime authority.",
-    "2026-09-19 Order C closeout integration: Core Contract Standard branch shared files were semantically reconciled with main 7848b948ac67; final changed_files will be regenerated from the exact merge revision before canonical PASS."
+    "2026-09-19 Order C closeout integration: Core Contract Standard branch shared files were semantically reconciled with main 7848b948ac67; final changed_files will be regenerated from the exact merge revision before canonical PASS.",
+    "2026-09-19 Order C closeout: changed_files regenerated from exact 7b63024c5dd0...400cbc14e39f diff after semantic merge with main; this is verifier parity only."
   ]
 }
