@@ -170,3 +170,24 @@ Migration order:
 5. only then remove duplicated imperative transition logic
 
 The target architecture is three explicit related machines, not one mega-state enum.
+
+
+### Current D checkpoint
+
+Completed:
+
+- Work Ledger exact state graph registered as `ai-core.work-lifecycle` SHADOW
+- REOBSERVE modeled explicitly without making it a global adopted primitive
+- full state-pair parity regression implemented
+- verification-context and closure edge cases covered
+- SHADOW source authority pinned to exact source blobs
+
+Still not completed:
+
+- replacing the hard-coded Work Ledger transition map
+- Order/Task coordination SHADOW model
+- Capability execution coordination SHADOW model
+- cross-machine Command/Event bridge
+- project-by-project migration
+
+Therefore the current Work Ledger remains authoritative.
