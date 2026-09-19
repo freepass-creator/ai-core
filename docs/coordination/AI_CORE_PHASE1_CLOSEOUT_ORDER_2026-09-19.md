@@ -216,6 +216,12 @@ This list is a queue candidate, not a fixed priority order. Order sets the actua
 
 ---
 
+## Order-side closeout registry
+
+The current machine-readable status is `registry/phase1-closeout.json` under `contracts/phase1-closeout.schema.json`.
+Run `npm run closeout:validate` to validate lane identity, blocking state, global gates and the rule that `BASELINE_LOCKED` requires A/B/C/D PASS plus green CI at the same observed revision.
+The registry may remain structurally valid while status is HOLD; that is intentional and prevents false completion.
+
 ## Immediate order
 
 A/B/C/D should now stop open-ended expansion and perform **Phase 1 gap-to-exit review** against this document.
