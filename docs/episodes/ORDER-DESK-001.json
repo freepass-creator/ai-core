@@ -25,6 +25,7 @@
     "contracts/core-adapter-result.schema.json",
     "contracts/core-adapter.schema.json",
     "contracts/core-api-page.schema.json",
+    "contracts/core-application-service.schema.json",
     "contracts/core-binding-profile.schema.json",
     "contracts/core-code-set.schema.json",
     "contracts/core-contract-adoption.schema.json",
@@ -339,6 +340,7 @@
     "2026-09-19 C-session P0 completion: source-priority, snapshot, request-idempotency, query, transformer, generic result, event-type, import/export, enum/code contracts plus migration bridge/guide were added. changed_files was regenerated again from the exact base_revision diff for verifier parity only.",
     "2026-09-19 C-session schema evolution follow-up: added automated same-major breaking-change detection and CI contracts:compat. changed_files was regenerated from the exact base_revision diff for verifier parity.",
     "2026-09-19 C-session adoption proof: real core.brief and work.projection builtin adapter results are executed through the existing runtime and shadow-projected into core-adapter-result/v1 at the audited source revision. This adds adoption evidence without changing runtime authority.",
-    "2026-09-19 C-P1 cross-project adoption: ERP4/Admin/Sales/Estimate were classified against every canonical C contract; ERP4 source-registry and Estimate adapter-result entered SHADOW with explicit artifacts; project backfill added scoped source authority, receipt milestones and CANCELLED error family. changed_files regenerated from exact base_revision diff for verifier parity only."
+    "2026-09-19 C-P1 cross-project adoption: ERP4/Admin/Sales/Estimate were classified against every canonical C contract; ERP4 source-registry and Estimate adapter-result entered SHADOW with explicit artifacts; project backfill added scoped source authority, receipt milestones and CANCELLED error family. changed_files regenerated from exact base_revision diff for verifier parity only.",
+    "2026-09-19 C-P1 Application Service backfill: added a machine Application Service contract, per-use-case actor/idempotency/transaction/error policies, mixed repository ports and service-only bindings; adoption matrix expanded to 25 contracts x 4 projects. changed_files regenerated from exact base_revision diff for verifier parity."
   ]
 }
