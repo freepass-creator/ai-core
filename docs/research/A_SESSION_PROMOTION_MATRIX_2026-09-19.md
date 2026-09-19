@@ -161,7 +161,7 @@ A 세션이 조사한 내용을 B·C·D·Security·QA·Governance 세션이 다�
 
 | Candidate | 축 | Evidence | 실제 근거 | 넘길 세션 | 다음 단계 |
 |---|---|---|---|---|---|
-| `ui.machine-conformance-gate` | UI/UX / Design QA | PROJECT_VERIFIED | fp-settlement | B | SECOND_PROJECT_REQUIRED |
+| `ui.machine-conformance-gate` | UI/UX / Design QA | CROSS_PROJECT_VERIFIED | fp-settlement, teamjpkwork | B | COMMON_ADOPTED_CANDIDATE |
 
 - 근거: `fp-settlement@b1e833dfed37ed08f5cc5ed83bdd55a29bf5bc24`, current observed head `b406da67a9cb2b85b5572a7f5d28d350ca84cb58`.
 - 프로젝트 전용 retro skin/픽셀값을 공통화하는 것이 아니라 **semantic token-role + effective-style + actually-used selector + CI fail** 메커니즘만 일반화한다.
@@ -203,3 +203,14 @@ A 세션이 조사한 내용을 B·C·D·Security·QA·Governance 세션이 다�
 - Central stale observation: AI Core `registry/projects.json` still records DevCenter at `132189799a...`; actual observed head is `6a838a28...`.
 - Destination: **C / Registry provenance**
 - 상세: `docs/research/A_SESSION_GAP_DEVCENTER_REGISTRY_REVISION_BINDING_2026-09-19.md`.
+
+
+### TeamJPKWork second evidence — `ui.machine-conformance-gate` 승격
+
+- **PROJECT_VERIFIED → CROSS_PROJECT_VERIFIED**
+- First evidence: `fp-settlement@b1e833dfed37ed08f5cc5ed83bdd55a29bf5bc24`
+- Second independent evidence: `teamjpkwork@75bb285a241b68c13acbe532c30d6d91110f8082`
+- TeamJPKWork independently enforces canonical screen tokens/roles with repeatable checkers and explicitly handles checker blind spots/false-green cases.
+- Project-local values, classic-theme texture, depth rules and badge semantics are not proposed as global defaults.
+- B can evaluate this mechanism as `COMMON_ADOPTED_CANDIDATE`.
+- Detail: `docs/research/A_SESSION_DISCOVERY_TEAMJPKWORK_UI_CONFORMANCE_SECOND_EVIDENCE_2026-09-19.md`.
