@@ -416,3 +416,49 @@ A SHADOW workflow without source authority is invalid.
 The parity test suite compares the current Ledger and D SHADOW against the same candidate transitions, including the full 11×11 state-pair matrix. If the source blobs change, the source-lock test fails until the SHADOW is re-audited.
 
 This is a migration gate, not a replacement switch.
+
+
+## Order / Task SHADOW parity checkpoint
+
+`registry/workflows.json` contains `ai-core.order-task-lifecycle@0.1.0` as SHADOW.
+
+The machine extracts the child-task lifecycle currently embedded in `OrderStore.mutate()`:
+
+- PENDING
+- RUNNING
+- BLOCKED
+- REPORTED
+
+Explicit transitions cover:
+
+- assign/reassign
+- initial claim
+- blocked resume
+- expired-lease reclaim
+- report
+- block
+- parent-revision invalidation back to PENDING
+
+The SHADOW intentionally does **not** model heartbeat as a business transition. Heartbeat is an audited lease fact update that preserves RUNNING.
+
+Guards mirror current OrderStore behavior for:
+
+- valid/assigned actor
+- active vs inactive lease
+- token/actor lease ownership
+- dependency completion
+- requirement revision match
+- report content/evidence validity
+- required reason validity
+
+Parent Order status remains a derived aggregate:
+
+- all child tasks REPORTED -> REVIEW
+- any BLOCKED -> BLOCKED
+- any RUNNING or REPORTED -> ACTIVE
+- otherwise -> NEW
+- CANCELLED/CLOSED remain terminal overrides
+
+The current close action records `USER_ACCEPTED_NOT_CANONICAL` and leaves the parent in REVIEW. D preserves that distinction rather than manufacturing canonical completion.
+
+The SHADOW is source-pinned to the exact `src/orders/store.mjs` Git blob and parity-tested against the real OrderStore.
