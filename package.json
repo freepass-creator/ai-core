@@ -34,6 +34,7 @@
     "workmap:validate": "node scripts/validate-work-map.mjs",
     "workflow:validate": "node scripts/validate-workflows.mjs",
     "workflow:bridge:validate": "node scripts/validate-workflow-bridges.mjs",
+    "workflow:recovery:validate": "node scripts/validate-workflow-recovery-policies.mjs",
     "ops:route": "node scripts/route-work.mjs",
     "capability:validate": "node scripts/validate-capability-registry.mjs",
     "core:capability": "node scripts/core-capability.mjs",
