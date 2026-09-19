@@ -7,6 +7,7 @@ import { readFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { appendLedgerEvent, verifyLedgerText } from '../scripts/work-ledger.mjs';
 import { createWorkLedgerShadow } from '../src/workflow/work-ledger-shadow.mjs';
+import { lifecycleGraph } from '../src/workflow/registry.mjs';
 
 const registry = JSON.parse(readFileSync(new URL('../registry/workflows.json', import.meta.url), 'utf8'));
 const workflow = registry.workflows.find(item => item.workflow_id === 'ai-core.work-lifecycle');
@@ -305,4 +306,31 @@ test('SHADOW source authority is pinned to the exact Work Ledger blobs', () => {
     }).trim();
     assert.equal(actual, source.blob_sha, source.path);
   }
+});
+
+
+test('registry-backed graph preserves the frozen legacy transition matrix', () => {
+  const legacy = new Map([
+    ['RECEIVED', ['PLANNED', 'BLOCKED', 'CANCELLED']],
+    ['PLANNED', ['IN_PROGRESS', 'BLOCKED', 'CANCELLED']],
+    ['IN_PROGRESS', ['VERIFYING', 'BLOCKED', 'CANCELLED']],
+    ['VERIFYING', ['IN_PROGRESS', 'AWAITING_AUTHORIZATION', 'READY', 'BLOCKED']],
+    ['AWAITING_AUTHORIZATION', ['READY', 'BLOCKED', 'CANCELLED']],
+    ['READY', ['EXECUTED', 'BLOCKED', 'CANCELLED']],
+    ['EXECUTED', ['OBSERVING', 'BLOCKED']],
+    ['OBSERVING', ['CLOSED', 'BLOCKED']],
+    ['CLOSED', []],
+    ['BLOCKED', ['PLANNED', 'IN_PROGRESS', 'VERIFYING', 'AWAITING_AUTHORIZATION', 'READY', 'OBSERVING', 'CANCELLED']],
+    ['CANCELLED', []],
+  ]);
+  const graph = lifecycleGraph('ai-core.work-lifecycle');
+  assert.deepEqual(
+    Object.fromEntries([...graph.transitions.entries()].map(([key, value]) => [key, [...value]])),
+    Object.fromEntries(legacy),
+  );
+  assert.deepEqual(graph.reobservable, ['RECEIVED', 'PLANNED', 'IN_PROGRESS']);
+  assert.deepEqual(
+    [...graph.verifiedPath].sort(),
+    ['AWAITING_AUTHORIZATION', 'CLOSED', 'EXECUTED', 'OBSERVING', 'READY'].sort(),
+  );
 });
