@@ -345,10 +345,10 @@ DevCenter:
 FreePass Admin에서 학습 후보였던 일부 항목을 실제 코드로 고도화하고 CI로 검증했다.
 
 기준 revision:
-`f8eb1bfd8337aad4a12948f18e668e3ee19ad3fc`
+`3f1812c6968f57494c1e8204e7a67d54e1c1f3ea`
 
 검증:
-- GitHub Actions run `35437615280`
+- GitHub Actions run `35437766677`
 - `npm ci` PASS
 - `npm run typecheck` PASS
 - `npm test` PASS
@@ -397,6 +397,16 @@ FreePass Admin에서 학습 후보였던 일부 항목을 실제 코드로 고�
    - 같은 submissionId 동시 재시도는 생성 1건
    - 서로 다른 진행 변경 동시 실행 시 둘 다 보존
 
+9. **Typed error contract**
+   - `AppError` + semantic code 사용
+   - Service가 Error message 문자열을 비교해 분기하지 않음
+
+10. **Application aggregate invariants**
+   - id / applicationNumber / submissionId / createdAt 불변
+   - 접수 당시 Snapshot 불변
+   - audit history append-only
+   - Repository write 경계에서 검증 + 회귀테스트
+
 ## 12. DevCenter 반영 상태
 
 DevCenter에 다음 candidate를 등록했다.
@@ -422,6 +432,8 @@ DevCenter에 다음 candidate를 등록했다.
 - single-process atomic aggregate mutation
 - actor contract
 - aggregate audit history
+- typed error contract
+- immutable Application aggregate + append-only audit history
 - typecheck/unit/build CI gate
 
 ### 운영 연결이 있어야 검증 가능
