@@ -2,10 +2,10 @@
   "schema_version": "1.0",
   "phase": "PHASE_1",
   "status": "HOLD",
-  "observed_revision": "462afc69da83b1f9074b25d1d8b2d6d60abc79ba",
+  "observed_revision": "70473ff9dc140ae0832a1e159fb8d8d41b9ae631",
   "ci": {
-    "run_id": 35444588930,
-    "head_sha": "462afc69da83b1f9074b25d1d8b2d6d60abc79ba",
+    "run_id": 35444799090,
+    "head_sha": "70473ff9dc140ae0832a1e159fb8d8d41b9ae631",
     "conclusion": "success"
   },
   "gates": {
@@ -20,10 +20,8 @@
     {
       "id": "A",
       "owner": "Repo Intelligence / Reverse Import",
-      "status": "REVIEW",
-      "blockers": [
-        "Phase 1 exit return packet has not yet been recorded against the closeout order."
-      ],
+      "status": "PASS",
+      "blockers": [],
       "evidence": [
         {
           "path": "docs/coordination/REPOSITORY_BACKFILL_AUDIT_2026-09-19.md"
@@ -33,6 +31,11 @@
         },
         {
           "path": "docs/research/a-session-promotion-matrix.v1.json"
+        },
+        {
+          "path": "docs/coordination/REPOSITORY_BACKFILL_AUDIT_2026-09-19.md",
+          "revision": "70473ff9dc140ae0832a1e159fb8d8d41b9ae631",
+          "note": "Order Phase 1 exit review: 36-repository backfill, promotion maturity routing, Core-vs-project gap classification and post-closeout queue are sufficient for the A baseline."
         }
       ]
     },
