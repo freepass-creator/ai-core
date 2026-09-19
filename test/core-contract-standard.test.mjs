@@ -12,7 +12,7 @@ const schema=id=>ajv.getSchema(id);
 
 test('core money uses minor units plus ISO currency and percentage is percentage-points',()=>{
   const types=schemas.find(x=>x.$id==='https://schemas.freepass.ai/core/types/v1');
-  const money=ajv.compile(types.$defs.money);
+  const money=ajv.compile({$ref:'https://schemas.freepass.ai/core/types/v1#/$defs/money'});
   assert.equal(money({amount_minor:125000,currency:'KRW'}),true);
   assert.equal(money({amount_minor:1250.5,currency:'KRW'}),false);
   assert.match(types.$defs.percentage.description,/10 means 10%/);
