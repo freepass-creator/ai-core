@@ -116,3 +116,57 @@ Instead determine:
 - which side effects are compensatable
 
 Then register the domain machine.
+
+
+## AI Core three-machine migration order
+
+The second-pass audit found three different workflow classes that must not be collapsed.
+
+### A. Order / Task coordination
+
+Source: `src/orders/store.mjs`
+
+Model separately:
+
+- Order aggregate projection: NEW / ACTIVE / BLOCKED / REVIEW / CANCELLED
+- Task lifecycle: PENDING / RUNNING / BLOCKED / REPORTED
+- lease facts: token / owner / expiresAt / attempt
+- requirement revision
+- user-acceptance evidence
+
+Do not treat heartbeat as a business transition. It extends a lease fact.
+
+Before migration, resolve the current CLOSED compatibility state explicitly: the store guards it as terminal, while current tested close behavior intentionally remains REVIEW with USER_ACCEPTED_NOT_CANONICAL.
+
+### B. Capability execution coordination
+
+Source: `src/engine/capability-execution-coordinator.mjs`
+
+Persistent coordination states:
+
+- RESERVED
+- RESULT
+
+Reconciliation result statuses:
+
+- SUCCEEDED
+- FAILED
+- HOLD
+
+These states describe execution delivery/outcome observation. They do not own Work business lifecycle.
+
+### C. Canonical Work lifecycle
+
+Source: `scripts/work-ledger.mjs`
+
+This remains the canonical AI Core Work business lifecycle.
+
+Migration order:
+
+1. model A and B as coordination/derived contracts without changing C authority
+2. model C exactly as SHADOW
+3. prove parity with existing Work Ledger revision/evidence rules
+4. connect the three through Command/Event contracts
+5. only then remove duplicated imperative transition logic
+
+The target architecture is three explicit related machines, not one mega-state enum.
