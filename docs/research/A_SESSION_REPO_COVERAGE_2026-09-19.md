@@ -9,6 +9,7 @@ A 세션이 연결된 GitHub 저장소를 매번 처음부터 다시 읽지 않�
 다음 감사의 기본 규칙:
 
 1. 현재 HEAD가 `observed_head`와 같으면 전체 재감사하지 않는다.
+   - **AI Core 자기 자신은 예외**: 이 registry를 갱신하면 AI Core HEAD도 바뀌므로 stored HEAD를 두지 않고 감사 시작 시 current HEAD를 읽는다.
 2. HEAD가 바뀌면 그 revision delta와 영향받는 계약부터 본다.
 3. Git revision이 같아도 production/runtime/external evidence가 바뀌면 다시 본다.
 4. clone/fork/copied-module 계보는 별도 Repo라는 이유만으로 CROSS_PROJECT 증거가 되지 않는다.
