@@ -133,3 +133,15 @@ Machine authority:
 - `contracts/workflow-bridge.schema.json`
 - `registry/workflow-bridges.json`
 - `scripts/validate-workflow-bridges.mjs`
+
+
+## 8. Current runtime authority split
+
+The first D runtime migration is active on this branch.
+
+- `registry/workflows.json -> ai-core.work-lifecycle` is the **CANONICAL state-graph authority**.
+- `scripts/work-ledger.mjs` consumes that graph for allowed lifecycle transitions.
+- Work Ledger remains the **CANONICAL append-only history authority** for event chain, subject revision, verification capture and closure evidence.
+- The generic D engine is not yet the sole executor for Work transitions; migration proceeds incrementally.
+
+This split is intentional: workflow meaning is centralized before storage/history mechanics are replaced.
