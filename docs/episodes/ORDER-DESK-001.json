@@ -312,7 +312,13 @@
     "test/validate-project-registry.test.mjs",
     "test/verify-main-state.test.mjs",
     "test/work-ledger-revision.test.mjs",
-    "test/work-ledger.test.mjs"
+    "test/work-ledger.test.mjs",
+    "test/work-recorder.test.mjs",
+    "test/work-reobserve.test.mjs",
+    "test/work-router.test.mjs",
+    "web/orders/app.js",
+    "web/orders/index.html",
+    "web/orders/style.css"
   ],
   "verification": {
     "behavior_tests": "Shared/client focused suite: 22 passed, 0 failed. Full suite result is recorded in SHARED-ORDER-VERIFICATION.json.",
@@ -369,6 +375,7 @@
     "2026-09-19 C-P1 cross-project adoption: ERP4/Admin/Sales/Estimate were classified against every canonical C contract; ERP4 source-registry and Estimate adapter-result entered SHADOW with explicit artifacts; project backfill added scoped source authority, receipt milestones and CANCELLED error family. changed_files regenerated from exact base_revision diff for verifier parity only.",
     "2026-09-19 C-P1 Application Service backfill: added a machine Application Service contract, per-use-case actor/idempotency/transaction/error policies, mixed repository ports and service-only bindings; adoption matrix expanded to 25 contracts x 4 projects. changed_files regenerated from exact base_revision diff for verifier parity.",
     "2026-09-19 Order C adoption integration: ERP4/Admin/Sales/Estimate adoption evidence was reconciled with main Core Contract Standard; exact changed_files will be regenerated after the merge revision.",
-    "2026-09-19 Order C adoption closeout: changed_files regenerated from exact 7b63024c5dd0...97575e9fac43 diff after adoption merge with canonical main."
+    "2026-09-19 Order C adoption closeout: changed_files regenerated from exact 7b63024c5dd0...97575e9fac43 diff after adoption merge with canonical main.",
+    "2026-09-19 Order C adoption evidence repair: changed_files rebuilt from full recursive Git tree diff 7b63024c5dd0..ab78c70d6a1f because GitHub compare file listings truncate at 300 files."
   ]
 }
