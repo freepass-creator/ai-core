@@ -69,3 +69,14 @@ test('best-effort batch must expose partial failure through a receipt',()=>{
   assert.equal(validateDataPipeline(pipeline).status,'VALID');
   assert.throws(()=>validateDataPipeline({...pipeline,partial_failure_policy:'FAIL_BEFORE_COMMIT'}),/BEST_EFFORT_BATCH_REQUIRES_PARTIAL_RECEIPT/);
 });
+
+
+test('legacy atomic pipeline without partial_failure_policy remains v1 compatible',()=>{
+  const pipeline={
+    schema_version:'core-data-pipeline-contract/v1',pipeline_id:'legacy.import',direction:'IMPORT',version:'1.0.0',
+    source:'source',target:'target',
+    stages:['RAW_SNAPSHOT','PARSE','NORMALIZE','VALIDATE','COMMIT'],
+    commit_policy:'ATOMIC',receipt_required:true
+  };
+  assert.equal(validateDataPipeline(pipeline).status,'VALID');
+});
