@@ -1,6 +1,8 @@
 import { createHash } from 'node:crypto';
 import { relative, isAbsolute } from 'node:path';
 import { createTerminalReceiptReader } from './execution-receipt.mjs';
+import { createWorkflowEngine } from '../workflow/engine.mjs';
+import { getWorkflow } from '../workflow/registry.mjs';
 
 const need=(condition,code)=>{if(!condition) throw new Error(code);};
 const text=value=>typeof value==='string'&&value.trim()===value&&value.length>0;
@@ -91,6 +93,8 @@ export function createCapabilityExecutionCoordinator({
   need(store?.db&&typeof store.get==='function','ORDER_STORE_REQUIRED');
   need(projectRegistry?.schema_version==='1.0'&&Array.isArray(projectRegistry.projects),'PROJECT_REGISTRY_REQUIRED');
   const projects=new Map(projectRegistry.projects.map(project=>[project.project_id,project]));
+  const executionWorkflow=getWorkflow('ai-core.capability-execution');
+  const executionEngine=createWorkflowEngine(executionWorkflow,{now:()=>iso(clock)});
   store.db.exec(CAPABILITY_EXECUTION_SCHEMA);
 
   function getRow(requestId){
@@ -197,6 +201,32 @@ export function createCapabilityExecutionCoordinator({
       return prior;
     }
 
+    const reconciled=reason==='RECONCILED_FROM_TERMINAL_RECEIPT';
+    const transitionId=reconciled?'capability-execution.reconcile-terminal':'capability-execution.complete';
+    const commandId=reconciled?'capability-execution.reconcile':'capability-execution.complete';
+    const transition=executionEngine.decide({
+      projection:{
+        entity_id:row.request_id,
+        revision:0,
+        states:{lifecycle:row.state},
+      },
+      transition_id:transitionId,
+      command_id:commandId,
+      command_payload:receipt,
+      actor:{actor_id:'ai-core-capability'},
+      facts:{
+        'execution.result_schema_valid':true,
+        'execution.result_context_matches':true,
+        'execution.result_capability_matches':true,
+        'execution.result_revision_matches':true,
+        'execution.result_status':receipt.status??null,
+      },
+      expected_revision:0,
+      idempotency_key:requestId,
+    });
+    need(transition.status==='TRANSITION_ACCEPTED','CAPABILITY_EXECUTION_WORKFLOW_REJECTED');
+    need(transition.next_projection.states.lifecycle==='RESULT','CAPABILITY_EXECUTION_WORKFLOW_TARGET_INVALID');
+
     const at=iso(clock);
     store.db.exec('BEGIN IMMEDIATE');
     try{
@@ -209,7 +239,7 @@ export function createCapabilityExecutionCoordinator({
       }
       const update=store.db.prepare(
         'UPDATE capability_execution_requests SET state=?,result_json=?,reason=?,updated_at=? WHERE request_id=? AND state=?'
-      ).run('RESULT',JSON.stringify(receipt),reason,at,requestId,'RESERVED');
+      ).run(transition.next_projection.states.lifecycle,JSON.stringify(receipt),reason,at,requestId,'RESERVED');
       need(update.changes===1,'CAPABILITY_EXECUTION_STATE_CHANGED');
 
       const order=store.get(row.order_id);
@@ -222,6 +252,10 @@ export function createCapabilityExecutionCoordinator({
         revision:row.requirement_revision,
         detail:{
           request_id:requestId,
+          workflow_id:executionWorkflow.workflow_id,
+          workflow_version:executionWorkflow.version,
+          workflow_transition_id:transition.event.transition_id,
+          workflow_event_type:transition.event.event_type,
           work_id:row.work_id,
           capability_id:row.capability_id,
           project_id:row.project_id,
