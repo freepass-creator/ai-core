@@ -195,3 +195,25 @@ test('application service contract keeps orchestration separate from domain engi
   };
   assert.equal(validate(service),true);
 });
+
+
+test('mixed repository port and service-only binding profile are valid',()=>{
+  const port=schema('https://schemas.freepass.ai/core/port/v1');
+  assert.equal(port({
+    schema_version:'core-port-contract/v1',port_id:'application.repository',port_version:'v1',
+    semantics:'Atomic application persistence and lookup',direction:'MIXED',
+    input_schema:null,output_schema:null,side_effects:true,idempotency:'REQUIRED',
+    error_codes:['NOT_FOUND','CONFLICT','PERSISTENCE_ERROR']
+  }),true);
+
+  const binding=schema('https://schemas.freepass.ai/core/binding-profile/v1');
+  assert.equal(binding({
+    schema_version:'core-binding-profile/v1',profile_id:'freepass-admin.dev',project_id:'freepass-admin',
+    environment:'development',subject_revision:'git:abc',engine_bindings:[],
+    service_bindings:[{
+      service_id:'freepass.application.service',service_version:'1.0.0',
+      ports:[{port_id:'application.repository',adapter_id:'freepass-admin.file-application'}]
+    }],
+    config_refs:[],secret_refs:[],verification_state:'PARTIAL'
+  }),true);
+});
