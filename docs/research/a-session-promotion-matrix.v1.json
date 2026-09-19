@@ -174,11 +174,13 @@
       "projects": [
         "freepass-admin",
         "jpkerp5",
-        "aiops"
+        "aiops",
+        "gukminchagimpo"
       ],
       "target_session": "D",
       "finding": "사실·상태·파생상태·표시상태 분리",
-      "next_gate": "COMMON_ADOPTED_CANDIDATE"
+      "next_gate": "COMMON_ADOPTED_CANDIDATE",
+      "evidence_note": "FreePass Admin, JPKERP5 and AIOps established fact/state separation; Gukmincha Gimpo independently derives stall state from lease/billing/date/config facts while keeping Map/index projections non-canonical."
     },
     {
       "id": "workflow.guard-vs-evidence",
