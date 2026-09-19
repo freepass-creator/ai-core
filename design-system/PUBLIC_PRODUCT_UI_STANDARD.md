@@ -3,6 +3,8 @@
 최종: 2026-09-19  
 상태: CURRENT / AI Core 공개형 상품 UI 규격
 
+참조 계층: `design-system/README.md` → 이 문서 → 운영 프로젝트 정본(`freepasserp4/docs/ERP4-MAIN-UI-STANDARD.md`)
+
 ## 1. 기준 구현
 
 공개형 상품 조회·검색 화면의 기준 구현은 **ERP4 White Label / freepasserp.com Product Browse**다.
