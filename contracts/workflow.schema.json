@@ -256,7 +256,7 @@
           "enum": [
             "NORMAL", "APPROVAL", "REJECT", "HOLD", "CANCEL", "FAIL", "RETRY",
             "RESUME", "ROLLBACK", "COMPENSATION", "RESTORE", "CORRECTION",
-            "TIMEOUT", "ESCALATION"
+            "TIMEOUT", "ESCALATION", "REOBSERVE"
           ]
         },
         "axis_id": { "type": "string" },
