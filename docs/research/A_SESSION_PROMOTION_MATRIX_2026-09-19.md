@@ -35,7 +35,7 @@ A 세션이 조사한 내용을 B·C·D·Security·QA·Governance 세션이 다�
 | `api.idempotency-key` | API/Error | CROSS_PROJECT_VERIFIED | freepass-admin, freepasserp4 | C | COMMON_ADOPTED_CANDIDATE |
 | `event.append-only-correction` | Event | CROSS_PROJECT_VERIFIED | aiops, freepass-admin, freepasserp4 | C/D | COMMON_ADOPTED_CANDIDATE |
 | `event.cloudevents-envelope` | Event | PROPOSED | 외부 기준 | C | RESEARCH_REQUIRED |
-| `workflow.fact-vs-state` | Workflow | CROSS_PROJECT_VERIFIED | freepass-admin, jpkerp5, aiops | D | COMMON_ADOPTED_CANDIDATE |
+| `workflow.fact-vs-state` | Workflow | CROSS_PROJECT_VERIFIED | freepass-admin, jpkerp5, aiops, gukminchagimpo | D | COMMON_ADOPTED_CANDIDATE |
 | `workflow.guard-vs-evidence` | Workflow | CROSS_PROJECT_VERIFIED | jpkerp5, aiops, workcontrol | D | COMMON_ADOPTED_CANDIDATE |
 | `workflow.launch-vs-completion` | Workflow | CROSS_PROJECT_VERIFIED | freepass-sales, aiops, workcontrol | D | COMMON_ADOPTED_CANDIDATE |
 | `workflow.hold-resume` | Workflow | PROJECT_VERIFIED | aiops | D | SECOND_PROJECT_REQUIRED |
@@ -300,3 +300,23 @@ A 세션이 조사한 내용을 B·C·D·Security·QA·Governance 세션이 다�
 - Migration: acknowledged mutation result + rollback/reconciliation + pending/confirmed/failed separation.
 - Destination: **C / Repository & Result**, D consumes confirmed result before workflow completion.
 - 상세: `docs/research/A_SESSION_GAP_JPKERP_V4_SERVER_ACK_MUTATION_2026-09-19.md`.
+
+
+### Gukmincha Gimpo derived-state reinforcement
+
+- `gukminchagimpo@0e32380725cc2d98c93b5462b282ade52047c45a`
+- Adds an independent property/parking-lease domain to `workflow.fact-vs-state`.
+- Stall status is explicitly not persisted as a second truth; Lease + Billing + date + config facts derive `vacant/active/overdue/expiring/reserved`.
+- O(1) Map/indexes are read projections only.
+- Detail: `docs/research/A_SESSION_DISCOVERY_GUKMINCHAGIMPO_DERIVED_STATE_2026-09-19.md`.
+
+
+## 2026-09-19 TeamJPK accessibility zoom/motion backport
+
+- Direction: **Core > Project**
+- Project revision: `teamjpk@b26cd298f07023dab38ee33b7de7ce95528df29b`
+- Explicit commit `dffbc055...` locked pinch zoom; current viewport still has `maximum-scale=1, user-scalable=no`.
+- Site also has continuous/decorative animation without reduced-motion handling.
+- AI Core B target requires WCAG 2.2 AA testing at 200% zoom and reduced-motion preference.
+- Destination: **B / Accessibility**
+- Detail: `docs/research/A_SESSION_GAP_TEAMJPK_ACCESSIBILITY_ZOOM_MOTION_2026-09-19.md`.
