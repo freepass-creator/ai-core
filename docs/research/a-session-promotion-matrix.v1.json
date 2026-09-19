@@ -437,6 +437,18 @@
       "finding": "multi-effect sequential write에서 후속 실패 시 이미 적용된 effect만 domain-specific undo로 역순 보상하고, 보상 실패 시 partial state를 숨기지 않고 명시적으로 escalation",
       "next_gate": "SECOND_PROJECT_REQUIRED",
       "evidence_note": "Renman commitAllCompensated at lib/commit.ts and commit-compensated tests verify reverse-order compensation, skip-without-undo semantics, audit-path compensation and explicit partial-state error when compensation itself fails."
+    },
+    {
+      "id": "ui.client-release-freshness",
+      "axis": "UI/UX/Client Runtime",
+      "evidence_level": "PROJECT_VERIFIED",
+      "projects": [
+        "freepasserp3"
+      ],
+      "target_session": "B",
+      "finding": "served build identity를 장시간 실행 중인 client가 주기/visibility 복귀 시점에 대조해 stale-client 상태를 감지하고 dirty/risk에 맞는 update UX로 전환",
+      "next_gate": "SECOND_PROJECT_REQUIRED",
+      "evidence_note": "FreePassERP3 commit 5344a500... added build-version.txt generation and runtime version-watch after stale SPA tabs kept executing obsolete deployed code. Current app entry actually starts the watcher. Exact auto-reload behavior is local; common candidate is release-drift detection plus safe update UX."
     }
   ]
 }
