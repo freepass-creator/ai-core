@@ -155,3 +155,29 @@ A 세션이 조사한 내용을 B·C·D·Security·QA·Governance 세션이 다�
 - 일반화 후보: **logical execution identity + success-evidence reconciliation + monotonic recovery no-replay**.
 - AIOps의 deterministic requestKey/lease/run manifest는 인접 근거지만 exact second-project proof로 계산하지 않는다.
 - 상세: `docs/research/A_SESSION_DISCOVERY_ERP4_RECOVERY_SLOT_REPLAY_2026-09-19.md`.
+
+
+## 2026-09-19 FP Settlement UI conformance delta
+
+| Candidate | 축 | Evidence | 실제 근거 | 넘길 세션 | 다음 단계 |
+|---|---|---|---|---|---|
+| `ui.machine-conformance-gate` | UI/UX / Design QA | PROJECT_VERIFIED | fp-settlement | B | SECOND_PROJECT_REQUIRED |
+
+- 근거: `fp-settlement@b1e833dfed37ed08f5cc5ed83bdd55a29bf5bc24`, current observed head `b406da67a9cb2b85b5572a7f5d28d350ca84cb58`.
+- 프로젝트 전용 retro skin/픽셀값을 공통화하는 것이 아니라 **semantic token-role + effective-style + actually-used selector + CI fail** 메커니즘만 일반화한다.
+- 상세: `docs/research/A_SESSION_DISCOVERY_FP_SETTLEMENT_UI_CONFORMANCE_2026-09-19.md`.
+
+
+## 2026-09-19 Vehicle Master identity/provenance backport
+
+- Direction: **Core > Project**
+- Project revision: `vehicle-master@233115fb1daf9f17ba58a4fae2c30eaaf99b2e8c`
+- Breaking impact: **HIGH if IDs are replaced in place**
+- Gap:
+  - trim ID is generated from mutable trim name;
+  - generation/model/manufacturer IDs have mutable-name fallback;
+  - powertrain identity includes mutable semantic attributes;
+  - export manifest has output version but only coarse source provenance.
+- Migration: consumer inventory → immutable canonical ID 추가 → current ID alias 보존 → dual-read Adapter → source/schema/normalizer lineage 추가 → consumer regression.
+- Destination: **C**
+- 상세: `docs/research/A_SESSION_GAP_VEHICLE_MASTER_IDENTITY_PROVENANCE_2026-09-19.md`.
