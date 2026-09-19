@@ -388,9 +388,9 @@ This v1 therefore introduces the common contract without silently changing curre
 
 ## Work Ledger SHADOW parity checkpoint
 
-`registry/workflows.json` now contains `ai-core.work-lifecycle@0.1.0` with `adoption_status=SHADOW`.
+`registry/workflows.json` now contains `ai-core.work-lifecycle@0.1.0` with `adoption_status=CANONICAL`.
 
-It models the current Work Ledger state graph without taking authority away from `scripts/work-ledger.mjs`.
+`scripts/work-ledger.mjs` now consumes this Registry graph directly. D owns the lifecycle state graph; Work Ledger retains append-only event/hash/revision/evidence history authority.
 
 The SHADOW includes:
 
@@ -415,7 +415,7 @@ A SHADOW workflow without source authority is invalid.
 
 The parity test suite compares the current Ledger and D SHADOW against the same candidate transitions, including the full 11×11 state-pair matrix. If the source blobs change, the source-lock test fails until the SHADOW is re-audited.
 
-This is a migration gate, not a replacement switch.
+This checkpoint completed the first runtime migration: the hard-coded Work Ledger transition map was removed. Frozen legacy-matrix tests and the full parity suite protect behavior during the authority split.
 
 
 ## Order / Task SHADOW parity checkpoint
