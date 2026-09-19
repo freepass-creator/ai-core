@@ -254,6 +254,16 @@
             "freepass-creator/freepasserp4@2d9fd07075aae7d6d64687fabbf61126e166c34c:docs/ERP5-FIRESTORE-SSOT.md"
           ],
           "action": "Project does not own the AI Core registry meta-contract."
+        },
+        {
+          "contract_id": "core.application-service.v1",
+          "classification": "MIGRATE",
+          "binding_state": "NONE",
+          "priority": "P1",
+          "evidence_refs": [
+            "freepass-creator/freepasserp4@2d9fd07075aae7d6d64687fabbf61126e166c34c:docs/ERP5-FIRESTORE-SSOT.md"
+          ],
+          "action": "Separate reusable use-case orchestration from workflow/scripts and declare required ports/idempotency/actor/transaction semantics when extracting service boundaries."
         }
       ],
       "next_gate": "Keep source-registry SHADOW; add snapshot shadow plus truthful BEST_EFFORT_BATCH pipeline and durable partial-result receipt before validating ERP4 publication flow."
@@ -507,6 +517,16 @@
             "freepass-creator/freepass-admin@fb85037969a6c2f4596350b9c66303025be6f19d:docs/SSOT.md"
           ],
           "action": "Project does not own the AI Core registry meta-contract."
+        },
+        {
+          "contract_id": "core.application-service.v1",
+          "classification": "CORE_MATCH",
+          "binding_state": "NONE",
+          "priority": "P0",
+          "evidence_refs": [
+            "freepass-creator/freepass-admin@fb85037969a6c2f4596350b9c66303025be6f19d:src/services/applications.ts"
+          ],
+          "action": "Register submit/progress/cancel use cases as the canonical Application Service contract without moving domain rules into the service."
         }
       ],
       "next_gate": "Bind Core port/engine/adapter/source/snapshot contracts to the existing backend architecture before production persistence/auth adapters are introduced."
@@ -760,6 +780,16 @@
             "freepass-creator/freepass-sales@fe69f76d81f4b9acd6f67f7b3f4ef5619f5e33d1:docs/SSOT.md"
           ],
           "action": "Project does not own the AI Core registry meta-contract."
+        },
+        {
+          "contract_id": "core.application-service.v1",
+          "classification": "MIGRATE",
+          "binding_state": "NONE",
+          "priority": "P1",
+          "evidence_refs": [
+            "freepass-creator/freepass-sales@fe69f76d81f4b9acd6f67f7b3f4ef5619f5e33d1:docs/AI-AUDIT.md"
+          ],
+          "action": "Extract one write use case from the large app module into an Application Service before binding repository/provider adapters."
         }
       ],
       "next_gate": "Extract one save/external-action boundary and shadow Core request/error/event/receipt semantics without rewriting the sales UI."
@@ -1018,6 +1048,16 @@
             "freepass-creator/freepass-estimate@8df0fdfe5ce72ffbc17b3adffcc881c37164ed3a:apps/new/src/lib/quote/contracts.js"
           ],
           "action": "Project does not own the AI Core registry meta-contract."
+        },
+        {
+          "contract_id": "core.application-service.v1",
+          "classification": "CORE_MATCH",
+          "binding_state": "NONE",
+          "priority": "P1",
+          "evidence_refs": [
+            "freepass-creator/freepass-estimate@8df0fdfe5ce72ffbc17b3adffcc881c37164ed3a:apps/new/src/lib/quote/calculate.js"
+          ],
+          "action": "Treat quote calculation orchestration as an Application Service while preserving Quote Engine and Provider Adapter authority."
         }
       ],
       "next_gate": "Shadow-bind quote execution/provider/snapshot to Core adapter/source/snapshot/receipt contracts and prove equivalence in the estimator verify command."
