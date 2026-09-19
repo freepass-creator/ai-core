@@ -196,13 +196,14 @@
         },
         {
           "contract_id": "core.data-pipeline.v1",
-          "classification": "CORE_MATCH",
+          "classification": "MIGRATE",
           "binding_state": "NONE",
           "priority": "P0",
           "evidence_refs": [
-            "freepass-creator/freepasserp4@2d9fd07075aae7d6d64687fabbf61126e166c34c:docs/ERP5-FIRESTORE-SSOT.md"
+            "freepass-creator/freepasserp4@2d9fd07075aae7d6d64687fabbf61126e166c34c:docs/ERP5-FIRESTORE-SSOT.md",
+            "freepass-creator/freepasserp4@2d9fd07075aae7d6d64687fabbf61126e166c34c:scripts/ingest-all-suppliers.mts"
           ],
-          "action": "Existing source→parse→normalize→ERP5→fixed snapshot flow matches Core; declare it as a pipeline instance."
+          "action": "Pipeline stages match Core, but supplier writes are sequential best-effort and can partially succeed; add BEST_EFFORT_BATCH semantics plus a durable PARTIAL/FAILED execution receipt before validation."
         },
         {
           "contract_id": "core.contract-registry.v1",
@@ -255,7 +256,7 @@
           "action": "Project does not own the AI Core registry meta-contract."
         }
       ],
-      "next_gate": "Create machine source-registry/snapshot/pipeline instances first; then shadow API error/request/receipt boundaries."
+      "next_gate": "Keep source-registry SHADOW; add snapshot shadow plus truthful BEST_EFFORT_BATCH pipeline and durable partial-result receipt before validating ERP4 publication flow."
     },
     {
       "project_id": "freepass-admin",
