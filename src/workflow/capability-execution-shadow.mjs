@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { isAbsolute, relative } from 'node:path';
 import { createWorkflowEngine, WorkflowError } from './engine.mjs';
 
 const canonical = value => Array.isArray(value)
@@ -112,6 +113,19 @@ export function createCapabilityExecutionShadow(workflow) {
       };
     }
 
+    if (!evaluated.values['execution.result_schema_valid']) {
+      return { eligible: false, code: 'WORK_RESULT_SCHEMA_INVALID', facts: evaluated.values };
+    }
+    if (!evaluated.values['execution.result_context_matches']) {
+      return { eligible: false, code: 'WORK_RESULT_CONTEXT_MISMATCH', facts: evaluated.values };
+    }
+    if (!evaluated.values['execution.result_capability_matches']) {
+      return { eligible: false, code: 'WORK_RESULT_CAPABILITY_MISMATCH', facts: evaluated.values };
+    }
+    if (!evaluated.values['execution.result_revision_matches']) {
+      return { eligible: false, code: 'WORK_RESULT_REVISION_STALE', facts: evaluated.values };
+    }
+
     try {
       const transition_id = reconciliation
         ? 'capability-execution.reconcile-terminal'
@@ -153,6 +167,7 @@ export function createCapabilityExecutionShadow(workflow) {
 
   function classifyReconciliation(row, capability, observed, {
     clock = () => Date.now(),
+    projectRoot = null,
   } = {}) {
     if (!row) return { action: 'ERROR', code: 'CAPABILITY_EXECUTION_REQUEST_MISSING' };
     if (row.state === 'RESULT') {
@@ -188,6 +203,12 @@ export function createCapabilityExecutionShadow(workflow) {
         ? 'FAILED'
         : 'HOLD';
 
+    let ref = null;
+    if (observed?.path && projectRoot) {
+      const rel = relative(projectRoot, observed.path);
+      if (rel && !rel.startsWith('..') && !isAbsolute(rel)) ref = rel.replaceAll('\\\\', '/');
+    }
+
     const result = {
       schema: 'ai-core-work-result/v1',
       order_id: row.order_id,
@@ -202,8 +223,8 @@ export function createCapabilityExecutionShadow(workflow) {
         : mapped === 'FAILED'
           ? '응답 유실 뒤 terminal execution receipt에서 실패를 확인했습니다.'
           : '응답 유실 뒤 terminal execution receipt가 HOLD 상태입니다.',
-      artifact_refs: [],
-      evidence_refs: [],
+      artifact_refs: ref ? [ref] : [],
+      evidence_refs: ref ? [`MEASURED:${ref} state=${observed?.state ?? 'unknown'}`] : [],
       checks: [{
         name: 'execution.receipt.reconcile',
         status: mapped === 'SUCCEEDED' ? 'PASS' : 'FAIL',
