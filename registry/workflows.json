@@ -1996,11 +1996,11 @@
       "description": "Shadow model of OrderStore child-task coordination. Parent Order status remains a derived aggregate projection and heartbeat remains a lease fact update.",
       "source_authority": {
         "repository": "freepass-creator/ai-core",
-        "revision": "444066bea9ac00e4cf4ba539c7b5344154bd407e",
+        "revision": "a86816cad5b386719934205c0cb36c6b24ea728f",
         "files": [
           {
             "path": "src/orders/store.mjs",
-            "blob_sha": "6887ad4a5e25957797c70e1d1b90474ceeeb48c2"
+            "blob_sha": "8a78d41fc44628a442c836ebf370f29870211aa3"
           }
         ]
       },
