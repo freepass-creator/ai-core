@@ -148,3 +148,20 @@ The first D runtime migration is active on this branch.
 - Cross-machine Workflow Bridges remain **SHADOW**; capability results feed evidence but do not directly transition Work.
 
 This split is intentional: workflow meaning is centralized while domain storage/history mechanics remain specialized.
+
+
+## 9. Recovery policy maturity rule
+
+Recovery no-replay remains a **PILOT** until evidence maturity permits common adoption.
+
+A fallback/recovery implementation that opts into the pilot must:
+
+- correlate all execution paths to one logical execution identity
+- reconcile authoritative success before fallback
+- suppress fallback after known success
+- preserve monotonic recovery progress
+- HOLD ambiguous outcome rather than blindly replay
+
+D owns these workflow semantics. C owns the shared identity contract. A supplies revision-bound project evidence.
+
+A single production incident is sufficient to create a PILOT and negative controls, but not sufficient to declare a company-wide common standard.
