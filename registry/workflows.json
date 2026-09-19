@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "registry_version": "1.2.0",
+  "registry_version": "1.3.0",
   "primitives": [
     {
       "primitive_id": "workflow.fact-vs-state",
@@ -115,6 +115,16 @@
         "ai-core"
       ],
       "notes": "Observed in OrderStore revise semantics; not COMMON_ADOPTED until another independent domain verifies it."
+    },
+    {
+      "primitive_id": "workflow.reconcile-before-retry",
+      "status": "PILOT",
+      "meaning": "When an external effect may have occurred but the response is lost, reconcile authoritative terminal evidence before deciding whether any retry is safe.",
+      "evidence_level": "PROJECT_VERIFIED",
+      "source_projects": [
+        "ai-core"
+      ],
+      "notes": "Verified in durable coordination and capability execution inside AI Core; broader cross-project evidence is still required before COMMON_ADOPTED."
     }
   ],
   "workflows": [
@@ -2605,6 +2615,247 @@
             "required": true,
             "reason_required": true
           }
+        }
+      ],
+      "obligations": []
+    },
+    {
+      "workflow_id": "ai-core.capability-execution",
+      "version": "0.1.0",
+      "adoption_status": "SHADOW",
+      "owner": "D-session-workflow-standard",
+      "description": "Shadow model of capability execution coordination. RESERVED/RESULT are persistent coordination states; reconcile HOLD is a projection, not a stored business state.",
+      "source_authority": {
+        "repository": "freepass-creator/ai-core",
+        "revision": "444066bea9ac00e4cf4ba539c7b5344154bd407e",
+        "files": [
+          {
+            "path": "src/engine/capability-execution-coordinator.mjs",
+            "blob_sha": "8517c60ede8f0166ffcfc35f7e29dc0c221262c4"
+          },
+          {
+            "path": "src/engine/execution-receipt.mjs",
+            "blob_sha": "0cbb7a0a29804b6e95557806348f44a06f29b79f"
+          }
+        ]
+      },
+      "state_axes": [
+        {
+          "axis_id": "lifecycle",
+          "initial_state": "RESERVED",
+          "states": [
+            {
+              "state_id": "RESERVED",
+              "kind": "NORMAL",
+              "terminal": false,
+              "description": "Execution identity is durably reserved before effect execution/result persistence."
+            },
+            {
+              "state_id": "RESULT",
+              "kind": "FINAL",
+              "terminal": true,
+              "description": "A safe durable work result receipt is persisted. Result status may be SUCCEEDED, FAILED or HOLD."
+            }
+          ]
+        }
+      ],
+      "facts": [
+        {
+          "fact_id": "execution.context_valid",
+          "type": "boolean",
+          "description": "Order routing, work binding, project/capability and subject revision all match."
+        },
+        {
+          "fact_id": "execution.capability_active",
+          "type": "boolean",
+          "description": "Capability is ACTIVE."
+        },
+        {
+          "fact_id": "execution.result_schema_valid",
+          "type": "boolean",
+          "description": "Result uses ai-core-work-result/v1."
+        },
+        {
+          "fact_id": "execution.result_context_matches",
+          "type": "boolean",
+          "description": "Result order/work context matches reserved identity."
+        },
+        {
+          "fact_id": "execution.result_capability_matches",
+          "type": "boolean",
+          "description": "Result capability/project matches reserved identity."
+        },
+        {
+          "fact_id": "execution.result_revision_matches",
+          "type": "boolean",
+          "description": "Result subject revision matches reserved identity."
+        },
+        {
+          "fact_id": "execution.result_status",
+          "type": "string",
+          "nullable": true,
+          "description": "Safe persisted result status such as SUCCEEDED, FAILED or HOLD."
+        },
+        {
+          "fact_id": "execution.reconciliation_status",
+          "type": "string",
+          "nullable": true,
+          "description": "Derived reconciliation observation such as SUCCEEDED, FAILED or HOLD."
+        },
+        {
+          "fact_id": "execution.reconciliation_reason",
+          "type": "string",
+          "nullable": true,
+          "description": "Derived reconciliation reason such as EXECUTION_OUTCOME_UNKNOWN."
+        }
+      ],
+      "guards": [
+        {
+          "guard_id": "execution.result-schema-valid",
+          "kind": "FACT_EQUALS",
+          "fact_id": "execution.result_schema_valid",
+          "expected": true
+        },
+        {
+          "guard_id": "execution.result-context-matches",
+          "kind": "FACT_EQUALS",
+          "fact_id": "execution.result_context_matches",
+          "expected": true
+        },
+        {
+          "guard_id": "execution.result-capability-matches",
+          "kind": "FACT_EQUALS",
+          "fact_id": "execution.result_capability_matches",
+          "expected": true
+        },
+        {
+          "guard_id": "execution.result-revision-matches",
+          "kind": "FACT_EQUALS",
+          "fact_id": "execution.result_revision_matches",
+          "expected": true
+        }
+      ],
+      "evidence_requirements": [],
+      "commands": [
+        {
+          "command_id": "capability-execution.complete",
+          "intent": "Persist a safe capability execution result",
+          "idempotency_required": true
+        },
+        {
+          "command_id": "capability-execution.reconcile",
+          "intent": "Reconcile a possibly completed execution from authoritative terminal receipt evidence",
+          "idempotency_required": true
+        }
+      ],
+      "events": [
+        {
+          "event_type": "ai-core.capability-execution.resulted",
+          "meaning": "A safe durable capability result was persisted."
+        },
+        {
+          "event_type": "ai-core.capability-execution.reconciled",
+          "meaning": "A terminal execution receipt was reconciled into a durable result."
+        }
+      ],
+      "transitions": [
+        {
+          "transition_id": "capability-execution.complete",
+          "purpose": "NORMAL",
+          "axis_id": "lifecycle",
+          "from": [
+            "RESERVED"
+          ],
+          "to": "RESULT",
+          "command_id": "capability-execution.complete",
+          "event_type": "ai-core.capability-execution.resulted",
+          "guards": [
+            "execution.result-schema-valid",
+            "execution.result-context-matches",
+            "execution.result-capability-matches",
+            "execution.result-revision-matches"
+          ],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "capability-execution.reconcile-terminal",
+          "purpose": "NORMAL",
+          "axis_id": "lifecycle",
+          "from": [
+            "RESERVED"
+          ],
+          "to": "RESULT",
+          "command_id": "capability-execution.reconcile",
+          "event_type": "ai-core.capability-execution.reconciled",
+          "guards": [
+            "execution.result-schema-valid",
+            "execution.result-context-matches",
+            "execution.result-capability-matches",
+            "execution.result-revision-matches"
+          ],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "HYBRID",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
         }
       ],
       "obligations": []
