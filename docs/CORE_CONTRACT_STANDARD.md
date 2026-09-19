@@ -280,3 +280,23 @@ Event type은 producer, payload schema, consumers, duplicate policy, replay poli
 기존 `ai-core-work-result/v1`은 현재 Work runtime의 도메인 결과로 유지한다. 신규 공통 integration에서는 `core-result/v1`을 사용하고, 중요한 side effect는 별도 `core-receipt/v1`을 연결한다.
 
 즉 Result는 **무슨 결과가 나왔는가**, Receipt는 **그 결과를 만들기 위해 실제 무엇을 실행했는가**를 증명한다.
+
+
+## 18. Automated Schema Evolution Gate
+
+`scripts/check-contract-compatibility.mjs`가 PR의 canonical v1 schema를 base branch와 비교한다.
+
+같은 major contract에서 다음은 breaking으로 판정한다.
+- canonical contract 삭제/경로 교체
+- 기존 property 삭제
+- required field 추가
+- enum value 삭제
+- nullability/type 축소
+- minimum/minLength/minItems 강화
+- maximum/maxLength/maxItems 축소
+- pattern/format/ref 변경
+- additionalProperties 허용 → 금지
+
+Breaking 변화가 필요하면 기존 v1을 수정하지 않고 새 major contract를 추가한다. CI는 `npm run contracts:compat`로 이 규칙을 검사한다.
+
+Core Contract Registry가 아직 없는 최초 도입 base에서는 `BASE_NOT_INITIALIZED`로 통과하며, #94가 main에 들어간 다음 변경부터 실제 compatibility gate가 활성화된다.
