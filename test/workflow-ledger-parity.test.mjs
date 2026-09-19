@@ -296,8 +296,8 @@ test('unverified BLOCKED cannot jump into verified-path states in either impleme
 });
 
 
-test('SHADOW source authority is pinned to the exact Work Ledger blobs', () => {
-  assert.equal(workflow.adoption_status, 'SHADOW');
+test('CANONICAL Work state graph remains pinned to the exact Work Ledger integration blobs', () => {
+  assert.equal(workflow.adoption_status, 'CANONICAL');
   assert.ok(workflow.source_authority);
   for (const source of workflow.source_authority.files) {
     const actual = execFileSync('git', ['hash-object', source.path], {
