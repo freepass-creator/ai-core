@@ -208,6 +208,12 @@
               }
             }
           }
+        },
+        "fact_groups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/factGroup"
+          }
         }
       }
     },
@@ -313,7 +319,8 @@
           "enum": [
             "FACT_PRESENT",
             "FACT_EQUALS",
-            "CUSTOM"
+            "CUSTOM",
+            "FACT_GROUP_COMPLETE"
           ]
         },
         "fact_id": {
@@ -321,6 +328,9 @@
         },
         "expected": {},
         "description": {
+          "type": "string"
+        },
+        "fact_group_id": {
           "type": "string"
         }
       }
@@ -792,6 +802,45 @@
           "minimum": 1
         },
         "escalation_event_type": {
+          "type": "string"
+        }
+      }
+    },
+    "factGroup": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "group_id",
+        "fact_ids",
+        "join_policy"
+      ],
+      "properties": {
+        "group_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_.-]*$"
+        },
+        "fact_ids": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "join_policy": {
+          "enum": [
+            "NONE",
+            "ALL_TRUE",
+            "ANY_TRUE",
+            "AT_LEAST_TRUE"
+          ]
+        },
+        "threshold": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "description": {
           "type": "string"
         }
       }
