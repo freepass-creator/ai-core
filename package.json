@@ -32,14 +32,18 @@
     "core:brief": "node scripts/core-brief.mjs",
     "work:reobserve": "node scripts/work-reobserve.mjs",
     "workmap:validate": "node scripts/validate-work-map.mjs",
-    "workflow:validate": "node scripts/validate-workflows.mjs",
-    "workflow:bridge:validate": "node scripts/validate-workflow-bridges.mjs",
-    "workflow:recovery:validate": "node scripts/validate-workflow-recovery-policies.mjs",
     "ops:route": "node scripts/route-work.mjs",
     "capability:validate": "node scripts/validate-capability-registry.mjs",
     "core:capability": "node scripts/core-capability.mjs",
     "direction:validate": "node scripts/validate-directions.mjs",
-    "project:inspect": "node scripts/project-capsule.mjs"
+    "project:inspect": "node scripts/project-capsule.mjs",
+    "closeout:validate": "node scripts/validate-phase1-closeout.mjs",
+    "contracts:validate": "node scripts/validate-core-contracts.mjs",
+    "contracts:compat": "node scripts/check-contract-compatibility.mjs",
+    "contracts:adoption": "node scripts/validate-core-contract-adoption.mjs",
+    "workflow:validate": "node scripts/validate-workflows.mjs",
+    "workflow:bridge:validate": "node scripts/validate-workflow-bridges.mjs",
+    "workflow:recovery:validate": "node scripts/validate-workflow-recovery-policies.mjs"
   },
   "dependencies": {
     "ajv": "8.20.0",
