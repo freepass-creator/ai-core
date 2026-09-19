@@ -317,6 +317,7 @@
     "2026-09-19 D-session runtime migration begins: next step moves the Work Ledger state graph from a hard-coded transition map to registry-backed ai-core.work-lifecycle while preserving ledger hash/revision/evidence authority.",
     "2026-09-19 D-session Work Ledger runtime migration: scripts/work-ledger.mjs now derives its lifecycle transition graph, REOBSERVABLE states and verified-path set from registry/workflows.json; a frozen legacy matrix test prevents behavior drift.",
     "2026-09-19 D-session first runtime authority migration complete: ai-core.work-lifecycle is CANONICAL for the state graph and scripts/work-ledger.mjs consumes the registry graph; Work Ledger still owns append-only event/hash/revision/evidence history.",
-    "2026-09-19 D-session Capability Execution runtime migration: RESERVED→RESULT persistence now requires D Workflow Engine approval; direct completion and terminal-receipt reconciliation emit distinct workflow transition/event metadata while preserving existing stable error/idempotency/safe-receipt behavior."
+    "2026-09-19 D-session Capability Execution runtime migration: RESERVED→RESULT persistence now requires D Workflow Engine approval; direct completion and terminal-receipt reconciliation emit distinct workflow transition/event metadata while preserving existing stable error/idempotency/safe-receipt behavior.",
+    "2026-09-19 D-session Order Task runtime migration: assign/claim/report/block/revision invalidation now require D Workflow Engine approval and use engine to_state; parent Order status now comes from D derived projection logic while existing stable validation errors and storage/event behavior remain."
   ]
 }
