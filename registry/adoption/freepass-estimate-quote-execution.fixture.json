@@ -1,0 +1,28 @@
+{
+  "source_contract": "freepass-quote-execution/v1",
+  "source_repository": "freepass-creator/freepass-estimate",
+  "source_revision": "8df0fdfe5ce72ffbc17b3adffcc881c37164ed3a",
+  "execution": {
+    "schema": "freepass-quote-execution/v1",
+    "status": "HOLD",
+    "provider": "external:welrix",
+    "engine": "external",
+    "subject_revision": "8df0fdfe5ce72ffbc17b3adffcc881c37164ed3a",
+    "request_id": "quote-shadow-001",
+    "started_at": "2026-09-19T12:40:00Z",
+    "ended_at": "2026-09-19T12:40:01Z",
+    "evidence": [
+      "provider-policy:fail-closed"
+    ],
+    "checks": [
+      {
+        "name": "provider.response",
+        "status": "FAIL",
+        "detail": "PROVIDER_UNAVAILABLE"
+      }
+    ],
+    "blockers": [
+      "PROVIDER_UNAVAILABLE"
+    ]
+  }
+}
