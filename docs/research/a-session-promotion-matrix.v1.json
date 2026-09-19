@@ -174,11 +174,13 @@
       "projects": [
         "freepass-admin",
         "jpkerp5",
-        "aiops"
+        "aiops",
+        "gukminchagimpo"
       ],
       "target_session": "D",
       "finding": "사실·상태·파생상태·표시상태 분리",
-      "next_gate": "COMMON_ADOPTED_CANDIDATE"
+      "next_gate": "COMMON_ADOPTED_CANDIDATE",
+      "evidence_note": "FreePass Admin, JPKERP5 and AIOps established fact/state separation; Gukmincha Gimpo independently derives stall state from lease/billing/date/config facts while keeping Map/index projections non-canonical."
     },
     {
       "id": "workflow.guard-vs-evidence",
@@ -186,11 +188,13 @@
       "evidence_level": "CROSS_PROJECT_VERIFIED",
       "projects": [
         "jpkerp5",
-        "aiops"
+        "aiops",
+        "workcontrol"
       ],
       "target_session": "D",
       "finding": "전이 가능조건과 완료 증거 분리",
-      "next_gate": "COMMON_ADOPTED_CANDIDATE"
+      "next_gate": "COMMON_ADOPTED_CANDIDATE",
+      "evidence_note": "JPK ERP5 and AIOps establish guard/evidence separation; WorkControl independently rejects human/UI completion claims when required business evidence (payment, vehicle return/intake, procedural notice) is absent."
     },
     {
       "id": "workflow.launch-vs-completion",
@@ -198,11 +202,13 @@
       "evidence_level": "CROSS_PROJECT_VERIFIED",
       "projects": [
         "freepass-sales",
-        "aiops"
+        "aiops",
+        "workcontrol"
       ],
       "target_session": "D",
       "finding": "앱 실행/사람 주장/시스템 확인/완료 분리",
-      "next_gate": "COMMON_ADOPTED_CANDIDATE"
+      "next_gate": "COMMON_ADOPTED_CANDIDATE",
+      "evidence_note": "FreePass Sales and AIOps establish action/claim vs verified completion; WorkControl independently keeps UI 완료 distinct from evidence-backed business closure."
     },
     {
       "id": "workflow.hold-resume",
@@ -226,7 +232,8 @@
       ],
       "target_session": "D",
       "finding": "opening event + due + closing event = obligation",
-      "next_gate": "SECOND_PROJECT_REQUIRED"
+      "next_gate": "SECOND_PROJECT_REQUIRED",
+      "evidence_note": "AIOps remains the exact project-verified implementation. WorkControl has owner/due in its specification and evidence-backed open/close recovery logic, but inspected runtime did not prove due/timeout enforcement; not counted as second exact implementation."
     },
     {
       "id": "security.role-org-scope-action",
@@ -330,7 +337,8 @@
       ],
       "target_session": "Governance",
       "finding": "main/deploy READY와 production serving revision 분리",
-      "next_gate": "SECOND_PROJECT_REQUIRED"
+      "next_gate": "SECOND_PROJECT_REQUIRED",
+      "evidence_note": "ERP4 remains the only counted current project evidence. Sonogong Estimator has a strong live bundle/app-commit checker and historical live-deploy documentation, but current connected Vercel control-plane observation exposes zero projects, so current target/revision proof is HOLD and not counted."
     },
     {
       "id": "governance.capability-pin",
@@ -382,6 +390,67 @@
       "target_session": "Governance/Security",
       "finding": "CycloneDX/SPDX SBOM profile",
       "next_gate": "RISK_PROFILE_PILOT"
+    },
+    {
+      "id": "workflow.recovery-slot-no-replay",
+      "axis": "Workflow/Recovery",
+      "evidence_level": "PROJECT_VERIFIED",
+      "projects": [
+        "freepasserp4"
+      ],
+      "target_session": "D/C",
+      "finding": "logical execution identity를 native/fallback/downstream 경로 전체에 공유하고, 성공 증거를 recovery eligibility 전에 대사하며 recovery cursor를 monotonic no-replay로 유지",
+      "next_gate": "SECOND_PROJECT_REQUIRED",
+      "evidence_note": "freepasserp4 audit 76 at 1cf94b788a204777109cf2031b1f518fbcd99b01: native settlement 35434637121 and downstream ERP5 35434667030 succeeded, yet fallback settlement 35439018911 and downstream ERP5 35439046831 replayed the same logical 18:05 slot. No duplicate rows/data corruption are claimed. AIOps requestKey/lease/run-manifest is adjacent evidence only and is not counted as a second exact implementation."
+    },
+    {
+      "id": "ui.machine-conformance-gate",
+      "axis": "UI/UX/Design QA",
+      "evidence_level": "CROSS_PROJECT_VERIFIED",
+      "projects": [
+        "fp-settlement",
+        "teamjpkwork"
+      ],
+      "target_session": "B",
+      "finding": "semantic UI role/token constraints를 실제 사용 selector와 effective CSS 기준으로 검사하고 off-grid 값을 CI에서 실패시키는 conformance gate",
+      "next_gate": "COMMON_ADOPTED_CANDIDATE",
+      "evidence_note": "FP Settlement b1e833df... and TeamJPKWork 75bb285a... independently implement machine-enforced UI conformance. Both bind screen implementations to centralized semantic rules/tokens and fail on unapproved drift; TeamJPKWork additionally documents scanner blind-spot/false-green counterexamples. Local visual values and product-specific interaction rules remain profile/domain-specific."
+    },
+    {
+      "id": "result.proof-input-digest-binding",
+      "axis": "Result/Receipt/Evidence",
+      "evidence_level": "PROJECT_VERIFIED",
+      "projects": [
+        "devcenter"
+      ],
+      "target_session": "C",
+      "finding": "proof를 subject revision뿐 아니라 source/checker/fixture input digest와 결속하고 검증 중 입력 변경 또는 checker 변경 시 stale 처리",
+      "next_gate": "SECOND_PROJECT_REQUIRED",
+      "evidence_note": "DevCenter verify-acceptance snapshots sourceDigest before/after and card-audit stores exact input SHA256 set. Regression explicitly verifies source change and test implementation change invalidate prior evidence."
+    },
+    {
+      "id": "workflow.compensated-multiwrite",
+      "axis": "Workflow/Compensation",
+      "evidence_level": "PROJECT_VERIFIED",
+      "projects": [
+        "renman"
+      ],
+      "target_session": "D",
+      "finding": "multi-effect sequential write에서 후속 실패 시 이미 적용된 effect만 domain-specific undo로 역순 보상하고, 보상 실패 시 partial state를 숨기지 않고 명시적으로 escalation",
+      "next_gate": "SECOND_PROJECT_REQUIRED",
+      "evidence_note": "Renman commitAllCompensated at lib/commit.ts and commit-compensated tests verify reverse-order compensation, skip-without-undo semantics, audit-path compensation and explicit partial-state error when compensation itself fails."
+    },
+    {
+      "id": "ui.client-release-freshness",
+      "axis": "UI/UX/Client Runtime",
+      "evidence_level": "PROJECT_VERIFIED",
+      "projects": [
+        "freepasserp3"
+      ],
+      "target_session": "B",
+      "finding": "served build identity를 장시간 실행 중인 client가 주기/visibility 복귀 시점에 대조해 stale-client 상태를 감지하고 dirty/risk에 맞는 update UX로 전환",
+      "next_gate": "SECOND_PROJECT_REQUIRED",
+      "evidence_note": "FreePassERP3 commit 5344a500... added build-version.txt generation and runtime version-watch after stale SPA tabs kept executing obsolete deployed code. Current app entry actually starts the watcher. Exact auto-reload behavior is local; common candidate is release-drift detection plus safe update UX."
     }
   ]
 }
