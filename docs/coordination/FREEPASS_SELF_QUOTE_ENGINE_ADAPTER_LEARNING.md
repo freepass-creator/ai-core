@@ -3,8 +3,8 @@
 - 상태: `VERIFIED_PROJECT_PATTERN / LEARNING_CANDIDATE / DO_NOT_AUTO-PROMOTE`
 - 현재 Domain SSOT: `freepass-creator/freepass-estimate`
 - 현재 검증 브랜치: `work/ui-baseline`
-- 검증 revision: `b04af7302406f606b93f3ec45dca64bd625c6c68`
-- 검증 증거: GitHub Actions `New-car baseline CI` run `35438072361` = SUCCESS
+- 검증 revision: `8df0fdfe5ce72ffbc17b3adffcc881c37164ed3a`
+- 검증 증거: GitHub Actions `New-car baseline CI` run `35438304012` = SUCCESS
 - 역사적 이관 원천: `freepass-creator/welrixtable`
 - 중고차 역사적 참고: `freepass-creator/sonogong-estimator`
 - 학습 대상: AI Core / DevCenter
@@ -378,7 +378,7 @@ AI Core Screen Design Standard에서 비파괴적으로 우선 채택:
 - preview build artifact
 
 최신 verified run:
-- `35438072361` — SUCCESS
+- `35438304012` — SUCCESS
 
 ## 18. AI Core Project Registry / Routing 반영
 
@@ -442,13 +442,11 @@ AI Core는 패턴·계약·evidence 방식만 학습한다.
 공통 규격 승격 전 추가 검증:
 
 1. 두 번째 실제 external provider Adapter
-2. timeout/retry/circuit-breaker 공통 정책
-3. provider health contract
-4. customer-visible error vs internal diagnostic 분리
-5. verification-manifest 패턴이 다른 실제 프로젝트에서도 유효한지 검증
-6. 중고 provider가 같은 canonical Quote contract를 재사용하는지 검증
-7. production URL revision proof
-8. work branch → main canonical promotion
+2. provider health contract
+3. verification-manifest 패턴이 다른 실제 프로젝트에서도 유효한지 검증
+4. 중고 provider가 같은 canonical Quote contract를 재사용하는지 검증
+5. production URL revision proof
+6. work branch → main canonical promotion
 
 ## 22. 근거
 
@@ -471,7 +469,7 @@ FreePass Estimate:
 - `apps/new/scripts/check-quote-execution-contract.mjs`
 - `apps/new/scripts/check-share-snapshot-contract.mjs`
 - `apps/new/scripts/e2e-mobile-ux.mjs`
-- verified revision: `b04af7302406f606b93f3ec45dca64bd625c6c68`
+- verified revision: `8df0fdfe5ce72ffbc17b3adffcc881c37164ed3a`
 
 Historical lineage:
 - `freepass-creator/welrixtable`
@@ -491,3 +489,53 @@ AI Core:
 ## 23. 한 줄 결론
 
 > **FreePass Estimate는 이미 신차 견적 Runtime/Provider/UX/Share 계약을 실제 구현하고 CI로 검증한 canonical estimator 프로젝트다. AI Core는 이 업무를 가져가는 것이 아니라 semantic contract, provider authority separation, fail-closed, snapshot provenance, interaction-state contract, verification-drift 교훈을 학습하고 그룹 라우팅을 이 프로젝트로 향하게 한다.**
+
+
+## 24. Provider Runtime Policy — 검증 완료
+
+FreePass Estimate는 외부 계산 공급자 장애 정책을 명시적 계약으로 고정했다.
+
+`provider-policy.js`:
+- timeout: 12,000ms
+- max attempts: 1
+- automatic retry: 없음
+- fallback: `none`
+- retry mode: manual
+
+오류를 분리한다:
+- `PROVIDER_UNSUPPORTED`
+- `PROVIDER_TIMEOUT`
+- `PROVIDER_UNAVAILABLE`
+- `PROVIDER_RESPONSE_INVALID`
+- `PROVIDER_ADAPTER_UNREGISTERED`
+- `PROVIDER_KIND_INVALID`
+
+보안/운영 경계:
+- upstream 원문 error message를 고객 응답에 그대로 노출하지 않음
+- 고객 공개 문구와 internal diagnostic을 분리
+- provider failure log에 고객/차량가격/수식/request payload를 넣지 않음
+- unsupported는 network failure로 잘못 변환하지 않음
+- 자동 fallback으로 다른 계산 결과를 만들지 않음
+
+검증:
+- `check-provider-runtime-policy.mjs`
+- CI run `35438304012` PASS
+
+AI Core 학습 후보:
+- provider adapter 계약에는 mapping뿐 아니라 timeout/retry/fallback/privacy 정책도 포함할 수 있다.
+- 정확성 민감 도메인에서는 automatic retry/fallback을 기본값으로 두지 않는다.
+- public error와 diagnostic evidence를 분리한다.
+
+## 25. Production Proof 현재 실측
+
+Vercel connected app에서 2026-09-19 확인:
+- team: `freepass-projects`
+- project listing: 0개
+
+따라서 현재 production proof HOLD는 추정이 아니라 관측된 상태다.
+
+- FreePass Estimate Vercel project: 관측 안 됨
+- production deployment URL: 관측 안 됨
+- live `/api/version`: 검증 불가
+
+코드/CI readiness와 production adoption을 분리한다.
