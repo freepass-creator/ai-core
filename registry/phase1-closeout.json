@@ -2,10 +2,10 @@
   "schema_version": "1.0",
   "phase": "PHASE_1",
   "status": "HOLD",
-  "observed_revision": "70473ff9dc140ae0832a1e159fb8d8d41b9ae631",
+  "observed_revision": "0c45a8ca8b3f049d77388e976e01df18037ed3d8",
   "ci": {
-    "run_id": 35444799090,
-    "head_sha": "70473ff9dc140ae0832a1e159fb8d8d41b9ae631",
+    "run_id": 35446074279,
+    "head_sha": "0c45a8ca8b3f049d77388e976e01df18037ed3d8",
     "conclusion": "success"
   },
   "gates": {
@@ -70,27 +70,26 @@
     {
       "id": "C",
       "owner": "Core Contract Platform",
-      "status": "REVIEW",
-      "blockers": [
-        "C must return Phase 1 gap-to-exit evidence covering the full contract baseline, not only currently implemented capability contracts."
-      ],
+      "status": "PASS",
+      "blockers": [],
       "evidence": [
         {
-          "path": "contracts/capability-registry.schema.json"
-        },
-        {
-          "path": "src/engine/adapter-contract.mjs"
-        },
-        {
-          "path": "src/engine/capability-engine.mjs"
-        },
-        {
-          "path": "src/engine/execution-receipt.mjs"
-        },
-        {
           "path": "docs/CORE_CONTRACT_STANDARD.md",
-          "revision": "681dd6d6c083d6fcdaf151110bcab761d286d3b8",
-          "note": "C adoption chain is CI-green but remains outside main; PR #94/#96 must be synchronized before Phase 1 PASS."
+          "revision": "87a0fbb2da93046cdbc45140b8d8c3e9e7a67ae9",
+          "note": "Core Contract Standard v1 root baseline merged to main; full CI and contracts validate/compat passed."
+        },
+        {
+          "path": "docs/CORE_CONTRACT_ADOPTION_2026-09-19.md",
+          "revision": "0c45a8ca8b3f049d77388e976e01df18037ed3d8",
+          "note": "ERP4/Admin/Sales/Estimate adoption layer merged to main; contracts:adoption and full main CI passed."
+        },
+        {
+          "path": "registry/core-contracts.json",
+          "revision": "0c45a8ca8b3f049d77388e976e01df18037ed3d8"
+        },
+        {
+          "path": "registry/core-contract-adoption.json",
+          "revision": "0c45a8ca8b3f049d77388e976e01df18037ed3d8"
         }
       ]
     },
