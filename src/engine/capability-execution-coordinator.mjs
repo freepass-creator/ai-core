@@ -110,8 +110,9 @@ export function createCapabilityExecutionCoordinator({
   function validateOrderContext(order,workId,capability){
     need(order?.routing&&order.routing.requirement_revision===order.revision,'ROUTING_REQUIREMENT_STALE');
     need(order.routing.capability_id===capability.id,'CAPABILITY_ROUTE_MISMATCH');
-    need(order.routing.target_project_id===capability.projects.find(id=>id===order.project)||capability.projects.includes('*'),'CAPABILITY_PROJECT_MISMATCH');
-    need(order.routing.target_revision&&order.routing.target_revision.length===40,'ROUTE_REVISION_INVALID');
+    need(order.project===order.routing.target_project_id,'ORDER_ROUTE_PROJECT_MISMATCH');
+    need(capability.projects.includes('*')||capability.projects.includes(order.routing.target_project_id),'CAPABILITY_PROJECT_MISMATCH');
+    need(/^[0-9a-f]{40}$/.test(order.routing.target_revision??''),'ROUTE_REVISION_INVALID');
     const binding=currentBinding(order,workId);
     need(binding.project_id===order.routing.target_project_id,'WORK_BINDING_PROJECT_MISMATCH');
     need(binding.subject_revision===order.routing.target_revision,'WORK_BINDING_REVISION_STALE');
