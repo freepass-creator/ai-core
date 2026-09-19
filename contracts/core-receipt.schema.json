@@ -162,6 +162,35 @@
           ]
         }
       }
+    },
+    "milestones": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "stage",
+          "observed_at",
+          "evidence_refs"
+        ],
+        "properties": {
+          "stage": {
+            "type": "string",
+            "pattern": "^[A-Z][A-Z0-9_]*$"
+          },
+          "observed_at": {
+            "$ref": "https://schemas.freepass.ai/core/types/v1#/$defs/datetime"
+          },
+          "evidence_refs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      },
+      "description": "Observed execution/delivery milestones. Milestone names do not define business workflow state."
     }
   }
 }
