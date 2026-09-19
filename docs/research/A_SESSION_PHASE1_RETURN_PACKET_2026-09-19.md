@@ -191,3 +191,62 @@ Until B/Order advances:
   `preflight → revision evidence → compare to AI Core → reverse-import → migrate gap → verify → adoption record`.
 
 A has **no additional Phase 1 blocker** to implement at this time.
+
+
+## 9. Order PR comment verification
+
+A inspected Order Session instructions left directly on the closeout PRs.
+
+### PR #92 — B root
+
+Order comment:
+- B is in **closeout/integration mode**, not expansion mode.
+- update/rebase onto latest main;
+- preserve B1→B2→B3→B4 chain;
+- run full repository tests + B validators;
+- regenerate exact-base episode inventory if needed;
+- return **Phase 1 exit packet** with exact head revision, commands and CI run;
+- do not add new UI/UX capability unless it is a real Phase 1 blocker.
+
+Observed after that instruction:
+- #92 base is current main `9952dfc44f...`;
+- #92 head is `705b4085f1...`;
+- exact-head Main State Consistency run `35446491282` is SUCCESS;
+- test + main-state + C + D + `uiux:validate` all passed.
+
+Therefore #92 has satisfied most technical root-closeout requirements.
+
+### PR #98 — B final-chain hold
+
+Order comment explicitly states:
+- B4 is the **final closeout evidence layer**, not an independent merge target;
+- do not declare B PASS until:
+  `#92 → #95 → #97 → #98`
+  has been replayed/rebased onto current main;
+- all B validators/full tests are green;
+- final conformance receipt is bound to the integrated head;
+- non-blocking improvements are Phase 2.
+
+### Current B blocker narrowed
+
+A currently sees:
+
+1. #92 root sync + exact-head CI: **DONE / GREEN**
+2. #95 still based on the old #92 revision: **NOT YET REPLAYED**
+3. #97 depends on #95: **WAITING**
+4. #98 depends on #97 and must produce final integrated conformance evidence: **WAITING**
+5. B Phase 1 exit packet required by Order: **NOT YET OBSERVED**
+
+So the remaining B closeout is primarily:
+**stacked-chain integration + final revision-bound evidence return**, not discovery of more UI features.
+
+## 10. A blocker decision after Order-comment review
+
+A found no evidence that any unadopted A UI candidate must be inserted before B Phase 1 closes.
+
+Specifically:
+- `ui.client-release-freshness` can defer to Phase 2.
+- exact consumer-source form of `ui.machine-conformance-gate` can mature through post-lock consumer adoption.
+- reduced-motion/zoom baseline already exists in B chain.
+
+Therefore A should not expand B scope or delay closeout.
