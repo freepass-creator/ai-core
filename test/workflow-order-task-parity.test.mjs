@@ -4,7 +4,7 @@ import { randomUUID } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { OrderStore, actors } from '../src/orders/store.mjs';
-import { createOrderTaskShadow, deriveOrderAggregateStatus } from '../src/workflow/order-task-shadow.mjs';
+import { createOrderTaskRuntime, deriveOrderAggregateStatus } from '../src/workflow/order-task-runtime.mjs';
 
 const registry = JSON.parse(readFileSync(new URL('../registry/workflows.json', import.meta.url), 'utf8'));
 const workflow = registry.workflows.find(item => item.workflow_id === 'ai-core.order-task-lifecycle');
@@ -60,7 +60,7 @@ test('claim parity covers assigned actor, active lease, expiry retry and blocked
   let now = Date.parse('2026-09-19T12:00:00.000Z');
   const store = new OrderStore(':memory:', { now: () => now, leaseMs: 1000 });
   t.after(() => store.close());
-  const shadow = createOrderTaskShadow(workflow, {
+  const shadow = createOrderTaskRuntime(workflow, {
     actorIds: actors.map(item => item.id),
     now: () => now,
   });
@@ -105,7 +105,7 @@ test('heartbeat is classified as an audited lease fact update, not a business st
   let now = Date.parse('2026-09-19T12:00:00.000Z');
   const store = new OrderStore(':memory:', { now: () => now, leaseMs: 1000 });
   t.after(() => store.close());
-  const shadow = createOrderTaskShadow(workflow, {
+  const shadow = createOrderTaskRuntime(workflow, {
     actorIds: actors.map(item => item.id),
     now: () => now,
   });
@@ -130,7 +130,7 @@ test('report parity covers lease ownership, requirement revision and evidence co
   let now = Date.parse('2026-09-19T12:00:00.000Z');
   const store = new OrderStore(':memory:', { now: () => now, leaseMs: 1000 });
   t.after(() => store.close());
-  const shadow = createOrderTaskShadow(workflow, {
+  const shadow = createOrderTaskRuntime(workflow, {
     actorIds: actors.map(item => item.id),
     now: () => now,
   });
@@ -180,7 +180,7 @@ test('assignment parity covers blocked handoff, missing reason and active-vs-exp
   let now = Date.parse('2026-09-19T12:00:00.000Z');
   const store = new OrderStore(':memory:', { now: () => now, leaseMs: 1000 });
   t.after(() => store.close());
-  const shadow = createOrderTaskShadow(workflow, {
+  const shadow = createOrderTaskRuntime(workflow, {
     actorIds: actors.map(item => item.id),
     now: () => now,
   });
@@ -217,7 +217,7 @@ test('assignment parity covers blocked handoff, missing reason and active-vs-exp
 test('dependency guard parity prevents later development tasks from claiming early', t => {
   const store = new OrderStore(':memory:');
   t.after(() => store.close());
-  const shadow = createOrderTaskShadow(workflow, {
+  const shadow = createOrderTaskRuntime(workflow, {
     actorIds: actors.map(item => item.id),
   });
 
@@ -241,7 +241,7 @@ test('dependency guard parity prevents later development tasks from claiming ear
 test('parent revision explicitly invalidates reported child task state and evidence', t => {
   const store = new OrderStore(':memory:');
   t.after(() => store.close());
-  const shadow = createOrderTaskShadow(workflow, {
+  const shadow = createOrderTaskRuntime(workflow, {
     actorIds: actors.map(item => item.id),
   });
 
