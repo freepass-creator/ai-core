@@ -11,7 +11,7 @@
     "Discuss a name with the user; keep the display name configurable.",
     "Use GitHub code from both local and server workers, sharing a single durable order ledger."
   ],
-  "scope": "Operating capability loop plus read-only Project Capsule source-review: revision-bound GitHub repository inspection for commands, delivery evidence, instructions and blockers without automatic registry activation.",
+  "scope": "Operating capability loop + Project Capsule + active read-only finance routing to AIOps canonical cash-source/receivable adapters.",
   "changed_files": [
     ".github/workflows/main-state.yml",
     ".github/workflows/shared-order-check.yml",
@@ -182,6 +182,7 @@
     "test/durable-order-work.test.mjs",
     "test/evaluate-control-tower.test.mjs",
     "test/execution-receipt.test.mjs",
+    "test/finance-capabilities.test.mjs",
     "test/github-project-inspector.test.mjs",
     "test/improvement-evolution-jsonl.test.mjs",
     "test/inventory-repositories.test.mjs",
@@ -248,6 +249,7 @@
     "2026-09-19 routed-order E2E P0: stored routing provenance now feeds the canonical Capability Engine plan without reinterpreting natural language; requirement revisions invalidate stale routing; explicit reroute is available only while the order is idle and records a REROUTE event. No capability execution or external mutation is performed by this endpoint.",
     "2026-09-19 order-work intake P0: routed orders can now durably create an internal RECEIVED Work using the existing Order DB for immutable binding/outbox, append to the canonical ledger, add an authorization-free snapshot skeleton, and reconcile repeated/concurrent calls to one identity. Bound requirements cannot reroute in place; a revised requirement receives a new Work identity. This path grants no execution or external authority.",
     "2026-09-19 operating capability loop: capability execution is now reserved by requestId before effects, retries reconcile terminal receipts instead of blindly re-executing, durable safe result receipts return to OrderStore history, and external mutation authority is issued/verified only from the same trusted Work sources and Control Tower state. Server execution stays default OFF.",
-    "2026-09-19 Project Capsule P0: added a read-only GitHub source-review inspector and core.project-inspect capability. It reads repository metadata/tree and package.json only, never .env contents, produces revision-bound evidence and blockers, and deliberately does not mutate registry/projects.json or auto-activate HOLD projects."
+    "2026-09-19 Project Capsule P0: added a read-only GitHub source-review inspector and core.project-inspect capability. It reads repository metadata/tree and package.json only, never .env contents, produces revision-bound evidence and blockers, and deliberately does not mutate registry/projects.json or auto-activate HOLD projects.",
+    "2026-09-19 finance capabilities: finance.cash-status and finance.receivables now route to AIOps lib/ai-core-finance-adapters.mjs at revision c37a4227. The adapters are read-only, expose no customer/vehicle detail for aggregate receivable answers, and HOLD stale or missing canonical sources."
   ]
 }
