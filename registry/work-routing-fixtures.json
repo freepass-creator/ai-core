@@ -49,7 +49,8 @@
     {
       "query": "견적기 고쳐",
       "expected_work_type_id": "estimator",
-      "expected_status": "HOLD_PROJECT_HOLD"
+      "expected_status": "HOLD_PROJECT_HOLD",
+      "expected_target_project_id": "freepass-estimate"
     },
     {
       "query": "ERP 상품 상세 고쳐",
