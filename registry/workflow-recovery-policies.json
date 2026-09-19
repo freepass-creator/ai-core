@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0.0",
+  "registry_version": "1.0.0",
+  "policies": [
+    {
+      "policy_id": "workflow.recovery-slot-no-replay",
+      "adoption_status": "PILOT",
+      "evidence_level": "PROJECT_VERIFIED",
+      "source_projects": ["freepasserp4"],
+      "description": "A fallback recovery path may execute only after reconciling all known success evidence for the same logical execution identity. Successful native or prior recovery execution suppresses replay.",
+      "identity": {
+        "scope": "LOGICAL_EXECUTION",
+        "dimensions": ["operation", "logical_slot", "subject_scope"],
+        "shared_across_paths": true
+      },
+      "execution_paths": ["NATIVE", "FALLBACK", "DOWNSTREAM"],
+      "success_reconciliation": {
+        "before_fallback": true,
+        "success_suppresses_fallback": true,
+        "evidence_sources": ["NATIVE_EXECUTION", "RECOVERY_HISTORY", "DOWNSTREAM_TERMINAL_EVIDENCE"]
+      },
+      "recovery_eligibility": {
+        "slot_due": true,
+        "no_success_evidence": true,
+        "no_successful_prior_recovery": true
+      },
+      "cursor": {
+        "monotonic": true,
+        "replay_forbidden_after_success": true
+      },
+      "ambiguous_outcome_action": "HOLD",
+      "contract_dependency": {
+        "identity_owner": "C",
+        "identity_contract_status": "PENDING"
+      },
+      "source_authority": {
+        "repository": "freepass-creator/freepasserp4",
+        "revision": "44a67cedc5f0d3e38efc68f1e8f84e6c28ab97b3",
+        "files": [
+          {
+            "path": ".automation/safe-chain-monitor.json",
+            "blob_sha": "425e6ee076b1a286d1dc872a9d6dae02dc4b06e6"
+          },
+          {
+            "path": "docs/ai-ssot-audit/2026-09-19-chatgpt-audit76-false-settlement-recovery-replayed-successful-native-slot.md",
+            "blob_sha": "0e9e3c9fb8c4608441a37cb64a0f0d0011679510"
+          }
+        ]
+      }
+    }
+  ]
+}
