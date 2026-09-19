@@ -16,7 +16,7 @@ const capability={
 };
 const projectRegistry={schema_version:'1.0',projects:[{project_id:'aiops',local_path:'/project'}]};
 
-function fixture({reconcileResult=null}={}){
+function fixture({reconcileResult=null,withBinding=true}={}){
   const store=new OrderStore(':memory:',{now:()=>Date.parse('2026-09-19T03:30:00Z')});
   const order=store.create({
     requestId:'create-1',title:'과태료',intent:'과태료 처리해',project:'aiops',kind:'general',
@@ -27,11 +27,13 @@ function fixture({reconcileResult=null}={}){
       capability_mode:'EXTERNAL_MUTATION',matched_alias:'과태료',blockers:[],requirement_revision:1,
     },
   });
-  store.db.exec(BINDING_SCHEMA);
-  store.db.prepare(`INSERT INTO coordination_bindings
-    (order_id,requirement_revision,work_id,project_id,subject_revision,requirement_digest,created_record_version,command_id,event_id)
-    VALUES (?,?,?,?,?,?,?,NULL,NULL)`)
-    .run(order.id,1,'WORK-001','aiops',sha,'digest',order.version);
+  if(withBinding){
+    store.db.exec(BINDING_SCHEMA);
+    store.db.prepare(`INSERT INTO coordination_bindings
+      (order_id,requirement_revision,work_id,project_id,subject_revision,requirement_digest,created_record_version,command_id,event_id)
+      VALUES (?,?,?,?,?,?,?,NULL,NULL)`)
+      .run(order.id,1,'WORK-001','aiops',sha,'digest',order.version);
+  }
 
   let snapshots=0;
   const receiptReader={
@@ -99,10 +101,9 @@ test('terminal receipt가 없으면 UNKNOWN으로 닫고 절대 재실행 판정
 });
 
 test('현재 requirement의 immutable binding이 없으면 실행 예약 자체가 안 된다',async t=>{
-  const f=fixture();t.after(()=>f.store.close());
-  f.store.db.exec('DELETE FROM coordination_bindings');
+  const f=fixture({withBinding:false});t.after(()=>f.store.close());
   await assert.rejects(
     f.coordinator.reserve({requestId:'exec-1',orderId:f.order.id,workId:'WORK-001',capability,input:{},perform:true}),
-    /BINDING_IMMUTABLE|WORK_BINDING_REQUIRED/
+    /WORK_BINDING_REQUIRED/
   );
 });
