@@ -443,14 +443,15 @@
     {
       "id": "ui.client-release-freshness",
       "axis": "UI/UX/Client Runtime",
-      "evidence_level": "PROJECT_VERIFIED",
+      "evidence_level": "CROSS_PROJECT_VERIFIED",
       "projects": [
-        "freepasserp3"
+        "freepasserp3",
+        "freepasserp4"
       ],
       "target_session": "B",
       "finding": "served build identity를 장시간 실행 중인 client가 주기/visibility 복귀 시점에 대조해 stale-client 상태를 감지하고 dirty/risk에 맞는 update UX로 전환",
-      "next_gate": "SECOND_PROJECT_REQUIRED",
-      "evidence_note": "FreePassERP3 commit 5344a500... added build-version.txt generation and runtime version-watch after stale SPA tabs kept executing obsolete deployed code. Current app entry actually starts the watcher. Exact auto-reload behavior is local; common candidate is release-drift detection plus safe update UX."
+      "next_gate": "COMMON_ADOPTED_CANDIDATE",
+      "evidence_note": "FreePassERP3 uses a generated static build-version baseline with polling/visibility drift detection. FreePassERP4 independently compares a client build stamp to a no-store server deployment stamp, checks focus/online/visibility/interval, defers reload while actively editing, and prevents same-stamp reload loops. FreePass Sales service-worker cache versioning is adjacent evidence only."
     }
   ]
 }
