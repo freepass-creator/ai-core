@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "registry_version": "1.5.0",
+  "registry_version": "1.6.0",
   "primitives": [
     {
       "primitive_id": "workflow.fact-vs-state",
@@ -125,6 +125,16 @@
         "ai-core"
       ],
       "notes": "Verified in durable coordination and capability execution inside AI Core; broader cross-project evidence is still required before COMMON_ADOPTED."
+    },
+    {
+      "primitive_id": "workflow.recovery-slot-no-replay",
+      "status": "PILOT",
+      "meaning": "Fallback recovery for a logical execution may run only after reconciling native-success and prior-recovery evidence; a successful logical execution cannot be replayed by another path.",
+      "evidence_level": "PROJECT_VERIFIED",
+      "source_projects": [
+        "freepasserp4"
+      ],
+      "notes": "ERP4 production failure-derived contract. Second independent project and C-owned logical execution identity contract are required before common adoption."
     }
   ],
   "workflows": [
