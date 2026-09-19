@@ -3,7 +3,8 @@
 - Version: 0.1
 - Date: 2026-09-19 (Asia/Seoul)
 - Status: WORKING COORDINATION MAP
-- Scope: AI Core completion lanes, ownership, dependencies and promotion gates
+- Scope: AI Core completion domains, dependencies and promotion gates
+- Live session assignment/status SSOT: `docs/handoffs/SESSION-MISSIONS.md`
 - Structural SSOT remains `docs/GROUP_OPERATING_MODEL.md`.
 - Runtime/work routing SSOT remains `registry/work-map.json`, `registry/capabilities.json`, `registry/projects.json`.
 - This map does not replace those SSOTs; it coordinates the work needed to mature them.
@@ -35,9 +36,11 @@ User order
 
 AI Core is headquarters. Product repositories remain independently owned subsidiaries. Common rules are promoted only when reusable and evidence-backed.
 
-## 3. Active work lanes
+## 3. Standardization domains
 
-| Lane | Session role | Primary outcome | Can run now | Main dependency |
+This table defines durable work domains, not live session ownership. Current session names, ACTIVE/HOLD state and actual operator assignment belong only in `docs/handoffs/SESSION-MISSIONS.md`.
+
+| Lane | Domain | Primary outcome | Can run now | Main dependency |
 |---|---|---|---|---|
 | L0 | Coordination / Master Map | keep one global map, dependencies, status, handoff | YES | none |
 | L1 | Research / Repository Backfill | discover what subsidiaries do better/worse than AI Core | YES | none |
@@ -48,7 +51,7 @@ AI Core is headquarters. Product repositories remain independently owned subsidi
 | L6 | Quality / Observability / Release | testing, SLO/health, logs, tracing, CI/CD, release evidence | YES, baseline first | L3/L4 interfaces |
 | L7 | Governance / Evolution | versioning, ADR, deprecation, exceptions, adoption/lock policy | YES | all lanes feed it |
 
-Detailed lane briefs live in `docs/lanes/`.
+Detailed domain briefs live in `docs/lanes/`. They are reusable scopes/checklists, not separate live session registries.
 
 ## 4. Dependency graph
 
@@ -68,7 +71,7 @@ L2 UI/UX                    L3 Core Contract     L5 Security
                                            v
                                   L7 Governance/Lock
 
-L0 Coordination observes and reconciles every lane.
+L0 Coordination observes and reconciles every domain. Live session-to-domain mapping is maintained only in `docs/handoffs/SESSION-MISSIONS.md`.
 ```
 
 No lane waits for another lane to finish completely. Dependencies mean “consume the latest verified primitive before locking”.
