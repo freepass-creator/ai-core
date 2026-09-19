@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.freepass.ai/core/event-type-registry/v1",
+  "title": "AI Core Event Type Registry v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "owner",
+    "types"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "core-event-type-registry/v1"
+    },
+    "owner": {
+      "const": "C_CORE_CONTRACT_STANDARD"
+    },
+    "types": {
+      "type": "array",
+      "items": {
+        "$ref": "https://schemas.freepass.ai/core/event-type/v1"
+      }
+    }
+  }
+}

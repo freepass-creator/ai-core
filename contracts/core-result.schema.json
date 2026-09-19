@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.freepass.ai/core/result/v1",
+  "title": "AI Core Generic Result v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "data",
+    "error",
+    "meta"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "core-result/v1"
+    },
+    "status": {
+      "enum": [
+        "SUCCEEDED",
+        "FAILED",
+        "HOLD",
+        "PARTIAL"
+      ]
+    },
+    "data": {},
+    "error": {
+      "anyOf": [
+        {
+          "$ref": "https://schemas.freepass.ai/core/error/v1"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "correlation_id",
+        "generated_at",
+        "receipt_ref"
+      ],
+      "properties": {
+        "correlation_id": {
+          "$ref": "https://schemas.freepass.ai/core/types/v1#/$defs/correlation_id"
+        },
+        "generated_at": {
+          "$ref": "https://schemas.freepass.ai/core/types/v1#/$defs/datetime"
+        },
+        "receipt_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "FAILED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "error": {
+            "not": {
+              "type": "null"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "SUCCEEDED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "error": {
+            "type": "null"
+          }
+        }
+      }
+    }
+  ]
+}

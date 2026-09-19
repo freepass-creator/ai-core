@@ -1,0 +1,128 @@
+{
+  "schema_version": "1.0",
+  "phase": "PHASE_1",
+  "status": "HOLD",
+  "observed_revision": "0c45a8ca8b3f049d77388e976e01df18037ed3d8",
+  "ci": {
+    "run_id": 35446074279,
+    "head_sha": "0c45a8ca8b3f049d77388e976e01df18037ed3d8",
+    "conclusion": "success"
+  },
+  "gates": {
+    "ownership_linked": true,
+    "executable_baseline": false,
+    "registry_linkage": false,
+    "revision_evidence": true,
+    "validation_green": true,
+    "no_false_completion": true
+  },
+  "lanes": [
+    {
+      "id": "A",
+      "owner": "Repo Intelligence / Reverse Import",
+      "status": "PASS",
+      "blockers": [],
+      "evidence": [
+        {
+          "path": "docs/coordination/REPOSITORY_BACKFILL_AUDIT_2026-09-19.md"
+        },
+        {
+          "path": "docs/research/A_SESSION_PROMOTION_MATRIX_2026-09-19.md"
+        },
+        {
+          "path": "docs/research/a-session-promotion-matrix.v1.json"
+        },
+        {
+          "path": "docs/coordination/REPOSITORY_BACKFILL_AUDIT_2026-09-19.md",
+          "revision": "70473ff9dc140ae0832a1e159fb8d8d41b9ae631",
+          "note": "Order Phase 1 exit review: 36-repository backfill, promotion maturity routing, Core-vs-project gap classification and post-closeout queue are sufficient for the A baseline."
+        }
+      ]
+    },
+    {
+      "id": "B",
+      "owner": "Global UI/UX Platform",
+      "status": "HOLD",
+      "blockers": [
+        "Order has not yet verified a B-owned machine validation path and Feature Registry linkage for the Phase 1 scope.",
+        "B must return a Phase 1 gap-to-exit packet separating baseline blockers from Phase 2 enhancements."
+      ],
+      "evidence": [
+        {
+          "path": "docs/SCREEN_DESIGN_STANDARD.md"
+        },
+        {
+          "path": "docs/FREEPASS_PRODUCT_UI_PROFILE.md"
+        },
+        {
+          "path": "design-system/tokens.css"
+        },
+        {
+          "path": "design-system/components.css"
+        },
+        {
+          "path": "docs/UI_UX_CONSTITUTION.md",
+          "revision": "f72254485a2001b2631520ef6be60aa24d9f8dca",
+          "note": "B4 candidate chain is CI-green but remains outside main; root PR #92 must be synchronized before Phase 1 PASS."
+        }
+      ]
+    },
+    {
+      "id": "C",
+      "owner": "Core Contract Platform",
+      "status": "PASS",
+      "blockers": [],
+      "evidence": [
+        {
+          "path": "docs/CORE_CONTRACT_STANDARD.md",
+          "revision": "87a0fbb2da93046cdbc45140b8d8c3e9e7a67ae9",
+          "note": "Core Contract Standard v1 root baseline merged to main; full CI and contracts validate/compat passed."
+        },
+        {
+          "path": "docs/CORE_CONTRACT_ADOPTION_2026-09-19.md",
+          "revision": "0c45a8ca8b3f049d77388e976e01df18037ed3d8",
+          "note": "ERP4/Admin/Sales/Estimate adoption layer merged to main; contracts:adoption and full main CI passed."
+        },
+        {
+          "path": "registry/core-contracts.json",
+          "revision": "0c45a8ca8b3f049d77388e976e01df18037ed3d8"
+        },
+        {
+          "path": "registry/core-contract-adoption.json",
+          "revision": "0c45a8ca8b3f049d77388e976e01df18037ed3d8"
+        }
+      ]
+    },
+    {
+      "id": "D",
+      "owner": "Workflow Platform",
+      "status": "HOLD",
+      "blockers": [
+        "Order inspection has not found a generic workflow registry plus transition validator/test/simulator on main.",
+        "D must decide whether current Control Tower/work-ledger primitives satisfy part of the baseline or a dedicated workflow layer must land."
+      ],
+      "evidence": [
+        {
+          "path": "docs/CONTROL_TOWER.md"
+        },
+        {
+          "path": "contracts/work-ledger-event.schema.json"
+        },
+        {
+          "path": "docs/research/WORKFLOW_STATE_MACHINE_CROSS_REPO_FINDINGS_2026-09-19.md"
+        },
+        {
+          "path": "docs/workflow/WORKFLOW_CONSTITUTION.md",
+          "revision": "6c9a295330db9a11fa8d1320e0af4b980fef2d32",
+          "note": "D candidate branch exists but CI run 35443899282 is red on recovery-policy reconciliation."
+        }
+      ]
+    }
+  ],
+  "deferrable": [
+    "Production activation of capabilities that are correctly HOLD.",
+    "Migration of every subsidiary repository.",
+    "Implementation of every provider-specific adapter.",
+    "Phase 2 enhancements that do not block a new project from starting on the common baseline."
+  ]
+}

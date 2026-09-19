@@ -35,9 +35,9 @@ A 세션이 조사한 내용을 B·C·D·Security·QA·Governance 세션이 다�
 | `api.idempotency-key` | API/Error | CROSS_PROJECT_VERIFIED | freepass-admin, freepasserp4 | C | COMMON_ADOPTED_CANDIDATE |
 | `event.append-only-correction` | Event | CROSS_PROJECT_VERIFIED | aiops, freepass-admin, freepasserp4 | C/D | COMMON_ADOPTED_CANDIDATE |
 | `event.cloudevents-envelope` | Event | PROPOSED | 외부 기준 | C | RESEARCH_REQUIRED |
-| `workflow.fact-vs-state` | Workflow | CROSS_PROJECT_VERIFIED | freepass-admin, jpkerp5, aiops | D | COMMON_ADOPTED_CANDIDATE |
-| `workflow.guard-vs-evidence` | Workflow | CROSS_PROJECT_VERIFIED | jpkerp5, aiops | D | COMMON_ADOPTED_CANDIDATE |
-| `workflow.launch-vs-completion` | Workflow | CROSS_PROJECT_VERIFIED | freepass-sales, aiops | D | COMMON_ADOPTED_CANDIDATE |
+| `workflow.fact-vs-state` | Workflow | CROSS_PROJECT_VERIFIED | freepass-admin, jpkerp5, aiops, gukminchagimpo | D | COMMON_ADOPTED_CANDIDATE |
+| `workflow.guard-vs-evidence` | Workflow | CROSS_PROJECT_VERIFIED | jpkerp5, aiops, workcontrol | D | COMMON_ADOPTED_CANDIDATE |
+| `workflow.launch-vs-completion` | Workflow | CROSS_PROJECT_VERIFIED | freepass-sales, aiops, workcontrol | D | COMMON_ADOPTED_CANDIDATE |
 | `workflow.hold-resume` | Workflow | PROJECT_VERIFIED | aiops | D | SECOND_PROJECT_REQUIRED |
 | `workflow.obligation-pair` | Workflow | PROJECT_VERIFIED | aiops | D | SECOND_PROJECT_REQUIRED |
 | `security.role-org-scope-action` | Security | PROJECT_VERIFIED | freepasserp4 | Security | SECOND_PROJECT_REQUIRED |
@@ -142,3 +142,193 @@ A 세션이 조사한 내용을 B·C·D·Security·QA·Governance 세션이 다�
 - FreePass Sales: `나중에`/재통화 흐름이 `다음연락일`을 보존하고, 날짜가 오늘까지 도래한 대상만 다시걸사람 큐로 올린다. 진행중 목록도 경과/오늘 약속을 우선한다.
 
 따라서 공통 의미는 특정 앱의 “보류” 라벨이 아니라 **defer until / resume at** 계약으로 잡을 수 있다.
+
+
+## 2026-09-19 ERP4 recovery replay delta
+
+| Candidate | 축 | Evidence | 실제 근거 | 넘길 세션 | 다음 단계 |
+|---|---|---|---|---|---|
+| `workflow.recovery-slot-no-replay` | Workflow / Recovery | PROJECT_VERIFIED | freepasserp4 | D/C | SECOND_PROJECT_REQUIRED |
+
+- 근거 revision: `freepasserp4@1cf94b788a204777109cf2031b1f518fbcd99b01` (observed head `44a67cedc5f0d3e38efc68f1e8f84e6c28ab97b3`).
+- 같은 logical 18:05 slot이 native schedule 성공 후 fallback으로 다시 실행된 것이 확인됐다.
+- 일반화 후보: **logical execution identity + success-evidence reconciliation + monotonic recovery no-replay**.
+- AIOps의 deterministic requestKey/lease/run manifest는 인접 근거지만 exact second-project proof로 계산하지 않는다.
+- 상세: `docs/research/A_SESSION_DISCOVERY_ERP4_RECOVERY_SLOT_REPLAY_2026-09-19.md`.
+
+
+## 2026-09-19 FP Settlement UI conformance delta
+
+| Candidate | 축 | Evidence | 실제 근거 | 넘길 세션 | 다음 단계 |
+|---|---|---|---|---|---|
+| `ui.machine-conformance-gate` | UI/UX / Design QA | CROSS_PROJECT_VERIFIED | fp-settlement, teamjpkwork | B | COMMON_ADOPTED_CANDIDATE |
+
+- 근거: `fp-settlement@b1e833dfed37ed08f5cc5ed83bdd55a29bf5bc24`, current observed head `b406da67a9cb2b85b5572a7f5d28d350ca84cb58`.
+- 프로젝트 전용 retro skin/픽셀값을 공통화하는 것이 아니라 **semantic token-role + effective-style + actually-used selector + CI fail** 메커니즘만 일반화한다.
+- 상세: `docs/research/A_SESSION_DISCOVERY_FP_SETTLEMENT_UI_CONFORMANCE_2026-09-19.md`.
+
+
+## 2026-09-19 Vehicle Master identity/provenance backport
+
+- Direction: **Core > Project**
+- Project revision: `vehicle-master@233115fb1daf9f17ba58a4fae2c30eaaf99b2e8c`
+- Breaking impact: **HIGH if IDs are replaced in place**
+- Gap:
+  - trim ID is generated from mutable trim name;
+  - generation/model/manufacturer IDs have mutable-name fallback;
+  - powertrain identity includes mutable semantic attributes;
+  - export manifest has output version but only coarse source provenance.
+- Migration: consumer inventory → immutable canonical ID 추가 → current ID alias 보존 → dual-read Adapter → source/schema/normalizer lineage 추가 → consumer regression.
+- Destination: **C**
+- 상세: `docs/research/A_SESSION_GAP_VEHICLE_MASTER_IDENTITY_PROVENANCE_2026-09-19.md`.
+
+
+## 2026-09-19 DevCenter proof-input binding delta
+
+| Candidate | 축 | Evidence | 실제 근거 | 넘길 세션 | 다음 단계 |
+|---|---|---|---|---|---|
+| `result.proof-input-digest-binding` | Result / Receipt / Evidence | PROJECT_VERIFIED | devcenter | C | SECOND_PROJECT_REQUIRED |
+
+- 근거: `devcenter@6a838a28b3c25b068e5bbe010071fd1de0242d30`, `verify-acceptance.mjs@6178e5fa...`, `card-audit.mjs@59b61085...`.
+- AI Core는 revision-bound proof 원칙이 더 넓고, DevCenter는 **source + checker/fixture input digest**로 stale proof를 실제로 판정하는 메커니즘이 더 구체적이다.
+- 상세: `docs/research/A_SESSION_DISCOVERY_DEVCENTER_PROOF_INPUT_BINDING_2026-09-19.md`.
+
+
+## 2026-09-19 DevCenter registry revision binding backport
+
+- Direction: **Core > Project**
+- Project revision: `devcenter@6a838a28b3c25b068e5bbe010071fd1de0242d30`
+- Gap: `registry.json` source locator entries lack entry-level revision/hash binding.
+- Migration: additive revision/hash metadata → stale detection → re-review gate.
+- Central stale observation: AI Core `registry/projects.json` still records DevCenter at `132189799a...`; actual observed head is `6a838a28...`.
+- Destination: **C / Registry provenance**
+- 상세: `docs/research/A_SESSION_GAP_DEVCENTER_REGISTRY_REVISION_BINDING_2026-09-19.md`.
+
+
+### TeamJPKWork second evidence — `ui.machine-conformance-gate` 승격
+
+- **PROJECT_VERIFIED → CROSS_PROJECT_VERIFIED**
+- First evidence: `fp-settlement@b1e833dfed37ed08f5cc5ed83bdd55a29bf5bc24`
+- Second independent evidence: `teamjpkwork@75bb285a241b68c13acbe532c30d6d91110f8082`
+- TeamJPKWork independently enforces canonical screen tokens/roles with repeatable checkers and explicitly handles checker blind spots/false-green cases.
+- Project-local values, classic-theme texture, depth rules and badge semantics are not proposed as global defaults.
+- B can evaluate this mechanism as `COMMON_ADOPTED_CANDIDATE`.
+- Detail: `docs/research/A_SESSION_DISCOVERY_TEAMJPKWORK_UI_CONFORMANCE_SECOND_EVIDENCE_2026-09-19.md`.
+
+
+### WorkControl evidence-backed closure
+
+- `workcontrol@b841ad748f39322a150ce3d3fdd5840fc8a7ee0f` adds independent supporting evidence to:
+  - `workflow.guard-vs-evidence`
+  - `workflow.launch-vs-completion`
+- Human/UI `완료` is not treated as verified completion; `proof.mjs` checks receipts such as money received or vehicle returned.
+- `workflow.obligation-pair` is **not promoted**: due exists in the specification, but the inspected recovery runtime does not prove due/timeout enforcement as part of the obligation lifecycle.
+- Detail: `docs/research/A_SESSION_DISCOVERY_WORKCONTROL_EVIDENCE_CLOSURE_2026-09-19.md`.
+
+
+### Sonogong production proof HOLD
+
+- `sonogong-estimator` has a strong live-bundle/commit readback mechanism in code.
+- Historical docs claim a live Vercel deployment, but the currently connected Vercel team exposes **0 projects**, so the current production target/revision cannot be independently resolved.
+- `release.production-revision-proof` therefore remains **PROJECT_VERIFIED** from ERP4 only.
+- Detail: `docs/research/A_SESSION_HOLD_SONOGONG_DEPLOYMENT_PROOF_2026-09-19.md`.
+
+
+## 2026-09-19 Mewcar canonical entrypoint supersession backport
+
+- Direction: **Core > Project**
+- Project revision: `mewcar@232f0fee0f0004a1e525444b9ddeb61d04e286f5`
+- Strong local practice retained:
+  - four-file canonical set under `정본/`
+  - assertion maturity states `확정 / 대표 의견 / 내부안 / 미정`
+  - old documents preserved as history
+  - business/legal execution not inferred from planning or statements
+- Gap: `PROJECT_READ_FIRST.md` still opens with the older 2026-09-16 canonical routing, while `정본/README.md` finalized on 2026-09-18 declares the four-file canonical set.
+- Migration: repoint the entrypoint to `정본/README.md`, keep older documents as source/history, add explicit supersession metadata if useful.
+- Destination: **C / SSOT provenance**
+- Detail: `docs/research/A_SESSION_GAP_MEWCAR_CANONICAL_ENTRYPOINT_SUPERSESSION_2026-09-19.md`.
+
+
+## 2026-09-19 FreePass Homepage reduced-motion backport
+
+- Direction: **Core > Project**
+- Project revision: `freepasshomepage@5f0152c26ac1f106a5f5aee46a3e0020d653c8f5`
+- Gap: smooth scroll, reveal transitions, marquee, count-up and continuous canvas animation exist without a reduced-motion profile.
+- AI Core B standard already requires reduced-motion behavior.
+- Migration: CSS `prefers-reduced-motion` + JS motion guard/static fallback.
+- Destination: **B / Accessibility**
+- Detail: `docs/research/A_SESSION_GAP_FREEPASSHOMEPAGE_REDUCED_MOTION_2026-09-19.md`.
+
+
+## 2026-09-19 Renman compensated multi-write delta
+
+| Candidate | 축 | Evidence | 실제 근거 | 넘길 세션 | 다음 단계 |
+|---|---|---|---|---|---|
+| `workflow.compensated-multiwrite` | Workflow / Compensation | PROJECT_VERIFIED | renman | D | SECOND_PROJECT_REQUIRED |
+
+- 근거: `renman@262e06de09db94a116fa377ea2f5dbe024bb086b`, `lib/commit.ts@e9b3e6d0...`, `tests/commit-compensated.test.ts@3d9038a5...`.
+- 핵심: multi-write 후속 실패 시 **이미 성공한 효과만 역순 보상**, 각 op이 domain-specific undo를 소유, 보상 자체 실패는 반쪽 상태로 명시적 승격.
+- AIOps/ERP4/Admin/Sales에서 exact second-project implementation은 확인하지 못했다.
+- 상세: `docs/research/A_SESSION_DISCOVERY_RENMAN_COMPENSATED_MULTIWRITE_2026-09-19.md`.
+
+
+## 2026-09-19 FreePassERP3 client release freshness delta
+
+| Candidate | 축 | Evidence | 실제 근거 | 넘길 세션 | 다음 단계 |
+|---|---|---|---|---|---|
+| `ui.client-release-freshness` | UI/UX / Client Runtime | PROJECT_VERIFIED | freepasserp3 | B | SECOND_PROJECT_REQUIRED |
+
+- 근거: `freepasserp3@5344a5001a6d62d686c79090a250c9aa21b470c3`, current observed head `8d8b7a559272a37823f879b77099b3bc17bf5a16`.
+- 장시간 열린 SPA가 배포 뒤에도 구버전 JS를 계속 실행하던 실제 문제를 stable build-version readback + periodic/visibility freshness check로 해결.
+- 일반화 대상은 자동 새로고침 자체가 아니라 **served release identity → stale client 감지 → dirty/risk-aware update UX**.
+- 상세: `docs/research/A_SESSION_DISCOVERY_FREEPASSERP3_CLIENT_RELEASE_FRESHNESS_2026-09-19.md`.
+
+
+## 2026-09-19 FreePassERP3 approximate canonicalization backport
+
+- Direction: **Core > Project**
+- Gap: low-confidence/weak trim match can still be forced into an existing SSOT trim and return `confidence: high` when no hard-review flag fires.
+- Migration: preserve raw source + normalized candidate separately, low-confidence/multi-generation ambiguity → REVIEW_REQUIRED, bind source master revision.
+- Destination: **C / Data Normalizer**
+- 상세: `docs/research/A_SESSION_GAP_FREEPASSERP3_APPROXIMATE_CANONICALIZATION_2026-09-19.md`.
+
+
+## 2026-09-19 JPKERP-v4 server-acknowledged mutation backport
+
+- Direction: **Core > Project**
+- Gap: shared RTDB store updates local cache/listeners before server ACK; write failure alerts but does not roll back/reconcile, and the setter exposes no awaitable result.
+- Migration: acknowledged mutation result + rollback/reconciliation + pending/confirmed/failed separation.
+- Destination: **C / Repository & Result**, D consumes confirmed result before workflow completion.
+- 상세: `docs/research/A_SESSION_GAP_JPKERP_V4_SERVER_ACK_MUTATION_2026-09-19.md`.
+
+
+### Gukmincha Gimpo derived-state reinforcement
+
+- `gukminchagimpo@0e32380725cc2d98c93b5462b282ade52047c45a`
+- Adds an independent property/parking-lease domain to `workflow.fact-vs-state`.
+- Stall status is explicitly not persisted as a second truth; Lease + Billing + date + config facts derive `vacant/active/overdue/expiring/reserved`.
+- O(1) Map/indexes are read projections only.
+- Detail: `docs/research/A_SESSION_DISCOVERY_GUKMINCHAGIMPO_DERIVED_STATE_2026-09-19.md`.
+
+
+## 2026-09-19 TeamJPK accessibility zoom/motion backport
+
+- Direction: **Core > Project**
+- Project revision: `teamjpk@b26cd298f07023dab38ee33b7de7ce95528df29b`
+- Explicit commit `dffbc055...` locked pinch zoom; current viewport still has `maximum-scale=1, user-scalable=no`.
+- Site also has continuous/decorative animation without reduced-motion handling.
+- AI Core B target requires WCAG 2.2 AA testing at 200% zoom and reduced-motion preference.
+- Destination: **B / Accessibility**
+- Detail: `docs/research/A_SESSION_GAP_TEAMJPK_ACCESSIBILITY_ZOOM_MOTION_2026-09-19.md`.
+
+
+## 2026-09-19 JPKERP silent reconciliation backport
+
+- Direction: **Core > Project**
+- Project revision: `jpkerp@e6de03adbac98a33da7d844fb8fb197ff885e7cb`
+- Gap: event persistence succeeds first, then payment reconciliation errors are swallowed; reconciliation itself performs sequential multi-billing writes plus final event back-reference without a transaction/compensation/result state.
+- Risk: event can look saved while financial allocation is partially applied or unmatched.
+- Migration: explicit reconciliation state/result + idempotent retry + transaction/outbox/compensation strategy + failure-injection tests.
+- Destination: **D primary / C secondary**
+- This is negative evidence supporting the need for `workflow.compensated-multiwrite`, not positive second-project implementation.
+- Detail: `docs/research/A_SESSION_GAP_JPKERP_SILENT_RECONCILIATION_PARTIAL_WRITE_2026-09-19.md`.
