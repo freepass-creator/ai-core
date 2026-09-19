@@ -113,8 +113,8 @@ function resultFor(order, extra = {}) {
   };
 }
 
-test('Capability Execution SHADOW is pinned to coordinator and receipt-reader source blobs', () => {
-  assert.equal(workflow.adoption_status, 'SHADOW');
+test('Canonical Capability Execution workflow is pinned to coordinator and receipt-reader integration blobs', () => {
+  assert.equal(workflow.adoption_status, 'CANONICAL');
   for (const source of workflow.source_authority.files) {
     const actual = execFileSync('git', ['hash-object', source.path], {
       cwd: new URL('..', import.meta.url),
