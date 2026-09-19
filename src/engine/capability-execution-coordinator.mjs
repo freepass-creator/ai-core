@@ -184,7 +184,7 @@ export function createCapabilityExecutionCoordinator({
   }
 
   function complete(requestId,result,{reason=null}={}){
-    const row=getRow(requestId);
+    let row=getRow(requestId);
     need(row,'CAPABILITY_EXECUTION_REQUEST_MISSING');
     const receipt=safeReceipt(result);
     need(receipt.order_id===row.order_id&&receipt.work_id===row.work_id,'WORK_RESULT_CONTEXT_MISMATCH');
@@ -196,9 +196,52 @@ export function createCapabilityExecutionCoordinator({
       need(digest(prior)===digest(receipt),'CAPABILITY_EXECUTION_RESULT_CONFLICT');
       return prior;
     }
+
     const at=iso(clock);
-    store.db.prepare('UPDATE capability_execution_requests SET state=?,result_json=?,reason=?,updated_at=? WHERE request_id=? AND state=?')
-      .run('RESULT',JSON.stringify(receipt),reason,at,requestId,'RESERVED');
+    store.db.exec('BEGIN IMMEDIATE');
+    try{
+      row=getRow(requestId);
+      if(row.state==='RESULT'){
+        const prior=rowReceipt(row);
+        need(digest(prior)===digest(receipt),'CAPABILITY_EXECUTION_RESULT_CONFLICT');
+        store.db.exec('COMMIT');
+        return prior;
+      }
+      const update=store.db.prepare(
+        'UPDATE capability_execution_requests SET state=?,result_json=?,reason=?,updated_at=? WHERE request_id=? AND state=?'
+      ).run('RESULT',JSON.stringify(receipt),reason,at,requestId,'RESERVED');
+      need(update.changes===1,'CAPABILITY_EXECUTION_STATE_CHANGED');
+
+      const order=store.get(row.order_id);
+      const event={
+        id:requestId,
+        at,
+        type:'CAPABILITY_RESULT',
+        by:'ai-core-capability',
+        version:order.version,
+        revision:row.requirement_revision,
+        detail:{
+          request_id:requestId,
+          work_id:row.work_id,
+          capability_id:row.capability_id,
+          project_id:row.project_id,
+          subject_revision:row.subject_revision,
+          status:receipt.status,
+          summary:receipt.summary,
+          artifact_refs:receipt.artifact_refs,
+          evidence_refs:receipt.evidence_refs,
+          checks:receipt.checks,
+          execution:receipt.execution,
+          blockers:receipt.blockers,
+          next_action:receipt.next_action,
+        },
+      };
+      store.db.prepare('INSERT INTO events(order_id,document) VALUES (?,?)').run(row.order_id,JSON.stringify(event));
+      store.db.exec('COMMIT');
+    }catch(error){
+      if(store.db.isTransaction) store.db.exec('ROLLBACK');
+      throw error;
+    }
     return rowReceipt(getRow(requestId));
   }
 
