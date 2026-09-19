@@ -98,7 +98,6 @@
     "docs/inventory/C-DEV-2026-09-15.json",
     "docs/research/API_EVENT_ERROR_STANDARD_FINDINGS_2026-09-19.md",
     "docs/research/AUTH_SECURITY_AUDIT_CROSS_REPO_FINDINGS_2026-09-19.md",
-    "docs/research/A_SESSION_DISCOVERY_ERP4_RECOVERY_SLOT_REPLAY_2026-09-19.md",
     "docs/research/A_SESSION_PROMOTION_MATRIX_2026-09-19.md",
     "docs/research/BUILD_DEPLOY_GOVERNANCE_CROSS_REPO_FINDINGS_2026-09-19.md",
     "docs/research/DATA_SSOT_CROSS_REPO_FINDINGS_2026-09-19.md",
@@ -203,7 +202,7 @@
     "src/routing/work-router.mjs",
     "src/workflow/capability-execution-shadow.mjs",
     "src/workflow/engine.mjs",
-    "src/workflow/order-task-shadow.mjs",
+    "src/workflow/order-task-runtime.mjs",
     "src/workflow/registry.mjs",
     "src/workflow/work-ledger-shadow.mjs",
     "test/ai-continuation-pack.test.mjs",
@@ -323,6 +322,7 @@
     "2026-09-19 D-session provenance refresh: workflow-bridges source pins now match the migrated OrderStore and Capability Execution coordinator runtime blobs.",
     "2026-09-19 shared-orders fixture refresh: cloned checkout tests now copy Order runtime workflow dependencies and registry/workflows.json after OrderStore became D-engine dependent.",
     "2026-09-19 D-session runtime migration verification: feature/parity/shared-clone/bridge tests all passed after fixture refresh; successor changed_files was regenerated once more from the exact base revision to include the fixture commit.",
-    "2026-09-19 parallel-main inventory sync: PR merge-tree verification identified A-session ERP4 recovery-slot replay research added on main after D branch creation; recorded the inherited path in successor changed_files without modifying A-session content."
+    "2026-09-19 parallel-main inventory sync: PR merge-tree verification identified A-session ERP4 recovery-slot replay research added on main after D branch creation; recorded the inherited path in successor changed_files without modifying A-session content.",
+    "2026-09-19 successor inventory canonicalization: changed_files regenerated as current-main verified successor inventory plus complete PR #93 net changed-file set, avoiding GitHub compare 250-file truncation."
   ]
 }
