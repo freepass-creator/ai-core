@@ -30,9 +30,21 @@ test('workflow-owned domain code content is not stolen by C',()=>{
   }
 });
 
-test('no pilot project claims cutover before Core contract equivalence proof',()=>{
+test('only ERP4 and Estimate have entered SHADOW; no project claims cutover',()=>{
+  const phases=Object.fromEntries(adoption.entries.map(x=>[x.project_id,x.phase]));
+  assert.equal(phases['freepasserp4'],'SHADOW');
+  assert.equal(phases['freepass-estimate'],'SHADOW');
+  assert.equal(phases['freepass-admin'],'INVENTORY');
+  assert.equal(phases['freepass-sales'],'INVENTORY');
   for(const entry of adoption.entries){
-    assert.equal(entry.phase,'INVENTORY');
     assert.equal(entry.assessments.some(x=>['CUTOVER_READ','CUTOVER_WRITE','RETIRED'].includes(x.binding_state)),false);
+  }
+});
+
+test('every SHADOW binding points to explicit AI Core proof artifacts',()=>{
+  for(const entry of adoption.entries){
+    for(const item of entry.assessments.filter(x=>x.binding_state==='SHADOW')){
+      assert.ok(item.artifact_refs?.length>0,`${entry.project_id}:${item.contract_id}`);
+    }
   }
 });
