@@ -232,3 +232,29 @@ A 세션이 조사한 내용을 B·C·D·Security·QA·Governance 세션이 다�
 - Historical docs claim a live Vercel deployment, but the currently connected Vercel team exposes **0 projects**, so the current production target/revision cannot be independently resolved.
 - `release.production-revision-proof` therefore remains **PROJECT_VERIFIED** from ERP4 only.
 - Detail: `docs/research/A_SESSION_HOLD_SONOGONG_DEPLOYMENT_PROOF_2026-09-19.md`.
+
+
+## 2026-09-19 Mewcar canonical entrypoint supersession backport
+
+- Direction: **Core > Project**
+- Project revision: `mewcar@232f0fee0f0004a1e525444b9ddeb61d04e286f5`
+- Strong local practice retained:
+  - four-file canonical set under `정본/`
+  - assertion maturity states `확정 / 대표 의견 / 내부안 / 미정`
+  - old documents preserved as history
+  - business/legal execution not inferred from planning or statements
+- Gap: `PROJECT_READ_FIRST.md` still opens with the older 2026-09-16 canonical routing, while `정본/README.md` finalized on 2026-09-18 declares the four-file canonical set.
+- Migration: repoint the entrypoint to `정본/README.md`, keep older documents as source/history, add explicit supersession metadata if useful.
+- Destination: **C / SSOT provenance**
+- Detail: `docs/research/A_SESSION_GAP_MEWCAR_CANONICAL_ENTRYPOINT_SUPERSESSION_2026-09-19.md`.
+
+
+## 2026-09-19 FreePass Homepage reduced-motion backport
+
+- Direction: **Core > Project**
+- Project revision: `freepasshomepage@5f0152c26ac1f106a5f5aee46a3e0020d653c8f5`
+- Gap: smooth scroll, reveal transitions, marquee, count-up and continuous canvas animation exist without a reduced-motion profile.
+- AI Core B standard already requires reduced-motion behavior.
+- Migration: CSS `prefers-reduced-motion` + JS motion guard/static fallback.
+- Destination: **B / Accessibility**
+- Detail: `docs/research/A_SESSION_GAP_FREEPASSHOMEPAGE_REDUCED_MOTION_2026-09-19.md`.
