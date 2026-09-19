@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "registry_version": "1.0.0",
+  "registry_version": "1.1.0",
   "bridges": [
     {
       "bridge_id": "ai-core.order-revision.invalidates-order-tasks",
@@ -25,17 +25,21 @@
         "source": "parent requirement revision"
       },
       "idempotency": {
-        "scope": ["order_id", "requirement_revision", "task_id"]
+        "scope": [
+          "order_id",
+          "requirement_revision",
+          "task_id"
+        ]
       },
       "direct_transition_allowed": true,
       "description": "A parent requirement revision invalidates every child task's lease/report/block state and resets the task to PENDING in the same OrderStore transaction.",
       "source_authority": {
         "repository": "freepass-creator/ai-core",
-        "revision": "444066bea9ac00e4cf4ba539c7b5344154bd407e",
+        "revision": "21fc52098e9ec604bc60899f1c17fdf0c6056aa5",
         "files": [
           {
             "path": "src/orders/store.mjs",
-            "blob_sha": "6887ad4a5e25957797c70e1d1b90474ceeeb48c2"
+            "blob_sha": "8a78d41fc44628a442c836ebf370f29870211aa3"
           }
         ]
       }
@@ -62,17 +66,20 @@
         "source": "derived aggregate"
       },
       "idempotency": {
-        "scope": ["order_id", "order_version"]
+        "scope": [
+          "order_id",
+          "order_version"
+        ]
       },
       "direct_transition_allowed": false,
       "description": "Order NEW/ACTIVE/BLOCKED/REVIEW is derived from child task states; it is not an independently writable business transition.",
       "source_authority": {
         "repository": "freepass-creator/ai-core",
-        "revision": "444066bea9ac00e4cf4ba539c7b5344154bd407e",
+        "revision": "21fc52098e9ec604bc60899f1c17fdf0c6056aa5",
         "files": [
           {
             "path": "src/orders/store.mjs",
-            "blob_sha": "6887ad4a5e25957797c70e1d1b90474ceeeb48c2"
+            "blob_sha": "8a78d41fc44628a442c836ebf370f29870211aa3"
           }
         ]
       }
@@ -99,17 +106,21 @@
         "source": "Control Tower / Work Ledger transition rules"
       },
       "idempotency": {
-        "scope": ["request_id", "work_id", "subject_revision"]
+        "scope": [
+          "request_id",
+          "work_id",
+          "subject_revision"
+        ]
       },
       "direct_transition_allowed": false,
       "description": "Persisted capability result is evidence for canonical Work evaluation. It never directly advances or closes Work.",
       "source_authority": {
         "repository": "freepass-creator/ai-core",
-        "revision": "444066bea9ac00e4cf4ba539c7b5344154bd407e",
+        "revision": "21fc52098e9ec604bc60899f1c17fdf0c6056aa5",
         "files": [
           {
             "path": "src/engine/capability-execution-coordinator.mjs",
-            "blob_sha": "8517c60ede8f0166ffcfc35f7e29dc0c221262c4"
+            "blob_sha": "6c0b3e893bbb44bb1707eeca4a47839d50ba15dd"
           }
         ]
       }
@@ -136,17 +147,21 @@
         "source": "Control Tower / Work Ledger transition rules"
       },
       "idempotency": {
-        "scope": ["request_id", "work_id", "subject_revision"]
+        "scope": [
+          "request_id",
+          "work_id",
+          "subject_revision"
+        ]
       },
       "direct_transition_allowed": false,
       "description": "A result reconstructed from terminal receipt evidence has the same non-authoritative bridge semantics as a directly returned capability result.",
       "source_authority": {
         "repository": "freepass-creator/ai-core",
-        "revision": "444066bea9ac00e4cf4ba539c7b5344154bd407e",
+        "revision": "21fc52098e9ec604bc60899f1c17fdf0c6056aa5",
         "files": [
           {
             "path": "src/engine/capability-execution-coordinator.mjs",
-            "blob_sha": "8517c60ede8f0166ffcfc35f7e29dc0c221262c4"
+            "blob_sha": "6c0b3e893bbb44bb1707eeca4a47839d50ba15dd"
           },
           {
             "path": "src/engine/execution-receipt.mjs",
