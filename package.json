@@ -35,7 +35,8 @@
     "ops:route": "node scripts/route-work.mjs",
     "capability:validate": "node scripts/validate-capability-registry.mjs",
     "core:capability": "node scripts/core-capability.mjs",
-    "direction:validate": "node scripts/validate-directions.mjs"
+    "direction:validate": "node scripts/validate-directions.mjs",
+    "project:inspect": "node scripts/project-capsule.mjs"
   },
   "dependencies": {
     "ajv": "8.20.0",

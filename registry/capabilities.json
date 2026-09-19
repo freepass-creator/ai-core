@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "observed_at": "2026-09-19T03:25:00Z",
+  "observed_at": "2026-09-19T03:45:00Z",
   "capabilities": [
     {
       "id": "core.brief",
@@ -292,6 +292,33 @@
       "walls": [],
       "result_contract": "ai-core-work-result/v1",
       "hold_reason": "원격 repository source-review와 Project Capsule 확정 절차를 capability adapter로 아직 고정하지 않았다."
+    },
+    {
+      "id": "core.project-inspect",
+      "title": "프로젝트 Source Review / Capsule",
+      "status": "ACTIVE",
+      "domains": [
+        "development"
+      ],
+      "projects": [
+        "ai-core"
+      ],
+      "mode": "READ_ONLY",
+      "priority": 86,
+      "adapter": {
+        "kind": "PROJECT_MODULE",
+        "entrypoint": "src/engine/project-capsule.mjs",
+        "export": "buildProjectCapsuleAdapter"
+      },
+      "inputs": [
+        {
+          "name": "observation",
+          "required": true
+        }
+      ],
+      "required_scopes": [],
+      "walls": [],
+      "result_contract": "ai-core-work-result/v1"
     },
     {
       "id": "core.business-planning",
