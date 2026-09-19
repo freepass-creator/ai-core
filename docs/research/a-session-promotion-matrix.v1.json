@@ -186,11 +186,13 @@
       "evidence_level": "CROSS_PROJECT_VERIFIED",
       "projects": [
         "jpkerp5",
-        "aiops"
+        "aiops",
+        "workcontrol"
       ],
       "target_session": "D",
       "finding": "전이 가능조건과 완료 증거 분리",
-      "next_gate": "COMMON_ADOPTED_CANDIDATE"
+      "next_gate": "COMMON_ADOPTED_CANDIDATE",
+      "evidence_note": "JPK ERP5 and AIOps establish guard/evidence separation; WorkControl independently rejects human/UI completion claims when required business evidence (payment, vehicle return/intake, procedural notice) is absent."
     },
     {
       "id": "workflow.launch-vs-completion",
@@ -198,11 +200,13 @@
       "evidence_level": "CROSS_PROJECT_VERIFIED",
       "projects": [
         "freepass-sales",
-        "aiops"
+        "aiops",
+        "workcontrol"
       ],
       "target_session": "D",
       "finding": "앱 실행/사람 주장/시스템 확인/완료 분리",
-      "next_gate": "COMMON_ADOPTED_CANDIDATE"
+      "next_gate": "COMMON_ADOPTED_CANDIDATE",
+      "evidence_note": "FreePass Sales and AIOps establish action/claim vs verified completion; WorkControl independently keeps UI 완료 distinct from evidence-backed business closure."
     },
     {
       "id": "workflow.hold-resume",
@@ -226,7 +230,8 @@
       ],
       "target_session": "D",
       "finding": "opening event + due + closing event = obligation",
-      "next_gate": "SECOND_PROJECT_REQUIRED"
+      "next_gate": "SECOND_PROJECT_REQUIRED",
+      "evidence_note": "AIOps remains the exact project-verified implementation. WorkControl has owner/due in its specification and evidence-backed open/close recovery logic, but inspected runtime did not prove due/timeout enforcement; not counted as second exact implementation."
     },
     {
       "id": "security.role-org-scope-action",
@@ -330,7 +335,8 @@
       ],
       "target_session": "Governance",
       "finding": "main/deploy READY와 production serving revision 분리",
-      "next_gate": "SECOND_PROJECT_REQUIRED"
+      "next_gate": "SECOND_PROJECT_REQUIRED",
+      "evidence_note": "ERP4 remains the only counted current project evidence. Sonogong Estimator has a strong live bundle/app-commit checker and historical live-deploy documentation, but current connected Vercel control-plane observation exposes zero projects, so current target/revision proof is HOLD and not counted."
     },
     {
       "id": "governance.capability-pin",
