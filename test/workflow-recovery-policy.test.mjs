@@ -29,7 +29,7 @@ test('ERP4 recovery-slot no-replay pilot is valid and remains project-verified',
 test('fallback recovery must reconcile native success and recovery history', () => {
   const broken = structuredClone(registry);
   const policy = broken.policies[0];
-  policy.success_reconciliation.evidence_sources = ['DOWNSTREAM_TERMINAL_EVIDENCE'];
+  policy.success_reconciliation.evidence_sources = ['DOWNSTREAM_TERMINAL_EVIDENCE', 'EXTERNAL_AUTHORITY'];
   const result = validateRecoveryPolicies(broken);
   assert.equal(result.status, 'INVALID');
   assert.ok(result.errors.some(item => item.code === 'RECOVERY_NATIVE_SUCCESS_RECONCILIATION_REQUIRED'));
