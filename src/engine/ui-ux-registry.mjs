@@ -26,6 +26,15 @@ export function validateUiUxRegistrySemantics(registry) {
     if (!feature.rules?.length) throw new Error('UIUX_RULES_REQUIRED:' + feature.id);
     if (!feature.verification?.length) throw new Error('UIUX_VERIFICATION_REQUIRED:' + feature.id);
 
+    if (feature.family === 'system' && !feature.evidence?.length) {
+      throw new Error('UIUX_SYSTEM_EVIDENCE_REQUIRED:' + feature.id);
+    }
+    for (const evidence of feature.evidence ?? []) {
+      if (!evidence.level || !evidence.refs?.length) {
+        throw new Error('UIUX_EVIDENCE_INVALID:' + feature.id);
+      }
+    }
+
     if (feature.kind === 'engine' && !feature.engine_binding) {
       throw new Error('UIUX_ENGINE_BINDING_REQUIRED:' + feature.id);
     }
