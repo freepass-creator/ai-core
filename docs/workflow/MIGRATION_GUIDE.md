@@ -187,11 +187,23 @@ Completed:
 - parent Order NEW/ACTIVE/BLOCKED/REVIEW projection reproduced as a derived aggregate
 - Order Task SHADOW source authority pinned to exact OrderStore blob
 
+Completed additionally:
+
+- Capability execution coordination registered as `ai-core.capability-execution` SHADOW
+- RESERVED/RESULT persistence separated from reconciliation HOLD projection
+- reserve replay/conflict, safe RESULT persistence and terminal receipt reconciliation parity covered
+- Capability Execution SHADOW source authority pinned to exact coordinator/receipt-reader blobs
+- cross-machine `workflow-bridges.json` registry added
+- parent revision -> child invalidation bridge locked
+- child task -> parent Order derived projection bridge locked
+- Capability RESULT / reconciled RESULT -> Work evidence-feed-only bridges locked
+- bridge semantic validator + negative tests + CI gate added
+
 Still not completed:
 
-- replacing the hard-coded Work Ledger transition map
-- Capability execution coordination SHADOW model
-- cross-machine Command/Event bridge
-- project-by-project migration
+- replacing the hard-coded Work Ledger transition map with registry-backed execution
+- replacing OrderStore imperative task transition branches with D engine authority
+- replacing Capability Execution imperative state branches with D engine authority
+- migrating business-project domain workflows into the registry
 
-Therefore the current Work Ledger remains authoritative.
+Therefore all three current SHADOW models remain comparison gates; existing runtime authorities remain unchanged.
