@@ -394,6 +394,18 @@
       "finding": "logical execution identity를 native/fallback/downstream 경로 전체에 공유하고, 성공 증거를 recovery eligibility 전에 대사하며 recovery cursor를 monotonic no-replay로 유지",
       "next_gate": "SECOND_PROJECT_REQUIRED",
       "evidence_note": "freepasserp4 audit 76 at 1cf94b788a204777109cf2031b1f518fbcd99b01: native settlement 35434637121 and downstream ERP5 35434667030 succeeded, yet fallback settlement 35439018911 and downstream ERP5 35439046831 replayed the same logical 18:05 slot. No duplicate rows/data corruption are claimed. AIOps requestKey/lease/run-manifest is adjacent evidence only and is not counted as a second exact implementation."
+    },
+    {
+      "id": "ui.machine-conformance-gate",
+      "axis": "UI/UX/Design QA",
+      "evidence_level": "PROJECT_VERIFIED",
+      "projects": [
+        "fp-settlement"
+      ],
+      "target_session": "B",
+      "finding": "semantic UI role/token constraints를 실제 사용 selector와 effective CSS 기준으로 검사하고 off-grid 값을 CI에서 실패시키는 conformance gate",
+      "next_gate": "SECOND_PROJECT_REQUIRED",
+      "evidence_note": "fp-settlement b1e833df... combines brick/pad/head/groove gates; source checkers filter to rendered classes and evaluate the last effective rule. Retro groove aesthetics and project pixel values remain local and are not proposed as global defaults."
     }
   ]
 }
