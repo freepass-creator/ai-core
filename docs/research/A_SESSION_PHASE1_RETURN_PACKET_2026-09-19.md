@@ -250,3 +250,49 @@ Specifically:
 - reduced-motion/zoom baseline already exists in B chain.
 
 Therefore A should not expand B scope or delay closeout.
+
+
+## 11. B stacked-chain divergence measurement
+
+A compared the exact current heads.
+
+### New #92 root → current #95 B2
+
+- base: `705b4085f1be9b7f2d20f3156e916cfa1b7d9094`
+- head: `f5f1fa9af4231cec4a7c32b31beab6213513f362`
+- compare status: **diverged**
+- #95 side commits: **67 ahead**
+- #95 missing from new #92/main line: **312 behind**
+
+This explains why PR #95 is currently `mergeable: false`.
+
+The B2 payload itself is concentrated in the expected UI runtime files:
+- design-token schema/runtime
+- component/pattern/interaction/screen registries
+- accessibility/i18n/responsive/migration standards
+- runtime validator/tests
+- consumer conformance registry
+
+The large behind count primarily reflects the main/C/D/root-B progression that happened after the old B2 base, not evidence that B2 should be discarded.
+
+### #95 → #97
+
+- status: **ahead**
+- #97: 14 commits ahead / 0 behind
+- chain is linear at this layer.
+
+### #97 → #98
+
+- status: **ahead**
+- #98: 6 commits ahead / 0 behind
+- chain is linear at this layer.
+
+### A diagnosis
+
+The integration bottleneck is concentrated at:
+
+**new #92 root → replay/rebase #95**
+
+Once #95 is correctly replayed on the new root, #97 and #98 are structurally linear follow-ons and should be replayed in order.
+
+A sees no reason to redesign B3/B4 or add new feature scope during this rebase.
