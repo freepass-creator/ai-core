@@ -157,6 +157,7 @@
     "registry/work-map.json",
     "registry/work-routing-fixtures.json",
     "scripts/ai-continuation-pack.mjs",
+    "scripts/check-contract-compatibility.mjs",
     "scripts/control-snapshot-refresh.mjs",
     "scripts/core-brief.mjs",
     "scripts/core-capability.mjs",
@@ -230,6 +231,7 @@
     "test/capability-receipt-registry.test.mjs",
     "test/control-tower-authority.test.mjs",
     "test/core-brief.test.mjs",
+    "test/core-contract-compatibility.test.mjs",
     "test/core-contract-standard.test.mjs",
     "test/data-contract-standard.test.mjs",
     "test/derive-control-snapshot.test.mjs",
@@ -325,6 +327,7 @@
     "2026-09-19 A-session second-evidence pass: stable error codes (Admin + Estimate branch) and exact-subject approval (AIOps + AI Core) were upgraded to CROSS_PROJECT_VERIFIED; production revision proof remains single-project verified because Estimate production observation is HOLD.",
     "2026-09-19 A-session hold/resume pass: AIOps defer-until and Sales next-contact queue semantics provide independent second-project evidence, upgrading workflow.hold-resume to CROSS_PROJECT_VERIFIED.",
     "2026-09-19 C-session Core Contract v1: canonical Data/SSOT, Engine/Port/Adapter/Binding, API/Event/Error/Receipt machine contracts and tests were added on the current successor line. changed_files was regenerated from the exact diff against base_revision only for main-state verifier parity; this inventory update does not broaden ORDER-DESK-001 scope or claim the C-session artifacts as Order Desk output.",
-    "2026-09-19 C-session P0 completion: source-priority, snapshot, request-idempotency, query, transformer, generic result, event-type, import/export, enum/code contracts plus migration bridge/guide were added. changed_files was regenerated again from the exact base_revision diff for verifier parity only."
+    "2026-09-19 C-session P0 completion: source-priority, snapshot, request-idempotency, query, transformer, generic result, event-type, import/export, enum/code contracts plus migration bridge/guide were added. changed_files was regenerated again from the exact base_revision diff for verifier parity only.",
+    "2026-09-19 C-session schema evolution follow-up: added automated same-major breaking-change detection and CI contracts:compat. changed_files was regenerated from the exact base_revision diff for verifier parity."
   ]
 }
