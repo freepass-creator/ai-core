@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "registry_version": "1.1.0",
+  "registry_version": "1.2.0",
   "primitives": [
     {
       "primitive_id": "workflow.fact-vs-state",
@@ -105,6 +105,16 @@
         "ai-core"
       ],
       "notes": "AI Core Work Ledger REOBSERVED semantics are being parity-tested in SHADOW before broader adoption."
+    },
+    {
+      "primitive_id": "workflow.revision-invalidation",
+      "status": "PILOT",
+      "meaning": "When a parent requirement revision changes, child work evidence may be invalidated and the child lifecycle reset explicitly rather than silently reusing stale completion.",
+      "evidence_level": "PROJECT_VERIFIED",
+      "source_projects": [
+        "ai-core"
+      ],
+      "notes": "Observed in OrderStore revise semantics; not COMMON_ADOPTED until another independent domain verifies it."
     }
   ],
   "workflows": [
@@ -1967,6 +1977,615 @@
           }
         ]
       }
+    },
+    {
+      "workflow_id": "ai-core.order-task-lifecycle",
+      "version": "0.1.0",
+      "adoption_status": "SHADOW",
+      "owner": "D-session-workflow-standard",
+      "description": "Shadow model of OrderStore child-task coordination. Parent Order status remains a derived aggregate projection and heartbeat remains a lease fact update.",
+      "source_authority": {
+        "repository": "freepass-creator/ai-core",
+        "revision": "444066bea9ac00e4cf4ba539c7b5344154bd407e",
+        "files": [
+          {
+            "path": "src/orders/store.mjs",
+            "blob_sha": "6887ad4a5e25957797c70e1d1b90474ceeeb48c2"
+          }
+        ]
+      },
+      "state_axes": [
+        {
+          "axis_id": "lifecycle",
+          "initial_state": "PENDING",
+          "states": [
+            {
+              "state_id": "PENDING",
+              "kind": "NORMAL",
+              "terminal": false,
+              "description": "Task is available for assignment/claim."
+            },
+            {
+              "state_id": "RUNNING",
+              "kind": "NORMAL",
+              "terminal": false,
+              "description": "Task is claimed under an active or expirable lease."
+            },
+            {
+              "state_id": "BLOCKED",
+              "kind": "HOLD",
+              "terminal": false,
+              "description": "Task stopped with an explicit blocked reason."
+            },
+            {
+              "state_id": "REPORTED",
+              "kind": "NORMAL",
+              "terminal": false,
+              "description": "A result was reported for the current requirement revision; it is not canonical completion."
+            }
+          ]
+        }
+      ],
+      "facts": [
+        {
+          "fact_id": "task.actor_valid",
+          "type": "boolean",
+          "description": "Requested actor is in the current assignable actor registry."
+        },
+        {
+          "fact_id": "task.actor_assigned",
+          "type": "boolean",
+          "description": "Requested actor is the task's assigned actor."
+        },
+        {
+          "fact_id": "task.lease_inactive",
+          "type": "boolean",
+          "description": "No unexpired task lease currently exists."
+        },
+        {
+          "fact_id": "task.lease_valid",
+          "type": "boolean",
+          "description": "Lease is active and actor/token match the task."
+        },
+        {
+          "fact_id": "task.dependencies_reported",
+          "type": "boolean",
+          "description": "Every prior task in the order has REPORTED state."
+        },
+        {
+          "fact_id": "task.revision_current",
+          "type": "boolean",
+          "description": "Command revision and lease revision equal the current order requirement revision."
+        },
+        {
+          "fact_id": "task.report_content_valid",
+          "type": "boolean",
+          "description": "Report summary/evidence satisfy current OrderStore input constraints."
+        }
+      ],
+      "guards": [
+        {
+          "guard_id": "task.actor-valid",
+          "kind": "FACT_EQUALS",
+          "fact_id": "task.actor_valid",
+          "expected": true
+        },
+        {
+          "guard_id": "task.actor-assigned",
+          "kind": "FACT_EQUALS",
+          "fact_id": "task.actor_assigned",
+          "expected": true
+        },
+        {
+          "guard_id": "task.lease-inactive",
+          "kind": "FACT_EQUALS",
+          "fact_id": "task.lease_inactive",
+          "expected": true
+        },
+        {
+          "guard_id": "task.lease-valid",
+          "kind": "FACT_EQUALS",
+          "fact_id": "task.lease_valid",
+          "expected": true
+        },
+        {
+          "guard_id": "task.dependencies-reported",
+          "kind": "FACT_EQUALS",
+          "fact_id": "task.dependencies_reported",
+          "expected": true
+        },
+        {
+          "guard_id": "task.revision-current",
+          "kind": "FACT_EQUALS",
+          "fact_id": "task.revision_current",
+          "expected": true
+        },
+        {
+          "guard_id": "task.report-content-valid",
+          "kind": "FACT_EQUALS",
+          "fact_id": "task.report_content_valid",
+          "expected": true
+        }
+      ],
+      "evidence_requirements": [],
+      "commands": [
+        {
+          "command_id": "order-task.assign",
+          "intent": "Assign or reassign a task",
+          "idempotency_required": true
+        },
+        {
+          "command_id": "order-task.claim",
+          "intent": "Claim a task execution lease",
+          "idempotency_required": true
+        },
+        {
+          "command_id": "order-task.report",
+          "intent": "Report a task result",
+          "idempotency_required": true
+        },
+        {
+          "command_id": "order-task.block",
+          "intent": "Block a running task",
+          "idempotency_required": true
+        },
+        {
+          "command_id": "order-task.invalidate",
+          "intent": "Invalidate task state/evidence after parent requirement revision",
+          "idempotency_required": true
+        }
+      ],
+      "events": [
+        {
+          "event_type": "ai-core.order-task.assigned",
+          "meaning": "Task assignment changed or was reaffirmed."
+        },
+        {
+          "event_type": "ai-core.order-task.claimed",
+          "meaning": "Task was claimed for an execution attempt."
+        },
+        {
+          "event_type": "ai-core.order-task.reported",
+          "meaning": "Task result was reported for the requirement revision."
+        },
+        {
+          "event_type": "ai-core.order-task.blocked",
+          "meaning": "Task was blocked with a reason."
+        },
+        {
+          "event_type": "ai-core.order-task.invalidated",
+          "meaning": "Parent requirement revision invalidated the child task state/evidence."
+        }
+      ],
+      "transitions": [
+        {
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "reversible": false,
+          "transition_id": "order-task.assign.pending",
+          "purpose": "NORMAL",
+          "axis_id": "lifecycle",
+          "from": [
+            "PENDING"
+          ],
+          "to": "PENDING",
+          "command_id": "order-task.assign",
+          "event_type": "ai-core.order-task.assigned",
+          "guards": [
+            "task.actor-valid",
+            "task.lease-inactive"
+          ],
+          "audit": {
+            "required": true,
+            "reason_required": true
+          }
+        },
+        {
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "reversible": false,
+          "transition_id": "order-task.assign.blocked",
+          "purpose": "RESUME",
+          "axis_id": "lifecycle",
+          "from": [
+            "BLOCKED"
+          ],
+          "to": "PENDING",
+          "command_id": "order-task.assign",
+          "event_type": "ai-core.order-task.assigned",
+          "guards": [
+            "task.actor-valid",
+            "task.lease-inactive"
+          ],
+          "audit": {
+            "required": true,
+            "reason_required": true
+          }
+        },
+        {
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "reversible": false,
+          "transition_id": "order-task.assign.expired-running",
+          "purpose": "RETRY",
+          "axis_id": "lifecycle",
+          "from": [
+            "RUNNING"
+          ],
+          "to": "PENDING",
+          "command_id": "order-task.assign",
+          "event_type": "ai-core.order-task.assigned",
+          "guards": [
+            "task.actor-valid",
+            "task.lease-inactive"
+          ],
+          "audit": {
+            "required": true,
+            "reason_required": true
+          }
+        },
+        {
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "reversible": false,
+          "transition_id": "order-task.claim.pending",
+          "purpose": "NORMAL",
+          "axis_id": "lifecycle",
+          "from": [
+            "PENDING"
+          ],
+          "to": "RUNNING",
+          "command_id": "order-task.claim",
+          "event_type": "ai-core.order-task.claimed",
+          "guards": [
+            "task.actor-assigned",
+            "task.lease-inactive",
+            "task.dependencies-reported"
+          ],
+          "audit": {
+            "required": true,
+            "reason_required": false
+          }
+        },
+        {
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "reversible": false,
+          "transition_id": "order-task.claim.blocked",
+          "purpose": "RESUME",
+          "axis_id": "lifecycle",
+          "from": [
+            "BLOCKED"
+          ],
+          "to": "RUNNING",
+          "command_id": "order-task.claim",
+          "event_type": "ai-core.order-task.claimed",
+          "guards": [
+            "task.actor-assigned",
+            "task.lease-inactive",
+            "task.dependencies-reported"
+          ],
+          "audit": {
+            "required": true,
+            "reason_required": false
+          }
+        },
+        {
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "reversible": false,
+          "transition_id": "order-task.claim.expired-running",
+          "purpose": "RETRY",
+          "axis_id": "lifecycle",
+          "from": [
+            "RUNNING"
+          ],
+          "to": "RUNNING",
+          "command_id": "order-task.claim",
+          "event_type": "ai-core.order-task.claimed",
+          "guards": [
+            "task.actor-assigned",
+            "task.lease-inactive",
+            "task.dependencies-reported"
+          ],
+          "audit": {
+            "required": true,
+            "reason_required": false
+          }
+        },
+        {
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "reversible": false,
+          "transition_id": "order-task.report",
+          "purpose": "NORMAL",
+          "axis_id": "lifecycle",
+          "from": [
+            "RUNNING"
+          ],
+          "to": "REPORTED",
+          "command_id": "order-task.report",
+          "event_type": "ai-core.order-task.reported",
+          "guards": [
+            "task.lease-valid",
+            "task.revision-current",
+            "task.report-content-valid"
+          ],
+          "audit": {
+            "required": true,
+            "reason_required": false
+          }
+        },
+        {
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "reversible": false,
+          "transition_id": "order-task.block",
+          "purpose": "HOLD",
+          "axis_id": "lifecycle",
+          "from": [
+            "RUNNING"
+          ],
+          "to": "BLOCKED",
+          "command_id": "order-task.block",
+          "event_type": "ai-core.order-task.blocked",
+          "guards": [
+            "task.lease-valid"
+          ],
+          "audit": {
+            "required": true,
+            "reason_required": true
+          }
+        },
+        {
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "reversible": false,
+          "transition_id": "order-task.invalidate",
+          "purpose": "INVALIDATE",
+          "axis_id": "lifecycle",
+          "from": [
+            "PENDING",
+            "RUNNING",
+            "BLOCKED",
+            "REPORTED"
+          ],
+          "to": "PENDING",
+          "command_id": "order-task.invalidate",
+          "event_type": "ai-core.order-task.invalidated",
+          "guards": [],
+          "audit": {
+            "required": true,
+            "reason_required": true
+          }
+        }
+      ],
+      "obligations": []
     }
   ]
 }
