@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "observed_at": "2026-09-19T10:19:03Z",
+  "observed_at": "2026-09-19T10:32:15Z",
   "projects": [
     {
       "project_id": "ai-core",
@@ -197,13 +197,13 @@
       "repository": "freepass-creator/freepass-admin",
       "default_branch": "main",
       "local_path": null,
-      "head_revision": "9c971d8ed0f13d7498f14643073b506167bb651a",
+      "head_revision": "a62d7c06cc257c9df167f6869bf3921d7eaec35b",
       "authoritative_sources": [
         {
           "kind": "GIT",
           "ref": "freepass-creator/freepass-admin",
-          "revision": "9c971d8ed0f13d7498f14643073b506167bb651a",
-          "observed_at": "2026-09-19T10:19:03Z"
+          "revision": "a62d7c06cc257c9df167f6869bf3921d7eaec35b",
+          "observed_at": "2026-09-19T10:32:15Z"
         }
       ],
       "commands": {
@@ -218,11 +218,11 @@
         "production-deployment"
       ],
       "known_blockers": [
-        "Production persistence is not verified; current JSON file store is development-only.",
-        "Production auth/permission and actor audit boundary are not verified.",
-        "Application number generation is not safe for concurrent multi-instance production writes.",
-        "Audit event persistence is not implemented.",
-        "UI/UX redesign is intentionally HOLD until the AI Core/DevCenter common UI/UX standard is finalized."
+        "Verified backend baseline at f8eb1bfd8337aad4a12948f18e668e3ee19ad3fc: npm ci, typecheck, test and build PASS in GitHub Actions run 35437615280.",
+        "Production persistence adapter is not implemented/verified; current file repository proves atomic semantics only inside one Node process.",
+        "Production auth/permission binding is not implemented/verified; ActorProvider contract exists but no approved production adapter is bound.",
+        "Production audit retention/sink, runtime smoke, deployment target and rollback remain unverified.",
+        "UI/UX redesign remains intentionally HOLD until the AI Core/DevCenter common UI/UX standard is finalized."
       ]
     },
     {
