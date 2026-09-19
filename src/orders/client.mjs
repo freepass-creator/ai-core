@@ -60,5 +60,11 @@ export class RemoteOrderClient {
   mutate(id, command) { return this.request(`/api/orders/${encodeURIComponent(id)}`, command); }
   packet(id, taskId) { return this.request(`/api/orders/${encodeURIComponent(id)}/packet?task=${encodeURIComponent(taskId)}`); }
   checkContext(id, taskId) { return this.request(`/api/orders/${encodeURIComponent(id)}/check-context?task=${encodeURIComponent(taskId)}`); }
+  workProjection(id) { return this.request(`/api/orders/${encodeURIComponent(id)}/work`); }
+  workIntake(id) { return this.request(`/api/orders/${encodeURIComponent(id)}/work-intake`, {}); }
+  capabilityPlan(id) { return this.request(`/api/orders/${encodeURIComponent(id)}/capability`); }
+  runCapability(id, command) { return this.request(`/api/orders/${encodeURIComponent(id)}/capability/run`, command); }
+  capabilityResults(id) { return this.request(`/api/orders/${encodeURIComponent(id)}/capability/results`); }
+  reroute(id, command) { return this.request(`/api/orders/${encodeURIComponent(id)}/reroute`, command); }
   name(name) { return this.request('/api/name', { name }); }
 }

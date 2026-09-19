@@ -8,6 +8,8 @@ import { createWorkProjectionProvider } from '../integration/order-work-sources.
 import { routeWork, validateWorkMap } from '../routing/work-router.mjs';
 import { createCapabilityEngine } from '../engine/capability-engine.mjs';
 import { createOrderWorkIntakeCoordinator } from '../integration/order-work-intake-coordinator.mjs';
+import { openOperatingCapabilityEngine } from '../engine/operating-engine.mjs';
+import { createCapabilityExecutionCoordinator } from '../engine/capability-execution-coordinator.mjs';
 
 let defaultRoutingConfigPromise;
 async function defaultRoutingConfig() {
@@ -74,7 +76,18 @@ const assets = new Map([
   ['/style.css', ['../../web/orders/style.css', 'text/css; charset=utf-8']],
   ['/tokens.css', ['../../design-system/tokens.css', 'text/css; charset=utf-8']],
 ]);
-export function startServer({ dbPath = defaultDb, port = 4318, expectedLedgerId = null, standalone = false, readWorkProjection = null, workSources = null, routingConfig = null } = {}) {
+export function startServer({
+  dbPath = defaultDb,
+  port = 4318,
+  expectedLedgerId = null,
+  standalone = false,
+  readWorkProjection = null,
+  workSources = null,
+  routingConfig = null,
+  capabilityExecutionEnabled = false,
+  executorIdentity = null,
+  capabilityRuntime = null,
+} = {}) {
   if ((!expectedLedgerId && !standalone) || (expectedLedgerId && standalone)) throw new OrderError('SERVER_MODE_REQUIRED', '공유 원장 ID 또는 명시적인 standalone 모드가 필요합니다.');
   const store = new OrderStore(dbPath);
   const ledgerId = store.ledgerId();
@@ -84,6 +97,31 @@ export function startServer({ dbPath = defaultDb, port = 4318, expectedLedgerId 
   // the adapter re-reads is the same record the endpoint compared versions on.
   if (!readWorkProjection && workSources) readWorkProjection = createWorkProjectionProvider({ store, workSources, ordersDbPath: dbPath });
   const workIntake = workSources ? createOrderWorkIntakeCoordinator({ store, workSources, ordersDbPath: dbPath }) : null;
+
+  let operatingCapabilityPromise = null;
+  async function operatingCapability() {
+    if (!operatingCapabilityPromise) {
+      operatingCapabilityPromise = (async () => {
+        const config = routingConfig ?? await defaultRoutingConfig();
+        const operating = await openOperatingCapabilityEngine({
+          store,
+          workSources,
+          ordersDbPath: dbPath,
+          capabilityRegistry: config.capabilityRegistry,
+          projectRegistry: config.projectRegistry,
+          ...(capabilityRuntime ? { runtime: capabilityRuntime } : {}),
+          executorIdentity,
+        });
+        const execution = createCapabilityExecutionCoordinator({
+          store,
+          projectRegistry: config.projectRegistry,
+        });
+        return { config, operating, execution };
+      })();
+    }
+    return operatingCapabilityPromise;
+  }
+
   const server = createServer(async (req, res) => {
     const json = (status, data) => { res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8' }); res.end(JSON.stringify(data)); };
     try {
@@ -119,6 +157,14 @@ export function startServer({ dbPath = defaultDb, port = 4318, expectedLedgerId 
         const validation = validateWorkMap(config.workMap, config.projectRegistry, config.capabilityRegistry);
         if (validation.status !== 'VALID') return json(503, { status:'HOLD', reason:'WORK_MAP_INVALID', errors:validation.errors });
         return json(200, capabilityPlan(order, config, { readWorkProjection }));
+      }
+
+      const capabilityRunMatch = url.pathname.match(/^\/api\/orders\/(ORD-[a-f0-9-]+)\/capability\/run$/);
+      const capabilityResultsMatch = url.pathname.match(/^\/api\/orders\/(ORD-[a-f0-9-]+)\/capability\/results$/);
+      if (req.method === 'GET' && capabilityResultsMatch) {
+        const { execution } = await operatingCapability();
+        store.get(capabilityResultsMatch[1]);
+        return json(200, execution.list(capabilityResultsMatch[1]));
       }
 
       const projectionMatch = url.pathname.match(/^\/api\/orders\/(ORD-[a-f0-9-]+)\/work$/);
@@ -173,6 +219,70 @@ export function startServer({ dbPath = defaultDb, port = 4318, expectedLedgerId 
           }
           return json(200, { ...result, projection });
         }
+        if (capabilityRunMatch) {
+          if (!capabilityExecutionEnabled) {
+            return json(423, { status:'HOLD', reason:'CAPABILITY_EXECUTION_DISABLED', execution_authorized:false });
+          }
+          if (data.perform !== true) throw new OrderError('PERFORM_CONFIRMATION_REQUIRED', '실행 요청은 perform:true가 필요합니다.', 400);
+          if (typeof data.requestId !== 'string' || !data.requestId.trim()) throw new OrderError('REQUEST_ID_REQUIRED', '실행 requestId가 필요합니다.', 400);
+          if (data.input !== undefined && (!data.input || typeof data.input !== 'object' || Array.isArray(data.input))) {
+            throw new OrderError('INVALID_INPUT', 'capability input은 객체여야 합니다.');
+          }
+
+          const order = store.get(capabilityRunMatch[1]);
+          const { config, operating, execution } = await operatingCapability();
+          const validation = validateWorkMap(config.workMap, config.projectRegistry, config.capabilityRegistry);
+          if (validation.status !== 'VALID') throw new OrderError('WORK_MAP_INVALID', '업무 지도를 확인해야 합니다.', 503);
+          if (!order.routing || order.routing.requirement_revision !== order.revision) {
+            return json(409, { status:'HOLD', reason:'ROUTING_REQUIREMENT_STALE' });
+          }
+          if (!operating.readWorkProjection) return json(409, { status:'HOLD', reason:'WORK_SOURCES_UNCONFIGURED' });
+
+          const projection = await operating.readWorkProjection(order.id);
+          if (projection?.status !== 'LINKED' || !projection.mapping?.work_id) {
+            return json(409, { status:'HOLD', reason:projection?.reason ?? 'WORK_LINK_REQUIRED' });
+          }
+          const workId = projection.mapping.work_id;
+          const route = storedCapabilityRoute(order);
+          const plan = operating.engine.plan({ route, orderId:order.id, workId });
+          if (plan.status !== 'PLANNED') return json(409, plan);
+
+          const capability = config.capabilityRegistry.capabilities.find(item => item.id === plan.capability_id);
+          if (!capability) return json(409, { status:'HOLD', reason:'CAPABILITY_NOT_REGISTERED' });
+
+          let reserved;
+          try {
+            reserved = await execution.reserve({
+              requestId:data.requestId,
+              orderId:order.id,
+              workId,
+              capability,
+              input:data.input ?? {},
+              perform:true,
+            });
+          } catch (error) {
+            if (error?.message === 'CAPABILITY_EXECUTION_IDEMPOTENCY_CONFLICT') {
+              throw new OrderError('CAPABILITY_EXECUTION_IDEMPOTENCY_CONFLICT', '같은 실행 requestId에 다른 내용이 들어왔습니다.', 409);
+            }
+            throw error;
+          }
+          if (reserved.replay) {
+            if (reserved.status === 'RESULT' && reserved.result) return json(200, reserved.result);
+            const reconciled = await execution.reconcile(data.requestId, capability);
+            if (reconciled.status === 'RESULT') return json(200, reconciled.result);
+            return json(409, reconciled);
+          }
+
+          const result = await operating.engine.run({
+            route,
+            orderId:order.id,
+            workId,
+            input:data.input ?? {},
+            perform:true,
+          });
+          const durable = execution.complete(data.requestId, result);
+          return json(200, durable);
+        }
         if (rerouteMatch) {
           const order = store.get(rerouteMatch[1]);
           const config = routingConfig ?? await defaultRoutingConfig();
@@ -213,12 +323,21 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   if (!standalone && (!dbPath || !isAbsolute(dbPath))) throw new Error('공유 서버는 --db 절대경로 또는 AI_CORE_ORDERS_DB가 필요합니다. 독립 실험만 --standalone을 사용하세요.');
   const expectedLedgerId = standalone ? null : readConnectionPolicy().ledgerId;
   if (!standalone && !expectedLedgerId) throw new Error('중앙 원장 ID가 설정되지 않았습니다.');
+  const capabilityExecutionEnabled = args.includes('--enable-capability-execution');
+  const executorIdentity = option('--executor', process.env.AI_CORE_EXECUTOR ?? null);
   // Fill the `readWorkProjection` socket that has been open and empty since it was
   // added: the endpoint answered HOLD for every order no matter what the canonical
   // sources said. `workSources` is operator configuration, so an unconfigured
   // server behaves exactly as before.
-  const { server, url } = await startServer({ dbPath: dbPath ?? defaultDb, port, expectedLedgerId, standalone,
-    workSources: standalone ? null : readConnectionPolicy().workSources ?? null });
+  const { server, url } = await startServer({
+    dbPath: dbPath ?? defaultDb,
+    port,
+    expectedLedgerId,
+    standalone,
+    workSources: standalone ? null : readConnectionPolicy().workSources ?? null,
+    capabilityExecutionEnabled,
+    executorIdentity,
+  });
   console.log(`AI Core order desk: ${url}\n${standalone ? 'Standalone experiment' : 'Shared private ledger'}; loopback only, use SSH for remote access.`);
   for (const signal of ['SIGINT', 'SIGTERM']) process.on(signal, () => server.close());
 }

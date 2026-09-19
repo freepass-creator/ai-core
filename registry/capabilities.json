@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "observed_at": "2026-09-18T17:30:00Z",
+  "observed_at": "2026-09-19T03:25:00Z",
   "capabilities": [
     {
       "id": "core.brief",
@@ -134,7 +134,25 @@
         "관청발송",
         "문서24업로드"
       ],
-      "result_contract": "ai-core-work-result/v1"
+      "result_contract": "ai-core-work-result/v1",
+      "receipt": {
+        "kind": "NEW_JSON_TERMINAL_RECEIPT",
+        "directory": "tmp/과태료",
+        "prefix": "실행기록-",
+        "suffix": ".json",
+        "schema_field": "schema",
+        "schema_value": "gwataeryo-run-manifest/v1",
+        "state_field": "state",
+        "success_states": [
+          "COMPLETED"
+        ],
+        "hold_states": [
+          "COMPLETED_WITH_HOLD"
+        ],
+        "failure_states": [
+          "FAILED"
+        ]
+      }
     },
     {
       "id": "operations.penalty.audit",
