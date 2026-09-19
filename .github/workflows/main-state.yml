@@ -25,6 +25,10 @@ jobs:
       - run: npm run capability:validate
       - run: npm run direction:validate
       - run: npm run workmap:validate
+      - run: npm run closeout:validate
+      - run: npm run contracts:validate
+      - run: npm run contracts:compat
+      - run: npm run contracts:adoption
       - run: npm run workflow:validate
       - run: npm run workflow:bridge:validate
       - run: npm run workflow:recovery:validate
