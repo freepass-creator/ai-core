@@ -100,18 +100,94 @@ Decision:
 
 Control Tower projection is an operational read/evaluation layer. Workflow meaning remains D-owned; current projection must not become a second mutable workflow authority.
 
-### 1.5 Order intake
+### 1.5 OrderStore / task lifecycle
 
-`WORK_READ_FIRST.md` already establishes:
+Existing implementation:
 
-- OrderStore is intake/requirement record.
-- Work Ledger is business-state authority.
-- work-intake writes immutable binding/outbox and RECEIVED history.
+- `src/orders/store.mjs`
+- regression coverage: `test/orders.test.mjs`, `test/shared-orders.test.mjs`
+
+This is not merely CRUD/intake. It already contains a second explicit operational lifecycle.
+
+Order projection states observed:
+
+- NEW
+- ACTIVE
+- BLOCKED
+- REVIEW
+- CANCELLED
+- CLOSED is recognized as terminal by guards, but current mutation paths do not transition into CLOSED.
+
+Task states observed:
+
+- PENDING
+- RUNNING
+- BLOCKED
+- REPORTED
+
+Important semantics:
+
+- version-based optimistic concurrency
+- claim lease + heartbeat + expiry
+- dependency ordering between tasks
+- report is `REPORTED_NOT_INDEPENDENTLY_VERIFIED`, not completion
+- requirement revision invalidates prior task reports and resets tasks
+- reroute is allowed only while idle and before binding
+- close requires evidence coverage and user confirmation, but intentionally remains REVIEW with `USER_ACCEPTED_NOT_CANONICAL`
+- order status is largely **derived from child task states** rather than independently transitioned
+
+Decision:
+
+Treat **Order lifecycle**, **Task lifecycle**, **lease state**, **requirement revision**, and **user-acceptance evidence** as distinct dimensions during migration.
+
+Do not simply copy NEW/ACTIVE/BLOCKED/REVIEW into the company primitive set.
+
+The current reserved-but-unreached CLOSED state should be modeled explicitly in SHADOW work before any replacement: either define its real transition/evidence or document it as historical/reserved compatibility.
+
+### 1.6 Capability execution coordination
+
+Existing implementation:
+
+- `src/engine/capability-execution-coordinator.mjs`
+- `src/engine/execution-receipt.mjs`
+
+Persistent coordination state:
+
+- RESERVED
+- RESULT
+
+Observed recovery/status interpretation:
+
+- SUCCEEDED
+- FAILED
+- HOLD
+- missing/ambiguous receipt -> HOLD / outcome unknown
+
+Important semantics:
+
+- request id + canonical payload digest idempotency
+- immutable execution identity
+- result conflict detection
+- terminal receipt reconciliation after lost response
+- result is appended back to OrderStore history
+- receipt success does not itself mutate canonical Work Ledger business state
+
+Decision:
+
+RESERVED/RESULT is an **execution-coordination state machine**, not a business lifecycle. D should reuse its idempotency/reconcile pattern while preserving the separation from Work Ledger state.
+
+### 1.7 Order intake boundary
+
+`WORK_READ_FIRST.md` establishes:
+
+- OrderStore records requirement/intake and task coordination.
+- Work Ledger is the canonical AI Core Work business-state authority.
+- work-intake writes immutable binding/outbox and RECEIVED Work history.
 - intake does not grant execution/completion authority.
 
 Decision:
 
-D keeps that boundary. CRUD/intake record mutation and workflow state transition remain separate concepts.
+D keeps the authority split. Order/task coordination, capability-execution coordination, and canonical Work lifecycle are related but are not one overloaded status enum.
 
 ## 2. Cross-project evidence imported from A session
 
