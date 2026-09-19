@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "observed_at": "2026-09-19T03:42:00Z",
+  "observed_at": "2026-09-19T10:19:03Z",
   "projects": [
     {
       "project_id": "ai-core",
@@ -190,31 +190,39 @@
     },
     {
       "project_id": "freepass-admin",
-      "name": "Freepass Admin",
+      "name": "FreePass Admin",
       "organization": "SUBSIDIARY",
       "status": "HOLD",
-      "mission": "Repository discovered and indexed by AI Core; mission and operating boundaries require source review before activation.",
+      "mission": "Internal FreePass admin product for canonical product search, application, contract progress and settlement; backend/domain integrity is prioritized while UI/UX waits for the AI Core/DevCenter common standard.",
       "repository": "freepass-creator/freepass-admin",
       "default_branch": "main",
       "local_path": null,
-      "head_revision": "4ed10b866bee4952046f54b17a9167ab5ef85c06",
+      "head_revision": "9c971d8ed0f13d7498f14643073b506167bb651a",
       "authoritative_sources": [
         {
           "kind": "GIT",
           "ref": "freepass-creator/freepass-admin",
-          "revision": "4ed10b866bee4952046f54b17a9167ab5ef85c06",
-          "observed_at": "2026-09-18T15:30:00Z"
+          "revision": "9c971d8ed0f13d7498f14643073b506167bb651a",
+          "observed_at": "2026-09-19T10:19:03Z"
         }
       ],
       "commands": {
-        "install": null,
-        "test": null,
-        "build": null
+        "install": "npm ci",
+        "test": "npm test",
+        "build": "npm run build"
       },
       "deploy_targets": [],
-      "required_approvals": [],
+      "required_approvals": [
+        "production-persistence-binding",
+        "production-auth-binding",
+        "production-deployment"
+      ],
       "known_blockers": [
-        "Discovered in the connected GitHub installation but not yet source-reviewed into an AI Core Project Capsule; execution remains HOLD until commands, SSOT and deployment boundaries are verified."
+        "Production persistence is not verified; current JSON file store is development-only.",
+        "Production auth/permission and actor audit boundary are not verified.",
+        "Application number generation is not safe for concurrent multi-instance production writes.",
+        "Audit event persistence is not implemented.",
+        "UI/UX redesign is intentionally HOLD until the AI Core/DevCenter common UI/UX standard is finalized."
       ]
     },
     {
