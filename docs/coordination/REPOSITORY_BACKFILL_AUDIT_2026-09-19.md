@@ -107,3 +107,27 @@ AI Core가 일부 중앙 문서만 앞서가고 실제 프로젝트 저장소의
 - Mewcar / Welrix Table / Mewcar-JB우리 Proposal 중앙 발견성 추가
 - Mewcar 자연어 업무 route 추가(실행 권한은 HOLD)
 - 견적 capability에 Welrix runtime/reference project 연결
+
+
+## A-session continuation — DevCenter / FP Settlement / Vehicle Master
+
+### FP Settlement → B candidate
+- `ui.machine-conformance-gate`
+- Project-verified machine UI conformance using rendered-selector scope, last-effective CSS evaluation and CI failure on semantic token/role drift.
+- Project-specific retro styling remains local.
+
+### Vehicle Master → C backport gap
+- Core is ahead on immutable identity and revision-level provenance.
+- Existing exported IDs are documented as stable external keys but leaf IDs are derived from mutable semantic/display values.
+- Direct replacement is HIGH breaking risk; migration must preserve current IDs as aliases during canonical-ID cutover.
+
+### DevCenter → C candidate
+- `result.proof-input-digest-binding`
+- DevCenter binds evidence to source + checker/fixture input digests and invalidates PASS when either source or test implementation changes.
+- AI Core already has broader revision-bound proof policy; this candidate supplies the missing executable specialization.
+- Second-project exact proof was searched in ERP4/Sales/Admin/AIOps and was **not** established. ERP4's checker-manifest known-bad mechanism is adjacent QA evidence, not the same proof-input binding contract. Evidence level remains PROJECT_VERIFIED.
+
+### DevCenter → C backport gap
+- DevCenter `registry.json` source locators are not entry-level revision/hash bound.
+- AI Core central project registry is also stale for DevCenter: recorded `132189799a...`, observed actual head `6a838a28...`.
+- The one-commit delta only extends `standards/backend/FREEPASS-ADMIN-PILOT.md`; no runtime code drift was found in that delta.
