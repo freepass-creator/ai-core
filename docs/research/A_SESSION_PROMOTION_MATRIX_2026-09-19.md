@@ -270,3 +270,33 @@ A 세션이 조사한 내용을 B·C·D·Security·QA·Governance 세션이 다�
 - 핵심: multi-write 후속 실패 시 **이미 성공한 효과만 역순 보상**, 각 op이 domain-specific undo를 소유, 보상 자체 실패는 반쪽 상태로 명시적 승격.
 - AIOps/ERP4/Admin/Sales에서 exact second-project implementation은 확인하지 못했다.
 - 상세: `docs/research/A_SESSION_DISCOVERY_RENMAN_COMPENSATED_MULTIWRITE_2026-09-19.md`.
+
+
+## 2026-09-19 FreePassERP3 client release freshness delta
+
+| Candidate | 축 | Evidence | 실제 근거 | 넘길 세션 | 다음 단계 |
+|---|---|---|---|---|---|
+| `ui.client-release-freshness` | UI/UX / Client Runtime | PROJECT_VERIFIED | freepasserp3 | B | SECOND_PROJECT_REQUIRED |
+
+- 근거: `freepasserp3@5344a5001a6d62d686c79090a250c9aa21b470c3`, current observed head `8d8b7a559272a37823f879b77099b3bc17bf5a16`.
+- 장시간 열린 SPA가 배포 뒤에도 구버전 JS를 계속 실행하던 실제 문제를 stable build-version readback + periodic/visibility freshness check로 해결.
+- 일반화 대상은 자동 새로고침 자체가 아니라 **served release identity → stale client 감지 → dirty/risk-aware update UX**.
+- 상세: `docs/research/A_SESSION_DISCOVERY_FREEPASSERP3_CLIENT_RELEASE_FRESHNESS_2026-09-19.md`.
+
+
+## 2026-09-19 FreePassERP3 approximate canonicalization backport
+
+- Direction: **Core > Project**
+- Gap: low-confidence/weak trim match can still be forced into an existing SSOT trim and return `confidence: high` when no hard-review flag fires.
+- Migration: preserve raw source + normalized candidate separately, low-confidence/multi-generation ambiguity → REVIEW_REQUIRED, bind source master revision.
+- Destination: **C / Data Normalizer**
+- 상세: `docs/research/A_SESSION_GAP_FREEPASSERP3_APPROXIMATE_CANONICALIZATION_2026-09-19.md`.
+
+
+## 2026-09-19 JPKERP-v4 server-acknowledged mutation backport
+
+- Direction: **Core > Project**
+- Gap: shared RTDB store updates local cache/listeners before server ACK; write failure alerts but does not roll back/reconcile, and the setter exposes no awaitable result.
+- Migration: acknowledged mutation result + rollback/reconciliation + pending/confirmed/failed separation.
+- Destination: **C / Repository & Result**, D consumes confirmed result before workflow completion.
+- 상세: `docs/research/A_SESSION_GAP_JPKERP_V4_SERVER_ACK_MUTATION_2026-09-19.md`.
