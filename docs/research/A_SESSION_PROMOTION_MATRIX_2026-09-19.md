@@ -181,3 +181,25 @@ A 세션이 조사한 내용을 B·C·D·Security·QA·Governance 세션이 다�
 - Migration: consumer inventory → immutable canonical ID 추가 → current ID alias 보존 → dual-read Adapter → source/schema/normalizer lineage 추가 → consumer regression.
 - Destination: **C**
 - 상세: `docs/research/A_SESSION_GAP_VEHICLE_MASTER_IDENTITY_PROVENANCE_2026-09-19.md`.
+
+
+## 2026-09-19 DevCenter proof-input binding delta
+
+| Candidate | 축 | Evidence | 실제 근거 | 넘길 세션 | 다음 단계 |
+|---|---|---|---|---|---|
+| `result.proof-input-digest-binding` | Result / Receipt / Evidence | PROJECT_VERIFIED | devcenter | C | SECOND_PROJECT_REQUIRED |
+
+- 근거: `devcenter@6a838a28b3c25b068e5bbe010071fd1de0242d30`, `verify-acceptance.mjs@6178e5fa...`, `card-audit.mjs@59b61085...`.
+- AI Core는 revision-bound proof 원칙이 더 넓고, DevCenter는 **source + checker/fixture input digest**로 stale proof를 실제로 판정하는 메커니즘이 더 구체적이다.
+- 상세: `docs/research/A_SESSION_DISCOVERY_DEVCENTER_PROOF_INPUT_BINDING_2026-09-19.md`.
+
+
+## 2026-09-19 DevCenter registry revision binding backport
+
+- Direction: **Core > Project**
+- Project revision: `devcenter@6a838a28b3c25b068e5bbe010071fd1de0242d30`
+- Gap: `registry.json` source locator entries lack entry-level revision/hash binding.
+- Migration: additive revision/hash metadata → stale detection → re-review gate.
+- Central stale observation: AI Core `registry/projects.json` still records DevCenter at `132189799a...`; actual observed head is `6a838a28...`.
+- Destination: **C / Registry provenance**
+- 상세: `docs/research/A_SESSION_GAP_DEVCENTER_REGISTRY_REVISION_BINDING_2026-09-19.md`.
