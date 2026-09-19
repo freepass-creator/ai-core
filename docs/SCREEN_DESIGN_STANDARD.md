@@ -1,5 +1,8 @@
 # Screen Design Standard v1.0
 
+> FreePass 제품군의 실제 업무/모바일 UI contract는 [`FREEPASS_UI_STANDARD.md`](FREEPASS_UI_STANDARD.md)를 함께 따른다. 이 문서는 접근성·기본 상호작용 baseline이고, FreePass 문서는 Estimate/Sales/Admin/ERP4에서 검증된 page depth·header·bottom navigation·ActionBar·List 규격을 구체화한다.
+
+
 ## Normative baseline
 
 - WCAG 2.2 AA is the accessibility conformance target.
