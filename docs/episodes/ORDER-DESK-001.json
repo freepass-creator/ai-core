@@ -94,6 +94,7 @@
     "docs/integration/ORDER_WORK_ADAPTER.md",
     "docs/integration/VOICE_FIRST_INTAKE.md",
     "docs/inventory/C-DEV-2026-09-15.json",
+    "docs/research/DATA_SSOT_CROSS_REPO_FINDINGS_2026-09-19.md",
     "docs/research/GLOBAL_PRODUCT_STANDARD_EVIDENCE_2026-09-19.md",
     "docs/research/global-product-standard-evidence.v1.json",
     "docs/reviews/ORDER_DESK_REVIEW.md",
@@ -267,6 +268,7 @@
     "2026-09-19 evidence-integrity repair: the historical UI-PATTERNS-BROWSER-002 receipt no longer claims the later Screen Design Standard as a browser-executed source; a fresh browser receipt is explicitly required for current normative conformance. Active successor changed_files was regenerated from the exact base_revision diff plus that receipt change.",
     "2026-09-19 repository-backfill audit: all 36 connected repositories were freshness-screened; Mewcar, Welrix Table and the Mewcar-JB Woori proposal were added with distinct ACTIVE/REFERENCE authority roles, while unreviewed older repositories remain discovered but unpromoted. changed_files was regenerated against the active base revision.",
     "2026-09-19 global-standard evidence feed: added a non-canonical research pack and machine-readable value matrix so the separate standardization session can choose company values from normative/platform/cross-project evidence without duplicating the canonical standard.",
-    "2026-09-19 session naming: this lane is formally named `A 세션 — Repo 조사 · AI Core 역수입`; it owns cross-repository discovery/evidence/backfill and must not create a competing canonical standard."
+    "2026-09-19 session naming: this lane is formally named `A 세션 — Repo 조사 · AI Core 역수입`; it owns cross-repository discovery/evidence/backfill and must not create a competing canonical standard.",
+    "2026-09-19 A-session Data/SSOT survey: cross-repo findings were recorded as non-canonical input for the Core Contract session, covering identity, canonical ownership, provenance, snapshots, status axes, master/transaction and event/current-state boundaries."
   ]
 }
