@@ -380,3 +380,19 @@ test('validator rejects invalid hold targets and non-explicit approval roles', (
   assert.ok(result.errors.some(item => item.code === 'APPROVAL_ROLES_REQUIRED'));
   assert.ok(result.errors.some(item => item.code === 'HOLD_TARGET_REQUIRED'));
 });
+
+
+test('validator requires provenance for SHADOW workflows and same-state REOBSERVE', () => {
+  const shadowWorkflow = structuredClone(machine());
+  shadowWorkflow.adoption_status = 'SHADOW';
+  shadowWorkflow.transitions[0].purpose = 'REOBSERVE';
+  const result = validateWorkflowRegistry({
+    schema_version: '1.0.0',
+    registry_version: '1.0.0',
+    primitives: [],
+    workflows: [shadowWorkflow]
+  });
+  assert.equal(result.status, 'INVALID');
+  assert.ok(result.errors.some(item => item.code === 'SHADOW_SOURCE_AUTHORITY_REQUIRED'));
+  assert.ok(result.errors.some(item => item.code === 'REOBSERVE_MUST_PRESERVE_STATE'));
+});
