@@ -16,6 +16,7 @@ test('생성된 capsule이 계약 schema를 만족한다',()=>{
     subject_revision:'a'.repeat(40),observed_at:'2026-09-19T03:40:00Z',
     tree_paths:['README.md','package.json','package-lock.json','src/app.js'],
     package_json:{scripts:{test:'node --test',build:'node build.mjs'}},
+    readme_text:'# Sample project',
   });
   assert.equal(validate(capsule),true,JSON.stringify(validate.errors));
 });
