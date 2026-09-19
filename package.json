@@ -40,7 +40,10 @@
     "closeout:validate": "node scripts/validate-phase1-closeout.mjs",
     "contracts:validate": "node scripts/validate-core-contracts.mjs",
     "contracts:compat": "node scripts/check-contract-compatibility.mjs",
-    "contracts:adoption": "node scripts/validate-core-contract-adoption.mjs"
+    "contracts:adoption": "node scripts/validate-core-contract-adoption.mjs",
+    "workflow:validate": "node scripts/validate-workflows.mjs",
+    "workflow:bridge:validate": "node scripts/validate-workflow-bridges.mjs",
+    "workflow:recovery:validate": "node scripts/validate-workflow-recovery-policies.mjs"
   },
   "dependencies": {
     "ajv": "8.20.0",

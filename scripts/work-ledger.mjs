@@ -3,24 +3,17 @@ import { open, readFile, unlink } from 'node:fs/promises';
 import { readFileSync } from 'node:fs';
 import Ajv2020 from 'ajv/dist/2020.js';
 import addFormats from 'ajv-formats';
+import { lifecycleGraph } from '../src/workflow/registry.mjs';
 
 const schema = JSON.parse(readFileSync(new URL('../contracts/work-ledger-event.schema.json', import.meta.url), 'utf8'));
 const ajv = new Ajv2020({ allErrors: true, strict: false });
 addFormats(ajv);
 const validateEvent = ajv.compile(schema);
-const transitions = new Map([
-  ['RECEIVED', ['PLANNED', 'BLOCKED', 'CANCELLED']],
-  ['PLANNED', ['IN_PROGRESS', 'BLOCKED', 'CANCELLED']],
-  ['IN_PROGRESS', ['VERIFYING', 'BLOCKED', 'CANCELLED']],
-  ['VERIFYING', ['IN_PROGRESS', 'AWAITING_AUTHORIZATION', 'READY', 'BLOCKED']],
-  ['AWAITING_AUTHORIZATION', ['READY', 'BLOCKED', 'CANCELLED']],
-  ['READY', ['EXECUTED', 'BLOCKED', 'CANCELLED']],
-  ['EXECUTED', ['OBSERVING', 'BLOCKED']],
-  ['OBSERVING', ['CLOSED', 'BLOCKED']],
-  ['BLOCKED', ['PLANNED', 'IN_PROGRESS', 'VERIFYING', 'AWAITING_AUTHORIZATION', 'READY', 'OBSERVING', 'CANCELLED']],
-]);
-export const REOBSERVABLE = ['RECEIVED', 'PLANNED', 'IN_PROGRESS'];
-const VERIFIED_PATH = ['AWAITING_AUTHORIZATION', 'READY', 'EXECUTED', 'OBSERVING', 'CLOSED'];
+const WORKFLOW_ID = 'ai-core.work-lifecycle';
+const graph = lifecycleGraph(WORKFLOW_ID);
+const transitions = graph.transitions;
+export const REOBSERVABLE = graph.reobservable;
+const VERIFIED_PATH = graph.verifiedPath;
 
 function canonical(value) {
   if (Array.isArray(value)) return value.map(canonical);

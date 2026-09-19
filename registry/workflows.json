@@ -1,0 +1,2883 @@
+{
+  "schema_version": "1.0.0",
+  "registry_version": "1.6.0",
+  "primitives": [
+    {
+      "primitive_id": "workflow.fact-vs-state",
+      "status": "COMMON_ADOPTED",
+      "meaning": "Facts, authoritative state, derived state and display state are separate concepts.",
+      "evidence_level": "CROSS_PROJECT_VERIFIED",
+      "source_projects": [
+        "freepass-admin",
+        "jpkerp5",
+        "aiops"
+      ]
+    },
+    {
+      "primitive_id": "workflow.multi-axis-state",
+      "status": "COMMON_ADOPTED",
+      "meaning": "Independent lifecycle dimensions are modeled as orthogonal state axes instead of one overloaded enum.",
+      "evidence_level": "CROSS_PROJECT_VERIFIED",
+      "source_projects": [
+        "jpkerp5",
+        "freepass-admin"
+      ]
+    },
+    {
+      "primitive_id": "workflow.guard-vs-evidence",
+      "status": "COMMON_ADOPTED",
+      "meaning": "A guard decides whether a transition may start; evidence proves what actually occurred.",
+      "evidence_level": "CROSS_PROJECT_VERIFIED",
+      "source_projects": [
+        "jpkerp5",
+        "aiops"
+      ]
+    },
+    {
+      "primitive_id": "workflow.launch-vs-completion",
+      "status": "COMMON_ADOPTED",
+      "meaning": "Requested, launched, human-reported, system-verified and completed semantics must not be collapsed.",
+      "evidence_level": "CROSS_PROJECT_VERIFIED",
+      "source_projects": [
+        "freepass-sales",
+        "aiops"
+      ]
+    },
+    {
+      "primitive_id": "workflow.idempotent-transition",
+      "status": "COMMON_ADOPTED",
+      "meaning": "The same idempotency key and intent replays the prior result; the same key with a different intent is a conflict.",
+      "evidence_level": "CROSS_PROJECT_VERIFIED",
+      "source_projects": [
+        "freepass-admin",
+        "freepasserp4",
+        "ai-core"
+      ]
+    },
+    {
+      "primitive_id": "workflow.append-only-history",
+      "status": "COMMON_ADOPTED",
+      "meaning": "Workflow history is append-only; correction, restore and cancellation are new events rather than history mutation.",
+      "evidence_level": "CROSS_PROJECT_VERIFIED",
+      "source_projects": [
+        "aiops",
+        "freepass-admin",
+        "freepasserp4"
+      ]
+    },
+    {
+      "primitive_id": "workflow.hold-resume",
+      "status": "COMMON_ADOPTED",
+      "meaning": "Hold is an open state, not completion, and a deferred workflow carries an explicit resume_at or equivalent due condition.",
+      "evidence_level": "CROSS_PROJECT_VERIFIED",
+      "source_projects": [
+        "aiops",
+        "freepass-sales"
+      ]
+    },
+    {
+      "primitive_id": "workflow.current-vs-history",
+      "status": "COMMON_ADOPTED",
+      "meaning": "Current projection and immutable event history are distinct and reconcilable.",
+      "evidence_level": "CROSS_PROJECT_VERIFIED",
+      "source_projects": [
+        "freepass-admin",
+        "aiops",
+        "freepasserp4"
+      ]
+    },
+    {
+      "primitive_id": "workflow.obligation-pair",
+      "status": "PILOT",
+      "meaning": "Opening event plus due rule plus closing event(s) forms an obligation with escalation on breach.",
+      "evidence_level": "PROJECT_VERIFIED",
+      "source_projects": [
+        "aiops"
+      ],
+      "notes": "Supported by the schema but not mandatory for all domain workflows until a second independent project verifies it."
+    },
+    {
+      "primitive_id": "workflow.revision-reobserve",
+      "status": "PILOT",
+      "meaning": "A workflow may bind to a newer subject revision without changing lifecycle state when explicit evidence proves the re-observation and the domain permits it.",
+      "evidence_level": "PROJECT_VERIFIED",
+      "source_projects": [
+        "ai-core"
+      ],
+      "notes": "AI Core Work Ledger REOBSERVED semantics are being parity-tested in SHADOW before broader adoption."
+    },
+    {
+      "primitive_id": "workflow.revision-invalidation",
+      "status": "PILOT",
+      "meaning": "When a parent requirement revision changes, child work evidence may be invalidated and the child lifecycle reset explicitly rather than silently reusing stale completion.",
+      "evidence_level": "PROJECT_VERIFIED",
+      "source_projects": [
+        "ai-core"
+      ],
+      "notes": "Observed in OrderStore revise semantics; not COMMON_ADOPTED until another independent domain verifies it."
+    },
+    {
+      "primitive_id": "workflow.reconcile-before-retry",
+      "status": "PILOT",
+      "meaning": "When an external effect may have occurred but the response is lost, reconcile authoritative terminal evidence before deciding whether any retry is safe.",
+      "evidence_level": "PROJECT_VERIFIED",
+      "source_projects": [
+        "ai-core"
+      ],
+      "notes": "Verified in durable coordination and capability execution inside AI Core; broader cross-project evidence is still required before COMMON_ADOPTED."
+    },
+    {
+      "primitive_id": "workflow.recovery-slot-no-replay",
+      "status": "PILOT",
+      "meaning": "Fallback recovery for a logical execution may run only after reconciling native-success and prior-recovery evidence; a successful logical execution cannot be replayed by another path.",
+      "evidence_level": "PROJECT_VERIFIED",
+      "source_projects": [
+        "freepasserp4"
+      ],
+      "notes": "ERP4 production failure-derived contract. Second independent project and C-owned logical execution identity contract are required before common adoption."
+    }
+  ],
+  "workflows": [
+    {
+      "workflow_id": "ai-core.work-lifecycle",
+      "version": "0.1.0",
+      "adoption_status": "CANONICAL",
+      "owner": "D-session-workflow-standard",
+      "description": "Canonical AI Core Work lifecycle state graph consumed by scripts/work-ledger.mjs. Work Ledger remains canonical append-only event/hash/revision/evidence history.",
+      "state_axes": [
+        {
+          "axis_id": "lifecycle",
+          "initial_state": "RECEIVED",
+          "states": [
+            {
+              "state_id": "RECEIVED",
+              "kind": "NORMAL",
+              "terminal": false,
+              "description": "AI Core Work Ledger RECEIVED state"
+            },
+            {
+              "state_id": "PLANNED",
+              "kind": "NORMAL",
+              "terminal": false,
+              "description": "AI Core Work Ledger PLANNED state"
+            },
+            {
+              "state_id": "IN_PROGRESS",
+              "kind": "NORMAL",
+              "terminal": false,
+              "description": "AI Core Work Ledger IN_PROGRESS state"
+            },
+            {
+              "state_id": "VERIFYING",
+              "kind": "NORMAL",
+              "terminal": false,
+              "description": "AI Core Work Ledger VERIFYING state"
+            },
+            {
+              "state_id": "AWAITING_AUTHORIZATION",
+              "kind": "NORMAL",
+              "terminal": false,
+              "description": "AI Core Work Ledger AWAITING_AUTHORIZATION state"
+            },
+            {
+              "state_id": "READY",
+              "kind": "NORMAL",
+              "terminal": false,
+              "description": "AI Core Work Ledger READY state"
+            },
+            {
+              "state_id": "EXECUTED",
+              "kind": "NORMAL",
+              "terminal": false,
+              "description": "AI Core Work Ledger EXECUTED state"
+            },
+            {
+              "state_id": "OBSERVING",
+              "kind": "NORMAL",
+              "terminal": false,
+              "description": "AI Core Work Ledger OBSERVING state"
+            },
+            {
+              "state_id": "CLOSED",
+              "kind": "FINAL",
+              "terminal": true,
+              "description": "AI Core Work Ledger CLOSED state"
+            },
+            {
+              "state_id": "BLOCKED",
+              "kind": "HOLD",
+              "terminal": false,
+              "description": "AI Core Work Ledger BLOCKED state"
+            },
+            {
+              "state_id": "CANCELLED",
+              "kind": "CANCELLED",
+              "terminal": true,
+              "description": "AI Core Work Ledger CANCELLED state"
+            }
+          ]
+        }
+      ],
+      "facts": [
+        {
+          "fact_id": "work.project_id",
+          "type": "string",
+          "description": "Current canonical project id."
+        },
+        {
+          "fact_id": "work.subject_revision",
+          "type": "string",
+          "description": "Current subject revision.",
+          "nullable": true
+        },
+        {
+          "fact_id": "work.verified_revision",
+          "type": "string",
+          "description": "Revision captured when entering VERIFYING.",
+          "nullable": true
+        },
+        {
+          "fact_id": "work.verification_captured",
+          "type": "boolean",
+          "description": "Whether VERIFYING captured a verification revision, including a null revision value."
+        }
+      ],
+      "guards": [
+        {
+          "guard_id": "work.project-same",
+          "kind": "CUSTOM",
+          "description": "Candidate event project must match current work project."
+        },
+        {
+          "guard_id": "work.subject-revision-same",
+          "kind": "CUSTOM",
+          "description": "Normal transition must preserve current subject revision."
+        },
+        {
+          "guard_id": "work.subject-revision-changed",
+          "kind": "CUSTOM",
+          "description": "REOBSERVE must bind a different non-null subject revision."
+        },
+        {
+          "guard_id": "work.verified-revision-compatible",
+          "kind": "CUSTOM",
+          "description": "If a verified revision exists, candidate subject revision must match it."
+        },
+        {
+          "guard_id": "work.verified-revision-present",
+          "kind": "CUSTOM",
+          "description": "Verified-path transition requires a previously captured verification revision."
+        },
+        {
+          "guard_id": "work.evidence-present",
+          "kind": "CUSTOM",
+          "description": "Candidate ledger event must contain at least one evidence reference."
+        },
+        {
+          "guard_id": "work.subject-revision-present",
+          "kind": "CUSTOM",
+          "description": "Candidate subject revision must be a non-null 40-hex revision."
+        }
+      ],
+      "evidence_requirements": [],
+      "commands": [
+        {
+          "command_id": "work.plan",
+          "intent": "Plan work",
+          "idempotency_required": false
+        },
+        {
+          "command_id": "work.start",
+          "intent": "Start or return work to in-progress",
+          "idempotency_required": false
+        },
+        {
+          "command_id": "work.verify",
+          "intent": "Enter verification",
+          "idempotency_required": false
+        },
+        {
+          "command_id": "work.await-authorization",
+          "intent": "Await authorization",
+          "idempotency_required": false
+        },
+        {
+          "command_id": "work.ready",
+          "intent": "Mark work ready",
+          "idempotency_required": false
+        },
+        {
+          "command_id": "work.execute",
+          "intent": "Record execution",
+          "idempotency_required": false
+        },
+        {
+          "command_id": "work.observe",
+          "intent": "Enter observation",
+          "idempotency_required": false
+        },
+        {
+          "command_id": "work.close",
+          "intent": "Close work",
+          "idempotency_required": false
+        },
+        {
+          "command_id": "work.block",
+          "intent": "Block work",
+          "idempotency_required": false
+        },
+        {
+          "command_id": "work.cancel",
+          "intent": "Cancel work",
+          "idempotency_required": false
+        },
+        {
+          "command_id": "work.resume",
+          "intent": "Resume blocked work",
+          "idempotency_required": false
+        },
+        {
+          "command_id": "work.reobserve",
+          "intent": "Re-observe a newer subject revision",
+          "idempotency_required": false
+        }
+      ],
+      "events": [
+        {
+          "event_type": "ai-core.work.planned",
+          "meaning": "Work entered planned state"
+        },
+        {
+          "event_type": "ai-core.work.started",
+          "meaning": "Work entered in-progress state"
+        },
+        {
+          "event_type": "ai-core.work.verifying",
+          "meaning": "Work entered verification"
+        },
+        {
+          "event_type": "ai-core.work.authorization-awaited",
+          "meaning": "Work is awaiting authorization"
+        },
+        {
+          "event_type": "ai-core.work.ready",
+          "meaning": "Work became ready"
+        },
+        {
+          "event_type": "ai-core.work.executed",
+          "meaning": "Work execution was recorded"
+        },
+        {
+          "event_type": "ai-core.work.observing",
+          "meaning": "Work entered observation"
+        },
+        {
+          "event_type": "ai-core.work.closed",
+          "meaning": "Work closed"
+        },
+        {
+          "event_type": "ai-core.work.blocked",
+          "meaning": "Work became blocked"
+        },
+        {
+          "event_type": "ai-core.work.cancelled",
+          "meaning": "Work cancelled"
+        },
+        {
+          "event_type": "ai-core.work.resumed",
+          "meaning": "Blocked work resumed"
+        },
+        {
+          "event_type": "ai-core.work.reobserved",
+          "meaning": "Work re-observed a newer subject revision"
+        }
+      ],
+      "transitions": [
+        {
+          "transition_id": "work.received.to.planned",
+          "purpose": "NORMAL",
+          "axis_id": "lifecycle",
+          "from": [
+            "RECEIVED"
+          ],
+          "to": "PLANNED",
+          "command_id": "work.plan",
+          "event_type": "ai-core.work.planned",
+          "guards": [
+            "work.project-same",
+            "work.subject-revision-same"
+          ],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "work.received.to.blocked",
+          "purpose": "HOLD",
+          "axis_id": "lifecycle",
+          "from": [
+            "RECEIVED"
+          ],
+          "to": "BLOCKED",
+          "command_id": "work.block",
+          "event_type": "ai-core.work.blocked",
+          "guards": [
+            "work.project-same",
+            "work.subject-revision-same",
+            "work.verified-revision-compatible"
+          ],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "work.received.to.cancelled",
+          "purpose": "CANCEL",
+          "axis_id": "lifecycle",
+          "from": [
+            "RECEIVED"
+          ],
+          "to": "CANCELLED",
+          "command_id": "work.cancel",
+          "event_type": "ai-core.work.cancelled",
+          "guards": [
+            "work.project-same",
+            "work.subject-revision-same",
+            "work.verified-revision-compatible"
+          ],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "work.planned.to.in-progress",
+          "purpose": "NORMAL",
+          "axis_id": "lifecycle",
+          "from": [
+            "PLANNED"
+          ],
+          "to": "IN_PROGRESS",
+          "command_id": "work.start",
+          "event_type": "ai-core.work.started",
+          "guards": [
+            "work.project-same",
+            "work.subject-revision-same"
+          ],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "work.planned.to.blocked",
+          "purpose": "HOLD",
+          "axis_id": "lifecycle",
+          "from": [
+            "PLANNED"
+          ],
+          "to": "BLOCKED",
+          "command_id": "work.block",
+          "event_type": "ai-core.work.blocked",
+          "guards": [
+            "work.project-same",
+            "work.subject-revision-same",
+            "work.verified-revision-compatible"
+          ],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "work.planned.to.cancelled",
+          "purpose": "CANCEL",
+          "axis_id": "lifecycle",
+          "from": [
+            "PLANNED"
+          ],
+          "to": "CANCELLED",
+          "command_id": "work.cancel",
+          "event_type": "ai-core.work.cancelled",
+          "guards": [
+            "work.project-same",
+            "work.subject-revision-same",
+            "work.verified-revision-compatible"
+          ],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "work.in-progress.to.verifying",
+          "purpose": "NORMAL",
+          "axis_id": "lifecycle",
+          "from": [
+            "IN_PROGRESS"
+          ],
+          "to": "VERIFYING",
+          "command_id": "work.verify",
+          "event_type": "ai-core.work.verifying",
+          "guards": [
+            "work.project-same",
+            "work.subject-revision-same"
+          ],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "work.in-progress.to.blocked",
+          "purpose": "HOLD",
+          "axis_id": "lifecycle",
+          "from": [
+            "IN_PROGRESS"
+          ],
+          "to": "BLOCKED",
+          "command_id": "work.block",
+          "event_type": "ai-core.work.blocked",
+          "guards": [
+            "work.project-same",
+            "work.subject-revision-same",
+            "work.verified-revision-compatible"
+          ],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "work.in-progress.to.cancelled",
+          "purpose": "CANCEL",
+          "axis_id": "lifecycle",
+          "from": [
+            "IN_PROGRESS"
+          ],
+          "to": "CANCELLED",
+          "command_id": "work.cancel",
+          "event_type": "ai-core.work.cancelled",
+          "guards": [
+            "work.project-same",
+            "work.subject-revision-same",
+            "work.verified-revision-compatible"
+          ],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "work.verifying.to.in-progress",
+          "purpose": "NORMAL",
+          "axis_id": "lifecycle",
+          "from": [
+            "VERIFYING"
+          ],
+          "to": "IN_PROGRESS",
+          "command_id": "work.start",
+          "event_type": "ai-core.work.started",
+          "guards": [
+            "work.project-same",
+            "work.subject-revision-same"
+          ],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "work.verifying.to.awaiting-authorization",
+          "purpose": "NORMAL",
+          "axis_id": "lifecycle",
+          "from": [
+            "VERIFYING"
+          ],
+          "to": "AWAITING_AUTHORIZATION",
+          "command_id": "work.await-authorization",
+          "event_type": "ai-core.work.authorization-awaited",
+          "guards": [
+            "work.project-same",
+            "work.subject-revision-same",
+            "work.verified-revision-compatible",
+            "work.verified-revision-present"
+          ],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "work.verifying.to.ready",
+          "purpose": "NORMAL",
+          "axis_id": "lifecycle",
+          "from": [
+            "VERIFYING"
+          ],
+          "to": "READY",
+          "command_id": "work.ready",
+          "event_type": "ai-core.work.ready",
+          "guards": [
+            "work.project-same",
+            "work.subject-revision-same",
+            "work.verified-revision-compatible",
+            "work.verified-revision-present"
+          ],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "work.verifying.to.blocked",
+          "purpose": "HOLD",
+          "axis_id": "lifecycle",
+          "from": [
+            "VERIFYING"
+          ],
+          "to": "BLOCKED",
+          "command_id": "work.block",
+          "event_type": "ai-core.work.blocked",
+          "guards": [
+            "work.project-same",
+            "work.subject-revision-same",
+            "work.verified-revision-compatible"
+          ],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "work.awaiting-authorization.to.ready",
+          "purpose": "NORMAL",
+          "axis_id": "lifecycle",
+          "from": [
+            "AWAITING_AUTHORIZATION"
+          ],
+          "to": "READY",
+          "command_id": "work.ready",
+          "event_type": "ai-core.work.ready",
+          "guards": [
+            "work.project-same",
+            "work.subject-revision-same",
+            "work.verified-revision-compatible",
+            "work.verified-revision-present"
+          ],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "work.awaiting-authorization.to.blocked",
+          "purpose": "HOLD",
+          "axis_id": "lifecycle",
+          "from": [
+            "AWAITING_AUTHORIZATION"
+          ],
+          "to": "BLOCKED",
+          "command_id": "work.block",
+          "event_type": "ai-core.work.blocked",
+          "guards": [
+            "work.project-same",
+            "work.subject-revision-same",
+            "work.verified-revision-compatible"
+          ],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "work.awaiting-authorization.to.cancelled",
+          "purpose": "CANCEL",
+          "axis_id": "lifecycle",
+          "from": [
+            "AWAITING_AUTHORIZATION"
+          ],
+          "to": "CANCELLED",
+          "command_id": "work.cancel",
+          "event_type": "ai-core.work.cancelled",
+          "guards": [
+            "work.project-same",
+            "work.subject-revision-same",
+            "work.verified-revision-compatible"
+          ],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "work.ready.to.executed",
+          "purpose": "NORMAL",
+          "axis_id": "lifecycle",
+          "from": [
+            "READY"
+          ],
+          "to": "EXECUTED",
+          "command_id": "work.execute",
+          "event_type": "ai-core.work.executed",
+          "guards": [
+            "work.project-same",
+            "work.subject-revision-same",
+            "work.verified-revision-compatible",
+            "work.verified-revision-present"
+          ],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "work.ready.to.blocked",
+          "purpose": "HOLD",
+          "axis_id": "lifecycle",
+          "from": [
+            "READY"
+          ],
+          "to": "BLOCKED",
+          "command_id": "work.block",
+          "event_type": "ai-core.work.blocked",
+          "guards": [
+            "work.project-same",
+            "work.subject-revision-same",
+            "work.verified-revision-compatible"
+          ],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "work.ready.to.cancelled",
+          "purpose": "CANCEL",
+          "axis_id": "lifecycle",
+          "from": [
+            "READY"
+          ],
+          "to": "CANCELLED",
+          "command_id": "work.cancel",
+          "event_type": "ai-core.work.cancelled",
+          "guards": [
+            "work.project-same",
+            "work.subject-revision-same",
+            "work.verified-revision-compatible"
+          ],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "work.executed.to.observing",
+          "purpose": "NORMAL",
+          "axis_id": "lifecycle",
+          "from": [
+            "EXECUTED"
+          ],
+          "to": "OBSERVING",
+          "command_id": "work.observe",
+          "event_type": "ai-core.work.observing",
+          "guards": [
+            "work.project-same",
+            "work.subject-revision-same",
+            "work.verified-revision-compatible",
+            "work.verified-revision-present"
+          ],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "work.executed.to.blocked",
+          "purpose": "HOLD",
+          "axis_id": "lifecycle",
+          "from": [
+            "EXECUTED"
+          ],
+          "to": "BLOCKED",
+          "command_id": "work.block",
+          "event_type": "ai-core.work.blocked",
+          "guards": [
+            "work.project-same",
+            "work.subject-revision-same",
+            "work.verified-revision-compatible"
+          ],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "work.observing.to.closed",
+          "purpose": "NORMAL",
+          "axis_id": "lifecycle",
+          "from": [
+            "OBSERVING"
+          ],
+          "to": "CLOSED",
+          "command_id": "work.close",
+          "event_type": "ai-core.work.closed",
+          "guards": [
+            "work.project-same",
+            "work.subject-revision-same",
+            "work.verified-revision-compatible",
+            "work.verified-revision-present",
+            "work.evidence-present",
+            "work.subject-revision-present"
+          ],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "work.observing.to.blocked",
+          "purpose": "HOLD",
+          "axis_id": "lifecycle",
+          "from": [
+            "OBSERVING"
+          ],
+          "to": "BLOCKED",
+          "command_id": "work.block",
+          "event_type": "ai-core.work.blocked",
+          "guards": [
+            "work.project-same",
+            "work.subject-revision-same",
+            "work.verified-revision-compatible"
+          ],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "work.blocked.to.planned",
+          "purpose": "RESUME",
+          "axis_id": "lifecycle",
+          "from": [
+            "BLOCKED"
+          ],
+          "to": "PLANNED",
+          "command_id": "work.resume",
+          "event_type": "ai-core.work.resumed",
+          "guards": [
+            "work.project-same",
+            "work.subject-revision-same"
+          ],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "work.blocked.to.in-progress",
+          "purpose": "RESUME",
+          "axis_id": "lifecycle",
+          "from": [
+            "BLOCKED"
+          ],
+          "to": "IN_PROGRESS",
+          "command_id": "work.resume",
+          "event_type": "ai-core.work.resumed",
+          "guards": [
+            "work.project-same",
+            "work.subject-revision-same"
+          ],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "work.blocked.to.verifying",
+          "purpose": "RESUME",
+          "axis_id": "lifecycle",
+          "from": [
+            "BLOCKED"
+          ],
+          "to": "VERIFYING",
+          "command_id": "work.resume",
+          "event_type": "ai-core.work.resumed",
+          "guards": [
+            "work.project-same",
+            "work.subject-revision-same"
+          ],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "work.blocked.to.awaiting-authorization",
+          "purpose": "RESUME",
+          "axis_id": "lifecycle",
+          "from": [
+            "BLOCKED"
+          ],
+          "to": "AWAITING_AUTHORIZATION",
+          "command_id": "work.resume",
+          "event_type": "ai-core.work.resumed",
+          "guards": [
+            "work.project-same",
+            "work.subject-revision-same",
+            "work.verified-revision-compatible",
+            "work.verified-revision-present"
+          ],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "work.blocked.to.ready",
+          "purpose": "RESUME",
+          "axis_id": "lifecycle",
+          "from": [
+            "BLOCKED"
+          ],
+          "to": "READY",
+          "command_id": "work.resume",
+          "event_type": "ai-core.work.resumed",
+          "guards": [
+            "work.project-same",
+            "work.subject-revision-same",
+            "work.verified-revision-compatible",
+            "work.verified-revision-present"
+          ],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "work.blocked.to.observing",
+          "purpose": "RESUME",
+          "axis_id": "lifecycle",
+          "from": [
+            "BLOCKED"
+          ],
+          "to": "OBSERVING",
+          "command_id": "work.resume",
+          "event_type": "ai-core.work.resumed",
+          "guards": [
+            "work.project-same",
+            "work.subject-revision-same",
+            "work.verified-revision-compatible",
+            "work.verified-revision-present"
+          ],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "work.blocked.to.cancelled",
+          "purpose": "CANCEL",
+          "axis_id": "lifecycle",
+          "from": [
+            "BLOCKED"
+          ],
+          "to": "CANCELLED",
+          "command_id": "work.cancel",
+          "event_type": "ai-core.work.cancelled",
+          "guards": [
+            "work.project-same",
+            "work.subject-revision-same",
+            "work.verified-revision-compatible"
+          ],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "work.received.reobserve",
+          "purpose": "REOBSERVE",
+          "axis_id": "lifecycle",
+          "from": [
+            "RECEIVED"
+          ],
+          "to": "RECEIVED",
+          "command_id": "work.reobserve",
+          "event_type": "ai-core.work.reobserved",
+          "guards": [
+            "work.project-same",
+            "work.subject-revision-changed",
+            "work.evidence-present"
+          ],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "work.planned.reobserve",
+          "purpose": "REOBSERVE",
+          "axis_id": "lifecycle",
+          "from": [
+            "PLANNED"
+          ],
+          "to": "PLANNED",
+          "command_id": "work.reobserve",
+          "event_type": "ai-core.work.reobserved",
+          "guards": [
+            "work.project-same",
+            "work.subject-revision-changed",
+            "work.evidence-present"
+          ],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "work.in-progress.reobserve",
+          "purpose": "REOBSERVE",
+          "axis_id": "lifecycle",
+          "from": [
+            "IN_PROGRESS"
+          ],
+          "to": "IN_PROGRESS",
+          "command_id": "work.reobserve",
+          "event_type": "ai-core.work.reobserved",
+          "guards": [
+            "work.project-same",
+            "work.subject-revision-changed",
+            "work.evidence-present"
+          ],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        }
+      ],
+      "obligations": [],
+      "source_authority": {
+        "repository": "freepass-creator/ai-core",
+        "revision": "4b3f9371f55de24e3cac05e72667f88bb5d7f081",
+        "files": [
+          {
+            "path": "scripts/work-ledger.mjs",
+            "blob_sha": "7afe8945101b84ea775b57d29f2981b8209bf41e"
+          },
+          {
+            "path": "contracts/work-ledger-event.schema.json",
+            "blob_sha": "ce9cb2e8c0201661b4b05e8c7a31445f19c8e442"
+          }
+        ]
+      }
+    },
+    {
+      "workflow_id": "ai-core.order-task-lifecycle",
+      "version": "0.1.0",
+      "adoption_status": "CANONICAL",
+      "owner": "D-session-workflow-standard",
+      "description": "Canonical OrderStore child-task lifecycle consumed by OrderStore through D Workflow Engine; parent Order status is derived and heartbeat remains a lease fact update.",
+      "source_authority": {
+        "repository": "freepass-creator/ai-core",
+        "revision": "c1f4f102a26be0b9af5b6559ac2c3ba61ac6d2b3",
+        "files": [
+          {
+            "path": "src/orders/store.mjs",
+            "blob_sha": "2262b219388f8ab0b6bb50a1f7d80eff631ccb12"
+          }
+        ]
+      },
+      "state_axes": [
+        {
+          "axis_id": "lifecycle",
+          "initial_state": "PENDING",
+          "states": [
+            {
+              "state_id": "PENDING",
+              "kind": "NORMAL",
+              "terminal": false,
+              "description": "Task is available for assignment/claim."
+            },
+            {
+              "state_id": "RUNNING",
+              "kind": "NORMAL",
+              "terminal": false,
+              "description": "Task is claimed under an active or expirable lease."
+            },
+            {
+              "state_id": "BLOCKED",
+              "kind": "HOLD",
+              "terminal": false,
+              "description": "Task stopped with an explicit blocked reason."
+            },
+            {
+              "state_id": "REPORTED",
+              "kind": "NORMAL",
+              "terminal": false,
+              "description": "A result was reported for the current requirement revision; it is not canonical completion."
+            }
+          ]
+        }
+      ],
+      "facts": [
+        {
+          "fact_id": "task.actor_valid",
+          "type": "boolean",
+          "description": "Requested actor is in the current assignable actor registry."
+        },
+        {
+          "fact_id": "task.actor_assigned",
+          "type": "boolean",
+          "description": "Requested actor is the task's assigned actor."
+        },
+        {
+          "fact_id": "task.lease_inactive",
+          "type": "boolean",
+          "description": "No unexpired task lease currently exists."
+        },
+        {
+          "fact_id": "task.lease_valid",
+          "type": "boolean",
+          "description": "Lease is active and actor/token match the task."
+        },
+        {
+          "fact_id": "task.dependencies_reported",
+          "type": "boolean",
+          "description": "Every prior task in the order has REPORTED state."
+        },
+        {
+          "fact_id": "task.revision_current",
+          "type": "boolean",
+          "description": "Command revision and lease revision equal the current order requirement revision."
+        },
+        {
+          "fact_id": "task.report_content_valid",
+          "type": "boolean",
+          "description": "Report summary/evidence satisfy current OrderStore input constraints."
+        },
+        {
+          "fact_id": "task.reason_valid",
+          "type": "boolean",
+          "description": "Required transition reason satisfies current OrderStore text constraints."
+        }
+      ],
+      "guards": [
+        {
+          "guard_id": "task.actor-valid",
+          "kind": "FACT_EQUALS",
+          "fact_id": "task.actor_valid",
+          "expected": true
+        },
+        {
+          "guard_id": "task.actor-assigned",
+          "kind": "FACT_EQUALS",
+          "fact_id": "task.actor_assigned",
+          "expected": true
+        },
+        {
+          "guard_id": "task.lease-inactive",
+          "kind": "FACT_EQUALS",
+          "fact_id": "task.lease_inactive",
+          "expected": true
+        },
+        {
+          "guard_id": "task.lease-valid",
+          "kind": "FACT_EQUALS",
+          "fact_id": "task.lease_valid",
+          "expected": true
+        },
+        {
+          "guard_id": "task.dependencies-reported",
+          "kind": "FACT_EQUALS",
+          "fact_id": "task.dependencies_reported",
+          "expected": true
+        },
+        {
+          "guard_id": "task.revision-current",
+          "kind": "FACT_EQUALS",
+          "fact_id": "task.revision_current",
+          "expected": true
+        },
+        {
+          "guard_id": "task.report-content-valid",
+          "kind": "FACT_EQUALS",
+          "fact_id": "task.report_content_valid",
+          "expected": true
+        },
+        {
+          "guard_id": "task.reason-valid",
+          "kind": "FACT_EQUALS",
+          "fact_id": "task.reason_valid",
+          "expected": true
+        }
+      ],
+      "evidence_requirements": [],
+      "commands": [
+        {
+          "command_id": "order-task.assign",
+          "intent": "Assign or reassign a task",
+          "idempotency_required": true
+        },
+        {
+          "command_id": "order-task.claim",
+          "intent": "Claim a task execution lease",
+          "idempotency_required": true
+        },
+        {
+          "command_id": "order-task.report",
+          "intent": "Report a task result",
+          "idempotency_required": true
+        },
+        {
+          "command_id": "order-task.block",
+          "intent": "Block a running task",
+          "idempotency_required": true
+        },
+        {
+          "command_id": "order-task.invalidate",
+          "intent": "Invalidate task state/evidence after parent requirement revision",
+          "idempotency_required": true
+        }
+      ],
+      "events": [
+        {
+          "event_type": "ai-core.order-task.assigned",
+          "meaning": "Task assignment changed or was reaffirmed."
+        },
+        {
+          "event_type": "ai-core.order-task.claimed",
+          "meaning": "Task was claimed for an execution attempt."
+        },
+        {
+          "event_type": "ai-core.order-task.reported",
+          "meaning": "Task result was reported for the requirement revision."
+        },
+        {
+          "event_type": "ai-core.order-task.blocked",
+          "meaning": "Task was blocked with a reason."
+        },
+        {
+          "event_type": "ai-core.order-task.invalidated",
+          "meaning": "Parent requirement revision invalidated the child task state/evidence."
+        }
+      ],
+      "transitions": [
+        {
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "reversible": false,
+          "transition_id": "order-task.assign.pending",
+          "purpose": "NORMAL",
+          "axis_id": "lifecycle",
+          "from": [
+            "PENDING"
+          ],
+          "to": "PENDING",
+          "command_id": "order-task.assign",
+          "event_type": "ai-core.order-task.assigned",
+          "guards": [
+            "task.actor-valid",
+            "task.lease-inactive",
+            "task.reason-valid"
+          ],
+          "audit": {
+            "required": true,
+            "reason_required": true
+          }
+        },
+        {
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "reversible": false,
+          "transition_id": "order-task.assign.blocked",
+          "purpose": "RESUME",
+          "axis_id": "lifecycle",
+          "from": [
+            "BLOCKED"
+          ],
+          "to": "PENDING",
+          "command_id": "order-task.assign",
+          "event_type": "ai-core.order-task.assigned",
+          "guards": [
+            "task.actor-valid",
+            "task.lease-inactive",
+            "task.reason-valid"
+          ],
+          "audit": {
+            "required": true,
+            "reason_required": true
+          }
+        },
+        {
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "reversible": false,
+          "transition_id": "order-task.assign.expired-running",
+          "purpose": "RETRY",
+          "axis_id": "lifecycle",
+          "from": [
+            "RUNNING"
+          ],
+          "to": "PENDING",
+          "command_id": "order-task.assign",
+          "event_type": "ai-core.order-task.assigned",
+          "guards": [
+            "task.actor-valid",
+            "task.lease-inactive",
+            "task.reason-valid"
+          ],
+          "audit": {
+            "required": true,
+            "reason_required": true
+          }
+        },
+        {
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "reversible": false,
+          "transition_id": "order-task.claim.pending",
+          "purpose": "NORMAL",
+          "axis_id": "lifecycle",
+          "from": [
+            "PENDING"
+          ],
+          "to": "RUNNING",
+          "command_id": "order-task.claim",
+          "event_type": "ai-core.order-task.claimed",
+          "guards": [
+            "task.actor-valid",
+            "task.actor-assigned",
+            "task.lease-inactive",
+            "task.dependencies-reported"
+          ],
+          "audit": {
+            "required": true,
+            "reason_required": false
+          }
+        },
+        {
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "reversible": false,
+          "transition_id": "order-task.claim.blocked",
+          "purpose": "RESUME",
+          "axis_id": "lifecycle",
+          "from": [
+            "BLOCKED"
+          ],
+          "to": "RUNNING",
+          "command_id": "order-task.claim",
+          "event_type": "ai-core.order-task.claimed",
+          "guards": [
+            "task.actor-valid",
+            "task.actor-assigned",
+            "task.lease-inactive",
+            "task.dependencies-reported"
+          ],
+          "audit": {
+            "required": true,
+            "reason_required": false
+          }
+        },
+        {
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "reversible": false,
+          "transition_id": "order-task.claim.expired-running",
+          "purpose": "RETRY",
+          "axis_id": "lifecycle",
+          "from": [
+            "RUNNING"
+          ],
+          "to": "RUNNING",
+          "command_id": "order-task.claim",
+          "event_type": "ai-core.order-task.claimed",
+          "guards": [
+            "task.actor-valid",
+            "task.actor-assigned",
+            "task.lease-inactive",
+            "task.dependencies-reported"
+          ],
+          "audit": {
+            "required": true,
+            "reason_required": false
+          }
+        },
+        {
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "reversible": false,
+          "transition_id": "order-task.report",
+          "purpose": "NORMAL",
+          "axis_id": "lifecycle",
+          "from": [
+            "RUNNING"
+          ],
+          "to": "REPORTED",
+          "command_id": "order-task.report",
+          "event_type": "ai-core.order-task.reported",
+          "guards": [
+            "task.actor-valid",
+            "task.lease-valid",
+            "task.revision-current",
+            "task.report-content-valid"
+          ],
+          "audit": {
+            "required": true,
+            "reason_required": false
+          }
+        },
+        {
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "reversible": false,
+          "transition_id": "order-task.block",
+          "purpose": "HOLD",
+          "axis_id": "lifecycle",
+          "from": [
+            "RUNNING"
+          ],
+          "to": "BLOCKED",
+          "command_id": "order-task.block",
+          "event_type": "ai-core.order-task.blocked",
+          "guards": [
+            "task.actor-valid",
+            "task.lease-valid",
+            "task.reason-valid"
+          ],
+          "audit": {
+            "required": true,
+            "reason_required": true
+          }
+        },
+        {
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "reversible": false,
+          "transition_id": "order-task.invalidate",
+          "purpose": "INVALIDATE",
+          "axis_id": "lifecycle",
+          "from": [
+            "PENDING",
+            "RUNNING",
+            "BLOCKED",
+            "REPORTED"
+          ],
+          "to": "PENDING",
+          "command_id": "order-task.invalidate",
+          "event_type": "ai-core.order-task.invalidated",
+          "guards": [
+            "task.reason-valid"
+          ],
+          "audit": {
+            "required": true,
+            "reason_required": true
+          }
+        }
+      ],
+      "obligations": []
+    },
+    {
+      "workflow_id": "ai-core.capability-execution",
+      "version": "0.1.0",
+      "adoption_status": "CANONICAL",
+      "owner": "D-session-workflow-standard",
+      "description": "Canonical capability execution coordination lifecycle consumed by the coordinator through D Workflow Engine. RESERVED/RESULT are persistent states; reconcile HOLD remains a projection.",
+      "source_authority": {
+        "repository": "freepass-creator/ai-core",
+        "revision": "81ea6d0edfb2581edc73696e30b911168d18a6ab",
+        "files": [
+          {
+            "path": "src/engine/capability-execution-coordinator.mjs",
+            "blob_sha": "6c0b3e893bbb44bb1707eeca4a47839d50ba15dd"
+          },
+          {
+            "path": "src/engine/execution-receipt.mjs",
+            "blob_sha": "0cbb7a0a29804b6e95557806348f44a06f29b79f"
+          }
+        ]
+      },
+      "state_axes": [
+        {
+          "axis_id": "lifecycle",
+          "initial_state": "RESERVED",
+          "states": [
+            {
+              "state_id": "RESERVED",
+              "kind": "NORMAL",
+              "terminal": false,
+              "description": "Execution identity is durably reserved before effect execution/result persistence."
+            },
+            {
+              "state_id": "RESULT",
+              "kind": "FINAL",
+              "terminal": true,
+              "description": "A safe durable work result receipt is persisted. Result status may be SUCCEEDED, FAILED or HOLD."
+            }
+          ]
+        }
+      ],
+      "facts": [
+        {
+          "fact_id": "execution.context_valid",
+          "type": "boolean",
+          "description": "Order routing, work binding, project/capability and subject revision all match."
+        },
+        {
+          "fact_id": "execution.capability_active",
+          "type": "boolean",
+          "description": "Capability is ACTIVE."
+        },
+        {
+          "fact_id": "execution.result_schema_valid",
+          "type": "boolean",
+          "description": "Result uses ai-core-work-result/v1."
+        },
+        {
+          "fact_id": "execution.result_context_matches",
+          "type": "boolean",
+          "description": "Result order/work context matches reserved identity."
+        },
+        {
+          "fact_id": "execution.result_capability_matches",
+          "type": "boolean",
+          "description": "Result capability/project matches reserved identity."
+        },
+        {
+          "fact_id": "execution.result_revision_matches",
+          "type": "boolean",
+          "description": "Result subject revision matches reserved identity."
+        },
+        {
+          "fact_id": "execution.result_status",
+          "type": "string",
+          "nullable": true,
+          "description": "Safe persisted result status such as SUCCEEDED, FAILED or HOLD."
+        },
+        {
+          "fact_id": "execution.reconciliation_status",
+          "type": "string",
+          "nullable": true,
+          "description": "Derived reconciliation observation such as SUCCEEDED, FAILED or HOLD."
+        },
+        {
+          "fact_id": "execution.reconciliation_reason",
+          "type": "string",
+          "nullable": true,
+          "description": "Derived reconciliation reason such as EXECUTION_OUTCOME_UNKNOWN."
+        }
+      ],
+      "guards": [
+        {
+          "guard_id": "execution.result-schema-valid",
+          "kind": "FACT_EQUALS",
+          "fact_id": "execution.result_schema_valid",
+          "expected": true
+        },
+        {
+          "guard_id": "execution.result-context-matches",
+          "kind": "FACT_EQUALS",
+          "fact_id": "execution.result_context_matches",
+          "expected": true
+        },
+        {
+          "guard_id": "execution.result-capability-matches",
+          "kind": "FACT_EQUALS",
+          "fact_id": "execution.result_capability_matches",
+          "expected": true
+        },
+        {
+          "guard_id": "execution.result-revision-matches",
+          "kind": "FACT_EQUALS",
+          "fact_id": "execution.result_revision_matches",
+          "expected": true
+        }
+      ],
+      "evidence_requirements": [],
+      "commands": [
+        {
+          "command_id": "capability-execution.reserve",
+          "intent": "Durably reserve execution identity before any effect",
+          "idempotency_required": true
+        },
+        {
+          "command_id": "capability-execution.complete",
+          "intent": "Persist a safe capability execution result",
+          "idempotency_required": true
+        },
+        {
+          "command_id": "capability-execution.reconcile",
+          "intent": "Reconcile a possibly completed execution from authoritative terminal receipt evidence",
+          "idempotency_required": true
+        }
+      ],
+      "events": [
+        {
+          "event_type": "ai-core.capability-execution.reserved",
+          "meaning": "Execution identity was durably reserved in initial RESERVED state."
+        },
+        {
+          "event_type": "ai-core.capability-execution.resulted",
+          "meaning": "A safe durable capability result was persisted."
+        },
+        {
+          "event_type": "ai-core.capability-execution.reconciled",
+          "meaning": "A terminal execution receipt was reconciled into a durable result."
+        }
+      ],
+      "transitions": [
+        {
+          "transition_id": "capability-execution.complete",
+          "purpose": "NORMAL",
+          "axis_id": "lifecycle",
+          "from": [
+            "RESERVED"
+          ],
+          "to": "RESULT",
+          "command_id": "capability-execution.complete",
+          "event_type": "ai-core.capability-execution.resulted",
+          "guards": [
+            "execution.result-schema-valid",
+            "execution.result-context-matches",
+            "execution.result-capability-matches",
+            "execution.result-revision-matches"
+          ],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "capability-execution.reconcile-terminal",
+          "purpose": "NORMAL",
+          "axis_id": "lifecycle",
+          "from": [
+            "RESERVED"
+          ],
+          "to": "RESULT",
+          "command_id": "capability-execution.reconcile",
+          "event_type": "ai-core.capability-execution.reconciled",
+          "guards": [
+            "execution.result-schema-valid",
+            "execution.result-context-matches",
+            "execution.result-capability-matches",
+            "execution.result-revision-matches"
+          ],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "HYBRID",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        }
+      ],
+      "obligations": []
+    }
+  ]
+}
