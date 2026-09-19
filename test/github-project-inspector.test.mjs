@@ -24,6 +24,9 @@ test('GitHub inspector는 branch→commit→tree→package만 읽고 비밀 파�
     if(path.startsWith('repos/freepass-creator/freepass-admin/contents/package.json')) return{
       encoding:'base64',content:b64({scripts:{test:'node --test',build:'tsc'}}),
     };
+    if(path.startsWith('repos/freepass-creator/freepass-admin/contents/README.md')) return{
+      encoding:'base64',content:Buffer.from('# admin').toString('base64'),
+    };
     throw new Error('unexpected '+path);
   };
   const inspect=createGitHubProjectInspector({gh,clock:()=>Date.parse('2026-09-19T03:40:00Z')});
@@ -31,7 +34,8 @@ test('GitHub inspector는 branch→commit→tree→package만 읽고 비밀 파�
   assert.equal(result.subject_revision,'a'.repeat(40));
   assert.equal(result.commands.test,'npm run test');
   assert.equal(calls.some(x=>x.includes('contents/.env')),false);
-  assert.equal(calls.filter(x=>x.includes('/contents/')).length,1);
+  assert.equal(calls.filter(x=>x.includes('/contents/')).length,2);
+  assert.ok(result.evidence_refs.some(x=>x.startsWith('READ:freepass-creator/freepass-admin/README.md@')));
 });
 
 test('truncated Git tree는 불완전 source review라 거절한다',async()=>{
