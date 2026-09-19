@@ -284,6 +284,7 @@
     "2026-09-19 A-session Auth/Security/Audit survey: ERP4/Admin/AIOps/Sales/JPK patterns were distilled into non-canonical input covering role-org-scope-action authz, risk-class approvals, exact-subject binding, PII-safe audit and security release gates.",
     "2026-09-19 A-session Observability/QA survey: ERP4/Sales/JPK/AIOps patterns were distilled into non-canonical input for telemetry context, freshness, pipeline status, layered proof, negative controls, job heartbeat and production revision readback.",
     "2026-09-19 A-session Build/Deploy/Governance survey: ERP4/Admin/Sales/AIOps/AI Core/DevCenter patterns and SemVer/SLSA/SSDF/SBOM references were distilled into non-canonical input for CI gates, production proof, versioning, migration, deprecation, exceptions and rollback.",
-    "2026-09-19 A-session promotion matrix: research findings were classified by evidence maturity and routed to C/D/Security/QA/Governance; only canonical sessions may promote COMMON_ADOPTED."
+    "2026-09-19 A-session promotion matrix: research findings were classified by evidence maturity and routed to C/D/Security/QA/Governance; only canonical sessions may promote COMMON_ADOPTED.",
+    "2026-09-19 A-session second-evidence pass: stable error codes (Admin + Estimate branch) and exact-subject approval (AIOps + AI Core) were upgraded to CROSS_PROJECT_VERIFIED; production revision proof remains single-project verified because Estimate production observation is HOLD."
   ]
 }

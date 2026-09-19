@@ -118,3 +118,17 @@ A 세션이 조사한 내용을 B·C·D·Security·QA·Governance 세션이 다�
 ```
 
 즉 A 세션은 앞으로 **continuous comparative audit** 역할을 맡는다.
+
+
+## 2026-09-19 재검사 승격
+
+- `api.stable-error-code`: **PROJECT_VERIFIED → CROSS_PROJECT_VERIFIED**.
+  - FreePass Admin: typed `AppError` / stable code.
+  - FreePass Estimate `work/ui-baseline`: provider error `PROVIDER_UNAVAILABLE`을 execution blocker와 함께 보존하고 contract test가 확인.
+- `security.exact-subject-approval`: **PROJECT_VERIFIED → CROSS_PROJECT_VERIFIED**.
+  - AIOps: plan/artifact/target/command digest + TTL.
+  - AI Core: authority receipt가 `subject_revision`, scopes, ledger head, action/target, expiry를 다시 검증.
+- `release.production-revision-proof`는 **유지: PROJECT_VERIFIED**.
+  - Estimate에는 `/api/version` 구현과 contract/CI 근거가 있으나 실제 production serving revision 관측은 HOLD이므로 두 번째 운영증거로 세지 않는다.
+
+이 재검사는 “비슷해 보인다”가 아니라 현재 source/revision의 실행계약을 읽고 올린 것이다.

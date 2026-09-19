@@ -123,13 +123,15 @@
     {
       "id": "api.stable-error-code",
       "axis": "API/Error",
-      "evidence_level": "PROJECT_VERIFIED",
+      "evidence_level": "CROSS_PROJECT_VERIFIED",
       "projects": [
-        "freepass-admin"
+        "freepass-admin",
+        "freepass-estimate@work/ui-baseline"
       ],
       "target_session": "C",
       "finding": "machine code와 user message 분리; JPK는 문자열 반례",
-      "next_gate": "SECOND_PROJECT_REQUIRED"
+      "next_gate": "COMMON_ADOPTED_CANDIDATE",
+      "evidence_note": "Admin uses typed AppError/domain codes; Estimate preserves PROVIDER_UNAVAILABLE and validates it in check-quote-execution-contract."
     },
     {
       "id": "api.idempotency-key",
@@ -238,13 +240,15 @@
     {
       "id": "security.exact-subject-approval",
       "axis": "Security",
-      "evidence_level": "PROJECT_VERIFIED",
+      "evidence_level": "CROSS_PROJECT_VERIFIED",
       "projects": [
-        "aiops"
+        "aiops",
+        "ai-core"
       ],
       "target_session": "Security",
       "finding": "plan/artifact/target/command digest에 승인 결속",
-      "next_gate": "SECOND_PROJECT_REQUIRED"
+      "next_gate": "COMMON_ADOPTED_CANDIDATE",
+      "evidence_note": "AIOps binds approval to plan/artifact/target/command digests and TTL; AI Core authority receipts reverify subject_revision, scope, ledger_head, authorization target/action and expiry."
     },
     {
       "id": "security.audit-pii-scrub",
