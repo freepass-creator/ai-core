@@ -1,0 +1,106 @@
+{
+  "version": "2026-09-19-v1",
+  "status": "DRAFT_NORMATIVE",
+  "canonicalDoc": "docs/FREEPASS_UI_STANDARD.md",
+  "learningIntake": "docs/coordination/UI_LEARNING_INTAKE.md",
+  "authority": [
+    "latest-user-decision",
+    "FREEPASS_UI_STANDARD",
+    "SCREEN_DESIGN_STANDARD",
+    "product-ui-ssot",
+    "implementation"
+  ],
+  "mobile": {
+    "explicitDepth": true,
+    "depths": [
+      0,
+      1,
+      2
+    ],
+    "topbarBaselinePx": 52,
+    "topTaskActions": false,
+    "bottomNavigation": {
+      "depth0Only": true,
+      "minItems": 3,
+      "maxItems": 5,
+      "heightPx": [
+        58,
+        60
+      ],
+      "safeArea": true
+    },
+    "actionBar": {
+      "depth": [
+        1,
+        2
+      ],
+      "heightPx": 44,
+      "touchMinPx": 44,
+      "twoActionRatio": "3:7",
+      "primaryMax": 1
+    }
+  },
+  "typography": {
+    "internalApp": {
+      "titlePx": 18,
+      "mainPx": 14,
+      "supportPx": 12
+    },
+    "mobileInputMinPx": 16
+  },
+  "controls": {
+    "standardVisiblePx": 40,
+    "taskActionPx": 44,
+    "touchMinPx": 44,
+    "frequentOneHandHitAreaRecommendedPx": 48,
+    "pillDefault": false
+  },
+  "list": {
+    "singleTap": true,
+    "doubleClickForbidden": true,
+    "minInteractiveHeightPx": 64,
+    "gapBaselinePx": 8,
+    "densityProfiles": [
+      "compact-2-line",
+      "dense-3-line"
+    ],
+    "numericTabular": true
+  },
+  "adoptionStates": [
+    "CANDIDATE",
+    "PROJECT_VERIFIED",
+    "CROSS_PROJECT_VERIFIED",
+    "COMMON_ADOPTED"
+  ],
+  "verificationStates": [
+    "DOCUMENTED",
+    "STATIC_CHECKED",
+    "RENDER_VERIFIED",
+    "USER_APPROVED"
+  ],
+  "profiles": [
+    "estimate",
+    "sales",
+    "admin",
+    "erp4-white-label",
+    "homepage",
+    "partner"
+  ],
+  "renderedMobile390": [
+    "single-primary-panel",
+    "no-header-task-cta",
+    "depth0-bottom-nav",
+    "depth12-actionbar",
+    "action-height>=44",
+    "safe-area",
+    "single-tap-list",
+    "no-horizontal-overflow",
+    "consistent-title-hierarchy"
+  ],
+  "renderedDesktop1280": [
+    "panel-role",
+    "bottom-actionbar",
+    "numeric-alignment",
+    "keyboard-focus"
+  ]
+}
