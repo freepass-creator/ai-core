@@ -1996,11 +1996,11 @@
       "description": "Canonical OrderStore child-task lifecycle consumed by OrderStore through D Workflow Engine; parent Order status is derived and heartbeat remains a lease fact update.",
       "source_authority": {
         "repository": "freepass-creator/ai-core",
-        "revision": "a86816cad5b386719934205c0cb36c6b24ea728f",
+        "revision": "c1f4f102a26be0b9af5b6559ac2c3ba61ac6d2b3",
         "files": [
           {
             "path": "src/orders/store.mjs",
-            "blob_sha": "8a78d41fc44628a442c836ebf370f29870211aa3"
+            "blob_sha": "2262b219388f8ab0b6bb50a1f7d80eff631ccb12"
           }
         ]
       },
