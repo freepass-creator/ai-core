@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "registry_version": "1.4.0",
+  "registry_version": "1.5.0",
   "primitives": [
     {
       "primitive_id": "workflow.fact-vs-state",
@@ -1991,9 +1991,9 @@
     {
       "workflow_id": "ai-core.order-task-lifecycle",
       "version": "0.1.0",
-      "adoption_status": "SHADOW",
+      "adoption_status": "CANONICAL",
       "owner": "D-session-workflow-standard",
-      "description": "Shadow model of OrderStore child-task coordination. Parent Order status remains a derived aggregate projection and heartbeat remains a lease fact update.",
+      "description": "Canonical OrderStore child-task lifecycle consumed by OrderStore through D Workflow Engine; parent Order status is derived and heartbeat remains a lease fact update.",
       "source_authority": {
         "repository": "freepass-creator/ai-core",
         "revision": "a86816cad5b386719934205c0cb36c6b24ea728f",
@@ -2622,9 +2622,9 @@
     {
       "workflow_id": "ai-core.capability-execution",
       "version": "0.1.0",
-      "adoption_status": "SHADOW",
+      "adoption_status": "CANONICAL",
       "owner": "D-session-workflow-standard",
-      "description": "Shadow model of capability execution coordination. RESERVED/RESULT are persistent coordination states; reconcile HOLD is a projection, not a stored business state.",
+      "description": "Canonical capability execution coordination lifecycle consumed by the coordinator through D Workflow Engine. RESERVED/RESULT are persistent states; reconcile HOLD remains a projection.",
       "source_authority": {
         "repository": "freepass-creator/ai-core",
         "revision": "81ea6d0edfb2581edc73696e30b911168d18a6ab",
