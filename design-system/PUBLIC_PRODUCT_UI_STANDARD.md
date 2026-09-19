@@ -87,10 +87,24 @@
 ### Mobile
 
 - 1열 유지
-- 모바일 폰트는 넓은 웹 조밀화의 영향을 받지 않는다
-- 터치 편의 때문에 카드 자체를 무리하게 축소하지 않는다
+- 모바일은 1열과 사진 폭을 유지하되 카드 자체의 세로 밀도만 조인다
+- 카드 세로 간격 24
+- 차량명 15px / 월 대여료 18px / 보조정보 13px / 캡션 12px
+- 기본 컨트롤 44px, 빠른필터 32px, 아이콘 버튼 40px, 최소 터치영역 44px
+- 검색 input은 iOS 자동확대 방지를 위해 16px 유지
 
-## 5. Typography
+## 5. Brand Color
+
+ERP4 MAIN / freepasserp.com Public Product 기본 팔레트는 서비스 BI 정본을 따른다.
+
+- Primary navy: `#1B2A4A`
+- Secondary ERP blue: `#5B9FD4`
+- Primary navy는 선택/주요 실행/핵심 강조에 사용
+- ERP blue는 검색 일치 강조, focus glow 등 보조 반응에 제한
+- green/red/orange는 브랜드 장식이 아니라 성공/위험/주의 같은 의미 상태에만 사용
+- White-label 채널은 각 채널의 실제 CI brandColor가 우선한다
+
+## 6. Typography
 
 타이포는 크기 자체보다 **서로의 비율**을 지킨다.
 
@@ -103,7 +117,7 @@
 
 상세화면은 목록보다 읽기 중심이므로 목록 카드 축소값을 그대로 적용하지 않는다.
 
-## 6. Spacing
+## 7. Spacing
 
 배치 여백은 의미별 사다리를 사용한다.
 
@@ -117,7 +131,7 @@
 
 임의의 10, 14, 18, 20, 28 같은 배치 여백을 새로 만들지 않는다. 광학 보정은 예외다.
 
-## 7. Radius
+## 8. Radius
 
 - 표시/작은 badge: 8
 - control: 10
@@ -126,7 +140,7 @@
 
 모든 요소를 pill로 만들지 않는다.
 
-## 8. Search Feedback
+## 9. Search Feedback
 
 검색 결과는 별도 설명 배지나 새 줄을 추가하기보다 **이미 보이는 일치 값**을 옅게 강조한다.
 
@@ -135,7 +149,7 @@
 - 강조는 브랜드색의 매우 옅은 배경 수준으로 제한
 - 결과 카드 구조와 줄 수는 검색 때문에 늘리지 않는다
 
-## 9. Detail
+## 10. Detail
 
 ERP4 White Label 상세를 현재 기준 구현으로 사용하되, 상세는 계속 미세 개선 대상이다.
 
@@ -158,7 +172,7 @@ ERP4 White Label 상세를 현재 기준 구현으로 사용하되, 상세는 �
 4. 긴 값 줄바꿈
 5. sticky header/action의 높이와 충돌
 
-## 10. Profile Separation
+## 11. Profile Separation
 
 ### Admin Profile
 
@@ -178,7 +192,7 @@ ERP4 White Label 상세를 현재 기준 구현으로 사용하되, 상세는 �
 
 두 프로필의 픽셀 값을 억지로 같게 만들지 않는다.
 
-## 11. Acceptance
+## 12. Acceptance
 
 공개형 상품 UI 변경 시 최소 다음을 확인한다.
 
