@@ -2207,6 +2207,20 @@
         "keyboard-or-equivalent",
         "mobile-desktop",
         "failure-path"
+      ],
+      "evidence": [
+        {
+          "level": "NORMATIVE",
+          "refs": [
+            "https://www.w3.org/WAI/WCAG22/Understanding/reflow.html"
+          ]
+        },
+        {
+          "level": "CROSS_PROJECT_VERIFIED",
+          "refs": [
+            "docs/research/GLOBAL_PRODUCT_STANDARD_EVIDENCE_2026-09-19.md"
+          ]
+        }
       ]
     },
     {
@@ -2232,6 +2246,15 @@
         "keyboard-or-equivalent",
         "mobile-desktop",
         "failure-path"
+      ],
+      "evidence": [
+        {
+          "level": "NORMATIVE",
+          "refs": [
+            "https://www.unicode.org/reports/tr35/",
+            "https://www.w3.org/International/"
+          ]
+        }
       ]
     },
     {
@@ -2258,6 +2281,15 @@
         "keyboard-or-equivalent",
         "mobile-desktop",
         "failure-path"
+      ],
+      "evidence": [
+        {
+          "level": "NORMATIVE",
+          "refs": [
+            "https://www.w3.org/WAI/WCAG22/Understanding/focus-not-obscured-minimum",
+            "https://www.w3.org/WAI/ARIA/apg/"
+          ]
+        }
       ]
     },
     {
@@ -2281,6 +2313,15 @@
         "keyboard-or-equivalent",
         "mobile-desktop",
         "failure-path"
+      ],
+      "evidence": [
+        {
+          "level": "PLATFORM_CONSENSUS",
+          "refs": [
+            "https://developer.apple.com/design/human-interface-guidelines/",
+            "docs/research/GLOBAL_PRODUCT_STANDARD_EVIDENCE_2026-09-19.md"
+          ]
+        }
       ]
     },
     {
@@ -2307,6 +2348,15 @@
         "locale-matrix",
         "round-trip-parsing",
         "failure-path"
+      ],
+      "evidence": [
+        {
+          "level": "NORMATIVE",
+          "refs": [
+            "https://cldr.unicode.org/",
+            "https://www.unicode.org/reports/tr35/"
+          ]
+        }
       ]
     },
     {
@@ -2334,6 +2384,15 @@
         "rtl-layout",
         "mixed-bidi",
         "mobile-desktop"
+      ],
+      "evidence": [
+        {
+          "level": "NORMATIVE",
+          "refs": [
+            "https://www.w3.org/International/docs/bp-html-bidi/",
+            "https://www.w3.org/International/articles/lang-bidi-use-cases/"
+          ]
+        }
       ]
     },
     {
@@ -2361,6 +2420,15 @@
         "long-labels",
         "multiline-actions",
         "mobile-desktop"
+      ],
+      "evidence": [
+        {
+          "level": "PLATFORM_CONSENSUS",
+          "refs": [
+            "https://developer.apple.com/design/human-interface-guidelines/inclusion",
+            "docs/research/GLOBAL_PRODUCT_STANDARD_EVIDENCE_2026-09-19.md"
+          ]
+        }
       ]
     },
     {
@@ -2386,6 +2454,14 @@
         "reduced-motion",
         "failure-path",
         "mobile-desktop"
+      ],
+      "evidence": [
+        {
+          "level": "PLATFORM_CONSENSUS",
+          "refs": [
+            "https://developer.apple.com/design/human-interface-guidelines/accessibility"
+          ]
+        }
       ]
     },
     {
@@ -2413,6 +2489,20 @@
         "high-contrast",
         "forced-colors",
         "focus-visible"
+      ],
+      "evidence": [
+        {
+          "level": "NORMATIVE",
+          "refs": [
+            "https://www.w3.org/TR/WCAG22/"
+          ]
+        },
+        {
+          "level": "PLATFORM_CONSENSUS",
+          "refs": [
+            "https://developer.apple.com/design/human-interface-guidelines/accessibility"
+          ]
+        }
       ]
     },
     {
@@ -2441,6 +2531,15 @@
         "200%-zoom",
         "400%-reflow",
         "portrait-landscape"
+      ],
+      "evidence": [
+        {
+          "level": "NORMATIVE",
+          "refs": [
+            "https://www.w3.org/WAI/WCAG22/Understanding/reflow.html",
+            "https://www.w3.org/WAI/WCAG22/Understanding/orientation.html"
+          ]
+        }
       ]
     },
     {
@@ -2472,6 +2571,20 @@
         "keyboard-or-equivalent",
         "ime-composition",
         "virtual-keyboard"
+      ],
+      "evidence": [
+        {
+          "level": "NORMATIVE",
+          "refs": [
+            "https://www.w3.org/TR/WCAG22/"
+          ]
+        },
+        {
+          "level": "CROSS_PROJECT_VERIFIED",
+          "refs": [
+            "docs/coordination/FREEPASS_SALES_RUNTIME_LEARNING.md"
+          ]
+        }
       ]
     }
   ]
