@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "registry_version": "1.3.0",
+  "registry_version": "1.4.0",
   "primitives": [
     {
       "primitive_id": "workflow.fact-vs-state",
@@ -131,9 +131,9 @@
     {
       "workflow_id": "ai-core.work-lifecycle",
       "version": "0.1.0",
-      "adoption_status": "SHADOW",
+      "adoption_status": "CANONICAL",
       "owner": "D-session-workflow-standard",
-      "description": "Exact shadow model of scripts/work-ledger.mjs lifecycle semantics. It does not replace the current ledger authority.",
+      "description": "Canonical AI Core Work lifecycle state graph consumed by scripts/work-ledger.mjs. Work Ledger remains canonical append-only event/hash/revision/evidence history.",
       "state_axes": [
         {
           "axis_id": "lifecycle",
