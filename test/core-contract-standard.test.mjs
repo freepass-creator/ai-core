@@ -166,3 +166,27 @@ test('receipt accepts compact operation metrics without project-specific schema 
   };
   assert.equal(validate(receipt),true);
 });
+
+
+test('application service contract keeps orchestration separate from domain engine',()=>{
+  const validate=schema('https://schemas.freepass.ai/core/application-service/v1');
+  const service={
+    schema_version:'core-application-service-contract/v1',
+    service_id:'freepass.application.submit',version:'1.0.0',
+    source:{locator:'src/services/applications.ts',revision:'git:abc'},
+    use_cases:[
+      {name:'submit',input_contract:'SubmitApplicationInput',output_contract:'SubmitResult'},
+      {name:'cancel',input_contract:'CancelInput',output_contract:'CancelResult'}
+    ],
+    required_ports:[
+      {port_id:'application.repository',port_version:'v1'},
+      {port_id:'product.repository',port_version:'v1'},
+      {port_id:'actor.provider',port_version:'v1'}
+    ],
+    side_effects:true,idempotency:'REQUIRED',actor_requirement:'REQUIRED',
+    transaction_boundary:'REPOSITORY_ATOMIC',
+    error_codes:['NOT_FOUND','VERSION_MISMATCH','CANCELLED'],
+    verification_profile:['service-unit','repository-contract']
+  };
+  assert.equal(validate(service),true);
+});
