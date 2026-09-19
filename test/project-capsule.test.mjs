@@ -10,6 +10,7 @@ const base={
   observed_at:'2026-09-19T03:40:00Z',
   tree_paths:['README.md','AGENTS.md','package.json','package-lock.json','src/index.ts','tsconfig.json'],
   package_json:{scripts:{test:'node --test',build:'tsc',dev:'vite'},devDependencies:{vite:'latest'}},
+  readme_text:'# FreePass Admin\n관리자 프로젝트',
 };
 
 test('Node 프로젝트를 revision-bound capsule로 만든다',()=>{
@@ -28,7 +29,7 @@ test('Node 프로젝트를 revision-bound capsule로 만든다',()=>{
 test('정적 홈페이지는 별도 build가 없어도 이유를 남기고 review 후보가 된다',()=>{
   const c=buildProjectCapsule({
     ...base,project_id:'freepass-homepage',repository:'freepass-creator/freepasshomepage',
-    tree_paths:['README.md','index.html','css/app.css','js/app.js'],package_json:null,
+    tree_paths:['README.md','index.html','css/app.css','js/app.js'],package_json:null,readme_text:'# 홈페이지',
   });
   assert.equal(c.classification.kind,'STATIC_WEB');
   assert.equal(c.commands.install,null);
@@ -38,7 +39,7 @@ test('정적 홈페이지는 별도 build가 없어도 이유를 남기고 revie
 });
 
 test('README와 실행 진입점이 없는 알 수 없는 저장소는 HOLD다',()=>{
-  const c=buildProjectCapsule({...base,tree_paths:['random.bin'],package_json:null});
+  const c=buildProjectCapsule({...base,tree_paths:['random.bin'],package_json:null,readme_text:null});
   assert.equal(c.readiness.status,'HOLD');
   assert.ok(c.readiness.blockers.includes('README_MISSING'));
   assert.ok(c.readiness.blockers.includes('PROJECT_KIND_UNKNOWN'));
