@@ -513,3 +513,42 @@ For both Capability-to-Work bridges:
 - existing Control Tower / Work Ledger authority remains required
 
 This prevents a capability receipt from becoming an accidental Work completion event.
+
+
+## Recovery Slot No-Replay Pilot
+
+A-session production evidence from FreePass ERP4 exposed a recovery-specific gap not covered by ordinary request idempotency.
+
+The verified failure class:
+
+`native logical execution succeeds -> recovery reconciliation misses that success -> fallback replays the same logical execution`.
+
+D registers this as:
+
+- primitive: `workflow.recovery-slot-no-replay`
+- policy registry: `registry/workflow-recovery-policies.json`
+- adoption: **PILOT**
+- evidence: **PROJECT_VERIFIED**
+- source project: `freepasserp4`
+
+The policy requires:
+
+1. native, fallback and downstream paths share one **logical execution identity**
+2. recovery eligibility is evaluated only after success-evidence reconciliation
+3. successful native execution suppresses fallback
+4. successful prior recovery suppresses another recovery
+5. recovery cursor/slot progress is monotonic
+6. replay after known success is forbidden
+7. ambiguous outcome results in **HOLD**, not blind retry
+
+This does not import ERP4-specific times, workflow names or run IDs.
+
+### C-session dependency
+
+D owns the recovery state-machine semantics, but the cross-path identity field contract belongs to C.
+
+The recovery policy therefore records:
+
+`identity_owner=C / identity_contract_status=PENDING`
+
+Until C binds the shared logical execution identity contract and a second independent project proves the same failure/implementation class, this policy must not be promoted to COMMON_ADOPTED.
