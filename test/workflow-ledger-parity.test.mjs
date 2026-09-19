@@ -4,6 +4,7 @@ import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { readFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { appendLedgerEvent, verifyLedgerText } from '../scripts/work-ledger.mjs';
 import { createWorkLedgerShadow } from '../src/workflow/work-ledger-shadow.mjs';
 
@@ -290,5 +291,18 @@ test('unverified BLOCKED cannot jump into verified-path states in either impleme
     }
   } finally {
     await fixture.close();
+  }
+});
+
+
+test('SHADOW source authority is pinned to the exact Work Ledger blobs', () => {
+  assert.equal(workflow.adoption_status, 'SHADOW');
+  assert.ok(workflow.source_authority);
+  for (const source of workflow.source_authority.files) {
+    const actual = execFileSync('git', ['hash-object', source.path], {
+      cwd: new URL('..', import.meta.url),
+      encoding: 'utf8',
+    }).trim();
+    assert.equal(actual, source.blob_sha, source.path);
   }
 });
