@@ -37,7 +37,8 @@
     "core:capability": "node scripts/core-capability.mjs",
     "direction:validate": "node scripts/validate-directions.mjs",
     "project:inspect": "node scripts/project-capsule.mjs",
-    "contracts:validate": "node scripts/validate-core-contracts.mjs"
+    "contracts:validate": "node scripts/validate-core-contracts.mjs",
+    "contracts:compat": "node scripts/check-contract-compatibility.mjs"
   },
   "dependencies": {
     "ajv": "8.20.0",
