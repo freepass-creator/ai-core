@@ -2,10 +2,10 @@
   "schema_version": "1.0",
   "phase": "PHASE_1",
   "status": "HOLD",
-  "observed_revision": "0c45a8ca8b3f049d77388e976e01df18037ed3d8",
+  "observed_revision": "7d3adb8ed9900a8cf1844c689415be35efcb8531",
   "ci": {
-    "run_id": 35446074279,
-    "head_sha": "0c45a8ca8b3f049d77388e976e01df18037ed3d8",
+    "run_id": 35446311469,
+    "head_sha": "7d3adb8ed9900a8cf1844c689415be35efcb8531",
     "conclusion": "success"
   },
   "gates": {
@@ -96,25 +96,30 @@
     {
       "id": "D",
       "owner": "Workflow Platform",
-      "status": "HOLD",
-      "blockers": [
-        "Order inspection has not found a generic workflow registry plus transition validator/test/simulator on main.",
-        "D must decide whether current Control Tower/work-ledger primitives satisfy part of the baseline or a dedicated workflow layer must land."
-      ],
+      "status": "PASS",
+      "blockers": [],
       "evidence": [
         {
-          "path": "docs/CONTROL_TOWER.md"
-        },
-        {
-          "path": "contracts/work-ledger-event.schema.json"
-        },
-        {
-          "path": "docs/research/WORKFLOW_STATE_MACHINE_CROSS_REPO_FINDINGS_2026-09-19.md"
-        },
-        {
           "path": "docs/workflow/WORKFLOW_CONSTITUTION.md",
-          "revision": "6c9a295330db9a11fa8d1320e0af4b980fef2d32",
-          "note": "D candidate branch exists but CI run 35443899282 is red on recovery-policy reconciliation."
+          "revision": "7d3adb8ed9900a8cf1844c689415be35efcb8531",
+          "note": "Workflow ownership and constitutional semantics are canonical on main."
+        },
+        {
+          "path": "docs/workflow/STATE_MACHINE_SPECIFICATION.md",
+          "revision": "7d3adb8ed9900a8cf1844c689415be35efcb8531"
+        },
+        {
+          "path": "registry/workflows.json",
+          "revision": "7d3adb8ed9900a8cf1844c689415be35efcb8531"
+        },
+        {
+          "path": "src/workflow/engine.mjs",
+          "revision": "7d3adb8ed9900a8cf1844c689415be35efcb8531"
+        },
+        {
+          "path": "registry/workflow-recovery-policies.json",
+          "revision": "7d3adb8ed9900a8cf1844c689415be35efcb8531",
+          "note": "Recovery policy validator and negative controls passed on main CI run 35446311469."
         }
       ]
     }
