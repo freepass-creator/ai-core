@@ -6,8 +6,8 @@
 - AI Core Core Contract P0: PR #94
 - adoption registry: `registry/core-contract-adoption.json`
 - project count: 4
-- canonical C contracts accounted per project: 24
-- total assessment cells: 96
+- canonical C contracts accounted per project: 25
+- total assessment cells: 100
 
 ## 1. 판정 의미
 
@@ -282,3 +282,47 @@ Project evidence
 그리고 ERP4 `core.data-pipeline.v1` 평가는 `CORE_MATCH`에서 `MIGRATE/P0`로 정정했다.
 
 이건 ERP4를 나쁘다고 평가한 것이 아니라, **실제 운영 의미를 Core가 충분히 표현하지 못했던 공백을 발견한 것**이다.
+
+
+## 11. Application Service contract backfill
+
+FreePass Admin 실제 구조를 대입하면서 Core의 누락을 확인했다.
+
+기존 Core는:
+```
+Domain Engine
+  -> Port
+  -> Adapter
+```
+를 기계 계약으로 갖고 있었지만, 실제 프로젝트가 반복해서 사용하는:
+```
+Domain Engine
+  -> Application Service
+  -> Port
+  -> Adapter
+```
+중 **Application Service**가 문서에만 있고 machine contract가 없었다.
+
+그래서 `core.application-service.v1`을 추가했다.
+
+소유 의미:
+- use-case orchestration
+- required ports
+- actor requirement
+- idempotency requirement
+- transaction boundary request
+- service-level stable errors
+- verification profile
+
+금지:
+- Domain 규칙을 Service로 끌어올리기
+- provider 기술명을 Service 의미로 만들기
+- UI rendering 소유
+
+첫 adoption 판정:
+- FreePass Admin: CORE_MATCH / P0
+- FreePass Estimate: CORE_MATCH / P1
+- ERP4: MIGRATE / P1
+- Sales: MIGRATE / P1
+
+Binding Profile에는 optional `service_bindings`를 additive하게 추가했다.
