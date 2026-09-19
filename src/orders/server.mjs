@@ -280,8 +280,11 @@ export function startServer({
             input:data.input ?? {},
             perform:true,
           });
-          const durable = execution.complete(data.requestId, result);
-          return json(200, durable);
+          execution.complete(data.requestId, result);
+          /* 첫 성공 응답은 실제 capability 결과를 돌려준다.
+             영속 저장은 execution.complete()가 PII/상세 data를 제거한 safe receipt로 따로 보존한다.
+             같은 requestId 재요청은 위 replay 분기에서 safe receipt만 돌려 중복 실행을 막는다. */
+          return json(200, result);
         }
         if (rerouteMatch) {
           const order = store.get(rerouteMatch[1]);
