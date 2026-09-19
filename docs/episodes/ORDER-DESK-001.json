@@ -102,6 +102,7 @@
     "docs/research/A_SESSION_DISCOVERY_DEVCENTER_PROOF_INPUT_BINDING_2026-09-19.md",
     "docs/research/A_SESSION_DISCOVERY_ERP4_RECOVERY_SLOT_REPLAY_2026-09-19.md",
     "docs/research/A_SESSION_DISCOVERY_FP_SETTLEMENT_UI_CONFORMANCE_2026-09-19.md",
+    "docs/research/A_SESSION_DISCOVERY_FREEPASSERP3_CLIENT_RELEASE_FRESHNESS_2026-09-19.md",
     "docs/research/A_SESSION_DISCOVERY_RENMAN_COMPENSATED_MULTIWRITE_2026-09-19.md",
     "docs/research/A_SESSION_DISCOVERY_TEAMJPKWORK_UI_CONFORMANCE_SECOND_EVIDENCE_2026-09-19.md",
     "docs/research/A_SESSION_DISCOVERY_WORKCONTROL_EVIDENCE_CLOSURE_2026-09-19.md",
@@ -308,6 +309,7 @@
     "2026-09-19 A-session promotion matrix: research findings were classified by evidence maturity and routed to C/D/Security/QA/Governance; only canonical sessions may promote COMMON_ADOPTED.",
     "2026-09-19 A-session second-evidence pass: stable error codes (Admin + Estimate branch) and exact-subject approval (AIOps + AI Core) were upgraded to CROSS_PROJECT_VERIFIED; production revision proof remains single-project verified because Estimate production observation is HOLD.",
     "2026-09-19 A-session hold/resume pass: AIOps defer-until and Sales next-contact queue semantics provide independent second-project evidence, upgrading workflow.hold-resume to CROSS_PROJECT_VERIFIED.",
-    "2026-09-19 Order Phase 1 closeout: current main CI exposed successor changed_files drift after new session/closeout and A-session evidence files landed. The inventory was regenerated from the exact base_revision...main diff; this is evidence bookkeeping only and does not broaden ORDER-DESK scope."
+    "2026-09-19 Order Phase 1 closeout: current main CI exposed successor changed_files drift after new session/closeout and A-session evidence files landed. The inventory was regenerated from the exact base_revision...main diff; this is evidence bookkeeping only and does not broaden ORDER-DESK scope.",
+    "2026-09-19 Order closeout freeze: successor inventory was regenerated after concurrent A-session research and closeout-gate commits so the evidence ledger again matches the exact base_revision...main file set."
   ]
 }
