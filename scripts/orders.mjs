@@ -26,6 +26,10 @@ try {
     let client;
     if (options.local) { store = new OrderStore(options.db); client = store; }
     else client = new RemoteOrderClient(connectionOptions({ endpoint: action === 'connect' ? first : options.endpoint, ledgerId: options.ledger }));
+    const remoteOnly = (method) => {
+      if (typeof client?.[method] !== 'function') throw new Error(`${action}은 중앙 오더 서버 연결에서만 지원합니다.`);
+      return client[method].bind(client);
+    };
     let result;
     if (action === 'connect') {
       const meta = await client.meta();
@@ -41,6 +45,12 @@ try {
     else if (action === 'create') result = await client.create(readJson(first));
     else if (action === 'act') result = await client.mutate(first, readJson(second));
     else if (action === 'packet') result = await client.packet(first, second);
+    else if (action === 'work') result = await remoteOnly('workProjection')(first);
+    else if (action === 'work-intake') result = await remoteOnly('workIntake')(first);
+    else if (action === 'capability') result = await remoteOnly('capabilityPlan')(first);
+    else if (action === 'capability-run') result = await remoteOnly('runCapability')(first, readJson(second));
+    else if (action === 'capability-results') result = await remoteOnly('capabilityResults')(first);
+    else if (action === 'reroute') result = await remoteOnly('reroute')(first, readJson(second));
     else if (action === 'name') result = await client.name(first);
     else if (action === 'export') {
       const orders = await client.list();
