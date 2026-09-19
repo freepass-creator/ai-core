@@ -1,4 +1,4 @@
-import { randomUUID } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 
 export class WorkflowError extends Error {
   constructor(code, details = {}) {
@@ -13,7 +13,19 @@ const need = (condition, code, details = {}) => {
   if (!condition) throw new WorkflowError(code, details);
 };
 
-const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+function canonical(value) {
+  if (Array.isArray(value)) return value.map(canonical);
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(Object.keys(value).sort().map(key => [key, canonical(value[key])]));
+  }
+  return value;
+}
+
+function digest(value) {
+  return `sha256:${createHash('sha256').update(JSON.stringify(canonical(value))).digest('hex')}`;
+}
+
+const same = (a, b) => digest(a) === digest(b);
 
 function indexWorkflow(workflow) {
   const axes = new Map(workflow.state_axes.map(axis => [axis.axis_id, {
@@ -71,6 +83,21 @@ function computeDelay(retry, attempt) {
   return 0;
 }
 
+function makeIntentFingerprint({ workflow, transition_id, command_id, entity_id, command_payload }) {
+  const command_payload_digest = digest(command_payload ?? {});
+  return {
+    command_payload_digest,
+    intent_fingerprint: digest({
+      workflow_id: workflow.workflow_id,
+      workflow_version: workflow.version,
+      transition_id,
+      command_id,
+      entity_id: entity_id ?? null,
+      command_payload_digest,
+    }),
+  };
+}
+
 export function createWorkflowEngine(workflow, {
   now = () => new Date().toISOString(),
   idFactory = () => randomUUID(),
@@ -93,7 +120,10 @@ export function createWorkflowEngine(workflow, {
     const facts = context.facts ?? {};
     for (const guardId of transition.guards) {
       const guard = idx.guards.get(guardId);
-      if (!guard) { reasons.push(`GUARD_UNKNOWN:${guardId}`); continue; }
+      if (!guard) {
+        reasons.push(`GUARD_UNKNOWN:${guardId}`);
+        continue;
+      }
       const builtIn = evaluateBuiltInGuard(guard, facts);
       const result = builtIn === null
         ? (evaluateGuard ? Boolean(evaluateGuard(guard, context, projection, transition)) : false)
@@ -105,8 +135,14 @@ export function createWorkflowEngine(workflow, {
     for (const evidenceId of transition.required_evidence) {
       const requirement = idx.evidence.get(evidenceId);
       const supplied = submittedEvidence.get(evidenceId);
-      if (!requirement) { reasons.push(`EVIDENCE_REQUIREMENT_UNKNOWN:${evidenceId}`); continue; }
-      if (!supplied) { reasons.push(`EVIDENCE_MISSING:${evidenceId}`); continue; }
+      if (!requirement) {
+        reasons.push(`EVIDENCE_REQUIREMENT_UNKNOWN:${evidenceId}`);
+        continue;
+      }
+      if (!supplied) {
+        reasons.push(`EVIDENCE_MISSING:${evidenceId}`);
+        continue;
+      }
       if (supplied.verification !== requirement.verification) {
         reasons.push(`EVIDENCE_VERIFICATION_MISMATCH:${evidenceId}`);
       }
@@ -117,7 +153,9 @@ export function createWorkflowEngine(workflow, {
       const byRole = approvalsByRole(context.approvals);
       const roleSatisfied = role => (byRole.get(role)?.length ?? 0) > 0;
       if (approval.policy === 'ALL') {
-        for (const role of approval.required_roles) if (!roleSatisfied(role)) reasons.push(`APPROVAL_MISSING:${role}`);
+        for (const role of approval.required_roles) {
+          if (!roleSatisfied(role)) reasons.push(`APPROVAL_MISSING:${role}`);
+        }
       } else if (approval.policy === 'ANY_ONE' && !approval.required_roles.some(roleSatisfied)) {
         reasons.push('APPROVAL_MISSING:ANY_ONE');
       }
@@ -127,7 +165,12 @@ export function createWorkflowEngine(workflow, {
       }
     }
 
-    return { eligible: reasons.length === 0, reasons, from_state: fromState, to_state: transition.to };
+    return {
+      eligible: reasons.length === 0,
+      reasons,
+      from_state: fromState,
+      to_state: transition.to,
+    };
   }
 
   function availableActions(projection, context = {}) {
@@ -154,6 +197,7 @@ export function createWorkflowEngine(workflow, {
     projection,
     transition_id,
     command_id,
+    command_payload = {},
     actor,
     reason = null,
     permissions = [],
@@ -168,10 +212,6 @@ export function createWorkflowEngine(workflow, {
   }) {
     need(projection && typeof projection === 'object', 'PROJECTION_REQUIRED');
     need(Number.isInteger(projection.revision) && projection.revision >= 0, 'PROJECTION_REVISION_INVALID');
-    need(expected_revision === projection.revision, 'VERSION_MISMATCH', {
-      expected_revision,
-      current_revision: projection.revision,
-    });
 
     const transition = idx.transitions.get(transition_id);
     need(transition, 'TRANSITION_UNKNOWN', { transition_id });
@@ -179,18 +219,35 @@ export function createWorkflowEngine(workflow, {
 
     const command = idx.commands.get(command_id);
     need(command, 'COMMAND_UNKNOWN', { command_id });
-    if (command.idempotency_required) need(typeof idempotency_key === 'string' && idempotency_key.length > 0, 'IDEMPOTENCY_KEY_REQUIRED');
+    if (command.idempotency_required) {
+      need(typeof idempotency_key === 'string' && idempotency_key.length > 0, 'IDEMPOTENCY_KEY_REQUIRED');
+    }
+
+    const identity = makeIntentFingerprint({
+      workflow,
+      transition_id,
+      command_id,
+      entity_id: projection.entity_id,
+      command_payload,
+    });
 
     if (idempotency_key) {
       const previous = history.find(item => item.idempotency_key === idempotency_key);
       if (previous) {
-        const sameIntent = previous.transition_id === transition_id
-          && previous.command_id === command_id
-          && previous.entity_id === projection.entity_id;
-        need(sameIntent, 'IDEMPOTENCY_CONFLICT', { idempotency_key });
+        const previousFingerprint = previous.intent_fingerprint ?? previous.result?.intent_fingerprint ?? null;
+        need(previousFingerprint === identity.intent_fingerprint, 'IDEMPOTENCY_CONFLICT', {
+          idempotency_key,
+          previous_intent_fingerprint: previousFingerprint,
+          current_intent_fingerprint: identity.intent_fingerprint,
+        });
         return { ...previous.result, replayed: true };
       }
     }
+
+    need(expected_revision === projection.revision, 'VERSION_MISMATCH', {
+      expected_revision,
+      current_revision: projection.revision,
+    });
 
     const baseContext = { actor, permissions, facts, evidence, approvals };
     let inspected = inspectTransition(projection, transition, baseContext);
@@ -199,8 +256,12 @@ export function createWorkflowEngine(workflow, {
       const policy = transition.manual_override;
       need(policy.allowed, 'MANUAL_OVERRIDE_NOT_ALLOWED');
       const overridePermissions = permissionSet(permissions);
-      for (const required of policy.permissions) need(overridePermissions.has(required), 'MANUAL_OVERRIDE_PERMISSION_MISSING', { permission: required });
-      if (policy.requires_reason) need(typeof reason === 'string' && reason.trim().length > 0, 'MANUAL_OVERRIDE_REASON_REQUIRED');
+      for (const required of policy.permissions) {
+        need(overridePermissions.has(required), 'MANUAL_OVERRIDE_PERMISSION_MISSING', { permission: required });
+      }
+      if (policy.requires_reason) {
+        need(typeof reason === 'string' && reason.trim().length > 0, 'MANUAL_OVERRIDE_REASON_REQUIRED');
+      }
 
       const bypass = new Set(policy.can_bypass);
       const remaining = inspected.reasons.filter(code => {
@@ -214,7 +275,9 @@ export function createWorkflowEngine(workflow, {
 
     need(inspected.eligible, 'TRANSITION_GUARD_REJECTED', { reasons: inspected.reasons });
 
-    if (transition.audit.reason_required) need(typeof reason === 'string' && reason.trim().length > 0, 'AUDIT_REASON_REQUIRED');
+    if (transition.audit.reason_required) {
+      need(typeof reason === 'string' && reason.trim().length > 0, 'AUDIT_REASON_REQUIRED');
+    }
 
     const timestamp = now();
     const event_id = idFactory();
@@ -232,6 +295,8 @@ export function createWorkflowEngine(workflow, {
       workflow_version: workflow.version,
       transition_id,
       command_id,
+      command_payload_digest: identity.command_payload_digest,
+      intent_fingerprint: identity.intent_fingerprint,
       axis_id: transition.axis_id,
       entity_id: projection.entity_id ?? null,
       from_state: inspected.from_state,
@@ -247,13 +312,20 @@ export function createWorkflowEngine(workflow, {
       manual_override: override ? {
         requested: true,
         bypassed: transition.manual_override.can_bypass,
-      } : { requested: false, bypassed: [] },
+      } : {
+        requested: false,
+        bypassed: [],
+      },
     };
 
     const audit = {
       audit_id: idFactory(),
       workflow_id: workflow.workflow_id,
+      workflow_version: workflow.version,
       transition_id,
+      command_id,
+      command_payload_digest: identity.command_payload_digest,
+      intent_fingerprint: identity.intent_fingerprint,
       entity_id: projection.entity_id ?? null,
       actor: actor ?? null,
       changed_at: timestamp,
@@ -272,13 +344,17 @@ export function createWorkflowEngine(workflow, {
     return {
       status: 'TRANSITION_ACCEPTED',
       replayed: false,
+      intent_fingerprint: identity.intent_fingerprint,
       next_projection: nextProjection,
       event,
       audit,
       effects: structuredClone(transition.effects),
       recovery: {
         reversible: transition.reversible,
-        compensation_transition_id: transition.compensation_transition_id ?? transition.failure.compensation_transition_id ?? null,
+        compensation_transition_id:
+          transition.compensation_transition_id
+          ?? transition.failure.compensation_transition_id
+          ?? null,
         retry: structuredClone(transition.retry),
         failure: structuredClone(transition.failure),
         timeout: transition.timeout ? structuredClone(transition.timeout) : null,
@@ -291,8 +367,11 @@ export function createWorkflowEngine(workflow, {
     const transition = idx.transitions.get(transition_id);
     need(transition, 'TRANSITION_UNKNOWN', { transition_id });
     need(Number.isInteger(attempt) && attempt >= 1, 'ATTEMPT_INVALID');
+
     const retry = transition.retry;
-    const retryable = retry.retryable_error_codes.length === 0 || retry.retryable_error_codes.includes(error_code);
+    const retryable = retry.retryable_error_codes.length === 0
+      || retry.retryable_error_codes.includes(error_code);
+
     if (retry.strategy !== 'NONE' && retryable && attempt < retry.max_attempts) {
       const delay = computeDelay(retry, attempt);
       return {
@@ -304,18 +383,22 @@ export function createWorkflowEngine(workflow, {
         occurred_at,
       };
     }
+
     return {
       action: transition.failure.on_exhausted,
       attempt,
       error_code,
       failure_state: transition.failure.failure_state ?? null,
-      compensation_transition_id: transition.failure.compensation_transition_id ?? transition.compensation_transition_id ?? null,
+      compensation_transition_id:
+        transition.failure.compensation_transition_id
+        ?? transition.compensation_transition_id
+        ?? null,
       escalation_event_type: transition.failure.escalation_event_type ?? null,
       occurred_at,
     };
   }
 
-  function dueAutomations(projection, event_type = null) {
+  function dueAutomations(projection, event_type = null, context = {}) {
     return workflow.transitions
       .filter(transition => transition.automation.mode !== 'MANUAL')
       .filter(transition => !event_type || transition.automation.trigger_event_types.includes(event_type))
@@ -323,7 +406,7 @@ export function createWorkflowEngine(workflow, {
         transition_id: transition.transition_id,
         command_id: transition.command_id,
         mode: transition.automation.mode,
-        inspection: inspectTransition(projection, transition, {}),
+        inspection: inspectTransition(projection, transition, context),
       }));
   }
 
