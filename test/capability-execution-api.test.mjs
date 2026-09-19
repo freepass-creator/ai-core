@@ -91,17 +91,19 @@ test('Order→Work 연결 뒤 local capability를 한 번 실행하고 durable r
   assert.equal(first.capability_id,'project.verify');
   assert.equal(first.work_id,linked.work_id);
   assert.equal(first.execution.performed,true);
-  assert.equal(Object.hasOwn(first.outcome,'data'),false,'durable receipt must omit adapter data');
+  assert.deepEqual(first.outcome.data,{secret:'not persisted'},'first response must preserve useful live result data');
   assert.equal(f.runs,1);
 
   const retry=await (await f.post(`/api/orders/${order.id}/capability/run`,command)).json();
-  assert.deepEqual(retry,first);
+  assert.equal(retry.status,'SUCCEEDED');
+  assert.equal(Object.hasOwn(retry.outcome,'data'),false,'replay returns the safe durable receipt');
   assert.equal(f.runs,1,'same requestId must never execute twice');
 
   const results=await (await fetch(`${f.url}/api/orders/${order.id}/capability/results`)).json();
   assert.equal(results.length,1);
   assert.equal(results[0].state,'RESULT');
   assert.equal(results[0].result.status,'SUCCEEDED');
+  assert.equal(Object.hasOwn(results[0].result.outcome,'data'),false,'durable result must omit adapter data');
 });
 
 test('같은 실행 requestId에 다른 input을 보내면 중복 실행 대신 충돌한다',async t=>{
