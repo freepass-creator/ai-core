@@ -39,8 +39,8 @@ Revision:
 `2d9fd07075aae7d6d64687fabbf61126e166c34c`
 
 핵심 판정:
-- CORE_MATCH: 8
-- MIGRATE: 11
+- CORE_MATCH: 7
+- MIGRATE: 12
 - D-owned: 1
 - N/A: 4
 
@@ -208,7 +208,8 @@ Core는 여전히 한 registry instance 안에서 canonical authority 하나만 
 ### 2순위 — ERP4
 - current ERP5 product source registry shadow 유지
 - fixed snapshot → Core snapshot
-- supplier ingest pipeline → Core data-pipeline
+- supplier ingest pipeline → Core data-pipeline (`BEST_EFFORT_BATCH`)
+- partial-success 가능한 supplier write에 durable PARTIAL/FAILED receipt
 - publish/write receipt
 - API error/request context
 - SHADOW → VALIDATED
@@ -261,3 +262,23 @@ Project evidence
 
 이 루프가 AI Core가 프로젝트를 일방적으로 덮는 방식이 아니라,
 **각 프로젝트의 실제 우위를 다시 AI Core 정본으로 흡수하면서 전체 시스템을 수렴시키는 방식**이다.
+
+
+## 10. ERP4 실제 writer 재감사
+
+2026-09-19 current main `44a67cedc5f0d3e38efc68f1e8f84e6c28ab97b3` 재확인 결과:
+
+- current main의 `scripts/ingest-all-suppliers.mts`는 **SSOT HARD GUARD**이며 production writer가 아니다.
+- 실제 production workflow `.github/workflows/erp5-ssot-refresh.yml`는 검증 엔진 `cf940df642edf315adbc6da2b4134fbad53da160`을 pin한다.
+- pinned engine의 `ingest-all-suppliers.mts`는 전체 source preflight 후 supplier별 sequential apply를 수행한다.
+- apply 단계에서는 한 supplier write가 실패해도 이미 성공한 앞 supplier write가 남을 수 있다.
+- 따라서 전역 ATOMIC으로 선언하면 거짓이다.
+
+이 실제 동작 때문에 Core `core-data-pipeline/v1`에 다음을 추가했다.
+
+- `commit_policy = BEST_EFFORT_BATCH`
+- `partial_failure_policy = ALLOW_PARTIAL_WITH_RECEIPT`
+
+그리고 ERP4 `core.data-pipeline.v1` 평가는 `CORE_MATCH`에서 `MIGRATE/P0`로 정정했다.
+
+이건 ERP4를 나쁘다고 평가한 것이 아니라, **실제 운영 의미를 Core가 충분히 표현하지 못했던 공백을 발견한 것**이다.
