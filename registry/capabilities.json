@@ -466,7 +466,7 @@
       "required_scopes": [],
       "walls": [],
       "result_contract": "ai-core-work-result/v1",
-      "hold_reason": "FreePass Estimate is now the estimator product/domain authority, but its observed main contains only README.md. Executable new-car quote contract/adapter evidence is still in welrixtable; do not route runtime execution to FreePass Estimate until implementation and tests migrate."
+      "hold_reason": "FreePass Estimate is the canonical estimator SSOT, but its canonical implementation is still on work/ui-baseline while main remains the initialization commit; execution stays HOLD until merge/reobservation and production proof."
     },
     {
       "id": "erp.product",
