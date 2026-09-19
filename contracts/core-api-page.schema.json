@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.freepass.ai/core/api-page/v1",
+  "title": "AI Core Cursor Page v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "items",
+    "page",
+    "meta"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "core-api-page/v1"
+    },
+    "items": {
+      "type": "array"
+    },
+    "page": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "next_cursor",
+        "has_more"
+      ],
+      "properties": {
+        "next_cursor": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "has_more": {
+          "type": "boolean"
+        },
+        "total_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "request_id",
+        "generated_at"
+      ],
+      "properties": {
+        "request_id": {
+          "$ref": "https://schemas.freepass.ai/core/types/v1#/$defs/stable_id"
+        },
+        "generated_at": {
+          "$ref": "https://schemas.freepass.ai/core/types/v1#/$defs/datetime"
+        },
+        "resource_revision": {
+          "anyOf": [
+            {
+              "$ref": "https://schemas.freepass.ai/core/types/v1#/$defs/revision"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,178 @@
+{
+  "schema_version": "core-contract-registry/v1",
+  "owner": "C_CORE_CONTRACT_STANDARD",
+  "revision": "2026-09-19",
+  "conventions": {
+    "json_field_naming": "snake_case",
+    "id_fields": "stable opaque identifiers named *_id; mutable labels/codes are not identity",
+    "date": "YYYY-MM-DD",
+    "datetime": "RFC3339 timestamp with timezone; canonical persisted time normalized to UTC",
+    "money": "{amount_minor,currency}; currency is ISO-4217 alpha-3",
+    "percentage": "percentage points; 10 means 10 percent, provider ratios belong in adapters",
+    "schema_version": "<contract>/vN",
+    "resource_revision": "opaque optimistic-concurrency token"
+  },
+  "contracts": [
+    {
+      "id": "core.types.v1",
+      "domain": "DATA",
+      "path": "contracts/core-types.schema.json",
+      "status": "CANONICAL",
+      "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
+    },
+    {
+      "id": "core.provenance.v1",
+      "domain": "DATA",
+      "path": "contracts/core-provenance.schema.json",
+      "status": "CANONICAL",
+      "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
+    },
+    {
+      "id": "core.adapter-result.v1",
+      "domain": "ENGINE_ADAPTER",
+      "path": "contracts/core-adapter-result.schema.json",
+      "status": "CANONICAL",
+      "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
+    },
+    {
+      "id": "core.api-page.v1",
+      "domain": "API",
+      "path": "contracts/core-api-page.schema.json",
+      "status": "CANONICAL",
+      "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
+    },
+    {
+      "id": "core.error.v1",
+      "domain": "ERROR",
+      "path": "contracts/core-error.schema.json",
+      "status": "CANONICAL",
+      "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
+    },
+    {
+      "id": "core.event.v1",
+      "domain": "EVENT",
+      "path": "contracts/core-event.schema.json",
+      "status": "CANONICAL",
+      "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
+    },
+    {
+      "id": "core.receipt.v1",
+      "domain": "RECEIPT",
+      "path": "contracts/core-receipt.schema.json",
+      "status": "CANONICAL",
+      "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
+    },
+    {
+      "id": "core.port.v1",
+      "domain": "ENGINE_ADAPTER",
+      "path": "contracts/core-port.schema.json",
+      "status": "CANONICAL",
+      "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
+    },
+    {
+      "id": "core.engine.v1",
+      "domain": "ENGINE_ADAPTER",
+      "path": "contracts/core-engine.schema.json",
+      "status": "CANONICAL",
+      "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
+    },
+    {
+      "id": "core.adapter.v1",
+      "domain": "ENGINE_ADAPTER",
+      "path": "contracts/core-adapter.schema.json",
+      "status": "CANONICAL",
+      "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
+    },
+    {
+      "id": "core.binding-profile.v1",
+      "domain": "ENGINE_ADAPTER",
+      "path": "contracts/core-binding-profile.schema.json",
+      "status": "CANONICAL",
+      "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
+    },
+    {
+      "id": "core.source-registry.v1",
+      "domain": "DATA",
+      "path": "contracts/core-source-registry.schema.json",
+      "status": "CANONICAL",
+      "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
+    },
+    {
+      "id": "core.snapshot.v1",
+      "domain": "DATA",
+      "path": "contracts/core-snapshot.schema.json",
+      "status": "CANONICAL",
+      "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
+    },
+    {
+      "id": "core.request-context.v1",
+      "domain": "API",
+      "path": "contracts/core-request-context.schema.json",
+      "status": "CANONICAL",
+      "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
+    },
+    {
+      "id": "core.query.v1",
+      "domain": "API",
+      "path": "contracts/core-query.schema.json",
+      "status": "CANONICAL",
+      "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
+    },
+    {
+      "id": "core.transformer.v1",
+      "domain": "ENGINE_ADAPTER",
+      "path": "contracts/core-transformer.schema.json",
+      "status": "CANONICAL",
+      "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
+    },
+    {
+      "id": "core.result.v1",
+      "domain": "RESULT",
+      "path": "contracts/core-result.schema.json",
+      "status": "CANONICAL",
+      "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
+    },
+    {
+      "id": "core.event-type.v1",
+      "domain": "EVENT",
+      "path": "contracts/core-event-type.schema.json",
+      "status": "CANONICAL",
+      "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
+    },
+    {
+      "id": "core.data-pipeline.v1",
+      "domain": "IMPORT_EXPORT",
+      "path": "contracts/core-data-pipeline.schema.json",
+      "status": "CANONICAL",
+      "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
+    },
+    {
+      "id": "core.contract-registry.v1",
+      "domain": "DATA",
+      "path": "contracts/core-contract-registry.schema.json",
+      "status": "CANONICAL",
+      "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
+    },
+    {
+      "id": "core.error-code-registry.v1",
+      "domain": "ERROR",
+      "path": "contracts/core-error-code-registry.schema.json",
+      "status": "CANONICAL",
+      "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
+    },
+    {
+      "id": "core.event-type-registry.v1",
+      "domain": "EVENT",
+      "path": "contracts/core-event-type-registry.schema.json",
+      "status": "CANONICAL",
+      "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
+    },
+    {
+      "id": "core.code-set.v1",
+      "domain": "CODE",
+      "path": "contracts/core-code-set.schema.json",
+      "status": "CANONICAL",
+      "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
+    }
+  ]
+}

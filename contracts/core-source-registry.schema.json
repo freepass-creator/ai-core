@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.freepass.ai/core/source-registry/v1",
+  "title": "AI Core SSOT Source Registry v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "subject_type",
+    "canonical_owner",
+    "canonical_writer",
+    "sources",
+    "fallback_policy"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "core-source-registry/v1"
+    },
+    "subject_type": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9._-]*$"
+    },
+    "canonical_owner": {
+      "type": "string",
+      "minLength": 1
+    },
+    "canonical_writer": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "source_id",
+          "role",
+          "priority",
+          "authoritative",
+          "freshness"
+        ],
+        "properties": {
+          "source_id": {
+            "$ref": "https://schemas.freepass.ai/core/types/v1#/$defs/stable_id"
+          },
+          "role": {
+            "enum": [
+              "CANONICAL",
+              "UPSTREAM",
+              "SUPPLEMENTAL",
+              "RECOVERY_ONLY",
+              "REFERENCE_ONLY"
+            ]
+          },
+          "priority": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "authoritative": {
+            "type": "boolean"
+          },
+          "freshness": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "max_age_seconds",
+              "on_stale"
+            ],
+            "properties": {
+              "max_age_seconds": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0
+              },
+              "on_stale": {
+                "enum": [
+                  "HOLD",
+                  "REJECT",
+                  "ALLOW_WITH_WARNING"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "fallback_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "requires_explicit_activation",
+        "evidence_required"
+      ],
+      "properties": {
+        "mode": {
+          "enum": [
+            "NONE",
+            "EXPLICIT_ONLY"
+          ]
+        },
+        "requires_explicit_activation": {
+          "const": true
+        },
+        "evidence_required": {
+          "const": true
+        }
+      }
+    }
+  }
+}

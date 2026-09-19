@@ -26,3 +26,5 @@ jobs:
       - run: npm run direction:validate
       - run: npm run workmap:validate
       - run: npm run closeout:validate
+      - run: npm run contracts:validate
+      - run: npm run contracts:compat
