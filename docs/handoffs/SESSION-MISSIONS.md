@@ -24,6 +24,18 @@ CLI 연결 유무와 무관하게 이 세션들이 실제로 돌고 있다. 각�
 
 `C:\dev\ai-core-control-tower` worktree 전담. GROUP-G0→G1→AI-CORE-MERGE-P0 진행, Control Tower registry/HANDOFF 배포, PR22 CI 이슈 해결, freepasserp4 3개 브랜치 cherry-pick 준비, 세션 조정 허브 — 사용자가 이 창 하나로 전체 현황 보고받음.
 
+## A 세션 — Repo 조사 · AI Core 역수입
+
+- 상태: **ACTIVE**
+- 역할: 기존 프로젝트 전수조사 / AI Core 역수입 / 글로벌 표준 근거 조사
+- 목표: 각 프로젝트가 AI Core보다 앞선 기능·규격·실패사례를 찾아 중앙 표준 후보로 공급한다.
+- 범위: UI/UX, Data/SSOT, Engine/Adapter, API/Event/Error, Workflow, Security/Audit, Observability/QA, Build/Deploy/Governance 전 축.
+- 우선순위: **Data/SSOT → Engine/Adapter → API/Event/Error → Workflow**. UI/UX 표준 세션에는 외부 표준·수치 근거를 공급한다.
+- 산출물: learning packet, evidence matrix, project comparison, promotion candidate, exception/hold reason.
+- 금지: 다른 세션이 만드는 canonical standard를 별도 파일로 복제하거나 경쟁 정본을 만들지 않는다. 프로젝트 고유 업무 의미를 AI Core로 강제 이동하지 않는다.
+- 승격 규칙: PROJECT_VERIFIED → CROSS_PROJECT_VERIFIED → COMMON_ADOPTED. 근거 없는 자동 승격 금지.
+- 현재 조사팩: `docs/research/GLOBAL_PRODUCT_STANDARD_EVIDENCE_2026-09-19.md`, `docs/coordination/REPOSITORY_BACKFILL_AUDIT_2026-09-19.md`.
+
 ## 갱신 규칙
 
 세션이 끝나거나 범위가 바뀌면 이 표를 그 자리에서 고친다. 새 표를 만들지 않는다.

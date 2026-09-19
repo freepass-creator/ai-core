@@ -266,6 +266,7 @@
     "2026-09-19 shared release gate: added production-proof and recovery guidance. Project-specific deploy targets/commands remain owned by each project; AI Core only owns the common release evidence boundary.",
     "2026-09-19 evidence-integrity repair: the historical UI-PATTERNS-BROWSER-002 receipt no longer claims the later Screen Design Standard as a browser-executed source; a fresh browser receipt is explicitly required for current normative conformance. Active successor changed_files was regenerated from the exact base_revision diff plus that receipt change.",
     "2026-09-19 repository-backfill audit: all 36 connected repositories were freshness-screened; Mewcar, Welrix Table and the Mewcar-JB Woori proposal were added with distinct ACTIVE/REFERENCE authority roles, while unreviewed older repositories remain discovered but unpromoted. changed_files was regenerated against the active base revision.",
-    "2026-09-19 global-standard evidence feed: added a non-canonical research pack and machine-readable value matrix so the separate standardization session can choose company values from normative/platform/cross-project evidence without duplicating the canonical standard."
+    "2026-09-19 global-standard evidence feed: added a non-canonical research pack and machine-readable value matrix so the separate standardization session can choose company values from normative/platform/cross-project evidence without duplicating the canonical standard.",
+    "2026-09-19 session naming: this lane is formally named `A 세션 — Repo 조사 · AI Core 역수입`; it owns cross-repository discovery/evidence/backfill and must not create a competing canonical standard."
   ]
 }
