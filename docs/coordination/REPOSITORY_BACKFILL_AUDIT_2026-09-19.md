@@ -187,3 +187,41 @@ AI Core가 일부 중앙 문서만 앞서가고 실제 프로젝트 저장소의
 ### DocsHub / FreePass Homepage promotion decision
 - DocsHub was inspected but no new B/C/D common mechanism met the promotion threshold.
 - Homepage produced a backport accessibility gap, not a reverse-import candidate.
+
+
+## A-session continuation — FreePassERP3 / JPKERP-v4 / legacy lineage
+
+### FreePassERP3 → C backport gap
+- Current head: `8d8b7a559272a37823f879b77099b3bc17bf5a16`.
+- `ssot-snap.js` explicitly forces unknown/nonexistent trims to the nearest existing SSOT trim.
+- Weak trim similarity (<0.2) can remain an info-only `트림추정` while overall `confidence` still returns `high` if no hard-review flag exists.
+- Direction: **Core > Project**.
+- Migration: preserve raw facts, separate normalized candidate, REVIEW_REQUIRED/UNRESOLVED gate, bind source master revision.
+
+### JPKERP-v4 → C backport gap
+- Current head: `8e72823454732a0d6bceddf8be646ad3c9cc83ff`.
+- Shared keyed RTDB store mutates local cache/listeners before server ACK.
+- Failed server write only alerts/logs; local state is not rolled back/reconciled and caller receives no awaitable result.
+- Direction: **Core > Project**.
+- Migration: server-acknowledged mutation result + pending/confirmed/failed + rollback/reconciliation.
+
+### FreePassERP3 → B candidate
+- New candidate: `ui.client-release-freshness`.
+- Evidence: introducing commit `5344a5001a6d62d686c79090a250c9aa21b470c3`; current version watcher is actually started from `src/app.js`.
+- Real failure addressed: a long-lived SPA tab kept executing old JS after a deployment because old hashed chunks still loaded successfully.
+- Generalized mechanism: served build identity → stale-client detection → safe update UX.
+- Evidence: `PROJECT_VERIFIED`, second independent project required.
+
+### Evidence independence / lineage control
+- `billincar` must **not** be treated as an independent second implementation merely because it is a separate repository.
+  - commit `68d1c16c322f027037ebeac14749f1f9de3989d0`: “billincar 클론 초기화”.
+  - current Billincar and JPKERP-v4 still share identical implementation blobs at common paths (e.g. `lib/dedup.ts`, audit/store utilities).
+- `rentsafe` and `chakhandeal` are not GitHub-declared forks, but their current trees have 92 common file paths and 52 byte-identical blobs at the same paths.
+  - therefore they are treated as **lineage-overlap / independence-unproven** for A-session cross-project evidence.
+  - do not use them together to satisfy `SECOND_PROJECT_REQUIRED` unless the specific candidate implementations are shown to be independently evolved and materially distinct.
+- This prevents cloned/forked code from falsely upgrading `PROJECT_VERIFIED → CROSS_PROJECT_VERIFIED`.
+
+### No promotion this pass
+- `freepasspartner`: inspected as outreach/proposal/queue tooling; no B/C/D common mechanism met the current promotion threshold.
+- `billincar`: useful as a derived deployment/product variant, but not counted as independent evidence from JPKERP lineage.
+- `rentsafe`: useful historical evidence, but Chakhandeal lineage overlap requires independence review before cross-project counting.
