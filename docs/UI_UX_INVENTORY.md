@@ -20,14 +20,15 @@ This inventory separates reusable interaction contracts from product-specific vi
 
 | Family | Common elements | Required states or behavior | Current status |
 |---|---|---|---|
-| Actions | primary, secondary, destructive, icon button, link | default, hover, pressed, focus, disabled, busy, success, error | partial |
-| Forms | text, textarea, search, select, checkbox, radio, switch, date/file input | label, hint, required, validation, disabled, read-only, saving | partial: text, email, select, checkbox, radio and validation samples |
-| Navigation | header, breadcrumb, tabs, pagination, bottom navigation | current location, keyboard order, overflow, back/restore | partial: keyboard tabs and bounded pagination samples |
-| Feedback | inline error, alert, status, toast, progress, skeleton | polite/assertive announcement, retry, dismissal, reduced motion | partial: error, status, toast, progress and retry samples |
-| Data display | list, card, badge, table, definition list | loading, empty, error, populated, sorting, selection | partial |
-| Overlays | dialog, confirmation, drawer, popover, tooltip | focus entry/trap/return, Escape, backdrop, destructive boundary | partial: native confirmation dialog sample |
-| Disclosure | accordion, details, expandable filters | `aria-expanded`, keyboard activation, retained state | partial: native details/summary sample |
-| Workflow UX | draft, local preservation, submit, retry, leave during save | stable work key, duplicate prevention, recovery, outcome receipt | covered in local simulation; real API idempotency and navigation integration remain product-owned |
+| Action | primary, secondary, destructive, icon, link, overflow | focus, active, disabled, busy, confirmation and bottom-action placement | registry-covered; browser examples remain partial |
+| Form | text, number, money, phone/email, textarea, search, select/combobox, checkbox/radio/switch, date/time, file/image, reorder | label, locale parsing, validation, read-only, saving/uploading, IME safety | registry-covered; example coverage partial |
+| Navigation | header, breadcrumb, tabs, bottom navigation, pagination, stepper, back/restore | current location, keyboard order, overflow, restore and responsive task order | registry-covered; example coverage partial |
+| Data | list, card, badge, table, sort/filter, virtual list, detail, definition, provenance, audit | loading, empty, error, populated, selection, stable identity and source trust | registry-covered; consumer evidence varies |
+| Feedback | inline error, alert, toast, progress, skeleton, empty, retry | announcement, dismissal, reduced motion, retry and completion semantics | registry-covered; browser evidence partial |
+| Overlay | dialog, bottom sheet, drawer, tooltip | focus entry/trap/return, Escape, modal intent, gesture equivalents | registry-covered; product adoption evidence partial |
+| Workflow | draft, autosave, explicit save, submit, delete, undo, optimistic update, conflict, offline, permission, session expiry | authoritative completion, idempotency, recovery, conflict and authority | registry-covered; backend enforcement remains product-owned |
+| Integration | engine job, adapter connection, sync, import/export, external action, document preview, AI action, notification, webhook | queued/running/partial/completed, health, receipt and retry boundaries | registry-covered; runtime binding evidence varies |
+| System | responsive, localization, focus, safe-area/keyboard, locale formatting, bidi, text expansion, motion, contrast, reflow/orientation, input method | locale-neutral semantics, RTL, zoom/reflow, preference and modality resilience | registry-covered; conformance matrix now required |
 
 ## UX rules shared across products
 
@@ -38,7 +39,7 @@ This inventory separates reusable interaction contracts from product-specific vi
 5. Define loading, empty, error and populated states before calling a data surface complete.
 6. Keep navigation possible when business rules do not require blocking it; explain every disabled action.
 7. Bind success to the actual saved or released target, not to opening another app or starting a request.
-8. Test mobile, desktop, zoom, reduced motion, light/dark themes and read-only permissions where applicable.
+8. Test mobile, desktop, 200% zoom, 400% reflow, reduced motion, high-contrast/forced colors, RTL/mixed bidi, representative locale formatting, virtual keyboard/IME and read-only permissions where applicable.
 
 ## Product-owned choices
 
@@ -47,11 +48,13 @@ Brand colors, corner shape, content density, icon family, tone of voice, domain 
 ## Build order
 
 1. Form controls and validation.
-2. Navigation and disclosure.
+2. Navigation and disclosure behavior.
 3. Feedback and data states.
-4. Dialog and confirmation.
-5. Draft, save, retry and leave-while-saving workflow.
-6. Automated consumer verification and per-product exception registry.
+4. Dialog, bottom sheet and confirmation.
+5. Draft, save, retry, conflict, offline and leave-while-saving workflow.
+6. Integration state/receipt surfaces for engines and adapters.
+7. Globalization system conformance: locale formatting, bidi/RTL, text expansion, motion, contrast, reflow/orientation and input methods.
+8. Automated consumer verification and per-product exception registry.
 
 
 ## Registry adoption gate
