@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0.0",
+  "registry_version": "1.0.0",
+  "primitives": [
+    {
+      "primitive_id": "workflow.fact-vs-state",
+      "status": "COMMON_ADOPTED",
+      "meaning": "Facts, authoritative state, derived state and display state are separate concepts.",
+      "evidence_level": "CROSS_PROJECT_VERIFIED",
+      "source_projects": ["freepass-admin", "jpkerp5", "aiops"]
+    },
+    {
+      "primitive_id": "workflow.multi-axis-state",
+      "status": "COMMON_ADOPTED",
+      "meaning": "Independent lifecycle dimensions are modeled as orthogonal state axes instead of one overloaded enum.",
+      "evidence_level": "CROSS_PROJECT_VERIFIED",
+      "source_projects": ["jpkerp5", "freepass-admin"]
+    },
+    {
+      "primitive_id": "workflow.guard-vs-evidence",
+      "status": "COMMON_ADOPTED",
+      "meaning": "A guard decides whether a transition may start; evidence proves what actually occurred.",
+      "evidence_level": "CROSS_PROJECT_VERIFIED",
+      "source_projects": ["jpkerp5", "aiops"]
+    },
+    {
+      "primitive_id": "workflow.launch-vs-completion",
+      "status": "COMMON_ADOPTED",
+      "meaning": "Requested, launched, human-reported, system-verified and completed semantics must not be collapsed.",
+      "evidence_level": "CROSS_PROJECT_VERIFIED",
+      "source_projects": ["freepass-sales", "aiops"]
+    },
+    {
+      "primitive_id": "workflow.idempotent-transition",
+      "status": "COMMON_ADOPTED",
+      "meaning": "The same idempotency key and intent replays the prior result; the same key with a different intent is a conflict.",
+      "evidence_level": "CROSS_PROJECT_VERIFIED",
+      "source_projects": ["freepass-admin", "freepasserp4", "ai-core"]
+    },
+    {
+      "primitive_id": "workflow.append-only-history",
+      "status": "COMMON_ADOPTED",
+      "meaning": "Workflow history is append-only; correction, restore and cancellation are new events rather than history mutation.",
+      "evidence_level": "CROSS_PROJECT_VERIFIED",
+      "source_projects": ["aiops", "freepass-admin", "freepasserp4"]
+    },
+    {
+      "primitive_id": "workflow.hold-resume",
+      "status": "COMMON_ADOPTED",
+      "meaning": "Hold is an open state, not completion, and a deferred workflow carries an explicit resume_at or equivalent due condition.",
+      "evidence_level": "CROSS_PROJECT_VERIFIED",
+      "source_projects": ["aiops", "freepass-sales"]
+    },
+    {
+      "primitive_id": "workflow.current-vs-history",
+      "status": "COMMON_ADOPTED",
+      "meaning": "Current projection and immutable event history are distinct and reconcilable.",
+      "evidence_level": "CROSS_PROJECT_VERIFIED",
+      "source_projects": ["freepass-admin", "aiops", "freepasserp4"]
+    },
+    {
+      "primitive_id": "workflow.obligation-pair",
+      "status": "PILOT",
+      "meaning": "Opening event plus due rule plus closing event(s) forms an obligation with escalation on breach.",
+      "evidence_level": "PROJECT_VERIFIED",
+      "source_projects": ["aiops"],
+      "notes": "Supported by the schema but not mandatory for all domain workflows until a second independent project verifies it."
+    }
+  ],
+  "workflows": []
+}
