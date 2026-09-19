@@ -320,3 +320,15 @@ A 세션이 조사한 내용을 B·C·D·Security·QA·Governance 세션이 다�
 - AI Core B target requires WCAG 2.2 AA testing at 200% zoom and reduced-motion preference.
 - Destination: **B / Accessibility**
 - Detail: `docs/research/A_SESSION_GAP_TEAMJPK_ACCESSIBILITY_ZOOM_MOTION_2026-09-19.md`.
+
+
+## 2026-09-19 JPKERP silent reconciliation backport
+
+- Direction: **Core > Project**
+- Project revision: `jpkerp@e6de03adbac98a33da7d844fb8fb197ff885e7cb`
+- Gap: event persistence succeeds first, then payment reconciliation errors are swallowed; reconciliation itself performs sequential multi-billing writes plus final event back-reference without a transaction/compensation/result state.
+- Risk: event can look saved while financial allocation is partially applied or unmatched.
+- Migration: explicit reconciliation state/result + idempotent retry + transaction/outbox/compensation strategy + failure-injection tests.
+- Destination: **D primary / C secondary**
+- This is negative evidence supporting the need for `workflow.compensated-multiwrite`, not positive second-project implementation.
+- Detail: `docs/research/A_SESSION_GAP_JPKERP_SILENT_RECONCILIATION_PARTIAL_WRITE_2026-09-19.md`.
