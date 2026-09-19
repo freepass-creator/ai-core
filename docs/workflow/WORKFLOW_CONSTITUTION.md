@@ -110,3 +110,26 @@ Every accepted transition records at least:
 - manual override use
 
 The audit record is append-only. Corrections are new records.
+
+
+## 7. Cross-machine bridge constitution
+
+Related state machines may exchange commands, evidence and derived projections only through an explicit bridge contract.
+
+Bridge rules:
+
+1. A source event does not automatically imply a target transition.
+2. `EVIDENCE_FEED` never dispatches a command and never directly changes target state.
+3. `PROJECTION_DEPENDENCY` computes a read projection only; the projection is not independently writable.
+4. `INVALIDATION_TRIGGER` and `COMMAND_TRIGGER` name the target workflow command, dispatch mode and idempotency scope explicitly.
+5. Cross-machine automatic dispatch must declare whether it is same-transaction, outbox or manual.
+6. A bridge may not grant authority that the target workflow does not already possess.
+7. Capability execution success is evidence for Work evaluation, not Work completion.
+8. Parent requirement revision may invalidate child evidence when the bridge explicitly declares the fan-out and revision identity.
+9. SHADOW bridges are pinned to exact source authority revisions/blobs and must be re-audited when those sources drift.
+
+Machine authority:
+
+- `contracts/workflow-bridge.schema.json`
+- `registry/workflow-bridges.json`
+- `scripts/validate-workflow-bridges.mjs`
