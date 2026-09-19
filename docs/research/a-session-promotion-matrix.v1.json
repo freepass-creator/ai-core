@@ -398,14 +398,15 @@
     {
       "id": "ui.machine-conformance-gate",
       "axis": "UI/UX/Design QA",
-      "evidence_level": "PROJECT_VERIFIED",
+      "evidence_level": "CROSS_PROJECT_VERIFIED",
       "projects": [
-        "fp-settlement"
+        "fp-settlement",
+        "teamjpkwork"
       ],
       "target_session": "B",
       "finding": "semantic UI role/token constraints를 실제 사용 selector와 effective CSS 기준으로 검사하고 off-grid 값을 CI에서 실패시키는 conformance gate",
-      "next_gate": "SECOND_PROJECT_REQUIRED",
-      "evidence_note": "fp-settlement b1e833df... combines brick/pad/head/groove gates; source checkers filter to rendered classes and evaluate the last effective rule. Retro groove aesthetics and project pixel values remain local and are not proposed as global defaults."
+      "next_gate": "COMMON_ADOPTED_CANDIDATE",
+      "evidence_note": "FP Settlement b1e833df... and TeamJPKWork 75bb285a... independently implement machine-enforced UI conformance. Both bind screen implementations to centralized semantic rules/tokens and fail on unapproved drift; TeamJPKWork additionally documents scanner blind-spot/false-green counterexamples. Local visual values and product-specific interaction rules remain profile/domain-specific."
     },
     {
       "id": "result.proof-input-digest-binding",
