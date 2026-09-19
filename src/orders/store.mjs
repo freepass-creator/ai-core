@@ -3,6 +3,8 @@ import { createHash, randomUUID } from 'node:crypto';
 import { mkdirSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createOrderTaskShadow } from '../workflow/order-task-shadow.mjs';
+import { getWorkflow } from '../workflow/registry.mjs';
 
 export const defaultDb = fileURLToPath(new URL('../../.local/orders.sqlite', import.meta.url));
 /** 누가 일하나 — ★정본
@@ -80,6 +82,10 @@ export class OrderStore {
     need(onRequirementSaved === null || typeof onRequirementSaved === 'function', 'INVALID_REQUIREMENT_HOOK', '호스트 연결 훅을 확인하세요.');
     this.#onRequirementSaved = onRequirementSaved;
     this.now = now; this.leaseMs = leaseMs;
+    this.taskWorkflow = createOrderTaskShadow(getWorkflow('ai-core.order-task-lifecycle'), {
+      actorIds: actors.map(item => item.id),
+      now: () => this.now(),
+    });
     if (path !== ':memory:') mkdirSync(dirname(resolve(path)), { recursive: true });
     this.db = new DatabaseSync(path);
     this.db.exec(`PRAGMA busy_timeout=5000; PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL;
@@ -159,13 +165,17 @@ export class OrderStore {
         need(task.status !== 'REPORTED', 'ALREADY_REPORTED', '결과가 접수된 작업은 재배정할 수 없습니다. 요구 수정으로 새 검증을 시작하세요.', 409);
         need(!activeLease(task), 'ACTIVE_LEASE', '진행 중인 담당 작업을 먼저 인계 대기로 전환하세요.', 409);
         detail = { taskId: task.id, from: task.assigned, to: actor(command.actor), reason: text(command.reason, '변경 이유', 2000) };
-        task.assigned = command.actor; task.status = 'PENDING'; task.lease = null; task.blockedReason = null;
+        const transition = this.taskWorkflow.decide(order, command);
+        need(transition.eligible, 'TASK_WORKFLOW_REJECTED', '업무 상태 전이 규칙을 확인하세요.', 409);
+        task.assigned = command.actor; task.status = transition.result.next_projection.states.lifecycle; task.lease = null; task.blockedReason = null;
       } else if (action === 'claim') {
         need(task.assigned === actor(command.actor), 'WRONG_ACTOR', '배정된 AI만 이 작업을 확보할 수 있습니다.', 409);
         need(task.status !== 'REPORTED' && !activeLease(task), 'ACTIVE_LEASE', '이미 결과가 있거나 다른 실행이 작업을 확보했습니다.', 409);
         const index = order.tasks.indexOf(task);
         need(order.tasks.slice(0, index).every(t => t.status === 'REPORTED'), 'DEPENDENCY_PENDING', '앞선 작업의 결과를 먼저 접수하세요.', 409);
-        task.attempt++; task.status = 'RUNNING'; task.blockedReason = null;
+        const transition = this.taskWorkflow.decide(order, command);
+        need(transition.eligible, 'TASK_WORKFLOW_REJECTED', '업무 상태 전이 규칙을 확인하세요.', 409);
+        task.attempt++; task.status = transition.result.next_projection.states.lifecycle; task.blockedReason = null;
         task.lease = { token: randomUUID(), expiresAt: new Date(this.now() + this.leaseMs).toISOString(), revision: order.revision };
         by = command.actor; detail = { taskId: task.id, attempt: task.attempt, expiresAt: task.lease.expiresAt };
       } else if (action === 'heartbeat') {
@@ -173,14 +183,35 @@ export class OrderStore {
       } else if (action === 'report') {
         verifyLease();
         need(command.revision === order.revision && task.lease.revision === order.revision, 'STALE_EVIDENCE', '현재 요구 버전의 결과만 접수할 수 있습니다.', 409);
-        task.report = { summary: text(command.summary, '결과 요약'), evidence: lines(command.evidence, '근거'), revision: order.revision, actor: command.actor, at: this.stamp(), status: 'REPORTED_NOT_INDEPENDENTLY_VERIFIED' };
-        task.status = 'REPORTED'; task.lease = null; detail = { taskId: task.id, attempt: task.attempt, report: task.report };
+        const summary = text(command.summary, '결과 요약');
+        const evidence = lines(command.evidence, '근거');
+        const transition = this.taskWorkflow.decide(order, command);
+        need(transition.eligible, 'TASK_WORKFLOW_REJECTED', '업무 상태 전이 규칙을 확인하세요.', 409);
+        task.report = { summary, evidence, revision: order.revision, actor: command.actor, at: this.stamp(), status: 'REPORTED_NOT_INDEPENDENTLY_VERIFIED' };
+        task.status = transition.result.next_projection.states.lifecycle; task.lease = null; detail = { taskId: task.id, attempt: task.attempt, report: task.report };
       } else if (action === 'block') {
-        verifyLease(); task.status = 'BLOCKED'; task.lease = null; task.blockedReason = text(command.reason, '대기 이유', 2000); detail = { taskId: task.id, reason: task.blockedReason };
+        verifyLease();
+        task.blockedReason = text(command.reason, '대기 이유', 2000);
+        const transition = this.taskWorkflow.decide(order, command);
+        need(transition.eligible, 'TASK_WORKFLOW_REJECTED', '업무 상태 전이 규칙을 확인하세요.', 409);
+        task.status = transition.result.next_projection.states.lifecycle; task.lease = null; detail = { taskId: task.id, reason: task.blockedReason };
       } else if (action === 'revise') {
-        order.intent = text(command.intent, '수정 요청'); order.criteria = lines(command.criteria, '완료 조건'); order.revision++; order.closure = null;
-        detail = { reason: text(command.reason, '수정 이유', 2000), intent: order.intent, criteria: order.criteria };
-        for (const t of order.tasks) { t.status = 'PENDING'; t.lease = null; t.report = null; t.blockedReason = null; }
+        const nextIntent = text(command.intent, '수정 요청');
+        const nextCriteria = lines(command.criteria, '완료 조건');
+        const reviseReason = text(command.reason, '수정 이유', 2000);
+        const invalidations = order.tasks.map(t => {
+          const transition = this.taskWorkflow.decideInvalidation(order, t, {
+            requestId: `${command.requestId}:${t.id}`,
+            version: command.version,
+            reason: reviseReason,
+          });
+          need(transition.eligible, 'TASK_WORKFLOW_REJECTED', '요구 변경에 따른 작업 무효화 규칙을 확인하세요.', 409);
+          return [t.id, transition.result.next_projection.states.lifecycle];
+        });
+        order.intent = nextIntent; order.criteria = nextCriteria; order.revision++; order.closure = null;
+        detail = { reason: reviseReason, intent: order.intent, criteria: order.criteria };
+        const targets = new Map(invalidations);
+        for (const t of order.tasks) { t.status = targets.get(t.id); t.lease = null; t.report = null; t.blockedReason = null; }
       } else if (action === 'reroute') {
         need(order.tasks.every(t => t.status === 'PENDING' && !t.lease && !t.report),
           'ROUTING_REQUIRES_IDLE_ORDER', '진행 중이거나 결과가 있는 오더는 업무 경로를 바꿀 수 없습니다.', 409);
@@ -217,9 +248,7 @@ export class OrderStore {
         order.status = 'CANCELLED'; for (const t of order.tasks) t.lease = null;
         detail = { reason: text(command.reason, '취소 이유', 2000) };
       } else throw new OrderError('UNKNOWN_ACTION', '지원하지 않는 처리입니다.');
-      if (!['CLOSED', 'CANCELLED'].includes(order.status)) {
-        order.status = order.tasks.every(t => t.status === 'REPORTED') ? 'REVIEW' : order.tasks.some(t => t.status === 'BLOCKED') ? 'BLOCKED' : order.tasks.some(t => ['RUNNING', 'REPORTED'].includes(t.status)) ? 'ACTIVE' : 'NEW';
-      }
+      order.status = this.taskWorkflow.deriveOrderAggregateStatus(order);
       order.version++;
       return this.save(order, action.toUpperCase(), by, detail);
     });
