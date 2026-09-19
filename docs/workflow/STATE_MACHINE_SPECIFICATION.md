@@ -342,7 +342,31 @@ A standard action projection exposes:
 
 The UI may choose how to display or disable an action. It may not redefine whether the transition is valid.
 
-## 19. Existing AI Core Work Ledger bridge
+## 19. Aggregate / child workflow rule
+
+The second-pass AI Core audit found an important pattern in `src/orders/store.mjs`:
+
+- an Order has a projection status
+- child Tasks each have their own lifecycle
+- lease/heartbeat is execution coordination
+- requirement revision invalidates prior reports
+- user acceptance is recorded without claiming canonical completion
+
+D therefore distinguishes:
+
+1. **child workflow state** — e.g. a task lifecycle
+2. **execution lease facts** — owner/token/expiry/attempt
+3. **parent aggregate projection** — derived from child states
+4. **requirement revision** — the epoch to which evidence belongs
+5. **canonical business completion** — separate authority when another domain owns it
+
+A parent status that is derived from children should not be independently writable merely because it is displayed as a status.
+
+Heartbeat/lease extension is normally coordination CRUD/fact update, not a business transition. Claim, block, report, invalidate/revise and cancel may be transitions because they change workflow meaning.
+
+Fork/join or multi-task completion should be represented by explicit guards over child facts/projections rather than a hidden UI rule.
+
+## 20. Existing AI Core Work Ledger bridge
 
 The current `scripts/work-ledger.mjs` remains authoritative for the AI Core Work lifecycle during this checkpoint.
 
