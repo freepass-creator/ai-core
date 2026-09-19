@@ -142,3 +142,16 @@ A 세션이 조사한 내용을 B·C·D·Security·QA·Governance 세션이 다�
 - FreePass Sales: `나중에`/재통화 흐름이 `다음연락일`을 보존하고, 날짜가 오늘까지 도래한 대상만 다시걸사람 큐로 올린다. 진행중 목록도 경과/오늘 약속을 우선한다.
 
 따라서 공통 의미는 특정 앱의 “보류” 라벨이 아니라 **defer until / resume at** 계약으로 잡을 수 있다.
+
+
+## 2026-09-19 ERP4 recovery replay delta
+
+| Candidate | 축 | Evidence | 실제 근거 | 넘길 세션 | 다음 단계 |
+|---|---|---|---|---|---|
+| `workflow.recovery-slot-no-replay` | Workflow / Recovery | PROJECT_VERIFIED | freepasserp4 | D/C | SECOND_PROJECT_REQUIRED |
+
+- 근거 revision: `freepasserp4@1cf94b788a204777109cf2031b1f518fbcd99b01` (observed head `44a67cedc5f0d3e38efc68f1e8f84e6c28ab97b3`).
+- 같은 logical 18:05 slot이 native schedule 성공 후 fallback으로 다시 실행된 것이 확인됐다.
+- 일반화 후보: **logical execution identity + success-evidence reconciliation + monotonic recovery no-replay**.
+- AIOps의 deterministic requestKey/lease/run manifest는 인접 근거지만 exact second-project proof로 계산하지 않는다.
+- 상세: `docs/research/A_SESSION_DISCOVERY_ERP4_RECOVERY_SLOT_REPLAY_2026-09-19.md`.
