@@ -259,3 +259,17 @@ AI Core가 일부 중앙 문서만 앞서가고 실제 프로젝트 저장소의
 - `freeepasserp2`, `freepasserp`, and `ci_center` were scanned for deltas/preserved patterns.
 - Their observed useful UI/component/catalog/brand patterns are already represented by newer project evidence or do not meet current B/C/D promotion gates.
 - `welrix-proposal` and `mewcar-jbwoori-proposal` remain document/proposal-specific evidence; no new B/C/D common contract was promoted in this pass.
+
+
+## A-session repository coverage registry
+
+- Machine index: `docs/research/a-session-repo-coverage.v1.json`
+- Human guide: `docs/research/A_SESSION_REPO_COVERAGE_2026-09-19.md`
+- Connected repositories covered: **36**
+  - CORE_BASELINE 1
+  - DEEP_EVIDENCE 22
+  - SAMPLED_NO_PROMOTION 9
+  - LINEAGE_OVERLAP 3
+  - MINIMAL_NO_TECH_ASSET 1
+- Future default: compare current HEAD to stored observed HEAD and audit only revision deltas unless deployment/runtime/external evidence changed.
+- AI Core itself is a self-reference exception: current HEAD is resolved at audit start rather than stored in its own coverage registry.
