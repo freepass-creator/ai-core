@@ -73,7 +73,7 @@ export function validateUiUxRegistrySemantics(registry) {
   }
 
   const i18nVerification = new Set(registry.profiles?.I18N?.verification ?? []);
-  for (const check of ['rtl-sample','mixed-bidi','locale-number-date-currency-unit','long-labels']) {
+  for (const check of ['ar-SA-rtl','mixed-bidi','locale-number-date-currency-unit','long-labels']) {
     if (!i18nVerification.has(check)) throw new Error('UIUX_I18N_VERIFICATION_MISSING:' + check);
   }
 
