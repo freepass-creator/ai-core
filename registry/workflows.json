@@ -197,12 +197,14 @@
         {
           "fact_id": "work.subject_revision",
           "type": "string",
-          "description": "Current subject revision."
+          "description": "Current subject revision.",
+          "nullable": true
         },
         {
           "fact_id": "work.verified_revision",
           "type": "string",
-          "description": "Revision captured when entering VERIFYING."
+          "description": "Revision captured when entering VERIFYING.",
+          "nullable": true
         },
         {
           "fact_id": "work.verification_captured",
@@ -1950,7 +1952,21 @@
           "reversible": false
         }
       ],
-      "obligations": []
+      "obligations": [],
+      "source_authority": {
+        "repository": "freepass-creator/ai-core",
+        "revision": "444066bea9ac00e4cf4ba539c7b5344154bd407e",
+        "files": [
+          {
+            "path": "scripts/work-ledger.mjs",
+            "blob_sha": "b8b8761d66a42744f9a996bf6ba883bf5df1fefc"
+          },
+          {
+            "path": "contracts/work-ledger-event.schema.json",
+            "blob_sha": "ce9cb2e8c0201661b4b05e8c7a31445f19c8e442"
+          }
+        ]
+      }
     }
   ]
 }
