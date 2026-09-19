@@ -176,34 +176,39 @@ The target architecture is three explicit related machines, not one mega-state e
 
 Completed:
 
-- Work Ledger exact state graph registered as `ai-core.work-lifecycle` SHADOW
+- Work lifecycle state graph promoted to `ai-core.work-lifecycle` CANONICAL and consumed by Work Ledger
 - REOBSERVE modeled explicitly without making it a global adopted primitive
 - full Work Ledger state-pair parity regression implemented
 - verification-context and closure edge cases covered
-- Work Ledger SHADOW source authority pinned to exact source blobs
-- OrderStore child-task lifecycle registered as `ai-core.order-task-lifecycle` SHADOW
+- Work lifecycle integration provenance pinned to exact source blobs
+- OrderStore child-task lifecycle promoted to `ai-core.order-task-lifecycle` CANONICAL and consumed through D Engine
 - claim/reclaim, blocked resume, assignment, report, block and parent-revision invalidation parity implemented
 - heartbeat classified as lease FACT_UPDATE rather than business transition
 - parent Order NEW/ACTIVE/BLOCKED/REVIEW projection reproduced as a derived aggregate
-- Order Task SHADOW source authority pinned to exact OrderStore blob
+- Order Task integration provenance pinned to exact OrderStore blob
 
 Completed additionally:
 
-- Capability execution coordination registered as `ai-core.capability-execution` SHADOW
+- Capability execution coordination promoted to `ai-core.capability-execution` CANONICAL and consumed through D Engine
 - RESERVED/RESULT persistence separated from reconciliation HOLD projection
 - reserve replay/conflict, safe RESULT persistence and terminal receipt reconciliation parity covered
-- Capability Execution SHADOW source authority pinned to exact coordinator/receipt-reader blobs
+- Capability Execution integration provenance pinned to exact coordinator/receipt-reader blobs
 - cross-machine `workflow-bridges.json` registry added
 - parent revision -> child invalidation bridge locked
 - child task -> parent Order derived projection bridge locked
 - Capability RESULT / reconciled RESULT -> Work evidence-feed-only bridges locked
 - bridge semantic validator + negative tests + CI gate added
 
+Current authority status:
+
+- Work lifecycle state graph: CANONICAL in D Registry; Work Ledger retains append-only history/evidence enforcement
+- Order Task lifecycle: CANONICAL in D Registry and D Engine authoritative for target state
+- Capability Execution lifecycle: CANONICAL in D Registry and D Engine authoritative for RESERVED -> RESULT
+- Workflow bridges: SHADOW until project-level bridge evidence and dispatch semantics mature
+
 Still not completed:
 
-- extending registry-backed Work lifecycle from state-graph lookup into full generic D-engine decision execution
-- replacing OrderStore imperative task transition branches with D engine authority
-- replacing Capability Execution imperative state branches with D engine authority
-- migrating business-project domain workflows into the registry
-
-Therefore Order/Task and Capability Execution remain SHADOW comparison gates. The Work lifecycle state graph is now CANONICAL in D Registry, while Work Ledger remains the canonical append-only history/evidence executor.
+- move remaining duplicated pre-validation/guard logic out of runtime if-branches where safe
+- expand Work lifecycle from registry graph authority toward full generic D-engine decision execution without weakening Ledger evidence rules
+- migrate business-project domain workflows into the Registry
+- validate domain bridges across FreePass Sales / ERP / Admin / Self Quote and other projects
