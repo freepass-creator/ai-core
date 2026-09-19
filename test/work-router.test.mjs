@@ -48,3 +48,18 @@ test('HOLD projects and capabilities never become executable routes', () => {
   assert.equal(active.capability_id, 'operations.penalty.prepare');
   assert.ok(/^[0-9a-f]{40}$/.test(active.target_revision));
 });
+
+
+test('canonical estimator authority remains FreePass Estimate-only', () => {
+  const work = workMap.work_types.find((item) => item.work_type_id === 'estimator');
+  const capability = capabilityRegistry.capabilities.find((item) => item.id === 'sales.vehicle-estimator');
+
+  assert.ok(work, 'estimator work type missing');
+  assert.ok(capability, 'sales.vehicle-estimator capability missing');
+  assert.equal(work.target_project_id, 'freepass-estimate');
+  assert.deepEqual(capability.projects, ['freepass-estimate']);
+
+  const result = routeWork('견적기 고쳐', { workMap, projectRegistry, capabilityRegistry });
+  assert.equal(result.target_project_id, 'freepass-estimate');
+  assert.equal(result.target_repository, 'freepass-creator/freepass-estimate');
+});
