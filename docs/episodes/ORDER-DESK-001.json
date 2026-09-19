@@ -430,6 +430,7 @@
     "2026-09-19 Order D closeout: changed_files rebuilt from full recursive Git tree diff 7b63024c5dd0..51535e95bc88 after Workflow merge with canonical main.",
     "2026-09-19 B-session UI/UX universal contract replay: current-main branch received UI/UX registry v1.1, globalization contracts, evidence provenance, bidi/safe-area common CSS and regression tests; changed_files was regenerated from the exact base_revision diff.",
     "2026-09-19 B-session evidence boundary: common CSS implementation changes were deferred because the existing UI-PATTERNS browser receipt is source-hash-bound; B1 keeps the normative/machine UI/UX contract and validation rules, while rendered CSS changes require a fresh browser receipt in a later lane.",
-    "2026-09-19 Order B1 closeout integration: universal UI/UX feature registry and globalization baseline reconciled with canonical C/D-enabled main; exact changed_files will be rebuilt from the merged Git tree."
+    "2026-09-19 Order B1 closeout integration: universal UI/UX feature registry and globalization baseline reconciled with canonical C/D-enabled main; exact changed_files will be rebuilt from the merged Git tree.",
+    "2026-09-19 Order B1 closeout: changed_files rebuilt from full recursive Git tree diff 7b63024c5dd0..0578ebae8d7d after UI/UX registry merge with canonical main."
   ]
 }
