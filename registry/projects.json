@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "observed_at": "2026-09-19T10:33:00Z",
+  "observed_at": "2026-09-19T10:37:10Z",
   "projects": [
     {
       "project_id": "ai-core",
@@ -248,8 +248,8 @@
         {
           "kind": "GIT",
           "ref": "freepass-creator/freepass-estimate#work/ui-baseline",
-          "revision": "4a3462441aea92ffc89092396c9c6a1a08e5fcd9",
-          "observed_at": "2026-09-19T10:35:29Z"
+          "revision": "b4488dae5ab38b9e211806766902c4c359091d02",
+          "observed_at": "2026-09-19T10:37:10Z"
         }
       ],
       "commands": {
