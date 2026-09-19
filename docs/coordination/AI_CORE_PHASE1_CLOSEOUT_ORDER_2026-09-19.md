@@ -185,6 +185,37 @@ Do not keep Phase 1 open merely because additional useful features can still be 
 
 ---
 
+## Closeout integration freeze and merge order
+
+While Phase 1 closeout is active:
+
+- **Do not land open-ended research or non-blocking enhancements directly on `main`.**
+- A may continue collecting evidence, but new non-blocking discoveries stay on an A/research branch or HOLD queue until `BASELINE_LOCKED`.
+- B/C/D may fix their Phase 1 blockers on their current branches, but canonical promotion is serialized by Order.
+- Direct `main` writes during closeout are limited to Order closeout/evidence repair or an explicitly identified Phase 1 blocker.
+- Every lane must rebase/update from the then-current `main` immediately before its final validation; stale green CI is candidate evidence, not canonical PASS.
+
+### Canonical promotion order
+
+1. **C — Core Contract**
+   - synchronize PR #94 with current main;
+   - land/verify the root contract baseline;
+   - replay PR #96 adoption evidence on top of the updated root.
+2. **D — Workflow**
+   - fix the current recovery-policy red test without suppressing the invariant;
+   - synchronize PR #93 after C so D can consume the canonical contract boundary;
+   - land only after full workflow validators and parity tests are green.
+3. **B — Global UI/UX**
+   - synchronize root PR #92 after C/D;
+   - replay the B chain #95 → #97 → #98;
+   - final B conformance evidence must bind to the integrated chain revision.
+4. **Order**
+   - refresh `registry/phase1-closeout.json`;
+   - require green main CI with closeout validation enabled;
+   - issue `BASELINE_LOCKED` only when A/B/C/D and all global gates pass.
+
+This ordering is a closeout integration sequence, not a statement that C is more important than D or B.
+
 ## Post-Phase-1 program
 
 After BASELINE_LOCKED, the main work changes to **one repository at a time**.
