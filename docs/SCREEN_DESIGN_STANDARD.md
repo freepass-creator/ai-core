@@ -109,8 +109,9 @@ Normative hierarchy:
 2. `registry/ui-ux-features.json` enumerates each common feature by stable ID and fixes its states, behaviors, shared profiles and verification requirements.
 3. Product profiles such as `docs/FREEPASS_PRODUCT_UI_PROFILE.md` may select brand, density, icon family, domain copy and business priority, but may not fork the common feature semantics.
 4. A new reusable feature is not a local standard until it has a registry entry or a documented temporary exception.
+5. System-level common standards carry machine-readable evidence provenance. The registry records evidence level and source references so a company value is distinguishable from a normative floor, platform consensus or project-only observation.
 
-Run `npm run uiux:validate` before adopting or modifying common UI/UX behavior.
+Run `npm run uiux:validate` before adopting or modifying common UI/UX behavior. System features without evidence provenance fail validation.
 
 ### Global consistency rule
 
