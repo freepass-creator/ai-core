@@ -81,6 +81,10 @@ test('완료 결과는 민감할 수 있는 outcome.data를 버린 안전 receip
   assert.equal(Object.hasOwn(saved.outcome,'data'),false);
   const list=f.coordinator.list(f.order.id);
   assert.equal(list.length,1);assert.equal(list[0].state,'RESULT');assert.equal(list[0].result.status,'SUCCEEDED');
+  const events=f.store.events(f.order.id).filter(event=>event.type==='CAPABILITY_RESULT');
+  assert.equal(events.length,1);
+  assert.equal(events[0].detail.request_id,'exec-1');
+  assert.equal(events[0].detail.status,'SUCCEEDED');
 });
 
 test('응답 유실 뒤 terminal receipt를 찾으면 재실행 없이 결과를 복구한다',async t=>{
