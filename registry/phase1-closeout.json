@@ -1,11 +1,11 @@
 {
   "schema_version": "1.0",
   "phase": "PHASE_1",
-  "status": "READY_FOR_BASELINE_LOCK",
-  "observed_revision": "0ca3140d17daf4d51df0fbc2010c4130ec3bb20d",
+  "status": "BASELINE_LOCKED",
+  "observed_revision": "c42a8cd26f5cd833c4f7d155790cf05d9ff152e3",
   "ci": {
-    "run_id": 35479258525,
-    "head_sha": "0ca3140d17daf4d51df0fbc2010c4130ec3bb20d",
+    "run_id": 35479309227,
+    "head_sha": "c42a8cd26f5cd833c4f7d155790cf05d9ff152e3",
     "conclusion": "success"
   },
   "gates": {
