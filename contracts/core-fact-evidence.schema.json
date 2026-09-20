@@ -1,0 +1,154 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.freepass.ai/core/fact-evidence/v1",
+  "title": "AI Core Fact Evidence v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "assertion_id",
+    "fact_id",
+    "subject",
+    "assertion_kind",
+    "value_digest",
+    "asserted_at",
+    "basis_refs",
+    "verification_state"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "core-fact-evidence/v1"
+    },
+    "assertion_id": {
+      "$ref": "https://schemas.freepass.ai/core/types/v1#/$defs/stable_id"
+    },
+    "fact_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9.-]*$"
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "id"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9._-]*$"
+        },
+        "id": {
+          "$ref": "https://schemas.freepass.ai/core/types/v1#/$defs/stable_id"
+        },
+        "revision": {
+          "anyOf": [
+            {
+              "$ref": "https://schemas.freepass.ai/core/types/v1#/$defs/revision"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "assertion_kind": {
+      "enum": [
+        "OBSERVED",
+        "INFERRED",
+        "DERIVED"
+      ]
+    },
+    "value_digest": {
+      "$ref": "https://schemas.freepass.ai/core/types/v1#/$defs/checksum"
+    },
+    "asserted_at": {
+      "$ref": "https://schemas.freepass.ai/core/types/v1#/$defs/datetime"
+    },
+    "basis_refs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "verification_state": {
+      "enum": [
+        "UNVERIFIED",
+        "VERIFIED",
+        "REVIEW_REQUIRED",
+        "REJECTED"
+      ]
+    },
+    "inference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rule_ref",
+        "basis_fact_refs"
+      ],
+      "properties": {
+        "rule_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "basis_fact_refs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "explanation": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "assertion_kind": {
+            "const": "INFERRED"
+          }
+        },
+        "required": [
+          "assertion_kind"
+        ]
+      },
+      "then": {
+        "required": [
+          "inference"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "assertion_kind": {
+            "enum": [
+              "OBSERVED",
+              "DERIVED"
+            ]
+          }
+        },
+        "required": [
+          "assertion_kind"
+        ]
+      },
+      "then": {
+        "not": {
+          "required": [
+            "inference"
+          ]
+        }
+      }
+    }
+  ]
+}
