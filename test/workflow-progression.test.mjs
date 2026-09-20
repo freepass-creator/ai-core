@@ -88,3 +88,19 @@ test('progression SOURCE_PARITY_VERIFIED requires successful CI evidence', () =>
   assert.ok(result.errors.some(item => item.code === 'SOURCE_PROGRESSION_PARITY_REQUIRES_SUCCESSFUL_CI'));
 });
 
+test('Sales D8 source-side parity evidence is exact-revision and remains SHADOW', () => {
+  const workflow = workflows.workflows.find(item => item.workflow_id === 'freepass-sales.lead-progress-lifecycle');
+
+  assert.equal(workflow.adoption_status, 'SHADOW');
+  assert.equal(workflow.adoption_evidence.stage, 'SOURCE_PARITY_VERIFIED');
+  assert.equal(workflow.adoption_evidence.revision, 'e8a96166e0961455119d9721501f26ecda229d03');
+  assert.equal(workflow.adoption_evidence.verification.kind, 'CI');
+  assert.equal(workflow.adoption_evidence.verification.conclusion, 'SUCCESS');
+  assert.equal(workflow.adoption_evidence.verification.run_id, 35481914375);
+
+  assert.equal(progression.adoption_status, 'SHADOW');
+  assert.equal(progression.adoption_evidence.stage, 'SOURCE_PARITY_VERIFIED');
+  assert.equal(progression.adoption_evidence.revision, workflow.adoption_evidence.revision);
+  assert.equal(progression.adoption_evidence.verification.run_id, 35481914375);
+});
+
