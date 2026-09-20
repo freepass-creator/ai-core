@@ -91,6 +91,27 @@ test('완료 결과는 민감할 수 있는 outcome.data를 버린 안전 receip
   assert.equal(events[0].detail.status,'SUCCEEDED');
 });
 
+test('durable RESULT는 requirement revision이 바뀐 뒤에도 같은 실행 requestId로 복구된다',async t=>{
+  const f=fixture();t.after(()=>f.store.close());
+  await f.coordinator.reserve({requestId:'exec-replay',orderId:f.order.id,workId:'WORK-001',capability,input:{a:1},perform:true});
+  const saved=f.coordinator.complete('exec-replay',resultFor(f.order));
+  const current=f.store.get(f.order.id);
+  const revised=f.store.mutate(f.order.id,{
+    requestId:'revise-after-result',version:current.version,action:'revise',
+    intent:'새 요구',criteria:['새 revision은 새 실행 requestId를 사용한다.'],reason:'요구 변경',
+  });
+  assert.equal(revised.revision,2);
+  assert.equal(revised.routing.requirement_revision,1);
+
+  const recovered=f.coordinator.recover({requestId:'exec-replay',orderId:f.order.id,input:{a:1},perform:true});
+  assert.equal(recovered.status,'RESULT');
+  assert.deepEqual(recovered.result,saved);
+  assert.throws(
+    ()=>f.coordinator.recover({requestId:'exec-replay',orderId:f.order.id,input:{a:2},perform:true}),
+    /CAPABILITY_EXECUTION_IDEMPOTENCY_CONFLICT/
+  );
+});
+
 test('응답 유실 뒤 terminal receipt를 찾으면 재실행 없이 결과를 복구한다',async t=>{
   const f=fixture({reconcileResult:{status:'SUCCEEDED',path:'/project/tmp/과태료/실행기록-recovered.json',state:'COMPLETED',receipt:{schema:'gwataeryo-run-manifest/v1',state:'COMPLETED'}}});
   t.after(()=>f.store.close());
