@@ -115,3 +115,43 @@ test('transition rejects another owner from closing the claim', () => {
     owner:'A-session-owner-other'
   }), /CLAIM_OWNER_MISMATCH/);
 });
+
+
+test('owner with an existing live claim is busy even for a different repository', () => {
+  const r=registry();
+  r.claims=[{
+    claim_id:'A-owner-busy',
+    claim_key:'freepass-creator/freepass-admin@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa::repo-rescan',
+    repository:'freepass-creator/freepass-admin',
+    subject_revision:'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+    scope:'repo-rescan',
+    owner_session:'A-session-owner-one',
+    state:'ACTIVE',
+    claimed_at:'2026-09-20T01:20:00Z',
+    lease_until:'2026-09-20T02:20:00Z',
+    completed_at:null,
+    evidence_refs:[]
+  }];
+  const result=evaluateClaim(r,request,new Date('2026-09-20T01:30:00Z'));
+  assert.equal(result.action,'SKIP_OWNER_BUSY');
+  assert.equal(result.claim.claim_id,'A-owner-busy');
+});
+
+test('another owner may claim non-conflicting work', () => {
+  const r=registry();
+  r.claims=[{
+    claim_id:'A-other-live',
+    claim_key:'freepass-creator/freepass-admin@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa::coordination:docs',
+    repository:'freepass-creator/freepass-admin',
+    subject_revision:'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+    scope:'coordination:docs',
+    owner_session:'A-session-owner-other',
+    state:'ACTIVE',
+    claimed_at:'2026-09-20T01:20:00Z',
+    lease_until:'2026-09-20T02:20:00Z',
+    completed_at:null,
+    evidence_refs:[]
+  }];
+  const result=acquireClaim(r,request,{now:new Date('2026-09-20T01:30:00Z'),claimId:'A-new-owner'});
+  assert.equal(result.decision.action,'ACQUIRED');
+});
