@@ -7,6 +7,8 @@ import {
 } from '../src/engine/project-audit-closure-queue.mjs';
 
 const readJson = path => readFile(new URL(path, import.meta.url),'utf8').then(JSON.parse);
+const FIXED_NOW = '2026-09-20T12:30:00.000Z';
+const opsPolicy = await readJson('../registry/project-audit-ops-policy.json');
 
 const handoffFiles = [
   '../docs/handoffs/project-4/freepass-admin.handoff.json',
@@ -47,6 +49,8 @@ function completionFor(handoff,{status='DONE',revision=handoff.audit_binding.sub
 test('current issued handoffs produce four-project zero-completion queue', async () => {
   const queue = buildProjectAuditClosureQueue({
     handoffs:await handoffs(),
+    opsPolicy,
+    now:FIXED_NOW,
   });
 
   assert.equal(queue.totals.projects,4);
@@ -64,6 +68,84 @@ test('current issued handoffs produce four-project zero-completion queue', async
   assert.equal(queue.items.every(item => item.stage==='HANDOFF_ISSUED'),true);
 });
 
+
+test('current queue assigns project accountability, lanes, priorities and SLA clocks', async () => {
+  const queue = buildProjectAuditClosureQueue({
+    handoffs:await handoffs(),
+    opsPolicy,
+    now:FIXED_NOW,
+  });
+
+  assert.equal(queue.schema,'ai-core-project-audit-closure-queue/v2');
+  assert.equal(queue.totals.p1_tasks,15);
+  assert.equal(queue.totals.p2_tasks,2);
+  assert.equal(queue.totals.p3_tasks,0);
+  assert.equal(queue.totals.on_track_tasks,17);
+  assert.equal(queue.totals.at_risk_tasks,0);
+  assert.equal(queue.totals.overdue_tasks,0);
+  assert.equal(queue.totals.executable_tasks,17);
+  assert.equal(queue.totals.nearest_due_at,'2026-09-23T11:20:00.000Z');
+
+  const admin = queue.items.find(item => item.project_id==='freepass-admin');
+  assert.equal(admin.accountable_scope,'PROJECT:freepass-admin');
+  assert.equal(admin.task_ops.priorities.P1,4);
+  assert.equal(admin.task_ops.on_track,4);
+  assert.equal(admin.operational_tasks.every(task => task.accountable_scope==='PROJECT:freepass-admin'),true);
+
+  const lanes = new Map(queue.lane_summary.map(item => [item.lane,item]));
+  assert.equal(lanes.get('B').tasks,3);
+  assert.equal(lanes.get('C').tasks,1);
+  assert.equal(lanes.get('D').tasks,3);
+  assert.equal(lanes.get('SECURITY').tasks,4);
+  assert.equal(lanes.get('QA').tasks,3);
+  assert.equal(lanes.get('GOVERNANCE').tasks,3);
+});
+
+test('P1 aging crosses AT_RISK and OVERDUE thresholds deterministically', async () => {
+  const hs = await handoffs();
+  const admin = structuredClone(hs.find(item => item.project_id==='freepass-admin'));
+
+  admin.audit_binding.audited_at='2026-09-18T10:30:00.000Z'; // 50h before FIXED_NOW
+  let queue = buildProjectAuditClosureQueue({
+    handoffs:[admin],
+    opsPolicy,
+    now:FIXED_NOW,
+  });
+  assert.equal(queue.totals.at_risk_tasks,4);
+  assert.equal(queue.totals.overdue_tasks,0);
+  assert.equal(queue.items[0].operational_tasks.every(task => task.sla_state==='AT_RISK'),true);
+
+  admin.audit_binding.audited_at='2026-09-17T11:30:00.000Z'; // 73h before FIXED_NOW
+  queue = buildProjectAuditClosureQueue({
+    handoffs:[admin],
+    opsPolicy,
+    now:FIXED_NOW,
+  });
+  assert.equal(queue.totals.at_risk_tasks,0);
+  assert.equal(queue.totals.overdue_tasks,4);
+  assert.equal(queue.items[0].operational_tasks.every(task => task.sla_state==='OVERDUE'),true);
+  assert.equal(queue.items[0].operational_tasks[0].overdue_by_hours,1);
+});
+
+test('DONE project work stops project SLA clock but remains REAUDIT_PENDING until audit closure', async () => {
+  const hs = await handoffs();
+  const admin = hs.find(item => item.project_id==='freepass-admin');
+  const completion = completionFor(admin);
+
+  const queue = buildProjectAuditClosureQueue({
+    handoffs:hs,
+    completionReports:[completion],
+    opsPolicy,
+    now:'2026-09-30T12:30:00.000Z',
+  });
+  const item = queue.items.find(item => item.project_id==='freepass-admin');
+
+  assert.equal(item.stage,'REAUDIT_REQUIRED');
+  assert.equal(item.task_ops.re_audit_pending,4);
+  assert.equal(item.task_ops.overdue,0);
+  assert.equal(item.operational_tasks.every(task => task.sla_state==='REAUDIT_PENDING'),true);
+});
+
 test('100 percent project completion becomes REAUDIT_REQUIRED, not closed', async () => {
   const hs = await handoffs();
   const admin = hs.find(item => item.project_id==='freepass-admin');
@@ -72,6 +154,8 @@ test('100 percent project completion becomes REAUDIT_REQUIRED, not closed', asyn
   const queue = buildProjectAuditClosureQueue({
     handoffs:hs,
     completionReports:[completion],
+    opsPolicy,
+    now:FIXED_NOW,
   });
   const item = queue.items.find(item => item.project_id==='freepass-admin');
 
@@ -89,6 +173,8 @@ test('partial completion stays OPEN_PARTIAL', async () => {
   const queue = buildProjectAuditClosureQueue({
     handoffs:hs,
     completionReports:[completion],
+    opsPolicy,
+    now:FIXED_NOW,
   });
   const item = queue.items.find(item => item.project_id==='freepass-estimate');
 
@@ -134,6 +220,8 @@ test('closure receipt drives verified audit-closure progress separately', async 
     handoffs:hs,
     completionReports:[completion],
     closureReceipts:[closure],
+    opsPolicy,
+    now:FIXED_NOW,
   });
   const item = queue.items.find(item => item.project_id==='freepass-admin');
 
@@ -157,6 +245,8 @@ test('live project movement overrides stored stage with HANDOFF_STALE', async ()
   const queue = buildProjectAuditClosureQueue({
     handoffs:hs,
     liveByProject,
+    opsPolicy,
+    now:FIXED_NOW,
   });
   const item = queue.items.find(item => item.project_id==='freepasserp4');
 
@@ -176,6 +266,8 @@ test('newer handoff supersedes older handoff for same project', async () => {
 
   const queue = buildProjectAuditClosureQueue({
     handoffs:[...hs,newer],
+    opsPolicy,
+    now:FIXED_NOW,
   });
 
   assert.equal(queue.totals.projects,4);
@@ -187,6 +279,8 @@ test('newer handoff supersedes older handoff for same project', async () => {
 test('markdown dashboard exposes portfolio and project progress', async () => {
   const queue = buildProjectAuditClosureQueue({
     handoffs:await handoffs(),
+    opsPolicy,
+    now:FIXED_NOW,
   });
   const md = renderProjectAuditClosureQueueMarkdown(queue);
 
