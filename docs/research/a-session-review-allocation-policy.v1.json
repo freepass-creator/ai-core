@@ -4,9 +4,10 @@
   "candidate_status": "READY_FOR_REVIEW",
   "claim_binding": {
     "repository": "freepass-creator/ai-core",
-    "scope_prefix": "review/",
+    "scope_prefix": "coordination:review-",
     "revision_field": "review_revision",
-    "revision_semantics": "Deterministic 40-hex review-pack fingerprint, not source proof and not required to be a Git commit."
+    "revision_semantics": "Deterministic 40-hex review-pack fingerprint, not source proof and not required to be a Git commit.",
+    "scope_semantics": "Canonical A coordination scope derived from normalized route id; compatible with a-session-scope-policy."
   },
   "weights": {
     "classification": {
