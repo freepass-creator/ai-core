@@ -98,6 +98,7 @@
             "enum": [
               "REQUIRED",
               "SUPPORTED",
+              "CALLER_ENFORCED",
               "NOT_APPLICABLE"
             ]
           },
