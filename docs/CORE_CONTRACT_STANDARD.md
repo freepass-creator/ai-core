@@ -81,6 +81,18 @@ field-level provenance에는 source path, digest, transformation, verification s
 
 이 셋을 URL `/v1` 하나로 대체하지 않는다.
 
+### 3.1 Observed / inferred / derived fact evidence
+
+`core-fact-evidence/v1`은 사실 증거의 종류를 `OBSERVED | INFERRED | DERIVED`로 구분한다.
+
+- `OBSERVED`: 직접 source evidence가 존재
+- `INFERRED`: 명시된 rule과 basis fact로 추론
+- `DERIVED`: source evidence를 변환해 계산된 사실
+
+`INFERRED`는 반드시 `rule_ref`와 `basis_fact_refs`를 남긴다. 논리적으로 타당한 추론이라도 `OBSERVED`로 승격하지 않는다.
+
+D가 workflow에서 추론 필요 조건과 금지되는 stronger completion fact를 정하고, C는 그 결과를 표현하는 typed evidence envelope를 제공한다. 상세는 `docs/CORE_FACT_EVIDENCE.md`를 따른다.
+
 ## 4. Engine / Adapter
 
 ```
@@ -175,6 +187,20 @@ receipt는 최소 다음 질문에 답해야 한다.
 - 어떤 executor/environment revision으로 재현 가능한가
 
 “버튼 클릭됨”, “명령 전송됨”은 업무 성공 증거가 아니다.
+
+### 8.1 Proof input freshness
+
+검증 결과가 source revision 하나만 보았다는 이유로 계속 유효하다고 가정하지 않는다.
+
+`core-proof-input-binding/v1`은 proof에 사용된 원본, checker 구현, fixture, config, schema, dependency를 각각 digest/revision에 결속하고 canonical input-set digest를 만든다.
+
+- 동일 input set → `CURRENT`
+- 구성 입력 추가/삭제 또는 digest/revision 변경 → `STALE`
+- binding 자체의 digest 불일치 → `INVALID`
+
+`STALE`은 업무 실패가 아니라 **과거 PASS가 현재 입력을 더 이상 증명하지 못한다**는 뜻이다. 다시 검증하기 전에는 current evidence로 집계하지 않는다.
+
+`core-receipt/v1`은 optional `proof_input_binding`으로 이 계약을 연결할 수 있다. 세부 규격은 `docs/CORE_PROOF_INPUT_BINDING.md`를 따른다.
 
 ## 9. Version / compatibility / migration
 
@@ -320,3 +346,12 @@ logical execution identity는 `operation_kind + logical_slot + subject_scope + s
 C는 identity/binding 형식만 소유한다. fallback 허용 조건, retry exhaustion, ambiguous outcome HOLD, replay suppression 같은 workflow 의미는 D가 소유한다.
 
 상세 규격과 runtime helper는 `docs/CORE_EXECUTION_IDENTITY.md`, `src/contracts/execution-identity.mjs`를 따른다.
+
+### 19.1 Scheduled execution observation
+
+`core-schedule-observation/v1`은 예정 logical slot, 실제 dispatch/run identity, execution attempt, downstream completion을 서로 다른 사실로 기록한다.
+
+C는 이 관측 형식과 identity binding만 소유한다. `ON_TIME / LATE / MISSED / UNKNOWN` 같은 timing assessment는 반드시 D가 소유한 `policy_ref`에 결속되어야 하며, C가 임의의 late/miss threshold를 정하지 않는다.
+
+세부 규격은 `docs/CORE_SCHEDULE_OBSERVATION.md`를 따른다.
+
