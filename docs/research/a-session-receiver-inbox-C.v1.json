@@ -2,7 +2,7 @@
   "schema": "ai-core-a-session-receiver-inbox/v1",
   "status": "RESEARCH_RECEIVER_INBOX_NOT_CANONICAL",
   "session": "C",
-  "observed_at": "2026-09-20T01:04:20Z",
+  "observed_at": "2026-09-20T01:17:00Z",
   "policy": {
     "source_of_truth": "A Routing Receipt Registry defines delivery; this inbox records receiver-side acknowledgement/review/decision only.",
     "conservative_default": "New routes enter as PENDING and remain unacknowledged until the target session writes revision-bound evidence.",
@@ -65,6 +65,24 @@
       ]
     },
     {
+      "route_id": "core-contract.sales-shadow-runtime-binding::C",
+      "finding_id": "core-contract.sales-shadow-runtime-binding",
+      "source_evidence_revision": "972c1616cac5022e0c6f74bb05f59a148c59ada9",
+      "delivered_at": "2026-09-20T01:12:20Z",
+      "receiver_status": "PENDING",
+      "acknowledgement": null,
+      "review": null,
+      "decision": null,
+      "history": [
+        {
+          "status": "PENDING",
+          "observed_at": "2026-09-20T01:12:20Z",
+          "basis_revision": "972c1616cac5022e0c6f74bb05f59a148c59ada9",
+          "reason": "Seeded from the A Routing Receipt Registry; no receiver acknowledgement exists yet."
+        }
+      ]
+    },
+    {
       "route_id": "governance.erp5-shadow-main-push-path::C",
       "finding_id": "governance.erp5-shadow-main-push-path",
       "source_evidence_revision": "432dcb0aa0fd62ac7698108284bced4138c32238",
@@ -114,6 +132,24 @@
           "status": "PENDING",
           "observed_at": "2026-09-20T00:00:00Z",
           "basis_revision": "432dcb0aa0fd62ac7698108284bced4138c32238",
+          "reason": "Seeded from the A Routing Receipt Registry; no receiver acknowledgement exists yet."
+        }
+      ]
+    },
+    {
+      "route_id": "workflow.forward-skip-evidence-integrity::C",
+      "finding_id": "workflow.forward-skip-evidence-integrity",
+      "source_evidence_revision": "972c1616cac5022e0c6f74bb05f59a148c59ada9",
+      "delivered_at": "2026-09-20T01:12:20Z",
+      "receiver_status": "PENDING",
+      "acknowledgement": null,
+      "review": null,
+      "decision": null,
+      "history": [
+        {
+          "status": "PENDING",
+          "observed_at": "2026-09-20T01:12:20Z",
+          "basis_revision": "972c1616cac5022e0c6f74bb05f59a148c59ada9",
           "reason": "Seeded from the A Routing Receipt Registry; no receiver acknowledgement exists yet."
         }
       ]
