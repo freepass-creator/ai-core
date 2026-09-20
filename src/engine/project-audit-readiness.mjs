@@ -33,8 +33,23 @@ export function validateProjectAuditReadinessRegistry(registry) {
     need(axis.canonical_sources.every(nonempty), `AUDIT_READINESS_CANONICAL_SOURCE_INVALID:${axis.id}`);
     need(axis.machine_checks.every(nonempty), `AUDIT_READINESS_MACHINE_CHECK_INVALID:${axis.id}`);
     need(axis.gaps.every(nonempty), `AUDIT_READINESS_GAP_INVALID:${axis.id}`);
-    if (axis.maturity === 'MACHINE_ENFORCED') need(axis.machine_checks.length > 0, `AUDIT_READINESS_ENFORCED_WITHOUT_CHECK:${axis.id}`);
-    if (axis.maturity === 'RESEARCH_ONLY') need(axis.gaps.length > 0, `AUDIT_READINESS_RESEARCH_GAP_REQUIRED:${axis.id}`);
+    need(unique(axis.canonical_sources), `AUDIT_READINESS_CANONICAL_SOURCE_DUPLICATE:${axis.id}`);
+    need(unique(axis.machine_checks), `AUDIT_READINESS_MACHINE_CHECK_DUPLICATE:${axis.id}`);
+    need(unique(axis.gaps), `AUDIT_READINESS_GAP_DUPLICATE:${axis.id}`);
+
+    if (axis.maturity === 'MACHINE_ENFORCED') {
+      need(axis.canonical_sources.length > 0, `AUDIT_READINESS_ENFORCED_WITHOUT_SOURCE:${axis.id}`);
+      need(axis.machine_checks.length > 0, `AUDIT_READINESS_ENFORCED_WITHOUT_CHECK:${axis.id}`);
+    }
+    if (axis.maturity === 'CANONICAL_PARTIAL') {
+      need(axis.canonical_sources.length > 0, `AUDIT_READINESS_PARTIAL_WITHOUT_SOURCE:${axis.id}`);
+      need(axis.machine_checks.length > 0, `AUDIT_READINESS_PARTIAL_WITHOUT_CHECK:${axis.id}`);
+      need(axis.gaps.length > 0, `AUDIT_READINESS_PARTIAL_GAP_REQUIRED:${axis.id}`);
+    }
+    if (axis.maturity === 'RESEARCH_ONLY') {
+      need(axis.canonical_sources.length > 0, `AUDIT_READINESS_RESEARCH_SOURCE_REQUIRED:${axis.id}`);
+      need(axis.gaps.length > 0, `AUDIT_READINESS_RESEARCH_GAP_REQUIRED:${axis.id}`);
+    }
   }
   return registry;
 }
@@ -47,8 +62,9 @@ export function assessProjectAuditReadiness(registry) {
   const advisoryOnly = REQUIRED_AUDIT_AXES.filter(id => byId.get(id).maturity === 'RESEARCH_ONLY');
   const missing = REQUIRED_AUDIT_AXES.filter(id => byId.get(id).maturity === 'MISSING');
 
-  // A read-only audit may use canonical/machine axes and surface research-only axes as
-  // advisory gaps. It must never convert an advisory axis into a conformance PASS.
+  // Read-only audit planning is safe when no axis is missing. Only MACHINE_ENFORCED
+  // axes may ever produce a full conformance PASS. CANONICAL_PARTIAL axes may execute
+  // their machine checks, but their declared gaps remain binding limitations.
   const readOnlyPilotReady = missing.length === 0;
   const fullConformanceReady = REQUIRED_AUDIT_AXES.every(id => byId.get(id).maturity === 'MACHINE_ENFORCED');
 
@@ -76,15 +92,25 @@ export function assessProjectAuditReadiness(registry) {
       canonical_partial: canonicalPartial,
       advisory_only: advisoryOnly,
       missing,
+      scorable: [...machineEnforced, ...canonicalPartial],
+    },
+    coverage: {
+      total_axes: REQUIRED_AUDIT_AXES.length,
+      machine_enforced_axes: machineEnforced.length,
+      canonical_partial_axes: canonicalPartial.length,
+      advisory_only_axes: advisoryOnly.length,
+      missing_axes: missing.length,
     },
     permissions: {
       read_only_project_audit: readOnlyPilotReady,
       gap_report: readOnlyPilotReady,
+      axis_machine_check: readOnlyPilotReady,
+      full_conformance_pass: fullConformanceReady,
       auto_remediation: false,
       canonical_promotion: false,
       production_mutation: false,
     },
     blockers,
-    rule: 'Research-only or partial axes may produce findings, never a conformance PASS. Promotion, remediation and production mutation require their own canonical contracts, revision-bound proof and authority.',
+    rule: 'CANONICAL_PARTIAL axes may run machine checks but cannot produce a full conformance PASS while declared gaps remain. Research-only axes are advisory. Promotion, remediation and production mutation require separate authority and revision-bound proof.',
   };
 }
