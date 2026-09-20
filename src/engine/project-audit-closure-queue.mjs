@@ -33,7 +33,7 @@ function closureMatches(receipt, handoff) {
     && receipt.handoff_binding?.standard_baseline_revision === handoff.audit_binding.standard_baseline_revision;
 }
 
-function selectActiveHandoffs(handoffs) {
+export function selectActiveProjectAuditHandoffs(handoffs) {
   const byProject = new Map();
   const superseded = [];
 
@@ -164,7 +164,7 @@ export function buildProjectAuditClosureQueue({
   need(Array.isArray(completionReports), 'AUDIT_CLOSURE_QUEUE_COMPLETIONS_REQUIRED');
   need(Array.isArray(closureReceipts), 'AUDIT_CLOSURE_QUEUE_RECEIPTS_REQUIRED');
 
-  const {active,superseded} = selectActiveHandoffs(handoffs);
+  const {active,superseded} = selectActiveProjectAuditHandoffs(handoffs);
 
   const items = active.map(handoff => {
     const completion = latestCompletion(completionReports,handoff);
