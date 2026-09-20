@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "status": "RESEARCH_ROUTING_INDEX_NOT_CANONICAL",
-  "observed_at": "2026-09-19",
+  "observed_at": "2026-09-20T11:12:00Z",
   "evidence_levels": [
     "PROPOSED",
     "PLATFORM_CONSENSUS",
@@ -451,6 +451,18 @@
       "finding": "served build identity를 장시간 실행 중인 client가 주기/visibility 복귀 시점에 대조해 stale-client 상태를 감지하고 dirty/risk에 맞는 update UX로 전환",
       "next_gate": "SECOND_PROJECT_REQUIRED",
       "evidence_note": "FreePassERP3 commit 5344a500... added build-version.txt generation and runtime version-watch after stale SPA tabs kept executing obsolete deployed code. Current app entry actually starts the watcher. Exact auto-reload behavior is local; common candidate is release-drift detection plus safe update UX."
+    },
+    {
+      "id": "workflow.capability-cutover-no-dual-run",
+      "axis": "Workflow/Cutover",
+      "evidence_level": "PROJECT_VERIFIED",
+      "projects": [
+        "aiops"
+      ],
+      "target_session": "D",
+      "finding": "replacement capability 검증 전 구 실행 경로를 끄지 않고, 검증 중에는 신규·구 스케줄의 중복 실행을 금지하며, 동일 source/path 검증 후에만 기존 실행 경로를 비활성화하고 retirement를 재평가하는 cutover 규칙",
+      "next_gate": "SECOND_PROJECT_REQUIRED",
+      "evidence_note": "AIOps dd47662ec6e92a689cbc4b8a50504e6013845ff9: scripts/backup-rtdb.mjs establishes the replacement read-only backup engine; docs/sop/AI운영/RTDB-백업.md requires source/path equivalence, no duplicate schedule, replacement verification before legacy disablement, and retirement re-evaluation."
     }
   ]
 }
