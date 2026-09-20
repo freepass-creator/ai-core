@@ -28,6 +28,8 @@
 
 ### B. Freepass — 판매·중개 사업
 
+제품명·폴더명·서비스명과 Data Monitor 기준은 [`FREEPASS_PRODUCT_DEFINITION_2026-09-20.md`](FREEPASS_PRODUCT_DEFINITION_2026-09-20.md)를 따른다.
+
 | 파트 | 현행 자산 | 현재 확인된 역할 | 판정 |
 |---|---|---|---|
 | 판매 플랫폼 | `freepass-creator/freepasserp4` | `Freepass ERP 1~4`가 화이트라벨로 진화한 현재 최종본. 영업자가 차량을 찾고 고객에게 카탈로그를 보여주는 `freepasserp.com` | **제품 최종본** |
