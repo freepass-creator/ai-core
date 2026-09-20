@@ -822,7 +822,7 @@
       "project_id": "freepass-estimate",
       "repository": "freepass-creator/freepass-estimate",
       "source_ref": "work/ui-baseline",
-      "subject_revision": "8df0fdfe5ce72ffbc17b3adffcc881c37164ed3a",
+      "subject_revision": "b526fdc73e812dcb0594d10caf2123bbade1d38b",
       "phase": "SHADOW",
       "assessments": [
         {
@@ -831,8 +831,8 @@
           "binding_state": "NONE",
           "priority": "P0",
           "evidence_refs": [
-            "freepass-creator/freepass-estimate@8df0fdfe5ce72ffbc17b3adffcc881c37164ed3a:apps/new/src/lib/quote/contracts.js",
-            "freepass-creator/freepass-estimate@8df0fdfe5ce72ffbc17b3adffcc881c37164ed3a:apps/new/src/lib/share-link.js"
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/contracts.js",
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/share-link.js"
           ],
           "action": "Percentage semantics already match; normalize money to minor units/currency and shared identity/time primitives at boundary."
         },
@@ -842,8 +842,8 @@
           "binding_state": "NONE",
           "priority": "P0",
           "evidence_refs": [
-            "freepass-creator/freepass-estimate@8df0fdfe5ce72ffbc17b3adffcc881c37164ed3a:apps/new/src/lib/quote/execution-result.js",
-            "freepass-creator/freepass-estimate@8df0fdfe5ce72ffbc17b3adffcc881c37164ed3a:apps/new/src/lib/share-link.js"
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/execution-result.js",
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/share-link.js"
           ],
           "action": "Quote execution/snapshot already pin source revision/provider mode; bind to Core provenance."
         },
@@ -853,12 +853,15 @@
           "binding_state": "SHADOW",
           "priority": "P0",
           "evidence_refs": [
-            "freepass-creator/freepass-estimate@8df0fdfe5ce72ffbc17b3adffcc881c37164ed3a:apps/new/src/lib/quote/execution-result.js"
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/core-contract-shadow.js",
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/execution-result.js"
           ],
-          "action": "Quote execution SUCCEEDED/HOLD/FAILED with provider/revision/evidence closely matches Core adapter result; add shadow binding.",
+          "action": "Current Estimate revision already projects quote execution into core-adapter-result/v1 in shadow. Preserve SHADOW until project-side verification is rerun at this exact revision.",
           "artifact_refs": [
             "registry/adoption/freepass-estimate-quote-execution.fixture.json",
-            "test/core-contract-cross-project-adoption.test.mjs"
+            "registry/adoption/freepass-estimate-quote-provider.adapter.json",
+            "test/core-contract-cross-project-adoption.test.mjs",
+            "test/freepass-estimate-port-binding.test.mjs"
           ]
         },
         {
@@ -867,7 +870,7 @@
           "binding_state": "NONE",
           "priority": "NA",
           "evidence_refs": [
-            "freepass-creator/freepass-estimate@8df0fdfe5ce72ffbc17b3adffcc881c37164ed3a:apps/new/src/lib/quote/contracts.js"
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/contracts.js"
           ],
           "action": "Quote calculation is not a paginated resource API."
         },
@@ -877,7 +880,7 @@
           "binding_state": "NONE",
           "priority": "P0",
           "evidence_refs": [
-            "freepass-creator/freepass-estimate@8df0fdfe5ce72ffbc17b3adffcc881c37164ed3a:apps/new/src/lib/quote/provider-policy.js"
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/provider-policy.js"
           ],
           "action": "Provider-specific error taxonomy is correct inside adapter; map it to Core provider error families at shared API boundary."
         },
@@ -887,7 +890,7 @@
           "binding_state": "NONE",
           "priority": "NA",
           "evidence_refs": [
-            "freepass-creator/freepass-estimate@8df0fdfe5ce72ffbc17b3adffcc881c37164ed3a:apps/new/src/lib/quote/execution-result.js"
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/execution-result.js"
           ],
           "action": "No event bus contract is required for current quote calculation path."
         },
@@ -897,50 +900,70 @@
           "binding_state": "NONE",
           "priority": "P0",
           "evidence_refs": [
-            "freepass-creator/freepass-estimate@8df0fdfe5ce72ffbc17b3adffcc881c37164ed3a:apps/new/src/lib/quote/execution-result.js"
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/execution-result.js"
           ],
           "action": "Execution proof exists but lacks canonical input/output digests and reproducibility fields required by Core receipt."
         },
         {
           "contract_id": "core.port.v1",
           "classification": "CORE_MATCH",
-          "binding_state": "NONE",
+          "binding_state": "SHADOW",
           "priority": "P0",
           "evidence_refs": [
-            "freepass-creator/freepass-estimate@8df0fdfe5ce72ffbc17b3adffcc881c37164ed3a:apps/new/src/lib/quote/contracts.js"
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/calculate.js",
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/provider-config.js"
           ],
-          "action": "Configured Quote Provider is a technology-neutral port concept."
+          "action": "Shadow-register the configured authoritative quote provider as a semantic calculation port.",
+          "artifact_refs": [
+            "registry/adoption/freepass-estimate-quote-provider.port.json",
+            "test/freepass-estimate-port-binding.test.mjs"
+          ]
         },
         {
           "contract_id": "core.engine.v1",
           "classification": "CORE_MATCH",
-          "binding_state": "NONE",
+          "binding_state": "SHADOW",
           "priority": "P0",
           "evidence_refs": [
-            "freepass-creator/freepass-estimate@8df0fdfe5ce72ffbc17b3adffcc881c37164ed3a:apps/new/src/lib/quote/contracts.js",
-            "freepass-creator/freepass-estimate@8df0fdfe5ce72ffbc17b3adffcc881c37164ed3a:apps/new/src/lib/quote/provider-policy.js"
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/calculate.js",
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/contracts.js"
           ],
-          "action": "Quote Engine owns canonical pricing semantics independent of provider transport."
+          "action": "Shadow-register the Quote Engine as provider-neutral business calculation semantics; keep production execution in the project.",
+          "artifact_refs": [
+            "registry/adoption/freepass-estimate-quote.engine.json",
+            "test/freepass-estimate-port-binding.test.mjs"
+          ]
         },
         {
           "contract_id": "core.adapter.v1",
           "classification": "CORE_MATCH",
-          "binding_state": "NONE",
+          "binding_state": "SHADOW",
           "priority": "P0",
           "evidence_refs": [
-            "freepass-creator/freepass-estimate@8df0fdfe5ce72ffbc17b3adffcc881c37164ed3a:apps/new/src/lib/quote/provider-policy.js"
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/provider-policy.js",
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/engines/external.js",
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/core-contract-shadow.js"
           ],
-          "action": "Provider adapters own unit/field/error translation and fail-closed policy."
+          "action": "Shadow-register provider routing/error/timeout semantics without moving provider-specific implementation into Core.",
+          "artifact_refs": [
+            "registry/adoption/freepass-estimate-quote-provider.adapter.json",
+            "test/freepass-estimate-port-binding.test.mjs"
+          ]
         },
         {
           "contract_id": "core.binding-profile.v1",
           "classification": "MIGRATE",
-          "binding_state": "NONE",
+          "binding_state": "SHADOW",
           "priority": "P1",
           "evidence_refs": [
-            "freepass-creator/freepass-estimate@8df0fdfe5ce72ffbc17b3adffcc881c37164ed3a:apps/new/src/lib/quote/provider-policy.js"
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/provider-config.js",
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/provider-policy.js"
           ],
-          "action": "Represent configured provider selection as an explicit revision-bound binding profile."
+          "action": "Represent current quote provider selection as a revision-bound SHADOW binding profile. verification_state remains NOT_RUN under no-Actions mode.",
+          "artifact_refs": [
+            "registry/adoption/freepass-estimate-quote.binding-profile.json",
+            "test/freepass-estimate-port-binding.test.mjs"
+          ]
         },
         {
           "contract_id": "core.source-registry.v1",
@@ -948,7 +971,7 @@
           "binding_state": "NONE",
           "priority": "P0",
           "evidence_refs": [
-            "freepass-creator/freepass-estimate@8df0fdfe5ce72ffbc17b3adffcc881c37164ed3a:apps/new/src/lib/quote/provider-policy.js"
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/provider-policy.js"
           ],
           "action": "Authoritative provider selection, no automatic fallback and fail-closed behavior match Core source/fallback semantics."
         },
@@ -958,7 +981,7 @@
           "binding_state": "NONE",
           "priority": "P0",
           "evidence_refs": [
-            "freepass-creator/freepass-estimate@8df0fdfe5ce72ffbc17b3adffcc881c37164ed3a:apps/new/src/lib/share-link.js"
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/share-link.js"
           ],
           "action": "Share snapshot v2 pins contracts, source revision, provider mode and fixed quote values."
         },
@@ -968,7 +991,7 @@
           "binding_state": "NONE",
           "priority": "P1",
           "evidence_refs": [
-            "freepass-creator/freepass-estimate@8df0fdfe5ce72ffbc17b3adffcc881c37164ed3a:apps/new/src/lib/quote/execution-result.js"
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/execution-result.js"
           ],
           "action": "Execution has requestId/revision but needs semantic idempotency digest and expected revision envelope."
         },
@@ -978,7 +1001,7 @@
           "binding_state": "NONE",
           "priority": "NA",
           "evidence_refs": [
-            "freepass-creator/freepass-estimate@8df0fdfe5ce72ffbc17b3adffcc881c37164ed3a:apps/new/src/lib/quote/contracts.js"
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/contracts.js"
           ],
           "action": "Quote request is a domain command, not generic search/filter/sort."
         },
@@ -988,7 +1011,7 @@
           "binding_state": "NONE",
           "priority": "P0",
           "evidence_refs": [
-            "freepass-creator/freepass-estimate@8df0fdfe5ce72ffbc17b3adffcc881c37164ed3a:apps/new/src/lib/quote/provider-policy.js"
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/provider-policy.js"
           ],
           "action": "Provider-specific mapping/normalization is explicit and can be registered as versioned transformer/adapter contracts."
         },
@@ -998,7 +1021,7 @@
           "binding_state": "NONE",
           "priority": "P1",
           "evidence_refs": [
-            "freepass-creator/freepass-estimate@8df0fdfe5ce72ffbc17b3adffcc881c37164ed3a:apps/new/src/lib/quote/contracts.js"
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/contracts.js"
           ],
           "action": "Domain QuoteResult remains authoritative; use Core result only for shared integration transport."
         },
@@ -1008,7 +1031,7 @@
           "binding_state": "NONE",
           "priority": "NA",
           "evidence_refs": [
-            "freepass-creator/freepass-estimate@8df0fdfe5ce72ffbc17b3adffcc881c37164ed3a:apps/new/src/lib/quote/execution-result.js"
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/execution-result.js"
           ],
           "action": "No cross-service event consumption contract exists in current estimator runtime."
         },
@@ -1018,7 +1041,7 @@
           "binding_state": "NONE",
           "priority": "P1",
           "evidence_refs": [
-            "freepass-creator/freepass-estimate@8df0fdfe5ce72ffbc17b3adffcc881c37164ed3a:apps/new/src/lib/quote/contracts.js"
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/contracts.js"
           ],
           "action": "Vehicle/provider mapping build scripts form a versioned import/projection pipeline; declare when adopted."
         },
@@ -1028,7 +1051,7 @@
           "binding_state": "NONE",
           "priority": "NA",
           "evidence_refs": [
-            "freepass-creator/freepass-estimate@8df0fdfe5ce72ffbc17b3adffcc881c37164ed3a:apps/new/src/lib/quote/contracts.js"
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/contracts.js"
           ],
           "action": "Project does not own the AI Core registry meta-contract."
         },
@@ -1038,7 +1061,7 @@
           "binding_state": "NONE",
           "priority": "NA",
           "evidence_refs": [
-            "freepass-creator/freepass-estimate@8df0fdfe5ce72ffbc17b3adffcc881c37164ed3a:apps/new/src/lib/quote/contracts.js"
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/contracts.js"
           ],
           "action": "Project does not own the AI Core registry meta-contract."
         },
@@ -1048,7 +1071,7 @@
           "binding_state": "NONE",
           "priority": "NA",
           "evidence_refs": [
-            "freepass-creator/freepass-estimate@8df0fdfe5ce72ffbc17b3adffcc881c37164ed3a:apps/new/src/lib/quote/contracts.js"
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/contracts.js"
           ],
           "action": "Project does not own the AI Core registry meta-contract."
         },
@@ -1058,8 +1081,8 @@
           "binding_state": "NONE",
           "priority": "P1",
           "evidence_refs": [
-            "freepass-creator/freepass-estimate@8df0fdfe5ce72ffbc17b3adffcc881c37164ed3a:apps/new/src/lib/quote/provider-policy.js",
-            "freepass-creator/freepass-estimate@8df0fdfe5ce72ffbc17b3adffcc881c37164ed3a:apps/new/src/lib/quote/execution-result.js"
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/provider-policy.js",
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/execution-result.js"
           ],
           "action": "Stable provider/error/status values exist but do not yet carry explicit lifecycle/deprecation metadata."
         },
@@ -1069,7 +1092,7 @@
           "binding_state": "NONE",
           "priority": "NA",
           "evidence_refs": [
-            "freepass-creator/freepass-estimate@8df0fdfe5ce72ffbc17b3adffcc881c37164ed3a:apps/new/src/lib/quote/contracts.js"
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/contracts.js"
           ],
           "action": "Project does not own the AI Core registry meta-contract."
         },
@@ -1079,7 +1102,7 @@
           "binding_state": "NONE",
           "priority": "P1",
           "evidence_refs": [
-            "freepass-creator/freepass-estimate@8df0fdfe5ce72ffbc17b3adffcc881c37164ed3a:apps/new/src/lib/quote/calculate.js"
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/calculate.js"
           ],
           "action": "Treat quote calculation orchestration as an Application Service while preserving Quote Engine and Provider Adapter authority."
         },
@@ -1092,7 +1115,7 @@
           "action": "Introduce logical execution identity where retries, provider attempts, asynchronous continuation, or recovery paths can represent one business execution."
         }
       ],
-      "next_gate": "Shadow-bind quote execution/provider/snapshot to Core adapter/source/snapshot/receipt contracts and prove equivalence in the estimator verify command."
+      "next_gate": "Run revision-bound project/Core contract checks for b526fdc...; if the Engine/Port/Adapter shadow and core-adapter-result projection remain equivalent, move only the relevant binding cells from SHADOW to VALIDATED."
     }
   ]
 }
