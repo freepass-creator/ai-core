@@ -1,5 +1,6 @@
 import { resolveServiceBinding, validateAdapterContract } from '../contracts/engine-adapter-contract.mjs';
 import { createAdapterInvocationRuntime } from './adapter-invocation-runtime.mjs';
+import { createRepositoryRuntime } from './repository-runtime.mjs';
 
 const text=value=>typeof value==='string'&&value.trim()===value&&value.length>0;
 const need=(condition,code,details={})=>{if(!condition){const e=new Error(code);e.code=code;e.details=details;throw e;}};
@@ -14,8 +15,10 @@ function normalizeServiceImplementation(implementation){
 export function createApplicationServiceRuntime({
   service,
   adapters=[],
+  repositories=[],
   profile,
   adapterImplementations,
+  repositoryImplementations=null,
   connectors=null,
   implementation,
   clock=Date.now,
@@ -24,6 +27,7 @@ export function createApplicationServiceRuntime({
   const binding=resolveServiceBinding({
     service,
     adapters,
+    repositories,
     profile,
     requireVerified:requireVerifiedBinding,
   });
@@ -50,6 +54,7 @@ export function createApplicationServiceRuntime({
       subject_revision:profile?.subject_revision??null,
       verification_state:profile?.verification_state??null,
       selected_adapters:binding.selected_adapters.map(x=>({...x})),
+      selected_repositories:(binding.selected_repositories??[]).map(x=>({...x})),
       errors:[...binding.errors],
     };
   }
@@ -116,16 +121,44 @@ export function createApplicationServiceRuntime({
 
     need(serviceImpl,'SERVICE_IMPLEMENTATION_REQUIRED');
     const portResults=[];
+    const repositoryByPort=new Map((binding.selected_repositories??[]).map(item=>[item.port_id,item]));
+    const repositoryById=new Map(repositories.map(item=>[item.repository_id,item]));
+    const availablePorts=[...new Set([...invocation.ports,...repositoryByPort.keys()])];
     const ports=Object.freeze({
-      available:Object.freeze(invocation.ports),
+      available:Object.freeze(availablePorts),
       async invoke(portId,portInput,options={}){
+        const repositoryBinding=repositoryByPort.get(portId);
+        if(repositoryBinding){
+          const repository=repositoryById.get(repositoryBinding.repository_id);
+          need(repository,'REPOSITORY_NOT_FOUND',{repository_id:repositoryBinding.repository_id});
+          const implementation=repositoryImplementations?.get?.(repository.repository_id)
+            ?? repositoryImplementations?.[repository.repository_id];
+          const runtime=createRepositoryRuntime({
+            repository,
+            implementation,
+            connectors,
+            project_id:profile.project_id,
+            clock,
+          });
+          need(text(options.repository_operation_id),'REPOSITORY_OPERATION_ID_REQUIRED',{port_id:portId});
+          const result=await runtime.invoke(options.repository_operation_id,portInput,{
+            correlation_id,
+            idempotency_key:options.idempotency_key??idempotency_key,
+            expected_revision:options.expected_revision??null,
+            auth_context:options.auth_context??auth_context,
+            execution:options.execution??execution,
+          });
+          portResults.push({port_id:portId,binding_kind:'REPOSITORY',result});
+          return result;
+        }
+
         const result=await invocation.invoke(portId,portInput,{
           correlation_id,
           idempotency_key:options.idempotency_key??idempotency_key,
           execution:options.execution??execution,
           auth_context:options.auth_context??auth_context,
         });
-        portResults.push({port_id:portId,result});
+        portResults.push({port_id:portId,binding_kind:'ADAPTER',result});
         return result;
       }
     });
