@@ -11,14 +11,14 @@ Deletion is a later action after branch/history preservation and external depend
 
 | Repository | Gate | Current blocker | Successor / current owner |
 |---|---|---|---|
-| `freepass-creator/-` | READY_FOR_ARCHIVE | Closed wrong-repo Webtoon draft PR; stale PR branch remains only as history | none |
+| `freepass-creator/-` | READY_FOR_ARCHIVE | Wrong-repo Webtoon draft PR closed; stale branch remains only as archive history | none |
 | `freepass-creator/rentsafe` | READY_AFTER_EXTERNAL_BINDING_CHECK | Confirm no old deployment/domain/secrets remain | `chakhandeal` |
-| `freepass-creator/jpkerp` | READY_AFTER_EXTERNAL_BINDING_CHECK | Multiple historical branches; preserve by archive | later ERP generations |
-| `freepass-creator/jpkerp2` | BLOCKED | Old Firebase/Storage/runtime bindings and divergent `redesign-v3` branch must be accounted for | `renman` + `vehicle-master` + later ERP lines |
+| `freepass-creator/jpkerp` | READY_AFTER_EXTERNAL_BINDING_CHECK | Confirm no old deployment/domain still uses the shared `jpkerp` Firebase client | later ERP generations |
+| `freepass-creator/jpkerp2` | READY_AFTER_EXTERNAL_BINDING_CHECK | Confirm old `jpkerp` Firebase/Storage/domain runtime is no longer served from this client | `renman` + `vehicle-master` + later ERP lines |
 | `freepass-creator/jpkerp-v4` | BLOCKED | Daily Vercel SMS cron must be proven disabled/migrated | later ERP line |
-| `freepass-creator/freeepasserp2` | BLOCKED | Firebase rules + Vercel deployment config; old binding check required | later FreePass ERP |
-| `freepass-creator/freepasserp` | BLOCKED | Firebase rules + Vercel deployment config; old binding check required | current FreePass ERP line |
-| `freepass-creator/jpkerp5` | BLOCKED | Daily RIMS license-verify cron + Firebase rules; runtime owner migration required | current owner unresolved; `billincar` contains same cron lineage |
+| `freepass-creator/freeepasserp2` | READY_AFTER_DEPLOYMENT_CHECK | Old Vercel deployment binding only; it uses the same `freepasserp3` Firebase backend as its successor generation | later FreePass ERP |
+| `freepass-creator/freepasserp` | READY_AFTER_DEPLOYMENT_CHECK | Old Vercel deployment binding only; same `freepasserp3` Firebase backend lineage | current FreePass ERP line |
+| `freepass-creator/jpkerp5` | BLOCKED | Daily RIMS Vercel cron + daily GitHub Actions RTDB backup + runtime owner cutover | backup engine → `aiops`; RIMS runtime owner unresolved, `billincar` has same lineage |
 
 ## Completed in this audit
 
@@ -26,10 +26,15 @@ Deletion is a later action after branch/history preservation and external depend
 - Marked all Wave-1 repositories NON-AUTHORITATIVE / RETIRE.
 - Closed the wrongly-created Webtoon Studio PR in `freepass-creator/-` without merging it.
 - Verified there are no other open PRs in Wave-1 repositories.
-- Inventoried non-default branches.
+- Inventoried non-default branches and preserved them by choosing repository archive as the default retirement action.
 - Compared the large divergent branch in `jpkerp2`.
 - Confirmed that `renman` supersedes the old jpkerp2 OCR endpoint with stronger authentication, rate limits, file validation, broader document support, and extraction fallback behavior.
 - Confirmed `vehicle-master` is the current vehicle taxonomy SSOT.
+- Confirmed `jpkerp` and `jpkerp2` use the same historical `jpkerp` Firebase project.
+- Confirmed `freepasserp` and `freeepasserp2` use the same `freepasserp3` Firebase project and nearly identical Vercel configuration.
+- File-tree comparison shows `freeepasserp2` is the smaller/older FreePass client: 118 files versus 219 in `freepasserp`, with 63 identical blobs and 113 files existing only in the later `freepasserp` line.
+- Scanned GitHub Actions in all eight Wave-1 repositories: only `jpkerp5` has a scheduled workflow. `rentsafe` has push/PR CI only.
+- Migrated the generic read-only RTDB backup engine from `jpkerp5` into AIOPS without creating a replacement schedule.
 
 ## Branch preservation register
 
@@ -48,50 +53,75 @@ No branch merge is required for retirement. Repository archive preserves them.
 
 ### freepass-creator/jpkerp2
 
-- `main` — current repository default, now marked RETIRE.
+- `main` — repository default, now marked RETIRE.
 - `redesign-v3` — diverged branch, 69 commits ahead / 46 behind relative to main.
-  Notable historical features include expense auto-classification, auto-debit matching, large ERP page redesigns, OCR/parsers, upload tooling, and vehicle-master scripts.
+  Historical features include expense auto-classification, auto-debit matching, large ERP page redesigns, OCR/parsers, upload tooling, and vehicle-master scripts.
 
-This branch is not authoritative, but it is preservation evidence. Archive the whole repository; do not delete until its history is intentionally preserved elsewhere.
+This branch is non-authoritative preservation evidence. Archiving the repository preserves it; it does not need to be merged back into main.
 
 ### freepass-creator/jpkerp5
 
-- `main` — legacy v5 line; contains Vercel daily RIMS license-verification cron and Firebase RTDB rules.
+- `main` — legacy v5 line; contains scheduled automation and Firebase RTDB logic.
 - `freepass-erp-flask` — independent initial FreePass ERP history with no common ancestor.
+
+## Backend lineage findings
+
+### JPK ERP lineage
+
+`jpkerp` and `jpkerp2` both point to the same historical Firebase project and RTDB/Storage. `jpkerp2` also contains historical scripts capable of reading/writing that backend and, in some utilities, the old `freepasserp3` backend.
+
+Therefore they are legacy clients, not separate current SSOTs. Their remaining archive gate is external serving/runtime verification, not feature migration.
+
+### FreePass ERP lineage
+
+`freepasserp` and `freeepasserp2` have the same Firebase client configuration pointing to `freepasserp3`, and their Vercel SPA configuration is identical.
+
+`freeepasserp2` is materially smaller and older than `freepasserp`. There is no reason to keep it as an authoritative implementation. It can move to archive as soon as an old/private Vercel deployment binding is ruled out.
 
 ## Critical runtime findings
 
 ### jpkerp-v4
 
-`vercel.json` schedules `/api/sms/cron/daily` every day. The route can send overdue, contract-expiry, inspection, and insurance SMS and writes SMS logs. It must not be archived/deleted until the historical deployment/cron is confirmed disabled or migrated.
+`vercel.json` schedules `/api/sms/cron/daily` every day. The route can send overdue, contract-expiry, inspection, and insurance SMS and writes SMS logs. It must not be archived until the historical deployment/cron is confirmed disabled or migrated.
 
-### jpkerp5
+### jpkerp5 — RIMS cron
 
 `vercel.json` schedules `/api/cron/license-verify` daily. The route:
 
 - calls RIMS for registered driver-license numbers;
 - reads and can update `v5/contracts` in RTDB;
 - marks license states such as suspended/cancelled/expired/disqualified;
-- explicitly contains comments saying the production cron was running daily at the time of implementation.
+- contains implementation comments stating that the production cron was running daily at the time.
 
-`billincar` contains the same cron lineage but with a weaker/older authentication form. Therefore the cleanup task is:
+`billincar` contains the same cron lineage, but its general UI data root is `billincar_demo` while the cron still directly targets `v5/contracts`. Its cron authentication is also an older/weaker variant than the jpkerp5 implementation.
 
-1. identify the actual current runtime owner;
-2. if `billincar` is the intended owner, port the stronger jpkerp5 cron authentication before cutover;
-3. prove only one scheduled runtime remains;
-4. disable the jpkerp5 deployment/cron;
-5. then archive jpkerp5.
+Required cutover:
 
-### jpkerp2
+1. identify the actual current RIMS runtime owner;
+2. if `billincar` is intended to own it, adopt the stronger authentication behavior before cutover;
+3. prove exactly one scheduled runtime remains;
+4. disable the legacy jpkerp5 Vercel cron;
+5. then clear this blocker.
 
-Historical documentation references:
+### jpkerp5 — RTDB backup
 
-- Firebase Storage bucket `jpkerp.firebasestorage.app`;
-- `jpkerp.com`;
-- RTDB events/mobile_uploads;
-- mobile photo upload and unresolved-work workflow.
+`.github/workflows/daily-backup.yml` schedules a full RTDB backup every day at **03:00 KST** and uploads a 30-day GitHub artifact. Current connector permissions do not expose enough scheduled-run history to prove whether recent runs are still executing, so the workflow is treated as live until verified.
 
-The OCR and vehicle-master roles have successors, but old runtime bindings must still be checked before archive.
+The generic backup engine has now been moved to:
+
+- `freepass-creator/aiops/scripts/backup-rtdb.mjs`
+- `freepass-creator/aiops/docs/sop/AI운영/RTDB-백업.md`
+
+AIOPS now owns the reusable code. **No new scheduled backup was created**, so there is no duplicate schedule from this migration.
+
+Remaining cutover gate:
+
+1. verify source DB and freshness of the legacy backup;
+2. manually validate the AIOPS backup against the same source;
+3. decide the final scheduler/secret owner;
+4. create/verify one replacement schedule only if still required;
+5. disable the legacy jpkerp5 workflow;
+6. re-evaluate archive readiness.
 
 ## Archive readiness rule
 
@@ -99,7 +129,7 @@ A Wave-1 repository becomes `READY_FOR_ARCHIVE` only when all are true:
 
 - no current production deployment/domain;
 - no scheduled job/cron;
-- no active Firebase/DB writer;
+- no active Firebase/DB writer served from that repository;
 - no open PR;
 - unique branch history is intentionally preserved by repository archive;
 - successor is known where required;
