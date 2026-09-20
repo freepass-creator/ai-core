@@ -41,6 +41,7 @@ export async function executeFencedPreparedEffectResume({
   clock=Date.now,
 }={}){
   need(lease_runtime&&typeof lease_runtime.acquire==='function'
+    &&typeof lease_runtime.renew==='function'
     &&typeof lease_runtime.assertFence==='function'
     &&typeof lease_runtime.release==='function','EXECUTION_LEASE_RUNTIME_REQUIRED');
   need(text(owner_id),'EXECUTION_LEASE_OWNER_REQUIRED');
@@ -91,7 +92,7 @@ export async function executeFencedPreparedEffectResume({
     };
   }
 
-  const lease=claim.lease;
+  let activeLease=claim.lease;
   let releaseResult=null;
   let outcome=null;
 
@@ -109,25 +110,34 @@ export async function executeFencedPreparedEffectResume({
         reason:'STALE_RESUME_PLAN_AFTER_LEASE',
         executed:false,
         lease_action:claim.action,
-        lease,
+        lease:activeLease,
         freshness:afterClaimFreshness,
         result:null,
       };
     }else{
-      await lease_runtime.assertFence({lease});
+      await lease_runtime.assertFence({lease:activeLease});
 
-      const beforeEffect=async()=>lease_runtime.assertFence({lease});
-      const beforeCompensation=async()=>lease_runtime.assertFence({lease});
+      const ensureLease=async()=>{
+        const checked=await lease_runtime.assertFence({lease:activeLease});
+        const renewed=await lease_runtime.renew({
+          lease:checked.lease,
+          ...(lease_ms?{lease_ms}:{})
+        });
+        activeLease=renewed.lease;
+        return activeLease;
+      };
+      const beforeEffect=async()=>ensureLease();
+      const beforeCompensation=async()=>ensureLease();
 
       const guardedEffect=async(effect,context)=>execute_effect(effect,{
         ...context,
-        execution_lease:lease,
-        fencing_token:lease.fencing_token,
+        execution_lease:activeLease,
+        fencing_token:activeLease.fencing_token,
       });
       const guardedCompensation=async(step,context)=>execute_compensation(step,{
         ...context,
-        execution_lease:lease,
-        fencing_token:lease.fencing_token,
+        execution_lease:activeLease,
+        fencing_token:activeLease.fencing_token,
       });
 
       const result=await executePreparedEffectResumeFromReceipts({
@@ -152,7 +162,7 @@ export async function executeFencedPreparedEffectResume({
         reason:result.reason??null,
         executed:result.executed,
         lease_action:claim.action,
-        lease,
+        lease:activeLease,
         freshness:result.freshness??afterClaimFreshness,
         result,
       };
@@ -165,7 +175,7 @@ export async function executeFencedPreparedEffectResume({
         gate_error_code:error?.code??error?.message,
         executed:false,
         lease_action:claim.action,
-        lease,
+        lease:activeLease,
         freshness:initialFreshness,
         result:null,
       };
@@ -174,7 +184,7 @@ export async function executeFencedPreparedEffectResume({
     }
   }finally{
     try{
-      releaseResult=await lease_runtime.release({lease});
+      releaseResult=await lease_runtime.release({lease:activeLease});
     }catch(error){
       releaseResult={
         action:'RELEASE_FAILED',
