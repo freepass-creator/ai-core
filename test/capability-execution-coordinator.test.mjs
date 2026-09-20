@@ -14,7 +14,7 @@ const capability={
     success_states:['COMPLETED'],hold_states:['COMPLETED_WITH_HOLD'],failure_states:['FAILED'],
   },
 };
-const projectRegistry={schema_version:'1.0',projects:[{project_id:'aiops',local_path:'/project'}]};
+const projectRegistry={schema_version:'1.1',projects:[{project_id:'aiops',repository:'freepass-creator/aiops',local_path:'/project'}]};
 
 function fixture({reconcileResult=null,withBinding=true}={}){
   const store=new OrderStore(':memory:',{now:()=>Date.parse('2026-09-19T03:30:00Z')});
