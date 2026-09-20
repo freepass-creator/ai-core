@@ -18,7 +18,7 @@ function recordShape(record,index){
     if(Array.isArray(record.current_proof_inputs)&&record.current_proof_inputs.length){
       proofStatus=verifyProofInputBinding(receipt.proof_input_binding,record.current_proof_inputs).status;
     }else{
-      proofStatus=record.proof_status??'UNVERIFIED';
+      proofStatus='UNVERIFIED';
     }
   }else if(record.proof_status!=null){
     proofStatus=record.proof_status;
