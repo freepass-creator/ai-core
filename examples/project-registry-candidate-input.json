@@ -1,0 +1,54 @@
+{
+  "capsule": {
+    "schema": "ai-core-project-capsule/v1",
+    "project_id": "sample-app",
+    "repository": "freepass-creator/sample-app",
+    "default_branch": "main",
+    "subject_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "observed_at": "2026-09-20T00:00:00Z",
+    "classification": {
+      "kind": "NODE_APP",
+      "framework": "Next.js",
+      "package_manager": "npm"
+    },
+    "commands": {
+      "install": "npm ci",
+      "test": "npm run test",
+      "build": "npm run build",
+      "start": "npm run dev",
+      "absent_reason": {}
+    },
+    "delivery": {
+      "targets": [
+        "Vercel-candidate"
+      ],
+      "workflows": [
+        ".github/workflows/ci.yml"
+      ]
+    },
+    "instructions": [
+      "README.md"
+    ],
+    "data_evidence": [],
+    "readiness": {
+      "status": "READY_FOR_REGISTRY_REVIEW",
+      "blockers": [],
+      "review_required": true
+    },
+    "evidence_refs": [
+      "GIT:freepass-creator/sample-app@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  "profile": {
+    "name": "Sample App",
+    "organization": "SUBSIDIARY",
+    "mission": "Describe the human-confirmed project mission.",
+    "local_path": null,
+    "required_approvals": [
+      "production-deployment"
+    ],
+    "known_blockers": [],
+    "requested_repository_lifecycle_status": "ACTIVE",
+    "requested_execution_readiness_status": "ACTIVE"
+  }
+}
