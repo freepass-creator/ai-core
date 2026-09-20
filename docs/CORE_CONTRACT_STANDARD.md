@@ -300,3 +300,24 @@ Event type은 producer, payload schema, consumers, duplicate policy, replay poli
 Breaking 변화가 필요하면 기존 v1을 수정하지 않고 새 major contract를 추가한다. CI는 `npm run contracts:compat`로 이 규칙을 검사한다.
 
 Core Contract Registry가 아직 없는 최초 도입 base에서는 `BASE_NOT_INITIALIZED`로 통과하며, #94가 main에 들어간 다음 변경부터 실제 compatibility gate가 활성화된다.
+
+
+## 19. Logical Execution Identity
+
+여러 request/attempt/path가 하나의 업무 실행을 구성할 때 `core-execution-identity/v1`을 사용한다.
+
+다음 식별자를 서로 구분한다.
+
+- `request_id`: 한 번의 요청
+- `idempotency.key`: semantic command 중복 방지
+- `correlation_id`: tracing 묶음
+- `logical_execution_id`: native/retry/fallback/downstream/recovery를 관통하는 동일 논리 실행
+- `attempt_id`: 실제 한 번의 실행 시도
+
+logical execution identity는 `operation_kind + logical_slot + subject_scope + semantic_input_digest` dimensions에 묶이며, canonical JSON SHA-256 `identity_digest`로 차이를 검출한다.
+
+`core-request-context/v1`, `core-adapter-result/v1`, `core-receipt/v1`, `core-event/v1`은 optional `execution` binding을 통해 같은 logical execution과 개별 attempt를 연결할 수 있다.
+
+C는 identity/binding 형식만 소유한다. fallback 허용 조건, retry exhaustion, ambiguous outcome HOLD, replay suppression 같은 workflow 의미는 D가 소유한다.
+
+상세 규격과 runtime helper는 `docs/CORE_EXECUTION_IDENTITY.md`, `src/contracts/execution-identity.mjs`를 따른다.
