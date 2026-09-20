@@ -15,9 +15,10 @@ AI Core UI/UX is a behavioral and implementation contract, not a mood board. A c
 5. `design-system/patterns.registry.json` — all pattern/workflow/surface projections with B runtime vs contract-only ownership.
 6. `design-system/interaction.contract.json` — cross-component interaction invariants.
 7. `contracts/ui-screen-manifest.schema.json` — consumer screen composition contract with explicit C/D bindings.
-8. `registry/ui-ux-governance.json` — temporary exception and deprecation registry.
-9. `registry/ui-ux-consumers.json` — real-product adoption/conformance status; evidence sources are not automatically conformant consumers.
-10. Product profiles — brand, density, icon family, domain copy and allowed exceptions.
+8. `contracts/ui-ux-machine-conformance.schema.json` — machine-enforced used-selector/token conformance gate.
+9. `registry/ui-ux-governance.json` — temporary exception and deprecation registry.
+10. `registry/ui-ux-consumers.json` — real-product adoption/conformance status; evidence sources are not automatically conformant consumers.
+11. Product profiles — brand, density, icon family, domain copy and allowed exceptions.
 
 A lower layer may specialize presentation but may not redefine the meaning of a higher-layer feature.
 
@@ -88,8 +89,9 @@ Minimum static gate:
 
 - `npm run uiux:validate`
 - `npm run uiux:runtime`
+- `npm run uiux:machine`
 
-Browser/visual gates follow `docs/UI_QA_VISUAL_REGRESSION.md`.
+The machine gate is specified in `docs/UI_UX_MACHINE_CONFORMANCE.md`. Browser/visual gates follow `docs/UI_QA_VISUAL_REGRESSION.md`.
 
 ## Revision rule
 
