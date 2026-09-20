@@ -1,6 +1,6 @@
 {
   "contract": "ai-core-ui-interaction-contract/v1",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "feature_registry": "registry/ui-ux-features.json",
   "constitution": "docs/UI_UX_CONSTITUTION.md",
   "rules": {
@@ -237,6 +237,27 @@
         "ime-composition",
         "virtual-keyboard",
         "keyboard-or-equivalent"
+      ]
+    },
+    "search_discovery_composition": {
+      "feature_refs": [
+        "form.search",
+        "data.filter",
+        "data.search-discovery"
+      ],
+      "invariants": [
+        "Every searchable surface declares one composition mode: search-only, search-filter, search-quick or search-filter-quick.",
+        "Detailed filter trigger stays adjacent to search; quick filters, when present, stay in the immediately following row.",
+        "Quick filters are not decorative shortcuts; each requires a stable high-frequency business criterion.",
+        "The same criterion may not be controlled by multiple independent UI states.",
+        "Search, detailed filters, quick filters, applied-filter visibility, result count and results share one query revision."
+      ],
+      "verification": [
+        "composition-mode",
+        "filter-adjacency",
+        "quick-filter-row",
+        "duplicate-criterion",
+        "query-revision"
       ]
     }
   }
