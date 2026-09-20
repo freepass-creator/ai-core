@@ -1,25 +1,34 @@
 {
   "schema_version": "1.0.0",
-  "registry_version": "1.0.0",
+  "registry_version": "1.1.0",
   "projections": [
     {
       "projection_id": "freepass-admin.application.status",
       "version": "0.1.0",
       "adoption_status": "SHADOW",
       "owner": "D-session-workflow-standard",
-      "description": "FreePass Admin ApplicationStatus is derived from authoritative cancellation lifecycle plus independent progress facts. RECEIVED/CONTRACTED/DELIVERED are projections, not independently writable lifecycle states.",
+      "description": "FreePass Admin ApplicationStatus is derived from authoritative cancellation lifecycle plus independent progress facts. RECEIVED/CONTRACTED/DELIVERED are projections, not independently writable lifecycle states. Source-side SHADOW parity is verified in FreePass Admin CI.",
       "workflow_id": "freepass-admin.application-lifecycle",
       "output": {
         "projection_ref": "application.status",
         "type": "string",
-        "allowed_values": ["RECEIVED", "CONTRACTED", "DELIVERED", "CANCELLED"]
+        "allowed_values": [
+          "RECEIVED",
+          "CONTRACTED",
+          "DELIVERED",
+          "CANCELLED"
+        ]
       },
       "rules": [
         {
           "rule_id": "freepass-admin.application.status.cancelled",
           "priority": 10,
           "all": [
-            { "kind": "STATE_EQUALS", "axis_id": "lifecycle", "value": "CANCELLED" }
+            {
+              "kind": "STATE_EQUALS",
+              "axis_id": "lifecycle",
+              "value": "CANCELLED"
+            }
           ],
           "result": "CANCELLED",
           "description": "Cancellation is authoritative and sticky."
@@ -28,7 +37,11 @@
           "rule_id": "freepass-admin.application.status.delivered",
           "priority": 20,
           "all": [
-            { "kind": "FACT_EQUALS", "fact_id": "application.delivery-completed", "value": true }
+            {
+              "kind": "FACT_EQUALS",
+              "fact_id": "application.delivery-completed",
+              "value": true
+            }
           ],
           "result": "DELIVERED",
           "description": "Delivery completion derives DELIVERED regardless of document/balance flags."
@@ -37,7 +50,11 @@
           "rule_id": "freepass-admin.application.status.contracted",
           "priority": 30,
           "all": [
-            { "kind": "FACT_EQUALS", "fact_id": "application.contract-completed", "value": true }
+            {
+              "kind": "FACT_EQUALS",
+              "fact_id": "application.contract-completed",
+              "value": true
+            }
           ],
           "result": "CONTRACTED",
           "description": "Contract completion derives CONTRACTED while not cancelled/delivered."
@@ -46,14 +63,66 @@
       "default_result": "RECEIVED",
       "source_authority": {
         "repository": "freepass-creator/freepass-admin",
-        "revision": "77f682af680528124096e4f7871504a3596c8990",
+        "revision": "2aede7df82591470308f25bd3ccd4e5358aa7c3c",
         "files": [
-          { "path": "src/domain/application/types.ts", "blob_sha": "3a758e425ac4ad083c401f3aba012b0794a1c207" },
-          { "path": "src/domain/application/update-progress.ts", "blob_sha": "0af6cc3679f0d5cd417c7f8abe69b8bb0766b594" },
-          { "path": "src/domain/application/create-application.ts", "blob_sha": "f12d88386939ae3df7fd1ee90a133f569d89b47d" },
-          { "path": "src/services/applications.ts", "blob_sha": "8a8d18950ab273471a43c69853f902009413d210" },
-          { "path": "src/services/__tests__/applications.test.ts", "blob_sha": "da229a328a4b49e3223b70ff68c0542013fc38f7" }
+          {
+            "path": "src/domain/application/types.ts",
+            "blob_sha": "3a758e425ac4ad083c401f3aba012b0794a1c207"
+          },
+          {
+            "path": "src/domain/application/update-progress.ts",
+            "blob_sha": "0af6cc3679f0d5cd417c7f8abe69b8bb0766b594"
+          },
+          {
+            "path": "src/domain/application/create-application.ts",
+            "blob_sha": "f12d88386939ae3df7fd1ee90a133f569d89b47d"
+          },
+          {
+            "path": "src/services/applications.ts",
+            "blob_sha": "8a8d18950ab273471a43c69853f902009413d210"
+          },
+          {
+            "path": "src/services/__tests__/applications.test.ts",
+            "blob_sha": "da229a328a4b49e3223b70ff68c0542013fc38f7"
+          },
+          {
+            "path": "contracts/ai-core/application-workflow.shadow.json",
+            "blob_sha": "fb5534b2f3832e8976bd39565f47ea5c8a99a90c"
+          },
+          {
+            "path": "src/adapters/ai-core/workflow-shadow.ts",
+            "blob_sha": "6221b529093f51cba3c9fc4d80b3d3ef9d9ecc18"
+          },
+          {
+            "path": "src/adapters/ai-core/__tests__/workflow-shadow.test.ts",
+            "blob_sha": "f6734a72128bae646167041e28ac2f8218fbe18b"
+          }
         ]
+      },
+      "adoption_evidence": {
+        "stage": "SOURCE_PARITY_VERIFIED",
+        "repository": "freepass-creator/freepass-admin",
+        "revision": "2aede7df82591470308f25bd3ccd4e5358aa7c3c",
+        "verification": {
+          "kind": "CI",
+          "conclusion": "SUCCESS",
+          "run_id": 35480824168,
+          "observed_at": "2026-09-20T01:13:56Z",
+          "files": [
+            {
+              "path": "contracts/ai-core/application-workflow.shadow.json",
+              "blob_sha": "fb5534b2f3832e8976bd39565f47ea5c8a99a90c"
+            },
+            {
+              "path": "src/adapters/ai-core/workflow-shadow.ts",
+              "blob_sha": "6221b529093f51cba3c9fc4d80b3d3ef9d9ecc18"
+            },
+            {
+              "path": "src/adapters/ai-core/__tests__/workflow-shadow.test.ts",
+              "blob_sha": "f6734a72128bae646167041e28ac2f8218fbe18b"
+            }
+          ]
+        }
       }
     }
   ]
