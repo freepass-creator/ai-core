@@ -1,0 +1,56 @@
+{
+  "schema_version": "core-adapter-contract/v1",
+  "adapter_id": "freepass-admin.file-product-read",
+  "adapter_version": "1.0.0",
+  "port_id": "product.read",
+  "provider_scope": "local-json-file",
+  "project_scope": "freepass-admin",
+  "source": {
+    "locator": "freepass-creator/freepass-admin:src/adapters/store/repositories.ts",
+    "revision": "2aede7df82591470308f25bd3ccd4e5358aa7c3c"
+  },
+  "compatibility": {
+    "port_versions": [
+      "v1"
+    ],
+    "engine_versions": []
+  },
+  "mapping": [
+    {
+      "canonical_field": "product",
+      "provider_field": "products.json row",
+      "transformation": "JsonFileStore lookup by canonical product id",
+      "unit_conversion": null
+    }
+  ],
+  "side_effects": false,
+  "idempotency": "NOT_APPLICABLE",
+  "retry_policy": {
+    "max_attempts": 1,
+    "backoff": "NONE",
+    "retryable_error_codes": []
+  },
+  "timeout_ms": 5000,
+  "auth_boundary": "Read is invoked from an actor-bound Application Service use case.",
+  "data_classification": [
+    "INTERNAL"
+  ],
+  "failure_mapping": [
+    {
+      "provider_code": "ENOENT",
+      "core_code": "NOT_FOUND"
+    }
+  ],
+  "health_check": "product repository contract tests",
+  "verification_profile": [
+    "read-contract",
+    "product-version"
+  ],
+  "connector_binding": {
+    "connector_id": "freepass-admin.json-file-store",
+    "connector_version": "1.0.0",
+    "operation_ids": [
+      "product.read"
+    ]
+  }
+}
