@@ -158,6 +158,21 @@ Engine/Port/Adapter/Binding Profile 계약은 `src/engine/port-runtime.mjs`에�
 FreePass Admin current SHADOW는 `actor.provider`가 아직 미연결이므로 전체 Service Runtime이 HOLD다. 세부 규격은 `docs/CORE_APPLICATION_SERVICE_RUNTIME.md`를 따른다.
 
 
+### 4.4 Repository Runtime
+
+Persistence Port는 Adapter를 억지로 거치지 않고 `core-repository/v1`로 Repository에 직접 binding할 수 있다.
+
+- Repository는 persistence, uniqueness, atomicity, concurrency, storage idempotency/revision 의미를 소유한다.
+- Adapter는 provider/project field/unit/error translation을 소유한다.
+- Service Binding의 한 Port는 Adapter 또는 Repository 중 정확히 하나에 연결한다.
+- Repository write는 concurrency/lost-update protection을 명시해야 한다.
+- idempotency는 `REQUIRED | SUPPORTED | CALLER_ENFORCED | NOT_APPLICABLE`로 소유 위치를 구분한다.
+- Connector 권한은 Repository operation별 최소 operation set으로 제한한다.
+- Repository Result는 retry/workflow completion을 정의하지 않는다.
+
+실행 구현은 `src/engine/repository-runtime.mjs`, 세부 규격은 `docs/CORE_REPOSITORY_RUNTIME.md`를 따른다.
+
+
 ## 5. API
 
 HTTP method/status semantics를 임의 재정의하지 않는다.
