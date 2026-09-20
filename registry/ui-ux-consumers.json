@@ -10,20 +10,33 @@
     {
       "id": "freepass-sales",
       "repository": "freepass-creator/freepass-sales",
-      "observed_revision": "fe69f76d81f4b9acd6f67f7b3f4ef5619f5e33d1",
-      "relation": "EVIDENCE_SOURCE",
-      "adoption_status": "EVIDENCE_ONLY",
+      "observed_revision": "0ef89b2f678dbbb6221b60f83b7da271c0419e8e",
+      "relation": "CANONICAL_CONSUMER",
+      "adoption_status": "MAPPED",
       "feature_refs": [
         "workflow.explicit-save",
         "workflow.autosave",
         "integration.external-action",
         "navigation.restore",
-        "system.input-method"
+        "system.input-method",
+        "navigation.header",
+        "navigation.bottom-nav",
+        "navigation.bottom-action",
+        "form.search",
+        "data.filter",
+        "data.list",
+        "data.card",
+        "system.responsive",
+        "system.focus",
+        "system.safe-area-keyboard",
+        "system.motion-preference"
       ],
       "conformance_revision": null,
       "conformance_receipts": [],
       "evidence_refs": [
-        "docs/coordination/FREEPASS_SALES_RUNTIME_LEARNING.md"
+        "docs/coordination/FREEPASS_SALES_RUNTIME_LEARNING.md",
+        "https://github.com/freepass-creator/freepass-sales/blob/feat/finalize-sales-suite-20260920/.ai-core/freepass-product-ui.json",
+        "https://github.com/freepass-creator/freepass-sales/blob/feat/finalize-sales-suite-20260920/docs/UI-STANDARD.md"
       ]
     },
     {
@@ -48,6 +61,32 @@
         "docs/coordination/ERP4_STABILITY_QUERY_LEARNING.md",
         "https://github.com/freepass-creator/freepasserp4/pull/435",
         "https://github.com/freepass-creator/freepasserp4/actions/runs/35443854623"
+      ]
+    },
+    {
+      "id": "freepass-estimate",
+      "repository": "freepass-creator/freepass-estimate",
+      "observed_revision": "37a18f253a448ba72dbad36b79b110da6640ea62",
+      "relation": "CANONICAL_CONSUMER",
+      "adoption_status": "MAPPED",
+      "feature_refs": [
+        "navigation.header",
+        "navigation.bottom-action",
+        "navigation.stepper",
+        "form.radio",
+        "form.select",
+        "data.card",
+        "system.responsive",
+        "system.focus",
+        "system.safe-area-keyboard",
+        "system.motion-preference",
+        "system.input-method"
+      ],
+      "conformance_revision": null,
+      "conformance_receipts": [],
+      "evidence_refs": [
+        "https://github.com/freepass-creator/freepass-estimate/blob/feat/manual-release-normalization-20260920/.ai-core/freepass-product-ui.json",
+        "https://github.com/freepass-creator/freepass-estimate/blob/feat/manual-release-normalization-20260920/docs/UI_BASELINE.md"
       ]
     }
   ]
