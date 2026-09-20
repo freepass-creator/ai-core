@@ -104,6 +104,39 @@ test('Order→Work 연결 뒤 local capability를 한 번 실행하고 durable r
   assert.equal(results[0].result.status,'SUCCEEDED');
 });
 
+test('완료 뒤 requirement가 바뀌어도 같은 requestId 재시도는 기존 RESULT를 반환하고 재실행하지 않는다',async t=>{
+  const f=await fixture(t);
+  const order=await (await f.post('/api/orders',orderBody(f.fp4))).json();
+  await f.post(`/api/orders/${order.id}/work-intake`,{});
+
+  const path=`/api/orders/${order.id}/capability/run`;
+  const command={requestId:'exec-revision-replay',perform:true,input:{a:1}};
+  const firstResponse=await f.post(path,command);
+  assert.equal(firstResponse.status,200);
+  const first=await firstResponse.json();
+  assert.equal(f.runs,1);
+
+  const current=await (await fetch(`${f.url}/api/orders/${order.id}`)).json();
+  const reviseResponse=await f.post(`/api/orders/${order.id}`,{
+    requestId:'revise-after-execution',version:current.order.version,action:'revise',
+    intent:'검증 요구 변경',criteria:['새 revision은 새 실행 ID로 처리한다.'],reason:'완료 뒤 요구 변경',
+  });
+  assert.equal(reviseResponse.status,200);
+  const revised=await reviseResponse.json();
+  assert.equal(revised.revision,2);
+  assert.equal(revised.routing.requirement_revision,1);
+
+  const replayResponse=await f.post(path,command);
+  assert.equal(replayResponse.status,200);
+  assert.deepEqual(await replayResponse.json(),first);
+  assert.equal(f.runs,1,'historical RESULT replay must not execute again');
+
+  const conflict=await f.post(path,{...command,input:{a:2}});
+  assert.equal(conflict.status,409);
+  assert.equal((await conflict.json()).error,'CAPABILITY_EXECUTION_IDEMPOTENCY_CONFLICT');
+  assert.equal(f.runs,1);
+});
+
 test('같은 실행 requestId에 다른 input을 보내면 중복 실행 대신 충돌한다',async t=>{
   const f=await fixture(t);
   const order=await (await f.post('/api/orders',orderBody(f.fp4))).json();
