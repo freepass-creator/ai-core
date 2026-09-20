@@ -9,17 +9,17 @@ const readJson = path => readFile(new URL(path, import.meta.url), 'utf8').then(J
 test('ERP4 v2 audit validates with exact-head executable CI proof', async () => {
   const [readiness, result] = await Promise.all([
     readJson('../registry/project-audit-readiness.json'),
-    readJson('../docs/audits/freepasserp4-v2-2026-09-20-r4.json'),
+    readJson('../docs/audits/freepasserp4-v2-2026-09-20-r5.json'),
   ]);
 
   assert.doesNotThrow(() => validateProjectAuditResult(result, readiness));
   const summary = summarizeProjectAuditResult(result, readiness);
 
   assert.equal(summary.audit_result_schema, 'ai-core-project-audit-result/v2');
-  assert.equal(summary.subject_revision, 'f7c89b7b995d8d98ea04606405e68b158fb4256f');
+  assert.equal(summary.subject_revision, '0cf39d7c639b8583c5d1244cff1ea8ce51a07329');
   assert.equal(summary.standard_binding.status, 'CURRENT');
-  assert.equal(summary.source_proof.ci_status, 'UNKNOWN');
-  assert.equal(summary.source_proof.ci_run_id, null);
+  assert.equal(summary.source_proof.ci_status, 'PASS');
+  assert.equal(summary.source_proof.ci_run_id, 35509593784);
   assert.equal(summary.source_proof.ci_revision_match, true);
   assert.equal(summary.source_proof.branch_protected, false);
   assert.equal(summary.counts.core_match, 4);
@@ -31,7 +31,7 @@ test('ERP4 live audit stays CURRENT even when central project registry observati
   const [readiness, projects, result] = await Promise.all([
     readJson('../registry/project-audit-readiness.json'),
     readJson('../registry/projects.json'),
-    readJson('../docs/audits/freepasserp4-v2-2026-09-20-r4.json'),
+    readJson('../docs/audits/freepasserp4-v2-2026-09-20-r5.json'),
   ]);
   const project = projects.projects.find(item => item.project_id === 'freepasserp4');
   assert.ok(project);
@@ -43,7 +43,7 @@ test('ERP4 live audit stays CURRENT even when central project registry observati
     repository: result.repository,
     default_branch: result.source_proof.default_branch,
     subject_revision: result.subject_revision,
-    observed_at: '2026-09-20T11:54:00.000Z',
+    observed_at: '2026-09-20T12:18:00.000Z',
     readiness: {
       status: 'READY_FOR_REGISTRY_REVIEW',
       blockers: [],
