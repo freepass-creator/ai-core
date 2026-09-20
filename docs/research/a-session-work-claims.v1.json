@@ -1,0 +1,15 @@
+{
+  "schema": "ai-core-a-session-work-claims/v1",
+  "status": "RESEARCH_COORDINATION_NOT_CANONICAL",
+  "observed_at": "2026-09-20T01:25:00Z",
+  "policy": {
+    "claim_key": "<repository>@<subject_revision>::<scope>",
+    "live_claim": "state=ACTIVE and lease_until > observed_at",
+    "duplicate_rule": "If another live claim exists for the same claim_key, do not inspect or mutate that work item; return SKIP_DUPLICATE.",
+    "completed_rule": "If the same claim_key is already COMPLETED and the repository subject revision is unchanged, do not repeat the audit.",
+    "optimistic_lock": "Every mutation must use the current GitHub blob SHA. On SHA conflict, refetch the registry and re-evaluate before retrying.",
+    "revision_guard": "Before material writes, re-check the repository head. If it moved, abandon or supersede the old claim and claim the new revision.",
+    "canonical_boundary": "Claims coordinate A-session research only and never change B/C/D canonical standards."
+  },
+  "claims": []
+}
