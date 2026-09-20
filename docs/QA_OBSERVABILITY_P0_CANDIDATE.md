@@ -1,10 +1,10 @@
-# AI Core QA / Observability P0 Candidate
+# AI Core QA / Observability P0 — Canonical Partial Baseline
 
-Status: `CANDIDATE / NOT CANONICAL / NO PRODUCTION AUTHORITY`
+Status: `CANONICAL_PARTIAL / NO PRODUCTION AUTHORITY`
 
-Four revision-bound project audits show that QA/Observability is still research-only in AI Core even though multiple projects already implement compatible mechanisms.
+Revision-bound project audits and SHADOW consumers established a shared QA/Observability baseline. Production proof remains a separate, higher evidence level.
 
-This candidate converts those repeated mechanisms into machine contracts without changing the current project-audit readiness state.
+The machine contracts are now canonical partial; they still cannot infer production truth from CI or synthetic evidence.
 
 ## Evidence generalized
 
@@ -158,9 +158,9 @@ Semantic tests cover:
 - stale source -> DEGRADED;
 - job success without terminal evidence/revision -> HOLD.
 
-## Promotion gates
+## Remaining gates to MACHINE_ENFORCED
 
-Remain non-canonical until:
+Remain CANONICAL_PARTIAL until:
 
 1. schemas and semantic tests execute in AI Core CI;
 2. ERP4 checker manifest can be represented without loss;
@@ -179,3 +179,10 @@ This candidate does not:
 - enable/disable schedulers;
 - declare production health;
 - turn research-only project audit findings into normative PASS/FAIL yet.
+
+## Promotion evidence — 2026-09-20
+
+- ERP4 QA/Governance SHADOW merged to main at `06e18ff52e14ec4e3670361d89a873913be4f51b` with dedicated SHADOW CI and existing CI both PASS.
+- FreePass Estimate QA SHADOW merged to main at `b9a2aea1955a2afe07dfbe11c4f4e780a88b442f`; contract-checker freshness semantics are preserved while production_proven remains false.
+- ERP4 intentionally reports incomplete negative-control coverage instead of manufacturing PASS.
+- Central AI Core Actions runner-entry remains unresolved, so group-wide enforcement is not yet claimed.
