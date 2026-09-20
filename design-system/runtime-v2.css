@@ -511,3 +511,22 @@
   font-weight: 700;
   border-color: currentColor;
 }
+
+
+/* Responsive master/detail composition. */
+.ui-master-detail {
+  display: grid;
+  min-inline-size: 0;
+}
+
+@media (max-width: 640px) {
+  .ui-master-detail[data-mobile-view="list"] > [data-ui-master-detail-pane]:not([data-pane="list"]),
+  .ui-master-detail[data-mobile-view="detail"] > [data-ui-master-detail-pane]:not([data-pane="detail"]),
+  .ui-master-detail[data-mobile-view="work"] > [data-ui-master-detail-pane]:not([data-pane="work"]) {
+    display: none !important;
+  }
+
+  .ui-master-detail > [data-ui-master-detail-pane] {
+    min-block-size: calc(100dvh - var(--safe-area-bottom));
+  }
+}
