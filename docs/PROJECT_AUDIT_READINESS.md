@@ -141,3 +141,43 @@ npm run audit:workbook -- <project_id> --output artifacts/audit/<project_id>-wor
 ```
 
 The workbook is read-only and defaults all axis verdicts to `UNKNOWN`. It preserves partial-standard gaps and produces a finalization target of `ai-core-project-audit-result/v2`.
+
+
+## Current v2 pilot portfolio
+
+The four original pilot audits have now been refreshed into v2:
+
+- FreePass Admin
+- FreePass ERP4
+- FreePass Estimate
+- AIOps
+
+Use:
+
+```bash
+npm run audit:portfolio
+npm run audit:portfolio -- --require-clean
+```
+
+The portfolio selects one active audit per project, prefers v2 over legacy v1, and keeps superseded results as history.
+
+Current expected rollup for the four active v2 pilots:
+
+- active projects: 4
+- active axis observations: 32
+- CORE_MATCH: 15
+- MIGRATION_GAP: 15
+- UNKNOWN: 2
+- exact-head CI PASS: 1 (ERP4)
+- exact-head CI UNKNOWN: 3 (Admin, Estimate, AIOps)
+- branch protection false: 4
+- registry drift requiring live freshness review: ERP4 only
+
+Important project-specific observations:
+
+- Admin exact-head Actions exist but terminate at runner entry with zero repository steps.
+- ERP4 exact-head CI executes real steps and passes through production build.
+- Estimate main is canonical, but its New-car CI and QA SHADOW push triggers still point to `work/ui-baseline`, leaving exact-main CI unobserved.
+- AIOps current main contains Security SHADOW and read-only Insurance evidence adapter work, but required verification remains fragmented and the Insurance workflow has no main-push trigger.
+
+These are audit findings only. Project 4 does not change the consumer projects from this audit lane.
