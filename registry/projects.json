@@ -1,6 +1,6 @@
 {
   "schema_version": "1.1",
-  "observed_at": "2026-09-20T10:50:00Z",
+  "observed_at": "2026-09-20T10:55:00Z",
   "projects": [
     {
       "project_id": "ai-core",
@@ -241,23 +241,14 @@
       "mission": "Canonical FreePass estimator/domain SSOT for new-car and used-car quote UI/UX, provider-neutral quote contracts, calculation-provider routing, sharing snapshots and estimator regression evidence.",
       "repository": "freepass-creator/freepass-estimate",
       "default_branch": "main",
-      "work_branches": [
-        "work/ui-baseline"
-      ],
       "local_path": null,
-      "head_revision": "d29daa37119bece0f3d1c9ddb38437de0175b11b",
+      "head_revision": "034f183bda462a2a2efa799213f6c3ceade6524a",
       "authoritative_sources": [
         {
           "kind": "GIT",
           "ref": "freepass-creator/freepass-estimate#main",
-          "revision": "d29daa37119bece0f3d1c9ddb38437de0175b11b",
-          "observed_at": "2026-09-19T10:35:29Z"
-        },
-        {
-          "kind": "GIT",
-          "ref": "freepass-creator/freepass-estimate#work/ui-baseline",
-          "revision": "8df0fdfe5ce72ffbc17b3adffcc881c37164ed3a",
-          "observed_at": "2026-09-19T10:46:16Z"
+          "revision": "034f183bda462a2a2efa799213f6c3ceade6524a",
+          "observed_at": "2026-09-20T10:55:00Z"
         }
       ],
       "commands": {
@@ -271,9 +262,8 @@
         "production-deployment"
       ],
       "known_blockers": [
-        "Canonical estimator implementation is verified on work/ui-baseline at 8df0fdfe5ce72ffbc17b3adffcc881c37164ed3a by GitHub Actions run 35438304012, while default main remains the initialization commit. Canonical merge/reobservation is still required.",
-        "Production proof remains HOLD: the connected Vercel account exposes team freepass-projects, and its current project listing is empty. No FreePass Estimate deployment/production URL is observable there, so /api/version cannot yet be checked against a live target.",
-        "FreePass Standard new-car regression is 532/535; the remaining three Hyundai NEXO cases intentionally fail closed because hydrogen cost policy is not approved."
+        "Production proof remains HOLD: no verified production deployment/live revision observation is currently bound to FreePass Estimate main.",
+        "FreePass Standard new-car regression remains fail-closed for three Hyundai NEXO cases because hydrogen cost policy is not approved."
       ]
     },
     {
