@@ -139,7 +139,7 @@
       "implementation_status": "RUNTIME_V2",
       "component_feature_refs": [
         "form.search",
-        "data.filter"
+        "form.select"
       ],
       "contract_source": "registry/ui-ux-features.json#data.search-discovery",
       "css_selector": ".ui-search-discovery",
