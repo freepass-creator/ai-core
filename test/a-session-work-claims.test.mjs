@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { validateAWorkClaims } from '../scripts/validate-a-session-work-claims.mjs';
+import { evidenceRefsDigest } from '../scripts/a-session-evidence-contract.mjs';
 
 const base = () => ({
   schema:'ai-core-a-session-work-claims/v1',
@@ -118,11 +119,15 @@ test('completed v2 claim rejects weak evidence refs', () => {
   assert.ok(result.errors.some(x=>x.code==='COMPLETION_EVIDENCE_V2_INVALID'));
 });
 
-test('completed v2 guarded claim accepts exact subject and full commit proof', () => {
+test('completed v2 guarded claim accepts exact subject, full proof and verification receipt', () => {
   const r = base();
   r.policy={ evidence_contract:{ active_from:'2026-09-20T02:35:00Z' } };
   r.observed_at='2026-09-20T02:40:00Z';
   const revision='2ec46bb2e88b10a31915b68ec77b2eecbdac57bd';
+  const refs=[
+    `subject:freepass-creator/freepass-sales@${revision}`,
+    'commit:freepass-creator/ai-core@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+  ];
   r.claims=[claim({
     claim_id:'A-v2-good',
     state:'COMPLETED',
@@ -130,10 +135,41 @@ test('completed v2 guarded claim accepts exact subject and full commit proof', (
     lease_until:'2026-09-20T02:38:00Z',
     completed_at:'2026-09-20T02:39:00Z',
     evidence_contract:'v2',
-    evidence_refs:[
-      `subject:freepass-creator/freepass-sales@${revision}`,
-      'commit:freepass-creator/ai-core@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
-    ]
+    evidence_refs:refs,
+    evidence_verification:{
+      status:'VERIFIED',
+      verifier:'github-remote-v2',
+      verified_at:'2026-09-20T02:39:00Z',
+      refs_digest:evidenceRefsDigest(refs)
+    }
   })];
   assert.equal(validateAWorkClaims(r).status,'VALID');
+});
+
+test('completed v2 claim rejects missing or tampered verification receipt', () => {
+  const r = base();
+  r.policy={ evidence_contract:{ active_from:'2026-09-20T02:35:00Z' } };
+  r.observed_at='2026-09-20T02:40:00Z';
+  const revision='2ec46bb2e88b10a31915b68ec77b2eecbdac57bd';
+  const refs=[
+    `subject:freepass-creator/freepass-sales@${revision}`,
+    'commit:freepass-creator/ai-core@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+  ];
+  r.claims=[claim({
+    claim_id:'A-v2-receipt-bad',
+    state:'COMPLETED',
+    claimed_at:'2026-09-20T02:36:00Z',
+    lease_until:'2026-09-20T02:38:00Z',
+    completed_at:'2026-09-20T02:39:00Z',
+    evidence_contract:'v2',
+    evidence_refs:refs,
+    evidence_verification:{
+      status:'VERIFIED',
+      verifier:'github-remote-v2',
+      verified_at:'2026-09-20T02:39:00Z',
+      refs_digest:'sha256:deadbeef'
+    }
+  })];
+  const result=validateAWorkClaims(r);
+  assert.ok(result.errors.some(x=>x.code==='EVIDENCE_REFS_DIGEST_MISMATCH'));
 });
