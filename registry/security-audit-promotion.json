@@ -1,0 +1,68 @@
+{
+  "schema_version": "security-audit-promotion-gate/v1",
+  "candidate_profile_ref": "docs/SECURITY_AUDIT_P0_CANDIDATE.md",
+  "target_maturity": "CANONICAL_PARTIAL",
+  "promotion_status": "HOLD",
+  "gates": [
+    {
+      "id": "core_machine_validation",
+      "status": "PENDING",
+      "evidence_refs": [
+        "scripts/validate-security-audit-p0.mjs",
+        "test/security-audit-p0.test.mjs",
+        "github:freepass-creator/ai-core/pull/164"
+      ],
+      "note": "Candidate validators and semantic tests are on main, but a successful current-main CI execution is not yet recorded here."
+    },
+    {
+      "id": "aiops_semantic_representation",
+      "status": "PASS",
+      "evidence_refs": [
+        "docs/audits/AIOPS_PILOT_2026-09-20.md",
+        "contracts/security-approval-bundle.schema.json",
+        "src/security/approval-policy.mjs",
+        "test/security-audit-p0.test.mjs"
+      ],
+      "note": "AIOps exact-subject approval, TTL, separation-of-duties, BLOCK precedence and bounded emergency semantics are represented by the candidate contracts and tests."
+    },
+    {
+      "id": "erp4_policy_consumption",
+      "status": "PENDING",
+      "evidence_refs": [
+        "docs/audits/FREEPASSERP4_PILOT_2026-09-20.md"
+      ],
+      "note": "ERP4 provides negative-test and release-gate source evidence, but a project-side consumer of this Security policy model is not yet bound."
+    },
+    {
+      "id": "independent_non_aiops_consumer",
+      "status": "PENDING",
+      "evidence_refs": [
+        "docs/audits/FREEPASS_ADMIN_PILOT_2026-09-20.md",
+        "docs/audits/FREEPASS_ESTIMATE_PILOT_2026-09-20.md"
+      ],
+      "note": "At least one non-AIOps project must consume the authz/approval contracts with revision-bound proof."
+    },
+    {
+      "id": "audit_redaction_consumer_test",
+      "status": "PENDING",
+      "evidence_refs": [
+        "contracts/security-audit-record.schema.json"
+      ],
+      "note": "The core contract forbids embedded sensitive values, but a consumer-side redaction test is still required."
+    },
+    {
+      "id": "branch_check_enforcement",
+      "status": "BLOCKED_EXTERNAL",
+      "evidence_refs": [
+        "docs/SECURITY_AUDIT_P0_CANDIDATE.md"
+      ],
+      "note": "Branch/check enforcement is a repository control and must be observed externally before canonical promotion."
+    },
+    {
+      "id": "canonical_owner_authorization",
+      "status": "PENDING",
+      "evidence_refs": [],
+      "note": "Promotion remains blocked until the canonical owner explicitly authorizes it after the technical gates pass."
+    }
+  ]
+}
