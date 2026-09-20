@@ -199,3 +199,68 @@ export function buildProjectAuditClosureReceipt({
     rule: 'A project completion report is not closure. CLOSED_VERIFIED requires a successor v2 audit at the returned result revision, current AI Core audit baseline, live CURRENT freshness, and no unresolved implementation/discovery verdict on the original handoff axes.',
   };
 }
+
+
+export function renderProjectAuditClosureMarkdown(receipt) {
+  need(receipt?.schema === 'ai-core-project-audit-closure-receipt/v1', 'AUDIT_CLOSURE_RECEIPT_SCHEMA_INVALID');
+
+  const lines = [
+    `# Project Audit Closure — ${receipt.project_id}`,
+    '',
+    `Status: **${receipt.status}**`,
+    '',
+    '## Binding',
+    '',
+    `- handoff revision: \`${receipt.handoff_binding.subject_revision}\``,
+    `- completion revision: \`${receipt.completion_binding.result_revision}\``,
+    `- standard baseline: \`${receipt.handoff_binding.standard_baseline_revision}\``,
+    `- successor audit: ${receipt.successor_audit_binding ? `\`${receipt.successor_audit_binding.subject_revision}\` / ${receipt.successor_audit_binding.live_status}` : 'not yet available'}`,
+    '',
+    '## Task closure',
+    '',
+  ];
+
+  for (const task of receipt.tasks) {
+    lines.push(
+      `### ${task.axis} — ${task.bucket}`,
+      '',
+      `- completion: \`${task.completion_status}\``,
+      `- re-audit verdict: \`${task.re_audit_verdict ?? 'NOT_AUDITED'}\``,
+      `- audit closed: \`${task.audit_closed}\``,
+      `- summary: ${task.summary}`,
+      ...(task.remaining_gaps.length ? ['- remaining gaps:', ...task.remaining_gaps.map(gap => `  - ${gap}`)] : []),
+      '',
+    );
+  }
+
+  lines.push(
+    '## Counts',
+    '',
+    `- tasks: ${receipt.counts.tasks}`,
+    `- done: ${receipt.counts.done}`,
+    `- partial: ${receipt.counts.partial}`,
+    `- not done: ${receipt.counts.not_done}`,
+    `- audit closed: ${receipt.counts.audit_closed}`,
+    '',
+    '## Next action',
+    '',
+    receipt.next_action,
+  );
+
+  if (receipt.blockers.length) {
+    lines.push('', '## Blockers', '', ...receipt.blockers.map(blocker => `- ${blocker}`));
+  }
+
+  lines.push(
+    '',
+    '## Execution boundary',
+    '',
+    '- no automatic project write',
+    '- no automatic project merge',
+    '- no automatic Core promotion',
+    '- no deployment',
+    '- no production mutation',
+  );
+
+  return lines.join('\n') + '\n';
+}
