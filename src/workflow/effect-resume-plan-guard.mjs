@@ -172,6 +172,9 @@ export function verifyEffectResumePlan(preparedPlan,{
   });
 
   const changes=[];
+  if(preparedPlan.plan_id!==planId(preparedPlan.plan_digest)){
+    changes.push('PLAN_ID_MISMATCH');
+  }
   const preparedPlannerDigest=canonicalDigest(preparedPlan.planner_result);
   if(preparedPlannerDigest!==preparedPlan.planner_result_digest){
     changes.push('PLAN_ARTIFACT_TAMPERED');
