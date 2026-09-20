@@ -104,17 +104,31 @@ export function validateWorkflowProgressions(progressionRegistry, workflowRegist
     if (progression.adoption_status === 'SHADOW' && !progression.source_authority) {
       errors.push(issue('SHADOW_PROGRESSION_SOURCE_AUTHORITY_REQUIRED', base));
     }
+    if (progression.source_authority) {
+      for (const pathValue of duplicates(progression.source_authority.files.map(item => item.path))) {
+        errors.push(issue('WORKFLOW_PROGRESSION_SOURCE_PATH_DUPLICATE', `${base}/source_authority/files`, { path: pathValue }));
+      }
+    }
     if (progression.adoption_status === 'PILOT' && !progression.adoption_evidence) {
       errors.push(issue('PILOT_PROGRESSION_ADOPTION_EVIDENCE_REQUIRED', base));
     }
     if (progression.adoption_evidence) {
+      const evidencePath = `${base}/adoption_evidence`;
+      for (const pathValue of duplicates(progression.adoption_evidence.verification.files.map(item => item.path))) {
+        errors.push(issue('WORKFLOW_PROGRESSION_ADOPTION_EVIDENCE_PATH_DUPLICATE', `${evidencePath}/verification/files`, { path: pathValue }));
+      }
       if (progression.adoption_status === 'SHADOW'
         && ['RUNTIME_PILOT', 'RUNTIME_CANONICAL'].includes(progression.adoption_evidence.stage)) {
-        errors.push(issue('SHADOW_PROGRESSION_CANNOT_CLAIM_RUNTIME_ADOPTION', `${base}/adoption_evidence`));
+        errors.push(issue('SHADOW_PROGRESSION_CANNOT_CLAIM_RUNTIME_ADOPTION', evidencePath));
+      }
+      if (progression.adoption_evidence.stage === 'SOURCE_PARITY_VERIFIED'
+        && (progression.adoption_evidence.verification.kind !== 'CI'
+          || progression.adoption_evidence.verification.conclusion !== 'SUCCESS')) {
+        errors.push(issue('SOURCE_PROGRESSION_PARITY_REQUIRES_SUCCESSFUL_CI', evidencePath));
       }
       if (progression.adoption_status === 'PILOT'
         && progression.adoption_evidence.stage !== 'RUNTIME_PILOT') {
-        errors.push(issue('PILOT_PROGRESSION_REQUIRES_RUNTIME_PILOT_EVIDENCE', `${base}/adoption_evidence`));
+        errors.push(issue('PILOT_PROGRESSION_REQUIRES_RUNTIME_PILOT_EVIDENCE', evidencePath));
       }
     }
   });
