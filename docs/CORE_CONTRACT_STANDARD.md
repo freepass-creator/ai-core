@@ -130,6 +130,20 @@ Engine/Port/Adapter/Binding Profile 계약은 `src/engine/port-runtime.mjs`에�
 세부 규격은 `docs/CORE_PORT_RUNTIME.md`를 따른다.
 
 
+### 4.2 Connector Runtime
+
+`core-connector/v1`과 `core-connector-result/v1`은 Adapter 아래의 저수준 transport를 분리한다.
+
+- Connector는 HTTP/DB/QUEUE/FILESYSTEM/SDK/IPC transport와 timeout/abort primitive를 소유한다.
+- credential은 contract에 값으로 저장하지 않고 reference만 둔다.
+- Connector result는 transport failure kind만 표현하고 `retryable`을 결정하지 않는다.
+- Adapter가 provider field/unit/error를 Core 의미로 변환한다.
+- D Workflow가 retry/backoff/resume/escalation을 결정한다.
+- Connector가 business completion이나 workflow state를 만들 수 없다.
+
+실행 구현은 `src/engine/connector-runtime.mjs`, 세부 규격은 `docs/CORE_CONNECTOR_RUNTIME.md`를 따른다.
+
+
 ## 5. API
 
 HTTP method/status semantics를 임의 재정의하지 않는다.
