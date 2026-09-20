@@ -15,11 +15,12 @@ const files = [
   '../docs/audits/freepasserp4-v2-2026-09-20-r2.json',
   '../docs/audits/freepasserp4-v2-2026-09-20-r3.json',
   '../docs/audits/freepasserp4-v2-2026-09-20-r4.json',
+  '../docs/audits/freepasserp4-v2-2026-09-20-r5.json',
   '../docs/audits/freepass-estimate-v2-2026-09-20.json',
   '../docs/audits/aiops-v2-2026-09-20.json',
 ];
 
-test('portfolio rolls eleven stored records into four active v2 audits', async () => {
+test('portfolio rolls twelve stored records into four active v2 audits', async () => {
   const [readinessRegistry, projectRegistry, auditResults] = await Promise.all([
     readJson('../registry/project-audit-readiness.json'),
     readJson('../registry/projects.json'),
@@ -32,9 +33,9 @@ test('portfolio rolls eleven stored records into four active v2 audits', async (
     auditResults,
   });
 
-  assert.equal(portfolio.totals.audit_records, 11);
+  assert.equal(portfolio.totals.audit_records, 12);
   assert.equal(portfolio.totals.active_projects, 4);
-  assert.equal(portfolio.totals.superseded_history, 7);
+  assert.equal(portfolio.totals.superseded_history, 8);
   assert.equal(portfolio.totals.axis_observations, 32);
   assert.equal(portfolio.projects.every(item => item.audit_result_schema === 'ai-core-project-audit-result/v2'), true);
   assert.equal(portfolio.permissions.auto_remediation, false);
@@ -56,8 +57,8 @@ test('portfolio preserves project-specific CI and freshness differences', async 
   const byId = new Map(portfolio.projects.map(item => [item.project_id, item]));
 
   assert.equal(byId.get('freepass-admin').ci.status, 'UNKNOWN');
-  assert.equal(byId.get('freepasserp4').subject_revision, 'f7c89b7b995d8d98ea04606405e68b158fb4256f');
-  assert.equal(byId.get('freepasserp4').ci.status, 'UNKNOWN');
+  assert.equal(byId.get('freepasserp4').subject_revision, '0cf39d7c639b8583c5d1244cff1ea8ce51a07329');
+  assert.equal(byId.get('freepasserp4').ci.status, 'PASS');
   assert.equal(byId.get('freepass-estimate').ci.status, 'UNKNOWN');
   assert.equal(byId.get('aiops').ci.status, 'UNKNOWN');
 
@@ -65,8 +66,8 @@ test('portfolio preserves project-specific CI and freshness differences', async 
   assert.equal(byId.get('freepasserp4').freshness_review_required, true);
   assert.equal(byId.get('freepasserp4').re_audit_candidate, false);
 
-  assert.equal(portfolio.totals.ci_pass, 0);
-  assert.equal(portfolio.totals.ci_unknown, 4);
+  assert.equal(portfolio.totals.ci_pass, 1);
+  assert.equal(portfolio.totals.ci_unknown, 3);
   assert.equal(portfolio.totals.registry_drift, 1);
   assert.equal(portfolio.totals.branch_unprotected, 4);
 });
