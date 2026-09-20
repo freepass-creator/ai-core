@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { planReverseCompensation, resolveCompensationOutcome } from '../src/workflow/compensation.mjs';
+import { planReverseCompensation, resolveCompensationOutcome, executeCompensatedEffects } from '../src/workflow/compensation.mjs';
 import { validateWorkflowCompensationPolicies } from '../scripts/validate-workflow-compensation-policies.mjs';
 
 const registry=JSON.parse(await readFile(new URL('../registry/workflow-compensation-policies.json',import.meta.url),'utf8'));
@@ -60,3 +60,60 @@ test('failed or missing compensation escalates explicit partial state',()=>{
   assert.deepEqual(outcome.missing_compensations,['a']);
   assert.equal(outcome.failed_compensations[0].effect_id,'b');
 });
+
+test('effect executor compensates only already-applied effects in reverse order',async()=>{
+  const calls=[];
+  const result=await executeCompensatedEffects({
+    correlation_id:'corr-1',
+    effects:[
+      {effect_id:'a',compensation_mode:'REQUIRED',compensation_action:'undo.a'},
+      {effect_id:'b',compensation_mode:'REQUIRED',compensation_action:'undo.b'},
+      {effect_id:'c',compensation_mode:'REQUIRED',compensation_action:'undo.c'}
+    ],
+    execute_effect:async(effect)=>{
+      calls.push('do:'+effect.effect_id);
+      return effect.effect_id==='c'
+        ? {status:'FAILED',error_code:'C_FAILED'}
+        : {status:'SUCCEEDED',receipt_ref:'receipt:'+effect.effect_id};
+    },
+    execute_compensation:async(step)=>{
+      calls.push('undo:'+step.effect_id);
+      return {status:'SUCCEEDED',receipt_ref:'comp:'+step.effect_id};
+    }
+  });
+  assert.equal(result.status,'FAILED');
+  assert.equal(result.action,'RETHROW_ORIGINAL_FAILURE');
+  assert.deepEqual(result.applied_effect_ids,['a','b']);
+  assert.deepEqual(calls,['do:a','do:b','do:c','undo:b','undo:a']);
+});
+
+test('compensation failure returns explicit partial state',async()=>{
+  const result=await executeCompensatedEffects({
+    effects:[
+      {effect_id:'a',compensation_mode:'REQUIRED',compensation_action:'undo.a'},
+      {effect_id:'b',compensation_mode:'REQUIRED',compensation_action:'undo.b'}
+    ],
+    execute_effect:async(effect)=>effect.effect_id==='a'
+      ? {status:'SUCCEEDED'}
+      : {status:'FAILED',error_code:'B_FAILED'},
+    execute_compensation:async()=>({status:'FAILED',error_code:'UNDO_FAILED'})
+  });
+  assert.equal(result.status,'PARTIAL_STATE');
+  assert.equal(result.action,'ESCALATE');
+  assert.equal(result.compensation_outcome.failed_compensations[0].effect_id,'a');
+});
+
+test('all successful effects need no compensation',async()=>{
+  const result=await executeCompensatedEffects({
+    effects:[
+      {effect_id:'a',compensation_mode:'NOT_REQUIRED',non_compensated_reason:'append-only'},
+      {effect_id:'b',compensation_mode:'REQUIRED',compensation_action:'undo.b'}
+    ],
+    execute_effect:async()=>({status:'SUCCEEDED'}),
+    execute_compensation:async()=>{throw new Error('should not run');}
+  });
+  assert.equal(result.status,'SUCCEEDED');
+  assert.equal(result.action,'CONTINUE');
+  assert.equal(result.compensation_plan,null);
+});
+
