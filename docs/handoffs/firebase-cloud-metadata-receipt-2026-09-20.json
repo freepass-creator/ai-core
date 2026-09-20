@@ -1,0 +1,29 @@
+{
+  "schema": "ai-core/firebase-cloud-metadata-receipt/v1",
+  "observed_at": "2026-09-20T11:46:13Z",
+  "read_only": true,
+  "document_values_read": false,
+  "rtdb_queried": false,
+  "services_enabled": false,
+  "commands": [
+    "firebase projects:list --json",
+    "gcloud firestore databases list --project=<project>",
+    "gcloud firestore indexes composite list --project=<project>",
+    "gcloud firestore backups schedules list --project=<project>"
+  ],
+  "projects": [
+    {"project_id": "chakhandeal", "firebase_state": "ACTIVE", "firestore": {"exists": true, "database": "(default)", "type": "FIRESTORE_NATIVE", "location": "asia-northeast3", "delete_protection": false, "pitr": false, "composite_indexes": 0, "backup_schedules": 0}},
+    {"project_id": "freepasserp3", "firebase_state": "ACTIVE", "firestore": {"exists": true, "database": "(default)", "type": "FIRESTORE_NATIVE", "location": "asia-northeast3", "delete_protection": true, "pitr": false, "composite_indexes": 0, "backup_schedules": 0}},
+    {"project_id": "freepasserp5", "firebase_state": "ACTIVE", "firestore": {"exists": true, "database": "(default)", "type": "FIRESTORE_NATIVE", "location": "asia-northeast3", "delete_protection": false, "pitr": false, "composite_indexes": 4, "backup_schedules": 0}, "ready_index_groups": ["settlement:_key+agent_code", "settlement:_key+provider_company_code", "contract:_key+agent_code", "contract:_key+provider_company_code"]},
+    {"project_id": "jpkerp", "firebase_state": "ACTIVE", "firestore": {"exists": null, "query_status": "SERVICE_DISABLED_NOT_ENABLED"}},
+    {"project_id": "renman-dd0a2", "firebase_state": "ACTIVE", "firestore": {"exists": true, "database": "(default)", "type": "FIRESTORE_NATIVE", "location": "asia-northeast3", "delete_protection": true, "pitr": true, "composite_indexes": 0, "backup_schedules": 1, "backup_retention_seconds": 8467200}},
+    {"project_id": "teamjpk-b70b7", "firebase_state": "ACTIVE", "firestore": {"exists": null, "query_status": "SERVICE_DISABLED_NOT_ENABLED"}},
+    {"project_id": "teamjpkwork", "firebase_state": "ACTIVE", "firestore": {"exists": true, "database": "(default)", "type": "FIRESTORE_NATIVE", "location": "asia-northeast3", "delete_protection": false, "pitr": false, "composite_indexes": 0, "backup_schedules": 0}},
+    {"project_id": "welrixtable", "firebase_state": "ACTIVE", "firestore": {"exists": true, "database": "(default)", "type": "FIRESTORE_NATIVE", "location": "asia-northeast3", "delete_protection": false, "pitr": false, "composite_indexes": 0, "backup_schedules": 0}}
+  ],
+  "current_live_compute": {
+    "freepasserp3_cloud_functions": 0,
+    "freepasserp3_cloud_run_services": 0,
+    "note": "Other projects returned disabled-service status; GitHub Actions schedules remain separate writer candidates."
+  }
+}

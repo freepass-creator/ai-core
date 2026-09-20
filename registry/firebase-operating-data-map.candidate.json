@@ -1,0 +1,171 @@
+{
+  "schema": "ai-core/firebase-operating-data-map-candidate/v1",
+  "status": "HOLD_READ_ONLY_CANDIDATE",
+  "observed_at": "2026-09-20T11:46:13Z",
+  "ai_core_revision": "f6ab4fd572eb003945beafa5e8722321a4b2fb81",
+  "authority": {
+    "allows_migration": false,
+    "allows_write": false,
+    "allows_deploy": false,
+    "allows_rtdb_reactivation": false
+  },
+  "axes": [
+    {
+      "axis_id": "freepass-data",
+      "recommended_boundary": "Sales CRM stays in welrixtable; ERP product/policy/contract/settlement targets freepasserp5 only after ERP3 parity and cutover proof.",
+      "project_ids": ["freepasserp3", "freepasserp5", "welrixtable", "teamjpk-b70b7"]
+    },
+    {
+      "axis_id": "rental-master",
+      "recommended_boundary": "teamjpkwork is the target rental atom/master owner candidate; AIOps is narrowed to a single validated ingest/command writer; Chakhandeal remains a trust/contract boundary.",
+      "project_ids": ["teamjpkwork", "renman-dd0a2", "chakhandeal", "jpkerp", "teamjpk-b70b7"]
+    }
+  ],
+  "firebase_projects": [
+    {
+      "project_id": "freepasserp3",
+      "axes": ["freepass-data"],
+      "database": {"id": "(default)", "type": "FIRESTORE_NATIVE", "location": "asia-northeast3", "delete_protection": true, "pitr": false},
+      "roles": ["legacy-operational-firestore", "auth-provider", "migration-source"],
+      "owning_repositories": ["freepass-creator/freepasserp4"],
+      "collections": ["products", "policy", "partner", "user", "contract", "settlement", "customer", "audit_logs", "new_car_trim", "settlement_rows", "settlement_clawbacks", "vehicle_master"],
+      "writers": ["freepasserp4-runtime", "freepasserp4-sync-scripts"],
+      "consumers": ["freepasserp4-ui-api", "freepass-admin-auth"],
+      "security_source": "C:\\dev\\freepasserp4\\firestore.rules",
+      "index_source": "C:\\dev\\freepasserp4\\firestore.indexes.json",
+      "backup_restore": "HOLD_LOCAL_PRODUCT_BACKUP_ONLY",
+      "freshness": "HOLD_DEPLOY_AND_SCHEDULER_REVISION_UNVERIFIED",
+      "holds": ["PRODUCT_POLICY_OVERLAP_WITH_FREEPASSERP5", "CLAIMED_COLLECTIONS_NOT_FULLY_COVERED_BY_RULES", "ACTIVE_RTDB_DEPENDENT_SCRIPTS", "RTDB_MIGRATION_DEBT"]
+    },
+    {
+      "project_id": "freepasserp5",
+      "axes": ["freepass-data"],
+      "database": {"id": "(default)", "type": "FIRESTORE_NATIVE", "location": "asia-northeast3", "delete_protection": false, "pitr": false},
+      "roles": ["admin-data-store", "erp-canonical-candidate"],
+      "owning_repositories": ["freepass-creator/freepass-admin", "freepass-creator/freepasserp4"],
+      "collections": ["products", "policy", "contract", "settlement", "vehicle_master", "settlement_rows", "settlement_events", "settlement_clawbacks", "settlement_invoices", "settlement_fee_rules", "partner"],
+      "writers": ["freepass-admin-runtime-gated", "migration-and-fill-scripts"],
+      "consumers": ["freepass-admin", "freepasserp4-whitelabel-bridge"],
+      "security_source": null,
+      "index_source": "LIVE_4_READY_COMPOSITE_INDEXES_LOCAL_DEPLOY_SOURCE_UNKNOWN",
+      "backup_restore": "HOLD_NO_LOCAL_RESTORE_EVIDENCE",
+      "freshness": "HOLD_LIVE_WRITER_AND_DEPLOY_REVISION_UNVERIFIED",
+      "holds": ["PRODUCT_POLICY_OVERLAP_WITH_FREEPASSERP3", "CROSS_PROJECT_AUTH_TRUST", "RULES_DEPLOY_OWNER_UNKNOWN"]
+    },
+    {
+      "project_id": "welrixtable",
+      "axes": ["freepass-data"],
+      "database": {"id": "(default)", "type": "FIRESTORE_NATIVE", "location": "asia-northeast3", "delete_protection": false, "pitr": false},
+      "roles": ["sales-crm"],
+      "owning_repositories": ["freepass-creator/freepass-sales"],
+      "collections": ["users", "leads", "leads/{leadId}/calls", "config", "forms"],
+      "writers": ["sales-web", "mail-intake-automation"],
+      "consumers": ["sales-web", "sales-call-app"],
+      "security_source": "C:\\dev\\sales\\firestore.rules",
+      "index_source": "C:\\dev\\sales\\firestore.indexes.json",
+      "backup_restore": "HOLD_NO_FIRESTORE_RESTORE_EVIDENCE",
+      "freshness": "HOLD_LIVE_DEPLOY_SHA_UNVERIFIED",
+      "holds": ["DIVERGENT_LOCAL_CHECKOUTS"]
+    },
+    {
+      "project_id": "teamjpkwork",
+      "axes": ["rental-master"],
+      "database": {"id": "(default)", "type": "FIRESTORE_NATIVE", "location": "asia-northeast3", "delete_protection": false, "pitr": false, "backup_schedules": 0},
+      "roles": ["rental-operating-store", "rental-master-candidate"],
+      "owning_repositories": ["freepass-creator/teamjpkwork", "freepass-creator/aiops"],
+      "collections": ["vehicles", "contracts", "documents", "contract_history", "contract_history_sheet", "payment_record", "수납스케줄v3", "arrears", "holding", "채권", "event_queue", "event_log", "car_cards", "today_tasks", "work_todo", "fine_todo", "fine_unpaid", "sheet_mirror", "money_tx", "bank_deposit", "debt_sale", "insurance_status", "insurance_check", "fleet_count", "customers", "insurance", "bank_tx", "유지미수판", "요약", "계좌이력", "ai_errors"],
+      "writers": ["aiops-ingest-and-mirror", "teamjpkwork-event-and-manual-commands"],
+      "consumers": ["teamjpkwork-ui", "aiops-queue-engine", "vehicle-360-projection"],
+      "security_source": "HOLD_VERIFY_DEPLOYED_RULES_REVISION",
+      "index_source": "NO_COMPOSITE_INDEXES_OBSERVED",
+      "backup_restore": "HOLD_NO_BACKUP_SCHEDULE",
+      "freshness": "HOLD_SCHEDULER_AND_DEPLOY_REVISION_UNVERIFIED",
+      "holds": ["MULTI_WRITER", "CONTRACT_HISTORY_COLLECTION_SPLIT", "RUNTIME_PROJECT_BINDING", "VEHICLE_IDENTITY_FALLBACK", "RESTORE_NOT_PROVEN"]
+    },
+    {
+      "project_id": "renman-dd0a2",
+      "axes": ["rental-master"],
+      "database": {"id": "(default)", "type": "FIRESTORE_NATIVE", "location": "asia-northeast3", "delete_protection": true, "pitr": true, "backup_schedule": "WEEKLY_SATURDAY_98_DAYS"},
+      "roles": ["legacy-preservation-store", "backup-candidate"],
+      "owning_repositories": ["freepass-creator/renman"],
+      "collections": [],
+      "writers": ["HOLD_CURRENT_WRITER_UNKNOWN"],
+      "consumers": ["HOLD_CURRENT_CONSUMER_UNKNOWN"],
+      "security_source": "HOLD",
+      "index_source": "NO_COMPOSITE_INDEXES_OBSERVED",
+      "backup_restore": "BACKUP_SCHEDULE_OBSERVED_RESTORE_REHEARSAL_NOT_PROVEN",
+      "freshness": "HOLD",
+      "holds": ["CANONICAL_ROLE_UNPROVEN", "OVERLAP_WITH_TEAMJPKWORK_UNMAPPED"]
+    },
+    {
+      "project_id": "chakhandeal",
+      "axes": ["rental-master"],
+      "database": {"id": "(default)", "type": "FIRESTORE_NATIVE", "location": "asia-northeast3", "delete_protection": false, "pitr": false, "backup_schedules": 0},
+      "roles": ["trust-and-contract-boundary"],
+      "owning_repositories": ["freepass-creator/chakhandeal"],
+      "collections": ["members", "consents", "risks", "appeals", "audits", "certificates", "pii_vault", "company_keys", "contracts", "lab_contracts"],
+      "writers": ["server-admin-sdk"],
+      "consumers": ["chakhandeal-ui-api"],
+      "security_source": "C:\\dev\\chakhandeal\\firestore.rules",
+      "index_source": "NO_COMPOSITE_INDEXES_OBSERVED",
+      "backup_restore": "HOLD_NO_BACKUP_SCHEDULE",
+      "freshness": "HOLD_PRODUCTION_USAGE_UNVERIFIED",
+      "holds": ["RESTORE_NOT_PROVEN", "NOT_A_RENTAL_MASTER_OWNER"]
+    },
+    {
+      "project_id": "jpkerp",
+      "axes": ["rental-master"],
+      "database": null,
+      "roles": ["legacy-rtdb-lineage", "migration-debt"],
+      "owning_repositories": ["freepass-creator/jpkerp", "freepass-creator/jpkerp2", "freepass-creator/jpkerp-v4", "freepass-creator/jpkerp5"],
+      "collections": [],
+      "writers": ["PROHIBITED_LEGACY_RTDB_SCRIPTS"],
+      "consumers": ["PROHIBITED_LEGACY_RTDB_CLIENTS"],
+      "security_source": "LEGACY_RTDB_RULES_ONLY",
+      "index_source": null,
+      "backup_restore": "LEGACY_RTDB_JSON_BACKUP_IS_MIGRATION_DEBT",
+      "freshness": "FIRESTORE_API_DISABLED",
+      "holds": ["RTDB_PERMANENTLY_RETIRED", "FIRESTORE_PARITY_UNPROVEN"]
+    },
+    {
+      "project_id": "teamjpk-b70b7",
+      "axes": ["freepass-data", "rental-master"],
+      "database": null,
+      "roles": ["legacy-estimator-rtdb", "migration-debt"],
+      "owning_repositories": ["freepass-creator/sonogong-estimator"],
+      "collections": [],
+      "writers": ["PROHIBITED_BROWSER_RTDB_WRITES"],
+      "consumers": ["sonogong-estimator"],
+      "security_source": "LEGACY_RTDB_RULES_ONLY",
+      "index_source": null,
+      "backup_restore": "HOLD",
+      "freshness": "FIRESTORE_API_DISABLED",
+      "holds": ["RTDB_PERMANENTLY_RETIRED", "ESTIMATOR_FIRESTORE_PARITY_UNPROVEN", "MASTER_COPY_PROVENANCE_UNKNOWN"]
+    }
+  ],
+  "source_revisions": [
+    {"repository": "freepass-creator/freepass-admin", "path": "C:\\dev\\freepasserp.com", "revision": "878646bb0459acf0007e0f7f36dfe0c2900c6e6a", "dirty": true},
+    {"repository": "freepass-creator/freepasserp4", "path": "C:\\dev\\freepasserp4", "revision": "595abaefa72ab0d5ee14414fec8998fd632ec488", "dirty": true},
+    {"repository": "freepass-creator/freepass-sales", "path": "C:\\dev\\sales", "revision": "94b81c4266963340fc79be9a5a9c4d59056a3cd1", "dirty": false},
+    {"repository": "freepass-creator/freepass-sales", "path": "C:\\dev\\freepass-sales", "revision": "dd4b5f2c59e834429e360a868464f89d4bb47edf", "dirty": false},
+    {"repository": "freepass-creator/teamjpkwork", "path": "C:\\dev\\teamjpkwork", "revision": "75bb285a241b68c13acbe532c30d6d91110f8082", "dirty": true},
+    {"repository": "freepass-creator/chakhandeal", "path": "C:\\dev\\chakhandeal", "revision": "ce56c92f84dd3813a2a04ec4ee4ba215fc78f333", "dirty": false},
+    {"repository": "freepass-creator/jpkerp", "path": "C:\\dev\\jpkerp", "revision": "e6de03adbac98a33da7d844fb8fb197ff885e7cb", "dirty": true},
+    {"repository": "freepass-creator/jpkerp-v4", "path": "C:\\dev\\jpkerp-v4", "revision": "8e72823454732a0d6bceddf8be646ad3c9cc83ff", "dirty": false},
+    {"repository": "freepass-creator/jpkerp2", "path": "C:\\dev\\jpkerp2", "revision": "6e1e9aee68fd2c3e6d2fd640e670860b60ee1d15", "dirty": true},
+    {"repository": "freepass-creator/jpkerp5", "path": "C:\\dev\\jpkerp5", "revision": "13aebe8f9eaad65d9d40c0925b4081b916438b35", "dirty": true},
+    {"repository": "freepass-creator/mewcar", "path": "C:\\dev\\mewcar", "revision": "95c13ab0473f6ca59ed40ffba359e707ad17dd95", "dirty": false},
+    {"repository": "freepass-creator/sonogong-estimator", "path": "C:\\dev\\sonogong-estimator", "revision": "fd65e6d8f9d2ffb865896b4b65442e3d2210570a", "dirty": false},
+    {"repository": "freepass-creator/aiops", "path": "C:\\dev\\aiops", "revision": "d12f6d4afba48450391981c37fe3bda5da14b02f", "dirty": true},
+    {"repository": "freepass-creator/renman", "path": "C:\\dev\\renman", "revision": "adcb74311928feae368aa5aadab084f27792eec9", "dirty": true}
+  ],
+  "next_start_here": [
+    "Approve a metadata-only products/policy parity manifest between freepasserp3 and freepasserp5.",
+    "Map collection-level writers and restore rehearsal for teamjpkwork and renman-dd0a2.",
+    "Bind actual Firebase/Vercel/GitHub scheduler deployments to immutable revisions.",
+    "Build RTDB consumer-parity inventory without enabling or reading RTDB.",
+    "Reconcile the existing freepasserp5 canonical_owner registry claim with current duplicate-writer evidence.",
+    "Add a validator/schema before promoting this candidate.",
+    "Promote this candidate only after canonical owner, deploy owner, freshness, security revision, and restore status are proven."
+  ]
+}
