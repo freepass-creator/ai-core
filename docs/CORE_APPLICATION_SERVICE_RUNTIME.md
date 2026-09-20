@@ -43,3 +43,21 @@ The development file adapters are separately bound to a FILESYSTEM Connector tha
 ## Verification state
 
 GitHub Actions are intentionally not used under the current user-directed mode. Code/tests are implemented but **NOT CI VERIFIED**.
+
+
+## Adapter vs Repository binding
+
+A Service Port binds to exactly one target:
+- Adapter — provider/project mapping or integration boundary;
+- Repository — persistence boundary.
+
+The runtime inspects the Binding Profile and routes the Port call through the corresponding runtime.
+
+For Repository bindings the Service call names the explicit `repository_operation_id`. This keeps a broad persistence Port from silently opening unrelated storage operations.
+
+FreePass Admin is the first SHADOW case where:
+- `application.repository` -> Repository
+- `product.read` -> Repository
+- `actor.provider` -> unresolved
+
+Therefore the current Admin Service remains HOLD even though both persistence Ports are structurally modeled.
