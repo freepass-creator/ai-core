@@ -49,14 +49,30 @@ test('expired active claim can be reacquired', () => {
   assert.equal(result.decision.claim.lease_until,'2026-09-20T02:15:00.000Z');
 });
 
-test('completion requires evidence and preserves claim identity', () => {
+test('v2 completion requires subject binding and verifiable proof syntax', () => {
   const acquired=acquireClaim(registry(), request, { now:new Date('2026-09-20T01:30:00Z'), claimId:'A-new' });
-  assert.throws(() => transitionClaim(acquired.registry,'A-new','COMPLETED',{ now:new Date('2026-09-20T01:40:00Z'), owner:'A-session-owner-one' }), /COMPLETION_EVIDENCE_REQUIRED/);
+  assert.equal(acquired.decision.claim.evidence_contract,'v2');
+  assert.throws(() => transitionClaim(acquired.registry,'A-new','COMPLETED',{
+    now:new Date('2026-09-20T01:40:00Z'),
+    owner:'A-session-owner-one'
+  }), /COMPLETION_EVIDENCE_INVALID/);
+  assert.throws(() => transitionClaim(acquired.registry,'A-new','COMPLETED',{
+    now:new Date('2026-09-20T01:40:00Z'),
+    owner:'A-session-owner-one',
+    evidenceRefs:['commit:af9e51b']
+  }), /COMPLETION_EVIDENCE_INVALID/);
+
+  const refs=[
+    `subject:freepass-creator/freepass-sales@${revision}`,
+    'commit:freepass-creator/ai-core@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+  ];
   const done=transitionClaim(acquired.registry,'A-new','COMPLETED',{
-    now:new Date('2026-09-20T01:40:00Z'), owner:'A-session-owner-one', evidenceRefs:['commit:af9e51b']
+    now:new Date('2026-09-20T01:40:00Z'),
+    owner:'A-session-owner-one',
+    evidenceRefs:refs
   });
   assert.equal(done.claim.state,'COMPLETED');
-  assert.deepEqual(done.claim.evidence_refs,['commit:af9e51b']);
+  assert.deepEqual(done.claim.evidence_refs,refs);
 });
 
 
