@@ -1,7 +1,7 @@
 {
   "schema": "ai-core-a-session-work-claims/v1",
   "status": "RESEARCH_COORDINATION_NOT_CANONICAL",
-  "observed_at": "2026-09-20T02:18:00Z",
+  "observed_at": "2026-09-20T02:19:00Z",
   "policy": {
     "claim_key": "<repository>@<subject_revision>::<scope>",
     "live_claim": "state=ACTIVE and lease_until > observed_at",
@@ -138,6 +138,45 @@
         "commit:d6ea1e343741edb190ac3d05679c56c3be3abcee",
         "commit:bcd5e3182c0dd935e2e7ea68e81d7a0751523816"
       ]
+    },
+    {
+      "claim_id": "A-REVIEW-20260920-0219-B",
+      "claim_key": "freepass-creator/ai-core@61c8f22efa9a5ae10f4fac2a12fa217b5f1f5f68::coordination:review-ui.freepass-sales-b-conformance--b",
+      "repository": "freepass-creator/ai-core",
+      "subject_revision": "61c8f22efa9a5ae10f4fac2a12fa217b5f1f5f68",
+      "scope": "coordination:review-ui.freepass-sales-b-conformance--b",
+      "owner_session": "B-session-review",
+      "state": "ACTIVE",
+      "claimed_at": "2026-09-20T02:19:00Z",
+      "lease_until": "2026-09-20T03:19:00Z",
+      "completed_at": null,
+      "evidence_refs": []
+    },
+    {
+      "claim_id": "A-REVIEW-20260920-0219-C",
+      "claim_key": "freepass-creator/ai-core@c09e9c43679458e4e1636ea7a52f73ea0803a219::coordination:review-core-contract.erp5-receipt-enforcement--c",
+      "repository": "freepass-creator/ai-core",
+      "subject_revision": "c09e9c43679458e4e1636ea7a52f73ea0803a219",
+      "scope": "coordination:review-core-contract.erp5-receipt-enforcement--c",
+      "owner_session": "C-session-review",
+      "state": "ACTIVE",
+      "claimed_at": "2026-09-20T02:19:00Z",
+      "lease_until": "2026-09-20T03:19:00Z",
+      "completed_at": null,
+      "evidence_refs": []
+    },
+    {
+      "claim_id": "A-REVIEW-20260920-0219-D",
+      "claim_key": "freepass-creator/ai-core@585868ab1f653bdca903319f6b9c58324460df91::coordination:review-audit.metadata-consistency-validator--d",
+      "repository": "freepass-creator/ai-core",
+      "subject_revision": "585868ab1f653bdca903319f6b9c58324460df91",
+      "scope": "coordination:review-audit.metadata-consistency-validator--d",
+      "owner_session": "D-session-review",
+      "state": "ACTIVE",
+      "claimed_at": "2026-09-20T02:19:00Z",
+      "lease_until": "2026-09-20T03:19:00Z",
+      "completed_at": null,
+      "evidence_refs": []
     }
   ]
 }
