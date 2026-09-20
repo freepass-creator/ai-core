@@ -1,3 +1,4 @@
+import { validateRepositoryContract } from './repository-contract.mjs';
 const need=(condition,code)=>{if(!condition) throw new Error(code);};
 const text=value=>typeof value==='string'&&value.trim()===value&&value.length>0;
 
@@ -67,6 +68,11 @@ export function validateBindingProfile(profile,{requireVerified=false}={}){
     need(Array.isArray(binding.ports),'SERVICE_BINDING_PORTS_INVALID');
     const portIds=binding.ports.map(x=>x?.port_id);
     need(new Set(portIds).size===portIds.length,`SERVICE_BINDING_PORT_DUPLICATE:${key}`);
+    for(const port of binding.ports){
+      const hasAdapter=text(port?.adapter_id);
+      const hasRepository=text(port?.repository_id);
+      need(hasAdapter!==hasRepository,`SERVICE_BINDING_TARGET_INVALID:${key}:${port?.port_id??'unknown'}`);
+    }
   }
   return {status:'VALID'};
 }
@@ -154,7 +160,7 @@ export function validateApplicationServiceContract(service){
   return {status:'VALID'};
 }
 
-export function resolveServiceBinding({service,adapters=[],profile,requireVerified=false}){
+export function resolveServiceBinding({service,adapters=[],repositories=[],profile,requireVerified=false}){
   const errors=[];
   try{validateApplicationServiceContract(service);}catch(error){errors.push(error.message);}
   try{validateBindingProfile(profile,{requireVerified});}catch(error){errors.push(error.message);}
@@ -176,27 +182,60 @@ export function resolveServiceBinding({service,adapters=[],profile,requireVerifi
     }
   }
 
-  const selected=[];
+  const repositoryIds=new Set();
+  for(const repository of repositories){
+    if(repositoryIds.has(repository.repository_id)) errors.push(`REPOSITORY_ID_DUPLICATE:${repository.repository_id}`);
+    repositoryIds.add(repository.repository_id);
+  }
+
+  const selectedAdapters=[];
+  const selectedRepositories=[];
   for(const port of required){
     const matches=binding?.ports?.filter(x=>x.port_id===port.port_id)??[];
     if(matches.length===0){errors.push(`PORT_UNRESOLVED:${port.port_id}`);continue;}
     if(matches.length>1){errors.push(`PORT_DUPLICATE_BINDING:${port.port_id}`);continue;}
-    const adapter=adapters.find(x=>x.adapter_id===matches[0].adapter_id);
-    if(!adapter){errors.push(`ADAPTER_NOT_FOUND:${matches[0].adapter_id}`);continue;}
-    try{validateAdapterContract(adapter);}catch(error){errors.push(`${adapter.adapter_id}:${error.message}`);}
-    if(adapter.port_id!==port.port_id) errors.push(`ADAPTER_PORT_MISMATCH:${adapter.adapter_id}`);
-    if(adapter.project_scope!=null&&adapter.project_scope!==profile?.project_id) errors.push(`ADAPTER_PROJECT_SCOPE_MISMATCH:${adapter.adapter_id}`);
-    if(!adapter.compatibility?.port_versions?.includes(port.port_version)) errors.push(`ADAPTER_PORT_VERSION_MISMATCH:${adapter.adapter_id}`);
-    selected.push({
-      port_id:port.port_id,
-      port_version:port.port_version,
-      adapter_id:adapter.adapter_id,
-      adapter_version:adapter.adapter_version,
-      side_effects:adapter.side_effects===true,
-      idempotency:adapter.idempotency,
-      timeout_ms:adapter.timeout_ms,
-      source_revision:adapter.source?.revision??null,
-    });
+    const target=matches[0];
+
+    if(target.adapter_id){
+      const adapter=adapters.find(x=>x.adapter_id===target.adapter_id);
+      if(!adapter){errors.push(`ADAPTER_NOT_FOUND:${target.adapter_id}`);continue;}
+      try{validateAdapterContract(adapter);}catch(error){errors.push(`${adapter.adapter_id}:${error.message}`);}
+      if(adapter.port_id!==port.port_id) errors.push(`ADAPTER_PORT_MISMATCH:${adapter.adapter_id}`);
+      if(adapter.project_scope!=null&&adapter.project_scope!==profile?.project_id) errors.push(`ADAPTER_PROJECT_SCOPE_MISMATCH:${adapter.adapter_id}`);
+      if(!adapter.compatibility?.port_versions?.includes(port.port_version)) errors.push(`ADAPTER_PORT_VERSION_MISMATCH:${adapter.adapter_id}`);
+      selectedAdapters.push({
+        binding_kind:'ADAPTER',
+        port_id:port.port_id,
+        port_version:port.port_version,
+        adapter_id:adapter.adapter_id,
+        adapter_version:adapter.adapter_version,
+        side_effects:adapter.side_effects===true,
+        idempotency:adapter.idempotency,
+        timeout_ms:adapter.timeout_ms,
+        source_revision:adapter.source?.revision??null,
+      });
+      continue;
+    }
+
+    if(target.repository_id){
+      const repository=repositories.find(x=>x.repository_id===target.repository_id);
+      if(!repository){errors.push(`REPOSITORY_NOT_FOUND:${target.repository_id}`);continue;}
+      try{validateRepositoryContract(repository);}catch(error){errors.push(`${repository.repository_id}:${error.message}`);}
+      if(repository.port_id!==port.port_id) errors.push(`REPOSITORY_PORT_MISMATCH:${repository.repository_id}`);
+      if(repository.port_version!==port.port_version) errors.push(`REPOSITORY_PORT_VERSION_MISMATCH:${repository.repository_id}`);
+      if(repository.project_scope!=null&&repository.project_scope!==profile?.project_id) errors.push(`REPOSITORY_PROJECT_SCOPE_MISMATCH:${repository.repository_id}`);
+      selectedRepositories.push({
+        binding_kind:'REPOSITORY',
+        port_id:port.port_id,
+        port_version:port.port_version,
+        repository_id:repository.repository_id,
+        repository_version:repository.repository_version,
+        source_revision:repository.source?.revision??null,
+      });
+      continue;
+    }
+
+    errors.push(`SERVICE_BINDING_TARGET_INVALID:${port.port_id}`);
   }
 
   return {
@@ -209,7 +248,8 @@ export function resolveServiceBinding({service,adapters=[],profile,requireVerifi
     environment:profile?.environment??null,
     subject_revision:profile?.subject_revision??null,
     verification_state:profile?.verification_state??null,
-    selected_adapters:selected,
+    selected_adapters:selectedAdapters,
+    selected_repositories:selectedRepositories,
     errors
   };
 }
