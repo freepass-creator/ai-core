@@ -187,6 +187,13 @@
       "path": "contracts/core-application-service.schema.json",
       "status": "CANONICAL",
       "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
+    },
+    {
+      "id": "core.execution-identity.v1",
+      "domain": "DATA",
+      "path": "contracts/core-execution-identity.schema.json",
+      "status": "CANONICAL",
+      "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
     }
   ]
 }
