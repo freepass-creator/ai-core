@@ -192,6 +192,22 @@ FreePass Admin의 상품 찾기 기본 mode는 **SEARCH_FILTER**다.
 - 최종 선택된 stable variant id가 다음 workflow로 넘어간다.
 - 검색 query를 바꾸는 동작이 아니므로 Search Quick Filter로 분류하지 않는다.
 
+## 11. Responsive Master → Detail
+
+PC에서 목록·상세·업무 패널을 동시에 보여 주는 화면도 모바일에서는 같은 패널을 세로로 쌓지 않는다.
+
+- desktop: 업무상 필요하면 multi-pane 허용
+- mobile: 한 번에 하나의 task pane만 표시
+- 목록 item 선택 → 상세 pane으로 drill-in
+- 상세 뒤로가기 → 기존 검색/query/선택/스크롤 문맥 복원
+- 목록과 상세의 제목 hierarchy는 동일 계열 유지
+- 업무 pane은 해당 업무 단계로 진입할 때 별도 화면으로 전환
+
+Machine:
+- feature: `data.master-detail`
+- runtime: `.ui-master-detail`
+- interaction: `master_detail_navigation`
+
 ## Machine binding
 
 - feature: `data.search-discovery`
