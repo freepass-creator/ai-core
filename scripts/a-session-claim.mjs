@@ -89,13 +89,13 @@ async function ghApi(args) {
   return (await run('gh', ['api', ...args], { encoding:'utf8', maxBuffer:16*1024*1024 })).stdout;
 }
 
-async function readRemoteRegistry(coordRepo = DEFAULT_COORD_REPO, branch = DEFAULT_BRANCH) {
+export async function readRemoteRegistry(coordRepo = DEFAULT_COORD_REPO, branch = DEFAULT_BRANCH) {
   const raw = JSON.parse(await ghApi([`repos/${coordRepo}/contents/${CLAIM_PATH}`, '-X', 'GET', '-f', `ref=${branch}`]));
   const content = Buffer.from(raw.content.replace(/\n/g,''), 'base64').toString('utf8');
   return { registry:JSON.parse(content), sha:raw.sha };
 }
 
-async function writeRemoteRegistry(registry, sha, message, coordRepo = DEFAULT_COORD_REPO, branch = DEFAULT_BRANCH) {
+export async function writeRemoteRegistry(registry, sha, message, coordRepo = DEFAULT_COORD_REPO, branch = DEFAULT_BRANCH) {
   const content = Buffer.from(`${JSON.stringify(registry, null, 2)}\n`, 'utf8').toString('base64');
   return JSON.parse(await ghApi([
     `repos/${coordRepo}/contents/${CLAIM_PATH}`, '-X', 'PUT',
