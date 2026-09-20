@@ -48,8 +48,16 @@ export function createRepositoryRuntime({
 
     const startedAt=iso(clock);
     try{
+      const connectorMap=repository.connector_binding?.operation_map?.find(
+        item=>item.repository_operation_id===operationId
+      )??null;
+      const connectorBinding=repository.connector_binding==null?null:{
+        connector_id:repository.connector_binding.connector_id,
+        connector_version:repository.connector_binding.connector_version,
+        operation_ids:connectorMap?.connector_operation_ids??[]
+      };
       const connector=createBoundConnectorFacade({
-        binding:repository.connector_binding,
+        binding:connectorBinding,
         connectors,
         correlation_id,
         auth_context,
