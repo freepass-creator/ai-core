@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.freepass.ai/security/action-policy/v1",
+  "title": "AI Core Security Action Policy v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "policy_id",
+    "risk_class",
+    "external_effect",
+    "reversible",
+    "independent_review_count",
+    "human_approval_required",
+    "emergency_override",
+    "audit_criticality"
+  ],
+  "properties": {
+    "schema_version": {"const": "security-action-policy/v1"},
+    "policy_id": {"type": "string", "pattern": "^[a-z][a-z0-9_.:-]+$"},
+    "risk_class": {
+      "enum": [
+        "READ_ONLY",
+        "LOCAL_MUTATION",
+        "REVERSIBLE_EXTERNAL_MUTATION",
+        "PRIVILEGED_MUTATION",
+        "IRREVERSIBLE_EXTERNAL_ACTION"
+      ]
+    },
+    "external_effect": {"type": "boolean"},
+    "reversible": {"type": "boolean"},
+    "independent_review_count": {"type": "integer", "minimum": 0, "maximum": 4},
+    "human_approval_required": {"type": "boolean"},
+    "emergency_override": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["allowed", "bypass_independent_review", "command_binding_required", "max_ttl_seconds"],
+      "properties": {
+        "allowed": {"type": "boolean"},
+        "bypass_independent_review": {"type": "boolean"},
+        "command_binding_required": {"type": "boolean"},
+        "max_ttl_seconds": {"type": "integer", "minimum": 0, "maximum": 86400}
+      }
+    },
+    "audit_criticality": {
+      "enum": ["TELEMETRY_BEST_EFFORT", "REQUIRED_AUDIT", "EVIDENTIARY"]
+    }
+  }
+}
