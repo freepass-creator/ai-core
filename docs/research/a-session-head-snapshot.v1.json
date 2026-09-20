@@ -1,7 +1,7 @@
 {
   "schema": "ai-core-a-session-head-snapshot/v1",
-  "observed_at": "2026-09-20T00:34:30Z",
-  "source": "A-session full connected-repository rescan; non-self heads verified by compare, AI Core head pinned to canonical main at branch start.",
+  "observed_at": "2026-09-20T00:42:31Z",
+  "source": "A-session full connected-repository rescan; non-self heads verified by compare, AI Core head pinned to canonical main at fresh A v2 branch start.",
   "repositories": [
     {
       "repository": "freepass-creator/-",
@@ -9,7 +9,7 @@
     },
     {
       "repository": "freepass-creator/ai-core",
-      "head": "f0ddb1ece826f5ef747b1bff13ef20977b9b5416"
+      "head": "8eae2ef7ccae6095b6dd0978d8b3085dfb360445"
     },
     {
       "repository": "freepass-creator/aiops",
