@@ -120,19 +120,21 @@ export function buildProjectAuditRefreshQueue({
     if (lifecycleStatus === 'RETIRE') reasons.push('PROJECT_RETIRED');
     if (executionReadiness === 'DISABLED') reasons.push('PROJECT_EXECUTION_DISABLED');
 
-    const reAuditCandidate =
+    // A registry revision mismatch is ambiguous: the registry may be stale, or the
+    // saved audit may be stale. Only live project inspection can decide. Do not turn
+    // a registry mismatch into a re-audit claim.
+    const reAuditCandidate = standard.status !== 'CURRENT';
+    const freshnessReviewRequired =
       registryStatus !== 'REGISTRY_MATCH' ||
       standard.status !== 'CURRENT';
 
     const priority = registryStatus === 'HOLD'
       ? 0
-      : registryStatus === 'REGISTRY_DRIFT'
+      : standard.status !== 'CURRENT'
         ? 1
-        : standard.status !== 'CURRENT'
-          ? 1
-          : registryStatus === 'UNKNOWN'
-            ? 2
-            : 3;
+        : registryStatus === 'REGISTRY_DRIFT' || registryStatus === 'UNKNOWN'
+          ? 2
+          : 3;
 
     items.push({
       project_id: result.project_id,
@@ -146,6 +148,7 @@ export function buildProjectAuditRefreshQueue({
       repository_lifecycle_status: lifecycleStatus,
       execution_readiness_status: executionReadiness,
       live_check_required: true,
+      freshness_review_required: freshnessReviewRequired,
       re_audit_candidate: reAuditCandidate,
       priority,
       reasons,
@@ -171,7 +174,13 @@ export function buildProjectAuditRefreshQueue({
       standard_unbound_legacy: items.filter(item => item.standard_baseline.status === 'UNKNOWN_LEGACY').length,
       hold: items.filter(item => item.registry_status === 'HOLD').length,
       unknown: items.filter(item => item.registry_status === 'UNKNOWN').length,
+      freshness_review_required: items.filter(item => item.freshness_review_required).length,
       re_audit_candidates: items.filter(item => item.re_audit_candidate).length,
+      action_required: items.filter(item =>
+        item.registry_status === 'HOLD' ||
+        item.freshness_review_required ||
+        item.re_audit_candidate
+      ).length,
     },
     items,
     superseded_history: superseded.map(result => ({
@@ -182,6 +191,6 @@ export function buildProjectAuditRefreshQueue({
       audited_revision: result.subject_revision,
       reason: 'SUPERSEDED_BY_HIGHER_QUALITY_OR_NEWER_AUDIT',
     })),
-    rule: 'One active audit is selected per project: v2 supersedes v1, and newer v2 audited_at supersedes older v2. Historical audits remain visible but cannot keep a project in the re-audit queue. Registry comparison only prioritizes refresh work; live project HEAD plus standard-baseline freshness must both pass.',
+    rule: 'One active audit is selected per project: v2 supersedes v1, and newer v2 audited_at supersedes older v2. Historical audits remain visible but cannot keep a project in the re-audit queue. Registry revision drift is ambiguous and triggers live freshness review, not an automatic re-audit claim. Only a stale/unbound standard baseline is a definite re-audit candidate before live project inspection.',
   };
 }
