@@ -146,6 +146,7 @@ export function validateUiUxRuntimeSemantics({
     'focus',
     'search_context',
     'search_discovery_composition',
+    'variant_selection',
     'single_choice_flow',
     'async_write',
     'external_action',
