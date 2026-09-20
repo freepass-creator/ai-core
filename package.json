@@ -55,7 +55,8 @@
     "a:routing:reconcile": "node scripts/reconcile-a-session-routing.mjs",
     "a:receiver:intake": "node scripts/a-session-receiver-worker.mjs",
     "a:receiver:intake:check": "node scripts/a-session-receiver-worker.mjs --all --check",
-    "a:claims:validate": "node scripts/validate-a-session-work-claims.mjs docs/research/a-session-work-claims.v1.json"
+    "a:claims:validate": "node scripts/validate-a-session-work-claims.mjs docs/research/a-session-work-claims.v1.json",
+    "workflow:progression:validate": "node scripts/validate-workflow-progressions.mjs"
   },
   "dependencies": {
     "ajv": "8.20.0",
