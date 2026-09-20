@@ -224,3 +224,22 @@ For automated sessions, set a stable session-scoped value before running claim c
 ```bash
 export AI_CORE_A_SESSION_ID=A-session-sales-a01
 ```
+
+
+## One live claim per owner
+
+A stable A-session owner may hold at most one live claim at a time.
+
+Reason:
+
+- one A session should have one currently owned work item;
+- reusing the same owner id in two chat windows should surface as an identity collision, not silently create parallel authority;
+- a session that wants another task must complete, abandon, supersede, or lose the lease on its current claim first.
+
+If an owner already has a live claim, a new claim request returns:
+
+`SKIP_OWNER_BUSY`
+
+The allocator returns `OWNER_BUSY` together with the owner's existing claim rather than misreporting that no work is available.
+
+The claim validator reports `LIVE_OWNER_DUPLICATE`, and claim health reports `MULTIPLE_LIVE_CLAIMS_FOR_OWNER` if the registry ever contains more than one live claim for the same owner.
