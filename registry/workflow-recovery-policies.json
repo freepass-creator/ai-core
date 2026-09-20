@@ -1,23 +1,38 @@
 {
   "schema_version": "1.0.0",
-  "registry_version": "1.0.0",
+  "registry_version": "1.1.0",
   "policies": [
     {
       "policy_id": "workflow.recovery-slot-no-replay",
       "adoption_status": "PILOT",
       "evidence_level": "PROJECT_VERIFIED",
-      "source_projects": ["freepasserp4"],
+      "source_projects": [
+        "freepasserp4"
+      ],
       "description": "A fallback recovery path may execute only after reconciling all known success evidence for the same logical execution identity. Successful native or prior recovery execution suppresses replay.",
       "identity": {
         "scope": "LOGICAL_EXECUTION",
-        "dimensions": ["operation", "logical_slot", "subject_scope"],
+        "dimensions": [
+          "operation_kind",
+          "logical_slot",
+          "subject_scope",
+          "semantic_input_digest"
+        ],
         "shared_across_paths": true
       },
-      "execution_paths": ["NATIVE", "FALLBACK", "DOWNSTREAM"],
+      "execution_paths": [
+        "NATIVE",
+        "FALLBACK",
+        "DOWNSTREAM"
+      ],
       "success_reconciliation": {
         "before_fallback": true,
         "success_suppresses_fallback": true,
-        "evidence_sources": ["NATIVE_EXECUTION", "RECOVERY_HISTORY", "DOWNSTREAM_TERMINAL_EVIDENCE"]
+        "evidence_sources": [
+          "NATIVE_EXECUTION",
+          "RECOVERY_HISTORY",
+          "DOWNSTREAM_TERMINAL_EVIDENCE"
+        ]
       },
       "recovery_eligibility": {
         "slot_due": true,
@@ -31,7 +46,8 @@
       "ambiguous_outcome_action": "HOLD",
       "contract_dependency": {
         "identity_owner": "C",
-        "identity_contract_status": "PENDING"
+        "identity_contract_status": "BOUND",
+        "identity_contract_ref": "core.execution-identity.v1"
       },
       "source_authority": {
         "repository": "freepass-creator/freepasserp4",
