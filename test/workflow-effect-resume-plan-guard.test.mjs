@@ -135,10 +135,7 @@ test('prepared resume plan is schema-valid and deterministic for the same input 
 
 test('receipt and binding array order do not change plan digest',()=>{
   const sourceA=sourceReceipt({id:'receipt.plan.a'});
-  const sourceB=buildRepositoryReceipt({
-    ...sourceReceipt({id:'receipt.plan.b',proof:false}),
-    receipt_id:'receipt.plan.b'
-  });
+  const sourceB=sourceReceipt({id:'receipt.plan.b',proof:false});
   const unusedBinding={
     ...bindings[0],
     binding_id:'bridge.unused',
