@@ -201,3 +201,33 @@ Semantics:
 - lower-level receipts are referenced, not copied
 
 Actions: NOT USED.
+
+
+## Recovery receipt no-replay cycle
+
+Scope: D recovery/retry evidence gate + C execution identity binding.
+
+Added:
+- `src/workflow/recovery-receipt-reconciler.mjs`
+- `src/workflow/recovery-execution-guard.mjs`
+- `src/workflow/retry-receipt-guard.mjs`
+- `test/workflow-recovery-receipt-reconciler.test.mjs`
+- `docs/workflow/RECOVERY_RECEIPT_NO_REPLAY.md`
+
+Recovery policy:
+- remains PILOT / PROJECT_VERIFIED
+- C identity dependency: PENDING -> BOUND
+- contract: `core.execution-identity.v1`
+- canonical dimensions: operation_kind / logical_slot / subject_scope / semantic_input_digest
+
+Rules:
+- authoritative success suppresses replay/retry
+- PARTIAL/HOLD/conflicting evidence -> HOLD
+- proof-bound success must be reverified from current proof inputs
+- same attempt already observed -> HOLD
+- only safe failure/no-success evidence -> recovery may proceed
+- executor is never called when suppression/HOLD applies
+
+Compensation parent receipts now carry execution identity and can directly feed recovery reconciliation.
+
+Actions: NOT USED.
