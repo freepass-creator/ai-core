@@ -1985,7 +1985,7 @@
       "obligations": [],
       "source_authority": {
         "repository": "freepass-creator/ai-core",
-        "revision": "aff400ca3a50bbe5a7709d11de77fbed4de360bd",
+        "revision": "6baa55e449e9ac5194b02ec7391b507b597ff65e",
         "files": [
           {
             "path": "scripts/work-ledger.mjs",
@@ -2001,7 +2001,7 @@
           },
           {
             "path": "src/workflow/engine.mjs",
-            "blob_sha": "eb109be93edd934fef87b54f74e2aeb864d292fa"
+            "blob_sha": "f03b47c1bc06f228270010a4bf7e7508f9734374"
           }
         ]
       }
