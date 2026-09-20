@@ -158,15 +158,18 @@
     {
       "repository": "freepass-creator/freepass-sales",
       "default_branch": "main",
-      "observed_head": "fe69f76d81f4b9acd6f67f7b3f4ef5619f5e33d1",
+      "observed_head": "2ec46bb2e88b10a31915b68ec77b2eecbdac57bd",
       "audit_state": "DEEP_EVIDENCE",
       "independence": "INDEPENDENT_UNLESS_CANDIDATE_SPECIFIC_LINEAGE_IS_FOUND",
       "findings": [
         "engine.repository-idempotency",
         "workflow.launch-vs-completion",
-        "workflow.hold-resume"
+        "workflow.hold-resume",
+        "ADOPTION: AI Core B UI/UX MAPPED",
+        "ADOPTION: C customer-search read adapter",
+        "ADOPTION: C promotion receipt SHADOW"
       ],
-      "note": null
+      "note": "Post-Phase-1 first repo adoption completed at Sales main 2ec46bb2e88b10a31915b68ec77b2eecbdac57bd. B common UI features are MAPPED to canonical AI Core B revision 0ca3140d17daf4d51df0fbc2010c4130ec3bb20d; C exact-match customer search is read-only with PII minimization/fail-closed HOLD; promotion execution facts are projected to core-receipt/v1 in SHADOW only. PR #22 exact-head CI and resulting-main Sales CI 35480676884 passed. No production deployment or runtime cutover claimed."
     },
     {
       "repository": "freepass-creator/freepasserp",
