@@ -252,3 +252,33 @@ Rules:
 - retained non-compensatable effects remain explicit
 
 Actions: NOT USED.
+
+
+## Effect receipt bridge cycle
+
+Scope: C execution receipt lineage -> D effect evidence/resume only.
+
+Added:
+- `contracts/workflow-effect-receipt-binding.schema.json`
+- `src/workflow/effect-receipt-bridge.mjs`
+- `src/workflow/effect-receipt-resume-runtime.mjs`
+- `test/workflow-effect-receipt-bridge.test.mjs`
+- `test/workflow-effect-receipt-resume.test.mjs`
+- `docs/workflow/EFFECT_RECEIPT_BRIDGE.md`
+
+Also completed execution identity propagation through:
+- Service parent receipt
+- Repository child receipt
+
+Rules:
+- explicit binding only; no name-based inference
+- source receipt belongs to one effect only
+- missing execution identity / PARTIAL / ambiguous source -> HOLD
+- proof binding is preserved and must be reverified
+- Repository/Service success can automatically become effect success evidence
+- Repository/Service failure remains failed effect evidence
+- composed runtime can skip proven writes and execute only unfinished effects
+
+No global project effect-binding registry was invented without project evidence.
+
+Actions: NOT USED.
