@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.freepass.ai/project-audit-completion-report/v1",
+  "title": "AI Core Project Audit Completion Report v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema","project_id","repository","handoff_subject_revision",
+    "standard_baseline_revision","result_revision","completed_at","task_results"
+  ],
+  "properties": {
+    "schema": { "const": "ai-core-project-audit-completion-report/v1" },
+    "project_id": { "type": "string", "minLength": 1 },
+    "repository": { "type": "string", "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$" },
+    "handoff_subject_revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "standard_baseline_revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "result_revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "completed_at": { "type": "string", "format": "date-time" },
+    "task_results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["bucket","axis","status","summary","evidence","remaining_gaps"],
+        "properties": {
+          "bucket": { "enum": ["PROJECT_IMPLEMENTATION","PROJECT_DISCOVERY"] },
+          "axis": {
+            "enum": [
+              "ui-ux","data-ssot","engine-adapter","api-event-error",
+              "workflow","security-audit","qa-observability","build-deploy-governance"
+            ]
+          },
+          "status": { "enum": ["DONE","PARTIAL","NOT_DONE","NOT_APPLICABLE"] },
+          "summary": { "type": "string", "minLength": 1 },
+          "evidence": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+          "remaining_gaps": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+        }
+      }
+    }
+  }
+}
