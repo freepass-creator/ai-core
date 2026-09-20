@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 
 const SHA40 = /^[0-9a-f]{40}$/;
-const REPO = /^[^/\\s]+\\/[^/\\s]+$/;
+const REPO = /^[^\\s/]+\\/[^\\s/]+$/;
 const VALID_STATES = new Set([
   'CORE_BASELINE',
   'DEEP_EVIDENCE',
