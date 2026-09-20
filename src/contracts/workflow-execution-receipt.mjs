@@ -127,13 +127,15 @@ export function buildCompensationExecutionReceipt({
   need(text(actor),'RECEIPT_ACTOR_REQUIRED');
   need(text(executor),'RECEIPT_EXECUTOR_REQUIRED');
   need(text(correlation_id),'CORRELATION_ID_REQUIRED');
-  need(execution_result&&['SUCCEEDED','FAILED','PARTIAL_STATE'].includes(execution_result.status),'COMPENSATION_EXECUTION_RESULT_INVALID');
+  need(execution_result&&['SUCCEEDED','FAILED','PARTIAL_STATE','HOLD'].includes(execution_result.status),'COMPENSATION_EXECUTION_RESULT_INVALID');
   need(text(started_at)&&text(ended_at),'COMPENSATION_EXECUTION_TIME_REQUIRED');
 
   const status=execution_result.status==='PARTIAL_STATE'?'PARTIAL':execution_result.status;
   const reason=status==='SUCCEEDED'
     ? null
-    : (machine(execution_result.original_error_code)?execution_result.original_error_code:'EFFECT_EXECUTION_FAILED');
+    : (machine(execution_result.original_error_code)
+        ? execution_result.original_error_code
+        : (status==='HOLD'?'EXECUTION_HOLD':'EFFECT_EXECUTION_FAILED'));
 
   const child_receipts=(action_receipts??[]).map(item=>({
     receipt_ref:item.receipt?.receipt_id??item.receipt_ref,
