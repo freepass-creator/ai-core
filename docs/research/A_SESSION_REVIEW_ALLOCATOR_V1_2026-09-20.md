@@ -15,7 +15,7 @@ Each review claim uses the existing A work-claim registry:
 - repository: `freepass-creator/ai-core`
 - subject revision: the review item's deterministic 40-hex `review_revision`
 - scope: `coordination:review-<normalized-route-id>`
-- owner: the B/C/D review session
+- owner: a stable A claim identity representing the B/C/D review worker (`A-session-<stable-unique-id>`)
 - lease / heartbeat / stale reaper: existing A claim machinery
 
 `review_revision` is a coordination fingerprint of the derived evidence pack. It is not source proof and is not a Git revision. If the review evidence changes, the fingerprint changes and the old completed claim does not suppress a genuinely new review.
@@ -53,11 +53,11 @@ Local invariant check:
 
 Preview a receiver's ranked queue without claiming:
 
-`node scripts/a-session-review-next.mjs --session C --owner C-review --dry-run`
+`node scripts/a-session-review-next.mjs --session C --owner A-session-review-c-v1 --dry-run`
 
 Claim the next available item:
 
-`node scripts/a-session-review-next.mjs --session C --owner C-review`
+`node scripts/a-session-review-next.mjs --session C --owner A-session-review-c-v1`
 
 B, C and D can run independently and safely in parallel.
 
