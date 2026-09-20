@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { claimKey, evaluateClaim, acquireClaim, renewClaim, transitionClaim } from '../scripts/a-session-claim.mjs';
+import { claimKey, evaluateClaim, acquireClaim, renewClaim, transitionClaim, completionHeadDecision } from '../scripts/a-session-claim.mjs';
 
 const revision='2ec46bb2e88b10a31915b68ec77b2eecbdac57bd';
 const request={ repository:'freepass-creator/freepass-sales', revision, scope:'repo-rescan', owner:'A-session-owner-one' };
@@ -154,4 +154,39 @@ test('another owner may claim non-conflicting work', () => {
   }];
   const result=acquireClaim(r,request,{now:new Date('2026-09-20T01:30:00Z'),claimId:'A-new-owner'});
   assert.equal(result.decision.action,'ACQUIRED');
+});
+
+
+test('completion head decision allows exact subject revision', () => {
+  const claim={ scope:'repo-rescan', subject_revision:revision };
+  assert.deepEqual(
+    completionHeadDecision(claim, revision),
+    { action:'ALLOW_COMPLETION' }
+  );
+});
+
+test('completion head decision supersedes moved repository', () => {
+  const claim={ scope:'repo-rescan', subject_revision:revision };
+  const moved='aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+  const result=completionHeadDecision(claim,moved);
+  assert.equal(result.action,'SUPERSEDE');
+  assert.equal(result.reason,'SUBJECT_HEAD_MOVED');
+  assert.equal(result.expected_revision,revision);
+  assert.equal(result.current_revision,moved);
+});
+
+test('coordination completion ignores ai-core head movement', () => {
+  const claim={ scope:'coordination:owner-policy', subject_revision:revision };
+  assert.deepEqual(
+    completionHeadDecision(claim,'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'),
+    { action:'ALLOW_COMPLETION' }
+  );
+});
+
+test('inspection completion fails closed when subject head is unknown', () => {
+  const claim={ scope:'runtime-evidence:production', subject_revision:revision };
+  assert.deepEqual(
+    completionHeadDecision(claim,null),
+    { action:'BLOCK_COMPLETION', reason:'SUBJECT_HEAD_UNKNOWN' }
+  );
 });
