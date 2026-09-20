@@ -41,5 +41,6 @@ jobs:
       - run: npm run workflow:progression:validate
       - run: npm run workflow:bridge:validate
       - run: npm run workflow:recovery:validate
+      - run: npm run workflow:schedule-timing:validate
       - run: npm run uiux:validate
       - run: npm run uiux:runtime
