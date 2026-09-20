@@ -21,6 +21,7 @@ export function buildServiceReceipt({
   milestones=[],
   metrics=null,
   source_revision=null,
+  execution=null,
 }={}){
   need(text(receipt_id),'RECEIPT_ID_REQUIRED');
   need(text(operation_id),'RECEIPT_OPERATION_ID_REQUIRED');
@@ -61,6 +62,7 @@ export function buildServiceReceipt({
       environment_revision:reproducibility.environment_revision??null,
       command_ref:reproducibility.command_ref??null
     },
+    ...(execution?{execution:structuredClone(execution)}:{}),
     child_receipts:(child_receipts??[]).map(item=>({
       receipt_ref:text(item?.receipt_ref)?item.receipt_ref:item?.receipt?.receipt_id,
       relation:item?.relation??'PORT'
