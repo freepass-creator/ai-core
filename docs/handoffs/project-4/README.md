@@ -10,7 +10,7 @@ Project 4 converts revision-bound audits into **read-only implementation/discove
 | Project | Bound revision | CI | Implementation | Discovery | Packet |
 |---|---|---:|---:|---:|---|
 | FreePass Admin | `2747ef32e96c550d7dea05c58ee012880cb42dd3` | UNKNOWN | 4 | 0 | `FREEPASS_ADMIN_AUDIT_HANDOFF_2026-09-20.md` |
-| FreePass ERP4 | `f7c89b7b995d8d98ea04606405e68b158fb4256f` | UNKNOWN | 4 | 0 | `FREEPASS_ERP4_AUDIT_HANDOFF_2026-09-20.md` |
+| FreePass ERP4 | `0cf39d7c639b8583c5d1244cff1ea8ce51a07329` | PASS | 4 | 0 | `FREEPASS_ERP4_AUDIT_HANDOFF_2026-09-20-r5.md` |
 | FreePass Estimate | `57a75aaeaa8b91f14c6bc22faa01e745daaa3112` | UNKNOWN | 3 | 1 | `FREEPASS_ESTIMATE_AUDIT_HANDOFF_2026-09-20.md` |
 | AIOps | `03dd804962eb4e345b7a34b3e0e97e8bc6d5efe3` | UNKNOWN | 4 | 1 | `AIOPS_AUDIT_HANDOFF_2026-09-20.md` |
 
@@ -80,7 +80,7 @@ npm run audit:handoff -- <project_id> --format md
 Each human-readable handoff has a machine JSON issuance record:
 
 - `freepass-admin.handoff.json`
-- `freepasserp4.handoff.json`
+- `freepasserp4-r5.handoff.json` — active\n- `freepasserp4.handoff.json` — superseded history
 - `freepass-estimate.handoff.json`
 - `aiops.handoff.json`
 
@@ -103,3 +103,26 @@ Do not reconstruct a closure from prose if the JSON issuance record exists.
 7. Only `CLOSED_VERIFIED` closes the handoff.
 
 A project statement such as "done", a merged PR, or a green CI run does not by itself close an audit finding.
+
+
+## Closure queue
+
+Current status board:
+
+- `CLOSURE_STATUS_2026-09-20-r2.md`
+- `closure-status-2026-09-20-r2.json`
+
+Historical stale-detection snapshot:
+
+- `CLOSURE_STATUS_2026-09-20.md`
+- `closure-status-2026-09-20.json`
+
+Use:
+
+```bash
+npm run audit:closure-queue
+npm run audit:closure-queue -- --live --format md
+npm run audit:closure-queue -- --live --require-clean
+```
+
+The queue separates **project-reported completion** from **audit closure**. A handoff moving to a new live revision becomes `HANDOFF_STALE` until a fresh audit/handoff supersedes it.
