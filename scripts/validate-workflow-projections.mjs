@@ -52,6 +52,31 @@ export function validateWorkflowProjections(projectionRegistry, workflowRegistry
       return;
     }
 
+    if (projection.adoption_evidence) {
+      const evidencePath = `${base}/adoption_evidence`;
+      const evidenceFiles = projection.adoption_evidence.verification.files.map(item => item.path);
+      for (const pathValue of duplicates(evidenceFiles)) {
+        errors.push(issue('WORKFLOW_PROJECTION_ADOPTION_EVIDENCE_PATH_DUPLICATE', `${evidencePath}/verification/files`, { path: pathValue }));
+      }
+      if (projection.adoption_status === 'SHADOW'
+        && ['RUNTIME_PILOT', 'RUNTIME_CANONICAL'].includes(projection.adoption_evidence.stage)) {
+        errors.push(issue('SHADOW_PROJECTION_CANNOT_CLAIM_RUNTIME_ADOPTION', evidencePath, {
+          stage: projection.adoption_evidence.stage,
+        }));
+      }
+      if (projection.adoption_evidence.stage === 'SOURCE_PARITY_VERIFIED'
+        && (projection.adoption_evidence.verification.kind !== 'CI'
+          || projection.adoption_evidence.verification.conclusion !== 'SUCCESS')) {
+        errors.push(issue('SOURCE_PROJECTION_PARITY_REQUIRES_SUCCESSFUL_CI', evidencePath));
+      }
+      if (projection.adoption_status === 'PILOT'
+        && projection.adoption_evidence.stage !== 'RUNTIME_PILOT') {
+        errors.push(issue('PILOT_PROJECTION_REQUIRES_RUNTIME_PILOT_EVIDENCE', evidencePath, {
+          stage: projection.adoption_evidence.stage,
+        }));
+      }
+    }
+
     const allowed = new Set(projection.output.allowed_values);
     if (!allowed.has(projection.default_result)) {
       errors.push(issue('WORKFLOW_PROJECTION_DEFAULT_UNKNOWN', `${base}/default_result`));
