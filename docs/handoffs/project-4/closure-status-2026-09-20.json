@@ -1,0 +1,176 @@
+{
+  "schema": "ai-core-project-audit-closure-queue/v1",
+  "totals": {
+    "projects": 4,
+    "handoffs": 4,
+    "superseded_handoffs": 0,
+    "implementation_tasks": 15,
+    "discovery_tasks": 2,
+    "actionable_tasks": 17,
+    "reported_complete_tasks": 0,
+    "audit_closed_tasks": 0,
+    "handoff_issued": 3,
+    "open_partial": 0,
+    "re_audit_required": 0,
+    "re_audit_gaps_remain": 0,
+    "handoff_stale": 1,
+    "hold": 0,
+    "closed_verified": 0,
+    "action_required": 4,
+    "reported_complete_percent": 0,
+    "audit_closed_percent": 0
+  },
+  "items": [
+    {
+      "project_id": "aiops",
+      "repository": "freepass-creator/aiops",
+      "handoff_revision": "03dd804962eb4e345b7a34b3e0e97e8bc6d5efe3",
+      "standard_baseline_revision": "d995d30e9b830894d53349c2196707bfbd1b6ad0",
+      "handoff_audited_at": "2026-09-20T11:36:00.000Z",
+      "live_status": "CURRENT",
+      "live_revision": "03dd804962eb4e345b7a34b3e0e97e8bc6d5efe3",
+      "stage": "HANDOFF_ISSUED",
+      "completion_revision": null,
+      "completion_at": null,
+      "successor_audit_revision": null,
+      "completion_progress": {
+        "total": 5,
+        "done": 0,
+        "partial": 0,
+        "not_done": 5,
+        "not_applicable": 0,
+        "returned": 0,
+        "returned_percent": 0,
+        "reported_complete": 0,
+        "reported_complete_percent": 0
+      },
+      "audit_closure_progress": {
+        "total": 5,
+        "closed": 0,
+        "closed_percent": 0
+      },
+      "implementation_tasks": 4,
+      "discovery_tasks": 1,
+      "blockers": [],
+      "next_action": "Project owner should implement/discover the issued tasks and return a completion report bound to the resulting revision.",
+      "closed": false,
+      "action_required": true
+    },
+    {
+      "project_id": "freepass-admin",
+      "repository": "freepass-creator/freepass-admin",
+      "handoff_revision": "2747ef32e96c550d7dea05c58ee012880cb42dd3",
+      "standard_baseline_revision": "d995d30e9b830894d53349c2196707bfbd1b6ad0",
+      "handoff_audited_at": "2026-09-20T11:20:00.000Z",
+      "live_status": "CURRENT",
+      "live_revision": "2747ef32e96c550d7dea05c58ee012880cb42dd3",
+      "stage": "HANDOFF_ISSUED",
+      "completion_revision": null,
+      "completion_at": null,
+      "successor_audit_revision": null,
+      "completion_progress": {
+        "total": 4,
+        "done": 0,
+        "partial": 0,
+        "not_done": 4,
+        "not_applicable": 0,
+        "returned": 0,
+        "returned_percent": 0,
+        "reported_complete": 0,
+        "reported_complete_percent": 0
+      },
+      "audit_closure_progress": {
+        "total": 4,
+        "closed": 0,
+        "closed_percent": 0
+      },
+      "implementation_tasks": 4,
+      "discovery_tasks": 0,
+      "blockers": [],
+      "next_action": "Project owner should implement/discover the issued tasks and return a completion report bound to the resulting revision.",
+      "closed": false,
+      "action_required": true
+    },
+    {
+      "project_id": "freepass-estimate",
+      "repository": "freepass-creator/freepass-estimate",
+      "handoff_revision": "57a75aaeaa8b91f14c6bc22faa01e745daaa3112",
+      "standard_baseline_revision": "d995d30e9b830894d53349c2196707bfbd1b6ad0",
+      "handoff_audited_at": "2026-09-20T11:35:00.000Z",
+      "live_status": "CURRENT",
+      "live_revision": "57a75aaeaa8b91f14c6bc22faa01e745daaa3112",
+      "stage": "HANDOFF_ISSUED",
+      "completion_revision": null,
+      "completion_at": null,
+      "successor_audit_revision": null,
+      "completion_progress": {
+        "total": 4,
+        "done": 0,
+        "partial": 0,
+        "not_done": 4,
+        "not_applicable": 0,
+        "returned": 0,
+        "returned_percent": 0,
+        "reported_complete": 0,
+        "reported_complete_percent": 0
+      },
+      "audit_closure_progress": {
+        "total": 4,
+        "closed": 0,
+        "closed_percent": 0
+      },
+      "implementation_tasks": 3,
+      "discovery_tasks": 1,
+      "blockers": [],
+      "next_action": "Project owner should implement/discover the issued tasks and return a completion report bound to the resulting revision.",
+      "closed": false,
+      "action_required": true
+    },
+    {
+      "project_id": "freepasserp4",
+      "repository": "freepass-creator/freepasserp4",
+      "handoff_revision": "f7c89b7b995d8d98ea04606405e68b158fb4256f",
+      "standard_baseline_revision": "d995d30e9b830894d53349c2196707bfbd1b6ad0",
+      "handoff_audited_at": "2026-09-20T11:58:00.000Z",
+      "live_status": "STALE",
+      "live_revision": "0cf39d7c639b8583c5d1244cff1ea8ce51a07329",
+      "stage": "HANDOFF_STALE",
+      "completion_revision": null,
+      "completion_at": null,
+      "successor_audit_revision": null,
+      "completion_progress": {
+        "total": 4,
+        "done": 0,
+        "partial": 0,
+        "not_done": 4,
+        "not_applicable": 0,
+        "returned": 0,
+        "returned_percent": 0,
+        "reported_complete": 0,
+        "reported_complete_percent": 0
+      },
+      "audit_closure_progress": {
+        "total": 4,
+        "closed": 0,
+        "closed_percent": 0
+      },
+      "implementation_tasks": 4,
+      "discovery_tasks": 0,
+      "blockers": [
+        "HANDOFF_PROJECT_REVISION_MOVED"
+      ],
+      "next_action": "Re-audit the live project revision and issue a fresh handoff before further execution.",
+      "closed": false,
+      "action_required": true
+    }
+  ],
+  "superseded_handoffs": [],
+  "permissions": {
+    "auto_write_project_repo": false,
+    "auto_merge_project_pr": false,
+    "auto_promote_core_standard": false,
+    "auto_deploy": false,
+    "production_mutation": false
+  },
+  "rule": "Completion progress and audit closure progress are intentionally separate. A project may report 100% complete while audit closure remains 0% until a successor v2 audit and live freshness verify the original handoff axes."
+}
