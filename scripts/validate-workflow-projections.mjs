@@ -52,6 +52,9 @@ export function validateWorkflowProjections(projectionRegistry, workflowRegistry
       return;
     }
 
+    if (projection.adoption_status === 'PILOT' && !projection.adoption_evidence) {
+      errors.push(issue('PILOT_PROJECTION_ADOPTION_EVIDENCE_REQUIRED', base));
+    }
     if (projection.adoption_evidence) {
       const evidencePath = `${base}/adoption_evidence`;
       const evidenceFiles = projection.adoption_evidence.verification.files.map(item => item.path);
