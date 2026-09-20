@@ -1,7 +1,7 @@
 {
   "schema": "ai-core-a-session-work-claims/v1",
   "status": "RESEARCH_COORDINATION_NOT_CANONICAL",
-  "observed_at": "2026-09-20T02:23:00Z",
+  "observed_at": "2026-09-20T02:29:00Z",
   "policy": {
     "claim_key": "<repository>@<subject_revision>::<scope>",
     "live_claim": "state=ACTIVE and lease_until > observed_at",
@@ -48,6 +48,21 @@
       "one_live_claim_per_owner": true,
       "owner_busy_result": "SKIP_OWNER_BUSY",
       "reason": "A session is a single active worker. Reusing one owner across concurrent tasks is treated as identity collision, not parallel capacity."
+    },
+    "completion_revision_guard": {
+      "guarded_scopes": [
+        "repo-rescan",
+        "runtime-evidence:*",
+        "migration-gap:*"
+      ],
+      "rule": "Before COMPLETED, resolve the repository current default-branch head and require it to equal subject_revision.",
+      "moved_head": "If current head differs, do not complete. Transition the claim to SUPERSEDED with SUBJECT_HEAD_MOVED and record superseded_by_revision.",
+      "lookup_failure": "If current head cannot be resolved, fail closed with SUBJECT_HEAD_CHECK_FAILED.",
+      "exempt_scopes": [
+        "routing:*",
+        "coordination:*"
+      ],
+      "reason": "Routing and AI Core coordination writes can legitimately mutate AI Core main while the coordination task is in progress."
     }
   },
   "claims": [
