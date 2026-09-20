@@ -133,6 +133,8 @@ test('Service runWithReceipt produces schema-valid parent and Repository child r
   assert.equal(out.receipt.child_receipts[0].receipt_ref,out.child_receipts[0].receipt_id);
   assert.equal(out.receipt.metrics.child_receipt_count,1);
   assert.equal(out.child_receipts[0].proof_input_binding.schema_version,'core-proof-input-binding/v1');
+  assert.equal(out.child_receipts[0].source_revision,'git:r1');
+  assert.equal(out.child_receipts[0].metrics.repository_revision,'r1');
 });
 
 test('failed child Repository receipt remains linked when parent Service fails',async()=>{
