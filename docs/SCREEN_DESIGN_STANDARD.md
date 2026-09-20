@@ -41,6 +41,18 @@ Official references:
 - When an action cannot fit safely, prefer overflow or a secondary bottom sheet/menu from the bottom action area rather than moving the action into the top header.
 - Products may deviate only when a platform convention or safety/accessibility requirement makes bottom placement materially worse; document the exception.
 
+## Screen composition
+
+Reusable screen layout follows `docs/UI_COMPOSITION_STANDARD.md`.
+Common controls are not considered standardized if each project places them arbitrarily.
+
+For search/discovery surfaces:
+- declare one canonical composition mode;
+- keep detailed-filter trigger adjacent to search;
+- place justified quick filters in the immediately following row;
+- keep applied filters, result count and results on one query revision;
+- do not duplicate a business criterion across independently controlled search, quick-filter and detailed-filter states.
+
 ## Dropdown
 
 - Prefer native `select` for a short single-choice list.
