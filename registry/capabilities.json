@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "observed_at": "2026-09-19T10:33:00Z",
+  "observed_at": "2026-09-20T10:50:00Z",
   "capabilities": [
     {
       "id": "core.brief",
@@ -415,7 +415,7 @@
     {
       "id": "sales.customer-search",
       "title": "영업 고객 조회",
-      "status": "HOLD",
+      "status": "ACTIVE",
       "domains": [
         "sales"
       ],
@@ -424,11 +424,20 @@
       ],
       "mode": "READ_ONLY",
       "priority": 76,
-      "inputs": [],
+      "inputs": [
+        {
+          "name": "query",
+          "required": true
+        }
+      ],
       "required_scopes": [],
       "walls": [],
       "result_contract": "ai-core-work-result/v1",
-      "hold_reason": "Sales 고객 조회 정본 reader를 AI Core capability 계약으로 아직 노출하지 않았다."
+      "adapter": {
+        "kind": "PROJECT_MODULE",
+        "entrypoint": "lib/ai-core-sales-adapters.mjs",
+        "export": "aiCoreCustomerSearch"
+      }
     },
     {
       "id": "sales.message",
