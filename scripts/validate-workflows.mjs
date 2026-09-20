@@ -54,6 +54,9 @@ export function validateWorkflowRegistry(registry) {
         errors.push(error('SHADOW_SOURCE_PATH_DUPLICATE', `${base}/source_authority/files`, { path: pathValue }));
       }
     }
+    if (workflow.adoption_status === 'PILOT' && !workflow.adoption_evidence) {
+      errors.push(error('PILOT_WORKFLOW_ADOPTION_EVIDENCE_REQUIRED', base));
+    }
     if (workflow.adoption_evidence) {
       const evidencePath = `${base}/adoption_evidence`;
       const evidenceFiles = workflow.adoption_evidence.verification.files.map(item => item.path);
