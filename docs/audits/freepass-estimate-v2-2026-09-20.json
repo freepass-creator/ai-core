@@ -1,0 +1,139 @@
+{
+  "schema": "ai-core-project-audit-result/v2",
+  "project_id": "freepass-estimate",
+  "repository": "freepass-creator/freepass-estimate",
+  "subject_revision": "57a75aaeaa8b91f14c6bc22faa01e745daaa3112",
+  "standard_baseline_revision": "d995d30e9b830894d53349c2196707bfbd1b6ad0",
+  "audited_at": "2026-09-20T11:35:00.000Z",
+  "source_proof": {
+    "default_branch": "main",
+    "ci": {
+      "status": "UNKNOWN",
+      "run_id": null,
+      "revision": "57a75aaeaa8b91f14c6bc22faa01e745daaa3112"
+    },
+    "branch_protected": false
+  },
+  "findings": [
+    {
+      "axis": "ui-ux",
+      "verdict": "CORE_MATCH",
+      "evidence": [
+        "GIT:freepass-creator/freepass-estimate@57a75aaeaa8b91f14c6bc22faa01e745daaa3112:AGENTS.md makes FreePass Estimate the authoritative estimator UI/UX upstream and fixes mobile one-screen-one-choice, Back preservation and action-placement rules.",
+        "GIT:freepass-creator/freepass-estimate@57a75aaeaa8b91f14c6bc22faa01e745daaa3112:.github/workflows/newcar-ci.yml contains UI parity, action placement, mobile navigation, visual grammar and accessibility checks.",
+        "README.md explicitly uses AI Core as the common accessibility/state/focus/responsive validation reference while keeping estimator-specific interaction authority local."
+      ],
+      "gaps": [
+        "Exact-main execution of the UI verification workflow is not observed because newcar-ci push is still restricted to work/ui-baseline."
+      ],
+      "next_action": "Retarget the canonical UI verification push path to main and keep estimator-specific interaction rules as the project profile rather than duplicating them in downstream consumers."
+    },
+    {
+      "axis": "data-ssot",
+      "verdict": "CORE_MATCH",
+      "evidence": [
+        "README.md and AGENTS.md declare FreePass Estimate as the upstream SSOT for estimator UI, QuoteRequest/QuoteResult and provider contracts.",
+        "Provider configuration is explicitly separated from calculation-provider authority and downstream consumers.",
+        "Share/result contracts preserve versioned quote state and project authority instead of turning consumer copies into new SSOTs."
+      ],
+      "gaps": [
+        "Production deployment and live revision proof remain separately unverified."
+      ],
+      "next_action": "Keep FreePass Estimate as the single estimator contract authority and propagate only verified revisions downstream."
+    },
+    {
+      "axis": "engine-adapter",
+      "verdict": "CORE_MATCH",
+      "evidence": [
+        "GIT:freepass-creator/freepass-estimate@57a75aaeaa8b91f14c6bc22faa01e745daaa3112:apps/new/scripts/check-provider-contract.mjs verifies one shared provider-neutral request/result contract for standard, external Excel and external ERP providers.",
+        "GIT:freepass-creator/freepass-estimate@57a75aaeaa8b91f14c6bc22faa01e745daaa3112:apps/new/scripts/check-provider-runtime-policy.mjs enforces no silent fallback, explicit timeout/retry policy and provider-error privacy.",
+        "AGENTS.md forbids quote-provider differences from forking the shared estimator UI."
+      ],
+      "gaps": [
+        "Second independent external provider parity remains limited compared with the canonical provider contract."
+      ],
+      "next_action": "Keep provider differences behind adapters and add independent provider parity evidence without forking the shared quote contract."
+    },
+    {
+      "axis": "api-event-error",
+      "verdict": "CORE_MATCH",
+      "evidence": [
+        "Provider runtime checks distinguish timeout, unavailable, invalid-response and unregistered-adapter failures with stable machine codes.",
+        "Upstream error details and secret-like diagnostic strings are explicitly prevented from leaking to response or logs.",
+        "Quote execution and provider contracts keep retryability/fallback behavior explicit."
+      ],
+      "gaps": [
+        "OpenAPI description/profile is not yet a canonical Core machine gate.",
+        "RFC 9457 and CloudEvents compatibility remain non-canonical research inputs."
+      ],
+      "next_action": "Retain current stable quote/provider error families and adopt a future canonical HTTP description profile without changing estimator domain semantics."
+    },
+    {
+      "axis": "workflow",
+      "verdict": "UNKNOWN",
+      "evidence": [
+        "Mobile navigation is a UI interaction contract and quote execution status is an execution-result contract.",
+        "No bounded D-owned business lifecycle beyond UI navigation and execution result was established in the inspected main."
+      ],
+      "gaps": [
+        "No material business workflow requiring AI Core D state-machine binding has yet been demonstrated."
+      ],
+      "next_action": "Do not invent a workflow for coverage; add D binding only when a persistent estimator business lifecycle actually exists."
+    },
+    {
+      "axis": "security-audit",
+      "verdict": "MIGRATION_GAP",
+      "evidence": [
+        "Provider credentials and proprietary calculation details stay server-side.",
+        "GIT:freepass-creator/freepass-estimate@57a75aaeaa8b91f14c6bc22faa01e745daaa3112:apps/new/scripts/check-provider-runtime-policy.mjs tests that upstream secret/detail strings do not leak to responses or logs.",
+        "Project rules explicitly forbid silent fallback and require visible provider failure."
+      ],
+      "gaps": [
+        "No revision-bound adoption of the current canonical partial Security/Audit contracts is present on main.",
+        "No production identity/authorization/audit-retention profile is established for the estimator.",
+        "Canonical partial Security policy does not itself grant runtime permissions."
+      ],
+      "next_action": "Bind provider privacy/credential boundaries to the canonical Security/Audit shape if identity or privileged estimator actions are introduced; keep current server-side credential isolation."
+    },
+    {
+      "axis": "qa-observability",
+      "verdict": "MIGRATION_GAP",
+      "evidence": [
+        "GIT:freepass-creator/freepass-estimate@57a75aaeaa8b91f14c6bc22faa01e745daaa3112:apps/new/verification-manifest.json binds six semantic contracts to explicit checker files.",
+        "GIT:freepass-creator/freepass-estimate@57a75aaeaa8b91f14c6bc22faa01e745daaa3112:apps/new/contracts/ai-core/qa-p0.shadow.json records SHADOW_PARITY and keeps production_proven false.",
+        "The QA shadow checker requires unified verify freshness and separates release revision proof from ordinary CI."
+      ],
+      "gaps": [
+        "No exact-main Actions run exists for the audited revision.",
+        "Both newcar-ci and AI Core QA SHADOW push triggers still target work/ui-baseline rather than canonical main.",
+        "Production health/telemetry and production revision remain external observations.",
+        "The narrow QA SHADOW explicitly does not prove project-wide negative-control coverage."
+      ],
+      "next_action": "Move canonical push verification to main, then re-observe exact-main CI and extend health/production evidence separately from synthetic contract freshness."
+    },
+    {
+      "axis": "build-deploy-governance",
+      "verdict": "MIGRATION_GAP",
+      "evidence": [
+        "GIT:freepass-creator/freepass-estimate@57a75aaeaa8b91f14c6bc22faa01e745daaa3112:apps/new/scripts/check-release-proof.mjs defines a no-store /api/version revision proof contract.",
+        "New-car CI includes a separate Release revision proof step and production build.",
+        "Project docs distinguish canonical upstream ownership from downstream propagation."
+      ],
+      "gaps": [
+        "Canonical main is not covered by the current push branches in newcar-ci and ai-core-qa-p0-shadow.",
+        "Main branch protection is false.",
+        "No exact-main CI run is observed at the audited revision.",
+        "No production target/live revision is independently observed."
+      ],
+      "next_action": "Retarget required verification workflows to main, enable branch protection after checks stabilize, and establish observable production revision proof before activation claims."
+    }
+  ],
+  "limitations": [
+    "Read-only audit of freepass-estimate main at 57a75aaeaa8b91f14c6bc22faa01e745daaa3112.",
+    "AI Core audit baseline is d995d30e9b830894d53349c2196707bfbd1b6ad0.",
+    "No exact-head GitHub Actions run exists for this main revision, so CI status is UNKNOWN.",
+    "The QA/New-car workflows still push-trigger on work/ui-baseline even though main is now canonical.",
+    "Production deployment/live revision and production telemetry were not independently observed.",
+    "CANONICAL_PARTIAL Core gaps remain binding."
+  ]
+}
