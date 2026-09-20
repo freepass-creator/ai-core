@@ -54,6 +54,24 @@ export function validateRecoveryPolicies(registry) {
       && policy.contract_dependency.identity_contract_status !== 'BOUND') {
       errors.push(issue('RECOVERY_COMMON_ADOPTION_IDENTITY_CONTRACT_REQUIRED', path));
     }
+
+    if (policy.contract_dependency.identity_contract_status === 'BOUND') {
+      if (policy.contract_dependency.identity_contract_ref !== 'core.execution-identity.v1') {
+        errors.push(issue('RECOVERY_IDENTITY_CONTRACT_REF_INVALID', path, {
+          contract_ref: policy.contract_dependency.identity_contract_ref ?? null,
+        }));
+      }
+      const expectedDimensions = ['operation_kind', 'logical_slot', 'subject_scope', 'semantic_input_digest'];
+      const actualDimensions = policy.identity.dimensions ?? [];
+      if (actualDimensions.length !== expectedDimensions.length
+        || expectedDimensions.some((value, index) => actualDimensions[index] !== value)) {
+        errors.push(issue('RECOVERY_IDENTITY_DIMENSIONS_DRIFT', path, {
+          expected: expectedDimensions,
+          actual: actualDimensions,
+        }));
+      }
+    }
+
     if (policy.execution_paths.includes('FALLBACK')
       && !policy.success_reconciliation.evidence_sources.includes('NATIVE_EXECUTION')) {
       errors.push(issue('RECOVERY_NATIVE_SUCCESS_RECONCILIATION_REQUIRED', path));
