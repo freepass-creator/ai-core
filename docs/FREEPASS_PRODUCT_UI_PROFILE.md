@@ -17,7 +17,8 @@
 
 Estimate 모바일 기준:
 
-- 제조사 → 모델 → 파워트레인 → 필요 시 인승/구동 → 트림
+- 제조사 → 모델 → 파워트레인(연료·배기량 + 필요 시 인승·구동/용도 포함) → 트림
+- 인승·구동을 별도 화면으로 다시 쪼개지 않는다. 파워트레인 카드가 내부 `variant + trimGroup`을 한 번에 확정한다.
 - 단일선택 단계는 선택 즉시 다음으로
 - Back으로 수정
 - 옵션/조건처럼 여러 값을 확정해야 하는 단계만 명시적 Next
@@ -193,3 +194,17 @@ FreePass mobile vehicle selection은 `model → powertrain → passenger/drive �
 - brand red/blue를 error/success 의미로 겸용하지 않는다.
 
 고객 신뢰형 화면은 neutral 70~80% + brand/action emphasis 20~30% 정도의 시각적 밀도를 목표로 하되, 이는 고정 비율이 아니라 우선순위 가이드다.
+
+
+## 15. Vehicle choice density
+
+고객 차량 선택은 의미가 겹치는 단계를 과도하게 분리하지 않는다.
+
+Canonical customer flow:
+`manufacturer → model → powertrain(engine + seat/drive when applicable) → trim → colors → options`
+
+- engine/fuel/displacement와 passenger/drive가 실제 상품 조합을 함께 결정하면 하나의 powertrain choice card로 표현한다.
+- 내부 데이터는 `variant`와 `trimGroup`으로 분리 저장할 수 있지만 UI 단계는 하나다.
+- 선택 후 해당 조합의 trim만 노출한다.
+- 별도 passenger/drive step은 만들지 않는다.
+- provider trim identity와 deep link는 그대로 유지한다.
