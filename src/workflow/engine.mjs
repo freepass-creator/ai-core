@@ -372,16 +372,17 @@ export function createWorkflowEngine(workflow, {
     };
   }
 
-  function resolveFailure({ transition_id, attempt, error_code, occurred_at = now() }) {
+  function resolveFailure({ transition_id, attempt, error_code, occurred_at = now(), retryable = null }) {
     const transition = idx.transitions.get(transition_id);
     need(transition, 'TRANSITION_UNKNOWN', { transition_id });
     need(Number.isInteger(attempt) && attempt >= 1, 'ATTEMPT_INVALID');
 
     const retry = transition.retry;
-    const retryable = retry.retryable_error_codes.length === 0
-      || retry.retryable_error_codes.includes(error_code);
+    const retryAllowed = retryable === null
+      ? (retry.retryable_error_codes.length === 0 || retry.retryable_error_codes.includes(error_code))
+      : retryable === true;
 
-    if (retry.strategy !== 'NONE' && retryable && attempt < retry.max_attempts) {
+    if (retry.strategy !== 'NONE' && retryAllowed && attempt < retry.max_attempts) {
       const delay = computeDelay(retry, attempt);
       return {
         action: retry.strategy === 'MANUAL' ? 'WAIT_MANUAL_RETRY' : 'RETRY',
@@ -407,6 +408,55 @@ export function createWorkflowEngine(workflow, {
     };
   }
 
+  function resolveAdapterOutcome({ transition_id, attempt, adapter_result, occurred_at = now() }) {
+    need(adapter_result?.schema_version === 'core-adapter-result/v1', 'ADAPTER_RESULT_SCHEMA_INVALID');
+    need(['SUCCEEDED','HOLD','FAILED'].includes(adapter_result.status), 'ADAPTER_RESULT_STATUS_INVALID');
+    need(typeof adapter_result.retryable === 'boolean', 'ADAPTER_RESULT_RETRYABLE_REQUIRED');
+
+    const context = {
+      adapter_id: adapter_result.adapter_id ?? null,
+      adapter_version: adapter_result.adapter_version ?? null,
+      correlation_id: adapter_result.correlation_id ?? null,
+      attempt,
+      occurred_at,
+    };
+
+    if (adapter_result.status === 'SUCCEEDED') {
+      return { action: 'CONTINUE', ...context, retryable: false, error_code: null };
+    }
+
+    const issues = Array.isArray(adapter_result.issues) ? adapter_result.issues : [];
+    const issue = issues.find(item => item?.severity === 'BLOCKING')
+      ?? issues.find(item => item?.severity === 'ERROR')
+      ?? issues[0]
+      ?? null;
+    const error_code = issue?.code ?? 'UPSTREAM_INVALID_RESPONSE';
+
+    if (adapter_result.status === 'HOLD') {
+      return {
+        action: 'HOLD',
+        ...context,
+        retryable: false,
+        error_code,
+        reason: 'ADAPTER_REQUESTED_HOLD',
+      };
+    }
+
+    return {
+      ...resolveFailure({
+        transition_id,
+        attempt,
+        error_code,
+        occurred_at,
+        retryable: adapter_result.retryable,
+      }),
+      adapter_id: context.adapter_id,
+      adapter_version: context.adapter_version,
+      correlation_id: context.correlation_id,
+      adapter_retryable: adapter_result.retryable,
+    };
+  }
+
   function dueAutomations(projection, event_type = null, context = {}) {
     return workflow.transitions
       .filter(transition => transition.automation.mode !== 'MANUAL')
@@ -425,6 +475,7 @@ export function createWorkflowEngine(workflow, {
     availableActions,
     decide,
     resolveFailure,
+    resolveAdapterOutcome,
     dueAutomations,
     inspectTransition: (projection, transition_id, context = {}) => {
       const transition = idx.transitions.get(transition_id);
