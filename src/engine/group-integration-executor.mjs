@@ -35,6 +35,7 @@ function hold(reason,extra={}){
   return {
     status:'HOLD',
     reason,
+    effect_state:'NONE',
     performed:false,
     receipt:null,
     external_effect:false,
@@ -171,6 +172,10 @@ export function createGroupIntegrationExecutor({
         packet_id:packet.packet_id,
         preflight:finalPreflight,
         authority_ref:authorityDecision.ref,
+        effect_state:'UNKNOWN',
+        performed:null,
+        external_effect:null,
+        outcome_known:false,
         detail:error?.message??null,
       });
     }
@@ -190,6 +195,10 @@ export function createGroupIntegrationExecutor({
         preflight:finalPreflight,
         authority_ref:authorityDecision.ref,
         execution:executionResult,
+        effect_state:executionResult.performed?'PERFORMED':'NONE',
+        performed:executionResult.performed,
+        external_effect:executionResult.performed,
+        outcome_known:true,
         detail:error?.message??null,
       });
     }
@@ -220,14 +229,20 @@ export function createGroupIntegrationExecutor({
         authority_ref:authorityDecision.ref,
         execution:executionResult,
         verification_results:verificationResults,
+        effect_state:executionResult.performed?'PERFORMED':'NONE',
+        performed:executionResult.performed,
+        external_effect:executionResult.performed,
+        outcome_known:true,
       });
     }
 
     return {
       status:receipt.status,
       packet_id:packet.packet_id,
+      effect_state:executionResult.performed?'PERFORMED':'NONE',
       performed:executionResult.performed,
       external_effect:executionResult.performed,
+      outcome_known:true,
       preflight:finalPreflight,
       authority_ref:authorityDecision.ref,
       verification_results:verificationResults,
