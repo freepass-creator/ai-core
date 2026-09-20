@@ -168,8 +168,8 @@ Current expected rollup for the four active v2 pilots:
 - CORE_MATCH: 15
 - MIGRATION_GAP: 15
 - UNKNOWN: 2
-- exact-head CI PASS: 1 (ERP4)
-- exact-head CI UNKNOWN: 3 (Admin, Estimate, AIOps)
+- exact-head CI PASS: 0
+- exact-head CI UNKNOWN: 4 (Admin, ERP4 current audit-doc head, Estimate, AIOps)
 - branch protection false: 4
 - registry drift requiring live freshness review: ERP4 only
 
