@@ -76,3 +76,39 @@ npm run audit:plan -- <project_id> --output artifacts/audit/<project_id>.json
 ```
 
 The audit-plan command is read-only. It inspects GitHub through the existing Project Capsule inspector, binds the exact subject revision into evidence, and emits no project writes or production mutations.
+
+
+## Freshness and re-audit queue
+
+Audit results are immutable revision-bound observations. They do not stay current when a project moves.
+
+Check one saved audit against the live GitHub project HEAD:
+
+```bash
+npm run audit:freshness -- docs/audits/freepass-admin-pilot-2026-09-20.json
+npm run audit:freshness -- docs/audits/freepass-admin-pilot-2026-09-20.json --require-current
+```
+
+Freshness states:
+
+- `CURRENT` — audited revision equals the live project revision and project identity matches.
+- `STALE` — project identity matches but the live project revision has moved.
+- `HOLD` — project/repository/default-branch identity is contradictory.
+
+The project registry is not allowed to overrule a live GitHub observation. If the audit matches live HEAD but `registry/projects.json` lags, the audit may remain `CURRENT` while the report separately emits `PROJECT_REGISTRY_OBSERVATION_STALE`.
+
+Build the stored-audit refresh queue:
+
+```bash
+npm run audit:queue
+npm run audit:queue -- --require-clean
+```
+
+The queue scans saved `ai-core-project-audit-result/v1` JSON files under `docs/audits` and compares them to the current project registry. It is a prioritization layer only:
+
+- `REGISTRY_DRIFT` -> re-audit candidate;
+- `REGISTRY_MATCH` -> still requires live `audit:freshness` before being presented as current;
+- `HOLD` -> project identity mismatch must be resolved first;
+- `UNKNOWN` -> registry evidence is insufficient.
+
+This split prevents a stale registry from certifying a stale audit and prevents a registry match from being mistaken for live proof.
