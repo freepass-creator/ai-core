@@ -730,3 +730,305 @@ Branch는 main 하나이며,
    - 견적/전자계약 정본 통합 전에 diff 회수 필요
 
 현재 역시 어떤 정리 작업도 수행하지 않았다.
+
+
+---
+
+## 16. 4차 감사 — 남은 Repo 전수 마감
+
+이번 구간으로 연결 계정에서 확인 가능한 **36개 Repo 전체를 최소 1회 이상 점검**했다.
+
+### Legacy ERP 상태 표식 확인
+
+다음 Repo에는 이미 2026-09-20자 `REPOSITORY_STATUS.md`가 존재하며
+명시적으로 `RETIRE / NON-AUTHORITATIVE`로 표기되어 있었다.
+
+- `freeepasserp2`
+- `freepasserp`
+- `jpkerp`
+- `jpkerp2`
+- `jpkerp-v4`
+- `jpkerp5`
+- `rentsafe`
+- `-` (accidental/empty legacy repo)
+
+이 상태 문서는 새 AI가 구세대 Repo를 현재 정본으로 오인하는 문제를 줄이는 데 유효하다.
+
+단, 여러 문서가 공통적으로
+**배포/Vercel/Firebase/cron/credential 등 외부 의존성을 확인하기 전에는 archive/delete 금지**
+조건을 갖고 있다.
+
+따라서 RETIRE 표식은 곧바로 삭제 가능하다는 뜻이 아니다.
+
+### FreePass ERP3
+
+Repo: `freepass-creator/freepasserp3`
+
+Branch는 `master` 하나다.
+
+tree 약 848 entries로 구세대 ERP 중 비교적 큰 편이고,
+다음과 같은 과거 자산이 남아 있다.
+
+- `CLAUDE.md`
+- `api/claude-vision.js`
+- `products_backup_20260507 (2).json`
+- 다수의 review/test/prototype HTML
+- Firebase/Vercel 관련 설정
+- 회사소개/제안서 산출물
+
+`CLAUDE.md`는 2026-04 개발 상태와 v3 이전 세대 맥락을 설명하며
+현재 ERP4보다 과거 구현임을 보여준다.
+
+다만 확인 당시 다른 구세대 Repo들과 달리
+루트에 `REPOSITORY_STATUS.md`가 없었다.
+
+따라서 현재 감사에서는 임의로 RETIRE 처리하지 않고,
+**명시적 status marker 누락 Repo**로 기록한다.
+
+### JPK ERP — default branch 역사 불일치
+
+Repo: `freepass-creator/jpkerp`
+
+현재 repository default는 `master`다.
+
+그러나 branch 비교 결과:
+
+- `main`은 `master`보다 약 68 commits 앞선 상태
+- `archive-v1`은 `master`와 공통 조상이 확인되지 않음
+
+즉 Repo 자체는 `RETIRE`로 표기되어 있어도,
+역사 증거를 확인할 때 default `master`만 읽으면
+나중 작업이 포함된 `main` 및 별도 lineage인 `archive-v1`을 놓칠 수 있다.
+
+향후 archive 전에 **historical evidence consolidation**이 필요하다.
+
+### JPK ERP2
+
+Repo: `freepass-creator/jpkerp2`
+
+Branch:
+
+- `main`
+- `redesign-v3`
+
+`redesign-v3`는 main과 diverged 상태이며
+상호 간 상당한 변경이 남아 있다.
+
+Repo는 이미 `RETIRE / NON-AUTHORITATIVE` 상태지만,
+archive 전에는 redesign branch의 역사적 유효 구현을 확인해야 한다.
+
+### JPK ERP5
+
+Repo: `freepass-creator/jpkerp5`
+
+Branch:
+
+- `main`
+- `freepass-erp-flask`
+
+두 branch는 공통 조상이 확인되지 않았다.
+
+즉 `freepass-erp-flask`는 단순한 기능 branch라기보다
+별도 lineage일 가능성이 높다.
+
+Repo는 이미 RETIRE로 표시되어 있으나,
+archive 전 별도 계보의 보존 가치 확인이 필요하다.
+
+### FreePass ERP2 / FreePass ERP 구세대
+
+`freeepasserp2`와 `freepasserp`는 각각 단일 기본 branch 구조이고
+둘 다 명시적으로 RETIRE 처리되어 있다.
+
+두 Repo 모두 Firebase rules / Vercel build-route 흔적이 남아 있어
+상태 문서가 지시하듯 외부 deployment binding 확인 전에는 삭제하면 안 된다.
+
+### JPK ERP v4
+
+Repo: `freepass-creator/jpkerp-v4`
+
+단일 `main` branch.
+
+상태 문서에는 과거 Vercel cron `/api/sms/cron/daily` 및
+자동 SMS 동작 코드가 남아 있음을 명시하고 있다.
+
+따라서 이 Repo는 코드 중복 문제가 아니라
+**죽은 줄 알았던 legacy automation이 외부에서 아직 살아 있을 수 있는 문제**가 핵심이다.
+
+### RentSafe
+
+Repo: `freepass-creator/rentsafe`
+
+단일 main branch이며
+상태 문서상 successor는 `freepass-creator/chakhandeal`이다.
+
+따라서 새 개발은 Chakhandeal에서 수행하고
+RentSafe는 migration evidence로만 보는 구조가 이미 문서화되어 있다.
+
+### Accidental Repo `freepass-creator/-`
+
+main에는 `README.md`, `REPOSITORY_STATUS.md`만 존재한다.
+
+추가 branch:
+
+- `cursor/setup-webtoon-studio-env-a5e7`
+
+이 Cursor branch는 main과 diverged하며 파일 1개 수준의 별도 변경이 있다.
+
+상태 문서에서는 accidental/empty legacy Repo로 RETIRE 처리되어 있다.
+신규 작업/배포/데이터 연결 금지가 이미 명시되어 있다.
+
+### Welrix Proposal
+
+Repo: `freepass-creator/welrix-proposal`
+
+단일 main branch, 약 9 entries.
+
+제안서 HTML/PDF/render 도구 중심이며
+branch/AI 중복 위험은 낮다.
+
+### Gukmincha Gimpo
+
+Repo: `freepass-creator/gukminchagimpo`
+
+단일 main branch, 약 91 entries.
+
+이번 감사 범위에서 별도 backup/AI branch 중복은 확인되지 않았다.
+
+### Mewcar JB Woori Proposal
+
+Repo: `freepass-creator/mewcar-jbwoori-proposal`
+
+Branch:
+
+- `main`
+- `cursor/jbwoori-proposal-redesign-b176`
+
+Cursor branch는 main과 diverged 상태다.
+
+main에는:
+
+- `docs/CODEX_HANDOFF_2026-09-14.md`
+- `docs/CODEX_HANDOFF_LATEST.md`
+- ChatGPT 보고서 reference
+
+가 존재한다.
+
+제안서 산출물 Repo지만 AI handoff/history가 함께 존재하므로
+최종본과 작업 evidence를 구분해서 읽어야 한다.
+
+---
+
+## 17. 36개 Repo 전수 감사 마감 요약
+
+2026-09-20 현재 연결 계정에서 확인 가능한 Repo 36개에 대해
+다음 항목을 중심으로 최소 1회 이상 확인했다.
+
+- branch 수 및 명칭
+- default/main 계보
+- main에 흡수된 branch 여부
+- diverged / no-common-ancestor branch
+- AI별 instruction/handoff 산출물
+- backup / tmp / archive / legacy 흔적
+- 명시적 repository status 존재 여부
+
+### 현재 가장 위험한 유형
+
+#### A. default branch가 실제 구현을 대표하지 않을 가능성
+
+- `freepass-estimate`
+- `renman`
+- `jpkerp`
+
+#### B. branch가 지나치게 누적
+
+- `freepasserp4` — 416
+- `ai-core` — 144
+- `freepass-sales` — 29
+- `freepass-admin` — 17
+
+#### C. 별도 lineage / 공통 조상 없음
+
+- `freepasshomepage:backup-old-main`
+- `teamjpk:backup-old-main`
+- `jpkerp:archive-v1`
+- `jpkerp5:freepass-erp-flask`
+
+#### D. AI별 규칙/문서가 서로 다른 세대
+
+- `aiops`
+- `freepasserp4`
+- `renman`
+- 일부 하위 AGENTS를 가진 `webtoon-studio`
+
+#### E. source tree에 backup/tmp/runtime artifact 혼재
+
+- `casemap-private`
+- `workcontrol`
+- `freepasspartner`
+- `freepasserp3`
+
+#### F. main 밖에 아직 실질 구현이 남아 있을 가능성
+
+- `welrixtable`
+- `sonogong-estimator`
+- `chakhandeal`
+- `docshub`
+- `mewcar-jbwoori-proposal`
+- `jpkerp2`
+
+### 상대적으로 구조가 단순한 Repo
+
+이번 중복 감사 관점에서 branch 구조가 비교적 단순하게 확인된 곳:
+
+- `vehicle-master`
+- `billincar`
+- `gukminchagimpo`
+- `welrix-proposal`
+- `ci_center`
+- `devcenter`
+- `teamjpkwork`
+
+"단순"은 기능 완성도나 품질 평가가 아니라
+**이번 감사 주제인 중복/부계/AI 산출물 누적 위험이 상대적으로 낮다**는 의미다.
+
+---
+
+## 18. 다음 단계용 기록
+
+이번 작업에서는 전체 Repo를 전수 확인했지만,
+실제 정리 작업은 하지 않았다.
+
+다음 작업이 시작될 경우 우선순위는 다음처럼 잡는 것이 안전하다.
+
+1. 정본 default mismatch 후보의 실제 canonical head 확정
+   - FreePass Estimate
+   - Renman
+   - JPK ERP historical lineage
+
+2. main 밖 유효 diff 회수
+   - WelrixTable
+   - Chakhandeal
+   - Sonogong Estimator
+   - Docshub
+   - Mewcar JB Woori Proposal
+
+3. AI instruction canonicalization
+   - AIOps
+   - ERP4
+   - Renman
+
+4. branch cleanup 후보 자동 분류
+   - AI Core
+   - ERP4
+   - Sales/Admin
+
+5. legacy Repo external binding 확인
+   - Vercel
+   - Firebase
+   - cron
+   - domain
+   - credential/automation
+
+그 전까지는 현재 branch/Repo를 이름만 보고 삭제하지 않는다.
+
+**전수 감사 상태: 36 / 36 Repo 확인 완료.**
