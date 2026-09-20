@@ -52,7 +52,7 @@ export function parseEffectiveCss(styleSources) {
       const declarations = parseDeclarations(match[2]);
       if (!declarations.size) continue;
       for (const selector of splitSelectors(rawSelector)) {
-        const key = String(source.id ?? source.path ?? 'style') + '::' + selector;
+        const key = selector;
         effective.set(key, {
           source: source.id ?? source.path ?? 'style',
           selector,
