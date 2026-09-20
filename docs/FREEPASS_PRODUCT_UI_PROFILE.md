@@ -116,3 +116,34 @@ ERP4:
 3. 공통 pattern을 쓰되 고정 px를 기계 복사하지 않는다.
 4. 프로젝트에서 더 나은 패턴이 검증되면 AI Core profile에 역수입한다.
 5. AI Core가 앞선 접근성/검증 규칙은 다시 각 프로젝트가 채택한다.
+
+
+## 12. Brand theme / Co-brand / White-label
+
+FreePass UI Profile은 **interaction grammar와 semantic state를 고정**하지만 브랜드 컬러 자체를 전역 고정하지 않는다.
+
+### 고정되는 것
+- typography hierarchy
+- spacing/radius/control size
+- top-information / bottom-action placement
+- selected / pressed / focus-visible / disabled / busy semantics
+- haptic/motion timing
+- success / warning / danger / focus / disabled 같은 semantic color role
+- contrast/accessibility floor
+
+### 교체 가능한 것
+- brand primary
+- brand strong
+- brand soft/tint
+- logo/wordmark
+- partner accent
+- campaign illustration/visual asset
+
+### theme modes
+- `freepass`: FreePass 기본 네이비
+- `cobrand`: 파트너 브랜드 primary를 허용하되 공통 component/state grammar 유지
+- `white-label`: 고객사 brand token을 사용하되 semantic state token은 변경 금지
+
+파트너 컬러는 component 의미를 바꾸면 안 된다. 예를 들어 빨강을 브랜드 primary로 쓸 수는 있지만, 동일 화면에서 danger/error와 구분 가능한 label/icon/copy/boundary를 유지해야 한다.
+
+Welrix 계열 화면은 neutral surface를 유지하고 brand/selection/primary-action 계층에 Welrix red family를 사용할 수 있다. FreePass 단독 화면은 FreePass navy를 기본으로 한다.
