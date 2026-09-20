@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "observed_at": "2026-09-20T11:20:00Z",
+  "observed_at": "2026-09-20T11:25:00Z",
   "capabilities": [
     {
       "id": "core.brief",
@@ -438,6 +438,33 @@
         "entrypoint": "lib/ai-core-sales-adapters.mjs",
         "export": "aiCoreCustomerSearch"
       }
+    },
+    {
+      "id": "sales.mydata-intake",
+      "title": "마이데이터 수집·연락처 동기화",
+      "status": "HOLD",
+      "domains": [
+        "sales"
+      ],
+      "projects": [
+        "freepass-sales"
+      ],
+      "mode": "EXTERNAL_MUTATION",
+      "priority": 75,
+      "inputs": [],
+      "required_scopes": [
+        "gmail-read",
+        "private-source-archive",
+        "lead-merge",
+        "contacts-write"
+      ],
+      "walls": [
+        "production-cloud-run-deploy",
+        "secret-manager-binding",
+        "scheduler-enable"
+      ],
+      "result_contract": "ai-core-work-result/v1",
+      "hold_reason": "Server ingestion code is on Sales main, but production Cloud Run region/service account, private source bucket, Secret Manager OAuth/Excel secrets and scheduler binding are not yet verified. No approved AI Core execution adapter or terminal receipt is bound."
     },
     {
       "id": "sales.message",
