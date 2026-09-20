@@ -200,6 +200,35 @@ test('transition requires current revision, guard, permission, reason and idempo
   assert.equal(accepted.audit.actor.actor_id, 'user-1');
 });
 
+test('generic decide forwards domain guard_context without weakening core decision fields', () => {
+  const workflow = machine();
+  workflow.guards = [{ guard_id: 'contract-present', kind: 'CUSTOM' }];
+
+  const engine = createWorkflowEngine(workflow, {
+    now: () => '2026-09-20T00:00:00.000Z',
+    idFactory: (() => { let n = 0; return () => `guard-id-${++n}`; })(),
+    evaluateGuard: (guard, context) => guard.guard_id === 'contract-present' && context.domain_ticket === 'bound',
+  });
+  const projection = { entity_id: 'contract-1', revision: 2, states: { lifecycle: 'RECEIVED' } };
+
+  const accepted = engine.decide({
+    projection,
+    transition_id: 'prepare',
+    command_id: 'prepare',
+    actor: { actor_id: 'user-1' },
+    reason: 'domain guard verified',
+    permissions: ['contract.prepare'],
+    expected_revision: 2,
+    idempotency_key: 'guard-context-key',
+    guard_context: { domain_ticket: 'bound' },
+  });
+
+  assert.equal(accepted.status, 'TRANSITION_ACCEPTED');
+  assert.equal(accepted.next_projection.states.lifecycle, 'READY');
+  assert.equal(accepted.event.expected_revision, 2);
+  assert.equal(accepted.event.resulting_revision, 3);
+});
+
 test('same idempotency key with same intent replays, different intent conflicts', () => {
   const engine = createWorkflowEngine(machine());
   const projection = { entity_id: 'contract-1', revision: 0, states: { lifecycle: 'RECEIVED' } };

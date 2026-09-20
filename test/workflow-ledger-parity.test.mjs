@@ -146,6 +146,31 @@ test('new Work Ledger appends are explicitly admitted or rejected by the D Workf
   }
 });
 
+test('Work append returns the generic D engine transition decision with canonical revision semantics', async () => {
+  const fixture = await openFixture('PLANNED');
+  try {
+    const text = await readFile(fixture.path, 'utf8');
+    const event = fixture.makeEvent({
+      type: 'TRANSITIONED',
+      from_state: 'PLANNED',
+      to_state: 'IN_PROGRESS',
+    });
+
+    const result = decideLedgerAppend(text, event);
+
+    assert.equal(result.accepted, true);
+    assert.equal(result.workflow_decision.status, 'TRANSITION_ACCEPTED');
+    assert.equal(result.workflow_decision.event.transition_id, 'work.planned.to.in-progress');
+    assert.equal(result.workflow_decision.event.command_id, 'work.start');
+    assert.equal(result.workflow_decision.event.expected_revision, fixture.projection.revision);
+    assert.equal(result.workflow_decision.event.resulting_revision, fixture.projection.revision + 1);
+    assert.equal(result.workflow_decision.next_projection.states.lifecycle, 'IN_PROGRESS');
+    assert.equal(result.workflow_decision.next_projection.revision, fixture.projection.revision + 1);
+  } finally {
+    await fixture.close();
+  }
+});
+
 test('D Engine owns new-write revision admission while the historical Ledger reader stays backward compatible', async () => {
   const fixture = await openFixture('PLANNED');
   try {

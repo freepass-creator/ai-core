@@ -34,45 +34,52 @@ function parseLedgerEvents(text) {
     : [];
 }
 
-function inspectLedgerEventAgainstCurrent(text, current, event) {
-  if (event?.type === 'CREATED') {
-    return workflowAdmission.inspect(null, event);
-  }
-
+function currentWorkProjection(text, current, event) {
   const prior = current.work?.[event?.work_id] ?? null;
+  if (!prior) return null;
+
   let verification_captured = false;
   let verified_revision = null;
   let event_count = 0;
 
-  if (prior) {
-    for (const recorded of parseLedgerEvents(text)) {
-      if (recorded.work_id !== event.work_id) continue;
-      event_count += 1;
-      if (recorded.to_state === 'VERIFYING') {
-        verification_captured = true;
-        verified_revision = recorded.subject_revision;
-      } else if (REOBSERVABLE.includes(recorded.to_state)) {
-        verification_captured = false;
-        verified_revision = null;
-      }
+  for (const recorded of parseLedgerEvents(text)) {
+    if (recorded.work_id !== event.work_id) continue;
+    event_count += 1;
+    if (recorded.to_state === 'VERIFYING') {
+      verification_captured = true;
+      verified_revision = recorded.subject_revision;
+    } else if (REOBSERVABLE.includes(recorded.to_state)) {
+      verification_captured = false;
+      verified_revision = null;
     }
   }
 
-  const projection = prior
-    ? {
-        entity_id: event.work_id,
-        revision: event_count,
-        states: { lifecycle: prior.state },
-        project_id: prior.project_id,
-        subject_revision: prior.subject_revision,
-        verification_captured,
-        verified_revision,
-        revisions: [...(prior.revisions ?? [])],
-        event_count,
-      }
-    : null;
+  return {
+    entity_id: event.work_id,
+    // CREATED establishes revision 0. Every later workflow event increments it.
+    revision: Math.max(0, event_count - 1),
+    states: { lifecycle: prior.state },
+    project_id: prior.project_id,
+    subject_revision: prior.subject_revision,
+    verification_captured,
+    verified_revision,
+    revisions: [...(prior.revisions ?? [])],
+    event_count,
+  };
+}
 
+function inspectLedgerEventAgainstCurrent(text, current, event) {
+  const projection = event?.type === 'CREATED'
+    ? null
+    : currentWorkProjection(text, current, event);
   return workflowAdmission.inspect(projection, event);
+}
+
+function decideLedgerEventAgainstCurrent(text, current, event) {
+  const projection = event?.type === 'CREATED'
+    ? null
+    : currentWorkProjection(text, current, event);
+  return workflowAdmission.decide(projection, event);
 }
 
 export function inspectLedgerEventWithWorkflow(text, event) {
@@ -150,7 +157,8 @@ export function verifyLedgerText(text) {
 }
 
 function decideLedgerAppendAgainstCurrent(text, current, event) {
-  const workflowInspection = inspectLedgerEventAgainstCurrent(text, current, event);
+  const workflowAdjudication = decideLedgerEventAgainstCurrent(text, current, event);
+  const workflowInspection = workflowAdjudication.inspection;
 
   const record = { ...event, previous_hash: current.head };
   record.event_hash = eventHash(record);
@@ -188,6 +196,7 @@ function decideLedgerAppendAgainstCurrent(text, current, event) {
     accepted: rejectionCode === null,
     rejection_code: rejectionCode,
     workflow_inspection: workflowInspection,
+    workflow_decision: workflowAdjudication.decision ?? null,
     candidate_verification: candidate,
     record,
   };
@@ -204,6 +213,7 @@ export function decideLedgerAppend(text, event) {
         reasons: ['WORKFLOW_LEDGER_INVALID'],
         ledger_errors: current.errors,
       },
+      workflow_decision: null,
       candidate_verification: null,
       record: null,
     };

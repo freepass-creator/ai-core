@@ -90,9 +90,90 @@ export function createWorkLedgerShadow(workflow) {
     }
   }
 
-  function apply(projection, event) {
+  function decide(projection, event) {
     const inspection = inspect(projection, event);
-    if (!inspection.eligible) return { status: 'REJECTED', inspection, projection };
+    if (!inspection.eligible) return { status: 'REJECTED', inspection, projection, decision: null };
+
+    if (event.type === 'CREATED') {
+      return {
+        status: 'ACCEPTED',
+        inspection,
+        projection,
+        decision: null,
+      };
+    }
+
+    const transition = workflow.transitions.find(item => item.transition_id === inspection.transition_id);
+    if (!transition) {
+      return {
+        status: 'REJECTED',
+        inspection: reject('TRANSITION_NOT_ALLOWED', {
+          transition_id: inspection.transition_id,
+          from_state: event.from_state,
+          to_state: event.to_state,
+        }),
+        projection,
+        decision: null,
+      };
+    }
+
+    try {
+      const decision = engine.decide({
+        projection,
+        transition_id: transition.transition_id,
+        command_id: transition.command_id,
+        command_payload: {
+          type: event.type,
+          project_id: event.project_id,
+          from_state: event.from_state,
+          to_state: event.to_state,
+          subject_revision: event.subject_revision ?? null,
+          evidence_refs: [...(event.evidence_refs ?? [])],
+        },
+        actor: event.actor ?? null,
+        reason: event.reason ?? null,
+        expected_revision: projection.revision,
+        request_id: event.event_id ?? null,
+        guard_context: { event },
+      });
+      return { status: 'ACCEPTED', inspection, projection, decision };
+    } catch (error) {
+      if (error instanceof WorkflowError) {
+        if (error.code === 'TRANSITION_GUARD_REJECTED') {
+          return {
+            status: 'REJECTED',
+            inspection: {
+              eligible: false,
+              reasons: [...(error.details?.reasons ?? [])],
+              transition_id: inspection.transition_id,
+              from_state: inspection.from_state,
+              to_state: inspection.to_state,
+            },
+            projection,
+            decision: null,
+            error_code: error.code,
+          };
+        }
+        return {
+          status: 'REJECTED',
+          inspection: reject(`ENGINE_DECISION_REJECTED:${error.code}`, {
+            transition_id: inspection.transition_id,
+            from_state: inspection.from_state,
+            to_state: inspection.to_state,
+          }),
+          projection,
+          decision: null,
+          error_code: error.code,
+        };
+      }
+      throw error;
+    }
+  }
+
+  function apply(projection, event) {
+    const adjudication = decide(projection, event);
+    const inspection = adjudication.inspection;
+    if (adjudication.status !== 'ACCEPTED') return { status: 'REJECTED', inspection, projection };
 
     if (event.type === 'CREATED') {
       const revisions = event.subject_revision ? [event.subject_revision] : [];
@@ -136,8 +217,8 @@ export function createWorkLedgerShadow(workflow) {
       inspection,
       projection: {
         ...projection,
-        revision: projection.revision + 1,
-        states: { ...projection.states, lifecycle: event.to_state },
+        revision: adjudication.decision.next_projection.revision,
+        states: adjudication.decision.next_projection.states,
         subject_revision: event.type === 'REOBSERVED'
           ? event.subject_revision
           : projection.subject_revision,
@@ -170,6 +251,7 @@ export function createWorkLedgerShadow(workflow) {
 
   return Object.freeze({
     inspect,
+    decide,
     apply,
     replay,
     workflow_id: workflow.workflow_id,
