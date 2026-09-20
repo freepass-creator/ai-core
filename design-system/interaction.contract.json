@@ -1,6 +1,6 @@
 {
   "contract": "ai-core-ui-interaction-contract/v1",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "feature_registry": "registry/ui-ux-features.json",
   "constitution": "docs/UI_UX_CONSTITUTION.md",
   "rules": {
@@ -258,6 +258,23 @@
         "quick-filter-row",
         "duplicate-criterion",
         "query-revision"
+      ]
+    },
+    "variant_selection": {
+      "feature_refs": [
+        "data.variant-selector"
+      ],
+      "invariants": [
+        "Displayed variants come from source data and are not padded with preferred or conventional values.",
+        "Variant selection changes the dependent detail choice without acting as a search filter.",
+        "If multiple subordinate variants share one displayed parent value, their differing conditions stay separately selectable.",
+        "The final selected stable variant identity is the identity handed to the next workflow step."
+      ],
+      "verification": [
+        "source-derived-options",
+        "no-fabricated-variants",
+        "parent-subvariant-selection",
+        "stable-selected-identity"
       ]
     }
   }
