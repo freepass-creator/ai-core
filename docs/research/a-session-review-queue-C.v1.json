@@ -11,7 +11,8 @@
   "policy": {
     "source_only": "This queue is derived from A Evidence, Routing and receiver Inbox state. Do not hand-edit it as authority.",
     "review_only": "The pack prepares evidence and questions but cannot review or decide for B/C/D.",
-    "resolved_history": "CLOSED routes remain in the queue as RESOLVED evidence history."
+    "resolved_history": "CLOSED routes remain in the queue as RESOLVED evidence history.",
+    "review_revision": "40-hex deterministic content fingerprint for review-claim identity; it is not source proof or a Git revision."
   },
   "items": [
     {
@@ -105,7 +106,8 @@
         "may_change_canon": false,
         "decision_owner": "C",
         "automatic_decision_forbidden": true
-      }
+      },
+      "review_revision": "1799e28162c85feaaae55dc50a0da0e0791cddd7"
     },
     {
       "pack_id": "core-contract.admin-production-binding::C",
@@ -191,7 +193,8 @@
         "may_change_canon": false,
         "decision_owner": "C",
         "automatic_decision_forbidden": true
-      }
+      },
+      "review_revision": "15a3a0dbb97ee5f220aa62a7db3dfa8cec8fe695"
     },
     {
       "pack_id": "core-contract.erp5-receipt-enforcement::C",
@@ -286,7 +289,8 @@
         "may_change_canon": false,
         "decision_owner": "C",
         "automatic_decision_forbidden": true
-      }
+      },
+      "review_revision": "c09e9c43679458e4e1636ea7a52f73ea0803a219"
     },
     {
       "pack_id": "core-contract.sales-shadow-runtime-binding::C",
@@ -371,7 +375,8 @@
         "may_change_canon": false,
         "decision_owner": "C",
         "automatic_decision_forbidden": true
-      }
+      },
+      "review_revision": "04aa6e28c0d97d5725224a4c956acb9567956836"
     },
     {
       "pack_id": "governance.erp5-shadow-main-push-path::C",
@@ -451,7 +456,8 @@
         "may_change_canon": false,
         "decision_owner": "C",
         "automatic_decision_forbidden": true
-      }
+      },
+      "review_revision": "3ef6111b6e5fe562b7eee7e7a42b622c54ccb6ad"
     },
     {
       "pack_id": "result.proof-input-digest-binding::C",
@@ -520,7 +526,8 @@
         "may_change_canon": false,
         "decision_owner": "C",
         "automatic_decision_forbidden": true
-      }
+      },
+      "review_revision": "614761e143c920f45ceae2dd9208fe0eb1e432a3"
     },
     {
       "pack_id": "scheduler.logical-slot-observability::C",
@@ -588,7 +595,8 @@
         "may_change_canon": false,
         "decision_owner": "C",
         "automatic_decision_forbidden": true
-      }
+      },
+      "review_revision": "60a6851967dff77250487b9530bae3c852a632f7"
     },
     {
       "pack_id": "workflow.forward-skip-evidence-integrity::C",
@@ -659,7 +667,8 @@
         "may_change_canon": false,
         "decision_owner": "C",
         "automatic_decision_forbidden": true
-      }
+      },
+      "review_revision": "2a641fe69059e0e146376ffac6c9a56b016bfa10"
     }
   ]
 }
