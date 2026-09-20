@@ -1,7 +1,7 @@
 {
   "schema": "ai-core-a-session-work-claims/v1",
   "status": "RESEARCH_COORDINATION_NOT_CANONICAL",
-  "observed_at": "2026-09-20T01:57:00Z",
+  "observed_at": "2026-09-20T02:04:00Z",
   "policy": {
     "claim_key": "<repository>@<subject_revision>::<scope>",
     "live_claim": "state=ACTIVE and lease_until > observed_at",
@@ -75,11 +75,18 @@
       "subject_revision": "7594411f3de57b25962a8e9aa7a4a5eb26abf67f",
       "scope": "a-claim-reaper",
       "owner_session": "A-session-current-chat",
-      "state": "ACTIVE",
+      "state": "COMPLETED",
       "claimed_at": "2026-09-20T01:57:00Z",
       "lease_until": "2026-09-20T02:57:00Z",
-      "completed_at": null,
-      "evidence_refs": []
+      "completed_at": "2026-09-20T02:04:00Z",
+      "evidence_refs": [
+        "commit:2e21fac194a8afc1a29b394e8592fc92b39e9959",
+        "commit:c1a0ff03eeb78b412c837ffe1f56d86f0bbb6f48",
+        "commit:8f92cb2804e4b2b0a7cbdb02c4267c430a50331a",
+        "commit:a4cc785ba92f42e5b80d6fd95793d54c7eeb225b",
+        "commit:dfb58c942e77dfe9e0ee1752d2183271fb993d4d",
+        "commit:7c6e60828e1bcf3b2192c14f7349bcd2e0b9ac16"
+      ]
     }
   ]
 }
