@@ -1,7 +1,7 @@
 {
   "schema": "ai-core-a-session-evidence-registry/v1",
   "status": "RESEARCH_ROUTING_INDEX_NOT_CANONICAL",
-  "observed_at": "2026-09-20T00:47:00Z",
+  "observed_at": "2026-09-20T00:56:35Z",
   "policy": {
     "canonical_boundary": "A records evidence and routing only. B/C/D canonical standards may be changed only by their owning sessions.",
     "project_gt_core": "Generalize reusable project implementation and route candidate with exact revision evidence.",
@@ -120,6 +120,14 @@
             "DOC",
             "CI"
           ]
+        },
+        {
+          "repository": "freepass-creator/freepasserp4",
+          "revision": "3b98649ff49a24376aca4b24590c15d36b95a8f6",
+          "evidence_types": [
+            "DOC",
+            "CI"
+          ]
         }
       ],
       "migration": {
@@ -140,6 +148,11 @@
           "status": "MIGRATION_REQUIRED",
           "observed_at": "2026-09-20T00:00:00Z",
           "reason": "Audit79 corrected the contradiction but prevention remains manual."
+        },
+        {
+          "status": "MIGRATION_REQUIRED",
+          "observed_at": "2026-09-20T00:56:35Z",
+          "reason": "Latest ERP4 Audit80 head still does not implement the three-surface audit metadata consistency validator."
         }
       ]
     },
@@ -169,6 +182,147 @@
           "status": "ACTIVE",
           "observed_at": "2026-09-20T00:00:00Z",
           "reason": "Phase-2 research candidate; failure/runtime evidence only."
+        }
+      ]
+    },
+    {
+      "id": "core-contract.admin-production-binding",
+      "classification": "CORE_GT_PROJECT",
+      "current_status": "MIGRATION_REQUIRED",
+      "evidence_level": "PROJECT_VERIFIED",
+      "routes": [
+        "C"
+      ],
+      "summary": "FreePass Admin consumes C Application Service contracts in SHADOW/PARTIAL form but lacks verified production persistence, actor-provider, durable receipt and runtime bindings.",
+      "revision_evidence": [
+        {
+          "repository": "freepass-creator/freepass-admin",
+          "revision": "77f682af680528124096e4f7871504a3596c8990",
+          "evidence_types": [
+            "CODE",
+            "SCHEMA",
+            "TEST",
+            "CI",
+            "DOC"
+          ]
+        }
+      ],
+      "migration": {
+        "target_repository": "freepass-creator/freepass-admin",
+        "breaking_impact": [
+          "Development bindings can be mistaken for production conformance.",
+          "Actor/authentication authority can be overstated while the production provider is unbound.",
+          "Critical mutations can report success without durable Core receipt/provenance proof.",
+          "Release claims can exceed exact production runtime evidence."
+        ],
+        "verification_needs": [
+          "Bind exact production persistence adapters.",
+          "Bind a fail-closed production ActorProvider.",
+          "Prove critical-write idempotency and durable receipt evidence.",
+          "Prove production audit retention.",
+          "Prove exact release/runtime revision before promotion."
+        ]
+      },
+      "state_history": [
+        {
+          "status": "MIGRATION_REQUIRED",
+          "observed_at": "2026-09-20T00:54:00Z",
+          "reason": "Admin C adoption is implemented only as SHADOW/PARTIAL and production bindings remain unverified."
+        }
+      ]
+    },
+    {
+      "id": "core-contract.erp5-receipt-enforcement",
+      "classification": "CORE_GT_PROJECT",
+      "current_status": "MIGRATION_REQUIRED",
+      "evidence_level": "PROJECT_VERIFIED",
+      "routes": [
+        "C"
+      ],
+      "summary": "ERP4/ERP5 implements and CI-verifies a Core ingest receipt shadow, but receipt build/upload is non-blocking and production scheduled receipt evidence remains unverified.",
+      "revision_evidence": [
+        {
+          "repository": "freepass-creator/freepasserp4",
+          "revision": "14056f8c2c3a7cc973d956b4f23929a4c420fb98",
+          "evidence_types": [
+            "CODE",
+            "SCHEMA",
+            "TEST",
+            "CI",
+            "DOC"
+          ]
+        },
+        {
+          "repository": "freepass-creator/freepasserp4",
+          "revision": "3b98649ff49a24376aca4b24590c15d36b95a8f6",
+          "evidence_types": [
+            "DOC",
+            "CI"
+          ]
+        }
+      ],
+      "migration": {
+        "target_repository": "freepass-creator/freepasserp4",
+        "breaking_impact": [
+          "A supplier PARTIAL/FAILED apply can still finish without durable machine receipt if the shadow evidence path fails.",
+          "Downstream recovery can lack authoritative partial-state provenance.",
+          "Operational status can diverge from supplier-level receipt state.",
+          "CI-only proof can be mistaken for production receipt conformance."
+        ],
+        "verification_needs": [
+          "Observe retained receipt artifacts from real production ERP5 refresh runs at an exact project revision.",
+          "Verify receipt schema conformance and sensitive-data exclusion.",
+          "Verify PARTIAL and FAILED behavior with real or controlled evidence.",
+          "Verify retention and retrievability.",
+          "Define fail-closed behavior when a required receipt cannot be built or uploaded.",
+          "Add publication-orchestration receipt if the C boundary requires it."
+        ]
+      },
+      "state_history": [
+        {
+          "status": "MIGRATION_REQUIRED",
+          "observed_at": "2026-09-20T00:54:00Z",
+          "reason": "Receipt shadow is implemented and CI-verified but remains non-blocking and lacks exact-head production observation."
+        }
+      ]
+    },
+    {
+      "id": "governance.erp5-shadow-main-push-path",
+      "classification": "CORE_GT_PROJECT",
+      "current_status": "MIGRATION_REQUIRED",
+      "evidence_level": "PROJECT_VERIFIED",
+      "routes": [
+        "C"
+      ],
+      "summary": "ERP4 SSOT Source Contract checks C shadow surfaces on pull requests but omits the same paths from main push filters, leaving a fail-open enforcement gap.",
+      "revision_evidence": [
+        {
+          "repository": "freepass-creator/freepasserp4",
+          "revision": "3b98649ff49a24376aca4b24590c15d36b95a8f6",
+          "evidence_types": [
+            "CODE",
+            "DOC",
+            "CI"
+          ]
+        }
+      ],
+      "migration": {
+        "target_repository": "freepass-creator/freepasserp4",
+        "breaking_impact": [
+          "A main-only change to C shadow contracts, projection code or checker can bypass the resulting-main Source Contract run.",
+          "PR success cannot be treated as fail-closed enforcement while main has no required status checks."
+        ],
+        "verification_needs": [
+          "Make push path coverage include the same C shadow surfaces as pull_request coverage or establish an equivalent fail-closed main gate.",
+          "Add a negative/trigger fixture proving a shadow-only main change schedules the Source Contract workflow.",
+          "Observe a green resulting-main run at the exact fixed revision."
+        ]
+      },
+      "state_history": [
+        {
+          "status": "MIGRATION_REQUIRED",
+          "observed_at": "2026-09-20T00:56:35Z",
+          "reason": "Audit80 proves pull-request and main-push path filters are asymmetric for the new C shadow surfaces."
         }
       ]
     }
