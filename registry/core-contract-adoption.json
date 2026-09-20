@@ -897,12 +897,17 @@
         {
           "contract_id": "core.receipt.v1",
           "classification": "MIGRATE",
-          "binding_state": "NONE",
+          "binding_state": "SHADOW",
           "priority": "P0",
           "evidence_refs": [
-            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/execution-result.js"
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/execution-result.js",
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/core-contract-shadow.js"
           ],
-          "action": "Execution proof exists but lacks canonical input/output digests and reproducibility fields required by Core receipt."
+          "action": "Core-side SHADOW builder now converts canonical adapter results into core-receipt/v1 with deterministic input/output digests and optional proof-input binding. Project-side durable receipt is still not cut over.",
+          "artifact_refs": [
+            "src/contracts/adapter-receipt.mjs",
+            "test/adapter-receipt.test.mjs"
+          ]
         },
         {
           "contract_id": "core.port.v1",
@@ -1113,9 +1118,58 @@
           "priority": "P1",
           "evidence_refs": [],
           "action": "Introduce logical execution identity where retries, provider attempts, asynchronous continuation, or recovery paths can represent one business execution."
+        },
+        {
+          "contract_id": "core.connector.v1",
+          "classification": "CORE_MATCH",
+          "binding_state": "SHADOW",
+          "priority": "P1",
+          "evidence_refs": [
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/engines/freepass-standard.js",
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/engines/external.js",
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/provider-policy.js"
+          ],
+          "artifact_refs": [
+            "registry/adoption/freepass-estimate-quote-http.connector.json",
+            "registry/adoption/freepass-estimate-quote-provider.adapter.json",
+            "test/adapter-connector-binding.test.mjs"
+          ],
+          "action": "Shadow-separate HTTP transport from provider interpretation. Adapter may call only declared quote.standard/quote.external Connector operations."
+        },
+        {
+          "contract_id": "core.connector-result.v1",
+          "classification": "MIGRATE",
+          "binding_state": "SHADOW",
+          "priority": "P1",
+          "evidence_refs": [
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/engines/freepass-standard.js",
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/engines/external.js"
+          ],
+          "artifact_refs": [
+            "contracts/core-connector-result.schema.json",
+            "src/engine/connector-runtime.mjs",
+            "test/connector-runtime.test.mjs"
+          ],
+          "action": "Represent transport success/failure separately from provider/Core error mapping; keep retryability in Adapter/D rather than Connector."
+        },
+        {
+          "contract_id": "core.proof-input-binding.v1",
+          "classification": "MIGRATE",
+          "binding_state": "SHADOW",
+          "priority": "P1",
+          "evidence_refs": [
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/provider-config.js",
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/provider-policy.js",
+            "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/scripts/check-ai-core-contract-shadow.mjs"
+          ],
+          "artifact_refs": [
+            "src/contracts/adapter-receipt.mjs",
+            "test/adapter-receipt.test.mjs"
+          ],
+          "action": "Bind quote proof to source/config/checker digests so a later provider/config/checker change makes prior proof stale instead of silently current."
         }
       ],
-      "next_gate": "Run revision-bound project/Core contract checks for b526fdc...; if the Engine/Port/Adapter shadow and core-adapter-result projection remain equivalent, move only the relevant binding cells from SHADOW to VALIDATED."
+      "next_gate": "Run local or later controlled verification for the current revision: Engine/Port/Adapter/Connector schema binding, adapter-result projection, receipt/proof binding. Keep all cells SHADOW until revision-bound checks actually execute."
     }
   ]
 }
