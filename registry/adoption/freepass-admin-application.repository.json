@@ -43,7 +43,7 @@
       "kind": "MUTATE",
       "side_effects": true,
       "idempotency": "CALLER_ENFORCED",
-      "expected_revision": "SUPPORTED"
+      "expected_revision": "NOT_APPLICABLE"
     }
   ],
   "atomicity": {
