@@ -204,6 +204,9 @@
         ]
       },
       "description": "Optional operation metrics. Project-specific raw payloads must not be copied here; only compact non-sensitive measurements."
+    },
+    "execution": {
+      "$ref": "https://schemas.freepass.ai/core/execution-identity/v1#/$defs/binding"
     }
   }
 }
