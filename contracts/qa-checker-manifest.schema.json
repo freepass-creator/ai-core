@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.freepass.ai/qa/checker-manifest/v1",
+  "title": "AI Core QA Checker Manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version","project_id","subject_revision","checkers"],
+  "properties": {
+    "schema_version": {"const":"qa-checker-manifest/v1"},
+    "project_id": {"type":"string","minLength":1},
+    "subject_revision": {"type":"string","minLength":1},
+    "checkers": {
+      "type":"array",
+      "items":{
+        "type":"object",
+        "additionalProperties":false,
+        "required":[
+          "checker_id","classification","command","contract_ids",
+          "proof_level","negative_control","reason"
+        ],
+        "properties":{
+          "checker_id":{"type":"string","pattern":"^[a-z][a-z0-9_.:-]+$"},
+          "classification":{"enum":["REQUIRED","MANUAL","NOT_APPLICABLE","PENDING"]},
+          "command":{"type":["string","null"]},
+          "contract_ids":{"type":"array","uniqueItems":true,"items":{"type":"string","minLength":1}},
+          "proof_level":{"enum":["FIXTURE","SYNTHETIC","EMULATOR","PREVIEW","PRODUCTION"]},
+          "negative_control":{
+            "type":"object",
+            "additionalProperties":false,
+            "required":["required","status","evidence_ref"],
+            "properties":{
+              "required":{"type":"boolean"},
+              "status":{"enum":["PROVEN","PENDING","NOT_APPLICABLE"]},
+              "evidence_ref":{"type":["string","null"]}
+            }
+          },
+          "reason":{"type":"string","minLength":1}
+        }
+      }
+    }
+  }
+}
