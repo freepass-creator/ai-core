@@ -115,6 +115,21 @@ Provider 특이사항은 Core Model에 넣지 않는다.
 
 Adapter terminal result는 `core-adapter-result/v1`을 사용한다. `status`, `retryable`, `adapter_version`, `source_revision`, `issues[]`, `evidence_refs[]`를 숨기지 않는다.
 
+### 4.1 Port Runtime
+
+Engine/Port/Adapter/Binding Profile 계약은 `src/engine/port-runtime.mjs`에서 실제 호출 경계로 연결한다.
+
+- PURE Engine은 synthetic binding을 요구하지 않는다.
+- PORT_MEDIATED Engine은 required port를 정확히 binding해야 한다.
+- strict runtime invocation은 `PASSED_WITHIN_SCOPE` binding profile을 요구한다.
+- side-effect adapter의 required idempotency를 호출 전에 강제한다.
+- timeout과 provider→Core failure mapping을 adapter boundary에서 수행한다.
+- 반환값은 `core-adapter-result/v1`으로 정규화한다.
+- retry/backoff/resume/compensation은 D Workflow 책임이며 C runtime이 임의 재시도하지 않는다.
+
+세부 규격은 `docs/CORE_PORT_RUNTIME.md`를 따른다.
+
+
 ## 5. API
 
 HTTP method/status semantics를 임의 재정의하지 않는다.
