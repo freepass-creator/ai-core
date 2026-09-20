@@ -13,7 +13,7 @@
     "source_proof": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["default_branch", "ci"],
+      "required": ["default_branch", "ci", "branch_protected"],
       "properties": {
         "default_branch": {"type": "string", "minLength": 1},
         "ci": {
@@ -31,12 +31,25 @@
     },
     "findings": {
       "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
       "items": {
         "type": "object",
         "additionalProperties": false,
         "required": ["axis", "verdict", "evidence", "gaps", "next_action"],
         "properties": {
-          "axis": {"type": "string", "minLength": 1},
+          "axis": {
+            "enum": [
+              "ui-ux",
+              "data-ssot",
+              "engine-adapter",
+              "api-event-error",
+              "workflow",
+              "security-audit",
+              "qa-observability",
+              "build-deploy-governance"
+            ]
+          },
           "verdict": {"enum": ["CORE_MATCH", "PROJECT_AHEAD", "MIGRATION_GAP", "RESEARCH_ADVISORY", "UNKNOWN"]},
           "evidence": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
           "gaps": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
