@@ -1,0 +1,122 @@
+{
+  "schema": "ai-core-a-session-receiver-inbox/v1",
+  "status": "RESEARCH_RECEIVER_INBOX_NOT_CANONICAL",
+  "session": "C",
+  "observed_at": "2026-09-20T01:04:20Z",
+  "policy": {
+    "source_of_truth": "A Routing Receipt Registry defines delivery; this inbox records receiver-side acknowledgement/review/decision only.",
+    "conservative_default": "New routes enter as PENDING and remain unacknowledged until the target session writes revision-bound evidence.",
+    "receiver_ahead_allowed": "Receiver state may advance before A central receipt reconciliation; A receipt may never be ahead of the receiver inbox.",
+    "canonical_boundary": "Session C may decide its own canonical work, but this inbox itself is coordination evidence and does not change canon."
+  },
+  "items": [
+    {
+      "route_id": "audit.metadata-consistency-validator::C",
+      "finding_id": "audit.metadata-consistency-validator",
+      "source_evidence_revision": "432dcb0aa0fd62ac7698108284bced4138c32238",
+      "delivered_at": "2026-09-20T00:56:35Z",
+      "receiver_status": "PENDING",
+      "acknowledgement": null,
+      "review": null,
+      "decision": null,
+      "history": [
+        {
+          "status": "PENDING",
+          "observed_at": "2026-09-20T00:56:35Z",
+          "basis_revision": "432dcb0aa0fd62ac7698108284bced4138c32238",
+          "reason": "Seeded from the A Routing Receipt Registry; no receiver acknowledgement exists yet."
+        }
+      ]
+    },
+    {
+      "route_id": "core-contract.admin-production-binding::C",
+      "finding_id": "core-contract.admin-production-binding",
+      "source_evidence_revision": "432dcb0aa0fd62ac7698108284bced4138c32238",
+      "delivered_at": "2026-09-20T00:54:00Z",
+      "receiver_status": "PENDING",
+      "acknowledgement": null,
+      "review": null,
+      "decision": null,
+      "history": [
+        {
+          "status": "PENDING",
+          "observed_at": "2026-09-20T00:54:00Z",
+          "basis_revision": "432dcb0aa0fd62ac7698108284bced4138c32238",
+          "reason": "Seeded from the A Routing Receipt Registry; no receiver acknowledgement exists yet."
+        }
+      ]
+    },
+    {
+      "route_id": "core-contract.erp5-receipt-enforcement::C",
+      "finding_id": "core-contract.erp5-receipt-enforcement",
+      "source_evidence_revision": "432dcb0aa0fd62ac7698108284bced4138c32238",
+      "delivered_at": "2026-09-20T00:54:00Z",
+      "receiver_status": "PENDING",
+      "acknowledgement": null,
+      "review": null,
+      "decision": null,
+      "history": [
+        {
+          "status": "PENDING",
+          "observed_at": "2026-09-20T00:54:00Z",
+          "basis_revision": "432dcb0aa0fd62ac7698108284bced4138c32238",
+          "reason": "Seeded from the A Routing Receipt Registry; no receiver acknowledgement exists yet."
+        }
+      ]
+    },
+    {
+      "route_id": "governance.erp5-shadow-main-push-path::C",
+      "finding_id": "governance.erp5-shadow-main-push-path",
+      "source_evidence_revision": "432dcb0aa0fd62ac7698108284bced4138c32238",
+      "delivered_at": "2026-09-20T00:56:35Z",
+      "receiver_status": "PENDING",
+      "acknowledgement": null,
+      "review": null,
+      "decision": null,
+      "history": [
+        {
+          "status": "PENDING",
+          "observed_at": "2026-09-20T00:56:35Z",
+          "basis_revision": "432dcb0aa0fd62ac7698108284bced4138c32238",
+          "reason": "Seeded from the A Routing Receipt Registry; no receiver acknowledgement exists yet."
+        }
+      ]
+    },
+    {
+      "route_id": "result.proof-input-digest-binding::C",
+      "finding_id": "result.proof-input-digest-binding",
+      "source_evidence_revision": "432dcb0aa0fd62ac7698108284bced4138c32238",
+      "delivered_at": "2026-09-19T00:00:00Z",
+      "receiver_status": "PENDING",
+      "acknowledgement": null,
+      "review": null,
+      "decision": null,
+      "history": [
+        {
+          "status": "PENDING",
+          "observed_at": "2026-09-19T00:00:00Z",
+          "basis_revision": "432dcb0aa0fd62ac7698108284bced4138c32238",
+          "reason": "Seeded from the A Routing Receipt Registry; no receiver acknowledgement exists yet."
+        }
+      ]
+    },
+    {
+      "route_id": "scheduler.logical-slot-observability::C",
+      "finding_id": "scheduler.logical-slot-observability",
+      "source_evidence_revision": "432dcb0aa0fd62ac7698108284bced4138c32238",
+      "delivered_at": "2026-09-20T00:00:00Z",
+      "receiver_status": "PENDING",
+      "acknowledgement": null,
+      "review": null,
+      "decision": null,
+      "history": [
+        {
+          "status": "PENDING",
+          "observed_at": "2026-09-20T00:00:00Z",
+          "basis_revision": "432dcb0aa0fd62ac7698108284bced4138c32238",
+          "reason": "Seeded from the A Routing Receipt Registry; no receiver acknowledgement exists yet."
+        }
+      ]
+    }
+  ]
+}
