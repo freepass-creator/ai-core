@@ -121,3 +121,86 @@ export function resolveBinding({engine,adapters=[],profile,requireVerified=false
     errors
   };
 }
+
+export function validateApplicationServiceContract(service){
+  need(service?.schema_version==='core-application-service-contract/v1','SERVICE_SCHEMA_VERSION_INVALID');
+  need(text(service.service_id)&&service.service_id.includes('.'),'SERVICE_ID_REQUIRED');
+  need(text(service.version),'SERVICE_VERSION_REQUIRED');
+  need(service?.source?.locator&&service?.source?.revision,'SERVICE_SOURCE_REVISION_REQUIRED');
+  need(Array.isArray(service.use_cases)&&service.use_cases.length>0,'SERVICE_USE_CASES_REQUIRED');
+  need(Array.isArray(service.required_ports),'SERVICE_PORTS_INVALID');
+  need(Array.isArray(service.verification_profile)&&service.verification_profile.length>0,'SERVICE_VERIFICATION_REQUIRED');
+  const useCases=new Set();
+  for(const useCase of service.use_cases){
+    need(text(useCase?.name),'SERVICE_USE_CASE_NAME_REQUIRED');
+    need(!useCases.has(useCase.name),`SERVICE_USE_CASE_DUPLICATE:${useCase.name}`);
+    useCases.add(useCase.name);
+    need(['REQUIRED','SUPPORTED','NOT_APPLICABLE'].includes(useCase.idempotency),'SERVICE_IDEMPOTENCY_INVALID');
+    need(['REQUIRED','OPTIONAL','NONE'].includes(useCase.actor_requirement),'SERVICE_ACTOR_REQUIREMENT_INVALID');
+    need(['REPOSITORY_ATOMIC','ORCHESTRATED','READ_ONLY','NONE'].includes(useCase.transaction_boundary),'SERVICE_TRANSACTION_BOUNDARY_INVALID');
+  }
+  const portIds=service.required_ports.map(x=>x?.port_id);
+  need(new Set(portIds).size===portIds.length,'SERVICE_PORT_DUPLICATE');
+  return {status:'VALID'};
+}
+
+export function resolveServiceBinding({service,adapters=[],profile,requireVerified=false}){
+  const errors=[];
+  try{validateApplicationServiceContract(service);}catch(error){errors.push(error.message);}
+  try{validateBindingProfile(profile,{requireVerified});}catch(error){errors.push(error.message);}
+
+  const adapterIds=new Set();
+  for(const adapter of adapters){
+    if(adapterIds.has(adapter.adapter_id)) errors.push(`ADAPTER_ID_DUPLICATE:${adapter.adapter_id}`);
+    adapterIds.add(adapter.adapter_id);
+  }
+
+  const binding=profile?.service_bindings?.find(x=>x.service_id===service?.service_id&&x.service_version===service?.version);
+  if(!binding) errors.push('SERVICE_BINDING_NOT_FOUND');
+
+  const required=service?.required_ports??[];
+  if(binding){
+    const requiredIds=new Set(required.map(x=>x.port_id));
+    for(const p of binding.ports??[]){
+      if(!requiredIds.has(p.port_id)) errors.push(`UNDECLARED_PORT_BINDING:${p.port_id}`);
+    }
+  }
+
+  const selected=[];
+  for(const port of required){
+    const matches=binding?.ports?.filter(x=>x.port_id===port.port_id)??[];
+    if(matches.length===0){errors.push(`PORT_UNRESOLVED:${port.port_id}`);continue;}
+    if(matches.length>1){errors.push(`PORT_DUPLICATE_BINDING:${port.port_id}`);continue;}
+    const adapter=adapters.find(x=>x.adapter_id===matches[0].adapter_id);
+    if(!adapter){errors.push(`ADAPTER_NOT_FOUND:${matches[0].adapter_id}`);continue;}
+    try{validateAdapterContract(adapter);}catch(error){errors.push(`${adapter.adapter_id}:${error.message}`);}
+    if(adapter.port_id!==port.port_id) errors.push(`ADAPTER_PORT_MISMATCH:${adapter.adapter_id}`);
+    if(adapter.project_scope!=null&&adapter.project_scope!==profile?.project_id) errors.push(`ADAPTER_PROJECT_SCOPE_MISMATCH:${adapter.adapter_id}`);
+    if(!adapter.compatibility?.port_versions?.includes(port.port_version)) errors.push(`ADAPTER_PORT_VERSION_MISMATCH:${adapter.adapter_id}`);
+    selected.push({
+      port_id:port.port_id,
+      port_version:port.port_version,
+      adapter_id:adapter.adapter_id,
+      adapter_version:adapter.adapter_version,
+      side_effects:adapter.side_effects===true,
+      idempotency:adapter.idempotency,
+      timeout_ms:adapter.timeout_ms,
+      source_revision:adapter.source?.revision??null,
+    });
+  }
+
+  return {
+    status:errors.length===0?'RESOLVED':'HOLD',
+    authorization:'NOT_GRANTED',
+    owner_kind:'APPLICATION_SERVICE',
+    owner_id:service?.service_id??null,
+    owner_version:service?.version??null,
+    project_id:profile?.project_id??null,
+    environment:profile?.environment??null,
+    subject_revision:profile?.subject_revision??null,
+    verification_state:profile?.verification_state??null,
+    selected_adapters:selected,
+    errors
+  };
+}
+
