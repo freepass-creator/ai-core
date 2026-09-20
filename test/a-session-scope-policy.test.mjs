@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { parseASessionScope, isCanonicalASessionScope, aSessionScopesConflict } from '../scripts/a-session-scope-policy.mjs';
+import { parseASessionScope, isCanonicalASessionScope, aSessionScopesConflict, requiresSubjectHeadGuard } from '../scripts/a-session-scope-policy.mjs';
 import { evaluateClaim } from '../scripts/a-session-claim.mjs';
 
 const rev='aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
@@ -57,4 +57,13 @@ test('completed repo-rescan does not permanently suppress later runtime evidence
 
 test('unknown scope is rejected rather than becoming an alias loophole',()=>{
   assert.throws(()=>evaluateClaim(registry(),{repository:'freepass-creator/x',revision:rev,scope:'audit',owner:'A-two'},new Date('2026-09-20T02:00:00Z')),/CLAIM_SCOPE_INVALID/);
+});
+
+
+test('completion head guard applies only to inspection scopes',()=> {
+  assert.equal(requiresSubjectHeadGuard('repo-rescan'),true);
+  assert.equal(requiresSubjectHeadGuard('runtime-evidence:production'),true);
+  assert.equal(requiresSubjectHeadGuard('migration-gap:gap-a'),true);
+  assert.equal(requiresSubjectHeadGuard('routing:gap-a'),false);
+  assert.equal(requiresSubjectHeadGuard('coordination:claim-health'),false);
 });
