@@ -32,6 +32,7 @@ jobs:
       - run: npm run contracts:compat
       - run: npm run contracts:adoption
       - run: npm run workflow:validate
+      - run: npm run workflow:projection:validate
       - run: npm run workflow:bridge:validate
       - run: npm run workflow:recovery:validate
       - run: npm run uiux:validate
