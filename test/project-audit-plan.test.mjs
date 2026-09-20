@@ -72,9 +72,10 @@ test('capsule blockers keep the project audit plan on HOLD', async () => {
 });
 
 test('revision evidence is mandatory for every project audit plan', async () => {
+  const registry = await readRegistry();
   const broken = capsule({ evidence_refs: [] });
   assert.throws(
-    () => buildProjectAuditPlan(await readRegistry(), broken),
+    () => buildProjectAuditPlan(registry, broken),
     /AUDIT_CAPSULE_REVISION_EVIDENCE_MISSING/,
   );
 });
