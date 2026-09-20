@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.freepass.ai/project-audit-result/v2",
+  "title": "AI Core Project Audit Result v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "project_id",
+    "repository",
+    "subject_revision",
+    "standard_baseline_revision",
+    "audited_at",
+    "source_proof",
+    "findings",
+    "limitations"
+  ],
+  "properties": {
+    "schema": {"const": "ai-core-project-audit-result/v2"},
+    "project_id": {"type": "string", "minLength": 1},
+    "repository": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"},
+    "subject_revision": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "standard_baseline_revision": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "audited_at": {"type": "string", "format": "date-time"},
+    "source_proof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["default_branch", "ci", "branch_protected"],
+      "properties": {
+        "default_branch": {"type": "string", "minLength": 1},
+        "ci": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "run_id", "revision"],
+          "properties": {
+            "status": {"enum": ["PASS", "FAIL", "UNKNOWN"]},
+            "run_id": {"type": ["integer", "null"]},
+            "revision": {"type": "string", "pattern": "^[0-9a-f]{40}$"}
+          }
+        },
+        "branch_protected": {"type": ["boolean", "null"]}
+      }
+    },
+    "findings": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["axis", "verdict", "evidence", "gaps", "next_action"],
+        "properties": {
+          "axis": {
+            "enum": [
+              "ui-ux",
+              "data-ssot",
+              "engine-adapter",
+              "api-event-error",
+              "workflow",
+              "security-audit",
+              "qa-observability",
+              "build-deploy-governance"
+            ]
+          },
+          "verdict": {"enum": ["CORE_MATCH", "PROJECT_AHEAD", "MIGRATION_GAP", "RESEARCH_ADVISORY", "UNKNOWN"]},
+          "evidence": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+          "gaps": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+          "next_action": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "limitations": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+  }
+}
