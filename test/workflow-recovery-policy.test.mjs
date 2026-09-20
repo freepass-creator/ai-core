@@ -23,7 +23,9 @@ test('ERP4 recovery-slot no-replay pilot is valid and remains project-verified',
   assert.equal(policy.cursor.replay_forbidden_after_success, true);
   assert.equal(policy.ambiguous_outcome_action, 'HOLD');
   assert.equal(policy.contract_dependency.identity_owner, 'C');
-  assert.equal(policy.contract_dependency.identity_contract_status, 'PENDING');
+  assert.equal(policy.contract_dependency.identity_contract_status, 'BOUND');
+  assert.equal(policy.contract_dependency.identity_contract_ref, 'core.execution-identity.v1');
+  assert.deepEqual(policy.identity.dimensions, ['operation_kind','logical_slot','subject_scope','semantic_input_digest']);
 });
 
 test('fallback recovery must reconcile native success and recovery history', () => {
@@ -40,6 +42,8 @@ test('common adoption cannot bypass second-project evidence or C identity bindin
   const broken = structuredClone(registry);
   const policy = broken.policies[0];
   policy.adoption_status = 'COMMON_ADOPTED';
+  policy.contract_dependency.identity_contract_status = 'PENDING';
+  delete policy.contract_dependency.identity_contract_ref;
   const result = validateRecoveryPolicies(broken);
   assert.equal(result.status, 'INVALID');
   assert.ok(result.errors.some(item => item.code === 'RECOVERY_COMMON_ADOPTION_EVIDENCE_REQUIRED'));
@@ -54,4 +58,16 @@ test('schema forbids replay-after-success and retry-on-ambiguous-outcome semanti
   const result = validateRecoveryPolicies(broken);
   assert.equal(result.status, 'INVALID');
   assert.ok(result.errors.some(item => item.code === 'RECOVERY_POLICY_SCHEMA_INVALID'));
+});
+
+
+test('bound identity contract rejects dimension drift and wrong contract ref', () => {
+  const broken = structuredClone(registry);
+  const policy = broken.policies[0];
+  policy.identity.dimensions = ['operation', 'logical_slot', 'subject_scope'];
+  policy.contract_dependency.identity_contract_ref = 'core.fake-identity.v1';
+  const result = validateRecoveryPolicies(broken);
+  assert.equal(result.status, 'INVALID');
+  assert.ok(result.errors.some(item => item.code === 'RECOVERY_IDENTITY_DIMENSIONS_DRIFT'));
+  assert.ok(result.errors.some(item => item.code === 'RECOVERY_IDENTITY_CONTRACT_REF_INVALID'));
 });
