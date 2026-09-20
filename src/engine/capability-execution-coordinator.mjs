@@ -176,7 +176,7 @@ export function createCapabilityExecutionCoordinator({
   clock=Date.now,
 }={}){
   need(store?.db&&typeof store.get==='function','ORDER_STORE_REQUIRED');
-  need(projectRegistry?.schema_version==='1.0'&&Array.isArray(projectRegistry.projects),'PROJECT_REGISTRY_REQUIRED');
+  need(projectRegistry?.schema_version==='1.1'&&Array.isArray(projectRegistry.projects),'PROJECT_REGISTRY_REQUIRED');
   const projects=new Map(projectRegistry.projects.map(project=>[project.project_id,project]));
   const executionWorkflow=getWorkflow('ai-core.capability-execution');
   const executionEngine=createWorkflowEngine(executionWorkflow,{now:()=>iso(clock)});
