@@ -1,7 +1,7 @@
 {
   "schema": "ai-core-a-session-work-claims/v1",
   "status": "RESEARCH_COORDINATION_NOT_CANONICAL",
-  "observed_at": "2026-09-20T02:33:00Z",
+  "observed_at": "2026-09-20T02:38:00Z",
   "policy": {
     "claim_key": "<repository>@<subject_revision>::<scope>",
     "live_claim": "state=ACTIVE and lease_until > observed_at",
@@ -44,7 +44,10 @@
         "abandon",
         "supersede"
       ],
-      "exception": "Automated expired-lease reaping may abandon an already expired ACTIVE claim without owner authority."
+      "exception": "Automated expired-lease reaping may abandon an already expired ACTIVE claim without owner authority.",
+      "one_live_claim_per_owner": true,
+      "owner_busy_result": "SKIP_OWNER_BUSY",
+      "reason": "A session is a single active worker. Reusing one owner across concurrent tasks is treated as identity collision, not parallel capacity."
     }
   },
   "claims": [
