@@ -1,0 +1,64 @@
+{
+  "schema_version": "core-repository-contract/v1",
+  "repository_id": "freepass-admin.product-repository",
+  "repository_version": "1.0.0",
+  "port_id": "product.read",
+  "project_scope": "freepass-admin",
+  "source": {
+    "locator": "freepass-creator/freepass-admin:src/adapters/store/repositories.ts",
+    "revision": "2aede7df82591470308f25bd3ccd4e5358aa7c3c"
+  },
+  "entity_scope": "product",
+  "operations": [
+    {
+      "operation_id": "product.get",
+      "kind": "READ",
+      "side_effects": false,
+      "idempotency": "NOT_APPLICABLE",
+      "expected_revision": "NOT_APPLICABLE"
+    },
+    {
+      "operation_id": "product.list",
+      "kind": "LIST",
+      "side_effects": false,
+      "idempotency": "NOT_APPLICABLE",
+      "expected_revision": "NOT_APPLICABLE"
+    },
+    {
+      "operation_id": "product.save",
+      "kind": "UPSERT",
+      "side_effects": true,
+      "idempotency": "CALLER_ENFORCED",
+      "expected_revision": "NOT_APPLICABLE"
+    }
+  ],
+  "atomicity": {
+    "scope": "SINGLE_COLLECTION",
+    "partial_write_possible": false
+  },
+  "concurrency": {
+    "mode": "PROCESS_SERIALIZED",
+    "lost_update_protection": true
+  },
+  "revision_policy": "MONOTONIC_INTEGER",
+  "connector_binding": {
+    "connector_id": "freepass-admin.json-file-store",
+    "connector_version": "1.0.0",
+    "operation_ids": [
+      "product.read",
+      "product.mutate"
+    ]
+  },
+  "data_classification": [
+    "INTERNAL"
+  ],
+  "error_codes": [
+    "NOT_FOUND",
+    "PERSISTENCE_ERROR"
+  ],
+  "verification_profile": [
+    "read-contract",
+    "product-version",
+    "atomic-rename-write"
+  ]
+}
