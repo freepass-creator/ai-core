@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "registry_version": "1.6.0",
+  "registry_version": "1.7.0",
   "primitives": [
     {
       "primitive_id": "workflow.fact-vs-state",
@@ -143,7 +143,7 @@
       "version": "0.1.0",
       "adoption_status": "CANONICAL",
       "owner": "D-session-workflow-standard",
-      "description": "Canonical AI Core Work lifecycle state graph consumed by scripts/work-ledger.mjs. Work Ledger remains canonical append-only event/hash/revision/evidence history.",
+      "description": "Canonical AI Core Work lifecycle state graph. New Work Ledger appends must pass the D Workflow Engine admission decision; Work Ledger remains canonical append-only event/hash/revision/evidence history.",
       "state_axes": [
         {
           "axis_id": "lifecycle",
@@ -1985,11 +1985,11 @@
       "obligations": [],
       "source_authority": {
         "repository": "freepass-creator/ai-core",
-        "revision": "4b3f9371f55de24e3cac05e72667f88bb5d7f081",
+        "revision": "a2f220351facb159595a7d8f0d8a3e3539a5e8a2",
         "files": [
           {
             "path": "scripts/work-ledger.mjs",
-            "blob_sha": "7afe8945101b84ea775b57d29f2981b8209bf41e"
+            "blob_sha": "5c60c43c6b9e7c8fc286936f649b28fc786ed3b1"
           },
           {
             "path": "contracts/work-ledger-event.schema.json",

@@ -201,7 +201,7 @@ Completed additionally:
 
 Current authority status:
 
-- Work lifecycle state graph: CANONICAL in D Registry; Work Ledger retains append-only history/evidence enforcement
+- Work lifecycle state graph: CANONICAL in D Registry; every new Work Ledger append now requires D Workflow Engine admission, while Work Ledger retains append-only history/evidence enforcement
 - Order Task lifecycle: CANONICAL in D Registry and D Engine authoritative for target state
 - Capability Execution lifecycle: CANONICAL in D Registry and D Engine authoritative for RESERVED -> RESULT
 - Workflow bridges: SHADOW until project-level bridge evidence and dispatch semantics mature
@@ -209,7 +209,7 @@ Current authority status:
 Still not completed:
 
 - move remaining duplicated pre-validation/guard logic out of runtime if-branches where safe
-- expand Work lifecycle from registry graph authority toward full generic D-engine decision execution without weakening Ledger evidence rules
+- finish Work lifecycle migration from dual admission (D Engine + Ledger verifier) toward full generic D-engine decision execution without weakening Ledger evidence/hash/revision rules
 - migrate business-project domain workflows into the Registry
 - validate domain bridges across FreePass Sales / ERP / Admin / Self Quote and other projects
 

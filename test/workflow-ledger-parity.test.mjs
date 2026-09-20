@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { readFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
-import { appendLedgerEvent, verifyLedgerText } from '../scripts/work-ledger.mjs';
+import { appendLedgerEvent, inspectLedgerEventWithWorkflow, verifyLedgerText } from '../scripts/work-ledger.mjs';
 import { createWorkLedgerShadow } from '../src/workflow/work-ledger-shadow.mjs';
 import { lifecycleGraph } from '../src/workflow/registry.mjs';
 
@@ -118,6 +118,33 @@ async function ledgerAccepts(fixture, event) {
     return false;
   }
 }
+
+test('new Work Ledger appends are explicitly admitted or rejected by the D Workflow Engine', async () => {
+  const fixture = await openFixture('PLANNED');
+  try {
+    const text = await readFile(fixture.path, 'utf8');
+
+    const accepted = fixture.makeEvent({
+      type: 'TRANSITIONED',
+      from_state: 'PLANNED',
+      to_state: 'IN_PROGRESS',
+    });
+    const rejected = fixture.makeEvent({
+      type: 'TRANSITIONED',
+      from_state: 'PLANNED',
+      to_state: 'READY',
+    });
+
+    const acceptedInspection = inspectLedgerEventWithWorkflow(text, accepted);
+    const rejectedInspection = inspectLedgerEventWithWorkflow(text, rejected);
+
+    assert.equal(acceptedInspection.eligible, true, JSON.stringify(acceptedInspection));
+    assert.equal(rejectedInspection.eligible, false, JSON.stringify(rejectedInspection));
+    assert.ok(rejectedInspection.reasons.includes('TRANSITION_NOT_ALLOWED'));
+  } finally {
+    await fixture.close();
+  }
+});
 
 test('SHADOW workflow matches every normal Work Ledger state-pair decision from canonical state contexts', async () => {
   for (const from of STATES) {
