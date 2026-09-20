@@ -5,6 +5,7 @@
 - Scope: ERP4-related paths directly under `C:\dev` and registered worktrees of `C:\dev\freepasserp4`.
 - Canonical repository: `C:\dev\freepasserp4`.
 - GitHub identity: `freepass-creator/freepasserp4`; remote read back as `https://github.com/freepass-creator/freepasserp4.git`; default branch read back as `main`.
+- Naming boundary: local layout follows the existing remote slug only. No GitHub repository or product/display name was renamed; alternate ERP4 paths are aliases/worktrees, not independent projects.
 - User authority: perform safe local organization, preserve dirty/unpublished/unknown work, delete nothing, keep RTDB retired.
 - Safety rule: no RTDB path was enabled, restored, queried, or deployed. `freepasserp4-rtdb-current` is migration debt and remains HOLD.
 
