@@ -229,6 +229,20 @@
       "path": "contracts/core-connector-result.schema.json",
       "status": "EXPERIMENTAL",
       "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
+    },
+    {
+      "id": "core.repository.v1",
+      "domain": "ENGINE_ADAPTER",
+      "path": "contracts/core-repository.schema.json",
+      "status": "EXPERIMENTAL",
+      "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
+    },
+    {
+      "id": "core.repository-result.v1",
+      "domain": "ENGINE_ADAPTER",
+      "path": "contracts/core-repository-result.schema.json",
+      "status": "EXPERIMENTAL",
+      "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
     }
   ]
 }
