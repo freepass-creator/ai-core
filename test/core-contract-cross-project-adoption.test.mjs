@@ -6,8 +6,9 @@ import { readFile } from 'node:fs/promises';
 import { bridgeLegacyAdapterResult } from '../src/contracts/legacy-adapter-bridge.mjs';
 
 const read=async path=>JSON.parse(await readFile(new URL('../'+path,import.meta.url),'utf8'));
-const [types,sourceSchema,adapterResultSchema,receiptSchema,erpSource,estimateFixture,errorRegistry]=await Promise.all([
+const [types,executionIdentitySchema,sourceSchema,adapterResultSchema,receiptSchema,erpSource,estimateFixture,errorRegistry]=await Promise.all([
   read('contracts/core-types.schema.json'),
+  read('contracts/core-execution-identity.schema.json'),
   read('contracts/core-source-registry.schema.json'),
   read('contracts/core-adapter-result.schema.json'),
   read('contracts/core-receipt.schema.json'),
@@ -16,7 +17,7 @@ const [types,sourceSchema,adapterResultSchema,receiptSchema,erpSource,estimateFi
   read('registry/core-error-codes.json')
 ]);
 const ajv=new Ajv2020({allErrors:true,strict:false}); addFormats(ajv);
-for(const s of [types,sourceSchema,adapterResultSchema,receiptSchema]) ajv.addSchema(s);
+for(const s of [types,executionIdentitySchema,sourceSchema,adapterResultSchema,receiptSchema]) ajv.addSchema(s);
 
 test('ERP4 documented ERP5 product SSOT is representable as a scoped Core source registry without fallback',()=>{
   const validate=ajv.getSchema('https://schemas.freepass.ai/core/source-registry/v1');
