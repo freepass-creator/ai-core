@@ -204,6 +204,7 @@ export function createWorkflowEngine(workflow, {
     facts = {},
     evidence = [],
     approvals = [],
+    guard_context = {},
     expected_revision,
     idempotency_key = null,
     request_id = null,
@@ -249,7 +250,14 @@ export function createWorkflowEngine(workflow, {
       current_revision: projection.revision,
     });
 
-    const baseContext = { actor, permissions, facts, evidence, approvals };
+    const baseContext = {
+      ...(guard_context && typeof guard_context === 'object' ? guard_context : {}),
+      actor,
+      permissions,
+      facts,
+      evidence,
+      approvals,
+    };
     let inspected = inspectTransition(projection, transition, baseContext);
 
     if (!inspected.eligible && override) {
