@@ -20,6 +20,7 @@ for(const schema of schemas) ajv.addSchema(schema);
 
 const policyValidator=ajv.getSchema('https://schemas.freepass.ai/security/action-policy/v1');
 const errors=[];
+if(registry.status!=='CANONICAL_PARTIAL') errors.push({code:'STANDARD_MATURITY_NOT_PROMOTED',status:registry.status});
 for(const [i,policy] of (registry.policies??[]).entries()) {
   if(!policyValidator(policy)) {
     for(const e of policyValidator.errors??[]) errors.push({path:`registry/security-action-policies.candidate.json/policies/${i}${e.instancePath}`,keyword:e.keyword,message:e.message});
@@ -33,8 +34,8 @@ for(const risk of ['READ_ONLY','LOCAL_MUTATION','REVERSIBLE_EXTERNAL_MUTATION','
 }
 
 console.log(JSON.stringify({
-  status:errors.length?'INVALID':'VALID_CANDIDATE',
-  canonical:false,
+  status:errors.length?'INVALID':'VALID_CANONICAL_PARTIAL',
+  canonical:'PARTIAL',
   policy_count:registry.policies?.length??0,
   schemas:schemaPaths,
   errors
