@@ -248,6 +248,15 @@ export function startServer({
             if (!recovered.result) return json(409, { status:'HOLD', reason:'CAPABILITY_EXECUTION_RESULT_MISSING', execution_authorized:false });
             return json(200, recovered.result);
           }
+          if (recovered?.status === 'RESERVED') {
+            const recoveryCapability = config.capabilityRegistry.capabilities.find(item => item.id === recovered.row?.capability_id);
+            if (!recoveryCapability) {
+              return json(409, { status:'HOLD', reason:'CAPABILITY_RECOVERY_METADATA_MISSING', execution_authorized:false });
+            }
+            const reconciled = await execution.reconcile(data.requestId, recoveryCapability);
+            if (reconciled.status === 'RESULT') return json(200, reconciled.result);
+            return json(409, reconciled);
+          }
 
           const order = store.get(capabilityRunMatch[1]);
           const validation = validateWorkMap(config.workMap, config.projectRegistry, config.capabilityRegistry);
