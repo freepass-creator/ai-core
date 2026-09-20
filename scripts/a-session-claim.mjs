@@ -204,7 +204,8 @@ if (process.argv[1]?.endsWith('a-session-claim.mjs')) {
       console.log(JSON.stringify(result, null, 2));
     } else {
       console.error('Usage: node scripts/a-session-claim.mjs claim|status --repository owner/repo --revision <sha> --scope <scope> [--owner <id>] [--lease-minutes 60]');
-      console.error('       node scripts/a-session-claim.mjs renew --claim-id <id> --owner <id> [--lease-minutes 60]');\n      console.error('       node scripts/a-session-claim.mjs complete|abandon|supersede --claim-id <id> [--evidence <ref> ...]');
+      console.error('       node scripts/a-session-claim.mjs renew --claim-id <id> --owner <id> [--lease-minutes 60]');
+      console.error('       node scripts/a-session-claim.mjs complete|abandon|supersede --claim-id <id> [--evidence <ref> ...]');
       process.exit(2);
     }
   } catch (error) {
