@@ -38,7 +38,7 @@
     {
       "repository": "freepass-creator/aiops",
       "default_branch": "main",
-      "observed_head": "c37a422765e784cdd843f36efb4be5328d7df4bb",
+      "observed_head": "dd47662ec6e92a689cbc4b8a50504e6013845ff9",
       "audit_state": "DEEP_EVIDENCE",
       "independence": "INDEPENDENT_UNLESS_CANDIDATE_SPECIFIC_LINEAGE_IS_FOUND",
       "findings": [
@@ -47,9 +47,10 @@
         "workflow.fact-vs-state",
         "workflow.guard-vs-evidence",
         "workflow.hold-resume",
-        "workflow.obligation-pair"
+        "workflow.obligation-pair",
+        "workflow.capability-cutover-no-dual-run"
       ],
-      "note": null
+      "note": "A-session incremental re-audit at dd47662ec6e92a689cbc4b8a50504e6013845ff9: RTDB backup ownership transfer exposes project-verified no-dual-run capability cutover semantics routed to D; Security SHADOW parity is already represented elsewhere."
     },
     {
       "repository": "freepass-creator/billincar",
@@ -409,5 +410,6 @@
       ],
       "note": null
     }
-  ]
+  ],
+  "observed_at": "2026-09-20T11:12:00Z"
 }
