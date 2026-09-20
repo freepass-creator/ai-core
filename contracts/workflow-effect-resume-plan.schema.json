@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://freepass.local/contracts/workflow-effect-resume-plan/v1",
+  "title": "AI Core Prepared Effect Resume Plan v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "algorithm",
+    "plan_id",
+    "logical_execution_id",
+    "identity_digest",
+    "effects_digest",
+    "bindings_digest",
+    "receipts_digest",
+    "proof_inputs_digest",
+    "planner_result_digest",
+    "plan_digest",
+    "prepared_at",
+    "planner_result"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "workflow-effect-resume-plan/v1"
+    },
+    "algorithm": {
+      "const": "EFFECT_RESUME_PLAN_SHA256_V1"
+    },
+    "plan_id": {
+      "type": "string",
+      "pattern": "^resume-plan\\.[0-9a-f]{32}$"
+    },
+    "logical_execution_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "identity_digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "effects_digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "bindings_digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "receipts_digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "proof_inputs_digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "planner_result_digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "plan_digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "prepared_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "planner_result": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}
