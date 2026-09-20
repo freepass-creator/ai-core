@@ -44,6 +44,7 @@ export function buildWorkflowActionReceipt({
   started_at,
   ended_at,
   metrics=null,
+  execution=null,
 }={}){
   need(['EFFECT','COMPENSATION'].includes(phase),'WORKFLOW_RECEIPT_PHASE_INVALID');
   need(text(receipt_id),'RECEIPT_ID_REQUIRED');
@@ -83,6 +84,7 @@ export function buildWorkflowActionReceipt({
     evidence_refs:[...new Set([...(result.evidence_refs??[]),...(evidence_refs??[])].filter(text))],
     reproducibility:baseReproducibility(reproducibility),
     child_receipts:normalizeChildReceipts(child_receipts),
+    ...(execution?{execution:structuredClone(execution)}:{}),
     metrics:{
       phase,
       effect_id,
@@ -112,6 +114,7 @@ export function buildCompensationExecutionReceipt({
   proof_inputs=null,
   started_at,
   ended_at,
+  execution=null,
 }={}){
   need(text(receipt_id),'RECEIPT_ID_REQUIRED');
   need(text(actor),'RECEIPT_ACTOR_REQUIRED');
@@ -159,6 +162,7 @@ export function buildCompensationExecutionReceipt({
     ended_at,
     evidence_refs:[...new Set((evidence_refs??[]).filter(text))],
     reproducibility:baseReproducibility(reproducibility),
+    ...(execution?{execution:structuredClone(execution)}:{}),
     child_receipts,
     metrics:{
       effect_count:Array.isArray(execution_result.effect_results)?execution_result.effect_results.length:0,
