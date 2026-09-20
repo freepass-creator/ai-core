@@ -9,6 +9,37 @@ function projectMap(projectRegistry) {
   return new Map(projectRegistry.projects.map(project => [project.project_id, project]));
 }
 
+function auditRank(result) {
+  const schemaRank = result.schema === 'ai-core-project-audit-result/v2' ? 2 : 1;
+  const timeRank = result.schema === 'ai-core-project-audit-result/v2'
+    ? Date.parse(result.audited_at)
+    : 0;
+  return { schemaRank, timeRank: Number.isFinite(timeRank) ? timeRank : 0 };
+}
+
+function selectActiveAuditResults(auditResults, readinessRegistry) {
+  const grouped = new Map();
+  for (const result of auditResults) {
+    validateProjectAuditResult(result, readinessRegistry);
+    const key = result.project_id;
+    const existing = grouped.get(key);
+    if (!existing) {
+      grouped.set(key, result);
+      continue;
+    }
+    const a = auditRank(existing);
+    const b = auditRank(result);
+    if (b.schemaRank > a.schemaRank || (b.schemaRank === a.schemaRank && b.timeRank > a.timeRank)) {
+      grouped.set(key, result);
+    }
+  }
+
+  const active = [...grouped.values()];
+  const activeSet = new Set(active);
+  const superseded = auditResults.filter(result => !activeSet.has(result));
+  return { active, superseded };
+}
+
 function standardStatus(result, readinessRegistry) {
   if (result.schema === 'ai-core-project-audit-result/v1') {
     return {
@@ -40,10 +71,10 @@ export function buildProjectAuditRefreshQueue({
 }) {
   need(Array.isArray(auditResults), 'AUDIT_QUEUE_RESULTS_REQUIRED');
   const projects = projectMap(projectRegistry);
+  const { active, superseded } = selectActiveAuditResults(auditResults, readinessRegistry);
   const items = [];
 
-  for (const result of auditResults) {
-    validateProjectAuditResult(result, readinessRegistry);
+  for (const result of active) {
     const project = projects.get(result.project_id) ?? null;
     const standard = standardStatus(result, readinessRegistry);
 
@@ -52,6 +83,7 @@ export function buildProjectAuditRefreshQueue({
         project_id: result.project_id,
         repository: result.repository,
         audit_result_schema: result.schema,
+        audited_at: result.audited_at ?? null,
         audited_revision: result.subject_revision,
         registry_revision: null,
         registry_status: 'UNKNOWN',
@@ -106,6 +138,7 @@ export function buildProjectAuditRefreshQueue({
       project_id: result.project_id,
       repository: result.repository,
       audit_result_schema: result.schema,
+      audited_at: result.audited_at ?? null,
       audited_revision: result.subject_revision,
       registry_revision: registryRevision,
       registry_status: registryStatus,
@@ -125,11 +158,13 @@ export function buildProjectAuditRefreshQueue({
   );
 
   return {
-    schema: 'ai-core-project-audit-refresh-queue/v2',
+    schema: 'ai-core-project-audit-refresh-queue/v3',
     observed_registry_at: projectRegistry.observed_at ?? null,
     standard_baseline_revision: readinessRegistry.baseline_revision,
     totals: {
-      audits: items.length,
+      audit_records: auditResults.length,
+      active_audits: items.length,
+      superseded_history: superseded.length,
       registry_drift: items.filter(item => item.registry_status === 'REGISTRY_DRIFT').length,
       registry_match: items.filter(item => item.registry_status === 'REGISTRY_MATCH').length,
       standard_stale: items.filter(item => item.standard_baseline.status === 'STALE').length,
@@ -139,6 +174,14 @@ export function buildProjectAuditRefreshQueue({
       re_audit_candidates: items.filter(item => item.re_audit_candidate).length,
     },
     items,
-    rule: 'Registry comparison only prioritizes refresh work. A registry match is not proof that an audit is current, and legacy v1 audits cannot prove which AI Core standard baseline they used. Live project HEAD plus standard-baseline freshness must both pass.',
+    superseded_history: superseded.map(result => ({
+      project_id: result.project_id,
+      repository: result.repository,
+      audit_result_schema: result.schema,
+      audited_at: result.audited_at ?? null,
+      audited_revision: result.subject_revision,
+      reason: 'SUPERSEDED_BY_HIGHER_QUALITY_OR_NEWER_AUDIT',
+    })),
+    rule: 'One active audit is selected per project: v2 supersedes v1, and newer v2 audited_at supersedes older v2. Historical audits remain visible but cannot keep a project in the re-audit queue. Registry comparison only prioritizes refresh work; live project HEAD plus standard-baseline freshness must both pass.',
   };
 }
