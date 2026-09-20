@@ -1,7 +1,7 @@
 {
   "schema": "ai-core-a-session-evidence-registry/v1",
   "status": "RESEARCH_ROUTING_INDEX_NOT_CANONICAL",
-  "observed_at": "2026-09-20T01:18:00Z",
+  "observed_at": "2026-09-20T11:12:00Z",
   "policy": {
     "canonical_boundary": "A records evidence and routing only. B/C/D canonical standards may be changed only by their owning sessions.",
     "project_gt_core": "Generalize reusable project implementation and route candidate with exact revision evidence.",
@@ -492,6 +492,34 @@
           "status": "MIGRATION_REQUIRED",
           "observed_at": "2026-09-20T01:18:00Z",
           "reason": "Admin D projection parity is exact-head CI verified in SHADOW mode, but D is not yet the runtime write authority."
+        }
+      ]
+    },
+    {
+      "id": "workflow.capability-cutover-no-dual-run",
+      "classification": "PROJECT_GT_CORE",
+      "current_status": "ROUTED",
+      "evidence_level": "PROJECT_VERIFIED",
+      "routes": [
+        "D"
+      ],
+      "summary": "Capability ownership cutover must verify the replacement against the same source while preventing dual scheduled execution, then disable the old path only after successful replacement evidence.",
+      "source_registry": "docs/research/a-session-promotion-matrix.v1.json",
+      "revision_evidence": [
+        {
+          "repository": "freepass-creator/aiops",
+          "revision": "dd47662ec6e92a689cbc4b8a50504e6013845ff9",
+          "evidence_types": [
+            "CODE",
+            "DOC"
+          ]
+        }
+      ],
+      "state_history": [
+        {
+          "status": "ROUTED",
+          "observed_at": "2026-09-20T11:12:00Z",
+          "reason": "AIOps now contains the replacement RTDB backup engine and an explicit no-dual-run cutover gate; route to D without changing D canon."
         }
       ]
     }
