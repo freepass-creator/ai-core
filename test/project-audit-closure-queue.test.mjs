@@ -11,6 +11,7 @@ const readJson = path => readFile(new URL(path, import.meta.url),'utf8').then(JS
 const handoffFiles = [
   '../docs/handoffs/project-4/freepass-admin.handoff.json',
   '../docs/handoffs/project-4/freepasserp4.handoff.json',
+  '../docs/handoffs/project-4/freepasserp4-r5.handoff.json',
   '../docs/handoffs/project-4/freepass-estimate.handoff.json',
   '../docs/handoffs/project-4/aiops.handoff.json',
 ];
@@ -49,6 +50,8 @@ test('current issued handoffs produce four-project zero-completion queue', async
   });
 
   assert.equal(queue.totals.projects,4);
+  assert.equal(queue.totals.handoffs,6);
+  assert.equal(queue.totals.superseded_handoffs,2);
   assert.equal(queue.totals.implementation_tasks,15);
   assert.equal(queue.totals.discovery_tasks,2);
   assert.equal(queue.totals.actionable_tasks,17);
