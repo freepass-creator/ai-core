@@ -1,0 +1,74 @@
+{
+  "schema_version": "core-adapter-contract/v1",
+  "adapter_id": "freepass-estimate.quote-provider",
+  "adapter_version": "freepass-quote-provider/v1",
+  "port_id": "quote.provider.calculate",
+  "provider_scope": "configured-authoritative-quote-provider",
+  "project_scope": "freepass-estimate",
+  "source": {
+    "locator": "freepass-creator/freepass-estimate:apps/new/src/lib/quote/calculate.js",
+    "revision": "b526fdc73e812dcb0594d10caf2123bbade1d38b"
+  },
+  "compatibility": {
+    "port_versions": [
+      "v1"
+    ],
+    "engine_versions": [
+      "1.0.0"
+    ]
+  },
+  "mapping": [
+    {
+      "canonical_field": "quote.request",
+      "provider_field": "configured-provider.request",
+      "transformation": "route normalized QuoteRequest through provider-config and provider-specific engine adapter",
+      "unit_conversion": null
+    },
+    {
+      "canonical_field": "quote.result",
+      "provider_field": "configured-provider.result",
+      "transformation": "validate provider result contract then preserve canonical QuoteResult meaning",
+      "unit_conversion": null
+    }
+  ],
+  "side_effects": false,
+  "idempotency": "NOT_APPLICABLE",
+  "retry_policy": {
+    "max_attempts": 1,
+    "backoff": "NONE",
+    "retryable_error_codes": [
+      "UPSTREAM_UNAVAILABLE"
+    ]
+  },
+  "timeout_ms": 12000,
+  "auth_boundary": "provider credentials and proprietary execution remain server-side",
+  "data_classification": [
+    "INTERNAL",
+    "FINANCIAL"
+  ],
+  "failure_mapping": [
+    {
+      "provider_code": "PROVIDER_TIMEOUT",
+      "core_code": "UPSTREAM_UNAVAILABLE"
+    },
+    {
+      "provider_code": "PROVIDER_UNAVAILABLE",
+      "core_code": "UPSTREAM_UNAVAILABLE"
+    },
+    {
+      "provider_code": "PROVIDER_RESPONSE_INVALID",
+      "core_code": "UPSTREAM_INVALID_RESPONSE"
+    },
+    {
+      "provider_code": "PROVIDER_UNSUPPORTED",
+      "core_code": "DOMAIN_VALIDATION_FAILED"
+    }
+  ],
+  "health_check": "freepass-estimate:apps/new/scripts/check-provider-health-contract.mjs",
+  "verification_profile": [
+    "freepass-estimate:apps/new/scripts/check-provider-contract.mjs",
+    "freepass-estimate:apps/new/scripts/check-provider-runtime-policy.mjs",
+    "freepass-estimate:apps/new/scripts/test-provider-routing.mjs",
+    "freepass-estimate:apps/new/scripts/check-ai-core-contract-shadow.mjs"
+  ]
+}
