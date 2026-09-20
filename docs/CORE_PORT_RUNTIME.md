@@ -41,3 +41,20 @@ The runtime does not grant execution authority and does not own workflow retry p
 Code and tests are implemented on `work/ai-core-no-actions-20260920`.
 
 GitHub Actions were intentionally not used by user direction. Therefore the implementation is **NOT CI VERIFIED** and no canonical promotion is claimed.
+
+
+## Connector binding
+
+An Adapter may declare optional `connector_binding`:
+- connector id/version;
+- explicitly allowed Connector operation ids.
+
+Port Runtime resolves that Connector runtime and exposes only the allowed operation set to the Adapter. Adapter code cannot use the facade to invoke undeclared Connector operations.
+
+## Receipt binding
+
+`invokeWithReceipt()` returns:
+- the canonical `core-adapter-result/v1`;
+- a `core-receipt/v1` generated from the exact same input/result.
+
+The receipt can include `core-proof-input-binding/v1`, so source/config/schema/checker changes can make old proof stale without rewriting historical results.
