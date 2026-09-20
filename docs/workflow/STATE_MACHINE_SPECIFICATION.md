@@ -561,3 +561,28 @@ The recovery policy therefore records:
 `identity_owner=C / identity_contract_status=PENDING`
 
 Until C binds the shared logical execution identity contract and a second independent project proves the same failure/implementation class, this policy must not be promoted to COMMON_ADOPTED.
+
+## 21. Monotonic progression and forward-skip integrity
+
+Some workflows have an ordered durable progression where later valid business facts may skip intermediate UI milestones. D models this separately from ordinary one-edge transitions through the Workflow Progression contract.
+
+Machine authority:
+
+- `contracts/workflow-progression.schema.json`
+- `registry/workflow-progressions.json`
+- `src/workflow/progression.mjs`
+- `scripts/validate-workflow-progressions.mjs`
+
+Rules:
+
+1. Progression order is explicit; array order in a normal state axis is not silently treated as business rank.
+2. Backward durable progress is forbidden unless a separate correction/restore workflow explicitly exists.
+3. Forward skip may be allowed by the progression contract.
+4. Skipped intermediate states must not receive fabricated completion events, timestamps or stronger evidence merely to fill the sequence.
+5. A later target may logically imply a prerequisite fact. That inference must be explicit and provenance-bearing.
+6. An inferred weaker prerequisite must not be promoted into a stronger fact. Example: “quote was presented” does not prove “quote was sent.”
+7. Transient contact/transport outcomes must not regress previously proven durable business progress.
+8. C owns the typed provenance/evidence envelope; D owns when the workflow requires inferred-prerequisite provenance.
+
+The first project-verified source is FreePass Sales. The reusable primitive `workflow.forward-skip-evidence-integrity` remains PILOT until a second independent project verifies the same rule.
+
