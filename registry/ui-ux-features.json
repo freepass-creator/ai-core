@@ -1,6 +1,6 @@
 {
   "contract": "ai-core-ui-ux-feature-registry/v1",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "normative_source": "docs/SCREEN_DESIGN_STANDARD.md",
   "global_rules": {
     "invariants": [
@@ -1423,6 +1423,45 @@
         "keyboard-or-equivalent",
         "mobile-desktop",
         "failure-path"
+      ]
+    },
+    {
+      "id": "data.master-detail",
+      "family": "data",
+      "title": "Responsive master-detail workspace",
+      "kind": "pattern",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "DATA_SURFACE",
+        "RESPONSIVE"
+      ],
+      "required_states": [
+        "list",
+        "detail",
+        "work"
+      ],
+      "rules": [
+        "Desktop may present list, detail and work panes together when simultaneous context materially helps the task.",
+        "Mobile must not stack desktop panes into one long page; it presents one task pane at a time.",
+        "Selecting a list item moves to the detail pane on mobile while desktop may keep list and detail visible together.",
+        "Back from mobile detail restores the prior list query, selection and scroll context where the underlying entity still exists.",
+        "List and detail page-title hierarchy remains visually continuous across the transition."
+      ],
+      "verification": [
+        "desktop-multi-pane",
+        "mobile-single-pane",
+        "list-to-detail",
+        "back-restore",
+        "header-continuity"
+      ],
+      "evidence": [
+        {
+          "level": "PROJECT_VERIFIED",
+          "refs": [
+            "docs/FREEPASS_PRODUCT_UI_PROFILE.md",
+            "docs/UI_COMPOSITION_STANDARD.md"
+          ]
+        }
       ]
     },
     {
