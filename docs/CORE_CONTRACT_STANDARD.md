@@ -81,6 +81,19 @@ field-level provenance에는 source path, digest, transformation, verification s
 
 이 셋을 URL `/v1` 하나로 대체하지 않는다.
 
+### 3.1 Observed / inferred / derived fact evidence
+
+`core-fact-evidence/v1`은 사실 증거의 종류를 `OBSERVED | INFERRED | DERIVED`로 구분한다.
+
+- `OBSERVED`: 직접 source evidence가 존재
+- `INFERRED`: 명시된 rule과 basis fact로 추론
+- `DERIVED`: source evidence를 변환해 계산된 사실
+
+`INFERRED`는 반드시 `rule_ref`와 `basis_fact_refs`를 남긴다. 논리적으로 타당한 추론이라도 `OBSERVED`로 승격하지 않는다.
+
+D가 workflow에서 추론 필요 조건과 금지되는 stronger completion fact를 정하고, C는 그 결과를 표현하는 typed evidence envelope를 제공한다. 상세는 `docs/CORE_FACT_EVIDENCE.md`를 따른다.
+
+
 ## 4. Engine / Adapter
 
 ```
