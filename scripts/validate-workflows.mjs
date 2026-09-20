@@ -54,6 +54,31 @@ export function validateWorkflowRegistry(registry) {
         errors.push(error('SHADOW_SOURCE_PATH_DUPLICATE', `${base}/source_authority/files`, { path: pathValue }));
       }
     }
+    if (workflow.adoption_evidence) {
+      const evidencePath = `${base}/adoption_evidence`;
+      const evidenceFiles = workflow.adoption_evidence.verification.files.map(item => item.path);
+      for (const pathValue of duplicates(evidenceFiles)) {
+        errors.push(error('WORKFLOW_ADOPTION_EVIDENCE_PATH_DUPLICATE', `${evidencePath}/verification/files`, { path: pathValue }));
+      }
+
+      if (workflow.adoption_status === 'SHADOW'
+        && ['RUNTIME_PILOT', 'RUNTIME_CANONICAL'].includes(workflow.adoption_evidence.stage)) {
+        errors.push(error('SHADOW_WORKFLOW_CANNOT_CLAIM_RUNTIME_ADOPTION', evidencePath, {
+          stage: workflow.adoption_evidence.stage,
+        }));
+      }
+      if (workflow.adoption_evidence.stage === 'SOURCE_PARITY_VERIFIED'
+        && (workflow.adoption_evidence.verification.kind !== 'CI'
+          || workflow.adoption_evidence.verification.conclusion !== 'SUCCESS')) {
+        errors.push(error('SOURCE_PARITY_REQUIRES_SUCCESSFUL_CI', evidencePath));
+      }
+      if (workflow.adoption_status === 'PILOT'
+        && workflow.adoption_evidence.stage !== 'RUNTIME_PILOT') {
+        errors.push(error('PILOT_WORKFLOW_REQUIRES_RUNTIME_PILOT_EVIDENCE', evidencePath, {
+          stage: workflow.adoption_evidence.stage,
+        }));
+      }
+    }
     const axisIds = workflow.state_axes.map(axis => axis.axis_id);
     for (const id of duplicates(axisIds)) errors.push(error('AXIS_ID_DUPLICATE', `${base}/state_axes`, { axis_id: id }));
 
