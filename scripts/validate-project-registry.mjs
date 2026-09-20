@@ -33,7 +33,7 @@ export function validateProjectRegistry(registry) {
     // look identical as a bare null, and the second must never hide behind the
     // first. Same shape as the CI checker manifest, where `manual`/`pending`
     // entries each carry a required reason.
-    if (project.status === 'ACTIVE') {
+    if (project.execution_readiness_status === 'ACTIVE') {
       for (const field of ['test', 'build']) {
         if (project.commands[field]) continue;
         const reason = project.commands_absent_reason?.[field];
@@ -49,7 +49,10 @@ export function validateProjectRegistry(registry) {
         errors.push({ code: 'ABSENT_REASON_FOR_PRESENT_COMMAND', path: `${path}/commands_absent_reason/${field}` });
       }
     }
-    if (project.status === 'RETIRE' && project.deploy_targets.length) {
+    if (project.repository_lifecycle_status === 'RETIRE' && project.execution_readiness_status !== 'DISABLED') {
+      errors.push({ code: 'RETIRED_PROJECT_EXECUTION_NOT_DISABLED', path: `${path}/execution_readiness_status` });
+    }
+    if (project.repository_lifecycle_status === 'RETIRE' && project.deploy_targets.length) {
       errors.push({ code: 'RETIRED_PROJECT_HAS_DEPLOY_TARGET', path: `${path}/deploy_targets` });
     }
     if (!project.authoritative_sources.some((source) => source.kind === 'GIT' && source.revision === project.head_revision)) {
