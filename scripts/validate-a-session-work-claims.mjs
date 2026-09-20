@@ -24,6 +24,7 @@ export function validateAWorkClaims(registry) {
 
   const claimIds = new Set();
   const liveClaims = [];
+  const liveByOwner = new Map();
   const observedAt = Date.parse(registry.observed_at || '');
 
   registry.claims.forEach((claim, i) => {
@@ -62,6 +63,9 @@ export function validateAWorkClaims(registry) {
           add(errors,code,p,claim.claim_key + ' conflicts with ' + prior.path);
         }
       }
+      const ownerPrior = liveByOwner.get(claim.owner_session);
+      if (ownerPrior) add(errors,'LIVE_OWNER_DUPLICATE',p,claim.owner_session + ' already owns ' + ownerPrior.path);
+      else liveByOwner.set(claim.owner_session,{ claim, path:p });
       liveClaims.push({ claim, path:p });
     }
 
