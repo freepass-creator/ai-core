@@ -45,11 +45,34 @@ function normalizeIssues(value,coreCode=null){
   return issues;
 }
 
+function resolveConnectorFacade(adapter,connectors,correlation_id,auth_context,execution){
+  const binding=adapter.connector_binding;
+  if(binding==null) return null;
+  const runtime=connectors?.get?.(binding.connector_id)??connectors?.[binding.connector_id];
+  need(runtime,'CONNECTOR_RUNTIME_MISSING',{connector_id:binding.connector_id});
+  need(runtime.connector_id===binding.connector_id,'CONNECTOR_RUNTIME_ID_MISMATCH');
+  need(runtime.connector_version===binding.connector_version,'CONNECTOR_RUNTIME_VERSION_MISMATCH');
+  const allowed=new Set(binding.operation_ids);
+  for(const operationId of allowed){
+    need(runtime.operations?.includes?.(operationId),'CONNECTOR_OPERATION_NOT_AVAILABLE',{connector_id:binding.connector_id,operation_id:operationId});
+  }
+  return Object.freeze({
+    connector_id:binding.connector_id,
+    connector_version:binding.connector_version,
+    operation_ids:Object.freeze([...allowed]),
+    async invoke(operationId,request,{signal=null}={}){
+      need(allowed.has(operationId),'CONNECTOR_OPERATION_NOT_ALLOWED',{connector_id:binding.connector_id,operation_id:operationId});
+      return runtime.invoke(operationId,request,{correlation_id,auth_context,execution,signal});
+    }
+  });
+}
+
 export function createPortRuntime({
   engine,
   adapters=[],
   profile,
   implementations,
+  connectors=null,
   clock=Date.now,
   requireVerifiedBinding=true,
 }={}){
@@ -85,6 +108,7 @@ export function createPortRuntime({
     if(adapter.side_effects===true&&adapter.idempotency==='REQUIRED') need(text(idempotency_key),'IDEMPOTENCY_KEY_REQUIRED');
     const impl=normalizeImplementation(implementations,adapter.adapter_id);
     need(impl,'ADAPTER_IMPLEMENTATION_MISSING',{adapter_id:adapter.adapter_id});
+    const connector=resolveConnectorFacade(adapter,connectors,correlation_id,auth_context,execution);
 
     const startedAt=iso(clock);
     try{
@@ -96,6 +120,7 @@ export function createPortRuntime({
         correlation_id,
         idempotency_key,
         auth_context,
+        connector,
         binding:{project_id:profile.project_id,environment:profile.environment,subject_revision:profile.subject_revision},
       }),adapter.timeout_ms,adapter.adapter_id);
       need(raw&&typeof raw==='object'&&!Array.isArray(raw),'ADAPTER_IMPLEMENTATION_RESULT_INVALID');
