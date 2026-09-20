@@ -18,7 +18,7 @@ export function createCapabilityEngine({capabilityRegistry,projectRegistry,built
     if(!project) return{status:'HOLD',reason:'PROJECT_NOT_REGISTERED'};
     if(!capabilitySupportsProject(cap,project.project_id)) return{status:'HOLD',reason:'CAPABILITY_PROJECT_MISMATCH'};
     if(cap.status!=='ACTIVE') return{status:'HOLD',reason:'CAPABILITY_NOT_ACTIVE',hold_reason:cap.hold_reason,capability_id:cap.id,project_id:project.project_id};
-    if(project.status!=='ACTIVE') return{status:'HOLD',reason:'PROJECT_NOT_ACTIVE',capability_id:cap.id,project_id:project.project_id};
+    if(project.execution_readiness_status!=='ACTIVE') return{status:'HOLD',reason:'PROJECT_NOT_ACTIVE',capability_id:cap.id,project_id:project.project_id};
     if(route.target_revision!==project.head_revision) return{status:'HOLD',reason:'ROUTE_REVISION_STALE',capability_id:cap.id,project_id:project.project_id};
     return{status:'PLANNED',capability_id:cap.id,project_id:project.project_id,subject_revision:project.head_revision,
       order_id:nonempty(orderId)?orderId:null,work_id:nonempty(workId)?workId:null,mode:cap.mode,adapter:structuredClone(cap.adapter),
