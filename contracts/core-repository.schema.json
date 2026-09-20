@@ -9,6 +9,7 @@
     "repository_id",
     "repository_version",
     "port_id",
+    "port_version",
     "project_scope",
     "source",
     "entity_scope",
@@ -244,6 +245,10 @@
         "type": "string",
         "minLength": 1
       }
+    },
+    "port_version": {
+      "type": "string",
+      "pattern": "^v[1-9][0-9]*$"
     }
   }
 }
