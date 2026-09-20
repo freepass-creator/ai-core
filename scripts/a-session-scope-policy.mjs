@@ -28,6 +28,12 @@ export function isCanonicalASessionScope(scope) {
   return parseASessionScope(scope).valid;
 }
 
+export function requiresSubjectHeadGuard(scope) {
+  const parsed = parseASessionScope(scope);
+  if (!parsed.valid) return false;
+  return new Set(['repo-rescan','runtime-evidence','migration-gap']).has(parsed.family);
+}
+
 export const A_SESSION_SCOPE_POLICY = Object.freeze({
   canonical:[
     'repo-rescan',
@@ -41,5 +47,6 @@ export const A_SESSION_SCOPE_POLICY = Object.freeze({
     'repo-rescan conflicts with runtime-evidence:* and migration-gap:* on the same repository revision',
     'routing:* and coordination:* only conflict with the same exact scope'
   ],
-  terminal_coverage:'Completed work suppresses only the same exact canonical scope. Runtime/deployment evidence may legitimately change without a repository revision change.'
+  terminal_coverage:'Completed work suppresses only the same exact canonical scope. Runtime/deployment evidence may legitimately change without a repository revision change.',
+  completion_head_guard:['repo-rescan','runtime-evidence:*','migration-gap:*']
 });
