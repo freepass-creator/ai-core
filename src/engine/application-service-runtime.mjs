@@ -1,4 +1,6 @@
 import { resolveServiceBinding, validateAdapterContract } from '../contracts/engine-adapter-contract.mjs';
+import { buildAdapterReceipt } from '../contracts/adapter-receipt.mjs';
+import { buildServiceReceipt } from '../contracts/service-receipt.mjs';
 import { createAdapterInvocationRuntime } from './adapter-invocation-runtime.mjs';
 import { createRepositoryRuntime } from './repository-runtime.mjs';
 
@@ -65,6 +67,7 @@ export function createApplicationServiceRuntime({
     correlation_id,
     execution=null,
     auth_context=null,
+    receipt_context=null,
   }={}){
     need(text(useCaseName),'SERVICE_USE_CASE_REQUIRED');
     need(text(correlation_id),'CORRELATION_ID_REQUIRED');
@@ -121,6 +124,7 @@ export function createApplicationServiceRuntime({
 
     need(serviceImpl,'SERVICE_IMPLEMENTATION_REQUIRED');
     const portResults=[];
+    let portReceiptSequence=0;
     const repositoryByPort=new Map((binding.selected_repositories??[]).map(item=>[item.port_id,item]));
     const repositoryById=new Map(repositories.map(item=>[item.repository_id,item]));
     const availablePorts=[...new Set([...invocation.ports,...repositoryByPort.keys()])];
@@ -141,13 +145,43 @@ export function createApplicationServiceRuntime({
             clock,
           });
           need(text(options.repository_operation_id),'REPOSITORY_OPERATION_ID_REQUIRED',{port_id:portId});
-          const result=await runtime.invoke(options.repository_operation_id,portInput,{
+          const invokeOptions={
             correlation_id,
             idempotency_key:options.idempotency_key??idempotency_key,
             expected_revision:options.expected_revision??null,
             auth_context:options.auth_context??auth_context,
             execution:options.execution??execution,
-          });
+          };
+          if(receipt_context){
+            portReceiptSequence+=1;
+            const child=await runtime.invokeWithReceipt(options.repository_operation_id,portInput,{
+              ...invokeOptions,
+              receipt:{
+                receipt_id:`${receipt_context.receipt_id}.child.${portReceiptSequence}`,
+                operation_id:`${receipt_context.receipt_id}.op.${portReceiptSequence}`,
+                operation_kind:options.repository_operation_id,
+                actor:receipt_context.actor,
+                executor:repository.repository_id,
+                input_refs:options.input_refs??[],
+                output_refs:options.output_refs??[],
+                evidence_refs:options.evidence_refs??[],
+                proof_inputs:options.proof_inputs??null,
+                reproducibility:{
+                  ...receipt_context.reproducibility,
+                  executor_version:repository.repository_version,
+                  command_ref:options.repository_operation_id,
+                }
+              }
+            });
+            portResults.push({
+              port_id:portId,
+              binding_kind:'REPOSITORY',
+              result:child.repository_result,
+              receipt:child.receipt
+            });
+            return child.repository_result;
+          }
+          const result=await runtime.invoke(options.repository_operation_id,portInput,invokeOptions);
           portResults.push({port_id:portId,binding_kind:'REPOSITORY',result});
           return result;
         }
@@ -158,6 +192,30 @@ export function createApplicationServiceRuntime({
           execution:options.execution??execution,
           auth_context:options.auth_context??auth_context,
         });
+        if(receipt_context){
+          portReceiptSequence+=1;
+          const selected=binding.selected_adapters.find(item=>item.port_id===portId);
+          const receipt=buildAdapterReceipt({
+            receipt_id:`${receipt_context.receipt_id}.child.${portReceiptSequence}`,
+            operation_id:`${receipt_context.receipt_id}.op.${portReceiptSequence}`,
+            operation_kind:portId,
+            actor:receipt_context.actor,
+            executor:selected?.adapter_id??result.adapter_id,
+            adapter_result:result,
+            input:portInput,
+            input_refs:options.input_refs??[],
+            output_refs:options.output_refs??[],
+            evidence_refs:options.evidence_refs??[],
+            proof_inputs:options.proof_inputs??null,
+            reproducibility:{
+              ...receipt_context.reproducibility,
+              executor_version:selected?.adapter_version??result.adapter_version,
+              command_ref:portId,
+            }
+          });
+          portResults.push({port_id:portId,binding_kind:'ADAPTER',result,receipt});
+          return result;
+        }
         portResults.push({port_id:portId,binding_kind:'ADAPTER',result});
         return result;
       }
@@ -213,9 +271,57 @@ export function createApplicationServiceRuntime({
     }
   }
 
+  async function runWithReceipt(useCaseName,input,options={}){
+    const {receipt:receiptOptions,...runOptions}=options;
+    need(receiptOptions&&typeof receiptOptions==='object','RECEIPT_OPTIONS_REQUIRED');
+    need(text(receiptOptions.receipt_id),'RECEIPT_ID_REQUIRED');
+    need(text(receiptOptions.actor),'RECEIPT_ACTOR_REQUIRED');
+    need(receiptOptions.reproducibility&&typeof receiptOptions.reproducibility.deterministic==='boolean','RECEIPT_REPRODUCIBILITY_REQUIRED');
+
+    const service_result=await run(useCaseName,input,{
+      ...runOptions,
+      receipt_context:receiptOptions,
+    });
+    const child_receipts=(service_result.port_results??[])
+      .filter(item=>item.receipt?.receipt_id)
+      .map(item=>({
+        receipt:item.receipt,
+        relation:item.binding_kind==='REPOSITORY'?'REPOSITORY':'ADAPTER'
+      }));
+
+    const receipt=buildServiceReceipt({
+      receipt_id:receiptOptions.receipt_id,
+      operation_id:receiptOptions.operation_id??`${receiptOptions.receipt_id}.operation`,
+      operation_kind:receiptOptions.operation_kind??`${service.service_id}.${useCaseName}`,
+      actor:receiptOptions.actor,
+      executor:receiptOptions.executor??service.service_id,
+      service_result,
+      input,
+      input_refs:receiptOptions.input_refs??[],
+      output_refs:receiptOptions.output_refs??[],
+      evidence_refs:receiptOptions.evidence_refs??[],
+      child_receipts,
+      proof_inputs:receiptOptions.proof_inputs??null,
+      reproducibility:{
+        ...receiptOptions.reproducibility,
+        executor_version:receiptOptions.reproducibility.executor_version??service.version,
+        command_ref:receiptOptions.reproducibility.command_ref??useCaseName,
+      },
+      milestones:receiptOptions.milestones??[],
+      metrics:{
+        ...(receiptOptions.metrics??{}),
+        child_receipt_count:child_receipts.length,
+      },
+      source_revision:service.source?.revision??null,
+    });
+
+    return {service_result,receipt,child_receipts:child_receipts.map(item=>item.receipt)};
+  }
+
   return Object.freeze({
     binding:Object.freeze(describe()),
     describe,
     run,
+    runWithReceipt,
   });
 }
