@@ -1,0 +1,42 @@
+{
+  "schema": "ai-core-project-audit-ops-policy/v1",
+  "status": "PROJECT4_LOCAL_POLICY",
+  "purpose": "Operational prioritization for Project 4 closure queue only. This is not a company-wide SLA standard and does not override project or standard-owner governance.",
+  "aging_basis": "handoff.audit_binding.audited_at",
+  "priorities": {
+    "P1": {
+      "sla_hours": 72,
+      "warning_after_hours": 48,
+      "description": "Material migration gap requiring project implementation."
+    },
+    "P2": {
+      "sla_hours": 168,
+      "warning_after_hours": 120,
+      "description": "Discovery or evidence work required before implementation."
+    },
+    "P3": {
+      "sla_hours": 336,
+      "warning_after_hours": 240,
+      "description": "Advisory research / standard-owner review."
+    },
+    "NONE": {
+      "sla_hours": null,
+      "warning_after_hours": null,
+      "description": "No project action."
+    }
+  },
+  "aging_states": {
+    "ON_TRACK": "Below warning threshold.",
+    "AT_RISK": "At or above warning threshold but below SLA.",
+    "OVERDUE": "At or above SLA.",
+    "CLOSED": "Task is audit-closed.",
+    "NOT_APPLICABLE": "No operational SLA applies."
+  },
+  "rules": [
+    "Aging is measured from the handoff audit timestamp because v1 handoffs do not carry a separate issued_at field.",
+    "A refreshed handoff resets the aging basis to the refreshed audit timestamp.",
+    "Completion reports stop project-work aging only for tasks reported DONE or NOT_APPLICABLE; audit closure is still tracked separately.",
+    "CLOSED_VERIFIED stops all Project 4 aging for the closed task.",
+    "SLA breach is an operational signal only; it does not authorize project writes, merges, escalation actions, deployment or production mutation."
+  ]
+}
