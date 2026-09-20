@@ -1,6 +1,6 @@
 {
   "schema_version": "1.1",
-  "observed_at": "2026-09-19T10:46:16Z",
+  "observed_at": "2026-09-20T10:50:00Z",
   "projects": [
     {
       "project_id": "ai-core",
@@ -316,13 +316,13 @@
       "repository": "freepass-creator/freepass-sales",
       "default_branch": "main",
       "local_path": "C:\\dev\\sales",
-      "head_revision": "fe69f76d81f4b9acd6f67f7b3f4ef5619f5e33d1",
+      "head_revision": "e8a96166e0961455119d9721501f26ecda229d03",
       "authoritative_sources": [
         {
           "kind": "GIT",
           "ref": "freepass-creator/freepass-sales",
-          "revision": "fe69f76d81f4b9acd6f67f7b3f4ef5619f5e33d1",
-          "observed_at": "2026-09-18T14:19:31Z"
+          "revision": "e8a96166e0961455119d9721501f26ecda229d03",
+          "observed_at": "2026-09-20T10:50:00Z"
         }
       ],
       "commands": {
