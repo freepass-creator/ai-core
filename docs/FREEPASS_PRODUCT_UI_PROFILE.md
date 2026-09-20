@@ -13,6 +13,26 @@
 - dialog도 실행은 footer
 - page header에 Save/Submit/Share 같은 CTA를 되돌려 놓지 않는다
 
+## 1-1. 공용 하단바는 유지되고 버튼 세트만 바뀐다
+
+FreePass 모바일은 화면마다 서로 다른 CTA 영역을 새로 만들지 않는다.
+
+- 같은 bottom action region을 계속 사용한다.
+- depth 0에서는 제품이 정한 글로벌 하단 네비게이션을 표시할 수 있다.
+- 상세/업무 depth로 들어가면 같은 자리가 contextual action bar로 바뀐다.
+- 기본 contextual 비율은 보조 3 : 주행동 7.
+- 한 boundary 안의 primary는 하나만 둔다.
+- 화면/상태가 바뀌면 버튼 label/action만 교체한다.
+- 상단은 정보/상태 중심이며 Save/Submit/Complete 같은 업무 CTA를 올리지 않는다.
+
+FreePass Admin 현재 승인 예:
+- 상품 상세: `공유 | 이 조건으로 접수하기`
+- 신규 접수: `그만두기 | 접수 저장`
+- 접수 진행: `접수 취소 | 현재 다음 업무`
+- 실적 검토: `이견/이슈 | 확인/공급사 확인/정산 확정`
+- 청구: `계산서 처리 | 수금 등록`
+- 지급: `지급 보류 | 지급 등록`
+
 ## 2. 단일선택은 즉시 전진
 
 Estimate 모바일 기준:
