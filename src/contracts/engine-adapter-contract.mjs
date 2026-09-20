@@ -58,6 +58,16 @@ export function validateBindingProfile(profile,{requireVerified=false}={}){
     const portIds=binding.ports.map(x=>x?.port_id);
     need(new Set(portIds).size===portIds.length,`ENGINE_BINDING_PORT_DUPLICATE:${key}`);
   }
+  const serviceKeys=new Set();
+  for(const binding of profile.service_bindings??[]){
+    need(text(binding?.service_id)&&text(binding?.service_version),'SERVICE_BINDING_IDENTITY_REQUIRED');
+    const key=`${binding.service_id}@${binding.service_version}`;
+    need(!serviceKeys.has(key),`SERVICE_BINDING_DUPLICATE:${key}`);
+    serviceKeys.add(key);
+    need(Array.isArray(binding.ports),'SERVICE_BINDING_PORTS_INVALID');
+    const portIds=binding.ports.map(x=>x?.port_id);
+    need(new Set(portIds).size===portIds.length,`SERVICE_BINDING_PORT_DUPLICATE:${key}`);
+  }
   return {status:'VALID'};
 }
 
