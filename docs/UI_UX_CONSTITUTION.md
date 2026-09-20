@@ -66,6 +66,20 @@ Company role values currently fixed from normative/platform/internal evidence:
 
 A reusable screen feature starts with `registry/ui-ux-features.json`. Component features are projected into `design-system/components.registry.json`; pattern/workflow/surface features are projected into `design-system/patterns.registry.json`. Cross-component behavior is governed by `design-system/interaction.contract.json`. Consumer screens declare their feature set with `contracts/ui-screen-manifest.schema.json`, including explicit `C:` data/API and `D:` workflow bindings. Screens compose those contracts; they do not invent local substitutes.
 
+## C/D execution feedback projection
+
+B의 `src/engine/ui-operation-feedback.mjs`는 C/D 결과를 기존 feedback feature로 투영한다.
+
+핵심 원칙:
+- adapter 기술 성공을 업무 완료로 표시하지 않는다.
+- 자동 retry는 진행 상태로 표시하고 임의 retry 버튼을 만들지 않는다.
+- manual retry/hold/resume 등 행동 버튼은 D가 제공한 allowed action만 노출한다.
+- verified completion receipt가 있을 때만 completion feedback을 표시한다.
+- partial state와 escalation은 blocking feedback으로 유지한다.
+
+세부 규격은 `docs/UI_OPERATION_FEEDBACK_PROJECTION.md`를 따른다.
+
+
 ## A-session promotion intake
 
 When A session sends a project pattern:
