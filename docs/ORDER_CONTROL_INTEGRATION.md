@@ -35,6 +35,8 @@ SQLite와 work ledger 두 저장소 사이에 원자적 트랜잭션이 있다�
 
 snapshot 파일 교체 뒤 outbox 승인 전에 중단된 재시도도 예외가 아니다. 기존 Work 항목을 발견하면 ID·프로젝트·SHA만 대조하지 않고 전체 snapshot을 Control Tower로 다시 검증한 뒤에만 `SNAPSHOT_WRITTEN`으로 승격한다. 불완전하거나 손상된 기존 항목은 `CONTROL_SNAPSHOT_INVALID` HOLD로 남긴다.
 
+새 Work를 추가하는 경우에도 전체 후보 snapshot을 먼저 검증하고, 검증에 성공한 바이트만 원자적으로 교체한다. 기존 snapshot이 이미 손상됐다면 새 항목을 덧쓴 파일로 교체하지 않고 원본을 그대로 보존한 채 HOLD한다.
+
 ## 브랜치 통합 순서
 
 1. #20의 공통 계약과 원장 변경을 먼저 검토·고정한다. 위 커밋 이후 변경됐다면 다시 대조한다.

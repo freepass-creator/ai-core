@@ -255,10 +255,10 @@ export function createOrderWorkIntakeCoordinator({store,workSources,ordersDbPath
       need(found.project_id===row.project_id&&found.subject_revision===row.subject_revision,'SNAPSHOT_ITEM_CONFLICT');
     }else{
       snapshot={...snapshot,as_of:iso(clock),items:[...snapshot.items,snapshotItem(order,row,row.event,project)]};
-      await writeSnapshotAtomic(snapshot);
     }
     const checked=runControlTower({registry:reg,snapshot,ledgerText:current.text});
     need(checked.status!=='INVALID','CONTROL_SNAPSHOT_INVALID');
+    if(!found) await writeSnapshotAtomic(snapshot);
     if(row.state!=='SNAPSHOT_WRITTEN') row=state(row,'SNAPSHOT_WRITTEN',{head:current.head,reason:null,attemptHead:row.attempt_head});
     return row;
   }

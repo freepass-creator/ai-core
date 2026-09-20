@@ -216,3 +216,24 @@ test('retry refuses a corrupt snapshot left between file write and outbox acknow
   assert.equal(outbox.state,'HOLD');
   assert.equal(outbox.reason,'CONTROL_SNAPSHOT_INVALID');
 });
+
+test('new intake validates a pre-existing corrupt snapshot before replacing the file',async t=>{
+  const f=await fixture(t);
+  const first=await (await f.post('/api/orders',orderInput({title:'보고서 제작',intent:'보고서 만들어'}))).json();
+  const linked=await (await f.post(`/api/orders/${first.id}/work-intake`)).json();
+  assert.equal(linked.status,'WORK_LINKED');
+
+  const corrupt=JSON.parse(readFileSync(f.snapshotPath,'utf8'));
+  delete corrupt.items[0].authorization;
+  const corruptText=JSON.stringify(corrupt,null,2)+'\n';
+  writeFileSync(f.snapshotPath,corruptText);
+
+  const second=await (await f.post('/api/orders',orderInput({title:'ERP 상품 상세',intent:'ERP 상품 상세 고쳐'}))).json();
+  const rejected=await (await f.post(`/api/orders/${second.id}/work-intake`)).json();
+  assert.equal(rejected.status,'HOLD');
+  assert.equal(rejected.reason,'CONTROL_SNAPSHOT_INVALID');
+  assert.equal(readFileSync(f.snapshotPath,'utf8'),corruptText,'validation failure must not replace the existing snapshot');
+  const outbox=f.store.db.prepare('SELECT state,reason FROM work_intake_outbox WHERE command_id=?').get(rejected.command_id);
+  assert.equal(outbox.state,'HOLD');
+  assert.equal(outbox.reason,'CONTROL_SNAPSHOT_INVALID');
+});
