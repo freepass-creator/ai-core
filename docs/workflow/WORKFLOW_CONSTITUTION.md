@@ -140,9 +140,9 @@ Machine authority:
 The first D runtime migration is active on this branch.
 
 - `registry/workflows.json -> ai-core.work-lifecycle` is the **CANONICAL state-graph authority**.
-- `scripts/work-ledger.mjs` consumes that graph for allowed lifecycle transitions, and every new append must also pass the generic D Workflow Engine admission decision.
+- `scripts/work-ledger.mjs` consumes that graph for lifecycle meaning, and the generic D Workflow Engine is the primary admission authority for every new append.
 - Work Ledger remains the **CANONICAL append-only history authority** for event chain, subject revision, verification capture and closure evidence.
-- The generic D engine is now a mandatory admission gate for new Work transitions, but is not yet the sole executor; Work Ledger still owns append-only history, hash-chain, revision and evidence enforcement.
+- The generic D engine now owns new-write workflow admission. Work Ledger verifier remains the storage/history compatibility backstop for event schema, append-only hash-chain, historical readability, revision/evidence integrity and stable Ledger error translation.
 - Order Task lifecycle is **CANONICAL** in D Registry, and OrderStore uses D Engine output for task target states and derived Order status.
 - Capability Execution lifecycle is **CANONICAL** in D Registry, and RESERVED -> RESULT persistence requires D Engine approval.
 - Cross-machine Workflow Bridges remain **SHADOW**; capability results feed evidence but do not directly transition Work.

@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { readFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
-import { appendLedgerEvent, inspectLedgerEventWithWorkflow, verifyLedgerText } from '../scripts/work-ledger.mjs';
+import { appendLedgerEvent, decideLedgerAppend, inspectLedgerEventWithWorkflow, verifyLedgerText } from '../scripts/work-ledger.mjs';
 import { createWorkLedgerShadow } from '../src/workflow/work-ledger-shadow.mjs';
 import { lifecycleGraph } from '../src/workflow/registry.mjs';
 
@@ -141,6 +141,45 @@ test('new Work Ledger appends are explicitly admitted or rejected by the D Workf
     assert.equal(acceptedInspection.eligible, true, JSON.stringify(acceptedInspection));
     assert.equal(rejectedInspection.eligible, false, JSON.stringify(rejectedInspection));
     assert.ok(rejectedInspection.reasons.includes('TRANSITION_NOT_ALLOWED'));
+  } finally {
+    await fixture.close();
+  }
+});
+
+test('D Engine owns new-write revision admission while the historical Ledger reader stays backward compatible', async () => {
+  const fixture = await openFixture('PLANNED');
+  try {
+    const text = await readFile(fixture.path, 'utf8');
+    const drift = fixture.makeEvent({
+      type: 'TRANSITIONED',
+      from_state: 'PLANNED',
+      to_state: 'IN_PROGRESS',
+      subject_revision: REV_B,
+    });
+
+    const decision = decideLedgerAppend(text, drift);
+
+    assert.equal(decision.accepted, false);
+    assert.equal(decision.rejection_code, 'REVISION_CHANGE_REQUIRES_REOBSERVED');
+    assert.equal(decision.workflow_inspection.eligible, false);
+    assert.ok(
+      decision.workflow_inspection.reasons.includes('GUARD_FAILED:work.subject-revision-same'),
+      JSON.stringify(decision.workflow_inspection),
+    );
+
+    // Historical compatibility intentionally still reads this candidate shape;
+    // it must not regain authority over whether a NEW write is allowed.
+    assert.equal(decision.candidate_verification.status, 'VALID');
+
+    await assert.rejects(
+      () => appendLedgerEvent(fixture.path, drift, fixture.head),
+      /REVISION_CHANGE_REQUIRES_REOBSERVED/,
+    );
+
+    const unchanged = verifyLedgerText(await readFile(fixture.path, 'utf8'));
+    assert.equal(unchanged.status, 'VALID');
+    assert.equal(unchanged.head, fixture.head);
+    assert.equal(unchanged.work['WORK-001'].state, 'PLANNED');
   } finally {
     await fixture.close();
   }
