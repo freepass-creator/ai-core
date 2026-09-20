@@ -204,3 +204,31 @@ test('identity mismatch is HOLD and ranks ahead of ordinary drift', async () => 
   assert.equal(queue.items[0].priority, 0);
   assert.ok(queue.items[0].reasons.includes('REPOSITORY_IDENTITY_MISMATCH'));
 });
+
+
+test('ERP4 v2 supersedes v1 while stale registry only requests live freshness review', async () => {
+  const [readinessRegistry, projectRegistry, legacy, currentV2] = await Promise.all([
+    readJson('../registry/project-audit-readiness.json'),
+    readJson('../registry/projects.json'),
+    readJson('../docs/audits/freepasserp4-pilot-2026-09-20.json'),
+    readJson('../docs/audits/freepasserp4-v2-2026-09-20.json'),
+  ]);
+
+  const queue = buildProjectAuditRefreshQueue({
+    readinessRegistry,
+    projectRegistry,
+    auditResults: [legacy, currentV2],
+  });
+
+  const erp4 = queue.items.find(item => item.project_id === 'freepasserp4');
+  assert.ok(erp4);
+  assert.equal(erp4.audit_result_schema, 'ai-core-project-audit-result/v2');
+  assert.equal(erp4.audited_revision, 'd2e6953a7bc99d75349705946b8b46674447af7a');
+  assert.equal(erp4.registry_status, 'REGISTRY_DRIFT');
+  assert.equal(erp4.standard_baseline.status, 'CURRENT');
+  assert.equal(erp4.freshness_review_required, true);
+  assert.equal(erp4.re_audit_candidate, false);
+  assert.ok(erp4.reasons.includes('REGISTRY_REVISION_MOVED'));
+  assert.equal(queue.totals.superseded_history, 1);
+  assert.equal(queue.superseded_history[0].audit_result_schema, 'ai-core-project-audit-result/v1');
+});
