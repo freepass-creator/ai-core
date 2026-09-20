@@ -1,5 +1,9 @@
 # Work / Codex — Read This First
 
+## Chat results must reach GitHub
+
+Work performed in a chat must follow [Chat to GitHub handoff policy](docs/CHAT_GITHUB_HANDOFF_POLICY.md). The chat is a working surface, while the relevant project repository is the durable handoff record. Preserve only reviewed minimal context and evidence pointers; do not copy sensitive raw conversations into GitHub.
+
 ## 비상 진입점 — 해당 작업을 계속하기 전에
 
 데이터 훼손·배포/보안 사고·AI 동시 수정·정본 불명확이 의심되면 [비상매뉴얼](docs/EMERGENCY_RUNBOOK.md)을 먼저 읽는다. 해당 작업의 추가 쓰기는 보류하고, 정상 서비스와 다른 작업은 보존한다.
