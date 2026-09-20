@@ -171,9 +171,33 @@ FreePass Admin의 상품 찾기 기본 mode는 **SEARCH_FILTER**다.
 접수/정산의 상태 tabs는 검색 quick filter가 아니라 **업무 workflow navigation/filter**로 분류하며,
 각 화면의 상태 업무량과 빈도를 근거로 별도 유지할 수 있다.
 
+## 10. Direct Variant Selector
+
+검색 결과를 좁히는 Quick Filter와, 실제 상품/서비스 variant를 고르는 선택줄을 구분한다.
+
+예:
+- 계약기간 13 / 27 / 48개월
+- 트림
+- 요금제
+- 실제 재고 옵션
+
+이 경우 `data.variant-selector`를 사용한다.
+
+규칙:
+- source data에 실제 존재하는 값만 표시한다.
+- 관행적인 12/24/36/48/60 등을 빈 자리를 채우기 위해 만들지 않는다.
+- 가로 선택줄은 overflow 시 horizontal scroll을 허용한다.
+- 선택 상태를 명확하게 보여 준다.
+- 한 표시값 아래 서로 다른 조건 variant가 여러 개면 하위 선택지를 그대로 노출한다.
+- 최종 선택된 stable variant id가 다음 workflow로 넘어간다.
+- 검색 query를 바꾸는 동작이 아니므로 Search Quick Filter로 분류하지 않는다.
+
 ## Machine binding
 
 - feature: `data.search-discovery`
 - runtime shell: `.ui-search-discovery`
 - modes: `search-only | search-filter | search-quick | search-filter-quick`
 - interaction contract: `search_discovery_composition`
+- direct variant feature: `data.variant-selector`
+- direct variant runtime: `.ui-variant-selector`
+- direct variant interaction: `variant_selection`
