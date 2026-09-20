@@ -85,3 +85,8 @@ It cannot write:
 ## Canonical scope alignment
 
 Review claims use the existing A scope policy. Route ids are normalized into `coordination:review-...`; no new claim-scope family is introduced. This means review allocation participates in the same overlap, lease, heartbeat and stale-reaper rules as the rest of A-session coordination.
+
+
+## Stable owner alignment
+
+Allocator claims require the same stable owner identity as every other A claim: `A-session-<stable-unique-id>`. Use `--owner` or `AI_CORE_A_SESSION_ID`. Stale review claims are superseded only by the same owner that acquired them.
