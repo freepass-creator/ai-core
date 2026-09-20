@@ -20,7 +20,7 @@ export function validateRepositoryContract(repository){
     need(!ids.has(operation.operation_id),`REPOSITORY_OPERATION_DUPLICATE:${operation.operation_id}`);
     ids.add(operation.operation_id);
     need(['READ','LIST','CREATE','MUTATE','UPSERT','DELETE'].includes(operation.kind),'REPOSITORY_OPERATION_KIND_INVALID');
-    need(['REQUIRED','SUPPORTED','NOT_APPLICABLE'].includes(operation.idempotency),'REPOSITORY_IDEMPOTENCY_INVALID');
+    need(['REQUIRED','SUPPORTED','CALLER_ENFORCED','NOT_APPLICABLE'].includes(operation.idempotency),'REPOSITORY_IDEMPOTENCY_INVALID');
     need(['REQUIRED','SUPPORTED','NOT_APPLICABLE'].includes(operation.expected_revision),'REPOSITORY_EXPECTED_REVISION_INVALID');
     if(operation.side_effects===true){
       hasWrite=true;
