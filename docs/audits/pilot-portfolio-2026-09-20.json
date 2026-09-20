@@ -1,0 +1,39 @@
+{
+  "schema": "ai-core-project-audit-portfolio/v1",
+  "date": "2026-09-20",
+  "projects": [
+    "freepass-admin",
+    "freepasserp4",
+    "freepass-estimate",
+    "aiops"
+  ],
+  "counts": {
+    "CORE_MATCH": 13,
+    "PROJECT_AHEAD": 1,
+    "MIGRATION_GAP": 8,
+    "RESEARCH_ADVISORY": 8,
+    "UNKNOWN": 2
+  },
+  "axis_summary": {
+    "ui-ux": ["MIGRATION_GAP", "MIGRATION_GAP", "CORE_MATCH", "UNKNOWN"],
+    "data-ssot": ["CORE_MATCH", "CORE_MATCH", "CORE_MATCH", "CORE_MATCH"],
+    "engine-adapter": ["CORE_MATCH", "CORE_MATCH", "CORE_MATCH", "CORE_MATCH"],
+    "api-event-error": ["CORE_MATCH", "MIGRATION_GAP", "CORE_MATCH", "CORE_MATCH"],
+    "workflow": ["CORE_MATCH", "MIGRATION_GAP", "UNKNOWN", "MIGRATION_GAP"],
+    "security-audit": ["RESEARCH_ADVISORY", "RESEARCH_ADVISORY", "RESEARCH_ADVISORY", "RESEARCH_ADVISORY"],
+    "qa-observability": ["RESEARCH_ADVISORY", "RESEARCH_ADVISORY", "RESEARCH_ADVISORY", "RESEARCH_ADVISORY"],
+    "build-deploy-governance": ["MIGRATION_GAP", "PROJECT_AHEAD", "MIGRATION_GAP", "MIGRATION_GAP"]
+  },
+  "core_p0_priorities": [
+    "security-audit-canonicalization",
+    "qa-observability-canonicalization",
+    "build-deploy-governance-machine-profile"
+  ],
+  "permissions": {
+    "read_only_audit": true,
+    "migration_planning": true,
+    "auto_remediation": false,
+    "full_conformance_claim": false,
+    "production_mutation": false
+  }
+}
