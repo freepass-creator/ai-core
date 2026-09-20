@@ -67,7 +67,9 @@
     "a:claims:reap": "node scripts/a-session-claim-health.mjs reap",
     "workflow:compensation:validate": "node scripts/validate-workflow-compensation-policies.mjs",
     "workflow:schedule-timing:validate": "node scripts/validate-workflow-schedule-timing-policies.mjs",
-    "uiux:machine": "node scripts/validate-ui-ux-machine-conformance.mjs --self-test"
+    "uiux:machine": "node scripts/validate-ui-ux-machine-conformance.mjs --self-test",
+    "a:review:next": "node scripts/a-session-review-next.mjs",
+    "a:review:allocator:check": "node scripts/a-session-review-next.mjs --local-check"
   },
   "dependencies": {
     "ajv": "8.20.0",
