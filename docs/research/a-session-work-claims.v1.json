@@ -1,7 +1,7 @@
 {
   "schema": "ai-core-a-session-work-claims/v1",
   "status": "RESEARCH_COORDINATION_NOT_CANONICAL",
-  "observed_at": "2026-09-20T01:25:00Z",
+  "observed_at": "2026-09-20T01:28:00Z",
   "policy": {
     "claim_key": "<repository>@<subject_revision>::<scope>",
     "live_claim": "state=ACTIVE and lease_until > observed_at",
@@ -11,5 +11,19 @@
     "revision_guard": "Before material writes, re-check the repository head. If it moved, abandon or supersede the old claim and claim the new revision.",
     "canonical_boundary": "Claims coordinate A-session research only and never change B/C/D canonical standards."
   },
-  "claims": []
+  "claims": [
+    {
+      "claim_id": "A-CLAIM-20260920-0128-CONCURRENCY-RUNTIME",
+      "claim_key": "freepass-creator/ai-core@fb3d41721eba6268b127ffc801d3ab5e19b096e9::a-concurrency-runtime",
+      "repository": "freepass-creator/ai-core",
+      "subject_revision": "fb3d41721eba6268b127ffc801d3ab5e19b096e9",
+      "scope": "a-concurrency-runtime",
+      "owner_session": "A-session-current-chat",
+      "state": "ACTIVE",
+      "claimed_at": "2026-09-20T01:28:00Z",
+      "lease_until": "2026-09-20T02:28:00Z",
+      "completed_at": null,
+      "evidence_refs": []
+    }
+  ]
 }
