@@ -1,4 +1,5 @@
 import { readFile } from 'node:fs/promises';
+import { isCanonicalASessionScope, aSessionScopesConflict } from './a-session-scope-policy.mjs';
 
 const SHA40 = /^[0-9a-f]{40}$/;
 const STATES = new Set(['ACTIVE','COMPLETED','ABANDONED','SUPERSEDED']);
@@ -21,7 +22,7 @@ export function validateAWorkClaims(registry) {
   if (!Array.isArray(registry.claims)) return { status:'INVALID', errors:[...errors,{ code:'CLAIMS_NOT_ARRAY', path:'/claims' }] };
 
   const claimIds = new Set();
-  const liveByKey = new Map();
+  const liveClaims = [];
   const observedAt = Date.parse(registry.observed_at || '');
 
   registry.claims.forEach((claim, i) => {
@@ -35,6 +36,7 @@ export function validateAWorkClaims(registry) {
     if (typeof claim?.repository !== 'string' || !claim.repository.includes('/')) add(errors,'REPOSITORY_INVALID',p + '/repository');
     if (!SHA40.test(claim?.subject_revision || '')) add(errors,'SUBJECT_REVISION_INVALID',p + '/subject_revision');
     if (typeof claim?.scope !== 'string' || !claim.scope.trim()) add(errors,'SCOPE_INVALID',p + '/scope');
+    else if (claim?.state === 'ACTIVE' && !isCanonicalASessionScope(claim.scope)) add(errors,'ACTIVE_SCOPE_NOT_CANONICAL',p + '/scope');
     if (typeof claim?.owner_session !== 'string' || !claim.owner_session.trim()) add(errors,'OWNER_SESSION_INVALID',p + '/owner_session');
     if (!STATES.has(claim?.state)) add(errors,'STATE_INVALID',p + '/state');
     if (!validDate(claim?.claimed_at)) add(errors,'CLAIMED_AT_INVALID',p + '/claimed_at');
@@ -48,9 +50,17 @@ export function validateAWorkClaims(registry) {
     }
 
     if (claim?.state === 'ACTIVE' && validDate(claim.lease_until) && Date.parse(claim.lease_until) > observedAt) {
-      const prior = liveByKey.get(claim.claim_key);
-      if (prior) add(errors,'LIVE_CLAIM_DUPLICATE',p,claim.claim_key + ' already live at ' + prior);
-      else liveByKey.set(claim.claim_key, p);
+      for (const prior of liveClaims) {
+        if (
+          prior.claim.repository === claim.repository &&
+          prior.claim.subject_revision === claim.subject_revision &&
+          aSessionScopesConflict(prior.claim.scope, claim.scope)
+        ) {
+          const code = prior.claim.claim_key === claim.claim_key ? 'LIVE_CLAIM_DUPLICATE' : 'LIVE_CLAIM_SCOPE_CONFLICT';
+          add(errors,code,p,claim.claim_key + ' conflicts with ' + prior.path);
+        }
+      }
+      liveClaims.push({ claim, path:p });
     }
 
     if (claim?.state === 'COMPLETED') {
@@ -62,7 +72,7 @@ export function validateAWorkClaims(registry) {
     }
   });
 
-  return { status: errors.length ? 'INVALID' : 'VALID', errors, live_claims: liveByKey.size };
+  return { status: errors.length ? 'INVALID' : 'VALID', errors, live_claims: liveClaims.length };
 }
 
 if (process.argv[1]?.endsWith('validate-a-session-work-claims.mjs')) {
