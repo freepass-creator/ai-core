@@ -1,0 +1,69 @@
+{
+  "schema_version": "security-audit-machine-enforcement-gate/v1",
+  "baseline_profile_ref": "docs/SECURITY_AUDIT_P0_CANDIDATE.md",
+  "current_maturity": "CANONICAL_PARTIAL",
+  "target_maturity": "MACHINE_ENFORCED",
+  "enforcement_status": "HOLD",
+  "gates": [
+    {
+      "id": "core_ci_execution",
+      "status": "BLOCKED_EXTERNAL",
+      "evidence_refs": [
+        "scripts/validate-security-audit-p0.mjs",
+        "test/security-audit-p0.test.mjs",
+        "docs/SECURITY_AUDIT_P0_CANDIDATE.md"
+      ],
+      "note": "Central AI Core Actions has an observed runner-entry failure mode, so exact-main CI execution proof is not yet reliable."
+    },
+    {
+      "id": "aiops_semantic_representation",
+      "status": "PASS",
+      "evidence_refs": [
+        "docs/SECURITY_AUDIT_P0_CANDIDATE.md",
+        "github:freepass-creator/aiops@dd47662ec6e92a689cbc4b8a50504e6013845ff9",
+        "contracts/security-approval-bundle.schema.json",
+        "src/security/approval-policy.mjs"
+      ],
+      "note": "AIOps SHADOW parity is recorded on main and represents exact-subject binding, separation of duties, BLOCK precedence, bounded emergency semantics and protected non-bypass without transferring runtime authority."
+    },
+    {
+      "id": "erp4_policy_consumption",
+      "status": "PENDING",
+      "evidence_refs": [
+        "docs/audits/FREEPASSERP4_PILOT_2026-09-20.md"
+      ],
+      "note": "ERP4 has source evidence for allow/deny security tests and release gates, but Security policy-model consumption is not yet recorded as revision-bound consumer proof."
+    },
+    {
+      "id": "independent_non_aiops_consumer",
+      "status": "PENDING",
+      "evidence_refs": [
+        "docs/audits/FREEPASS_ADMIN_PILOT_2026-09-20.md",
+        "docs/audits/FREEPASS_ESTIMATE_PILOT_2026-09-20.md"
+      ],
+      "note": "At least one project without AIOps lineage still needs revision-bound consumption proof for the authz/approval contracts."
+    },
+    {
+      "id": "audit_redaction_consumer_test",
+      "status": "PENDING",
+      "evidence_refs": [
+        "contracts/security-audit-record.schema.json"
+      ],
+      "note": "The canonical partial contract forbids embedded sensitive values, but a project-side redaction test must prove the rule is consumed rather than merely declared."
+    },
+    {
+      "id": "branch_check_enforcement",
+      "status": "BLOCKED_EXTERNAL",
+      "evidence_refs": [
+        "registry/project-audit-readiness.json"
+      ],
+      "note": "Stable required-check and branch enforcement is an external repository control that must be observed before this axis can be MACHINE_ENFORCED."
+    },
+    {
+      "id": "canonical_owner_machine_enforcement",
+      "status": "PENDING",
+      "evidence_refs": [],
+      "note": "After all technical gates pass, the canonical owner must explicitly promote Security/Audit from CANONICAL_PARTIAL to MACHINE_ENFORCED at the exact reviewed revision."
+    }
+  ]
+}
