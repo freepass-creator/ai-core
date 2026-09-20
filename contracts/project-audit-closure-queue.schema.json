@@ -1,12 +1,27 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.freepass.ai/project-audit-closure-queue/v1",
-  "title": "AI Core Project Audit Closure Queue v1",
+  "$id": "https://schemas.freepass.ai/project-audit-closure-queue/v2",
+  "title": "AI Core Project Audit Closure Queue v2",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema","totals","items","superseded_handoffs","permissions","rule"],
+  "required": [
+    "schema","observed_at","ops_policy","totals","lane_summary",
+    "items","superseded_handoffs","permissions","rule"
+  ],
   "properties": {
-    "schema": { "const": "ai-core-project-audit-closure-queue/v1" },
+    "schema": { "const": "ai-core-project-audit-closure-queue/v2" },
+    "observed_at": { "type": "string", "format": "date-time" },
+    "ops_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema","status","aging_basis","priorities"],
+      "properties": {
+        "schema": { "const": "ai-core-project-audit-ops-policy/v1" },
+        "status": { "const": "PROJECT4_LOCAL_POLICY" },
+        "aging_basis": { "type": "string", "minLength": 1 },
+        "priorities": { "type": "object" }
+      }
+    },
     "totals": {
       "type": "object",
       "additionalProperties": false,
@@ -14,6 +29,10 @@
         "projects","handoffs","superseded_handoffs",
         "implementation_tasks","discovery_tasks","actionable_tasks",
         "reported_complete_tasks","audit_closed_tasks",
+        "p1_tasks","p2_tasks","p3_tasks",
+        "on_track_tasks","at_risk_tasks","overdue_tasks",
+        "re_audit_pending_tasks","executable_tasks",
+        "oldest_open_age_hours","nearest_due_at",
         "handoff_issued","open_partial","re_audit_required",
         "re_audit_gaps_remain","handoff_stale","hold",
         "closed_verified","action_required",
@@ -28,6 +47,16 @@
         "actionable_tasks": { "type": "integer", "minimum": 0 },
         "reported_complete_tasks": { "type": "integer", "minimum": 0 },
         "audit_closed_tasks": { "type": "integer", "minimum": 0 },
+        "p1_tasks": { "type": "integer", "minimum": 0 },
+        "p2_tasks": { "type": "integer", "minimum": 0 },
+        "p3_tasks": { "type": "integer", "minimum": 0 },
+        "on_track_tasks": { "type": "integer", "minimum": 0 },
+        "at_risk_tasks": { "type": "integer", "minimum": 0 },
+        "overdue_tasks": { "type": "integer", "minimum": 0 },
+        "re_audit_pending_tasks": { "type": "integer", "minimum": 0 },
+        "executable_tasks": { "type": "integer", "minimum": 0 },
+        "oldest_open_age_hours": { "type": ["number","null"], "minimum": 0 },
+        "nearest_due_at": { "type": ["string","null"], "format": "date-time" },
         "handoff_issued": { "type": "integer", "minimum": 0 },
         "open_partial": { "type": "integer", "minimum": 0 },
         "re_audit_required": { "type": "integer", "minimum": 0 },
@@ -40,23 +69,49 @@
         "audit_closed_percent": { "type": "integer", "minimum": 0, "maximum": 100 }
       }
     },
+    "lane_summary": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "lane","owner","tasks","p1","p2","p3",
+          "on_track","at_risk","overdue","re_audit_pending","closed"
+        ],
+        "properties": {
+          "lane": { "type": "string", "minLength": 1 },
+          "owner": { "type": "string", "minLength": 1 },
+          "tasks": { "type": "integer", "minimum": 0 },
+          "p1": { "type": "integer", "minimum": 0 },
+          "p2": { "type": "integer", "minimum": 0 },
+          "p3": { "type": "integer", "minimum": 0 },
+          "on_track": { "type": "integer", "minimum": 0 },
+          "at_risk": { "type": "integer", "minimum": 0 },
+          "overdue": { "type": "integer", "minimum": 0 },
+          "re_audit_pending": { "type": "integer", "minimum": 0 },
+          "closed": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
     "items": {
       "type": "array",
       "items": {
         "type": "object",
         "additionalProperties": false,
         "required": [
-          "project_id","repository","handoff_revision",
-          "standard_baseline_revision","handoff_audited_at",
+          "project_id","repository","accountable_scope",
+          "handoff_revision","standard_baseline_revision","handoff_audited_at",
           "live_status","live_revision","stage",
           "completion_revision","completion_at","successor_audit_revision",
           "completion_progress","audit_closure_progress",
           "implementation_tasks","discovery_tasks",
+          "task_ops","operational_tasks",
           "blockers","next_action","closed","action_required"
         ],
         "properties": {
           "project_id": { "type": "string", "minLength": 1 },
           "repository": { "type": "string", "minLength": 1 },
+          "accountable_scope": { "type": "string", "pattern": "^PROJECT:.+$" },
           "handoff_revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
           "standard_baseline_revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
           "handoff_audited_at": { "type": "string", "format": "date-time" },
@@ -90,6 +145,11 @@
           "audit_closure_progress": { "type": "object" },
           "implementation_tasks": { "type": "integer", "minimum": 0 },
           "discovery_tasks": { "type": "integer", "minimum": 0 },
+          "task_ops": { "type": "object" },
+          "operational_tasks": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/operationalTask" }
+          },
           "blockers": { "type": "array", "items": { "type": "string" } },
           "next_action": { "type": "string", "minLength": 1 },
           "closed": { "type": "boolean" },
@@ -114,5 +174,49 @@
       }
     },
     "rule": { "type": "string", "minLength": 1 }
+  },
+  "$defs": {
+    "operationalTask": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "task_id","project_id","repository","accountable_scope",
+        "bucket","axis","standard_lane","standard_owner","priority",
+        "handoff_revision","age_basis_at","age_hours",
+        "warning_after_hours","sla_hours","warning_at","due_at",
+        "sla_state","overdue_by_hours","remaining_sla_hours",
+        "completion_status","completion_at","audit_closed","executable",
+        "instruction","next_action"
+      ],
+      "properties": {
+        "task_id": { "type": "string", "minLength": 1 },
+        "project_id": { "type": "string", "minLength": 1 },
+        "repository": { "type": "string", "minLength": 1 },
+        "accountable_scope": { "type": "string", "pattern": "^PROJECT:.+$" },
+        "bucket": { "enum": ["PROJECT_IMPLEMENTATION","PROJECT_DISCOVERY"] },
+        "axis": { "type": "string", "minLength": 1 },
+        "standard_lane": { "type": "string", "minLength": 1 },
+        "standard_owner": { "type": "string", "minLength": 1 },
+        "priority": { "enum": ["P1","P2","P3","NONE"] },
+        "handoff_revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "age_basis_at": { "type": "string", "format": "date-time" },
+        "age_hours": { "type": ["number","null"], "minimum": 0 },
+        "warning_after_hours": { "type": ["number","null"], "minimum": 0 },
+        "sla_hours": { "type": ["number","null"], "minimum": 0 },
+        "warning_at": { "type": ["string","null"], "format": "date-time" },
+        "due_at": { "type": ["string","null"], "format": "date-time" },
+        "sla_state": {
+          "enum": ["ON_TRACK","AT_RISK","OVERDUE","REAUDIT_PENDING","CLOSED","NOT_APPLICABLE"]
+        },
+        "overdue_by_hours": { "type": ["number","null"], "minimum": 0 },
+        "remaining_sla_hours": { "type": ["number","null"], "minimum": 0 },
+        "completion_status": { "enum": ["NOT_RETURNED","DONE","PARTIAL","NOT_DONE","NOT_APPLICABLE"] },
+        "completion_at": { "type": ["string","null"], "format": "date-time" },
+        "audit_closed": { "type": "boolean" },
+        "executable": { "type": "boolean" },
+        "instruction": { "type": "string", "minLength": 1 },
+        "next_action": { "type": "string", "minLength": 1 }
+      }
+    }
   }
 }
