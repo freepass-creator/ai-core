@@ -1,0 +1,176 @@
+{
+  "schema": "ai-core-a-session-evidence-registry/v1",
+  "status": "RESEARCH_ROUTING_INDEX_NOT_CANONICAL",
+  "observed_at": "2026-09-20T00:47:00Z",
+  "policy": {
+    "canonical_boundary": "A records evidence and routing only. B/C/D canonical standards may be changed only by their owning sessions.",
+    "project_gt_core": "Generalize reusable project implementation and route candidate with exact revision evidence.",
+    "core_gt_project": "Record migration/backport gap with breaking impact and verification needs.",
+    "different": "Record distinct problem/evidence without forcing promotion when neither side is strictly ahead."
+  },
+  "findings": [
+    {
+      "id": "ui.machine-conformance-gate",
+      "classification": "PROJECT_GT_CORE",
+      "current_status": "ROUTED",
+      "evidence_level": "CROSS_PROJECT_VERIFIED",
+      "routes": [
+        "B"
+      ],
+      "summary": "Machine-enforced semantic UI role/token conformance against effective implementation selectors.",
+      "source_registry": "docs/research/a-session-promotion-matrix.v1.json",
+      "revision_evidence": [
+        {
+          "repository": "freepass-creator/fp-settlement",
+          "revision": "b406da67a9cb2b85b5572a7f5d28d350ca84cb58",
+          "evidence_types": [
+            "CODE",
+            "TEST"
+          ]
+        },
+        {
+          "repository": "freepass-creator/teamjpkwork",
+          "revision": "75bb285a241b68c13acbe532c30d6d91110f8082",
+          "evidence_types": [
+            "CODE",
+            "TEST",
+            "DOC"
+          ]
+        }
+      ],
+      "state_history": [
+        {
+          "status": "ROUTED",
+          "observed_at": "2026-09-19T00:00:00Z",
+          "reason": "Independent project evidence satisfies A cross-project routing threshold."
+        }
+      ]
+    },
+    {
+      "id": "result.proof-input-digest-binding",
+      "classification": "PROJECT_GT_CORE",
+      "current_status": "ROUTED",
+      "evidence_level": "PROJECT_VERIFIED",
+      "routes": [
+        "C"
+      ],
+      "summary": "Bind proof to source/checker/fixture input digests so changed verification inputs stale prior evidence.",
+      "source_registry": "docs/research/a-session-promotion-matrix.v1.json",
+      "revision_evidence": [
+        {
+          "repository": "freepass-creator/devcenter",
+          "revision": "6a838a28b3c25b068e5bbe010071fd1de0242d30",
+          "evidence_types": [
+            "CODE",
+            "TEST"
+          ]
+        }
+      ],
+      "state_history": [
+        {
+          "status": "ROUTED",
+          "observed_at": "2026-09-19T00:00:00Z",
+          "reason": "Project-verified C candidate; second independent project still required for broader adoption evidence."
+        }
+      ]
+    },
+    {
+      "id": "workflow.compensated-multiwrite",
+      "classification": "PROJECT_GT_CORE",
+      "current_status": "ROUTED",
+      "evidence_level": "PROJECT_VERIFIED",
+      "routes": [
+        "D"
+      ],
+      "summary": "Reverse-order domain compensation for already-applied effects with explicit partial-state escalation when compensation fails.",
+      "source_registry": "docs/research/a-session-promotion-matrix.v1.json",
+      "revision_evidence": [
+        {
+          "repository": "freepass-creator/renman",
+          "revision": "262e06de09db94a116fa377ea2f5dbe024bb086b",
+          "evidence_types": [
+            "CODE",
+            "TEST"
+          ]
+        }
+      ],
+      "state_history": [
+        {
+          "status": "ROUTED",
+          "observed_at": "2026-09-19T00:00:00Z",
+          "reason": "Project-verified D candidate; second independent project remains required."
+        }
+      ]
+    },
+    {
+      "id": "audit.metadata-consistency-validator",
+      "classification": "CORE_GT_PROJECT",
+      "current_status": "MIGRATION_REQUIRED",
+      "evidence_level": "PROJECT_VERIFIED",
+      "routes": [
+        "D",
+        "C"
+      ],
+      "summary": "ERP4 corrected a stale audit-ledger contradiction but still lacks a durable exact-revision consistency validator.",
+      "revision_evidence": [
+        {
+          "repository": "freepass-creator/freepasserp4",
+          "revision": "606a761683345869400274e4dea360908d2622bf",
+          "evidence_types": [
+            "DOC",
+            "CI"
+          ]
+        }
+      ],
+      "migration": {
+        "target_repository": "freepass-creator/freepasserp4",
+        "breaking_impact": [
+          "Resolved work can be reopened from stale metadata.",
+          "Duplicate append/correction cycles can recur.",
+          "Operational decision state can diverge while application data remains unaffected."
+        ],
+        "verification_needs": [
+          "Reconcile central ledger, AI entrypoint and latest detail at one exact revision.",
+          "Fail CI on contradictory latest-state claims.",
+          "Include a negative fixture reproducing the stale Audit78 ledger-gap claim."
+        ]
+      },
+      "state_history": [
+        {
+          "status": "MIGRATION_REQUIRED",
+          "observed_at": "2026-09-20T00:00:00Z",
+          "reason": "Audit79 corrected the contradiction but prevention remains manual."
+        }
+      ]
+    },
+    {
+      "id": "scheduler.logical-slot-observability",
+      "classification": "DIFFERENT",
+      "current_status": "ACTIVE",
+      "evidence_level": "FAILURE_RUNTIME_EVIDENCE",
+      "routes": [
+        "D",
+        "C"
+      ],
+      "summary": "Expected logical schedule slot, actual dispatch identity, lateness/miss classification and downstream completion must remain distinguishable.",
+      "difference_reason": "ERP4 proves the ambiguity through a very-late successful native run, while AI Core has adjacent recovery/SLA semantics but no reusable solved logical-slot identity implementation.",
+      "revision_evidence": [
+        {
+          "repository": "freepass-creator/freepasserp4",
+          "revision": "606a761683345869400274e4dea360908d2622bf",
+          "evidence_types": [
+            "RUNTIME",
+            "DOC"
+          ]
+        }
+      ],
+      "state_history": [
+        {
+          "status": "ACTIVE",
+          "observed_at": "2026-09-20T00:00:00Z",
+          "reason": "Phase-2 research candidate; failure/runtime evidence only."
+        }
+      ]
+    }
+  ]
+}
