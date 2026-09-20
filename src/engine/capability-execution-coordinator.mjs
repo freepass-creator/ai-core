@@ -88,12 +88,24 @@ function relativeReceiptRef(projectRoot,path){
   return rel.replaceAll('\\','/');
 }
 
-function recoverySnapshot(capability,before){
+function projectRecoveryBinding(project){
+  if(!text(project?.project_id)||!text(project?.repository)||!text(project?.local_path)) return null;
+  return canonical({
+    project_id:project.project_id,
+    repository:project.repository,
+    local_path:project.local_path,
+  });
+}
+
+function recoverySnapshot(capability,before,project){
   if(before===null||!capability?.receipt) return null;
+  const projectBinding=projectRecoveryBinding(project);
+  need(projectBinding,'PROJECT_RECOVERY_BINDING_REQUIRED');
   return {
-    version:1,
+    version:2,
     before,
     receipt:canonical(capability.receipt),
+    project_binding:projectBinding,
     mode:capability.mode??null,
     walls:[...(capability.walls??[])].map(String),
   };
@@ -104,7 +116,7 @@ function parseRecoverySnapshot(row,capability=null){
   try{
     raw=row?.before_receipts_json?JSON.parse(row.before_receipts_json):null;
   }catch{
-    return {invalid:true,before:new Map(),receipt:null,mode:null,walls:[]};
+    return {invalid:true,before:new Map(),receipt:null,project_binding:null,mode:null,walls:[]};
   }
   if(Array.isArray(raw)){
     return {
@@ -112,6 +124,7 @@ function parseRecoverySnapshot(row,capability=null){
       historical:false,
       before:new Map(raw),
       receipt:capability?.receipt??null,
+      project_binding:null,
       mode:capability?.mode??null,
       walls:[...(capability?.walls??[])].map(String),
     };
@@ -122,6 +135,7 @@ function parseRecoverySnapshot(row,capability=null){
       historical:false,
       before:new Map(),
       receipt:capability?.receipt??null,
+      project_binding:null,
       mode:capability?.mode??null,
       walls:[...(capability?.walls??[])].map(String),
     };
@@ -132,11 +146,27 @@ function parseRecoverySnapshot(row,capability=null){
       historical:true,
       before:new Map(raw.before),
       receipt:raw.receipt,
+      project_binding:null,
       mode:raw.mode??null,
       walls:[...(raw.walls??[])].map(String),
     };
   }
-  return {invalid:true,before:new Map(),receipt:null,mode:null,walls:[]};
+  if(
+    raw&&raw.version===2&&Array.isArray(raw.before)&&raw.receipt&&typeof raw.receipt==='object'&&!Array.isArray(raw.receipt)
+    &&raw.project_binding&&typeof raw.project_binding==='object'&&!Array.isArray(raw.project_binding)
+    &&text(raw.project_binding.project_id)&&text(raw.project_binding.repository)&&text(raw.project_binding.local_path)
+  ){
+    return {
+      invalid:false,
+      historical:true,
+      before:new Map(raw.before),
+      receipt:raw.receipt,
+      project_binding:canonical(raw.project_binding),
+      mode:raw.mode??null,
+      walls:[...(raw.walls??[])].map(String),
+    };
+  }
+  return {invalid:true,before:new Map(),receipt:null,project_binding:null,mode:null,walls:[]};
 }
 
 export function createCapabilityExecutionCoordinator({
@@ -229,7 +259,7 @@ export function createCapabilityExecutionCoordinator({
     const project=projects.get(shape.project_id);
     need(project,'PROJECT_NOT_REGISTERED');
     const before=await snapshotBefore(capability,project);
-    const recovery=recoverySnapshot(capability,before);
+    const recovery=recoverySnapshot(capability,before,project);
     const at=iso(clock);
 
     store.db.exec('BEGIN IMMEDIATE');
@@ -358,11 +388,22 @@ export function createCapabilityExecutionCoordinator({
     if(!recovery.receipt){
       return {status:'HOLD',reason:'CAPABILITY_RECOVERY_METADATA_MISSING',reconciled:false};
     }
+    if(!recovery.project_binding){
+      return {status:'HOLD',reason:'PROJECT_RECOVERY_BINDING_MISSING',reconciled:false};
+    }
 
     const project=projects.get(row.project_id);
-    need(project&&text(project.local_path),'PROJECT_LOCAL_PATH_REQUIRED');
+    const currentProjectBinding=projectRecoveryBinding(project);
+    if(
+      !currentProjectBinding
+      ||recovery.project_binding.project_id!==row.project_id
+      ||digest(currentProjectBinding)!==digest(recovery.project_binding)
+    ){
+      return {status:'HOLD',reason:'PROJECT_RECOVERY_BINDING_DRIFT',reconciled:false};
+    }
+    const projectRoot=recovery.project_binding.local_path;
     const observed=await receiptReader.reconcile(
-      project.local_path,
+      projectRoot,
       recovery.receipt,
       recovery.before,
       {expectedIdentity:requestId},
@@ -378,7 +419,7 @@ export function createCapabilityExecutionCoordinator({
       };
     }
 
-    const ref=observed.path?relativeReceiptRef(project.local_path,observed.path):null;
+    const ref=observed.path?relativeReceiptRef(projectRoot,observed.path):null;
     const mapped=observed.status==='SUCCEEDED'?'SUCCEEDED':observed.status==='FAILED'?'FAILED':'HOLD';
     const result={
       schema:'ai-core-work-result/v1',
