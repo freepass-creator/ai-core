@@ -1,0 +1,225 @@
+{
+  "schema": "ai-core-project-audit-handoff/v1",
+  "status": "READY",
+  "project_id": "freepasserp4",
+  "repository": "freepass-creator/freepasserp4",
+  "default_branch": "main",
+  "audit_binding": {
+    "subject_revision": "f7c89b7b995d8d98ea04606405e68b158fb4256f",
+    "standard_baseline_revision": "d995d30e9b830894d53349c2196707bfbd1b6ad0",
+    "audited_at": "2026-09-20T11:58:00.000Z",
+    "ci_status": "UNKNOWN",
+    "ci_run_id": null,
+    "branch_protected": false,
+    "live_status": "CURRENT",
+    "live_revision": "f7c89b7b995d8d98ea04606405e68b158fb4256f"
+  },
+  "counts": {
+    "project_implementation": 4,
+    "project_discovery": 0,
+    "core_candidate_review": 0,
+    "standard_research": 0,
+    "no_project_action": 4
+  },
+  "project_work": {
+    "implementation": [
+      {
+        "bucket": "PROJECT_IMPLEMENTATION",
+        "priority": "P1",
+        "axis": "ui-ux",
+        "verdict": "MIGRATION_GAP",
+        "standard_owner": {
+          "lane": "B",
+          "owner": "Global UI/UX Standard"
+        },
+        "evidence": [
+          "GIT:freepass-creator/freepasserp4@f7c89b7b995d8d98ea04606405e68b158fb4256f:.github/workflows/ci.yml runs design tokens, product-grid, design, UI contract, speed and brand guards on exact main.",
+          "GitHub Actions CI run 35507788301 passed the exact audited revision, including the UI/design stability gates.",
+          "The inspected main tree contains extensive local UI audit/checker assets, but no revision-bound AI Core UI consumer-conformance receipt was established."
+        ],
+        "gaps": [
+          "Strong project-local UI guards are not yet represented as an AI Core UI/UX consumer conformance artifact on current main."
+        ],
+        "next_action": "Map the proven ERP4 UI guards and active product surfaces to canonical AI Core feature IDs without replacing the project-specific visual/business rules.",
+        "instruction": "Map the proven ERP4 UI guards and active product surfaces to canonical AI Core feature IDs without replacing the project-specific visual/business rules."
+      },
+      {
+        "bucket": "PROJECT_IMPLEMENTATION",
+        "priority": "P1",
+        "axis": "api-event-error",
+        "verdict": "MIGRATION_GAP",
+        "standard_owner": {
+          "lane": "C",
+          "owner": "Core Contract Standard"
+        },
+        "evidence": [
+          "GIT:freepass-creator/freepasserp4@f7c89b7b995d8d98ea04606405e68b158fb4256f:contracts/ai-core/settlement-intake.api-shadow.json keeps settlement create as SHADOW with ERP4 runtime authority.",
+          "GIT:freepass-creator/freepasserp4@f7c89b7b995d8d98ea04606405e68b158fb4256f:contracts/ai-core/settlement-update.api-shadow.json records first-party UI adoption as ACTIVE for SettlementBoard and IntakeStation.",
+          "GIT:freepass-creator/freepasserp4@f7c89b7b995d8d98ea04606405e68b158fb4256f:app/api/settlement/board/route.ts exposes Firestore resource_revision and transactionally enforces optional expected_revision with HTTP 409 / VERSION_MISMATCH.",
+          "GIT:freepass-creator/freepasserp4@f7c89b7b995d8d98ea04606405e68b158fb4256f:components/settlement/SettlementBoard.tsx and IntakeStation.tsx send observed resource_revision as expected_revision and reload after VERSION_MISMATCH.",
+          "SSOT Source Contract run 35508944490 passed on the exact audited revision.",
+          "Parent implementation revision 1b31af44fac362085649c13d155e4e0c089ae929 passed CI run 35508944501 and SSOT Source Contract 35508944490; the current audited delta only records Audit 82 and removes its recorder workflow."
+        ],
+        "gaps": [
+          "request_id is still not accepted/emitted on the bounded settlement write surface.",
+          "correlation_id is still not accepted/emitted.",
+          "Create does not yet bind a Core idempotency key / semantic_payload_digest.",
+          "Legacy/external callers may still omit expected_revision by compatibility design.",
+          "Errors are not fully emitted as core.error.v1 / RFC 9457-compatible envelopes.",
+          "Success remains project-native rather than core.result/v1.",
+          "Real first-party VERSION_MISMATCH runtime occurrence has not been independently observed by this audit.",
+          "OpenAPI description/profile is not yet a canonical Core machine gate."
+        ],
+        "next_action": "Add request_id and correlation_id to the bounded settlement write surface, observe real first-party VERSION_MISMATCH recovery, then project stable Core error/result envelopes internally before any public cutover.",
+        "instruction": "Add request_id and correlation_id to the bounded settlement write surface, observe real first-party VERSION_MISMATCH recovery, then project stable Core error/result envelopes internally before any public cutover."
+      },
+      {
+        "bucket": "PROJECT_IMPLEMENTATION",
+        "priority": "P1",
+        "axis": "workflow",
+        "verdict": "MIGRATION_GAP",
+        "standard_owner": {
+          "lane": "D",
+          "owner": "Workflow Standard"
+        },
+        "evidence": [
+          "ERP4 main has extensive workflow/recovery/schedule/settlement simulations and CI guards, including check:workflows and multiple domain simulations.",
+          "CI run 35507788301 passed workflow-readability and the settlement/vehicle-lock/release-blocker simulations at the exact revision.",
+          "No bounded project-side AI Core D workflow/projection consumer binding was established in the inspected current main tree."
+        ],
+        "gaps": [
+          "Project workflow semantics are proven locally but are not revision-bound to a canonical AI Core D workflow/projection contract for a selected bounded lifecycle."
+        ],
+        "next_action": "Bind one bounded operational lifecycle, such as settlement intake/recovery or scheduled delivery, to D SHADOW parity while keeping ERP4 runtime authority.",
+        "instruction": "Bind one bounded operational lifecycle, such as settlement intake/recovery or scheduled delivery, to D SHADOW parity while keeping ERP4 runtime authority."
+      },
+      {
+        "bucket": "PROJECT_IMPLEMENTATION",
+        "priority": "P1",
+        "axis": "security-audit",
+        "verdict": "MIGRATION_GAP",
+        "standard_owner": {
+          "lane": "SECURITY",
+          "owner": "Security/Audit Standard"
+        },
+        "evidence": [
+          "GIT:freepass-creator/freepasserp4@f7c89b7b995d8d98ea04606405e68b158fb4256f:docs/SECURITY_RELEASE_GATE_2026-08-03.md records role/rule/adversarial security gates, explicit production NO-GO boundaries and rollback-sensitive release sequencing.",
+          "GIT:freepass-creator/freepasserp4@f7c89b7b995d8d98ea04606405e68b158fb4256f:scripts/scrub-audit-pii.mts preserves audit records while masking sensitive fields and defaults to dry-run.",
+          "Current CI includes multiple security-adjacent fail-closed gates, while production Firebase Rules/opening remains explicitly separate."
+        ],
+        "gaps": [
+          "ERP4 has strong project security evidence but no complete revision-bound adoption of the current canonical partial Security/Audit contracts.",
+          "Production role-account Rules behavior and current production security state are external facts not independently re-executed by this audit.",
+          "Universal secret/dependency/source/SBOM scanning is not yet a group-wide required gate.",
+          "Canonical partial policy does not itself grant runtime permissions."
+        ],
+        "next_action": "Map the proven rule-negative-tests, role boundaries, PII scrubbing and release-security evidence into the canonical Security/Audit shape without interpreting SHADOW parity as production authorization.",
+        "instruction": "Map the proven rule-negative-tests, role boundaries, PII scrubbing and release-security evidence into the canonical Security/Audit shape without interpreting SHADOW parity as production authorization."
+      }
+    ],
+    "discovery": []
+  },
+  "standard_work": {
+    "core_candidate_review": [],
+    "research": []
+  },
+  "no_project_action": [
+    {
+      "bucket": "NO_PROJECT_ACTION",
+      "priority": "NONE",
+      "axis": "data-ssot",
+      "verdict": "CORE_MATCH",
+      "standard_owner": {
+        "lane": "C",
+        "owner": "Core Contract Standard"
+      },
+      "evidence": [
+        "GIT:freepass-creator/freepasserp4@f7c89b7b995d8d98ea04606405e68b158fb4256f:contracts/ai-core/erp5-products.source-registry.json declares freepasserp5 as canonical owner, one canonical Firestore source, stale->HOLD and no implicit fallback.",
+        "GIT:freepass-creator/freepasserp4@f7c89b7b995d8d98ea04606405e68b158fb4256f:contracts/ai-core/erp5-product-refresh.pipeline.json expresses the canonical import stages and requires a receipt for partial failure.",
+        "GIT:freepass-creator/freepasserp4@f7c89b7b995d8d98ea04606405e68b158fb4256f:.github/workflows/ssot-source-contract.yml now guards AI Core SSOT shadow surfaces symmetrically on PR and main push.",
+        "Audit 81 records the prior push-path gap as resolved while preserving production SSOT ownership."
+      ],
+      "gaps": [
+        "The central AI Core project registry observation lags the live ERP4 revision and must be refreshed separately.",
+        "Production runtime freshness remains an external observation beyond static contract parity."
+      ],
+      "next_action": "Preserve the existing ERP5 owner/writer/fallback boundaries and refresh only the central observation metadata; do not create a second writer in AI Core.",
+      "instruction": "No project remediation is requested from this audit finding."
+    },
+    {
+      "bucket": "NO_PROJECT_ACTION",
+      "priority": "NONE",
+      "axis": "engine-adapter",
+      "verdict": "CORE_MATCH",
+      "standard_owner": {
+        "lane": "C",
+        "owner": "Core Contract Standard"
+      },
+      "evidence": [
+        "GIT:freepass-creator/freepasserp4@f7c89b7b995d8d98ea04606405e68b158fb4256f:contracts/ai-core/erp5-product-refresh.pipeline.json separates pipeline stages, target and commit/partial-failure semantics.",
+        "GIT:freepass-creator/freepasserp4@f7c89b7b995d8d98ea04606405e68b158fb4256f:lib/domain/ai-core-contract-shadow.ts projects the project-owned ERP5 sales snapshot into the Core snapshot contract while pinning the production engine revision.",
+        "CI run 35507788301 passed the ERP5 canonical Firebase boundary, source/contract guards, API shadow and simulations without transferring runtime authority to AI Core."
+      ],
+      "gaps": [
+        "Some receipt/adoption paths remain SHADOW and do not authorize Core to replace the ERP4/ERP5 runtime engine."
+      ],
+      "next_action": "Continue adapter/pipeline SHADOW adoption around proven project engines and require revision-bound receipts before tightening enforcement.",
+      "instruction": "No project remediation is requested from this audit finding."
+    },
+    {
+      "bucket": "NO_PROJECT_ACTION",
+      "priority": "NONE",
+      "axis": "qa-observability",
+      "verdict": "CORE_MATCH",
+      "standard_owner": {
+        "lane": "QA",
+        "owner": "QA/Observability Standard"
+      },
+      "evidence": [
+        "GIT:freepass-creator/freepasserp4@f7c89b7b995d8d98ea04606405e68b158fb4256f:scripts/ci-checker-manifest.json classifies required/manual/pending checkers and exposes missing negative controls rather than converting them to PASS.",
+        "GIT:freepass-creator/freepasserp4@f7c89b7b995d8d98ea04606405e68b158fb4256f:contracts/ai-core/qa-p0.shadow.json and scripts/check-ai-core-qa-governance-shadow.mjs map that inventory into the Core QA candidate shape while preserving SHADOW_WITH_GAPS.",
+        "CI run 35507788301 executed real runner steps and passed typecheck, required guards, API SHADOW, known-bad tests, simulations and production build."
+      ],
+      "gaps": [
+        "The QA SHADOW reports 28 required checkers without proven negative controls.",
+        "Actual production health, scheduler state and production revision remain external observations.",
+        "Central AI Core GitHub Actions runner-entry is still unreliable and does not prove group-wide enforcement."
+      ],
+      "next_action": "Keep the checker manifest and known-bad model as the project QA baseline, reduce the explicit negative-control backlog, and attach production observations separately from CI proof.",
+      "instruction": "No project remediation is requested from this audit finding."
+    },
+    {
+      "bucket": "NO_PROJECT_ACTION",
+      "priority": "NONE",
+      "axis": "build-deploy-governance",
+      "verdict": "CORE_MATCH",
+      "standard_owner": {
+        "lane": "GOVERNANCE",
+        "owner": "Build/Deploy/Governance Standard"
+      },
+      "evidence": [
+        "GIT:freepass-creator/freepasserp4@f7c89b7b995d8d98ea04606405e68b158fb4256f:docs/VERCEL-PRODUCTION-RELEASE.md explicitly separates main, deployment READY and actual production serving revision.",
+        "GIT:freepass-creator/freepasserp4@f7c89b7b995d8d98ea04606405e68b158fb4256f:contracts/ai-core/governance-p0.shadow.json maps expected revision, deployment identity, production targets, /api/version observation and rollback while marking verification PARTIAL.",
+        "Audit 81 proves the previous AI Core Source Contract push-filter gap is resolved on a main push.",
+        "CI run 35507788301 passed all exact-head checks and Production build."
+      ],
+      "gaps": [
+        "Main branch protection is currently false.",
+        "This audit does not independently observe the current production deployment/revision or runtime smoke.",
+        "SLSA provenance and SBOM profiles remain optional higher-assurance extensions rather than universal requirements.",
+        "Production release proof still requires target-specific observation and rollback evidence."
+      ],
+      "next_action": "Preserve current release-proof/version-readback semantics, add branch protection after required checks stabilize, and keep production observation/rollback evidence separate from CI success.",
+      "instruction": "No project remediation is requested from this audit finding."
+    }
+  ],
+  "execution_boundary": {
+    "auto_write_project_repo": false,
+    "auto_open_project_pr": false,
+    "auto_promote_core_standard": false,
+    "auto_deploy": false,
+    "production_mutation": false
+  },
+  "blockers": [],
+  "rule": "Project implementation work comes only from MIGRATION_GAP findings. UNKNOWN creates discovery work, PROJECT_AHEAD routes evidence to the standard owner, and CORE_MATCH never creates a project remediation task. A stale audit cannot authorize handoff execution."
+}
