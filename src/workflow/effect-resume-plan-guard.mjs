@@ -38,8 +38,8 @@ function normalizedProofInputsMap(receipts,currentProofInputsByReceipt){
 
 function computePlannerResult({effects,bindings,receipts,target_execution,current_proof_inputs_by_receipt}){
   const bridge=bridgeReceiptsToEffectEvidence({
-    bindings,
-    receipts,
+    bindings:sortedBindings(bindings),
+    receipts:[...receipts].sort((a,b)=>String(a?.receipt_id??'').localeCompare(String(b?.receipt_id??''))),
     target_execution,
     current_proof_inputs_by_receipt,
   });
