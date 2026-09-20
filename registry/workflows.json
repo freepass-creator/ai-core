@@ -1985,11 +1985,11 @@
       "obligations": [],
       "source_authority": {
         "repository": "freepass-creator/ai-core",
-        "revision": "3348359b8500a477bcfabcf8019e0e4e13d4724d",
+        "revision": "6f15fe8a618813135f3d00a56e1ac45aade49598",
         "files": [
           {
             "path": "scripts/work-ledger.mjs",
-            "blob_sha": "f5952d3b9b94294e99c16b4350f5ad7176df5395"
+            "blob_sha": "4c44157168ef8988ce62fe7df22c32bbe6523f11"
           },
           {
             "path": "contracts/work-ledger-event.schema.json",
