@@ -26,11 +26,11 @@ ERP4 PR #435 pins AI Core B Feature Registry v1.3.0, declares its shared feature
 
 ### FreePass Admin
 
-Observed revision: `c16e55e0e449e74aa4403861be89bcbb5f77ee97`
+Observed revision: `02deb4df0fcb123a478519e3cbb408cd5e2ad7c6`
 
 Status: `MAPPED`
 
-FreePass Admin PR #35 pins AI Core Feature Registry v1.3.0, records 11 common feature bindings, pins the user-approved Admin visual authority, and connects Development Center Design Hub compile/visual inputs. The current Next UI is explicitly not claimed PILOT or CONFORMANT because it still differs from the approved rev 5 visual authority and has no browser visual receipt yet.
+FreePass Admin PR #35 established the mapping; PR #37 migrated the actual Next shell toward the user-approved rev 5 direction; PR #38 rebound the Design Hub job to the migrated UI revision. Admin remains MAPPED, not PILOT/CONFORMANT, because browser visual receipts and the full conformance matrix are still absent. The connected Vercel team currently exposes no Admin project, so preview deployment evidence is not available through that route.
 
 ## Promotion path
 
