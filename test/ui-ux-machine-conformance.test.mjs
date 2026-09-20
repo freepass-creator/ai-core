@@ -17,10 +17,12 @@ const manifest = {
 };
 
 test('collects literal and template className usage', () => {
-  const source = '<div class="ui-row a"></div>' + '<div className={`ui-cell ${active ? "on" : ""}`}></div>';
+  const source = '<div class="ui-row a"></div>' + '<div className={`ui-cell ${active ? "on" : ""}`}></div>' + '<input className={\'ui-input\'} />' + '<span className={"ui-label"}></span>';
   const used = collectUsedClasses(source);
   assert.equal(used.has('ui-row'), true);
   assert.equal(used.has('ui-cell'), true);
+  assert.equal(used.has('ui-input'), true);
+  assert.equal(used.has('ui-label'), true);
 });
 
 test('later declaration for a used selector is treated as effective', () => {
