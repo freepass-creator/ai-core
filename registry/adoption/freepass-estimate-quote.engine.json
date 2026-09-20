@@ -1,0 +1,39 @@
+{
+  "schema_version": "core-engine-contract/v1",
+  "engine_id": "freepass-estimate.quote",
+  "version": "1.0.0",
+  "source": {
+    "locator": "freepass-creator/freepass-estimate:apps/new/src/lib/quote/calculate.js",
+    "revision": "b526fdc73e812dcb0594d10caf2123bbade1d38b"
+  },
+  "inputs": [
+    "freepass-quote-request/v1"
+  ],
+  "outputs": [
+    "freepass-quote-result/v1"
+  ],
+  "invariants": [
+    "Quote request/result semantics remain provider-neutral at the application boundary.",
+    "An authoritative configured provider failure does not silently fall back to a different calculator.",
+    "Provider-specific field/unit translation remains outside the engine meaning.",
+    "Technical quote execution success is evidence of calculation, not downstream contract/business completion."
+  ],
+  "required_ports": [
+    {
+      "port_id": "quote.provider.calculate",
+      "port_version": "v1"
+    }
+  ],
+  "effect_model": "PORT_MEDIATED",
+  "error_codes": [
+    "VALIDATION_ERROR",
+    "DOMAIN_VALIDATION_FAILED",
+    "UPSTREAM_UNAVAILABLE",
+    "UPSTREAM_INVALID_RESPONSE"
+  ],
+  "verification_profile": [
+    "freepass-estimate:apps/new/scripts/check-standard-engine.mjs",
+    "freepass-estimate:apps/new/scripts/check-quote-execution-contract.mjs",
+    "freepass-estimate:apps/new/scripts/check-ai-core-contract-shadow.mjs"
+  ]
+}
