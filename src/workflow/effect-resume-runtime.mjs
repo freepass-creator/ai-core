@@ -29,6 +29,8 @@ export async function executeEffectResume({
   receipt,
   execute_effect,
   execute_compensation,
+  before_effect=null,
+  before_compensation=null,
   clock=Date.now,
 }={}){
   need(Array.isArray(effects)&&effects.length>0,'EFFECT_RESUME_EFFECTS_REQUIRED');
@@ -64,6 +66,12 @@ export async function executeEffectResume({
   for(const action of plan.actions){
     if(action.action!=='RUN') continue;
     const effect=effectById.get(action.effect_id);
+    if(before_effect) await before_effect(effect,{
+      correlation_id,
+      target_execution,
+      current_attempt,
+      resume_plan:plan,
+    });
     const started=iso(clock);
     let result;
     try{
@@ -121,6 +129,13 @@ export async function executeEffectResume({
     const compensationResults=[];
 
     for(const step of compensationPlan.steps){
+      if(before_compensation) await before_compensation(step,{
+        correlation_id,
+        original_error_code:originalError,
+        target_execution,
+        current_attempt,
+        resume_plan:plan,
+      });
       const compStarted=iso(clock);
       let compensation;
       try{
