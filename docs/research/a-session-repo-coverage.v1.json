@@ -133,7 +133,7 @@
     {
       "repository": "freepass-creator/freepass-admin",
       "default_branch": "main",
-      "observed_head": "fb85037969a6c2f4596350b9c66303025be6f19d",
+      "observed_head": "77f682af680528124096e4f7871504a3596c8990",
       "audit_state": "DEEP_EVIDENCE",
       "independence": "INDEPENDENT_UNLESS_CANDIDATE_SPECIFIC_LINEAGE_IS_FOUND",
       "findings": [
@@ -141,7 +141,7 @@
         "data.snapshot-revision",
         "api.stable-error-code"
       ],
-      "note": null
+      "note": "A-session re-observed Admin at 77f682af680528124096e4f7871504a3596c8990 after C Application Service SHADOW/PARTIAL adoption. Production binding verification remains a Core > Project gap."
     },
     {
       "repository": "freepass-creator/freepass-estimate",
@@ -192,16 +192,18 @@
     {
       "repository": "freepass-creator/freepasserp4",
       "default_branch": "main",
-      "observed_head": "606a761683345869400274e4dea360908d2622bf",
+      "observed_head": "3b98649ff49a24376aca4b24590c15d36b95a8f6",
       "audit_state": "DEEP_EVIDENCE",
       "independence": "INDEPENDENT_UNLESS_CANDIDATE_SPECIFIC_LINEAGE_IS_FOUND",
       "findings": [
         "workflow.recovery-slot-no-replay",
         "release.production-revision-proof",
         "BACKPORT: audit metadata consistency validator",
-        "Different: scheduler.logical-slot-observability (failure/runtime evidence only)"
+        "Different: scheduler.logical-slot-observability (failure/runtime evidence only)",
+        "BACKPORT: C shadow production binding and receipt enforcement",
+        "BACKPORT: SSOT Source Contract main-push path parity"
       ],
-      "note": "Advanced by latest A-session Audit79 evidence to 606a761683345869400274e4dea360908d2622bf. Final delta is audit metadata only; no durable Project > Core implementation evidence. Audit metadata consistency backport gap remains."
+      "note": "A-session re-observed ERP4 through Audit80 at 3b98649ff49a24376aca4b24590c15d36b95a8f6. C shadow adoption is implemented/CI-verified but not production-enforced; Audit80 adds a main-push CI path-coverage gap."
     },
     {
       "repository": "freepass-creator/freepasshomepage",
