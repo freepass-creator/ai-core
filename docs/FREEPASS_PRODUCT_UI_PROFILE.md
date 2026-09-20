@@ -175,3 +175,21 @@ FreePass mobile vehicle selection은 `model → powertrain → passenger/drive �
 - full-red `welrix` theme: 브랜드 캠페인/특수 surface에서만 명시적으로 선택
 
 즉 partner identity는 유지하지만, 고객이 행동하고 금액을 판단하는 핵심 UI는 trust-oriented cool palette를 기본으로 한다.
+
+
+## 14. Brand emphasis budget
+
+브랜드색은 모든 숫자/텍스트를 칠하는 장식색이 아니라 **행동·선택·진행 상태를 설명하는 제한된 강조 자원**으로 사용한다.
+
+기본:
+- brand primary: primary CTA, selected state, progress, active navigation, key result emphasis
+- neutral text: 일반 차량가격, 목록의 옵션가격, 설명문, 비교 전 숫자
+- brand soft: selected/background confirmation
+- partner accent: co-brand/logo/partner label
+
+금지:
+- 목록의 모든 가격을 brand primary로 칠하지 않는다.
+- 설명문·보조값을 전부 brand color로 올리지 않는다.
+- brand red/blue를 error/success 의미로 겸용하지 않는다.
+
+고객 신뢰형 화면은 neutral 70~80% + brand/action emphasis 20~30% 정도의 시각적 밀도를 목표로 하되, 이는 고정 비율이 아니라 우선순위 가이드다.
