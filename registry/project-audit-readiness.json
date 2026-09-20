@@ -1,0 +1,145 @@
+{
+  "schema": "ai-core-project-audit-readiness/v1",
+  "baseline_revision": "879844bd0a75355b7bd5b91961d26c96929f61de",
+  "axes": [
+    {
+      "id": "ui-ux",
+      "maturity": "MACHINE_ENFORCED",
+      "canonical_sources": [
+        "docs/UI_UX_CONSTITUTION.md",
+        "docs/ACCESSIBILITY_STANDARD.md",
+        "docs/INTERNATIONALIZATION_STANDARD.md",
+        "docs/RESPONSIVE_STANDARD.md",
+        "registry/ui-ux-features.json"
+      ],
+      "machine_checks": [
+        "npm run uiux:validate",
+        "npm run uiux:runtime"
+      ],
+      "gaps": []
+    },
+    {
+      "id": "data-ssot",
+      "maturity": "MACHINE_ENFORCED",
+      "canonical_sources": [
+        "docs/CORE_CONTRACT_STANDARD.md",
+        "registry/core-contracts.json",
+        "contracts/core-types.schema.json",
+        "contracts/core-provenance.schema.json",
+        "contracts/core-source-registry.schema.json",
+        "contracts/core-snapshot.schema.json"
+      ],
+      "machine_checks": [
+        "npm run contracts:validate",
+        "npm run contracts:compat",
+        "npm run contracts:adoption"
+      ],
+      "gaps": []
+    },
+    {
+      "id": "engine-adapter",
+      "maturity": "MACHINE_ENFORCED",
+      "canonical_sources": [
+        "docs/CORE_CONTRACT_STANDARD.md",
+        "contracts/core-engine.schema.json",
+        "contracts/core-adapter.schema.json",
+        "contracts/core-port.schema.json",
+        "contracts/core-binding-profile.schema.json",
+        "contracts/core-application-service.schema.json"
+      ],
+      "machine_checks": [
+        "npm run contracts:validate",
+        "npm run contracts:compat",
+        "npm test"
+      ],
+      "gaps": []
+    },
+    {
+      "id": "api-event-error",
+      "maturity": "CANONICAL_PARTIAL",
+      "canonical_sources": [
+        "docs/CORE_CONTRACT_STANDARD.md",
+        "contracts/core-request-context.schema.json",
+        "contracts/core-query.schema.json",
+        "contracts/core-api-page.schema.json",
+        "contracts/core-error.schema.json",
+        "contracts/core-event.schema.json",
+        "registry/core-error-codes.json",
+        "registry/core-event-types.json"
+      ],
+      "machine_checks": [
+        "npm run contracts:validate",
+        "npm run contracts:compat"
+      ],
+      "gaps": [
+        "OpenAPI description/profile is not yet a canonical machine gate.",
+        "RFC 9457 alignment is research input rather than an adopted HTTP error profile.",
+        "CloudEvents compatibility is research input rather than an adopted transport profile."
+      ]
+    },
+    {
+      "id": "workflow",
+      "maturity": "MACHINE_ENFORCED",
+      "canonical_sources": [
+        "contracts/workflow.schema.json",
+        "contracts/workflow-projection.schema.json",
+        "contracts/workflow-progression.schema.json",
+        "contracts/workflow-recovery-policy.schema.json",
+        "contracts/workflow-bridge.schema.json"
+      ],
+      "machine_checks": [
+        "npm run workflow:validate",
+        "npm run workflow:projection:validate",
+        "npm run workflow:progression:validate",
+        "npm run workflow:bridge:validate",
+        "npm run workflow:recovery:validate"
+      ],
+      "gaps": []
+    },
+    {
+      "id": "security-audit",
+      "maturity": "RESEARCH_ONLY",
+      "canonical_sources": [
+        "docs/research/AUTH_SECURITY_AUDIT_CROSS_REPO_FINDINGS_2026-09-19.md"
+      ],
+      "machine_checks": [],
+      "gaps": [
+        "No canonical Security/Audit contract registry exists yet.",
+        "No shared authz, secret, dependency, source-code or SBOM security gate is wired into main CI.",
+        "Security findings may be reported as advisory evidence only until a canonical owner adopts them."
+      ]
+    },
+    {
+      "id": "qa-observability",
+      "maturity": "RESEARCH_ONLY",
+      "canonical_sources": [
+        "docs/research/OBSERVABILITY_QA_CROSS_REPO_FINDINGS_2026-09-19.md"
+      ],
+      "machine_checks": [],
+      "gaps": [
+        "No canonical telemetry/health/QA result contract registry exists yet.",
+        "OpenTelemetry semantic conventions are not yet an adopted machine gate.",
+        "Lint, typecheck, coverage and negative-control requirements are not expressed as a universal project checker manifest."
+      ]
+    },
+    {
+      "id": "build-deploy-governance",
+      "maturity": "CANONICAL_PARTIAL",
+      "canonical_sources": [
+        "docs/shared-services/SHARED_RELEASE_GATE.md",
+        "docs/research/BUILD_DEPLOY_GOVERNANCE_CROSS_REPO_FINDINGS_2026-09-19.md",
+        "docs/STANDARD_DEVELOPMENT_FORM.md"
+      ],
+      "machine_checks": [
+        "npm run verify",
+        "npm run repo:preflight",
+        "npm run checkpoint"
+      ],
+      "gaps": [
+        "Build/checker manifest, ADR, exception registry and deprecation lifecycle are not yet one canonical machine contract.",
+        "SLSA provenance and SBOM profiles are research candidates, not current release requirements.",
+        "Branch protection and current CI runner execution are repository/runtime controls and must be verified externally."
+      ]
+    }
+  ]
+}
