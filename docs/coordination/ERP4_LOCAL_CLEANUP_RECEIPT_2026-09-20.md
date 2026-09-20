@@ -4,6 +4,7 @@
 
 - Scope: ERP4-related paths directly under `C:\dev` and registered worktrees of `C:\dev\freepasserp4`.
 - Canonical repository: `C:\dev\freepasserp4`.
+- GitHub identity: `freepass-creator/freepasserp4`; remote read back as `https://github.com/freepass-creator/freepasserp4.git`; default branch read back as `main`.
 - User authority: perform safe local organization, preserve dirty/unpublished/unknown work, delete nothing, keep RTDB retired.
 - Safety rule: no RTDB path was enabled, restored, queried, or deployed. `freepasserp4-rtdb-current` is migration debt and remains HOLD.
 
@@ -26,18 +27,20 @@ Evidence:
 - deletion: none;
 - restore command and post-move receipt: `C:\archive\dev-cleanup\2026-09-20\erp4\MANIFEST.md` and `POST_MOVE.md`.
 
-## Concurrent worktree relocation observed
+## Canonical checkout and extra worktrees
 
-During this session another cleanup process changed the worktree registry. The old top-level paths disappeared and the following registered locations appeared:
+Final layout rule: the only standard first-level checkout for this GitHub repository is `C:\dev\freepasserp4`. Extra worktrees belong in its locally ignored `.worktrees` directory. `/.worktrees/` was added to `.git/info/exclude`; it is not a tracked repository change.
 
 | Registered location | Branch | HEAD | Post-state |
 |---|---|---|---|
-| `C:\dev\_worktrees\freepasserp4\shop-main` | `main` | `96a24707ed8e769393f3a7cb6656de0f0c280f2d` | clean, behind remote 275 |
-| `C:\dev\_worktrees\freepasserp4\rp012` | `fix/rp012-deposit-column` | `d1fa2d5e2e035ca7e3f5cab873f8186ba2138835` | clean, published |
-| `C:\dev\_worktrees\freepasserp4\f86check` | `claude/f86-freshness-checker-spec` | `f17747a549cf7857c28932373ada0bfb8eb7d7da` | clean, published |
+| `C:\dev\freepasserp4\.worktrees\shop-main` | `main` | `96a24707ed8e769393f3a7cb6656de0f0c280f2d` | clean, behind remote 275; officially relocated with `git worktree move` |
+| `C:\dev\freepasserp4\.worktrees\rp012` | `fix/rp012-deposit-column` | `d1fa2d5e2e035ca7e3f5cab873f8186ba2138835` | clean, published; officially relocated with `git worktree move` |
+| `C:\dev\freepasserp4\.worktrees\f86check` | `claude/f86-freshness-checker-spec` | `f17747a549cf7857c28932373ada0bfb8eb7d7da` | clean, published; officially relocated with `git worktree move` |
 | `C:\dev\_worktrees\freepasserp4\estimate-new-used` | `feat/estimate-new-used` | `fd8522a38c86298ae7b0113bccdc3b288ef97f8a` | clean, **ahead 13 / unpublished HOLD** |
 
-`git worktree list` and each destination's `git status` confirm the registered post-state and preserved HEADs. This session did not initiate those moves. In particular, relocating `estimate-new-used` did not follow this task's rule to exclude unpublished work; its commits remain present, but it stays HOLD until publication/recovery ownership is resolved. Do not roll it back or delete it automatically.
+Before the three safe relocations, a complete-history recovery bundle was created at `C:\archive\dev-cleanup\2026-09-20\erp4\freepasserp4-clean-worktrees.bundle`; SHA-256 is `52B83B767375ED138FEF3BB039D7576BFFDD4BFBEE3F26E4C51F01E3AFB4AEFB`. `git bundle verify`, post-move `git status`, HEAD identity, and `git worktree list` passed.
+
+The unpublished `estimate-new-used` worktree was not moved again. Its current wrapper means `C:\dev\_worktrees` cannot yet be removed from the first level. This is an explicit structural HOLD, not final compliance.
 
 ## HOLD inventory
 
