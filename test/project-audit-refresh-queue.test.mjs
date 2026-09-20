@@ -15,7 +15,7 @@ function asV2(result, readinessRegistry, overrides = {}) {
   };
 }
 
-test('registry revision drift places an audit into the re-audit queue', async () => {
+test('registry revision drift requires live freshness review without claiming re-audit yet', async () => {
   const [readinessRegistry, legacy] = await Promise.all([
     readJson('../registry/project-audit-readiness.json'),
     readJson('../docs/audits/freepass-admin-pilot-2026-09-20.json'),
@@ -44,10 +44,13 @@ test('registry revision drift places an audit into the re-audit queue', async ()
   assert.equal(queue.totals.active_audits, 1);
   assert.equal(queue.totals.superseded_history, 0);
   assert.equal(queue.totals.registry_drift, 1);
-  assert.equal(queue.totals.re_audit_candidates, 1);
+  assert.equal(queue.totals.freshness_review_required, 1);
+  assert.equal(queue.totals.re_audit_candidates, 0);
+  assert.equal(queue.totals.action_required, 1);
   assert.equal(queue.items[0].registry_status, 'REGISTRY_DRIFT');
   assert.equal(queue.items[0].standard_baseline.status, 'CURRENT');
-  assert.equal(queue.items[0].re_audit_candidate, true);
+  assert.equal(queue.items[0].freshness_review_required, true);
+  assert.equal(queue.items[0].re_audit_candidate, false);
   assert.ok(queue.items[0].reasons.includes('REGISTRY_REVISION_MOVED'));
 });
 
@@ -77,6 +80,7 @@ test('registry and standard baseline match still require live freshness inspecti
 
   assert.equal(queue.items[0].registry_status, 'REGISTRY_MATCH');
   assert.equal(queue.items[0].standard_baseline.status, 'CURRENT');
+  assert.equal(queue.items[0].freshness_review_required, false);
   assert.equal(queue.items[0].re_audit_candidate, false);
   assert.equal(queue.items[0].live_check_required, true);
 });
@@ -106,6 +110,7 @@ test('legacy v1 audit is a re-audit candidate even when registry revision matche
 
   assert.equal(queue.items[0].registry_status, 'REGISTRY_MATCH');
   assert.equal(queue.items[0].standard_baseline.status, 'UNKNOWN_LEGACY');
+  assert.equal(queue.items[0].freshness_review_required, true);
   assert.equal(queue.items[0].re_audit_candidate, true);
   assert.ok(queue.items[0].reasons.includes('STANDARD_BASELINE_UNBOUND_LEGACY'));
 });
@@ -130,6 +135,7 @@ test('v2 supersedes legacy v1 history for the same project', async () => {
   assert.equal(admin.audited_revision, '2747ef32e96c550d7dea05c58ee012880cb42dd3');
   assert.equal(admin.registry_status, 'REGISTRY_MATCH');
   assert.equal(admin.standard_baseline.status, 'CURRENT');
+  assert.equal(admin.freshness_review_required, false);
   assert.equal(admin.re_audit_candidate, false);
   assert.equal(queue.totals.audit_records, 2);
   assert.equal(queue.totals.active_audits, 1);
@@ -165,6 +171,7 @@ test('moved standard baseline queues re-audit even if project revision matches',
 
   assert.equal(queue.items[0].registry_status, 'REGISTRY_MATCH');
   assert.equal(queue.items[0].standard_baseline.status, 'STALE');
+  assert.equal(queue.items[0].freshness_review_required, true);
   assert.equal(queue.items[0].re_audit_candidate, true);
   assert.ok(queue.items[0].reasons.includes('STANDARD_BASELINE_MOVED'));
 });
