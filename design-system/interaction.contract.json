@@ -1,6 +1,6 @@
 {
   "contract": "ai-core-ui-interaction-contract/v1",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "feature_registry": "registry/ui-ux-features.json",
   "constitution": "docs/UI_UX_CONSTITUTION.md",
   "rules": {
@@ -275,6 +275,27 @@
         "no-fabricated-variants",
         "parent-subvariant-selection",
         "stable-selected-identity"
+      ]
+    },
+    "master_detail_navigation": {
+      "feature_refs": [
+        "data.master-detail",
+        "navigation.restore",
+        "data.detail"
+      ],
+      "invariants": [
+        "Desktop multi-pane composition does not imply stacked panes on mobile.",
+        "Mobile exposes exactly one active master-detail task pane at a time.",
+        "List selection moves to detail without losing query, selected identity or recoverable list context.",
+        "Back restores the list context instead of creating a fresh unrelated search state.",
+        "List and detail heading hierarchy remains continuous."
+      ],
+      "verification": [
+        "desktop-multi-pane",
+        "mobile-single-pane",
+        "selection-continuity",
+        "back-restore",
+        "header-continuity"
       ]
     }
   }
