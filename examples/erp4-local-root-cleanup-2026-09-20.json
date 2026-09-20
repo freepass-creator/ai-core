@@ -1,0 +1,303 @@
+{
+  "schema_version": 1,
+  "observed_at": "2026-09-20T20:03:34.6844937+09:00",
+  "canonical_repository": {
+    "path": "C:\\dev\\freepasserp4",
+    "origin": "freepass-creator/freepasserp4",
+    "branch": "feat/spring-atom-monitor",
+    "head": "595abaefa72ab0d5ee14414fec8998fd632ec488",
+    "dirty_count": 3,
+    "ahead": 16,
+    "behind": 46,
+    "decision": "HOLD_DIRTY_DIVERGED"
+  },
+  "archive": {
+    "root": "C:\\Users\\admin\\DevArchive\\erp4-root-cleanup\\2026-09-20\\reversible-stubs",
+    "manifest": "C:\\Users\\admin\\DevArchive\\erp4-root-cleanup\\2026-09-20\\reversible-stubs\\manifest.json",
+    "manifest_sha256": "5243C39C50120E6C0BE785ED96ADF339F01468891ECDB94E889686EEC0107169"
+  },
+  "executed": [
+    {
+      "source": "C:\\dev\\fp4-spring-pr",
+      "destination": "C:\\Users\\admin\\DevArchive\\erp4-root-cleanup\\2026-09-20\\reversible-stubs\\fp4-spring-pr",
+      "owner_repository": "C:\\dev\\freepasserp4",
+      "classification": "empty_shell_with_node_modules_junction",
+      "bytes_excluding_junction_target": 0,
+      "metadata_sha256": "DBE5B7E72F75E8B3B9DBF28858CBDBA2DC5FDE0B395F0C20537AD12B7A4D9516",
+      "junction_target": "C:\\dev\\freepasserp4\\node_modules",
+      "restore_command": "Move-Item -LiteralPath 'C:\\Users\\admin\\DevArchive\\erp4-root-cleanup\\2026-09-20\\reversible-stubs\\fp4-spring-pr' -Destination 'C:\\dev\\fp4-spring-pr'",
+      "verified_no_recent_codex_cwd": true,
+      "verified_no_external_process_reference": true
+    },
+    {
+      "source": "C:\\dev\\fp4-spring-pr2",
+      "destination": "C:\\Users\\admin\\DevArchive\\erp4-root-cleanup\\2026-09-20\\reversible-stubs\\fp4-spring-pr2",
+      "owner_repository": "C:\\dev\\freepasserp4",
+      "classification": "empty_shell_with_node_modules_junction",
+      "bytes_excluding_junction_target": 0,
+      "metadata_sha256": "D3110D3154AD880B22CC57C094EB681A2578304C72AE5FF3681FADA0A0F28F52",
+      "junction_target": "C:\\dev\\freepasserp4\\node_modules",
+      "restore_command": "Move-Item -LiteralPath 'C:\\Users\\admin\\DevArchive\\erp4-root-cleanup\\2026-09-20\\reversible-stubs\\fp4-spring-pr2' -Destination 'C:\\dev\\fp4-spring-pr2'",
+      "verified_no_recent_codex_cwd": true,
+      "verified_no_external_process_reference": true
+    },
+    {
+      "source": "C:\\dev\\.wt-est2",
+      "destination": "C:\\Users\\admin\\DevArchive\\erp4-root-cleanup\\2026-09-20\\reversible-stubs\\.wt-est2",
+      "owner_repository": "C:\\dev\\freepasserp4",
+      "classification": "empty_shell_with_node_modules_junction",
+      "bytes_excluding_junction_target": 0,
+      "metadata_sha256": "B8EEB5C10F488ECB78A23EDCE6A2719E45E763A6FEE7A145960F75B49E7C5FAA",
+      "junction_target": "C:\\dev\\freepasserp4\\node_modules",
+      "restore_command": "Move-Item -LiteralPath 'C:\\Users\\admin\\DevArchive\\erp4-root-cleanup\\2026-09-20\\reversible-stubs\\.wt-est2' -Destination 'C:\\dev\\.wt-est2'",
+      "verified_no_recent_codex_cwd": true,
+      "verified_no_external_process_reference": true
+    },
+    {
+      "source": "C:\\dev\\.wt-newcar",
+      "destination": "C:\\Users\\admin\\DevArchive\\erp4-root-cleanup\\2026-09-20\\reversible-stubs\\.wt-newcar",
+      "owner_repository": "C:\\dev\\freepasserp4",
+      "classification": "empty_shell_with_node_modules_junction",
+      "bytes_excluding_junction_target": 0,
+      "metadata_sha256": "1E843A5DC0795EA8EB9F218A8C013D704FEC6DA0049DA19F78FCCE9961131095",
+      "junction_target": "C:\\dev\\freepasserp4\\node_modules",
+      "restore_command": "Move-Item -LiteralPath 'C:\\Users\\admin\\DevArchive\\erp4-root-cleanup\\2026-09-20\\reversible-stubs\\.wt-newcar' -Destination 'C:\\dev\\.wt-newcar'",
+      "verified_no_recent_codex_cwd": true,
+      "verified_no_external_process_reference": true
+    },
+    {
+      "source": "C:\\dev\\.wt-slim",
+      "destination": "C:\\Users\\admin\\DevArchive\\erp4-root-cleanup\\2026-09-20\\reversible-stubs\\.wt-slim",
+      "owner_repository": "C:\\dev\\freepasserp4",
+      "classification": "empty_shell_with_node_modules_junction",
+      "bytes_excluding_junction_target": 0,
+      "metadata_sha256": "255B723F766782800B10F6501B0E2192A4C95331A34F9551DC47C21F71FA713F",
+      "junction_target": "C:\\dev\\freepasserp4\\node_modules",
+      "restore_command": "Move-Item -LiteralPath 'C:\\Users\\admin\\DevArchive\\erp4-root-cleanup\\2026-09-20\\reversible-stubs\\.wt-slim' -Destination 'C:\\dev\\.wt-slim'",
+      "verified_no_recent_codex_cwd": true,
+      "verified_no_external_process_reference": true
+    }
+  ],
+  "execution_contract": {
+    "operation": "MOVE_TO_EXTERNAL_REVERSIBLE_ARCHIVE",
+    "owner_repository": "C:\\dev\\freepasserp4",
+    "classification": "empty_shell_with_node_modules_junction",
+    "bytes_excluding_junction_target": 0,
+    "junction_target": "C:\\dev\\freepasserp4\\node_modules",
+    "active_process_status": "NO_EXTERNAL_PROCESS_REFERENCE_OBSERVED",
+    "session_status": "NO_RECENT_CODEX_CWD_MATCH_IN_50_THREAD_SNAPSHOT",
+    "restore_command_template": "Move-Item -LiteralPath '<archive-path>' -Destination '<original-path>'",
+    "pre_move_git_proof": {
+      "dot_git_absent_for_all": true,
+      "excluded_from_git_worktree_list": true,
+      "worktree_list_canonical": "C:\\dev\\freepasserp4"
+    },
+    "post_move_checks": {
+      "all_source_paths_absent": true,
+      "all_archive_paths_present": true,
+      "all_junction_targets_preserved": true,
+      "verified_at": "2026-09-20T20:03:34.6844937+09:00"
+    }
+  },
+  "duplicate_decision": {
+    "paths": [
+      "C:\\dev\\freepasserp4-ui-deploy",
+      "C:\\dev\\freepasserp4-ui-upload"
+    ],
+    "head": "a466b0aa3fb4ecbb7d08d6e9806e917953b18397",
+    "dirty_count_each": 3,
+    "modified_file_hashes_equal": true,
+    "git_binary_patch_sha256": "EA1CD6F00988E582C58519EB638F926EC0CB98FF82C68FC2137A78665439E7A9",
+    "directory_sets_equal": false,
+    "upload_unique_paths": [
+      ".env.local",
+      ".vercel/README.txt"
+    ],
+    "decision": "HOLD_SECRET_SAFE_BACKUP_AND_CANONICAL_SELECTION_REQUIRED",
+    "deploy_unique_path_count": 34,
+    "deploy_unique_path_sample": [
+      ".vercel/.env.production.local",
+      ".vercel/build.stderr.log",
+      ".vercel/build.stdout.log",
+      ".vercel/output/config.json"
+    ],
+    "upload_git_registration": "NOT_SEPARATELY_REGISTERED_ALIASES_DEPLOY_GITDIR"
+  },
+  "registered_worktrees": [
+    {
+      "path": "C:\\dev\\.wt-est",
+      "head": "fd8522a38c86298ae7b0113bccdc3b288ef97f8a",
+      "branch": "feat/estimate-new-used",
+      "dirty_count": 0,
+      "decision": "HOLD_ACTIVE_AND_PUBLICATION_RECHECK"
+    },
+    {
+      "path": "C:\\dev\\.wt-rp012",
+      "head": "d1fa2d5e2e035ca7e3f5cab873f8186ba2138835",
+      "branch": "fix/rp012-deposit-column",
+      "dirty_count": 0,
+      "decision": "HOLD_ACTIVE_AND_PUBLICATION_RECHECK"
+    },
+    {
+      "path": "C:\\dev\\.wt-test",
+      "head": "c4c43a43e86d4cc372db33f42da409589a7bc93d",
+      "branch": null,
+      "dirty_count": 1,
+      "decision": "HOLD_DIRTY"
+    },
+    {
+      "path": "C:\\dev\\fp-shop-pr",
+      "head": "96a24707ed8e769393f3a7cb6656de0f0c280f2d",
+      "branch": "main",
+      "dirty_count": 0,
+      "decision": "HOLD_ACTIVE_AND_PUBLICATION_RECHECK"
+    },
+    {
+      "path": "C:\\dev\\freepasserp4-rtdb-current",
+      "head": "d8954261ac1b5271bccb141fc9c3c4acdba2ca6d",
+      "branch": "codex/rtdb-cutover-current",
+      "dirty_count": 2,
+      "decision": "HOLD_FIRESTORE_EXTRACTION_AND_DIRTY_STATE"
+    },
+    {
+      "path": "C:\\dev\\freepasserp4-ui-deploy",
+      "head": "a466b0aa3fb4ecbb7d08d6e9806e917953b18397",
+      "branch": null,
+      "dirty_count": 3,
+      "decision": "HOLD_DIRTY"
+    },
+    {
+      "path": "C:\\dev\\freepasserp4-wt-f86check",
+      "head": "f17747a549cf7857c28932373ada0bfb8eb7d7da",
+      "branch": "claude/f86-freshness-checker-spec",
+      "dirty_count": 0,
+      "decision": "HOLD_ACTIVE_AND_PUBLICATION_RECHECK"
+    },
+    {
+      "path": "C:\\dev\\worktrees\\freepass-source-registry-current",
+      "head": "fed7cce004668170919d26bb128619ed4c248122",
+      "branch": "codex/source-registry-current",
+      "dirty_count": 5,
+      "decision": "HOLD_DIRTY"
+    },
+    {
+      "path": "C:\\dev\\freepasserp4\\tmp\\deploy-31c8280",
+      "head": "31c82800f2fc30954d6fae7e5907d9c1f62ba962",
+      "branch": null,
+      "dirty_count": 3,
+      "decision": "HOLD_DIRTY"
+    },
+    {
+      "path": "C:\\dev\\freepasserp4\\tmp\\deploy-9a70768",
+      "head": "9a707682009269436c15c5431a978912ffb04c2a",
+      "branch": null,
+      "dirty_count": 18,
+      "decision": "HOLD_DIRTY"
+    },
+    {
+      "path": "C:\\dev\\freepasserp4\\tmp\\deploy-cce3ce0",
+      "head": "6e30cf3b5c63fc903c3dd918828d16bcc068d394",
+      "branch": null,
+      "dirty_count": 18,
+      "decision": "HOLD_DIRTY_AND_DIRECTORY_NAME_HEAD_MISMATCH"
+    },
+    {
+      "path": "C:\\dev\\freepasserp4\\tmp\\deploy-photo-production",
+      "head": "4f6a889bb0edfcef72c65da62e2ec5ba3df70f35",
+      "branch": "codex/photo-download-production",
+      "dirty_count": 3,
+      "decision": "HOLD_DIRTY"
+    },
+    {
+      "path": "C:\\dev\\freepasserp4\\tmp\\deploy-supplier-main",
+      "head": "0b5c04764b502d6c5294b7b814e04d9d82abe1f1",
+      "branch": "codex/supplier-filter-column",
+      "dirty_count": 3,
+      "decision": "HOLD_DIRTY"
+    },
+    {
+      "path": "C:\\dev\\freepasserp4\\tmp\\wt-stl-atoms",
+      "head": "8d1cd6f63aa5f7d490a0c277755eaaa578ac141a",
+      "branch": "feat/settlement-from-atoms",
+      "dirty_count": 1,
+      "decision": "HOLD_DIRTY"
+    }
+  ],
+  "non_git_hold": [
+    {
+      "path": "C:\\dev\\freepasserp4-ui-source",
+      "decision": "HOLD_FULL_TREE_AND_SECRET_SAFE_COMPARISON_REQUIRED"
+    },
+    {
+      "path": "C:\\dev\\freepasserp4-ui-source.zip",
+      "decision": "HOLD_PROVENANCE_AND_ARCHIVE_COMPARISON_REQUIRED"
+    },
+    {
+      "path": "C:\\dev\\_wt",
+      "decision": "HOLD_OWNER_UNKNOWN"
+    },
+    {
+      "path": "C:\\dev\\_wt-base",
+      "decision": "HOLD_HISTORICALLY_ERP4_ATTRIBUTED_CURRENT_OWNER_RECHECK_REQUIRED"
+    },
+    {
+      "path": "C:\\dev\\_wt-fence",
+      "decision": "HOLD_OWNER_UNKNOWN_AND_TRACE_PRESENT"
+    }
+  ],
+  "target_layout": {
+    "canonical_repository": "C:\\dev\\freepasserp4",
+    "registered_worktrees": "C:\\dev\\_worktrees\\freepasserp4\\<name>",
+    "imports": "C:\\dev\\freepasserp4\\archive\\imports",
+    "temporary_outputs": "C:\\dev\\freepasserp4\\tmp",
+    "required_ignored_paths": [
+      ".worktrees/",
+      "tmp/",
+      "archive/",
+      "imports/"
+    ],
+    "ignore_observation": {
+      "tmp/": "IGNORED_BY_GITIGNORE_LINE_27",
+      ".worktrees/": "NOT_PROVEN_IGNORED",
+      "archive/": "NOT_PROVEN_IGNORED",
+      "imports/": "NOT_PROVEN_IGNORED",
+      "decision": "HOLD_CREATION_UNTIL_IGNORE_RULES_ARE_COMMITTED"
+    }
+  },
+  "prohibitions": [
+    "DO_NOT_MOVE_REGISTERED_WORKTREES_WITH_FILESYSTEM_MOVE",
+    "DO_NOT_COMMIT_SERVICE_ACCOUNT_JSON",
+    "DO_NOT_ENABLE_OR_RESTORE_RTDB"
+  ],
+  "service_account_hold": [
+    {
+      "path": "C:\\dev\\teamjpk-haru-sa.json",
+      "consumers": [],
+      "decision": "HOLD_SECURE_PATH_AND_CONSUMER_REWRITE_REQUIRED"
+    },
+    {
+      "path": "C:\\dev\\teamjpk-sa.json",
+      "consumers": [
+        "C:\\dev\\aiops\\lib\\fb.mjs"
+      ],
+      "decision": "HOLD_SECURE_PATH_AND_CONSUMER_REWRITE_REQUIRED"
+    },
+    {
+      "path": "C:\\dev\\teamjpkwork-sa.json",
+      "consumers": [
+        "C:\\dev\\aiops\\lib\\fb.mjs",
+        "C:\\dev\\aiops\\scripts\\rtdb-두드리기.mjs"
+      ],
+      "decision": "HOLD_SECURE_PATH_AND_CONSUMER_REWRITE_REQUIRED"
+    },
+    {
+      "path": "C:\\dev\\freepasserp4\\tmp\\firebase-auth\\sa.json",
+      "consumers": [
+        "C:\\dev\\aiops\\lib\\goog.mjs",
+        "C:\\dev\\aiops\\AI_GUIDE.md",
+        "C:\\dev\\aiops\\SHEET_MAP.md"
+      ],
+      "decision": "HOLD_SECURE_PATH_AND_CONSUMER_REWRITE_REQUIRED"
+    }
+  ]
+}
