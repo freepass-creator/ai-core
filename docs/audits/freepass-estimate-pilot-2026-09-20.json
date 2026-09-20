@@ -1,0 +1,138 @@
+{
+  "schema": "ai-core-project-audit-result/v1",
+  "project_id": "freepass-estimate",
+  "repository": "freepass-creator/freepass-estimate",
+  "subject_revision": "b526fdc73e812dcb0594d10caf2123bbade1d38b",
+  "source_proof": {
+    "default_branch": "main",
+    "ci": {
+      "status": "PASS",
+      "run_id": 35479102648,
+      "revision": "b526fdc73e812dcb0594d10caf2123bbade1d38b"
+    },
+    "branch_protected": false
+  },
+  "findings": [
+    {
+      "axis": "ui-ux",
+      "verdict": "CORE_MATCH",
+      "evidence": [
+        "candidate canonical branch enforces action placement, mobile navigation, visual grammar and accessibility baseline in CI",
+        "Top is informational / Bottom is actionable is implemented and regression-checked",
+        "single-choice auto-advance, Back state preservation and explicit-Next stages are expressed as a testable navigation contract"
+      ],
+      "gaps": [
+        "canonical implementation is still on work/ui-baseline rather than default main"
+      ],
+      "next_action": "Preserve the estimator-specific interaction contract and complete canonical branch promotion separately; do not rewrite the product flow merely to mimic generic Core screens."
+    },
+    {
+      "axis": "data-ssot",
+      "verdict": "CORE_MATCH",
+      "evidence": [
+        "FreePass Estimate explicitly owns estimator UI/UX, QuoteRequest/QuoteResult and provider contract authority",
+        "calculation truth owner is separated from shared estimator product ownership",
+        "versioned share snapshot preserves quote/result/execution contracts and source revision",
+        "unknown future snapshot contracts fail closed"
+      ],
+      "gaps": [
+        "AI Core central project observation still points to an older work/ui-baseline revision"
+      ],
+      "next_action": "Refresh central observation after the current audit branch work settles; preserve provider calculation truth as external authority without creating a second estimator SSOT."
+    },
+    {
+      "axis": "engine-adapter",
+      "verdict": "CORE_MATCH",
+      "evidence": [
+        "provider-neutral QuoteRequest/QuoteResult separates domain meaning from external provider connection",
+        "provider-specific field/unit translation and credentials stay in server-side adapters",
+        "authoritative provider failure does not silently fall back to a different calculation engine",
+        "Core adapter-result shadow preserves correlation, source revision, retryability, issues and evidence"
+      ],
+      "gaps": [
+        "Core receipt input/output digest shadow is not yet applied",
+        "second independent external provider has not yet proven the same provider contract"
+      ],
+      "next_action": "Keep current SHADOW adoption, add receipt digest evidence next, and require a second real external provider before treating provider configuration semantics as cross-provider validated."
+    },
+    {
+      "axis": "api-event-error",
+      "verdict": "CORE_MATCH",
+      "evidence": [
+        "stable quote/provider error codes are separated from mutable public messages",
+        "timeout, unavailable, invalid response, unsupported adapter and invalid kind are distinguished",
+        "upstream diagnostic detail is not exposed in client responses or failure logs",
+        "provider retryability is explicit and Core shadow maps it into adapter result semantics"
+      ],
+      "gaps": [
+        "no adopted OpenAPI description/profile for the HTTP quote endpoints",
+        "full generic Core receipt is not yet attached to quote execution"
+      ],
+      "next_action": "Keep the stable error and retry semantics; when the AI Core HTTP profile becomes canonical, describe the existing quote endpoints without changing the domain contract."
+    },
+    {
+      "axis": "workflow",
+      "verdict": "UNKNOWN",
+      "evidence": [
+        "mobile navigation is a B-owned interaction state contract",
+        "quote execution SUCCEEDED/HOLD/FAILED is an execution-result contract rather than a proven D business workflow"
+      ],
+      "gaps": [
+        "no bounded D-owned business workflow requiring canonical workflow/projection binding was established in this audit"
+      ],
+      "next_action": "Do not invent a D workflow merely for coverage. Introduce D binding only when estimator business lifecycle state beyond UI navigation/execution result actually exists."
+    },
+    {
+      "axis": "security-audit",
+      "verdict": "RESEARCH_ADVISORY",
+      "evidence": [
+        "external provider credentials and proprietary calculation assets stay server-side",
+        "provider failure tests verify upstream secret/detail strings do not leak to response or logs",
+        "share snapshot intentionally omits internal adapter identifiers"
+      ],
+      "gaps": [
+        "AI Core Security/Audit axis remains RESEARCH_ONLY",
+        "no production identity/authorization/audit-retention profile was established for this estimator candidate branch"
+      ],
+      "next_action": "Use provider error privacy and server-side credential boundary as Security/Audit evidence, but do not promote them to a company-wide security pass until the Core security profile is canonical."
+    },
+    {
+      "axis": "qa-observability",
+      "verdict": "RESEARCH_ADVISORY",
+      "evidence": [
+        "exact candidate revision CI passes UI, provider, domain, runtime proof, snapshot, release-proof, sync and production-build checks",
+        "verification-manifest.json maps semantic contract identifiers to their checkers",
+        "verification freshness checker guards against stale contract/checker relationships",
+        "provider runtime policy tests cover timeout, unavailable, invalid response, unregistered adapter and no secret-detail leak"
+      ],
+      "gaps": [
+        "AI Core QA/Observability axis remains RESEARCH_ONLY",
+        "no production health/freshness/telemetry observation is available because no production target is observable"
+      ],
+      "next_action": "Reverse-import contract-to-checker freshness binding as QA/Governance evidence and preserve exact-revision CI proof separately from production observability."
+    },
+    {
+      "axis": "build-deploy-governance",
+      "verdict": "MIGRATION_GAP",
+      "evidence": [
+        "candidate branch has a single npm verify entrypoint and CI at the exact audited revision",
+        "release proof contract distinguishes CI success from production revision observation",
+        "verification manifest makes contract/checker ownership explicit"
+      ],
+      "gaps": [
+        "default main is still the initialization commit, while the actual estimator candidate lives on work/ui-baseline",
+        "work/ui-baseline branch protection currently reports protected=false",
+        "connected Vercel team exposes zero projects, so no production deployment or live /api/version proof is observable",
+        "AI Core project registry still records an older candidate revision"
+      ],
+      "next_action": "Promote the verified canonical candidate to main through the existing approval boundary, refresh the central registry, then establish an observable production target and exact revision readback before capability activation."
+    }
+  ],
+  "limitations": [
+    "Audit intentionally targets the PR #1 candidate canonical head rather than default main, because main contains only the initialization README.",
+    "The candidate branch is not treated as production merely because its CI is green.",
+    "Security/Audit and QA/Observability are research-only AI Core axes and cannot receive normative PASS/FAIL verdicts.",
+    "The connected Vercel team currently exposes zero projects, so production deployment and live revision proof are unavailable.",
+    "No second independent external quote provider was observed at the audited revision."
+  ]
+}
