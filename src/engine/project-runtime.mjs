@@ -28,7 +28,7 @@ export function createProjectRuntime({
   importModule=async p=>import(pathToFileURL(p).href),
 }={}){
   async function assertProject(project){
-    need(project&&project.status==='ACTIVE','PROJECT_NOT_ACTIVE');
+    need(project&&project.execution_readiness_status==='ACTIVE','PROJECT_NOT_EXECUTION_READY');
     need(typeof project.local_path==='string'&&project.local_path.length>0&&isAbsolute(project.local_path),'PROJECT_LOCAL_PATH_REQUIRED');
     const head=await readHead(project.local_path); need(head===project.head_revision,'PROJECT_REVISION_STALE');
     const dirty=await readDirtyPaths(project.local_path); need(Array.isArray(dirty)&&dirty.length===0,'PROJECT_WORKTREE_DIRTY');

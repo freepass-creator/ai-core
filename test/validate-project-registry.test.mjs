@@ -77,7 +77,23 @@ test('future source observation is rejected', () => {
 
 test('retired project cannot retain a deploy target', () => {
   const input = clone(example);
-  input.projects[0].status = 'RETIRE';
+  input.projects[0].repository_lifecycle_status = 'RETIRE';
+  input.projects[0].execution_readiness_status = 'DISABLED';
   input.projects[0].deploy_targets = ['production'];
   assert.ok(codes(input).includes('RETIRED_PROJECT_HAS_DEPLOY_TARGET'));
+});
+
+
+test('repository lifecycle does not grant execution readiness', () => {
+  const input = clone(example);
+  input.projects[0].repository_lifecycle_status = 'REFERENCE';
+  input.projects[0].execution_readiness_status = 'ACTIVE';
+  assert.deepEqual(validateProjectRegistry(input), { status: 'VALID', errors: [] });
+});
+
+test('retired repository must be execution disabled', () => {
+  const input = clone(example);
+  input.projects[0].repository_lifecycle_status = 'RETIRE';
+  input.projects[0].execution_readiness_status = 'HOLD';
+  assert.ok(codes(input).includes('RETIRED_PROJECT_EXECUTION_NOT_DISABLED'));
 });

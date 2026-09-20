@@ -1,16 +1,19 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "observed_at": "2026-09-15T00:40:00Z",
   "projects": [
     {
       "project_id": "ai-core",
       "name": "AI Core",
       "organization": "HEADQUARTERS",
-      "status": "ACTIVE",
+      "repository_lifecycle_status": "ACTIVE",
+      "execution_readiness_status": "ACTIVE",
       "mission": "Route work and preserve revision-bound decisions, evidence and authority boundaries.",
       "repository": "freepass-creator/ai-core",
       "default_branch": "main",
-      "work_branches": ["codex/order-control-integration"],
+      "work_branches": [
+        "codex/order-control-integration"
+      ],
       "local_path": "C:\\dev\\ai-core-control-tower",
       "head_revision": "e13b0867c8d2a55d3d54a6cac63f3e30584a5ba4",
       "authoritative_sources": [
@@ -27,8 +30,12 @@
         "build": "npm run verify"
       },
       "deploy_targets": [],
-      "required_approvals": ["merge-to-main"],
-      "known_blockers": ["PR #20 is open and not adopted on main"]
+      "required_approvals": [
+        "merge-to-main"
+      ],
+      "known_blockers": [
+        "PR #20 is open and not adopted on main"
+      ]
     }
   ]
 }
