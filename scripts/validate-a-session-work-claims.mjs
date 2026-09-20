@@ -1,5 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { isCanonicalASessionScope, aSessionScopesConflict } from './a-session-scope-policy.mjs';
+import { isValidASessionOwner } from './a-session-owner-policy.mjs';
 
 const SHA40 = /^[0-9a-f]{40}$/;
 const STATES = new Set(['ACTIVE','COMPLETED','ABANDONED','SUPERSEDED']);
@@ -38,6 +39,7 @@ export function validateAWorkClaims(registry) {
     if (typeof claim?.scope !== 'string' || !claim.scope.trim()) add(errors,'SCOPE_INVALID',p + '/scope');
     else if (claim?.state === 'ACTIVE' && !isCanonicalASessionScope(claim.scope)) add(errors,'ACTIVE_SCOPE_NOT_CANONICAL',p + '/scope');
     if (typeof claim?.owner_session !== 'string' || !claim.owner_session.trim()) add(errors,'OWNER_SESSION_INVALID',p + '/owner_session');
+    else if (claim?.state === 'ACTIVE' && !isValidASessionOwner(claim.owner_session)) add(errors,'ACTIVE_OWNER_NOT_STABLE',p + '/owner_session');
     if (!STATES.has(claim?.state)) add(errors,'STATE_INVALID',p + '/state');
     if (!validDate(claim?.claimed_at)) add(errors,'CLAIMED_AT_INVALID',p + '/claimed_at');
     if (!validDate(claim?.lease_until)) add(errors,'LEASE_UNTIL_INVALID',p + '/lease_until');
