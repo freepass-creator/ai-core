@@ -20,7 +20,13 @@ export function evaluateClaim(registry, request, now = new Date()) {
   if (!isCanonicalASessionScope(request?.scope)) throw new Error('CLAIM_SCOPE_INVALID');
   const key = claimKey(request);
   const nowMs = now.getTime();
-  const sameSubject = (registry.claims || []).filter(x =>
+  const allClaims = registry.claims || [];
+  const ownerLive = allClaims.find(x =>
+    x.owner_session === request.owner &&
+    x.state === 'ACTIVE' &&
+    Date.parse(x.lease_until) > nowMs
+  );
+  const sameSubject = allClaims.filter(x =>
     x.repository === request.repository &&
     x.subject_revision === request.revision
   );
@@ -33,6 +39,12 @@ export function evaluateClaim(registry, request, now = new Date()) {
     return {
       action:live.claim_key === key ? 'SKIP_DUPLICATE' : 'SKIP_SCOPE_CONFLICT',
       claim:live
+    };
+  }
+  if (ownerLive) {
+    return {
+      action:'SKIP_OWNER_BUSY',
+      claim:ownerLive
     };
   }
   const done = [...sameSubject].reverse().find(x => x.state === 'COMPLETED' && x.claim_key === key);
