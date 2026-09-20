@@ -227,6 +227,38 @@
         "type": "string",
         "minLength": 1
       }
+    },
+    "connector_binding": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "connector_id",
+        "connector_version",
+        "operation_ids"
+      ],
+      "properties": {
+        "connector_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]*(\\.[a-z][a-z0-9_-]*)+$"
+        },
+        "connector_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "operation_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9._-]*$"
+          }
+        }
+      },
+      "description": "Optional low-level transport binding. Adapter owns interpretation; Connector owns transport only."
     }
   }
 }
