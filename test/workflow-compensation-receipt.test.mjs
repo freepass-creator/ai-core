@@ -4,6 +4,8 @@ import Ajv2020 from 'ajv/dist/2020.js';
 import addFormats from 'ajv-formats';
 import { readFile } from 'node:fs/promises';
 import { executeCompensatedEffectsWithReceipts } from '../src/workflow/compensation-receipt-runtime.mjs';
+import { createExecutionIdentity, bindExecutionAttempt } from '../src/contracts/execution-identity.mjs';
+import { reconcileRecoveryReceipts } from '../src/workflow/recovery-receipt-reconciler.mjs';
 
 const types=JSON.parse(await readFile(new URL('../contracts/core-types.schema.json',import.meta.url),'utf8'));
 const execution=JSON.parse(await readFile(new URL('../contracts/core-execution-identity.schema.json',import.meta.url),'utf8'));
@@ -12,6 +14,22 @@ const receiptSchema=JSON.parse(await readFile(new URL('../contracts/core-receipt
 const ajv=new Ajv2020({allErrors:true,strict:false}); addFormats(ajv);
 for(const schema of [types,execution,proof,receiptSchema]) ajv.addSchema(schema);
 const validate=ajv.getSchema('https://schemas.freepass.ai/core/receipt/v1');
+
+const logicalIdentity=createExecutionIdentity({
+  logicalExecutionId:'logical.multiwrite.test',
+  dimensions:{
+    operation_kind:'workflow.compensated-multiwrite',
+    logical_slot:'slot-1',
+    subject_scope:{scope_type:'test',scope_key:'subject-1'},
+    semantic_input_digest:'sha256:'+'9'.repeat(64)
+  },
+  createdAt:'2026-09-20T08:59:00Z'
+});
+const attemptBinding=bindExecutionAttempt(logicalIdentity,{
+  attemptId:'attempt-1',
+  attemptSequence:1,
+  executionPath:'NATIVE'
+});
 
 const effects=[
   {effect_id:'write-a',compensation_mode:'REQUIRED',compensation_action:'undo-a'},
@@ -31,7 +49,8 @@ const receiptOptions=(id)=>({
   },
   proof_inputs:[
     {role:'SOURCE',ref:'workflow-policy',digest:'sha256:'+'a'.repeat(64),revision:'git:workflow'}
-  ]
+  ],
+  execution:attemptBinding
 });
 
 function assertReceipt(value){
@@ -135,4 +154,60 @@ test('action receipt preserves downstream execution receipt as child evidence',a
   assert.equal(out.receipt.child_receipts[0].relation,'EFFECT');
   assertReceipt(out.action_receipts[0]);
   assertReceipt(out.receipt);
+});
+
+
+test('compensation parent receipt can directly drive recovery no-replay reconciliation',async()=>{
+  const out=await executeCompensatedEffectsWithReceipts({
+    effects,
+    correlation_id:'corr-reconcile-success',
+    receipt:receiptOptions('receipt.multi.reconcile.success'),
+    execute_effect:async(effect)=>({status:'SUCCEEDED',data:{effect:effect.effect_id}}),
+    execute_compensation:async()=>({status:'SUCCEEDED'}),
+    clock:()=>Date.parse('2026-09-20T09:04:00Z')
+  });
+
+  assert.deepEqual(out.receipt.execution,attemptBinding);
+  assert.deepEqual(out.action_receipts[0].execution,attemptBinding);
+
+  const reconciliation=reconcileRecoveryReceipts({
+    target_execution:attemptBinding,
+    evidence_records:[{
+      source:'NATIVE_EXECUTION',
+      terminal_authority:true,
+      current_proof_inputs:[
+        {role:'SOURCE',ref:'workflow-policy',digest:'sha256:'+'a'.repeat(64),revision:'git:workflow'}
+      ],
+      receipt:out.receipt
+    }]
+  });
+  assert.equal(reconciliation.action,'SUPPRESS_REPLAY');
+});
+
+test('PARTIAL compensation parent receipt drives HOLD rather than retry',async()=>{
+  const out=await executeCompensatedEffectsWithReceipts({
+    effects,
+    correlation_id:'corr-reconcile-partial',
+    receipt:receiptOptions('receipt.multi.reconcile.partial'),
+    execute_effect:async(effect)=>effect.effect_id==='write-a'
+      ? {status:'SUCCEEDED'}
+      : {status:'FAILED',error_code:'SECOND_WRITE_FAILED'},
+    execute_compensation:async()=>({status:'FAILED',error_code:'UNDO_FAILED'}),
+    clock:()=>Date.parse('2026-09-20T09:05:00Z')
+  });
+
+  const reconciliation=reconcileRecoveryReceipts({
+    target_execution:attemptBinding,
+    evidence_records:[{
+      source:'RECOVERY_HISTORY',
+      terminal_authority:true,
+      current_proof_inputs:[
+        {role:'SOURCE',ref:'workflow-policy',digest:'sha256:'+'a'.repeat(64),revision:'git:workflow'}
+      ],
+      receipt:out.receipt
+    }]
+  });
+  assert.equal(out.receipt.status,'PARTIAL');
+  assert.equal(reconciliation.action,'HOLD');
+  assert.equal(reconciliation.reason,'AMBIGUOUS_OR_PARTIAL_OUTCOME');
 });
