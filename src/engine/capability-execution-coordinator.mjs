@@ -36,6 +36,10 @@ export const CAPABILITY_EXECUTION_SCHEMA=`
     BEFORE UPDATE OF request_id,order_id,requirement_revision,work_id,capability_id,project_id,subject_revision,payload_digest,input_digest,perform
     ON capability_execution_requests
     BEGIN SELECT RAISE(ABORT,'CAPABILITY_EXECUTION_IDENTITY_IMMUTABLE'); END;
+  CREATE TRIGGER IF NOT EXISTS capability_execution_recovery_snapshot_no_update
+    BEFORE UPDATE OF before_receipts_json
+    ON capability_execution_requests
+    BEGIN SELECT RAISE(ABORT,'CAPABILITY_EXECUTION_RECOVERY_SNAPSHOT_IMMUTABLE'); END;
   CREATE TRIGGER IF NOT EXISTS capability_execution_no_delete
     BEFORE DELETE ON capability_execution_requests
     BEGIN SELECT RAISE(ABORT,'CAPABILITY_EXECUTION_IMMUTABLE'); END;`;
@@ -82,6 +86,57 @@ function relativeReceiptRef(projectRoot,path){
   const rel=relative(projectRoot,path);
   if(!rel||rel.startsWith('..')||isAbsolute(rel)) return null;
   return rel.replaceAll('\\','/');
+}
+
+function recoverySnapshot(capability,before){
+  if(before===null||!capability?.receipt) return null;
+  return {
+    version:1,
+    before,
+    receipt:canonical(capability.receipt),
+    mode:capability.mode??null,
+    walls:[...(capability.walls??[])].map(String),
+  };
+}
+
+function parseRecoverySnapshot(row,capability=null){
+  let raw=null;
+  try{
+    raw=row?.before_receipts_json?JSON.parse(row.before_receipts_json):null;
+  }catch{
+    return {invalid:true,before:new Map(),receipt:null,mode:null,walls:[]};
+  }
+  if(Array.isArray(raw)){
+    return {
+      invalid:false,
+      historical:false,
+      before:new Map(raw),
+      receipt:capability?.receipt??null,
+      mode:capability?.mode??null,
+      walls:[...(capability?.walls??[])].map(String),
+    };
+  }
+  if(raw===null){
+    return {
+      invalid:false,
+      historical:false,
+      before:new Map(),
+      receipt:capability?.receipt??null,
+      mode:capability?.mode??null,
+      walls:[...(capability?.walls??[])].map(String),
+    };
+  }
+  if(raw&&raw.version===1&&Array.isArray(raw.before)&&raw.receipt&&typeof raw.receipt==='object'&&!Array.isArray(raw.receipt)){
+    return {
+      invalid:false,
+      historical:true,
+      before:new Map(raw.before),
+      receipt:raw.receipt,
+      mode:raw.mode??null,
+      walls:[...(raw.walls??[])].map(String),
+    };
+  }
+  return {invalid:true,before:new Map(),receipt:null,mode:null,walls:[]};
 }
 
 export function createCapabilityExecutionCoordinator({
@@ -174,6 +229,7 @@ export function createCapabilityExecutionCoordinator({
     const project=projects.get(shape.project_id);
     need(project,'PROJECT_NOT_REGISTERED');
     const before=await snapshotBefore(capability,project);
+    const recovery=recoverySnapshot(capability,before);
     const at=iso(clock);
 
     store.db.exec('BEGIN IMMEDIATE');
@@ -189,7 +245,7 @@ export function createCapabilityExecutionCoordinator({
         VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`)
         .run(requestId,shape.order_id,shape.requirement_revision,shape.work_id,shape.capability_id,shape.project_id,
           shape.subject_revision,shape.payload_digest,shape.input_digest,shape.perform?1:0,
-          before===null?null:JSON.stringify(before),'RESERVED',null,null,at,at);
+          recovery===null?null:JSON.stringify(recovery),'RESERVED',null,null,at,at);
       store.db.exec('COMMIT');
     }catch(error){
       if(store.db.isTransaction) store.db.exec('ROLLBACK');
@@ -290,19 +346,25 @@ export function createCapabilityExecutionCoordinator({
     return rowReceipt(getRow(requestId));
   }
 
-  async function reconcile(requestId,capability){
+  async function reconcile(requestId,capability=null){
     const row=getRow(requestId);
     need(row,'CAPABILITY_EXECUTION_REQUEST_MISSING');
     if(row.state==='RESULT') return {status:'RESULT',result:rowReceipt(row),reconciled:true};
-    if(!capability?.receipt) return {status:'HOLD',reason:'EXECUTION_OUTCOME_UNKNOWN',reconciled:false};
+
+    const recovery=parseRecoverySnapshot(row,capability);
+    if(recovery.invalid){
+      return {status:'HOLD',reason:'CAPABILITY_RECOVERY_METADATA_INVALID',reconciled:false};
+    }
+    if(!recovery.receipt){
+      return {status:'HOLD',reason:'CAPABILITY_RECOVERY_METADATA_MISSING',reconciled:false};
+    }
 
     const project=projects.get(row.project_id);
     need(project&&text(project.local_path),'PROJECT_LOCAL_PATH_REQUIRED');
-    const before=new Map(JSON.parse(row.before_receipts_json??'[]'));
     const observed=await receiptReader.reconcile(
       project.local_path,
-      capability.receipt,
-      before,
+      recovery.receipt,
+      recovery.before,
       {expectedIdentity:requestId},
     );
     if(observed.status==='HOLD'&&observed.reason==='EXECUTION_RECEIPT_MISSING'){
@@ -321,18 +383,18 @@ export function createCapabilityExecutionCoordinator({
     const result={
       schema:'ai-core-work-result/v1',
       order_id:row.order_id,work_id:row.work_id,project_id:row.project_id,capability_id:row.capability_id,
-      subject_revision:row.subject_revision,mode:capability.mode,status:mapped,
+      subject_revision:row.subject_revision,mode:recovery.mode,status:mapped,
       summary:mapped==='SUCCEEDED'?'응답 유실 뒤 terminal execution receipt로 성공을 재확인했습니다.'
         :mapped==='FAILED'?'응답 유실 뒤 terminal execution receipt에서 실패를 확인했습니다.'
           :'응답 유실 뒤 terminal execution receipt가 HOLD 상태입니다.',
       artifact_refs:ref?[ref]:[],
       evidence_refs:ref?[`MEASURED:${ref} state=${observed.state??'unknown'}`]:[],
       checks:[{name:'execution.receipt.reconcile',status:mapped==='SUCCEEDED'?'PASS':'FAIL',detail:observed.state??observed.reason??null}],
-      execution:{performed:true,external_effect:capability.mode==='EXTERNAL_MUTATION',started_at:null,ended_at:iso(clock),authorization_source:null},
+      execution:{performed:true,external_effect:recovery.mode==='EXTERNAL_MUTATION',started_at:null,ended_at:iso(clock),authorization_source:null},
       outcome:{observed:mapped==='SUCCEEDED',data:null},
       blockers:mapped==='SUCCEEDED'?[]:[observed.reason??'EXECUTION_RECEIPT_HOLD'],
       next_action:mapped==='SUCCEEDED'?'정본 상태 전이는 기존 Control Tower/Work Ledger 규칙으로 계속합니다.':'terminal receipt 내용을 확인합니다.',
-      walls:[...(capability.walls??[])],
+      walls:recovery.walls,
     };
     const saved=complete(requestId,result,{reason:'RECONCILED_FROM_TERMINAL_RECEIPT'});
     return {status:'RESULT',result:saved,reconciled:true};
