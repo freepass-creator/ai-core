@@ -4,33 +4,63 @@
   "title": "AI Core Derived Workflow Projection Registry",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "registry_version", "projections"],
+  "required": [
+    "schema_version",
+    "registry_version",
+    "projections"
+  ],
   "properties": {
-    "schema_version": { "const": "1.0.0" },
-    "registry_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "registry_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
     "projections": {
       "type": "array",
-      "items": { "$ref": "#/$defs/projection" }
+      "items": {
+        "$ref": "#/$defs/projection"
+      }
     }
   },
   "$defs": {
     "sourceAuthority": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["repository", "revision", "files"],
+      "required": [
+        "repository",
+        "revision",
+        "files"
+      ],
       "properties": {
-        "repository": { "type": "string", "minLength": 1 },
-        "revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "repository": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
         "files": {
           "type": "array",
           "minItems": 1,
           "items": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["path", "blob_sha"],
+            "required": [
+              "path",
+              "blob_sha"
+            ],
             "properties": {
-              "path": { "type": "string", "minLength": 1 },
-              "blob_sha": { "type": "string", "pattern": "^[0-9a-f]{40}$" }
+              "path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "blob_sha": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{40}$"
+              }
             }
           }
         }
@@ -41,20 +71,41 @@
         {
           "type": "object",
           "additionalProperties": false,
-          "required": ["kind", "axis_id", "value"],
+          "required": [
+            "kind",
+            "axis_id",
+            "value"
+          ],
           "properties": {
-            "kind": { "const": "STATE_EQUALS" },
-            "axis_id": { "type": "string", "minLength": 1 },
-            "value": { "type": "string", "minLength": 1 }
+            "kind": {
+              "const": "STATE_EQUALS"
+            },
+            "axis_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "value": {
+              "type": "string",
+              "minLength": 1
+            }
           }
         },
         {
           "type": "object",
           "additionalProperties": false,
-          "required": ["kind", "fact_id", "value"],
+          "required": [
+            "kind",
+            "fact_id",
+            "value"
+          ],
           "properties": {
-            "kind": { "const": "FACT_EQUALS" },
-            "fact_id": { "type": "string", "minLength": 1 },
+            "kind": {
+              "const": "FACT_EQUALS"
+            },
+            "fact_id": {
+              "type": "string",
+              "minLength": 1
+            },
             "value": {}
           }
         }
@@ -63,54 +114,205 @@
     "rule": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["rule_id", "priority", "all", "result"],
+      "required": [
+        "rule_id",
+        "priority",
+        "all",
+        "result"
+      ],
       "properties": {
-        "rule_id": { "type": "string", "pattern": "^[a-z][a-z0-9_.-]*$" },
-        "priority": { "type": "integer", "minimum": 0 },
+        "rule_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_.-]*$"
+        },
+        "priority": {
+          "type": "integer",
+          "minimum": 0
+        },
         "all": {
           "type": "array",
           "minItems": 1,
-          "items": { "$ref": "#/$defs/condition" }
+          "items": {
+            "$ref": "#/$defs/condition"
+          }
         },
-        "result": { "type": "string", "minLength": 1 },
-        "description": { "type": "string" }
+        "result": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string"
+        }
       }
     },
     "projection": {
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "projection_id", "version", "adoption_status", "owner", "workflow_id",
-        "output", "rules", "default_result", "source_authority"
+        "projection_id",
+        "version",
+        "adoption_status",
+        "owner",
+        "workflow_id",
+        "output",
+        "rules",
+        "default_result",
+        "source_authority"
       ],
       "properties": {
-        "projection_id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*(?:\\.[a-z][a-z0-9-]*)+$" },
-        "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
-        "adoption_status": { "enum": ["SHADOW", "PILOT", "CANONICAL", "DEPRECATED"] },
-        "owner": { "type": "string", "minLength": 1 },
-        "description": { "type": "string" },
-        "workflow_id": { "type": "string", "minLength": 1 },
+        "projection_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*(?:\\.[a-z][a-z0-9-]*)+$"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "adoption_status": {
+          "enum": [
+            "SHADOW",
+            "PILOT",
+            "CANONICAL",
+            "DEPRECATED"
+          ]
+        },
+        "owner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string"
+        },
+        "workflow_id": {
+          "type": "string",
+          "minLength": 1
+        },
         "output": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["projection_ref", "type", "allowed_values"],
+          "required": [
+            "projection_ref",
+            "type",
+            "allowed_values"
+          ],
           "properties": {
-            "projection_ref": { "type": "string", "minLength": 1 },
-            "type": { "const": "string" },
+            "projection_ref": {
+              "type": "string",
+              "minLength": 1
+            },
+            "type": {
+              "const": "string"
+            },
             "allowed_values": {
               "type": "array",
               "minItems": 1,
               "uniqueItems": true,
-              "items": { "type": "string", "minLength": 1 }
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
             }
           }
         },
         "rules": {
           "type": "array",
-          "items": { "$ref": "#/$defs/rule" }
+          "items": {
+            "$ref": "#/$defs/rule"
+          }
         },
-        "default_result": { "type": "string", "minLength": 1 },
-        "source_authority": { "$ref": "#/$defs/sourceAuthority" }
+        "default_result": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_authority": {
+          "$ref": "#/$defs/sourceAuthority"
+        },
+        "adoption_evidence": {
+          "$ref": "#/$defs/adoptionEvidence"
+        }
+      }
+    },
+    "adoptionEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "stage",
+        "repository",
+        "revision",
+        "verification"
+      ],
+      "properties": {
+        "stage": {
+          "enum": [
+            "SOURCE_MODELED",
+            "SOURCE_PARITY_VERIFIED",
+            "RUNTIME_PILOT",
+            "RUNTIME_CANONICAL"
+          ]
+        },
+        "repository": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "verification": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "conclusion",
+            "files"
+          ],
+          "properties": {
+            "kind": {
+              "enum": [
+                "CI",
+                "RUNTIME"
+              ]
+            },
+            "conclusion": {
+              "enum": [
+                "SUCCESS",
+                "FAILURE",
+                "HOLD"
+              ]
+            },
+            "run_id": {
+              "type": [
+                "integer",
+                "string"
+              ]
+            },
+            "observed_at": {
+              "type": "string"
+            },
+            "files": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "path",
+                  "blob_sha"
+                ],
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "blob_sha": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{40}$"
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
   }
