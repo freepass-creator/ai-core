@@ -90,3 +90,7 @@ Review claims use the existing A scope policy. Route ids are normalized into `co
 ## Stable owner alignment
 
 Allocator claims require the same stable owner identity as every other A claim: `A-session-<stable-unique-id>`. Use `--owner` or `AI_CORE_A_SESSION_ID`. Stale review claims are superseded only by the same owner that acquired them.
+
+## One-live-owner rule
+
+The common A claim policy permits only one live claim per owner. Review Allocator returns `OWNER_BUSY` instead of assigning a second route to the same review worker. Use distinct stable B/C/D owners for legitimate parallel review capacity.
