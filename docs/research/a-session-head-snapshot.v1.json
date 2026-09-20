@@ -1,7 +1,7 @@
 {
   "schema": "ai-core-a-session-head-snapshot/v1",
-  "observed_at": "2026-09-20T00:56:35Z",
-  "source": "A-session exact-head refresh after Admin C-adoption and ERP4 Audit80; AI Core self head pinned to audit-start main.",
+  "observed_at": "2026-09-20T01:18:00Z",
+  "source": "A-session full connected exact-head rescan after Sales/Admin/ERP4 follow-up evidence; AI Core self head pinned to audit-start main before A coordination registry mutations.",
   "repositories": [
     {
       "repository": "freepass-creator/-",
@@ -9,7 +9,7 @@
     },
     {
       "repository": "freepass-creator/ai-core",
-      "head": "a5d17a362b730069b02d9cf9b5014ba362cda883"
+      "head": "032820bfa965ce8a746c3a5825c1be121b0415f1"
     },
     {
       "repository": "freepass-creator/aiops",
@@ -49,7 +49,7 @@
     },
     {
       "repository": "freepass-creator/freepass-admin",
-      "head": "77f682af680528124096e4f7871504a3596c8990"
+      "head": "2aede7df82591470308f25bd3ccd4e5358aa7c3c"
     },
     {
       "repository": "freepass-creator/freepass-estimate",
@@ -57,7 +57,7 @@
     },
     {
       "repository": "freepass-creator/freepass-sales",
-      "head": "fe69f76d81f4b9acd6f67f7b3f4ef5619f5e33d1"
+      "head": "2ec46bb2e88b10a31915b68ec77b2eecbdac57bd"
     },
     {
       "repository": "freepass-creator/freepasserp",
@@ -69,7 +69,7 @@
     },
     {
       "repository": "freepass-creator/freepasserp4",
-      "head": "3b98649ff49a24376aca4b24590c15d36b95a8f6"
+      "head": "f01b91c7f68fc2f55d8d642bc3d39f5e07368967"
     },
     {
       "repository": "freepass-creator/freepasshomepage",
