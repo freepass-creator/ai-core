@@ -41,8 +41,9 @@ async function readJsonFiles(dir, predicate) {
   return out;
 }
 
-const [readinessRegistry,handoffs,completionReports,closureReceipts] = await Promise.all([
+const [readinessRegistry,opsPolicy,handoffs,completionReports,closureReceipts] = await Promise.all([
   readFile(resolve(root,'registry/project-audit-readiness.json'),'utf8').then(JSON.parse),
+  readFile(resolve(root,'registry/project-audit-ops-policy.json'),'utf8').then(JSON.parse),
   readJsonFiles(
     resolve(root,'docs/handoffs/project-4'),
     parsed => parsed?.schema === 'ai-core-project-audit-handoff/v1',
@@ -91,6 +92,8 @@ const queue = buildProjectAuditClosureQueue({
   completionReports,
   closureReceipts,
   liveByProject,
+  opsPolicy,
+  now:new Date().toISOString(),
 });
 
 const rendered = format === 'md'
