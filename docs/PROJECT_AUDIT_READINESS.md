@@ -311,3 +311,46 @@ Current state:
 - 4 live-current active handoffs
 
 The queue does not infer completion from commits or CI. It waits for a completion report, successor audit and verified closure receipt.
+
+
+## Operational accountability and SLA
+
+Closure Queue v2 adds task-level operational control without inventing a human-assignee registry.
+
+Each actionable task now carries:
+
+- `accountable_scope = PROJECT:<project_id>`
+- standard lane / standard owner
+- P1/P2/P3 priority
+- aging basis
+- age in hours
+- warning timestamp
+- due timestamp
+- SLA state
+- overdue hours
+- completion state
+- audit-closure state
+
+Project 4 local policy:
+
+- `registry/project-audit-ops-policy.json`
+
+Current default:
+- P1 warning 48h, SLA 72h
+- P2 warning 120h, SLA 168h
+- P3 warning 240h, SLA 336h
+
+Current status board:
+
+- `docs/handoffs/project-4/OWNERSHIP_SLA_STATUS_2026-09-20-r3.md`
+- `docs/handoffs/project-4/closure-status-2026-09-20-r3.json`
+
+At the 2026-09-20 21:45 KST snapshot:
+- P1 15 / P2 2
+- ON_TRACK 17
+- AT_RISK 0
+- OVERDUE 0
+- oldest open task age 1.4h
+- nearest P1 due 2026-09-23 20:20 KST
+
+A DONE completion report stops the project-work SLA clock and moves the task to `REAUDIT_PENDING`; only verified successor audit closure moves it to `CLOSED`.
