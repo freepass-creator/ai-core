@@ -3,18 +3,30 @@ const need = (condition, code) => { if (!condition) throw new Error(code); };
 const FINAL = new Set(['CLOSED_VERIFIED']);
 const OPEN = new Set(['HANDOFF_ISSUED','OPEN_PARTIAL','REAUDIT_REQUIRED','REAUDIT_GAPS_REMAIN','HANDOFF_STALE','HOLD']);
 
+const DEFAULT_OPS_POLICY = Object.freeze({
+  schema:'ai-core-project-audit-ops-policy/v1',
+  status:'PROJECT4_LOCAL_POLICY',
+  aging_basis:'handoff.audit_binding.audited_at',
+  priorities:{
+    P1:{sla_hours:72,warning_after_hours:48},
+    P2:{sla_hours:168,warning_after_hours:120},
+    P3:{sla_hours:336,warning_after_hours:240},
+    NONE:{sla_hours:null,warning_after_hours:null},
+  },
+});
+
 function time(value) {
   const parsed = Date.parse(value ?? '');
   return Number.isFinite(parsed) ? parsed : Number.NEGATIVE_INFINITY;
 }
 
-function handoffKey(handoff) {
-  return [
-    handoff.project_id,
-    handoff.repository,
-    handoff.audit_binding?.subject_revision,
-    handoff.audit_binding?.standard_baseline_revision,
-  ].join('|');
+function iso(ms) {
+  return Number.isFinite(ms) ? new Date(ms).toISOString() : null;
+}
+
+function hoursBetween(laterMs, earlierMs) {
+  if (!Number.isFinite(laterMs) || !Number.isFinite(earlierMs)) return null;
+  return Math.round(Math.max(0,laterMs-earlierMs) / 36e5 * 10) / 10;
 }
 
 function completionMatches(completion, handoff) {
@@ -154,15 +166,164 @@ function nextAction(stage, closure) {
   }
 }
 
+function validateOpsPolicy(policy) {
+  need(policy?.schema === 'ai-core-project-audit-ops-policy/v1', 'AUDIT_CLOSURE_QUEUE_OPS_POLICY_SCHEMA_INVALID');
+  for (const priority of ['P1','P2','P3','NONE']) {
+    need(policy.priorities?.[priority], `AUDIT_CLOSURE_QUEUE_OPS_PRIORITY_MISSING:${priority}`);
+  }
+  return policy;
+}
+
+function completionTaskMap(completion) {
+  return new Map((completion?.task_results ?? []).map(item => [`${item.bucket}:${item.axis}`,item]));
+}
+
+function closureTaskMap(closure) {
+  return new Map((closure?.tasks ?? []).map(item => [`${item.bucket}:${item.axis}`,item]));
+}
+
+function operationalTasks({handoff,completion,closure,stage,policy,nowMs}) {
+  const completionMap = completionTaskMap(completion);
+  const closureMap = closureTaskMap(closure);
+  const tasks = [
+    ...(handoff.project_work?.implementation ?? []),
+    ...(handoff.project_work?.discovery ?? []),
+  ];
+
+  return tasks.map(task => {
+    const key = `${task.bucket}:${task.axis}`;
+    const returned = completionMap.get(key) ?? null;
+    const closed = closureMap.get(key)?.audit_closed === true;
+    const completionStatus = returned?.status ?? 'NOT_RETURNED';
+    const rule = policy.priorities?.[task.priority] ?? policy.priorities.NONE;
+    const basisMs = time(handoff.audit_binding.audited_at);
+    const slaHours = rule.sla_hours;
+    const warningHours = rule.warning_after_hours;
+    const dueMs = Number.isFinite(slaHours) ? basisMs + slaHours * 36e5 : Number.NaN;
+    const warningMs = Number.isFinite(warningHours) ? basisMs + warningHours * 36e5 : Number.NaN;
+    const ageHours = hoursBetween(nowMs,basisMs);
+
+    let slaState = 'NOT_APPLICABLE';
+    if (closed) {
+      slaState = 'CLOSED';
+    } else if (completionStatus === 'DONE' || completionStatus === 'NOT_APPLICABLE') {
+      slaState = 'REAUDIT_PENDING';
+    } else if (task.priority !== 'NONE' && Number.isFinite(slaHours)) {
+      if (nowMs >= dueMs) slaState = 'OVERDUE';
+      else if (nowMs >= warningMs) slaState = 'AT_RISK';
+      else slaState = 'ON_TRACK';
+    }
+
+    const executable = !['HANDOFF_STALE','HOLD','CLOSED_VERIFIED'].includes(stage)
+      && !closed
+      && completionStatus !== 'DONE'
+      && completionStatus !== 'NOT_APPLICABLE';
+
+    return {
+      task_id:`${handoff.project_id}:${task.bucket}:${task.axis}:${handoff.audit_binding.subject_revision.slice(0,12)}`,
+      project_id:handoff.project_id,
+      repository:handoff.repository,
+      accountable_scope:`PROJECT:${handoff.project_id}`,
+      bucket:task.bucket,
+      axis:task.axis,
+      standard_lane:task.standard_owner?.lane ?? 'UNKNOWN',
+      standard_owner:task.standard_owner?.owner ?? 'UNKNOWN',
+      priority:task.priority,
+      handoff_revision:handoff.audit_binding.subject_revision,
+      age_basis_at:handoff.audit_binding.audited_at,
+      age_hours:ageHours,
+      warning_after_hours:warningHours,
+      sla_hours:slaHours,
+      warning_at:Number.isFinite(warningMs) ? iso(warningMs) : null,
+      due_at:Number.isFinite(dueMs) ? iso(dueMs) : null,
+      sla_state:slaState,
+      overdue_by_hours:slaState === 'OVERDUE' ? hoursBetween(nowMs,dueMs) : 0,
+      remaining_sla_hours:['ON_TRACK','AT_RISK'].includes(slaState)
+        ? Math.max(0,Math.round((dueMs-nowMs)/36e5*10)/10)
+        : null,
+      completion_status:completionStatus,
+      completion_at:completion?.completed_at ?? null,
+      audit_closed:closed,
+      executable,
+      instruction:task.instruction,
+      next_action:task.next_action,
+    };
+  });
+}
+
+function summarizeTaskOps(tasks) {
+  const count = state => tasks.filter(task => task.sla_state === state).length;
+  const priorities = Object.fromEntries(
+    ['P1','P2','P3','NONE'].map(priority => [priority,tasks.filter(task => task.priority === priority).length])
+  );
+  const openAges = tasks
+    .filter(task => !task.audit_closed && Number.isFinite(task.age_hours))
+    .map(task => task.age_hours);
+  const due = tasks
+    .filter(task => ['ON_TRACK','AT_RISK','OVERDUE'].includes(task.sla_state) && task.due_at)
+    .map(task => time(task.due_at))
+    .filter(Number.isFinite);
+
+  return {
+    tasks:tasks.length,
+    priorities,
+    on_track:count('ON_TRACK'),
+    at_risk:count('AT_RISK'),
+    overdue:count('OVERDUE'),
+    re_audit_pending:count('REAUDIT_PENDING'),
+    closed:count('CLOSED'),
+    not_applicable:count('NOT_APPLICABLE'),
+    executable:tasks.filter(task => task.executable).length,
+    oldest_open_age_hours:openAges.length ? Math.max(...openAges) : null,
+    nearest_due_at:due.length ? iso(Math.min(...due)) : null,
+  };
+}
+
+function summarizeLanes(tasks) {
+  const byLane = new Map();
+  for (const task of tasks) {
+    const key = `${task.standard_lane}|${task.standard_owner}`;
+    const current = byLane.get(key) ?? {
+      lane:task.standard_lane,
+      owner:task.standard_owner,
+      tasks:0,
+      p1:0,
+      p2:0,
+      p3:0,
+      on_track:0,
+      at_risk:0,
+      overdue:0,
+      re_audit_pending:0,
+      closed:0,
+    };
+    current.tasks += 1;
+    if (task.priority === 'P1') current.p1 += 1;
+    if (task.priority === 'P2') current.p2 += 1;
+    if (task.priority === 'P3') current.p3 += 1;
+    if (task.sla_state === 'ON_TRACK') current.on_track += 1;
+    if (task.sla_state === 'AT_RISK') current.at_risk += 1;
+    if (task.sla_state === 'OVERDUE') current.overdue += 1;
+    if (task.sla_state === 'REAUDIT_PENDING') current.re_audit_pending += 1;
+    if (task.sla_state === 'CLOSED') current.closed += 1;
+    byLane.set(key,current);
+  }
+  return [...byLane.values()].sort((a,b) => a.lane.localeCompare(b.lane));
+}
+
 export function buildProjectAuditClosureQueue({
   handoffs,
   completionReports = [],
   closureReceipts = [],
   liveByProject = new Map(),
+  opsPolicy = DEFAULT_OPS_POLICY,
+  now = new Date().toISOString(),
 }) {
   need(Array.isArray(handoffs), 'AUDIT_CLOSURE_QUEUE_HANDOFFS_REQUIRED');
   need(Array.isArray(completionReports), 'AUDIT_CLOSURE_QUEUE_COMPLETIONS_REQUIRED');
   need(Array.isArray(closureReceipts), 'AUDIT_CLOSURE_QUEUE_RECEIPTS_REQUIRED');
+  const policy = validateOpsPolicy(opsPolicy);
+  const nowMs = time(now);
+  need(Number.isFinite(nowMs), 'AUDIT_CLOSURE_QUEUE_NOW_INVALID');
 
   const {active,superseded} = selectActiveProjectAuditHandoffs(handoffs);
 
@@ -175,10 +336,12 @@ export function buildProjectAuditClosureQueue({
     const stage = stageFor({handoff,completion,closure,live});
     const completionProgress = completionCounts(handoff,completion);
     const auditProgress = auditClosureCounts(handoff,closure);
+    const tasks = operationalTasks({handoff,completion,closure,stage,policy,nowMs});
 
     return {
       project_id:handoff.project_id,
       repository:handoff.repository,
+      accountable_scope:`PROJECT:${handoff.project_id}`,
       handoff_revision:handoff.audit_binding.subject_revision,
       standard_baseline_revision:handoff.audit_binding.standard_baseline_revision,
       handoff_audited_at:handoff.audit_binding.audited_at,
@@ -192,12 +355,17 @@ export function buildProjectAuditClosureQueue({
       audit_closure_progress:auditProgress,
       implementation_tasks:handoff.counts.project_implementation,
       discovery_tasks:handoff.counts.project_discovery,
+      task_ops:summarizeTaskOps(tasks),
+      operational_tasks:tasks,
       blockers:[...(closure?.blockers ?? []), ...(live?.blockers ?? [])],
       next_action:nextAction(stage,closure),
       closed:FINAL.has(stage),
       action_required:OPEN.has(stage),
     };
   });
+
+  const allTasks = items.flatMap(item => item.operational_tasks);
+  const taskOps = summarizeTaskOps(allTasks);
 
   const totals = {
     projects:items.length,
@@ -208,6 +376,16 @@ export function buildProjectAuditClosureQueue({
     actionable_tasks:items.reduce((sum,item)=>sum+item.completion_progress.total,0),
     reported_complete_tasks:items.reduce((sum,item)=>sum+item.completion_progress.reported_complete,0),
     audit_closed_tasks:items.reduce((sum,item)=>sum+item.audit_closure_progress.closed,0),
+    p1_tasks:taskOps.priorities.P1,
+    p2_tasks:taskOps.priorities.P2,
+    p3_tasks:taskOps.priorities.P3,
+    on_track_tasks:taskOps.on_track,
+    at_risk_tasks:taskOps.at_risk,
+    overdue_tasks:taskOps.overdue,
+    re_audit_pending_tasks:taskOps.re_audit_pending,
+    executable_tasks:taskOps.executable,
+    oldest_open_age_hours:taskOps.oldest_open_age_hours,
+    nearest_due_at:taskOps.nearest_due_at,
     handoff_issued:items.filter(item=>item.stage==='HANDOFF_ISSUED').length,
     open_partial:items.filter(item=>item.stage==='OPEN_PARTIAL').length,
     re_audit_required:items.filter(item=>item.stage==='REAUDIT_REQUIRED').length,
@@ -226,8 +404,16 @@ export function buildProjectAuditClosureQueue({
     : 100;
 
   return {
-    schema:'ai-core-project-audit-closure-queue/v1',
+    schema:'ai-core-project-audit-closure-queue/v2',
+    observed_at:iso(nowMs),
+    ops_policy:{
+      schema:policy.schema,
+      status:policy.status,
+      aging_basis:policy.aging_basis,
+      priorities:policy.priorities,
+    },
     totals,
+    lane_summary:summarizeLanes(allTasks),
     items,
     superseded_handoffs:superseded.map(handoff => ({
       project_id:handoff.project_id,
@@ -242,73 +428,96 @@ export function buildProjectAuditClosureQueue({
       auto_deploy:false,
       production_mutation:false,
     },
-    rule:'Completion progress and audit closure progress are intentionally separate. A project may report 100% complete while audit closure remains 0% until a successor v2 audit and live freshness verify the original handoff axes.',
+    rule:'Completion progress and audit closure progress are intentionally separate. Task ownership is PROJECT:<project_id>; standard lanes are review/coordination dimensions. Project 4 SLA is a local operational signal only and does not authorize writes, merges, deployment or production mutation.',
   };
 }
 
-
 export function renderProjectAuditClosureQueueMarkdown(queue) {
-  need(queue?.schema === 'ai-core-project-audit-closure-queue/v1', 'AUDIT_CLOSURE_QUEUE_SCHEMA_INVALID');
+  need(
+    queue?.schema === 'ai-core-project-audit-closure-queue/v2'
+      || queue?.schema === 'ai-core-project-audit-closure-queue/v1',
+    'AUDIT_CLOSURE_QUEUE_SCHEMA_INVALID'
+  );
 
   const t = queue.totals;
   const lines = [
     '# Project 4 — Closure Status',
     '',
+    `Observed: ${queue.observed_at ?? 'not recorded'}`,
+    '',
     '## Portfolio',
     '',
     `- projects: **${t.projects}**`,
     `- actionable tasks: **${t.actionable_tasks}** (implementation ${t.implementation_tasks} / discovery ${t.discovery_tasks})`,
+    `- priority: **P1 ${t.p1_tasks ?? 0} / P2 ${t.p2_tasks ?? 0} / P3 ${t.p3_tasks ?? 0}**`,
+    `- SLA: **on track ${t.on_track_tasks ?? 0} / at risk ${t.at_risk_tasks ?? 0} / overdue ${t.overdue_tasks ?? 0}**`,
     `- project-reported complete: **${t.reported_complete_tasks}/${t.actionable_tasks} (${t.reported_complete_percent}%)**`,
     `- audit-closed: **${t.audit_closed_tasks}/${t.actionable_tasks} (${t.audit_closed_percent}%)**`,
     `- handoff issued: **${t.handoff_issued}**`,
     `- partial: **${t.open_partial}**`,
     `- re-audit required: **${t.re_audit_required}**`,
-    `- re-audit gaps remain: **${t.re_audit_gaps_remain}**`,
     `- stale handoff: **${t.handoff_stale}**`,
     `- closed verified: **${t.closed_verified}**`,
     '',
     '## Projects',
     '',
-    '| Project | Stage | Live | Reported | Audit closed | Next |',
-    '|---|---|---|---:|---:|---|',
+    '| Project owner | Stage | Live | P1/P2 | SLA | Reported | Audit closed |',
+    '|---|---|---|---:|---|---:|---:|',
   ];
 
   for (const item of queue.items) {
+    const ops = item.task_ops ?? {};
     lines.push(
-      `| ${item.project_id} | ${item.stage} | ${item.live_status} | ${item.completion_progress.reported_complete_percent}% | ${item.audit_closure_progress.closed_percent}% | ${item.next_action.replace(/\|/g,'/')} |`
+      `| ${item.accountable_scope ?? `PROJECT:${item.project_id}`} | ${item.stage} | ${item.live_status} | ${ops.priorities?.P1 ?? 0}/${ops.priorities?.P2 ?? 0} | ${ops.on_track ?? 0} on / ${ops.at_risk ?? 0} risk / ${ops.overdue ?? 0} late | ${item.completion_progress.reported_complete_percent}% | ${item.audit_closure_progress.closed_percent}% |`
     );
   }
 
-  lines.push(
-    '',
-    '## Detail',
-    '',
-  );
-
-  for (const item of queue.items) {
+  if (queue.lane_summary?.length) {
     lines.push(
-      `### ${item.project_id}`,
       '',
-      `- repository: \`${item.repository}\``,
-      `- handoff revision: \`${item.handoff_revision}\``,
-      `- live revision: ${item.live_revision ? `\`${item.live_revision}\`` : 'unobserved'}`,
-      `- stage: **${item.stage}**`,
-      `- project-reported complete: ${item.completion_progress.reported_complete}/${item.completion_progress.total} (${item.completion_progress.reported_complete_percent}%)`,
-      `- audit closed: ${item.audit_closure_progress.closed}/${item.audit_closure_progress.total} (${item.audit_closure_progress.closed_percent}%)`,
-      `- implementation tasks: ${item.implementation_tasks}`,
-      `- discovery tasks: ${item.discovery_tasks}`,
-      `- next: ${item.next_action}`,
+      '## Standard lanes',
+      '',
+      '| Lane | Owner | Tasks | P1 | P2 | On track | At risk | Overdue |',
+      '|---|---|---:|---:|---:|---:|---:|---:|',
     );
-    if (item.blockers.length) {
-      lines.push('- blockers:', ...item.blockers.map(blocker => `  - ${blocker}`));
+    for (const lane of queue.lane_summary) {
+      lines.push(
+        `| ${lane.lane} | ${lane.owner} | ${lane.tasks} | ${lane.p1} | ${lane.p2} | ${lane.on_track} | ${lane.at_risk} | ${lane.overdue} |`
+      );
     }
-    lines.push('');
+  }
+
+  lines.push('', '## Operational tasks', '');
+  const taskRows = queue.items
+    .flatMap(item => item.operational_tasks ?? [])
+    .sort((a,b) => {
+      const severity = {OVERDUE:0,AT_RISK:1,ON_TRACK:2,REAUDIT_PENDING:3,CLOSED:4,NOT_APPLICABLE:5};
+      return (severity[a.sla_state] ?? 9) - (severity[b.sla_state] ?? 9)
+        || a.priority.localeCompare(b.priority)
+        || a.project_id.localeCompare(b.project_id);
+    });
+
+  if (!taskRows.length) {
+    lines.push('- No operational tasks.');
+  } else {
+    lines.push(
+      '| Project | Axis | Lane | Priority | Age | SLA | State | Due |',
+      '|---|---|---|---|---:|---:|---|---|',
+    );
+    for (const task of taskRows) {
+      lines.push(
+        `| ${task.project_id} | ${task.axis} | ${task.standard_lane} | ${task.priority} | ${task.age_hours ?? '-'}h | ${task.sla_hours ?? '-'}h | ${task.sla_state} | ${task.due_at ?? '-'} |`
+      );
+    }
   }
 
   lines.push(
+    '',
     '## Interpretation',
     '',
-    'Project-reported completion and audit closure are deliberately different. A project can report 100% completion while audit closure stays 0% until a successor v2 audit at that result revision is live-current and closes the original handoff axes.',
+    'Project accountability is shown as PROJECT:<project_id>. Standard lanes identify the AI Core standard owner that reviews or coordinates the axis; they do not imply a specific human assignee.',
+    '',
+    'Project-reported completion and audit closure are deliberately different. Project 4 SLA is a local operational queue signal measured from the handoff audit timestamp; it is not a company-wide SLA and does not authorize escalation actions.',
     '',
     '## Safety boundary',
     '',
