@@ -201,10 +201,13 @@ FreePass mobile vehicle selection은 `model → powertrain → passenger/drive �
 고객 차량 선택은 의미가 겹치는 단계를 과도하게 분리하지 않는다.
 
 Canonical customer flow:
-`manufacturer → model → powertrain(engine + seat/drive when applicable) → trim → colors → options`
+`manufacturer → model → powertrain(engine + true base-configuration axes only) → trim → colors → options(configuration axes included)`
 
-- engine/fuel/displacement와 passenger/drive가 실제 상품 조합을 함께 결정하면 하나의 powertrain choice card로 표현한다.
-- 내부 데이터는 `variant`와 `trimGroup`으로 분리 저장할 수 있지만 UI 단계는 하나다.
-- 선택 후 해당 조합의 trim만 노출한다.
+- 고정된 인승/구동 값은 선택지가 아니므로 powertrain 카드에 표시하지 않는다.
+- 제조사 기준에서 유료 옵션으로 고르는 인승/AWD·4WD·HTRAC는 powertrain에 표시하지 않고 **Options 단계에서만** 선택한다.
+- 실제 기본 구성축으로 2개 이상 존재하는 인승/구동만 powertrain 선택지에 포함한다. 예: 카니발 7/9인승, 팰리세이드 7/9인승.
+- 내부 provider가 옵션 조합별 완성차 row를 별도로 갖더라도 그 provider group은 UI authority가 아니다.
+- 내부 데이터는 `variant`, base axes, selected axis options를 분리 저장할 수 있지만 고객 UI 단계는 하나다.
+- 선택 후 해당 기본 구성의 trim만 노출한다.
 - 별도 passenger/drive step은 만들지 않는다.
-- provider trim identity와 deep link는 그대로 유지한다.
+- provider trim identity와 deep link는 base trim + axis option으로 역변환하여 호환한다.
