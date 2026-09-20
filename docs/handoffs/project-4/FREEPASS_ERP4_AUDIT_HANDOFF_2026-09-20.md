@@ -6,10 +6,10 @@ Status: **READY**
 
 - repository: `freepass-creator/freepasserp4`
 - branch: `main`
-- subject revision: `1b31af44fac362085649c13d155e4e0c089ae929`
+- subject revision: `f7c89b7b995d8d98ea04606405e68b158fb4256f`
 - AI Core standard baseline: `d995d30e9b830894d53349c2196707bfbd1b6ad0`
-- CI: `PASS` — run `35508944501`
-- SSOT Source Contract: `PASS` — run `35508944490`
+- CI: `UNKNOWN` — no exact-head Actions run at the current audit-doc revision
+- Parent implementation proof: CI `35508944501` PASS + SSOT Source Contract `35508944490` PASS at `1b31af44fac362085649c13d155e4e0c089ae929`
 - branch protection: `false`
 - live freshness at handoff creation: `CURRENT`
 
