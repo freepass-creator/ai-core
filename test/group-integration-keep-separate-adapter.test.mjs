@@ -77,7 +77,7 @@ test('adapter will not silently reuse a pointer owned by another repository iden
     await assert.rejects(
       adapter.execute({
         packet:packet({repository:'freepass-creator/other-sales'}),
-        preflight:preflight(),
+        preflight:preflight({repository:'freepass-creator/other-sales'}),
         attempt_id:'attempt-2',
       }),
       /KEEP_SEPARATE_POINTER_IDENTITY_CONFLICT/,
