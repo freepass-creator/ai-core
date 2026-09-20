@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.freepass.ai/security/machine-enforcement-gate/v1",
+  "title": "AI Core Security Audit Machine Enforcement Gate v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "baseline_profile_ref",
+    "current_maturity",
+    "target_maturity",
+    "enforcement_status",
+    "gates"
+  ],
+  "properties": {
+    "schema_version": {"const": "security-audit-machine-enforcement-gate/v1"},
+    "baseline_profile_ref": {"type": "string", "minLength": 1},
+    "current_maturity": {"const": "CANONICAL_PARTIAL"},
+    "target_maturity": {"const": "MACHINE_ENFORCED"},
+    "enforcement_status": {"enum": ["HOLD", "READY"]},
+    "gates": {
+      "type": "array",
+      "minItems": 7,
+      "maxItems": 7,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "status", "evidence_refs", "note"],
+        "properties": {
+          "id": {
+            "enum": [
+              "core_ci_execution",
+              "aiops_semantic_representation",
+              "erp4_policy_consumption",
+              "independent_non_aiops_consumer",
+              "audit_redaction_consumer_test",
+              "branch_check_enforcement",
+              "canonical_owner_machine_enforcement"
+            ]
+          },
+          "status": {"enum": ["PASS", "PENDING", "HOLD", "BLOCKED_EXTERNAL"]},
+          "evidence_refs": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {"type": "string", "minLength": 1}
+          },
+          "note": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  }
+}
