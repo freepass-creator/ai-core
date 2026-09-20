@@ -3,7 +3,7 @@ import { promisify } from 'node:util';
 import { randomUUID } from 'node:crypto';
 import { isCanonicalASessionScope, aSessionScopesConflict, requiresSubjectHeadGuard } from './a-session-scope-policy.mjs';
 import { isValidASessionOwner, resolveASessionOwner } from './a-session-owner-policy.mjs';
-import { validateACompletionEvidence, verifyACompletionEvidenceRemote } from './a-session-evidence-contract.mjs';
+import { validateACompletionEvidence, verifyACompletionEvidenceRemote, evidenceRefsDigest } from './a-session-evidence-contract.mjs';
 
 const run = promisify(execFile);
 const DEFAULT_COORD_REPO = process.env.AI_CORE_COORDINATION_REPOSITORY || 'freepass-creator/ai-core';
@@ -269,6 +269,14 @@ export async function finishRemote(claimId, state, options = {}) {
     }
 
     const prepared = transitionClaim(current.registry, claimId, effectiveState, options);
+    if (effectiveState === 'COMPLETED' && existing.evidence_contract === 'v2' && remoteEvidence?.status === 'VALID') {
+      prepared.claim.evidence_verification = {
+        status:'VERIFIED',
+        verifier:'github-remote-v2',
+        verified_at:new Date().toISOString(),
+        refs_digest:evidenceRefsDigest(options.evidenceRefs ?? [])
+      };
+    }
     if (guard?.action === 'SUPERSEDE') {
       prepared.claim.superseded_reason = guard.reason;
       prepared.claim.superseded_by_revision = guard.current_revision;
