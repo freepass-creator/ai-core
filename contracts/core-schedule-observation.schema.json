@@ -1,0 +1,167 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.freepass.ai/core/schedule-observation/v1",
+  "title": "AI Core Schedule Observation v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "observation_id",
+    "operation_kind",
+    "slot",
+    "dispatch",
+    "execution",
+    "completion",
+    "timing_assessment",
+    "observed_at"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "core-schedule-observation/v1"
+    },
+    "observation_id": {
+      "$ref": "https://schemas.freepass.ai/core/types/v1#/$defs/stable_id"
+    },
+    "operation_kind": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9._-]*$"
+    },
+    "slot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "logical_slot",
+        "expected_at"
+      ],
+      "properties": {
+        "logical_slot": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "expected_at": {
+          "$ref": "https://schemas.freepass.ai/core/types/v1#/$defs/datetime"
+        }
+      }
+    },
+    "dispatch": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "dispatch_id",
+            "dispatched_at"
+          ],
+          "properties": {
+            "dispatch_id": {
+              "$ref": "https://schemas.freepass.ai/core/types/v1#/$defs/stable_id"
+            },
+            "dispatched_at": {
+              "$ref": "https://schemas.freepass.ai/core/types/v1#/$defs/datetime"
+            },
+            "provider_run_ref": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "execution": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "https://schemas.freepass.ai/core/execution-identity/v1#/$defs/binding"
+        }
+      ]
+    },
+    "completion": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "completed_at",
+            "receipt_ref"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "SUCCEEDED",
+                "FAILED",
+                "HOLD",
+                "PARTIAL",
+                "UNKNOWN"
+              ]
+            },
+            "completed_at": {
+              "$ref": "https://schemas.freepass.ai/core/types/v1#/$defs/datetime"
+            },
+            "receipt_ref": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "timing_assessment": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "classification",
+            "policy_ref",
+            "assessed_at",
+            "lateness_ms"
+          ],
+          "properties": {
+            "classification": {
+              "enum": [
+                "ON_TIME",
+                "LATE",
+                "MISSED",
+                "UNKNOWN"
+              ]
+            },
+            "policy_ref": {
+              "type": "string",
+              "minLength": 1
+            },
+            "assessed_at": {
+              "$ref": "https://schemas.freepass.ai/core/types/v1#/$defs/datetime"
+            },
+            "lateness_ms": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            }
+          }
+        }
+      ]
+    },
+    "observed_at": {
+      "$ref": "https://schemas.freepass.ai/core/types/v1#/$defs/datetime"
+    }
+  }
+}
