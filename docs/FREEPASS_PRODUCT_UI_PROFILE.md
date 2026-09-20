@@ -147,3 +147,19 @@ FreePass UI Profile은 **interaction grammar와 semantic state를 고정**하지
 파트너 컬러는 component 의미를 바꾸면 안 된다. 예를 들어 빨강을 브랜드 primary로 쓸 수는 있지만, 동일 화면에서 danger/error와 구분 가능한 label/icon/copy/boundary를 유지해야 한다.
 
 Welrix 계열 화면은 neutral surface를 유지하고 brand/selection/primary-action 계층에 Welrix red family를 사용할 수 있다. FreePass 단독 화면은 FreePass navy를 기본으로 한다.
+
+
+## 13. Text alignment grammar
+
+정렬은 장식이 아니라 정보형에 따라 고정한다.
+
+- **start/left**: page/section title, model/powertrain/spec/trim/option choice text, card narrative, field label, helper/explanation text
+- **center**: manufacturer/logo selector, color swatch selector, short chips, compact period comparison tiles, standalone CTA label
+- **end/right**: money, percentage, quantity, totals, definition values and table values where comparison benefits from a stable numeric edge
+
+금지:
+- 한 선택 리스트 안에서 어떤 행은 가운데, 어떤 행은 왼쪽으로 섞지 않는다.
+- 굵은 글자라는 이유만으로 가운데 정렬하지 않는다.
+- 숫자/금액을 문장형 텍스트와 같은 축에 흔들리게 두지 않는다.
+
+FreePass mobile vehicle selection은 `model → powertrain → passenger/drive → trim → option`의 텍스트 축을 모두 start 정렬한다. 제조사와 색상처럼 시각적 객체를 고르는 grid만 center를 허용한다.
