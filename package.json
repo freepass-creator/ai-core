@@ -46,7 +46,8 @@
     "workflow:recovery:validate": "node scripts/validate-workflow-recovery-policies.mjs",
     "uiux:validate": "node scripts/validate-ui-ux-registry.mjs",
     "uiux:runtime": "node scripts/validate-ui-ux-runtime.mjs",
-    "a:coverage:validate": "node scripts/validate-a-session-coverage.mjs docs/research/a-session-repo-coverage.v1.json docs/research/a-session-head-snapshot.v1.json"
+    "a:coverage:validate": "node scripts/validate-a-session-coverage.mjs docs/research/a-session-repo-coverage.v1.json docs/research/a-session-head-snapshot.v1.json",
+    "a:evidence:validate": "node scripts/validate-a-session-evidence.mjs docs/research/a-session-evidence-registry.v1.json"
   },
   "dependencies": {
     "ajv": "8.20.0",
