@@ -42,7 +42,7 @@ An eventual late dispatch does not retroactively prove that the schedule was hea
 
 C owns the observation envelope and execution identity. D owns timing thresholds and the interpretation of ON_TIME/LATE/MISSED for a workflow or scheduler policy.
 
-Current C dependency is draft PR #131 (`core.schedule-observation/v1`).
+C `core.schedule-observation/v1` is integrated on the same no-Actions work branch and is available as the observation envelope. Timing thresholds remain intentionally unset, so D stays PROPOSED.
 
 ## Source evidence
 
