@@ -164,6 +164,7 @@
     "docs/research/A_SESSION_DISCOVERY_TEAMJPKWORK_UI_CONFORMANCE_SECOND_EVIDENCE_2026-09-19.md",
     "docs/research/A_SESSION_DISCOVERY_WORKCONTROL_EVIDENCE_CLOSURE_2026-09-19.md",
     "docs/research/A_SESSION_EVIDENCE_GATE_2026-09-20.md",
+    "docs/research/A_SESSION_EVIDENCE_REGISTRY_V1_2026-09-20.md",
     "docs/research/A_SESSION_GAP_DEVCENTER_REGISTRY_REVISION_BINDING_2026-09-19.md",
     "docs/research/A_SESSION_GAP_FREEPASSERP3_APPROXIMATE_CANONICALIZATION_2026-09-19.md",
     "docs/research/A_SESSION_GAP_FREEPASSHOMEPAGE_REDUCED_MOTION_2026-09-19.md",
@@ -182,6 +183,7 @@
     "docs/research/GLOBAL_PRODUCT_STANDARD_EVIDENCE_2026-09-19.md",
     "docs/research/OBSERVABILITY_QA_CROSS_REPO_FINDINGS_2026-09-19.md",
     "docs/research/WORKFLOW_STATE_MACHINE_CROSS_REPO_FINDINGS_2026-09-19.md",
+    "docs/research/a-session-evidence-registry.v1.json",
     "docs/research/a-session-head-snapshot.v1.json",
     "docs/research/a-session-promotion-matrix.v1.json",
     "docs/research/a-session-repo-coverage.v1.json",
@@ -250,6 +252,7 @@
     "scripts/route-work.mjs",
     "scripts/run-control-tower.mjs",
     "scripts/validate-a-session-coverage.mjs",
+    "scripts/validate-a-session-evidence.mjs",
     "scripts/validate-capability-registry.mjs",
     "scripts/validate-core-contract-adoption.mjs",
     "scripts/validate-core-contracts.mjs",
@@ -314,6 +317,7 @@
     "src/workflow/registry.mjs",
     "src/workflow/work-ledger-shadow.mjs",
     "test/a-session-coverage.test.mjs",
+    "test/a-session-evidence.test.mjs",
     "test/ai-continuation-pack.test.mjs",
     "test/capability-convergence.test.mjs",
     "test/capability-execution-api.test.mjs",
@@ -471,6 +475,7 @@
     "2026-09-19 Order B1 closeout: changed_files rebuilt from full recursive Git tree diff 7b63024c5dd0..0578ebae8d7d after UI/UX registry merge with canonical main.",
     "2026-09-19 B-session B2: executable UI/UX layers added on stacked PR #95 — machine token provenance, component/pattern/screen contracts, runtime-v2 CSS, governance/consumer conformance gates and A-session evidence promotion. changed_files regenerated from the exact base_revision diff; this inventory update does not broaden the historical episode scope.",
     "2026-09-19 B-session B3: per-product UI/UX consumer manifest contract and ERP4 MAPPED adoption evidence added; changed_files regenerated from the exact base_revision diff for repository verifier parity.",
-    "2026-09-20 A-session evidence gate: successor inventory now includes the A coverage validator, exact head snapshot, evidence-gate research note and regression test. This is verifier parity only and does not broaden ORDER-DESK scope or change B/C/D canon."
+    "2026-09-20 A-session evidence gate: successor inventory now includes the A coverage validator, exact head snapshot, evidence-gate research note and regression test. This is verifier parity only and does not broaden ORDER-DESK scope or change B/C/D canon.",
+    "2026-09-20 A-session Evidence Registry v1: Project>Core, Core>Project and Different are now explicit machine classifications with B/C/D routing, exact revision evidence, evidence level and state history; Core>Project additionally requires breaking impact and verification needs. Research routing only; no B/C/D canonical authority is granted."
   ]
 }
