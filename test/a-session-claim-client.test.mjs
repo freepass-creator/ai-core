@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { claimKey, evaluateClaim, acquireClaim, renewClaim, transitionClaim } from '../scripts/a-session-claim.mjs';
 
 const revision='2ec46bb2e88b10a31915b68ec77b2eecbdac57bd';
-const request={ repository:'freepass-creator/freepass-sales', revision, scope:'repo-rescan', owner:'A-one' };
+const request={ repository:'freepass-creator/freepass-sales', revision, scope:'repo-rescan', owner:'A-session-owner-one' };
 const registry=()=>({
   schema:'ai-core-a-session-work-claims/v1',
   status:'RESEARCH_COORDINATION_NOT_CANONICAL',
@@ -19,7 +19,7 @@ test('active claim causes duplicate skip', () => {
   const r=registry();
   r.claims.push({
     claim_id:'A-old', claim_key:claimKey(request), repository:request.repository, subject_revision:revision, scope:request.scope,
-    owner_session:'A-other', state:'ACTIVE', claimed_at:'2026-09-20T01:20:00Z', lease_until:'2026-09-20T02:20:00Z',
+    owner_session:'A-session-owner-other', state:'ACTIVE', claimed_at:'2026-09-20T01:20:00Z', lease_until:'2026-09-20T02:20:00Z',
     completed_at:null, evidence_refs:[]
   });
   const result=evaluateClaim(r, request, new Date('2026-09-20T01:30:00Z'));
@@ -30,7 +30,7 @@ test('completed claim causes already completed skip', () => {
   const r=registry();
   r.claims.push({
     claim_id:'A-done', claim_key:claimKey(request), repository:request.repository, subject_revision:revision, scope:request.scope,
-    owner_session:'A-other', state:'COMPLETED', claimed_at:'2026-09-20T01:00:00Z', lease_until:'2026-09-20T01:20:00Z',
+    owner_session:'A-session-owner-other', state:'COMPLETED', claimed_at:'2026-09-20T01:00:00Z', lease_until:'2026-09-20T01:20:00Z',
     completed_at:'2026-09-20T01:10:00Z', evidence_refs:['commit:abc']
   });
   assert.equal(evaluateClaim(r, request, new Date('2026-09-20T01:30:00Z')).action,'SKIP_ALREADY_COMPLETED');
@@ -40,7 +40,7 @@ test('expired active claim can be reacquired', () => {
   const r=registry();
   r.claims.push({
     claim_id:'A-expired', claim_key:claimKey(request), repository:request.repository, subject_revision:revision, scope:request.scope,
-    owner_session:'A-other', state:'ACTIVE', claimed_at:'2026-09-20T01:00:00Z', lease_until:'2026-09-20T01:20:00Z',
+    owner_session:'A-session-owner-other', state:'ACTIVE', claimed_at:'2026-09-20T01:00:00Z', lease_until:'2026-09-20T01:20:00Z',
     completed_at:null, evidence_refs:[]
   });
   const result=acquireClaim(r, request, { now:new Date('2026-09-20T01:30:00Z'), leaseMinutes:45, claimId:'A-new' });
@@ -51,9 +51,9 @@ test('expired active claim can be reacquired', () => {
 
 test('completion requires evidence and preserves claim identity', () => {
   const acquired=acquireClaim(registry(), request, { now:new Date('2026-09-20T01:30:00Z'), claimId:'A-new' });
-  assert.throws(() => transitionClaim(acquired.registry,'A-new','COMPLETED',{ now:new Date('2026-09-20T01:40:00Z') }), /COMPLETION_EVIDENCE_REQUIRED/);
+  assert.throws(() => transitionClaim(acquired.registry,'A-new','COMPLETED',{ now:new Date('2026-09-20T01:40:00Z'), owner:'A-session-owner-one' }), /COMPLETION_EVIDENCE_REQUIRED/);
   const done=transitionClaim(acquired.registry,'A-new','COMPLETED',{
-    now:new Date('2026-09-20T01:40:00Z'), evidenceRefs:['commit:af9e51b']
+    now:new Date('2026-09-20T01:40:00Z'), owner:'A-session-owner-one', evidenceRefs:['commit:af9e51b']
   });
   assert.equal(done.claim.state,'COMPLETED');
   assert.deepEqual(done.claim.evidence_refs,['commit:af9e51b']);
@@ -62,7 +62,7 @@ test('completion requires evidence and preserves claim identity', () => {
 
 test('renew extends a live claim for the same owner', () => {
   const acquired=acquireClaim(registry(), request, { now:new Date('2026-09-20T01:30:00Z'), leaseMinutes:30, claimId:'A-live' });
-  const renewed=renewClaim(acquired.registry,'A-live','A-one',{
+  const renewed=renewClaim(acquired.registry,'A-live','A-session-owner-one',{
     now:new Date('2026-09-20T01:45:00Z'),
     leaseMinutes:60
   });
@@ -73,7 +73,7 @@ test('renew extends a live claim for the same owner', () => {
 
 test('expired claim can be safely recovered by the same owner when nobody replaced it', () => {
   const acquired=acquireClaim(registry(), request, { now:new Date('2026-09-20T01:00:00Z'), leaseMinutes:15, claimId:'A-expired' });
-  const recovered=renewClaim(acquired.registry,'A-expired','A-one',{
+  const recovered=renewClaim(acquired.registry,'A-expired','A-session-owner-one',{
     now:new Date('2026-09-20T01:30:00Z'),
     leaseMinutes:45
   });
@@ -83,7 +83,7 @@ test('expired claim can be safely recovered by the same owner when nobody replac
 
 test('renew rejects owner mismatch', () => {
   const acquired=acquireClaim(registry(), request, { now:new Date('2026-09-20T01:30:00Z'), claimId:'A-owned' });
-  assert.throws(() => renewClaim(acquired.registry,'A-owned','A-other',{
+  assert.throws(() => renewClaim(acquired.registry,'A-owned','A-session-owner-other',{
     now:new Date('2026-09-20T01:40:00Z')
   }), /CLAIM_OWNER_MISMATCH/);
 });
@@ -93,16 +93,25 @@ test('expired owner cannot recover after another live claimant replaced it', () 
   r.claims=[
     {
       claim_id:'A-old', claim_key:claimKey(request), repository:request.repository, subject_revision:revision, scope:request.scope,
-      owner_session:'A-one', state:'ACTIVE', claimed_at:'2026-09-20T01:00:00Z', lease_until:'2026-09-20T01:10:00Z',
+      owner_session:'A-session-owner-one', state:'ACTIVE', claimed_at:'2026-09-20T01:00:00Z', lease_until:'2026-09-20T01:10:00Z',
       completed_at:null, evidence_refs:[]
     },
     {
       claim_id:'A-new', claim_key:claimKey(request), repository:request.repository, subject_revision:revision, scope:request.scope,
-      owner_session:'A-two', state:'ACTIVE', claimed_at:'2026-09-20T01:20:00Z', lease_until:'2026-09-20T02:20:00Z',
+      owner_session:'A-session-owner-two', state:'ACTIVE', claimed_at:'2026-09-20T01:20:00Z', lease_until:'2026-09-20T02:20:00Z',
       completed_at:null, evidence_refs:[]
     }
   ];
-  assert.throws(() => renewClaim(r,'A-old','A-one',{
+  assert.throws(() => renewClaim(r,'A-old','A-session-owner-one',{
     now:new Date('2026-09-20T01:30:00Z')
   }), /CLAIM_SUPERSEDED_BY_LIVE_OWNER/);
+});
+
+
+test('transition rejects another owner from closing the claim', () => {
+  const acquired=acquireClaim(registry(), request, { now:new Date('2026-09-20T01:30:00Z'), claimId:'A-owned-close' });
+  assert.throws(() => transitionClaim(acquired.registry,'A-owned-close','ABANDONED',{
+    now:new Date('2026-09-20T01:40:00Z'),
+    owner:'A-session-owner-other'
+  }), /CLAIM_OWNER_MISMATCH/);
 });
