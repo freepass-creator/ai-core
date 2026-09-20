@@ -5,6 +5,12 @@ on:
   push:
     branches: [main]
 
+# Prevent the multi-session A/B/C/D workflow from creating an unbounded queue.
+# A newer push on the same PR or main supersedes the older verification run.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   verify:
     runs-on: ubuntu-latest
