@@ -83,3 +83,32 @@ test('projection validator rejects unknown facts and duplicate priority', () => 
   assert.ok(result.errors.some(item => item.code === 'WORKFLOW_PROJECTION_PRIORITY_DUPLICATE'));
   assert.ok(result.errors.some(item => item.code === 'WORKFLOW_PROJECTION_FACT_UNKNOWN'));
 });
+
+test('Admin D6 source parity evidence is revision-bound and remains SHADOW', () => {
+  assert.equal(workflow.adoption_status, 'SHADOW');
+  assert.equal(workflow.adoption_evidence.stage, 'SOURCE_PARITY_VERIFIED');
+  assert.equal(workflow.adoption_evidence.revision, '2aede7df82591470308f25bd3ccd4e5358aa7c3c');
+  assert.equal(workflow.adoption_evidence.verification.kind, 'CI');
+  assert.equal(workflow.adoption_evidence.verification.conclusion, 'SUCCESS');
+  assert.equal(workflow.adoption_evidence.verification.run_id, 35480824168);
+
+  assert.equal(statusProjection.adoption_status, 'SHADOW');
+  assert.equal(statusProjection.adoption_evidence.stage, 'SOURCE_PARITY_VERIFIED');
+  assert.equal(statusProjection.adoption_evidence.revision, workflow.adoption_evidence.revision);
+});
+
+test('projection maturity rejects SHADOW runtime claims and PILOT without runtime evidence', () => {
+  const falseRuntime = structuredClone(projections);
+  falseRuntime.projections[0].adoption_evidence.stage = 'RUNTIME_PILOT';
+  let result = validateWorkflowProjections(falseRuntime, workflows);
+  assert.equal(result.status, 'INVALID');
+  assert.ok(result.errors.some(item => item.code === 'SHADOW_PROJECTION_CANNOT_CLAIM_RUNTIME_ADOPTION'));
+
+  const pilotWithoutEvidence = structuredClone(projections);
+  pilotWithoutEvidence.projections[0].adoption_status = 'PILOT';
+  delete pilotWithoutEvidence.projections[0].adoption_evidence;
+  result = validateWorkflowProjections(pilotWithoutEvidence, workflows);
+  assert.equal(result.status, 'INVALID');
+  assert.ok(result.errors.some(item => item.code === 'PILOT_PROJECTION_ADOPTION_EVIDENCE_REQUIRED'));
+});
+
