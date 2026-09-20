@@ -3,6 +3,15 @@ import { executePreparedEffectResumeFromReceipts } from './effect-receipt-resume
 
 const text=value=>typeof value==='string'&&value.trim()===value&&value.length>0;
 const need=(condition,code)=>{if(!condition){const error=new Error(code);error.code=code;throw error;}};
+const FENCE_ERRORS=new Set([
+  'STALE_FENCING_TOKEN',
+  'EXECUTION_LEASE_EXPIRED',
+  'EXECUTION_LEASE_NOT_FOUND',
+  'EXECUTION_LEASE_NOT_ACTIVE',
+  'EXECUTION_LEASE_ID_MISMATCH',
+  'EXECUTION_LEASE_OWNER_MISMATCH',
+  'EXECUTION_LEASE_CAS_CONFLICT_EXHAUSTED'
+]);
 
 function sameAttempt(target,current){
   return Boolean(
@@ -53,6 +62,7 @@ export async function executeFencedPreparedEffectResume({
       executed:false,
       lease_action:'NOT_ACQUIRED',
       lease:null,
+      lease_release:null,
       freshness:initialFreshness,
       result:null,
     };
@@ -67,10 +77,15 @@ export async function executeFencedPreparedEffectResume({
   if(!['ACQUIRED','ACQUIRED_AFTER_EXPIRY'].includes(claim.action)){
     return {
       status:'HOLD',
-      reason:claim.action==='BUSY'?'EXECUTION_LEASE_BUSY':claim.action==='ALREADY_OWNED'?'EXECUTION_LEASE_ALREADY_OWNED':(claim.reason??'EXECUTION_LEASE_NOT_ACQUIRED'),
+      reason:claim.action==='BUSY'
+        ? 'EXECUTION_LEASE_BUSY'
+        : claim.action==='ALREADY_OWNED'
+          ? 'EXECUTION_LEASE_ALREADY_OWNED'
+          : (claim.reason??'EXECUTION_LEASE_NOT_ACQUIRED'),
       executed:false,
       lease_action:claim.action,
       lease:claim.lease??null,
+      lease_release:null,
       freshness:initialFreshness,
       result:null,
     };
@@ -78,6 +93,8 @@ export async function executeFencedPreparedEffectResume({
 
   const lease=claim.lease;
   let releaseResult=null;
+  let outcome=null;
+
   try{
     const afterClaimFreshness=verifyEffectResumePlan(prepared_plan,{
       effects,
@@ -87,7 +104,7 @@ export async function executeFencedPreparedEffectResume({
       current_proof_inputs_by_receipt,
     });
     if(afterClaimFreshness.status!=='CURRENT'){
-      return {
+      outcome={
         status:'HOLD',
         reason:'STALE_RESUME_PLAN_AFTER_LEASE',
         executed:false,
@@ -96,44 +113,66 @@ export async function executeFencedPreparedEffectResume({
         freshness:afterClaimFreshness,
         result:null,
       };
+    }else{
+      await lease_runtime.assertFence({lease});
+
+      const beforeEffect=async()=>lease_runtime.assertFence({lease});
+      const beforeCompensation=async()=>lease_runtime.assertFence({lease});
+
+      const guardedEffect=async(effect,context)=>execute_effect(effect,{
+        ...context,
+        execution_lease:lease,
+        fencing_token:lease.fencing_token,
+      });
+      const guardedCompensation=async(step,context)=>execute_compensation(step,{
+        ...context,
+        execution_lease:lease,
+        fencing_token:lease.fencing_token,
+      });
+
+      const result=await executePreparedEffectResumeFromReceipts({
+        prepared_plan,
+        effects,
+        bindings,
+        receipts,
+        target_execution,
+        current_attempt,
+        current_proof_inputs_by_receipt,
+        correlation_id,
+        receipt,
+        execute_effect:guardedEffect,
+        execute_compensation:guardedCompensation,
+        before_effect:beforeEffect,
+        before_compensation:beforeCompensation,
+        clock,
+      });
+
+      outcome={
+        status:result.status,
+        reason:result.reason??null,
+        executed:result.executed,
+        lease_action:claim.action,
+        lease,
+        freshness:result.freshness??afterClaimFreshness,
+        result,
+      };
     }
-
-    await lease_runtime.assertFence({lease});
-
-    const guardedEffect=async(effect,context)=>{
-      await lease_runtime.assertFence({lease});
-      return execute_effect(effect,{...context,execution_lease:lease});
-    };
-    const guardedCompensation=async(step,context)=>{
-      await lease_runtime.assertFence({lease});
-      return execute_compensation(step,{...context,execution_lease:lease});
-    };
-
-    const result=await executePreparedEffectResumeFromReceipts({
-      prepared_plan,
-      effects,
-      bindings,
-      receipts,
-      target_execution,
-      current_attempt,
-      current_proof_inputs_by_receipt,
-      correlation_id,
-      receipt,
-      execute_effect:guardedEffect,
-      execute_compensation:guardedCompensation,
-      clock,
-    });
-
-    return {
-      status:result.status,
-      reason:result.reason??null,
-      executed:result.executed,
-      lease_action:claim.action,
-      lease,
-      freshness:result.freshness??afterClaimFreshness,
-      result,
-    };
-  } finally {
+  }catch(error){
+    if(FENCE_ERRORS.has(error?.code??error?.message)){
+      outcome={
+        status:'HOLD',
+        reason:'EXECUTION_FENCE_LOST',
+        gate_error_code:error?.code??error?.message,
+        executed:false,
+        lease_action:claim.action,
+        lease,
+        freshness:initialFreshness,
+        result:null,
+      };
+    }else{
+      throw error;
+    }
+  }finally{
     try{
       releaseResult=await lease_runtime.release({lease});
     }catch(error){
@@ -143,4 +182,12 @@ export async function executeFencedPreparedEffectResume({
       };
     }
   }
+
+  return {
+    ...outcome,
+    lease_release:releaseResult,
+    coordination_warning:releaseResult?.action==='RELEASE_FAILED'
+      ? 'EXECUTION_LEASE_RELEASE_FAILED'
+      : null,
+  };
 }
