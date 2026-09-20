@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "registry_version": "1.12.0",
+  "registry_version": "1.13.0",
   "primitives": [
     {
       "primitive_id": "workflow.fact-vs-state",
@@ -145,6 +145,16 @@
         "freepass-sales"
       ],
       "notes": "Verified in FreePass Sales. Second independent project evidence is required before COMMON_ADOPTED."
+    },
+    {
+      "primitive_id": "workflow.schedule-timing-assessment",
+      "status": "PROPOSED",
+      "meaning": "Scheduled work keeps expected logical slot, actual dispatch and eventual completion distinct; timing classification uses an explicit domain policy and never infers cadence health merely from eventual success.",
+      "evidence_level": "PROPOSED",
+      "source_projects": [
+        "freepasserp4"
+      ],
+      "notes": "Motivated by FAILURE_RUNTIME_EVIDENCE only. No company-wide late/missed thresholds are locked. Promotion requires C schedule-observation contract plus project-verified implementation."
     }
   ],
   "workflows": [
