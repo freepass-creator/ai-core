@@ -1,7 +1,7 @@
 {
   "schema_version": "core-contract-registry/v1",
   "owner": "C_CORE_CONTRACT_STANDARD",
-  "revision": "2026-09-20-no-actions",
+  "revision": "2026-09-20",
   "conventions": {
     "json_field_naming": "snake_case",
     "id_fields": "stable opaque identifiers named *_id; mutable labels/codes are not identity",
