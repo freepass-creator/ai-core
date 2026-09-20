@@ -454,7 +454,11 @@
     "test/a-session-claim-health.test.mjs",
     "test/a-session-evidence-contract.test.mjs",
     "test/a-session-owner-policy.test.mjs",
-    "test/a-session-scope-policy.test.mjs"
+    "test/a-session-scope-policy.test.mjs",
+    "docs/research/A_SESSION_REVIEW_ALLOCATOR_V1_2026-09-20.md",
+    "docs/research/a-session-review-allocation-policy.v1.json",
+    "scripts/a-session-review-next.mjs",
+    "test/a-session-review-allocator.test.mjs"
   ],
   "verification": {
     "behavior_tests": "Shared/client focused suite: 22 passed, 0 failed. Full suite result is recorded in SHARED-ORDER-VERIFICATION.json.",
