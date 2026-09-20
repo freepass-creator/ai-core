@@ -71,3 +71,14 @@ The path-dependency verifier is intentionally external because generic AI Core c
 Register this adapter under the `COLOCATE_ONLY` classification in #149's common executor. No other classification is enabled.
 
 The Work Packet currently names the action kind `FILESYSTEM_RELOCATION`, but this adapter deliberately satisfies that plan non-destructively through workspace projection; no source relocation/cutover occurs.
+
+
+## Verification evidence
+
+Isolated filesystem verification completed with:
+
+- syntax check: PASS
+- focused projection/verifier tests: 8/8 PASS
+- covered link creation, conflict refusal, idempotency, explicit area mapping, preflight repository binding, source revision/dirty recheck, and independent path-dependency verification
+
+The isolated run used Node's directory-link behavior on the current test platform. Windows junction behavior remains delegated to Node's documented `symlink(..., "junction")` path and must still be observed on the operating Windows workspace before production use.
