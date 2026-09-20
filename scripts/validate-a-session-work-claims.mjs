@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { isCanonicalASessionScope, aSessionScopesConflict } from './a-session-scope-policy.mjs';
 import { isValidASessionOwner } from './a-session-owner-policy.mjs';
-import { validateACompletionEvidence } from './a-session-evidence-contract.mjs';
+import { validateACompletionEvidence, evidenceRefsDigest } from './a-session-evidence-contract.mjs';
 
 const SHA40 = /^[0-9a-f]{40}$/;
 const STATES = new Set(['ACTIVE','COMPLETED','ABANDONED','SUPERSEDED']);
@@ -81,6 +81,14 @@ export function validateAWorkClaims(registry) {
           requiresHeadGuard:['repo-rescan','runtime-evidence','migration-gap'].some(family => claim.scope === family || claim.scope?.startsWith(family + ':'))
         });
         for (const code of evidence.errors) add(errors,'COMPLETION_EVIDENCE_V2_INVALID',p + '/evidence_refs',code);
+        const verification = claim?.evidence_verification;
+        if (!verification || verification.status !== 'VERIFIED') add(errors,'EVIDENCE_VERIFICATION_REQUIRED',p + '/evidence_verification');
+        else {
+          if (verification.verifier !== 'github-remote-v2') add(errors,'EVIDENCE_VERIFIER_INVALID',p + '/evidence_verification/verifier');
+          if (!validDate(verification.verified_at)) add(errors,'EVIDENCE_VERIFIED_AT_INVALID',p + '/evidence_verification/verified_at');
+          const expectedDigest = evidenceRefsDigest(claim.evidence_refs);
+          if (verification.refs_digest !== expectedDigest) add(errors,'EVIDENCE_REFS_DIGEST_MISMATCH',p + '/evidence_verification/refs_digest');
+        }
       } else if (!Array.isArray(claim?.evidence_refs) || claim.evidence_refs.length === 0 ||
           claim.evidence_refs.some(x => typeof x !== 'string' || !x.trim())) {
         add(errors,'COMPLETION_EVIDENCE_REQUIRED',p + '/evidence_refs');
