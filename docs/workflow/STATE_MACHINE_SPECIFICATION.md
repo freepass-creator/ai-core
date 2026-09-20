@@ -243,6 +243,21 @@ Machine authority:
 - `src/workflow/schedule-timing.mjs`
 - `scripts/validate-workflow-schedule-timing-policies.mjs`
 
+### 10.2 Adapter outcome → workflow recovery
+
+C의 `core-adapter-result/v1`은 기술 실행 결과와 `retryable` 판단을 제공하고, D는 그 결과를 workflow recovery 의미로 해석한다.
+
+`WorkflowEngine.resolveAdapterOutcome()` 규칙:
+
+- `SUCCEEDED` → `CONTINUE`; 성공 자체가 임의의 state transition을 만들지는 않는다.
+- `HOLD` → `HOLD`; adapter가 명시적으로 보류한 결과를 자동 retry로 바꾸지 않는다.
+- `FAILED + retryable=true` → 기존 transition retry policy에 따라 `RETRY / WAIT_MANUAL_RETRY / exhausted action`.
+- `FAILED + retryable=false` → retry strategy가 있더라도 즉시 failure/exhaustion 경로로 간다.
+- error code는 canonical adapter issue에서 가져오며 transition의 retry/failure/compensation/escalation 규칙을 그대로 재사용한다.
+
+즉 C가 **기술적 재시도 가능성**을 말하고, D가 **언제·몇 번·어떤 상태와 escalation으로 재시도할지** 결정한다.
+
+
 ## 11. Automation Pattern
 
 Modes:
