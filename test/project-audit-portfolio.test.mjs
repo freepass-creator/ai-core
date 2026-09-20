@@ -13,11 +13,12 @@ const files = [
   '../docs/audits/freepass-admin-v2-2026-09-20.json',
   '../docs/audits/freepasserp4-v2-2026-09-20.json',
   '../docs/audits/freepasserp4-v2-2026-09-20-r2.json',
+  '../docs/audits/freepasserp4-v2-2026-09-20-r3.json',
   '../docs/audits/freepass-estimate-v2-2026-09-20.json',
   '../docs/audits/aiops-v2-2026-09-20.json',
 ];
 
-test('portfolio rolls nine stored records into four active v2 audits', async () => {
+test('portfolio rolls ten stored records into four active v2 audits', async () => {
   const [readinessRegistry, projectRegistry, auditResults] = await Promise.all([
     readJson('../registry/project-audit-readiness.json'),
     readJson('../registry/projects.json'),
@@ -30,9 +31,9 @@ test('portfolio rolls nine stored records into four active v2 audits', async () 
     auditResults,
   });
 
-  assert.equal(portfolio.totals.audit_records, 9);
+  assert.equal(portfolio.totals.audit_records, 10);
   assert.equal(portfolio.totals.active_projects, 4);
-  assert.equal(portfolio.totals.superseded_history, 5);
+  assert.equal(portfolio.totals.superseded_history, 6);
   assert.equal(portfolio.totals.axis_observations, 32);
   assert.equal(portfolio.projects.every(item => item.audit_result_schema === 'ai-core-project-audit-result/v2'), true);
   assert.equal(portfolio.permissions.auto_remediation, false);
@@ -54,7 +55,7 @@ test('portfolio preserves project-specific CI and freshness differences', async 
   const byId = new Map(portfolio.projects.map(item => [item.project_id, item]));
 
   assert.equal(byId.get('freepass-admin').ci.status, 'UNKNOWN');
-  assert.equal(byId.get('freepasserp4').subject_revision, '6188a9ea6b22a7513e51c325384c8558201708e2');
+  assert.equal(byId.get('freepasserp4').subject_revision, '1b31af44fac362085649c13d155e4e0c089ae929');
   assert.equal(byId.get('freepasserp4').ci.status, 'PASS');
   assert.equal(byId.get('freepass-estimate').ci.status, 'UNKNOWN');
   assert.equal(byId.get('aiops').ci.status, 'UNKNOWN');
