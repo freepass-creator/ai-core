@@ -26,6 +26,7 @@ jobs:
       - run: npm run a:evidence:validate
       - run: npm run a:routing:validate
       - run: npm run a:receiver:validate
+      - run: npm run a:receiver:intake:check
       - run: npm run capability:validate
       - run: npm run direction:validate
       - run: npm run workmap:validate
