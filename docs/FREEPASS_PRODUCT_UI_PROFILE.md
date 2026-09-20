@@ -163,3 +163,15 @@ Welrix 계열 화면은 neutral surface를 유지하고 brand/selection/primary-
 - 숫자/금액을 문장형 텍스트와 같은 축에 흔들리게 두지 않는다.
 
 FreePass mobile vehicle selection은 `model → powertrain → passenger/drive → trim → option`의 텍스트 축을 모두 start 정렬한다. 제조사와 색상처럼 시각적 객체를 고르는 grid만 center를 허용한다.
+
+
+### Customer-facing trust default
+
+신차 장기렌터카처럼 금액·심사·계약이 결합된 고객 화면의 기본 co-brand theme는 `welrix-trust`다.
+
+- CTA / selected / progress: FreePass navy family
+- neutral surface: white / cool gray
+- Welrix red: logo, partner label, small co-brand accent
+- full-red `welrix` theme: 브랜드 캠페인/특수 surface에서만 명시적으로 선택
+
+즉 partner identity는 유지하지만, 고객이 행동하고 금액을 판단하는 핵심 UI는 trust-oriented cool palette를 기본으로 한다.
