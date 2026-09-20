@@ -24,7 +24,7 @@ function orderBody(fp4){
   };
 }
 
-test('RESERVED terminal receipt는 requirement 변경 뒤에도 current routing gate 전에 복구되고 재실행되지 않는다',async t=>{
+test('RESERVED terminal receipt는 requirement 변경 뒤에도 current routing gate 전에 identity 검증 후 복구되고 재실행되지 않는다',async t=>{
   const root=mkdtempSync(join(tmpdir(),'capability-reserved-recovery-'));
   const projectRegistry=structuredClone(baseProjects);
   const capabilityRegistry=structuredClone(baseCapabilities);
@@ -33,7 +33,7 @@ test('RESERVED terminal receipt는 requirement 변경 뒤에도 current routing 
   fp4.local_path=join(root,'freepasserp4');
   verify.receipt={
     kind:'NEW_JSON_TERMINAL_RECEIPT',directory:'tmp/receipts',prefix:'run-',suffix:'.json',
-    schema_field:'schema',schema_value:'test-run/v1',state_field:'state',
+    schema_field:'schema',schema_value:'test-run/v1',state_field:'state',identity_field:'request_id',
     success_states:['COMPLETED'],hold_states:['HOLD'],failure_states:['FAILED'],
   };
 
@@ -84,7 +84,7 @@ test('RESERVED terminal receipt는 requirement 변경 뒤에도 current routing 
 
   const receiptDir=join(fp4.local_path,'tmp','receipts');
   mkdirSync(receiptDir,{recursive:true});
-  writeFileSync(join(receiptDir,'run-completed.json'),JSON.stringify({schema:'test-run/v1',state:'COMPLETED'}));
+  writeFileSync(join(receiptDir,'run-completed.json'),JSON.stringify({schema:'test-run/v1',state:'COMPLETED',request_id:requestId}));
 
   const current=started.store.get(order.id);
   const revisedResponse=await post(`/api/orders/${order.id}`,{
