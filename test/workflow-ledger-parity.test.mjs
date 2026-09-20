@@ -140,7 +140,7 @@ test('new Work Ledger appends are explicitly admitted or rejected by the D Workf
 
     assert.equal(acceptedInspection.eligible, true, JSON.stringify(acceptedInspection));
     assert.equal(rejectedInspection.eligible, false, JSON.stringify(rejectedInspection));
-    assert.ok(rejectedInspection.reasons.includes('FROM_STATE_NOT_ALLOWED'));
+    assert.ok(rejectedInspection.reasons.includes('TRANSITION_NOT_ALLOWED'));
   } finally {
     await fixture.close();
   }
