@@ -138,3 +138,97 @@ export function buildProjectAuditHandoffPacket({
     rule: 'Project implementation work comes only from MIGRATION_GAP findings. UNKNOWN creates discovery work, PROJECT_AHEAD routes evidence to the standard owner, and CORE_MATCH never creates a project remediation task. A stale audit cannot authorize handoff execution.',
   };
 }
+
+
+export function renderProjectAuditHandoffMarkdown(packet) {
+  need(packet?.schema === 'ai-core-project-audit-handoff/v1', 'AUDIT_HANDOFF_PACKET_SCHEMA_INVALID');
+
+  const lines = [
+    `# Project Audit Handoff — ${packet.project_id}`,
+    '',
+    `Status: **${packet.status}**`,
+    '',
+    '## Revision binding',
+    '',
+    `- repository: \`${packet.repository}\``,
+    `- branch: \`${packet.default_branch}\``,
+    `- subject revision: \`${packet.audit_binding.subject_revision}\``,
+    `- AI Core standard baseline: \`${packet.audit_binding.standard_baseline_revision}\``,
+    `- audited at: \`${packet.audit_binding.audited_at}\``,
+    `- CI: \`${packet.audit_binding.ci_status}\`${packet.audit_binding.ci_run_id ? ` (run ${packet.audit_binding.ci_run_id})` : ''}`,
+    `- live freshness: \`${packet.audit_binding.live_status}\``,
+    '',
+    '## Project implementation',
+    '',
+  ];
+
+  if (!packet.project_work.implementation.length) {
+    lines.push('- No project implementation task from this audit.');
+  } else {
+    for (const task of packet.project_work.implementation) {
+      lines.push(
+        `### ${task.axis} — ${task.priority}`,
+        '',
+        `Standard owner: **${task.standard_owner.lane} / ${task.standard_owner.owner}**`,
+        '',
+        task.instruction,
+        '',
+        'Gaps:',
+        ...task.gaps.map(gap => `- ${gap}`),
+        '',
+      );
+    }
+  }
+
+  lines.push('## Discovery', '');
+  if (!packet.project_work.discovery.length) {
+    lines.push('- No discovery-only task.');
+  } else {
+    for (const task of packet.project_work.discovery) {
+      lines.push(
+        `### ${task.axis} — ${task.priority}`,
+        '',
+        task.instruction,
+        '',
+        ...task.gaps.map(gap => `- ${gap}`),
+        '',
+      );
+    }
+  }
+
+  lines.push('## Standard-owner routing', '');
+  const routed = [
+    ...packet.standard_work.core_candidate_review,
+    ...packet.standard_work.research,
+  ];
+  if (!routed.length) {
+    lines.push('- No project-ahead or research item requires standard-owner review.');
+  } else {
+    for (const task of routed) {
+      lines.push(
+        `- **${task.axis}** → ${task.standard_owner.lane} / ${task.standard_owner.owner}: ${task.instruction}`
+      );
+    }
+  }
+
+  lines.push(
+    '',
+    '## No-project-action axes',
+    '',
+    ...packet.no_project_action.map(task => `- ${task.axis}: CORE_MATCH; no remediation requested.`),
+    '',
+    '## Execution boundary',
+    '',
+    '- no automatic project write',
+    '- no automatic project PR',
+    '- no automatic Core promotion',
+    '- no deployment',
+    '- no production mutation',
+  );
+
+  if (packet.blockers.length) {
+    lines.push('', '## Blockers', '', ...packet.blockers.map(item => `- ${item}`));
+  }
+
+  return lines.join('\n') + '\n';
+}
