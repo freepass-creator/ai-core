@@ -76,3 +76,15 @@ test('progression validator rejects unknown inference facts and fake runtime mat
   assert.ok(result.errors.some(item => item.code === 'WORKFLOW_PROGRESSION_INFERRED_FACT_UNKNOWN'));
   assert.ok(result.errors.some(item => item.code === 'SHADOW_PROGRESSION_CANNOT_CLAIM_RUNTIME_ADOPTION'));
 });
+
+test('progression SOURCE_PARITY_VERIFIED requires successful CI evidence', () => {
+  const broken = structuredClone(progressions);
+  broken.progressions[0].adoption_evidence.stage = 'SOURCE_PARITY_VERIFIED';
+  broken.progressions[0].adoption_evidence.verification.kind = 'RUNTIME';
+  broken.progressions[0].adoption_evidence.verification.conclusion = 'HOLD';
+
+  const result = validateWorkflowProgressions(broken, workflows);
+  assert.equal(result.status, 'INVALID');
+  assert.ok(result.errors.some(item => item.code === 'SOURCE_PROGRESSION_PARITY_REQUIRES_SUCCESSFUL_CI'));
+});
+
