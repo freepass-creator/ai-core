@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { isCanonicalASessionScope, aSessionScopesConflict } from './a-session-scope-policy.mjs';
 import { isValidASessionOwner } from './a-session-owner-policy.mjs';
+import { validateACompletionEvidence } from './a-session-evidence-contract.mjs';
 
 const SHA40 = /^[0-9a-f]{40}$/;
 const STATES = new Set(['ACTIVE','COMPLETED','ABANDONED','SUPERSEDED']);
@@ -44,6 +45,10 @@ export function validateAWorkClaims(registry) {
     if (!STATES.has(claim?.state)) add(errors,'STATE_INVALID',p + '/state');
     if (!validDate(claim?.claimed_at)) add(errors,'CLAIMED_AT_INVALID',p + '/claimed_at');
     if (!validDate(claim?.lease_until)) add(errors,'LEASE_UNTIL_INVALID',p + '/lease_until');
+    const evidenceV2From = registry.policy?.evidence_contract?.active_from ? Date.parse(registry.policy.evidence_contract.active_from) : null;
+    if (evidenceV2From != null && validDate(claim?.claimed_at) && Date.parse(claim.claimed_at) >= evidenceV2From && claim?.evidence_contract !== 'v2') {
+      add(errors,'EVIDENCE_CONTRACT_V2_REQUIRED',p + '/evidence_contract');
+    }
     if (claim?.heartbeat_at != null) {
       if (!validDate(claim.heartbeat_at)) add(errors,'HEARTBEAT_AT_INVALID',p + '/heartbeat_at');
       else {
@@ -71,7 +76,12 @@ export function validateAWorkClaims(registry) {
 
     if (claim?.state === 'COMPLETED') {
       if (!validDate(claim?.completed_at)) add(errors,'COMPLETED_AT_REQUIRED',p + '/completed_at');
-      if (!Array.isArray(claim?.evidence_refs) || claim.evidence_refs.length === 0 ||
+      if (claim?.evidence_contract === 'v2') {
+        const evidence = validateACompletionEvidence(claim, claim.evidence_refs, {
+          requiresHeadGuard:['repo-rescan','runtime-evidence','migration-gap'].some(family => claim.scope === family || claim.scope?.startsWith(family + ':'))
+        });
+        for (const code of evidence.errors) add(errors,'COMPLETION_EVIDENCE_V2_INVALID',p + '/evidence_refs',code);
+      } else if (!Array.isArray(claim?.evidence_refs) || claim.evidence_refs.length === 0 ||
           claim.evidence_refs.some(x => typeof x !== 'string' || !x.trim())) {
         add(errors,'COMPLETION_EVIDENCE_REQUIRED',p + '/evidence_refs');
       }
