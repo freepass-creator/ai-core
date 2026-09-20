@@ -280,6 +280,7 @@ export function createApplicationServiceRuntime({
 
     const normalizedReceiptContext={
       ...receiptOptions,
+      execution:receiptOptions.execution??runOptions.execution??null,
       reproducibility:{
         ...receiptOptions.reproducibility,
         executor_version:receiptOptions.reproducibility.executor_version??service.version,
@@ -317,6 +318,7 @@ export function createApplicationServiceRuntime({
         child_receipt_count:child_receipts.length,
       },
       source_revision:service.source?.revision??null,
+      execution:normalizedReceiptContext.execution??null,
     });
 
     return {service_result,receipt,child_receipts:child_receipts.map(item=>item.receipt)};
