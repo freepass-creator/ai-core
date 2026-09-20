@@ -122,3 +122,36 @@ Current branch audit:
 - canonical promotion: not claimed
 - CI: not run by user direction
 
+
+
+## Repository / Service separation cycle
+
+Non-overlap target: FreePass Admin + C runtime only.
+
+Added:
+- `core-repository/v1`
+- `core-repository-result/v1`
+- `src/contracts/repository-contract.mjs`
+- `src/engine/repository-runtime.mjs`
+- Service Binding support for exactly one Adapter or Repository target per Port
+- Application Service Runtime routing to Adapter or Repository runtime
+- per-Repository-operation Connector least-privilege mapping
+
+FreePass Admin current source:
+`2aede7df82591470308f25bd3ccd4e5358aa7c3c`
+
+Current Admin Service SHADOW:
+- `application.repository` -> `freepass-admin.application-repository`
+- `product.read` -> `freepass-admin.product-repository`
+- `actor.provider` -> unresolved
+
+Therefore strict Service Runtime remains HOLD.
+
+Admin file persistence facts preserved:
+- process-local write serialization
+- temp-file + rename write path
+- submissionId duplicate protection for application create
+- monotonic product version increment
+- development filesystem evidence only; no production Firestore behavior inferred
+
+Actions: NOT USED.
