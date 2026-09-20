@@ -108,6 +108,9 @@
     },
     "ended_at": {
       "$ref": "https://schemas.freepass.ai/core/types/v1#/$defs/datetime"
+    },
+    "execution": {
+      "$ref": "https://schemas.freepass.ai/core/execution-identity/v1#/$defs/binding"
     }
   }
 }
