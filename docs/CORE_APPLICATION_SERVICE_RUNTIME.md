@@ -61,3 +61,18 @@ FreePass Admin is the first SHADOW case where:
 - `actor.provider` -> unresolved
 
 Therefore the current Admin Service remains HOLD even though both persistence Ports are structurally modeled.
+
+
+## Parent / child receipt lineage
+
+`runWithReceipt()` creates:
+
+1. child receipt for each Adapter/Repository Port execution;
+2. one parent Service `core-receipt/v1`;
+3. parent `child_receipts[]` references back to the exact child receipts.
+
+The parent receipt does not copy child payloads. It records only lineage references, parent input/output digests, compact evidence and optional proof-input binding.
+
+A Service HOLD or FAILED result does not erase child receipts that already exist. This preserves partial execution evidence for later D workflow recovery/compensation decisions.
+
+Receipt lineage is execution evidence only. It does not mark workflow completion.
