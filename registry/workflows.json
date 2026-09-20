@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "registry_version": "1.11.0",
+  "registry_version": "1.12.0",
   "primitives": [
     {
       "primitive_id": "workflow.fact-vs-state",
@@ -135,6 +135,16 @@
         "freepasserp4"
       ],
       "notes": "ERP4 production failure-derived contract. Second independent project and C-owned logical execution identity contract are required before common adoption."
+    },
+    {
+      "primitive_id": "workflow.forward-skip-evidence-integrity",
+      "status": "PILOT",
+      "meaning": "A monotonic workflow may skip intermediate milestones when a later valid business fact is established, but skipped milestone completion evidence must not be fabricated; logically implied prerequisites are recorded as inferred facts with provenance.",
+      "evidence_level": "PROJECT_VERIFIED",
+      "source_projects": [
+        "freepass-sales"
+      ],
+      "notes": "Verified in FreePass Sales. Second independent project evidence is required before COMMON_ADOPTED."
     }
   ],
   "workflows": [
@@ -3066,6 +3076,682 @@
             {
               "path": "src/adapters/ai-core/__tests__/workflow-shadow.test.ts",
               "blob_sha": "f6734a72128bae646167041e28ac2f8218fbe18b"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "workflow_id": "freepass-sales.lead-progress-lifecycle",
+      "version": "0.1.0",
+      "adoption_status": "SHADOW",
+      "owner": "D-session-workflow-standard",
+      "description": "FreePass Sales durable business progress lifecycle extracted from pipeline SSOT. Contact outcomes are separate and must not regress proven business progress. Forward skip semantics are governed by workflow-progressions.json.",
+      "state_axes": [
+        {
+          "axis_id": "progress",
+          "initial_state": "UNTOUCHED",
+          "states": [
+            {
+              "state_id": "UNTOUCHED",
+              "kind": "NORMAL",
+              "terminal": false,
+              "description": "No durable business-progress milestone has been proven yet."
+            },
+            {
+              "state_id": "INTERESTED",
+              "kind": "NORMAL",
+              "terminal": false
+            },
+            {
+              "state_id": "QUOTE_PRESENTED",
+              "kind": "NORMAL",
+              "terminal": false
+            },
+            {
+              "state_id": "PROCEEDING_AGREED",
+              "kind": "NORMAL",
+              "terminal": false
+            },
+            {
+              "state_id": "CONSENT_SENT",
+              "kind": "NORMAL",
+              "terminal": false
+            },
+            {
+              "state_id": "CONSENT_COMPLETED",
+              "kind": "NORMAL",
+              "terminal": false
+            },
+            {
+              "state_id": "SCREENING_SUBMITTED",
+              "kind": "NORMAL",
+              "terminal": false
+            },
+            {
+              "state_id": "APPROVED",
+              "kind": "NORMAL",
+              "terminal": false
+            },
+            {
+              "state_id": "CONTRACTED",
+              "kind": "NORMAL",
+              "terminal": false
+            },
+            {
+              "state_id": "DELIVERED",
+              "kind": "FINAL",
+              "terminal": true
+            },
+            {
+              "state_id": "NOT_INTERESTED",
+              "kind": "CANCELLED",
+              "terminal": true
+            },
+            {
+              "state_id": "REJECTED",
+              "kind": "FAILURE",
+              "terminal": true
+            }
+          ]
+        }
+      ],
+      "facts": [
+        {
+          "fact_id": "sales.quote-presented",
+          "type": "boolean",
+          "description": "A quote was presented by any valid presentation method."
+        },
+        {
+          "fact_id": "sales.quote-sent",
+          "type": "boolean",
+          "description": "A quote was actually sent through a recorded delivery channel."
+        },
+        {
+          "fact_id": "sales.quote-presentation-method",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "fact_id": "sales.quote-presentation-reason",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "fact_id": "sales.contact-status",
+          "type": "string",
+          "nullable": true,
+          "description": "Transient contact state remains separate from durable progress."
+        },
+        {
+          "fact_id": "sales.contact-attempts",
+          "type": "integer",
+          "description": "Contact attempt count; not a durable business progress state."
+        }
+      ],
+      "guards": [],
+      "evidence_requirements": [],
+      "commands": [
+        {
+          "command_id": "freepass-sales.lead.advance-progress",
+          "intent": "Advance durable Sales business progress",
+          "idempotency_required": false
+        },
+        {
+          "command_id": "freepass-sales.lead.mark-not-interested",
+          "intent": "Close lead as not interested",
+          "idempotency_required": false
+        },
+        {
+          "command_id": "freepass-sales.lead.mark-rejected",
+          "intent": "Close lead as screening rejected",
+          "idempotency_required": false
+        }
+      ],
+      "events": [
+        {
+          "event_type": "freepass-sales.lead.progress-advanced",
+          "meaning": "Durable business progress advanced."
+        },
+        {
+          "event_type": "freepass-sales.lead.not-interested",
+          "meaning": "Lead closed as not interested."
+        },
+        {
+          "event_type": "freepass-sales.lead.rejected",
+          "meaning": "Lead closed after screening rejection."
+        }
+      ],
+      "transitions": [
+        {
+          "transition_id": "freepass-sales.lead.advance.interested",
+          "purpose": "NORMAL",
+          "axis_id": "progress",
+          "from": [
+            "UNTOUCHED"
+          ],
+          "to": "INTERESTED",
+          "command_id": "freepass-sales.lead.advance-progress",
+          "event_type": "freepass-sales.lead.progress-advanced",
+          "guards": [],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "freepass-sales.lead.advance.quote-presented",
+          "purpose": "NORMAL",
+          "axis_id": "progress",
+          "from": [
+            "INTERESTED"
+          ],
+          "to": "QUOTE_PRESENTED",
+          "command_id": "freepass-sales.lead.advance-progress",
+          "event_type": "freepass-sales.lead.progress-advanced",
+          "guards": [],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "freepass-sales.lead.advance.proceeding-agreed",
+          "purpose": "NORMAL",
+          "axis_id": "progress",
+          "from": [
+            "QUOTE_PRESENTED"
+          ],
+          "to": "PROCEEDING_AGREED",
+          "command_id": "freepass-sales.lead.advance-progress",
+          "event_type": "freepass-sales.lead.progress-advanced",
+          "guards": [],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "freepass-sales.lead.advance.consent-sent",
+          "purpose": "NORMAL",
+          "axis_id": "progress",
+          "from": [
+            "PROCEEDING_AGREED"
+          ],
+          "to": "CONSENT_SENT",
+          "command_id": "freepass-sales.lead.advance-progress",
+          "event_type": "freepass-sales.lead.progress-advanced",
+          "guards": [],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "freepass-sales.lead.advance.consent-completed",
+          "purpose": "NORMAL",
+          "axis_id": "progress",
+          "from": [
+            "CONSENT_SENT"
+          ],
+          "to": "CONSENT_COMPLETED",
+          "command_id": "freepass-sales.lead.advance-progress",
+          "event_type": "freepass-sales.lead.progress-advanced",
+          "guards": [],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "freepass-sales.lead.advance.screening-submitted",
+          "purpose": "NORMAL",
+          "axis_id": "progress",
+          "from": [
+            "CONSENT_COMPLETED"
+          ],
+          "to": "SCREENING_SUBMITTED",
+          "command_id": "freepass-sales.lead.advance-progress",
+          "event_type": "freepass-sales.lead.progress-advanced",
+          "guards": [],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "freepass-sales.lead.advance.approved",
+          "purpose": "NORMAL",
+          "axis_id": "progress",
+          "from": [
+            "SCREENING_SUBMITTED"
+          ],
+          "to": "APPROVED",
+          "command_id": "freepass-sales.lead.advance-progress",
+          "event_type": "freepass-sales.lead.progress-advanced",
+          "guards": [],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "freepass-sales.lead.advance.contracted",
+          "purpose": "NORMAL",
+          "axis_id": "progress",
+          "from": [
+            "APPROVED"
+          ],
+          "to": "CONTRACTED",
+          "command_id": "freepass-sales.lead.advance-progress",
+          "event_type": "freepass-sales.lead.progress-advanced",
+          "guards": [],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "freepass-sales.lead.advance.delivered",
+          "purpose": "NORMAL",
+          "axis_id": "progress",
+          "from": [
+            "CONTRACTED"
+          ],
+          "to": "DELIVERED",
+          "command_id": "freepass-sales.lead.advance-progress",
+          "event_type": "freepass-sales.lead.progress-advanced",
+          "guards": [],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "freepass-sales.lead.close.not-interested",
+          "purpose": "CANCEL",
+          "axis_id": "progress",
+          "from": [
+            "UNTOUCHED",
+            "INTERESTED",
+            "QUOTE_PRESENTED",
+            "PROCEEDING_AGREED",
+            "CONSENT_SENT",
+            "CONSENT_COMPLETED",
+            "SCREENING_SUBMITTED",
+            "APPROVED",
+            "CONTRACTED"
+          ],
+          "to": "NOT_INTERESTED",
+          "command_id": "freepass-sales.lead.mark-not-interested",
+          "event_type": "freepass-sales.lead.not-interested",
+          "guards": [],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        },
+        {
+          "transition_id": "freepass-sales.lead.close.rejected",
+          "purpose": "FAIL",
+          "axis_id": "progress",
+          "from": [
+            "SCREENING_SUBMITTED"
+          ],
+          "to": "REJECTED",
+          "command_id": "freepass-sales.lead.mark-rejected",
+          "event_type": "freepass-sales.lead.rejected",
+          "guards": [],
+          "required_evidence": [],
+          "permissions": [],
+          "approval": {
+            "policy": "NONE",
+            "required_roles": [],
+            "separation_of_duties": false
+          },
+          "effects": [],
+          "failure": {
+            "on_exhausted": "HOLD"
+          },
+          "retry": {
+            "strategy": "NONE",
+            "max_attempts": 0,
+            "base_delay_ms": 0,
+            "retryable_error_codes": []
+          },
+          "automation": {
+            "mode": "MANUAL",
+            "trigger_event_types": []
+          },
+          "manual_override": {
+            "allowed": false,
+            "permissions": [],
+            "can_bypass": [],
+            "requires_reason": true
+          },
+          "audit": {
+            "required": true,
+            "reason_required": false
+          },
+          "reversible": false
+        }
+      ],
+      "obligations": [],
+      "source_authority": {
+        "repository": "freepass-creator/freepass-sales",
+        "revision": "2ec46bb2e88b10a31915b68ec77b2eecbdac57bd",
+        "files": [
+          {
+            "path": "웹/pipeline.js",
+            "blob_sha": "efea7051ba6b619e78cd82e9d3cf7eaf06abb4cd"
+          },
+          {
+            "path": "검토/pipeline검증.mjs",
+            "blob_sha": "aea8f06107d2c73fb8d688626427f379c35ce8a3"
+          },
+          {
+            "path": "검토/pipeline시뮬레이션.mjs",
+            "blob_sha": "867dab5d4a27ffa25352b7daa65e386b86f08788"
+          }
+        ]
+      },
+      "adoption_evidence": {
+        "stage": "SOURCE_MODELED",
+        "repository": "freepass-creator/freepass-sales",
+        "revision": "2ec46bb2e88b10a31915b68ec77b2eecbdac57bd",
+        "verification": {
+          "kind": "CI",
+          "conclusion": "SUCCESS",
+          "run_id": 35480676884,
+          "observed_at": "2026-09-20T01:09:59Z",
+          "files": [
+            {
+              "path": "웹/pipeline.js",
+              "blob_sha": "efea7051ba6b619e78cd82e9d3cf7eaf06abb4cd"
+            },
+            {
+              "path": "검토/pipeline검증.mjs",
+              "blob_sha": "aea8f06107d2c73fb8d688626427f379c35ce8a3"
             }
           ]
         }
