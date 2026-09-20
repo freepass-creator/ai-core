@@ -30,28 +30,36 @@
 
 | 파트 | 현행 자산 | 현재 확인된 역할 | 판정 |
 |---|---|---|---|
-| 관리자 | `freepass-creator/freepass-admin` (`C:\dev\freepasserp.com`) | 내부 관리자의 상품찾기·접수·계약·정산 화면 | 독립 파트 |
+| 판매 플랫폼 | `freepass-creator/freepasserp4` | `Freepass ERP 1~4`가 화이트라벨로 진화한 현재 최종본. 영업자가 차량을 찾고 고객에게 카탈로그를 보여주는 `freepasserp.com` | **제품 최종본** |
+| 관리자 | `freepass-creator/freepass-admin` (현재 로컬 폴더 `C:\dev\freepasserp.com`) | 내부 관리자의 상품찾기·접수·계약·정산 화면 | 내부 독립 파트 |
 | 영업 | `freepass-creator/freepass-sales` (`C:\dev\sales`) | 모바일 영업 CRM, 고객·통화·후속조치·견적/계약진행 | 독립 파트 |
-| 기존 ERP·통합 기능 | `freepass-creator/freepasserp4` | 상품·파트너·공급사·접수·전자계약·정산·시트 동기화 등 기존 구현 | 현행 기능 원천. 관리자/영업과 중복 범위 정리 필요 |
-| 견적기 | `freepasserp4`의 catalog/quote·inventory 계열, `sonogong-estimator` 임베드 | 견적 관련 기능이 여러 곳에 존재 | **HOLD:** 무엇을 Freepass 견적기 정본으로 쓸지 실제 화면·도메인 확인 필요 |
+| 견적기 | `freepasserp4`의 catalog/quote·inventory 계열과 현재 Estimate 구현 | 고객 조건에 맞는 차량·상품 견적 생성 | 내부 독립 파트. 정확한 코드 경계 확인 필요 |
 | 상품·판매 데이터 | `freepasserp4`의 Firestore/Sheet 연결, `freepass-admin`의 Canonical Product 모델 | 상품 정본 후보가 둘 이상 | **HOLD:** 별도 저장소를 만들기 전에 writer·consumer 대조 필요 |
 
-**구분:** Freepass는 `관리자`, `영업`, `견적`, `데이터` 네 파트로 관리한다. 당장은 새 저장소를 만들지 않고 위 현행 자산을 파트에 배정한다. `freepasserp4`는 폐기 대상으로 보지 않고, 기존 기능과 데이터 흐름의 원천으로 둔다.
+**구분:** `freepasserp.com`은 도메인 이름이면서 현재 제품 이름이다. 코드 계보와 GitHub 정본은 `freepasserp4`다. `Freepass Admin`, `Freepass Sales`, `Freepass Estimate`는 이 판매 플랫폼을 내부에서 운영·지원하는 별도 파트다. 현재 `C:\dev\freepasserp.com` 폴더는 실제로 `freepass-admin` 원격을 가리켜 이름이 충돌하므로, 제품 귀속은 원격 저장소 기준으로 판단하고 로컬 폴더 이름은 정리 작업에서 바로잡는다.
 
 ### C. JPK — 렌터카 운영
 
 | 파트 | 현행 자산 | 현재 확인된 역할 | 판정 |
 |---|---|---|---|
-| 렌터카 ERP | `freepass-creator/jpkerp5` | 차량·계약·배차·반납·수납·미수·재무·정비·사고·보험·과태료·사용자 관리 구현 | 기능 기준 ERP 후보 |
-| 직원 업무 | `freepass-creator/teamjpkwork` | 직원이 오늘 할 일을 보고 처리하고, 처리 결과를 남기는 WORK 화면 | 직원 업무 정본 |
+| 렌터카 매니저 | `renman` 계열. `jpkerp2`·`jpkerp-v4`·`jpkerp5`의 검증 기능을 계승 | 차량·계약·배차·반납·수납·미수·재무·정비·사고·보험·과태료를 관리하는 JPK ERP 계열 최종 제품 | **제품 최종본**. 정본 저장소와 이관 범위 확인 필요 |
+| 이전 ERP 세대 | `jpkerp`, `jpkerp2`, `jpkerp-v4`, `jpkerp5` | 렌터카 매니저가 계승할 기능과 데이터 모델의 구현 원천 | 신규 제품 작업 대상이 아니라 이관·검증 원천 |
+| 직원 업무 | `freepass-creator/teamjpkwork` | 렌터카 매니저의 데이터를 바탕으로 직원이 오늘 할 일을 보고 처리하고 결과를 남기는 WORK 화면 | 별도 제품·직원 업무 정본 |
 | 업무 판정·자료 연결 | `freepass-creator/aiops` | 시트와 데이터센터 자료를 읽고 직원 할 일을 판정·공급 | 공통 운영 엔진 |
 | 관제·감사 | `freepass-creator/workcontrol` | 문제 탐지와 직원 현황 확인 | 보조 관제 파트 |
 | 과태료 전용 흐름 | `teamjpkwork` 과태료 API/UI, `billincar`, `aiops` 과태료 엔진 | 기능이 여러 저장소에 분산 | **HOLD:** 실제 처리 주체와 대전 갈래를 업무별로 대조 필요 |
-| 차세대 참고 구현 | `renman` | OCR 기반 멀티테넌트 렌터카 ERP의 초기 구현 | 운영 정본 아님. 읽기 전용 참고 |
 
-**구분:** 렌터카 ERP는 차량·계약·금액·상태 같은 업무 원장을 맡고, JPK Work는 그 원장에서 직원에게 배정된 일을 처리하는 화면을 맡는다. 같은 기능을 양쪽에 다시 만들지 않는다. `jpkerp5`의 실제 배포·사용 여부가 확인되기 전에는 운영 정본이라고 확정하지 않는다.
+**구분:** `렌터카 매니저`는 JPK ERP 2·3·4·5의 최종 진화 제품이고 차량·계약·금액·상태 같은 렌터카 운영 원장을 맡는다. `JPK Work`는 렌터카 매니저를 바탕으로 직원에게 할 일을 보여주고 처리 결과를 받는 별도 제품이다. Work 안에 렌터카 ERP 전체를 다시 만들지 않는다.
 
-### D. Mewcar — 자동차 구독 사업
+### D. 착한거래 — 전자계약
+
+| 파트 | 현행 자산 | 현재 확인된 역할 | 판정 |
+|---|---|---|---|
+| 전자계약 | `freepass-creator/chakhandeal`과 `freepasserp4`의 전자계약 연결 | 계약서 생성·본인확인·서명·계약 증빙 | **귀속 HOLD** |
+
+**구분:** 착한거래는 회사나 영업 플랫폼보다는 전자계약 기능 제품에 가깝다. 당장은 Freepass 전용으로 넣거나 JPK 내부에 합치지 않는다. 공통 계약 서비스, Freepass 하위 기능, 독립 제품 중 어디에 둘지는 실제 계약 작성자·사용자·데이터 소유자·배포 도메인을 대조한 뒤 결정한다.
+
+### E. Mewcar — 자동차 구독 사업
 
 | 파트 | 현행 자산 | 맡는 범위 |
 |---|---|---|
@@ -72,17 +80,21 @@ AI Core
 └─ Cases            사건·법무 기록
 
 Freepass
-├─ Admin            상품찾기·접수·계약·정산
+├─ ERP.com          화이트라벨 차량찾기·고객 카탈로그
+├─ Admin            내부 상품·접수·계약·정산
 ├─ Sales            고객·통화·후속조치
-├─ Quote            견적
+├─ Estimate         견적
 ├─ Data             상품·공급사·정책·접수 스냅샷
-└─ Legacy/Bridge    기존 ERP 기능과 전환 연결
+└─ Bridge           내부 파트와 ERP.com 연결
 
 JPK
-├─ Rental ERP       차량·계약·수납·정비·사고·과태료 원장
-├─ Work             직원 할 일·처리·완료
+├─ Rental Manager   JPK ERP 계열 최종본·렌터카 운영 원장
+├─ Work             매니저 기반 직원 할 일·처리·완료
 ├─ Control          누락·오류·직원 현황 관제
 └─ Penalty          과태료 처리 흐름
+
+Chakhandeal
+└─ E-sign           전자계약·본인확인·서명·계약 증빙 (귀속 HOLD)
 
 Mewcar
 ├─ Business         사업·상품·심사 정책
@@ -94,8 +106,8 @@ Mewcar
 
 ## 4. 보관·중복으로 분류할 현재 폴더
 
-- `jpkerp`, `jpkerp2`, `jpkerp-v4`: 과거 세대. 신규 작업 배정 금지.
-- `renman-v2`: Git 원격 없는 실험 사본. 정본으로 사용 금지.
+- `jpkerp`, `jpkerp2`, `jpkerp-v4`, `jpkerp5`: 렌터카 매니저의 이전 ERP 세대·기능 이관 원천. 신규 제품 기능은 렌터카 매니저에 배정한다.
+- `renman-v2`: Git 원격 없는 렌터카 매니저 실험 사본. 원격 정본 확정 전 독자 정본으로 사용하지 않는다.
 - `worknavi`, `worknavi-security`, `worknavi-answer-packets`: `teamjpkwork` 원격의 작업 사본 또는 과거 갈래. 별도 프로젝트로 세지 않음.
 - `freepasserp`, `freeepasserp2`, `freepasserp3`: Freepass 과거 세대. 신규 작업 배정 금지.
 - `freepasserp4-rtdb-current`, `freepasserp4-ui-deploy`, `_wt-test`: `freepasserp4` 작업 사본. 별도 프로젝트로 세지 않음.
@@ -109,15 +121,16 @@ Mewcar
 
 | 우선순위 | 확인할 것 | 확인 후 결정 |
 |---|---|---|
-| 1 | `jpkerp5` 실제 배포 URL·사용자·Firebase/Firestore 정본 | JPK Rental ERP 운영 정본 확정 여부 |
-| 2 | `teamjpkwork`가 읽는 계약·차량·업무 데이터와 writer | ERP와 Work 사이 책임 경계 |
-| 3 | `freepasserp4`, `freepass-admin`, `freepass-sales`의 상품·접수·계약 writer | Freepass Data 정본과 중복 제거 순서 |
-| 4 | 실제 사용 중인 견적 화면과 도메인 | Freepass Quote 정본 |
-| 5 | 과태료 사건 생성부터 고지·대전·납부·소송까지 실제 흐름 | JPK Penalty와 Cases 책임 분리 |
+| 1 | `freepasserp4`의 실제 `freepasserp.com` 배포와 화이트라벨 화면 | Freepass ERP.com 최종본의 운영 범위 |
+| 2 | Freepass Admin·Sales·Estimate의 현재 저장소와 ERP.com 연결 | 내부 파트별 코드·데이터 책임 |
+| 3 | `renman`·`renman-v2`·`jpkerp5`의 기능·배포·Firestore writer | 렌터카 매니저 정본 저장소와 이관 목록 |
+| 4 | `teamjpkwork`가 읽는 계약·차량·업무 데이터와 writer | 렌터카 매니저와 JPK Work 사이 책임 경계 |
+| 5 | 착한거래의 계약 작성자·사용자·데이터 소유자·배포 도메인 | 독립/공통/Freepass 귀속 결정 |
+| 6 | 과태료 사건 생성부터 고지·대전·납부·소송까지 실제 흐름 | JPK Penalty와 Cases 책임 분리 |
 
 ## 6. 바로 적용할 운영 규칙
 
-1. 새 업무는 위 네 프로젝트와 하위 파트 중 하나에 먼저 배정한다.
+1. 새 업무는 위 사업·공통 프로젝트와 하위 파트 중 하나에 먼저 배정한다.
 2. 업무 화면 변경은 해당 제품 저장소에서 하고, 공통 오더·인계 기록은 AI Core에 남긴다.
 3. 같은 원격의 작업 폴더를 새 프로젝트로 등록하지 않는다.
 4. 운영 정본 미확인 항목은 `HOLD`로 기록하고 기존 운영을 임의로 바꾸지 않는다.
@@ -125,7 +138,9 @@ Mewcar
 
 ## NEXT_START_HERE
 
-1. `jpkerp5`와 `teamjpkwork`의 배포 메타데이터 및 Firestore writer/reader를 읽기 전용으로 대조한다.
-2. 결과로 JPK Rental ERP와 Work의 실제 경계를 확정한다.
-3. 이어서 Freepass의 상품·접수·계약 writer를 대조해 `Admin/Sales/Quote/Data/Legacy` 책임표를 확정한다.
-4. 확정 전에는 저장소 생성·이름 변경·데이터 이전을 하지 않는다.
+1. `freepasserp4`가 현재 `freepasserp.com`에 제공하는 화이트라벨 기능을 배포 메타데이터와 코드로 확정한다.
+2. Freepass Admin·Sales·Estimate를 ERP.com과 대조해 내부 파트 책임표를 확정한다.
+3. `renman`·`renman-v2`·`jpkerp5`를 대조해 렌터카 매니저 정본 저장소와 계승 기능을 확정한다.
+4. 렌터카 매니저와 `teamjpkwork`의 Firestore writer/reader를 대조해 ERP 원장과 직원 할 일의 경계를 확정한다.
+5. 착한거래는 귀속이 결정될 때까지 독립 전자계약 제품으로 유지한다.
+6. 확정 전에는 저장소 생성·이름 변경·데이터 이전을 하지 않는다.
