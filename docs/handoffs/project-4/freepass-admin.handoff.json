@@ -1,0 +1,218 @@
+{
+  "schema": "ai-core-project-audit-handoff/v1",
+  "status": "READY",
+  "project_id": "freepass-admin",
+  "repository": "freepass-creator/freepass-admin",
+  "default_branch": "main",
+  "audit_binding": {
+    "subject_revision": "2747ef32e96c550d7dea05c58ee012880cb42dd3",
+    "standard_baseline_revision": "d995d30e9b830894d53349c2196707bfbd1b6ad0",
+    "audited_at": "2026-09-20T11:20:00.000Z",
+    "ci_status": "UNKNOWN",
+    "ci_run_id": 35506433512,
+    "branch_protected": false,
+    "live_status": "CURRENT",
+    "live_revision": "2747ef32e96c550d7dea05c58ee012880cb42dd3"
+  },
+  "counts": {
+    "project_implementation": 4,
+    "project_discovery": 0,
+    "core_candidate_review": 0,
+    "standard_research": 0,
+    "no_project_action": 4
+  },
+  "project_work": {
+    "implementation": [
+      {
+        "bucket": "PROJECT_IMPLEMENTATION",
+        "priority": "P1",
+        "axis": "ui-ux",
+        "verdict": "MIGRATION_GAP",
+        "standard_owner": {
+          "lane": "B",
+          "owner": "Global UI/UX Standard"
+        },
+        "evidence": [
+          "GIT:freepass-creator/freepass-admin@2747ef32e96c550d7dea05c58ee012880cb42dd3:docs/SSOT.md keeps UI/UX HOLD pending AI Core/DevCenter common standard adoption.",
+          "GIT:freepass-creator/freepass-admin@2747ef32e96c550d7dea05c58ee012880cb42dd3:AGENTS.md explicitly defers independent UI/UX redesign until the common standard is applied.",
+          "No revision-bound AI Core UI consumer-conformance artifact was found in the current main tree."
+        ],
+        "gaps": [
+          "Current Admin main does not carry a revision-bound AI Core UI/UX consumer conformance receipt.",
+          "Project-local UI specs and mockups exist, but they are not evidence of Core UI standard adoption."
+        ],
+        "next_action": "Map the active Admin product/list/detail/application surfaces to canonical AI Core feature IDs and add a read-only consumer conformance receipt without replacing product-specific business layout decisions.",
+        "instruction": "Map the active Admin product/list/detail/application surfaces to canonical AI Core feature IDs and add a read-only consumer conformance receipt without replacing product-specific business layout decisions."
+      },
+      {
+        "bucket": "PROJECT_IMPLEMENTATION",
+        "priority": "P1",
+        "axis": "security-audit",
+        "verdict": "MIGRATION_GAP",
+        "standard_owner": {
+          "lane": "SECURITY",
+          "owner": "Security/Audit Standard"
+        },
+        "evidence": [
+          "GIT:freepass-creator/freepass-admin@2747ef32e96c550d7dea05c58ee012880cb42dd3:src/domain/security/actor.ts defines ActorRef and fail-closed actor validation.",
+          "GIT:freepass-creator/freepass-admin@2747ef32e96c550d7dea05c58ee012880cb42dd3:src/ports/auth.ts defines an ActorProvider boundary that must fail closed when authentication is absent or invalid.",
+          "docs/SSOT.md and docs/RELEASE.md explicitly keep production Auth/Permission and production audit retention NOT VERIFIED."
+        ],
+        "gaps": [
+          "Canonical partial Security/Audit policy does not grant real permissions; Admin has no verified production AuthN/AuthZ adapter.",
+          "No verified role x organization x scope x action enforcement is bound on production main.",
+          "Production audit sink, retention and tamper-evidence behavior remain unverified.",
+          "Universal secret/dependency/source/SBOM scanning is not a group-wide required gate."
+        ],
+        "next_action": "Implement and verify production ActorProvider/AuthZ and audit-retention adapters behind the existing ports, then map them to the canonical partial Security/Audit contracts without changing runtime authority prematurely.",
+        "instruction": "Implement and verify production ActorProvider/AuthZ and audit-retention adapters behind the existing ports, then map them to the canonical partial Security/Audit contracts without changing runtime authority prematurely."
+      },
+      {
+        "bucket": "PROJECT_IMPLEMENTATION",
+        "priority": "P1",
+        "axis": "qa-observability",
+        "verdict": "MIGRATION_GAP",
+        "standard_owner": {
+          "lane": "QA",
+          "owner": "QA/Observability Standard"
+        },
+        "evidence": [
+          "GIT:freepass-creator/freepass-admin@2747ef32e96c550d7dea05c58ee012880cb42dd3:.github/workflows/backend-check.yml declares npm ci, typecheck, test and build checks.",
+          "GitHub Actions backend-check run 35506433512 targets the exact audited revision but ended before any step executed: steps=[] and runner_id=0.",
+          "GitHub Actions Governance Shadow run 35506433482 also ended before any step executed: steps=[] and runner_id=0."
+        ],
+        "gaps": [
+          "Current exact-revision CI execution proof is UNKNOWN because the runner never entered repository steps.",
+          "No canonical project health/freshness/telemetry envelope is bound to the Admin runtime.",
+          "Production runtime smoke and production observability remain NOT VERIFIED.",
+          "Negative-control coverage is not expressed as one project-wide checker manifest."
+        ],
+        "next_action": "Re-observe exact-main CI when runners execute, then add bounded health/freshness and checker-manifest evidence without treating build success as production observability.",
+        "instruction": "Re-observe exact-main CI when runners execute, then add bounded health/freshness and checker-manifest evidence without treating build success as production observability."
+      },
+      {
+        "bucket": "PROJECT_IMPLEMENTATION",
+        "priority": "P1",
+        "axis": "build-deploy-governance",
+        "verdict": "MIGRATION_GAP",
+        "standard_owner": {
+          "lane": "GOVERNANCE",
+          "owner": "Build/Deploy/Governance Standard"
+        },
+        "evidence": [
+          "GIT:freepass-creator/freepass-admin@2747ef32e96c550d7dea05c58ee012880cb42dd3:docs/RELEASE.md separates source, static, domain, persistence, permission/audit, runtime smoke and deployment gates.",
+          "GIT:freepass-creator/freepass-admin@2747ef32e96c550d7dea05c58ee012880cb42dd3:contracts/ai-core/governance-p0.shadow.json intentionally expects SHADOW_HOLD for stale release evidence and missing production bindings.",
+          "GIT:freepass-creator/freepass-admin@2747ef32e96c550d7dea05c58ee012880cb42dd3:scripts/check-ai-core-governance-shadow.mjs fails if the expected HOLD blocker set drifts.",
+          "GitHub main branch observation reports protected=false."
+        ],
+        "gaps": [
+          "Current CI runner execution remains externally unverified because both exact-head workflows executed zero steps.",
+          "docs/RELEASE.md verified baseline predates the current Admin main revision.",
+          "Production deployment target, production runtime smoke and rollback evidence remain unverified.",
+          "Main branch has no active branch protection/required status checks.",
+          "SLSA provenance/SBOM remain optional higher-assurance extensions in the Core baseline."
+        ],
+        "next_action": "First restore executable exact-head CI and refresh release evidence, then establish protected required checks plus production target/revision/rollback proof before any production-ready claim.",
+        "instruction": "First restore executable exact-head CI and refresh release evidence, then establish protected required checks plus production target/revision/rollback proof before any production-ready claim."
+      }
+    ],
+    "discovery": []
+  },
+  "standard_work": {
+    "core_candidate_review": [],
+    "research": []
+  },
+  "no_project_action": [
+    {
+      "bucket": "NO_PROJECT_ACTION",
+      "priority": "NONE",
+      "axis": "data-ssot",
+      "verdict": "CORE_MATCH",
+      "standard_owner": {
+        "lane": "C",
+        "owner": "Core Contract Standard"
+      },
+      "evidence": [
+        "GIT:freepass-creator/freepass-admin@2747ef32e96c550d7dea05c58ee012880cb42dd3:docs/SSOT.md separates product rules, code, domain, services, ports, adapters and production bindings by authority.",
+        "The canonical lineage Supplier RAW -> Adapter -> Mapping/Validation -> Canonical Product -> Search -> Application Snapshot is explicit in docs/SSOT.md.",
+        "GIT:freepass-creator/freepass-admin@2747ef32e96c550d7dea05c58ee012880cb42dd3:src/adapters/ai-core/__tests__/core-contract-shadow.test.ts verifies immutable application snapshot digest after the live product advances."
+      ],
+      "gaps": [
+        "Production Product/Application persistence remains NOT VERIFIED and the JSON file store is development-only."
+      ],
+      "next_action": "Keep current SSOT ownership and snapshot semantics; bind any future production persistence through the existing Port/Adapter boundary rather than promoting the development file store.",
+      "instruction": "No project remediation is requested from this audit finding."
+    },
+    {
+      "bucket": "NO_PROJECT_ACTION",
+      "priority": "NONE",
+      "axis": "engine-adapter",
+      "verdict": "CORE_MATCH",
+      "standard_owner": {
+        "lane": "C",
+        "owner": "Core Contract Standard"
+      },
+      "evidence": [
+        "GIT:freepass-creator/freepass-admin@2747ef32e96c550d7dea05c58ee012880cb42dd3:docs/AI_CORE_CONTRACT_ADOPTION_2026-09-19.md records Domain -> Application Service -> Port -> Adapter/Repository separation.",
+        "Development binding profile intentionally binds application.repository and product.read while leaving actor.provider unbound.",
+        "GIT:freepass-creator/freepass-admin@2747ef32e96c550d7dea05c58ee012880cb42dd3:src/adapters/ai-core/__tests__/core-contract-shadow.test.ts asserts the partial binding and rejects inventing a production ActorProvider adapter."
+      ],
+      "gaps": [
+        "Production persistence and production ActorProvider bindings remain unverified."
+      ],
+      "next_action": "Preserve the partial binding profile and add production adapters only when their external authority, failure semantics and verification evidence are real.",
+      "instruction": "No project remediation is requested from this audit finding."
+    },
+    {
+      "bucket": "NO_PROJECT_ACTION",
+      "priority": "NONE",
+      "axis": "api-event-error",
+      "verdict": "CORE_MATCH",
+      "standard_owner": {
+        "lane": "C",
+        "owner": "Core Contract Standard"
+      },
+      "evidence": [
+        "GIT:freepass-creator/freepass-admin@2747ef32e96c550d7dea05c58ee012880cb42dd3:src/domain/errors.ts defines stable application error codes including validation, conflict, version mismatch, authorization, cancellation and persistence families.",
+        "GIT:freepass-creator/freepass-admin@2747ef32e96c550d7dea05c58ee012880cb42dd3:src/adapters/ai-core/core-contract-shadow.ts maps AppError and service reasons into core-error/v1 with correlation and retryability.",
+        "The same shadow layer projects submissionId into request_id/idempotency and preserves expected product revision."
+      ],
+      "gaps": [
+        "OpenAPI description/profile is not a canonical machine gate in the current Core baseline.",
+        "RFC 9457 alignment remains non-canonical research input.",
+        "No material public HTTP API surface was established as requiring transport-wide conformance in this audit."
+      ],
+      "next_action": "Keep the stable request/error/idempotency mapping and adopt a future canonical HTTP/OpenAPI transport profile only at real API boundaries.",
+      "instruction": "No project remediation is requested from this audit finding."
+    },
+    {
+      "bucket": "NO_PROJECT_ACTION",
+      "priority": "NONE",
+      "axis": "workflow",
+      "verdict": "CORE_MATCH",
+      "standard_owner": {
+        "lane": "D",
+        "owner": "Workflow Standard"
+      },
+      "evidence": [
+        "GIT:freepass-creator/freepass-admin@2747ef32e96c550d7dea05c58ee012880cb42dd3:docs/AI_CORE_WORKFLOW_ADOPTION_2026-09-20.md records D SHADOW binding while preserving FreePass Admin domain runtime authority.",
+        "GIT:freepass-creator/freepass-admin@2747ef32e96c550d7dea05c58ee012880cb42dd3:src/adapters/ai-core/__tests__/workflow-shadow.test.ts checks submit, progress, contract, delivery, cancellation and post-cancellation rejection.",
+        "The workflow negative test fails closed with AI_CORE_WORKFLOW_SHADOW_DRIFT when stored source status and D-derived projection disagree."
+      ],
+      "gaps": [
+        "AI Core Workflow Engine is intentionally not runtime write authority yet."
+      ],
+      "next_action": "Retain SHADOW parity until persistence/audit atomicity, error mapping, rollback and exact-revision runtime evidence justify any authority cutover.",
+      "instruction": "No project remediation is requested from this audit finding."
+    }
+  ],
+  "execution_boundary": {
+    "auto_write_project_repo": false,
+    "auto_open_project_pr": false,
+    "auto_promote_core_standard": false,
+    "auto_deploy": false,
+    "production_mutation": false
+  },
+  "blockers": [],
+  "rule": "Project implementation work comes only from MIGRATION_GAP findings. UNKNOWN creates discovery work, PROJECT_AHEAD routes evidence to the standard owner, and CORE_MATCH never creates a project remediation task. A stale audit cannot authorize handoff execution."
+}
