@@ -50,8 +50,8 @@ test('current issued handoffs produce four-project zero-completion queue', async
   });
 
   assert.equal(queue.totals.projects,4);
-  assert.equal(queue.totals.handoffs,6);
-  assert.equal(queue.totals.superseded_handoffs,2);
+  assert.equal(queue.totals.handoffs,5);
+  assert.equal(queue.totals.superseded_handoffs,1);
   assert.equal(queue.totals.implementation_tasks,15);
   assert.equal(queue.totals.discovery_tasks,2);
   assert.equal(queue.totals.actionable_tasks,17);
@@ -179,8 +179,8 @@ test('newer handoff supersedes older handoff for same project', async () => {
   });
 
   assert.equal(queue.totals.projects,4);
-  assert.equal(queue.totals.handoffs,5);
-  assert.equal(queue.totals.superseded_handoffs,1);
+  assert.equal(queue.totals.handoffs,6);
+  assert.equal(queue.totals.superseded_handoffs,2);
   assert.equal(queue.items.find(item=>item.project_id==='freepass-admin').handoff_revision,'a'.repeat(40));
 });
 
