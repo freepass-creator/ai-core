@@ -31,12 +31,12 @@
 | 파트 | 현행 자산 | 현재 확인된 역할 | 판정 |
 |---|---|---|---|
 | 판매 플랫폼 | `freepass-creator/freepasserp4` | `Freepass ERP 1~4`가 화이트라벨로 진화한 현재 최종본. 영업자가 차량을 찾고 고객에게 카탈로그를 보여주는 `freepasserp.com` | **제품 최종본** |
-| 관리자 | `freepass-creator/freepass-admin` (현재 로컬 폴더 `C:\dev\freepasserp.com`) | 내부 관리자의 상품찾기·접수·계약·정산 화면 | 내부 독립 파트 |
+| 관리자 | `freepass-creator/freepass-admin` (현재 로컬 체크아웃 `C:\dev\freepasserp.com`) | 내부 관리자의 상품찾기·접수·계약·정산 화면 | 이미 분리된 내부 제품 |
 | 영업 | `freepass-creator/freepass-sales` (`C:\dev\sales`) | 모바일 영업 CRM, 고객·통화·후속조치·견적/계약진행 | 독립 파트 |
-| 견적기 | `freepasserp4`의 catalog/quote·inventory 계열과 현재 Estimate 구현 | 고객 조건에 맞는 차량·상품 견적 생성 | 내부 독립 파트. 정확한 코드 경계 확인 필요 |
+| 견적기 | `freepass-creator/freepass-estimate` | 고객 조건에 맞는 차량·상품 견적 생성 | 이미 분리된 내부 제품. 로컬 최상위 체크아웃은 미확인 |
 | 상품·판매 데이터 | `freepasserp4`의 Firestore/Sheet 연결, `freepass-admin`의 Canonical Product 모델 | 상품 정본 후보가 둘 이상 | **HOLD:** 별도 저장소를 만들기 전에 writer·consumer 대조 필요 |
 
-**구분:** `freepasserp.com`은 도메인 이름이면서 현재 제품 이름이다. 코드 계보와 GitHub 정본은 `freepasserp4`다. `Freepass Admin`, `Freepass Sales`, `Freepass Estimate`는 이 판매 플랫폼을 내부에서 운영·지원하는 별도 파트다. 현재 `C:\dev\freepasserp.com` 폴더는 실제로 `freepass-admin` 원격을 가리켜 이름이 충돌하므로, 제품 귀속은 원격 저장소 기준으로 판단하고 로컬 폴더 이름은 정리 작업에서 바로잡는다.
+**구분:** `freepasserp.com`은 도메인 이름이면서 현재 제품 이름이다. 코드 계보와 GitHub 정본은 `freepasserp4`다. `Freepass Admin`, `Freepass Sales`, `Freepass Estimate`는 GitHub에서도 이미 별도 저장소로 나뉘어 있다. 현재 확인된 로컬 체크아웃은 `C:\dev\freepasserp4`, `C:\dev\freepasserp.com`(원격은 `freepass-admin`), `C:\dev\sales`이며, `freepass-estimate` 원격을 가리키는 최상위 로컬 Git 체크아웃은 이번 조사에서 발견되지 않았다. 폴더 이름만으로 제품 귀속을 바꾸지 않고 원격과 실제 체크아웃을 함께 본다.
 
 ### C. JPK — 렌터카 운영
 
@@ -122,7 +122,7 @@ Mewcar
 | 우선순위 | 확인할 것 | 확인 후 결정 |
 |---|---|---|
 | 1 | `freepasserp4`의 실제 `freepasserp.com` 배포와 화이트라벨 화면 | Freepass ERP.com 최종본의 운영 범위 |
-| 2 | Freepass Admin·Sales·Estimate의 현재 저장소와 ERP.com 연결 | 내부 파트별 코드·데이터 책임 |
+| 2 | 이미 분리된 Freepass Admin·Sales·Estimate 저장소와 ERP.com 연결 | 내부 파트별 코드·데이터 책임 |
 | 3 | `renman`·`renman-v2`·`jpkerp5`의 기능·배포·Firestore writer | 렌터카 매니저 정본 저장소와 이관 목록 |
 | 4 | `teamjpkwork`가 읽는 계약·차량·업무 데이터와 writer | 렌터카 매니저와 JPK Work 사이 책임 경계 |
 | 5 | 착한거래의 계약 작성자·사용자·데이터 소유자·배포 도메인 | 독립/공통/Freepass 귀속 결정 |
