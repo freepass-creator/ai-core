@@ -25,7 +25,7 @@ export function createCapabilityEngine({capabilityRegistry,projectRegistry,built
       required_scopes:[...cap.required_scopes],walls:[...cap.walls],result_contract:cap.result_contract,authorization_source:null};
   }
 
-  async function run({route,orderId=null,workId=null,input={},perform=false,authority=null}={}){
+  async function run({route,orderId=null,workId=null,requestId=null,input={},perform=false,authority=null}={}){
     let p=plan({route,orderId,workId});
     if(p.status!=='PLANNED') return createWorkResult({plan:p.capability_id?{capability_id:p.capability_id,project_id:p.project_id}:null,status:'HOLD',summary:'capability 실행 경로가 HOLD입니다.',blockers:[p.reason],nextAction:p.hold_reason??'route/project/capability 상태를 확인합니다.',clock});
     const cap=caps.get(p.capability_id), project=projects.get(p.project_id);
@@ -55,7 +55,7 @@ export function createCapabilityEngine({capabilityRegistry,projectRegistry,built
         if(!a||typeof a.invoke!=='function') throw new Error('BUILTIN_ADAPTER_MISSING');
         result=await a.invoke({plan:p,capability:cap,project,input,authority:effectiveAuthority??authority});
       }else if(cap.adapter.kind==='PROJECT_MODULE'){
-        result=normalizeAdapterResult(await runtime.runModule(cap,project,input,{plan:p,authority:effectiveAuthority??authority,executorIdentity}));
+        result=normalizeAdapterResult(await runtime.runModule(cap,project,input,{plan:p,authority:effectiveAuthority??authority,executorIdentity,requestId}));
       }else if(['PROJECT_COMMAND','PROJECT_REGISTRY_COMMAND'].includes(cap.adapter.kind)){
         result=normalizeAdapterResult(await runtime.runCommand(cap,project));
       }else throw new Error('CAPABILITY_ADAPTER_KIND_UNSUPPORTED');
