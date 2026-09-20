@@ -114,6 +114,7 @@ export function createExecutionLeaseRuntime({
   async function renew({lease,lease_ms=defaultLeaseMs}={}){
     validateExecutionLease(lease);
     need(lease.state==='ACTIVE','EXECUTION_LEASE_NOT_ACTIVE');
+    need(Number.isInteger(lease_ms)&&lease_ms>0,'EXECUTION_LEASE_DURATION_INVALID');
     const key=executionLeaseKey(lease);
 
     for(let i=0;i<maxCasAttempts;i++){
@@ -123,6 +124,7 @@ export function createExecutionLeaseRuntime({
       const current=state.lease;
       const nowMs=Number(clock());
       need(current,'EXECUTION_LEASE_NOT_FOUND');
+      validateExecutionLease(current);
       need(current.fencing_token===lease.fencing_token,'STALE_FENCING_TOKEN');
       need(current.lease_id===lease.lease_id,'EXECUTION_LEASE_ID_MISMATCH');
       need(current.owner_id===lease.owner_id&&current.attempt_id===lease.attempt_id,'EXECUTION_LEASE_OWNER_MISMATCH');
@@ -146,6 +148,7 @@ export function createExecutionLeaseRuntime({
     const current=row?.state?.lease??null;
     const nowMs=Number(clock());
     need(current,'EXECUTION_LEASE_NOT_FOUND');
+    validateExecutionLease(current);
     need(current.state==='ACTIVE','EXECUTION_LEASE_NOT_ACTIVE');
     need(Date.parse(current.lease_until)>nowMs,'EXECUTION_LEASE_EXPIRED');
     need(current.fencing_token===lease.fencing_token,'STALE_FENCING_TOKEN',{
@@ -167,6 +170,7 @@ export function createExecutionLeaseRuntime({
       const state=row?.state??{max_fencing_token:0,lease:null};
       const current=state.lease;
       need(current,'EXECUTION_LEASE_NOT_FOUND');
+      validateExecutionLease(current);
       need(current.fencing_token===lease.fencing_token,'STALE_FENCING_TOKEN');
       need(current.lease_id===lease.lease_id,'EXECUTION_LEASE_ID_MISMATCH');
       need(current.owner_id===lease.owner_id&&current.attempt_id===lease.attempt_id,'EXECUTION_LEASE_OWNER_MISMATCH');
