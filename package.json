@@ -73,7 +73,8 @@
     "audit:queue": "node scripts/project-audit-refresh-queue.mjs",
     "audit:workbook": "node scripts/project-audit-workbook.mjs",
     "audit:portfolio": "node scripts/project-audit-portfolio.mjs",
-    "audit:portfolio:live": "node scripts/project-audit-live-portfolio.mjs"
+    "audit:portfolio:live": "node scripts/project-audit-live-portfolio.mjs",
+    "audit:handoff": "node scripts/project-audit-handoff.mjs"
   },
   "dependencies": {
     "ajv": "8.20.0",
