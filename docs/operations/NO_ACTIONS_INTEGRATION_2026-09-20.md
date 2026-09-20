@@ -282,3 +282,32 @@ Rules:
 No global project effect-binding registry was invented without project evidence.
 
 Actions: NOT USED.
+
+
+## Resume plan freshness cycle
+
+Scope: D prepared effect-resume plan integrity only.
+
+Added:
+- `contracts/workflow-effect-resume-plan.schema.json`
+- `src/workflow/effect-resume-plan-guard.mjs`
+- prepared-plan APIs in `src/workflow/effect-receipt-resume-runtime.mjs`
+- `test/workflow-effect-resume-plan-guard.test.mjs`
+- `docs/workflow/EFFECT_RESUME_PLAN_FRESHNESS.md`
+
+Pinned inputs:
+- complete target attempt binding
+- ordered effects
+- canonicalized receipt bindings
+- full source receipt set
+- current proof inputs
+- planner result
+
+Rules:
+- any meaningful change -> STALE_RESUME_PLAN / HOLD
+- stale plan executor call count = 0
+- plan artifact tampering/component digest mismatch/plan id mismatch -> stale
+- same logical execution with a different attempt requires a new plan
+- array reordering for set-like receipt/binding/proof inputs does not stale the plan
+
+Actions: NOT USED.
