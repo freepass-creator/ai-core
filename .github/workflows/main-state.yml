@@ -24,6 +24,7 @@ jobs:
       - run: npm run registry:validate registry/projects.json
       - run: npm run a:coverage:validate
       - run: npm run a:evidence:validate
+      - run: npm run a:routing:validate
       - run: npm run capability:validate
       - run: npm run direction:validate
       - run: npm run workmap:validate
