@@ -1,7 +1,7 @@
 {
   "schema": "ai-core-a-session-work-claims/v1",
   "status": "RESEARCH_COORDINATION_NOT_CANONICAL",
-  "observed_at": "2026-09-20T02:21:00Z",
+  "observed_at": "2026-09-20T02:23:00Z",
   "policy": {
     "claim_key": "<repository>@<subject_revision>::<scope>",
     "live_claim": "state=ACTIVE and lease_until > observed_at",
@@ -145,7 +145,7 @@
       "repository": "freepass-creator/ai-core",
       "subject_revision": "04caebd51983d02532de3e767548c32fa7525d90",
       "scope": "coordination:owner-identity",
-      "owner_session": "A-session-current-chat",
+      "owner_session": "A-session-owner-policy-0221",
       "state": "ACTIVE",
       "claimed_at": "2026-09-20T02:21:00Z",
       "lease_until": "2026-09-20T03:21:00Z",
