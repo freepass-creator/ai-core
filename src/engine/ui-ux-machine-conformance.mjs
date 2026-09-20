@@ -53,11 +53,14 @@ export function parseEffectiveCss(styleSources) {
       if (!declarations.size) continue;
       for (const selector of splitSelectors(rawSelector)) {
         const key = selector;
+        const previous = effective.get(key);
+        const mergedDeclarations = new Map(previous?.declarations ?? []);
+        for (const [property, value] of declarations) mergedDeclarations.set(property, value);
         effective.set(key, {
           source: source.id ?? source.path ?? 'style',
           selector,
           className: lastClass(selector),
-          declarations,
+          declarations: mergedDeclarations,
           order: order++
         });
       }
