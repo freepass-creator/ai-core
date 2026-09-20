@@ -19,6 +19,7 @@ export function buildRepositoryReceipt({
   reproducibility,
   milestones=[],
   metrics=null,
+  source_revision=null,
 }={}){
   need(text(receipt_id),'RECEIPT_ID_REQUIRED');
   need(text(operation_id),'RECEIPT_OPERATION_ID_REQUIRED');
@@ -51,7 +52,7 @@ export function buildRepositoryReceipt({
       digest:data==null?null:canonicalDigest(data),
       refs:[...new Set((output_refs??[]).filter(text))]
     },
-    source_revision:repository_result.revision==null?null:String(repository_result.revision),
+    source_revision:source_revision??null,
     started_at:repository_result.started_at,
     ended_at:repository_result.ended_at,
     evidence_refs:[...new Set([...(repository_result.evidence_refs??[]),...(evidence_refs??[])].filter(text))],
@@ -63,7 +64,11 @@ export function buildRepositoryReceipt({
     }
   };
   if(Array.isArray(milestones)&&milestones.length) receipt.milestones=structuredClone(milestones);
-  if(metrics&&typeof metrics==='object'&&!Array.isArray(metrics)) receipt.metrics=structuredClone(metrics);
+  const mergedMetrics={
+    ...(metrics&&typeof metrics==='object'&&!Array.isArray(metrics)?metrics:{}),
+    ...(repository_result.revision==null?{}:{repository_revision:repository_result.revision})
+  };
+  if(Object.keys(mergedMetrics).length) receipt.metrics=mergedMetrics;
   if(Array.isArray(proof_inputs)&&proof_inputs.length) receipt.proof_input_binding=buildProofInputBinding(proof_inputs);
   return receipt;
 }
