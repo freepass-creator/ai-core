@@ -421,3 +421,58 @@
     border-color: CanvasText;
   }
 }
+
+
+/* Canonical search/discovery composition.
+   Mode is declared with data-ui-search-mode:
+   search-only | search-filter | search-quick | search-filter-quick */
+.ui-search-discovery {
+  display: grid;
+  gap: var(--space-2);
+  min-inline-size: 0;
+}
+
+.ui-search-discovery > [data-ui-search-row] {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.ui-search-discovery[data-ui-search-mode="search-only"] > [data-ui-search-row] {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.ui-search-discovery [data-ui-filter-trigger] {
+  min-block-size: var(--control-height-touch-min);
+  white-space: nowrap;
+}
+
+.ui-search-discovery [data-ui-quick-filters] {
+  display: flex;
+  gap: var(--space-2);
+  overflow-x: auto;
+  padding-block: var(--space-1);
+  scrollbar-width: thin;
+}
+
+.ui-search-discovery[data-ui-search-mode="search-only"] [data-ui-quick-filters],
+.ui-search-discovery[data-ui-search-mode="search-filter"] [data-ui-quick-filters] {
+  display: none;
+}
+
+.ui-search-discovery [data-ui-applied-filters] {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+@media (max-width: 640px) {
+  .ui-search-discovery > [data-ui-search-row] {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .ui-search-discovery [data-ui-filter-trigger] {
+    min-inline-size: var(--control-height-touch-min);
+  }
+}
