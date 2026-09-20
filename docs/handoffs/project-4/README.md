@@ -126,3 +126,31 @@ npm run audit:closure-queue -- --live --require-clean
 ```
 
 The queue separates **project-reported completion** from **audit closure**. A handoff moving to a new live revision becomes `HANDOFF_STALE` until a fresh audit/handoff supersedes it.
+
+
+## Ownership / priority / SLA
+
+Project 4 does not invent human assignees.
+
+Operational accountability is:
+
+- `PROJECT:<project_id>` — project implementation/discovery owner
+- task `standard_lane` — AI Core standard review/coordination lane
+- task `priority` — P1/P2/P3
+- task `sla_state` — ON_TRACK / AT_RISK / OVERDUE / REAUDIT_PENDING / CLOSED
+
+Local Project 4 SLA policy:
+
+- `registry/project-audit-ops-policy.json`
+- P1: warning 48h / SLA 72h
+- P2: warning 120h / SLA 168h
+- P3: warning 240h / SLA 336h
+
+This policy is an operational Project 4 queue signal only. It is not a company-wide SLA standard.
+
+Current status:
+
+- `OWNERSHIP_SLA_STATUS_2026-09-20-r3.md`
+- `closure-status-2026-09-20-r3.json`
+
+Current snapshot: 17 actionable tasks, P1 15 / P2 2, all 17 ON_TRACK, 0 AT_RISK, 0 OVERDUE.
