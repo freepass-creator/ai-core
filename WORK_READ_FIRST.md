@@ -58,9 +58,17 @@ AI 이름보다 최신 사용자 결정, 현재 프로젝트 정본, revision-bo
 
 공통 기능은 본사로 정리하되 고유 제품·Git·데이터 SSOT·브랜드·배포는 독립 유지한다. 비상 기능 `EMG-P0`와는 별도 작업이며, 운영 전환·삭제·권한 변경은 이 인계만으로 허용되지 않는다.
 
+## 개발 구현·고도화 요청을 처리하는 경우
+
+AI Core의 공통 Contract를 실제 프로젝트에 적용하는 개발 요청은 [Development Center 실행 인계](docs/DEVELOPMENT_CENTER_EXECUTION_HANDOFF.md)를 따른다.
+
+AI Core가 회사 공통 헌법·Contract를 소유하고, `freepass-creator/devcenter`가 **Development Center Control Plane + 7 Hubs** 구조로 실제 개발 실행을 관장한다. AI Core 안에서 같은 실행 조직을 다시 만들지 않는다.
+
+개발 요청의 흐름은 `AI Core 기준 확인 → Development Center Hub Router → Primary/Secondary Hub → 프로젝트 구현 → Quality evidence → 필요 시 Delivery evidence`다. Development Center가 등록되지 않은 새 Hub를 임의 생성하거나 프로젝트 고유 정본을 복사해 본사 정본으로 만들지 않는다.
+
 ## UI/UX 공통 기능 규격을 작업하는 경우
 
-공통 UI/UX는 `docs/UI_UX_CONSTITUTION.md` → `docs/SCREEN_DESIGN_STANDARD.md` → `registry/ui-ux-features.json` 순서로 읽는다. Feature Registry가 기능별 상태·행동·검증 정본이고, `design-system/tokens.json`, `design-system/components.registry.json`, `design-system/interaction.contract.json`이 실행 가능한 projection을 제공한다. 신규 consumer는 검증된 legacy CSS를 보존한 채 `design-system/tokens.runtime.css` + `design-system/runtime-v2.css`를 staged adoption한다.
+공통 UI/UX는 `docs/UI_UX_CONSTITUTION.md` → `docs/SCREEN_DESIGN_STANDARD.md` → `registry/ui-ux-features.json` 순서로 읽는다. **실제 프로젝트 디자인 통일·화면 고도화의 실행 진입점은 Development Center의 Design Hub다.** AI Core B는 normative contract를 소유하고 Design Hub가 이를 project revision에 적용한다. Feature Registry가 기능별 상태·행동·검증 정본이고, `design-system/tokens.json`, `design-system/components.registry.json`, `design-system/interaction.contract.json`이 실행 가능한 projection을 제공한다. 신규 consumer는 검증된 legacy CSS를 보존한 채 `design-system/tokens.runtime.css` + `design-system/runtime-v2.css`를 staged adoption한다.
 
 `npm run uiux:validate`와 `npm run uiux:runtime`가 모두 통과하지 않는 공통 규격 변경은 채택하지 않는다. 프로젝트별 브랜드·밀도·아이콘·도메인 문구는 제품 profile이 소유하지만, 공통 feature ID의 상태명·완료 의미·실패/재시도·접근성·엔진/어댑터 경계는 로컬에서 임의 분기하지 않는다. C가 데이터/API 의미를, D가 도메인 workflow를 소유하며 B는 이를 재정의하지 않는다. 새 공통 기능은 먼저 Registry에 등록하거나 만료가 있는 예외를 남긴다.
 
