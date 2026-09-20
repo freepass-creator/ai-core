@@ -55,6 +55,31 @@ function registryObservation(registryProject, capsule) {
       };
 }
 
+function standardObservation(result, readinessRegistry) {
+  if (result.schema === 'ai-core-project-audit-result/v1') {
+    return {
+      status: 'UNKNOWN_LEGACY',
+      audited_baseline_revision: null,
+      current_baseline_revision: readinessRegistry.baseline_revision,
+      reason: 'STANDARD_BASELINE_UNBOUND_LEGACY',
+    };
+  }
+
+  return result.standard_baseline_revision === readinessRegistry.baseline_revision
+    ? {
+        status: 'CURRENT',
+        audited_baseline_revision: result.standard_baseline_revision,
+        current_baseline_revision: readinessRegistry.baseline_revision,
+        reason: null,
+      }
+    : {
+        status: 'STALE',
+        audited_baseline_revision: result.standard_baseline_revision,
+        current_baseline_revision: readinessRegistry.baseline_revision,
+        reason: 'STANDARD_BASELINE_MOVED',
+      };
+}
+
 export function assessProjectAuditFreshness({
   result,
   readinessRegistry,
@@ -72,31 +97,38 @@ export function assessProjectAuditFreshness({
   const registry = registryObservation(registryProject, capsule);
   if (registry.status === 'MISMATCH') identityBlockers.push(registry.reason);
 
+  const standard = standardObservation(result, readinessRegistry);
   const auditedRevision = result.subject_revision;
   const liveRevision = capsule.subject_revision;
-  const moved = auditedRevision !== liveRevision;
+  const projectMoved = auditedRevision !== liveRevision;
+  const standardMoved = standard.status !== 'CURRENT';
 
   const status = identityBlockers.length
     ? 'HOLD'
-    : moved
+    : projectMoved || standardMoved
       ? 'STALE'
       : 'CURRENT';
 
   const reasons = [];
-  if (moved) reasons.push('SUBJECT_REVISION_MOVED');
+  if (projectMoved) reasons.push('SUBJECT_REVISION_MOVED');
+  if (standard.reason) reasons.push(standard.reason);
   if (registry.status === 'STALE') reasons.push('PROJECT_REGISTRY_OBSERVATION_STALE');
   if (registry.status === 'UNKNOWN') reasons.push(registry.reason);
   if (capsule.readiness?.status !== 'READY_FOR_REGISTRY_REVIEW') reasons.push('LIVE_PROJECT_CAPSULE_HOLD');
 
   return {
-    schema: 'ai-core-project-audit-freshness/v1',
+    schema: 'ai-core-project-audit-freshness/v2',
+    audit_result_schema: result.schema,
     project_id: result.project_id,
     repository: result.repository,
     default_branch: result.source_proof.default_branch,
     status,
-    audited_revision: auditedRevision,
-    live_revision: liveRevision,
-    moved,
+    project_revision: {
+      audited: auditedRevision,
+      live: liveRevision,
+      moved: projectMoved,
+    },
+    standard_baseline: standard,
     re_audit_required: status !== 'CURRENT',
     audit_usable_as_current: status === 'CURRENT',
     registry_observation: registry,
@@ -107,6 +139,6 @@ export function assessProjectAuditFreshness({
     },
     blockers: identityBlockers,
     reasons,
-    rule: 'Only an audit bound to the currently observed project revision may be presented as current. Registry observations are advisory freshness evidence; live revision inspection wins when the registry lags.',
+    rule: 'An audit is current only when both the live project revision and the AI Core audit-standard baseline match the revisions bound into the audit result. Legacy v1 results have no standard-baseline binding and therefore require re-audit.',
   };
 }
