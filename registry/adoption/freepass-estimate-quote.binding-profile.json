@@ -1,0 +1,25 @@
+{
+  "schema_version": "core-binding-profile/v1",
+  "profile_id": "binding.freepass-estimate.quote.shadow",
+  "project_id": "freepass-estimate",
+  "environment": "shadow",
+  "subject_revision": "b526fdc73e812dcb0594d10caf2123bbade1d38b",
+  "engine_bindings": [
+    {
+      "engine_id": "freepass-estimate.quote",
+      "engine_version": "1.0.0",
+      "ports": [
+        {
+          "port_id": "quote.provider.calculate",
+          "adapter_id": "freepass-estimate.quote-provider"
+        }
+      ]
+    }
+  ],
+  "config_refs": [
+    "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/provider-config.js",
+    "freepass-creator/freepass-estimate@b526fdc73e812dcb0594d10caf2123bbade1d38b:apps/new/src/lib/quote/provider-policy.js"
+  ],
+  "secret_refs": [],
+  "verification_state": "NOT_RUN"
+}
