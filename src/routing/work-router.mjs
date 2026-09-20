@@ -102,14 +102,21 @@ export function routeWork(queryValue, { workMap, projectRegistry, capabilityRegi
   const base = {
     query, work_type_id: work.work_type_id, name: work.name, domain: work.domain, matched_alias,
     target_project_id: work.target_project_id, target_repository: project.repository,
-    target_revision: project.head_revision, project_status: project.status,
+    target_revision: project.head_revision,
+    project_lifecycle_status: project.repository_lifecycle_status,
+    project_execution_readiness_status: project.execution_readiness_status,
+    // compatibility alias: historically project_status meant runtime admission.
+    project_status: project.execution_readiness_status,
     capability_id: capability.id, capability_status: capability.status, capability_mode: capability.mode,
     approval_boundary: work.approval_boundary, completion_condition: work.completion_condition,
     source_pointers: work.source_pointers,
   };
 
-  if (project.status !== 'ACTIVE') {
-    return { status:`HOLD_PROJECT_${project.status}`, reason:'TARGET_PROJECT_NOT_ACTIVE', ...base, blockers:project.known_blockers ?? [] };
+  if (project.repository_lifecycle_status === 'RETIRE') {
+    return { status:'HOLD_PROJECT_DISABLED', reason:'TARGET_PROJECT_RETIRED', ...base, blockers:project.known_blockers ?? [] };
+  }
+  if (project.execution_readiness_status !== 'ACTIVE') {
+    return { status:`HOLD_PROJECT_${project.execution_readiness_status}`, reason:'TARGET_PROJECT_EXECUTION_NOT_READY', ...base, blockers:project.known_blockers ?? [] };
   }
   if (capability.status !== 'ACTIVE') {
     return { status:`HOLD_CAPABILITY_${capability.status}`, reason:'CAPABILITY_NOT_ACTIVE', ...base, blockers:[capability.hold_reason] };
