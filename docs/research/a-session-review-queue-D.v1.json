@@ -11,7 +11,8 @@
   "policy": {
     "source_only": "This queue is derived from A Evidence, Routing and receiver Inbox state. Do not hand-edit it as authority.",
     "review_only": "The pack prepares evidence and questions but cannot review or decide for B/C/D.",
-    "resolved_history": "CLOSED routes remain in the queue as RESOLVED evidence history."
+    "resolved_history": "CLOSED routes remain in the queue as RESOLVED evidence history.",
+    "review_revision": "40-hex deterministic content fingerprint for review-claim identity; it is not source proof or a Git revision."
   },
   "items": [
     {
@@ -105,7 +106,8 @@
         "may_change_canon": false,
         "decision_owner": "D",
         "automatic_decision_forbidden": true
-      }
+      },
+      "review_revision": "585868ab1f653bdca903319f6b9c58324460df91"
     },
     {
       "pack_id": "scheduler.logical-slot-observability::D",
@@ -173,7 +175,8 @@
         "may_change_canon": false,
         "decision_owner": "D",
         "automatic_decision_forbidden": true
-      }
+      },
+      "review_revision": "86453fd363f00fecb843835fdd1d5e8a78773ed9"
     },
     {
       "pack_id": "workflow.admin-runtime-binding::D",
@@ -291,7 +294,8 @@
         "may_change_canon": false,
         "decision_owner": "D",
         "automatic_decision_forbidden": true
-      }
+      },
+      "review_revision": "e75aff8404ef0551dbdf4d20ff6783cf408b705a"
     },
     {
       "pack_id": "workflow.compensated-multiwrite::D",
@@ -360,7 +364,8 @@
         "may_change_canon": false,
         "decision_owner": "D",
         "automatic_decision_forbidden": true
-      }
+      },
+      "review_revision": "98d4ed9c2eb6265b6ee7aa98e450d46d1ca25f06"
     },
     {
       "pack_id": "workflow.forward-skip-evidence-integrity::D",
@@ -466,7 +471,8 @@
         "may_change_canon": false,
         "decision_owner": "D",
         "automatic_decision_forbidden": true
-      }
+      },
+      "review_revision": "1020695f48e640ae0f6e8f7b10065e887d962101"
     }
   ]
 }
