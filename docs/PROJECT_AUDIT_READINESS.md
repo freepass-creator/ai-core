@@ -112,3 +112,32 @@ The queue scans saved `ai-core-project-audit-result/v1` JSON files under `docs/a
 - `UNKNOWN` -> registry evidence is insufficient.
 
 This split prevents a stale registry from certifying a stale audit and prevents a registry match from being mistaken for live proof.
+
+
+## Audit Result v2 — dual revision binding
+
+New audits must use `ai-core-project-audit-result/v2`.
+
+v2 binds two revisions:
+
+1. `subject_revision` — the exact target project revision audited.
+2. `standard_baseline_revision` — the exact AI Core audit-standard baseline used.
+
+It also records `audited_at`.
+
+This means an audit becomes stale when either side moves:
+
+- project code moves -> `SUBJECT_REVISION_MOVED`;
+- AI Core audit standard moves -> `STANDARD_BASELINE_MOVED`;
+- legacy v1 has no standard baseline -> `STANDARD_BASELINE_UNBOUND_LEGACY`.
+
+Legacy v1 audit results remain readable historical evidence, but they cannot be presented as current under the v2 freshness rules.
+
+Generate a review workbook directly from the live project and current Core baseline:
+
+```bash
+npm run audit:workbook -- <project_id>
+npm run audit:workbook -- <project_id> --output artifacts/audit/<project_id>-workbook.json
+```
+
+The workbook is read-only and defaults all axis verdicts to `UNKNOWN`. It preserves partial-standard gaps and produces a finalization target of `ai-core-project-audit-result/v2`.
