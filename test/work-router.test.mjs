@@ -38,6 +38,8 @@ test('HOLD projects and capabilities never become executable routes', () => {
   assert.equal(result.work_type_id, 'document-production');
   assert.equal(result.status, 'HOLD_PROJECT_HOLD');
   assert.equal(result.project_status, 'HOLD');
+  assert.equal(result.project_execution_readiness_status, 'HOLD');
+  assert.equal(result.project_lifecycle_status, 'ACTIVE');
 
   const capHold = routeWork('ERP 상품 상세 고쳐', { workMap, projectRegistry, capabilityRegistry });
   assert.equal(capHold.status, 'HOLD_CAPABILITY_HOLD');
@@ -62,4 +64,18 @@ test('canonical estimator authority remains FreePass Estimate-only', () => {
   const result = routeWork('견적기 고쳐', { workMap, projectRegistry, capabilityRegistry });
   assert.equal(result.target_project_id, 'freepass-estimate');
   assert.equal(result.target_repository, 'freepass-creator/freepass-estimate');
+});
+
+
+test('repository lifecycle and execution readiness stay separate in routing', () => {
+  const registry = structuredClone(projectRegistry);
+  const welrix = registry.projects.find((item) => item.project_id === 'welrixtable');
+  if (welrix) {
+    assert.equal(welrix.repository_lifecycle_status, 'REFERENCE');
+    assert.equal(welrix.execution_readiness_status, 'ACTIVE');
+  }
+
+  const docshub = registry.projects.find((item) => item.project_id === 'docshub');
+  assert.equal(docshub.repository_lifecycle_status, 'ACTIVE');
+  assert.equal(docshub.execution_readiness_status, 'HOLD');
 });
