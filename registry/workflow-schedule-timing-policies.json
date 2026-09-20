@@ -8,7 +8,7 @@
       "evidence_level": "FAILURE_RUNTIME_EVIDENCE",
       "observation_contract": {
         "contract_id": "core.schedule-observation.v1",
-        "status": "PENDING"
+        "status": "AVAILABLE"
       },
       "late_after_ms": null,
       "missed_after_ms": null,
@@ -26,7 +26,7 @@
           "blob_sha": "a2cdec9f96a9a7f04349040351f0f98514250b4c"
         }
       ],
-      "notes": "Failure/runtime evidence proves that expected slot, dispatch and eventual success must remain distinct. No company-wide late/missed thresholds are locked yet. Promotion to PILOT requires a concrete policy profile plus the C observation contract to be available."
+      "notes": "Failure/runtime evidence proves that expected slot, dispatch and eventual success must remain distinct. C core.schedule-observation.v1 is available on this integration branch. No company-wide late/missed thresholds are locked; promotion to PILOT still requires a concrete domain timing policy plus implementation evidence."
     }
   ]
 }
