@@ -2,6 +2,7 @@ import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { randomUUID } from 'node:crypto';
 import { isCanonicalASessionScope, aSessionScopesConflict } from './a-session-scope-policy.mjs';
+import { isValidASessionOwner, resolveASessionOwner } from './a-session-owner-policy.mjs';
 
 const run = promisify(execFile);
 const DEFAULT_COORD_REPO = process.env.AI_CORE_COORDINATION_REPOSITORY || 'freepass-creator/ai-core';
@@ -40,6 +41,7 @@ export function evaluateClaim(registry, request, now = new Date()) {
 }
 
 export function acquireClaim(registry, request, { now = new Date(), leaseMinutes = 60, claimId = null } = {}) {
+  if (!isValidASessionOwner(request?.owner)) throw new Error('A_SESSION_OWNER_INVALID');
   const decision = evaluateClaim(registry, request, now);
   if (decision.action !== 'ACQUIRE') return { registry, decision };
   const id = claimId || `A-${now.toISOString().replace(/[-:.TZ]/g,'').slice(0,14)}-${randomUUID().slice(0,8)}`;
@@ -63,10 +65,13 @@ export function acquireClaim(registry, request, { now = new Date(), leaseMinutes
 }
 
 export function renewClaim(registry, claimId, owner, { now = new Date(), leaseMinutes = 60 } = {}) {
+  if (!isValidASessionOwner(owner)) throw new Error('A_SESSION_OWNER_INVALID');
   const next = structuredClone(registry);
   const claim = next.claims.find(x => x.claim_id === claimId);
   if (!claim) throw new Error('CLAIM_NOT_FOUND');
   if (claim.state !== 'ACTIVE') throw new Error('CLAIM_NOT_ACTIVE');
+  if (!isValidASessionOwner(owner)) throw new Error('A_SESSION_OWNER_INVALID');
+  if (claim.owner_session !== owner) throw new Error('CLAIM_OWNER_MISMATCH');
   if (!owner || claim.owner_session !== owner) throw new Error('CLAIM_OWNER_MISMATCH');
 
   const competing = next.claims.find(x =>
@@ -86,7 +91,7 @@ export function renewClaim(registry, claimId, owner, { now = new Date(), leaseMi
   return { registry:next, claim, action:recovered ? 'RECOVERED' : 'RENEWED' };
 }
 
-export function transitionClaim(registry, claimId, state, { now = new Date(), evidenceRefs = [] } = {}) {
+export function transitionClaim(registry, claimId, state, { now = new Date(), evidenceRefs = [], owner = null } = {}) {
   const allowed = new Set(['COMPLETED','ABANDONED','SUPERSEDED']);
   if (!allowed.has(state)) throw new Error('CLAIM_TARGET_STATE_INVALID');
   const next = structuredClone(registry);
@@ -183,7 +188,7 @@ if (process.argv[1]?.endsWith('a-session-claim.mjs')) {
         repository:argValue(args,'--repository'),
         revision:argValue(args,'--revision'),
         scope:argValue(args,'--scope'),
-        owner:argValue(args,'--owner') || process.env.AI_CORE_ACTOR || 'A_SESSION'
+        owner:resolveASessionOwner(argValue(args,'--owner'))
       };
       if (!request.repository || !request.revision || !request.scope) throw new Error('CLAIM_ARGUMENT_REQUIRED');
       if (command === 'status') {
@@ -200,7 +205,7 @@ if (process.argv[1]?.endsWith('a-session-claim.mjs')) {
       }
     } else if (command === 'renew') {
       const claimId = argValue(args,'--claim-id');
-      const owner = argValue(args,'--owner') || process.env.AI_CORE_ACTOR || 'A_SESSION';
+      const owner = resolveASessionOwner(argValue(args,'--owner'));
       if (!claimId) throw new Error('CLAIM_ID_REQUIRED');
       const result = await renewRemote(claimId, owner, {
         leaseMinutes:Number(argValue(args,'--lease-minutes') || 60),
@@ -212,16 +217,18 @@ if (process.argv[1]?.endsWith('a-session-claim.mjs')) {
       const claimId = argValue(args,'--claim-id');
       if (!claimId) throw new Error('CLAIM_ID_REQUIRED');
       const state = command === 'complete' ? 'COMPLETED' : command === 'abandon' ? 'ABANDONED' : 'SUPERSEDED';
+      const owner = resolveASessionOwner(argValue(args,'--owner'));
       const result = await finishRemote(claimId, state, {
+        owner,
         evidenceRefs:argValues(args,'--evidence'),
         coordRepo:argValue(args,'--coord-repo') || undefined,
         branch:argValue(args,'--branch') || undefined
       });
       console.log(JSON.stringify(result, null, 2));
     } else {
-      console.error('Usage: node scripts/a-session-claim.mjs claim|status --repository owner/repo --revision <sha> --scope <scope> [--owner <id>] [--lease-minutes 60]');
+      console.error('Usage: node scripts/a-session-claim.mjs claim|status --repository owner/repo --revision <sha> --scope <scope> --owner <A-session-id> [--lease-minutes 60]');
       console.error('       node scripts/a-session-claim.mjs renew --claim-id <id> --owner <id> [--lease-minutes 60]');
-      console.error('       node scripts/a-session-claim.mjs complete|abandon|supersede --claim-id <id> [--evidence <ref> ...]');
+      console.error('       node scripts/a-session-claim.mjs complete|abandon|supersede --claim-id <id> --owner <id> [--evidence <ref> ...]');
       process.exit(2);
     }
   } catch (error) {
