@@ -28,10 +28,17 @@ function normalizedProofInputsMap(receipts,currentProofInputsByReceipt){
     const value=currentProofInputsByReceipt?.get?.(receipt.receipt_id)
       ?? currentProofInputsByReceipt?.[receipt.receipt_id]
       ?? null;
-    entries.push({
-      receipt_id:receipt.receipt_id,
-      inputs:Array.isArray(value)?structuredClone(value):null
-    });
+    const inputs=Array.isArray(value)
+      ? [...value]
+          .map(item=>({
+            role:item?.role??null,
+            ref:item?.ref??null,
+            digest:item?.digest??null,
+            revision:item?.revision??null,
+          }))
+          .sort((a,b)=>String(a.role).localeCompare(String(b.role))||String(a.ref).localeCompare(String(b.ref)))
+      : null;
+    entries.push({receipt_id:receipt.receipt_id,inputs});
   }
   return entries;
 }
@@ -161,6 +168,24 @@ export function verifyEffectResumePlan(preparedPlan,{
   });
 
   const changes=[];
+  const preparedPlannerDigest=canonicalDigest(preparedPlan.planner_result);
+  if(preparedPlannerDigest!==preparedPlan.planner_result_digest){
+    changes.push('PLAN_ARTIFACT_TAMPERED');
+  }
+  const preparedComponentPlanDigest=canonicalDigest({
+    algorithm:preparedPlan.algorithm,
+    logical_execution_id:preparedPlan.logical_execution_id,
+    identity_digest:preparedPlan.identity_digest,
+    effects_digest:preparedPlan.effects_digest,
+    bindings_digest:preparedPlan.bindings_digest,
+    receipts_digest:preparedPlan.receipts_digest,
+    proof_inputs_digest:preparedPlan.proof_inputs_digest,
+    planner_result_digest:preparedPlan.planner_result_digest,
+  });
+  if(preparedComponentPlanDigest!==preparedPlan.plan_digest){
+    changes.push('PLAN_COMPONENT_DIGEST_MISMATCH');
+  }
+
   if(preparedPlan.logical_execution_id!==target_execution.logical_execution_id
     || preparedPlan.identity_digest!==target_execution.identity_digest){
     changes.push('TARGET_EXECUTION_CHANGED');
