@@ -1,0 +1,213 @@
+{
+  "schema": "ai-core-project-audit-handoff/v1",
+  "status": "READY",
+  "project_id": "freepass-estimate",
+  "repository": "freepass-creator/freepass-estimate",
+  "default_branch": "main",
+  "audit_binding": {
+    "subject_revision": "57a75aaeaa8b91f14c6bc22faa01e745daaa3112",
+    "standard_baseline_revision": "d995d30e9b830894d53349c2196707bfbd1b6ad0",
+    "audited_at": "2026-09-20T11:35:00.000Z",
+    "ci_status": "UNKNOWN",
+    "ci_run_id": null,
+    "branch_protected": false,
+    "live_status": "CURRENT",
+    "live_revision": "57a75aaeaa8b91f14c6bc22faa01e745daaa3112"
+  },
+  "counts": {
+    "project_implementation": 3,
+    "project_discovery": 1,
+    "core_candidate_review": 0,
+    "standard_research": 0,
+    "no_project_action": 4
+  },
+  "project_work": {
+    "implementation": [
+      {
+        "bucket": "PROJECT_IMPLEMENTATION",
+        "priority": "P1",
+        "axis": "security-audit",
+        "verdict": "MIGRATION_GAP",
+        "standard_owner": {
+          "lane": "SECURITY",
+          "owner": "Security/Audit Standard"
+        },
+        "evidence": [
+          "Provider credentials and proprietary calculation details stay server-side.",
+          "GIT:freepass-creator/freepass-estimate@57a75aaeaa8b91f14c6bc22faa01e745daaa3112:apps/new/scripts/check-provider-runtime-policy.mjs tests that upstream secret/detail strings do not leak to responses or logs.",
+          "Project rules explicitly forbid silent fallback and require visible provider failure."
+        ],
+        "gaps": [
+          "No revision-bound adoption of the current canonical partial Security/Audit contracts is present on main.",
+          "No production identity/authorization/audit-retention profile is established for the estimator.",
+          "Canonical partial Security policy does not itself grant runtime permissions."
+        ],
+        "next_action": "Bind provider privacy/credential boundaries to the canonical Security/Audit shape if identity or privileged estimator actions are introduced; keep current server-side credential isolation.",
+        "instruction": "Bind provider privacy/credential boundaries to the canonical Security/Audit shape if identity or privileged estimator actions are introduced; keep current server-side credential isolation."
+      },
+      {
+        "bucket": "PROJECT_IMPLEMENTATION",
+        "priority": "P1",
+        "axis": "qa-observability",
+        "verdict": "MIGRATION_GAP",
+        "standard_owner": {
+          "lane": "QA",
+          "owner": "QA/Observability Standard"
+        },
+        "evidence": [
+          "GIT:freepass-creator/freepass-estimate@57a75aaeaa8b91f14c6bc22faa01e745daaa3112:apps/new/verification-manifest.json binds six semantic contracts to explicit checker files.",
+          "GIT:freepass-creator/freepass-estimate@57a75aaeaa8b91f14c6bc22faa01e745daaa3112:apps/new/contracts/ai-core/qa-p0.shadow.json records SHADOW_PARITY and keeps production_proven false.",
+          "The QA shadow checker requires unified verify freshness and separates release revision proof from ordinary CI."
+        ],
+        "gaps": [
+          "No exact-main Actions run exists for the audited revision.",
+          "Both newcar-ci and AI Core QA SHADOW push triggers still target work/ui-baseline rather than canonical main.",
+          "Production health/telemetry and production revision remain external observations.",
+          "The narrow QA SHADOW explicitly does not prove project-wide negative-control coverage."
+        ],
+        "next_action": "Move canonical push verification to main, then re-observe exact-main CI and extend health/production evidence separately from synthetic contract freshness.",
+        "instruction": "Move canonical push verification to main, then re-observe exact-main CI and extend health/production evidence separately from synthetic contract freshness."
+      },
+      {
+        "bucket": "PROJECT_IMPLEMENTATION",
+        "priority": "P1",
+        "axis": "build-deploy-governance",
+        "verdict": "MIGRATION_GAP",
+        "standard_owner": {
+          "lane": "GOVERNANCE",
+          "owner": "Build/Deploy/Governance Standard"
+        },
+        "evidence": [
+          "GIT:freepass-creator/freepass-estimate@57a75aaeaa8b91f14c6bc22faa01e745daaa3112:apps/new/scripts/check-release-proof.mjs defines a no-store /api/version revision proof contract.",
+          "New-car CI includes a separate Release revision proof step and production build.",
+          "Project docs distinguish canonical upstream ownership from downstream propagation."
+        ],
+        "gaps": [
+          "Canonical main is not covered by the current push branches in newcar-ci and ai-core-qa-p0-shadow.",
+          "Main branch protection is false.",
+          "No exact-main CI run is observed at the audited revision.",
+          "No production target/live revision is independently observed."
+        ],
+        "next_action": "Retarget required verification workflows to main, enable branch protection after checks stabilize, and establish observable production revision proof before activation claims.",
+        "instruction": "Retarget required verification workflows to main, enable branch protection after checks stabilize, and establish observable production revision proof before activation claims."
+      }
+    ],
+    "discovery": [
+      {
+        "bucket": "PROJECT_DISCOVERY",
+        "priority": "P2",
+        "axis": "workflow",
+        "verdict": "UNKNOWN",
+        "standard_owner": {
+          "lane": "D",
+          "owner": "Workflow Standard"
+        },
+        "evidence": [
+          "Mobile navigation is a UI interaction contract and quote execution status is an execution-result contract.",
+          "No bounded D-owned business lifecycle beyond UI navigation and execution result was established in the inspected main."
+        ],
+        "gaps": [
+          "No material business workflow requiring AI Core D state-machine binding has yet been demonstrated."
+        ],
+        "next_action": "Do not invent a workflow for coverage; add D binding only when a persistent estimator business lifecycle actually exists.",
+        "instruction": "Establish revision-bound evidence before implementation. Do not invent a workflow for coverage; add D binding only when a persistent estimator business lifecycle actually exists."
+      }
+    ]
+  },
+  "standard_work": {
+    "core_candidate_review": [],
+    "research": []
+  },
+  "no_project_action": [
+    {
+      "bucket": "NO_PROJECT_ACTION",
+      "priority": "NONE",
+      "axis": "ui-ux",
+      "verdict": "CORE_MATCH",
+      "standard_owner": {
+        "lane": "B",
+        "owner": "Global UI/UX Standard"
+      },
+      "evidence": [
+        "GIT:freepass-creator/freepass-estimate@57a75aaeaa8b91f14c6bc22faa01e745daaa3112:AGENTS.md makes FreePass Estimate the authoritative estimator UI/UX upstream and fixes mobile one-screen-one-choice, Back preservation and action-placement rules.",
+        "GIT:freepass-creator/freepass-estimate@57a75aaeaa8b91f14c6bc22faa01e745daaa3112:.github/workflows/newcar-ci.yml contains UI parity, action placement, mobile navigation, visual grammar and accessibility checks.",
+        "README.md explicitly uses AI Core as the common accessibility/state/focus/responsive validation reference while keeping estimator-specific interaction authority local."
+      ],
+      "gaps": [
+        "Exact-main execution of the UI verification workflow is not observed because newcar-ci push is still restricted to work/ui-baseline."
+      ],
+      "next_action": "Retarget the canonical UI verification push path to main and keep estimator-specific interaction rules as the project profile rather than duplicating them in downstream consumers.",
+      "instruction": "No project remediation is requested from this audit finding."
+    },
+    {
+      "bucket": "NO_PROJECT_ACTION",
+      "priority": "NONE",
+      "axis": "data-ssot",
+      "verdict": "CORE_MATCH",
+      "standard_owner": {
+        "lane": "C",
+        "owner": "Core Contract Standard"
+      },
+      "evidence": [
+        "README.md and AGENTS.md declare FreePass Estimate as the upstream SSOT for estimator UI, QuoteRequest/QuoteResult and provider contracts.",
+        "Provider configuration is explicitly separated from calculation-provider authority and downstream consumers.",
+        "Share/result contracts preserve versioned quote state and project authority instead of turning consumer copies into new SSOTs."
+      ],
+      "gaps": [
+        "Production deployment and live revision proof remain separately unverified."
+      ],
+      "next_action": "Keep FreePass Estimate as the single estimator contract authority and propagate only verified revisions downstream.",
+      "instruction": "No project remediation is requested from this audit finding."
+    },
+    {
+      "bucket": "NO_PROJECT_ACTION",
+      "priority": "NONE",
+      "axis": "engine-adapter",
+      "verdict": "CORE_MATCH",
+      "standard_owner": {
+        "lane": "C",
+        "owner": "Core Contract Standard"
+      },
+      "evidence": [
+        "GIT:freepass-creator/freepass-estimate@57a75aaeaa8b91f14c6bc22faa01e745daaa3112:apps/new/scripts/check-provider-contract.mjs verifies one shared provider-neutral request/result contract for standard, external Excel and external ERP providers.",
+        "GIT:freepass-creator/freepass-estimate@57a75aaeaa8b91f14c6bc22faa01e745daaa3112:apps/new/scripts/check-provider-runtime-policy.mjs enforces no silent fallback, explicit timeout/retry policy and provider-error privacy.",
+        "AGENTS.md forbids quote-provider differences from forking the shared estimator UI."
+      ],
+      "gaps": [
+        "Second independent external provider parity remains limited compared with the canonical provider contract."
+      ],
+      "next_action": "Keep provider differences behind adapters and add independent provider parity evidence without forking the shared quote contract.",
+      "instruction": "No project remediation is requested from this audit finding."
+    },
+    {
+      "bucket": "NO_PROJECT_ACTION",
+      "priority": "NONE",
+      "axis": "api-event-error",
+      "verdict": "CORE_MATCH",
+      "standard_owner": {
+        "lane": "C",
+        "owner": "Core Contract Standard"
+      },
+      "evidence": [
+        "Provider runtime checks distinguish timeout, unavailable, invalid-response and unregistered-adapter failures with stable machine codes.",
+        "Upstream error details and secret-like diagnostic strings are explicitly prevented from leaking to response or logs.",
+        "Quote execution and provider contracts keep retryability/fallback behavior explicit."
+      ],
+      "gaps": [
+        "OpenAPI description/profile is not yet a canonical Core machine gate.",
+        "RFC 9457 and CloudEvents compatibility remain non-canonical research inputs."
+      ],
+      "next_action": "Retain current stable quote/provider error families and adopt a future canonical HTTP description profile without changing estimator domain semantics.",
+      "instruction": "No project remediation is requested from this audit finding."
+    }
+  ],
+  "execution_boundary": {
+    "auto_write_project_repo": false,
+    "auto_open_project_pr": false,
+    "auto_promote_core_standard": false,
+    "auto_deploy": false,
+    "production_mutation": false
+  },
+  "blockers": [],
+  "rule": "Project implementation work comes only from MIGRATION_GAP findings. UNKNOWN creates discovery work, PROJECT_AHEAD routes evidence to the standard owner, and CORE_MATCH never creates a project remediation task. A stale audit cannot authorize handoff execution."
+}
