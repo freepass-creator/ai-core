@@ -431,3 +431,19 @@ test('proof input ordering alone does not stale a prepared plan',()=>{
   assert.equal(verified.status,'CURRENT');
   assert.deepEqual(verified.changes,[]);
 });
+
+
+test('tampered plan id is detected',()=>{
+  const source=sourceReceipt({proof:false});
+  const prepared=prepareEffectResumeFromReceipts({
+    effects,bindings,receipts:[source],target_execution:attempt2,
+    prepared_at:'2026-09-20T13:15:00Z'
+  });
+  const tampered=structuredClone(prepared);
+  tampered.plan_id='resume-plan.'+'0'.repeat(32);
+  const verified=verifyEffectResumePlan(tampered,{
+    effects,bindings,receipts:[source],target_execution:attempt2
+  });
+  assert.equal(verified.status,'STALE');
+  assert.ok(verified.changes.includes('PLAN_ID_MISMATCH'));
+});
