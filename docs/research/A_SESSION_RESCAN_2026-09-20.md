@@ -238,3 +238,24 @@ No B, C or D canonical standard was edited.
 ### Next scan rule
 
 Treat the reconciled repository heads and the four newly machine-indexed findings as already audited. Do not notify again unless at least one of these changes: repository head, production/deployment/runtime evidence, receiver acknowledgement/decision, migration state, contradiction, or evidence level.
+
+
+---
+
+## Cross-session concurrency rule
+
+A-session work is now coordinated by `docs/research/a-session-work-claims.v1.json` and `docs/research/A_SESSION_CONCURRENCY_PROTOCOL.md`.
+
+Before any material repository re-audit, runtime-evidence inspection, migration-gap synchronization or routing write:
+
+1. resolve the exact project revision;
+2. build `<repository>@<revision>::<scope>`;
+3. read the latest claim registry and current blob SHA;
+4. stop silently if the same work is already live or already completed at the same revision;
+5. otherwise claim it using the current blob SHA;
+6. on a stale-SHA conflict, refetch and re-evaluate instead of blind retrying;
+7. complete/abandon/supersede the claim with revision-bound evidence.
+
+The local Work Ledger lock protects one filesystem writer. The A claim registry is the required GitHub-level cross-session coordination layer.
+
+Duplicate/no-change work remains silent. B/C/D canonical standards are not modified by this coordination protocol.
