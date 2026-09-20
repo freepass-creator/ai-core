@@ -33,6 +33,14 @@ test('later declaration for a used selector is treated as effective', () => {
   assert.equal(result.violations.length, 0);
 });
 
+test('later partial selector override preserves earlier allowed properties', () => {
+  const result = evaluateUiMachineConformance({
+    manifest,
+    styleSources: [{ id: 'x.css', content: '.ui-row{height:var(--row-height);padding:4px}.ui-row{padding:8px}' }],
+    usageSources: [{ id: 'x.tsx', content: '<div className="ui-row" />' }]
+  });
+  assert.equal(result.status, 'PASS');
+});
 test('off-grid value on an actually used class fails', () => {
   const result = evaluateUiMachineConformance({
     manifest,
