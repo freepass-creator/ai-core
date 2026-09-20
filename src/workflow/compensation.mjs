@@ -73,3 +73,80 @@ export function resolveCompensationOutcome({ original_error_code, plan, compensa
     retained_effects:plan.retained_effects ?? []
   };
 }
+
+export async function executeCompensatedEffects({
+  effects,
+  execute_effect,
+  execute_compensation,
+  correlation_id=null
+}={}) {
+  need(Array.isArray(effects)&&effects.length>0,'COMPENSATION_EFFECTS_REQUIRED');
+  need(typeof execute_effect==='function','EFFECT_EXECUTOR_REQUIRED');
+  need(typeof execute_compensation==='function','COMPENSATION_EXECUTOR_REQUIRED');
+
+  const normalized=effects.map(normalizeEffect);
+  const applied=[];
+  const effect_results=[];
+
+  for (const effect of normalized) {
+    let result;
+    try {
+      result=await execute_effect(effect,{correlation_id});
+    } catch (error) {
+      result={status:'FAILED',error_code:error?.code??'EFFECT_EXECUTION_FAILED',detail:error?.message??null};
+    }
+    const status=result?.status;
+    need(['SUCCEEDED','HOLD','FAILED'].includes(status),'EFFECT_RESULT_STATUS_INVALID',{effect_id:effect.effect_id});
+    effect_results.push({effect_id:effect.effect_id,...result});
+    if(status==='SUCCEEDED'){
+      applied.push(effect.effect_id);
+      continue;
+    }
+
+    const original_error_code=result?.error_code
+      ?? (status==='HOLD'?'EFFECT_HOLD':'EFFECT_EXECUTION_FAILED');
+    const plan=planReverseCompensation({effects:normalized,applied_effect_ids:applied});
+    const compensation_results=[];
+
+    for (const step of plan.steps) {
+      let compensation;
+      try {
+        compensation=await execute_compensation(step,{correlation_id,original_error_code});
+      } catch (error) {
+        compensation={status:'FAILED',error_code:error?.code??'COMPENSATION_FAILED',detail:error?.message??null};
+      }
+      if(!compensation||!['SUCCEEDED','FAILED'].includes(compensation.status)){
+        compensation={status:'FAILED',error_code:'COMPENSATION_RESULT_INVALID'};
+      }
+      compensation_results.push({effect_id:step.effect_id,...compensation});
+    }
+
+    const outcome=resolveCompensationOutcome({original_error_code,plan,compensation_results});
+    return {
+      status:outcome.status==='PARTIAL_STATE'?'PARTIAL_STATE':'FAILED',
+      action:outcome.action,
+      correlation_id,
+      failed_effect_id:effect.effect_id,
+      original_error_code,
+      applied_effect_ids:[...applied],
+      effect_results,
+      compensation_plan:plan,
+      compensation_results,
+      compensation_outcome:outcome
+    };
+  }
+
+  return {
+    status:'SUCCEEDED',
+    action:'CONTINUE',
+    correlation_id,
+    failed_effect_id:null,
+    original_error_code:null,
+    applied_effect_ids:[...applied],
+    effect_results,
+    compensation_plan:null,
+    compensation_results:[],
+    compensation_outcome:null
+  };
+}
+
