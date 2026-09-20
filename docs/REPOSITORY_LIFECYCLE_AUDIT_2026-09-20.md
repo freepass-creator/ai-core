@@ -55,7 +55,7 @@ AI Core reverse-import/audit must treat `RETIRE` repositories as non-authoritati
 | freepass-creator/freeepasserp2 | RETIRE | later FreePass ERP generations | Legacy generation; Firebase rules + Vercel config exist, so deployment disconnect must be verified first |
 | freepass-creator/freepasserp | RETIRE | later FreePass ERP generations | Legacy generation; Firebase rules + Vercel config exist, so deployment disconnect must be verified first |
 | freepass-creator/rentsafe | RETIRE | chakhandeal | chakhandeal states that RentSafe history was migrated into it |
-| freepass-creator/workcontrol | HOLD | teamjpkwork + aiops | Do not retire yet: current AIOPS README still assigns control judgement/daily-routine responsibility to workcontrol |
+| freepass-creator/workcontrol | RETIRE | teamjpkwork + aiops | Employee monitoring code/SOP migrated into AIOPS; current AIOPS README no longer assigns runtime ownership to workcontrol. Verify no old deployment before archive |
 | freepass-creator/- | RETIRE | none | Empty/accidental repository; highest-priority cleanup candidate |
 | freepass-creator/freepasspartner | HOLD | unknown | Preserve until current operational use and script ownership are checked |
 | freepass-creator/welrix-proposal | REFERENCE | docshub candidate | No app entrypoint/package observed in this audit; treat as proposal/reference material until useful content is migrated to DocsHub |
@@ -76,15 +76,16 @@ The following repositories are the first cleanup wave because a successor is kno
 5. `freepass-creator/jpkerp`
 6. `freepass-creator/jpkerp2` after Firebase/runtime dependency verification
 7. `freepass-creator/jpkerp-v4` after Vercel cron/deployment shutdown verification
-8. `freepass-creator/jpkerp5` after unported behavior is accounted for
+8. `freepass-creator/jpkerp5` after scheduled-runtime cutover
+9. `freepass-creator/workcontrol` after old deployment/domain check
 
-`workcontrol` is explicitly excluded from this wave until its still-live AIOPS dependency is migrated or disproven.
+`workcontrol` dependency migration was completed on 2026-09-20 and it is now an additional RETIRE target. Archive still requires an old deployment/domain check.
 
 ## Evidence already observed in this audit
 
 - `rentsafe` describes itself as the original MVP, while `chakhandeal` states it was migrated from `rentsafe` with history.
 - `teamjpkwork` describes itself as the current body for WORK.
-- Current `aiops/README.md` still says `workcontrol` handles control judgement and the daily routine, so `workcontrol` cannot be retired yet.
+- `workcontrol/scripts/staff.mjs` was migrated to `aiops/scripts/staff.mjs`; the AIOPS employee-monitoring SOP and README now point only to AIOPS. Legacy `daily.mjs` responsibilities are covered by current `watch.mjs`, `sheets/hourly.mjs`, and `scripts/staff.mjs`, so workcontrol is now non-authoritative RETIRE.
 - `freepass-estimate` explicitly names `welrixtable`, `sonogong-estimator`, and `freepasserp4` as reference repositories and says they must not be retired before the new estimate product stabilizes.
 - `vehicle-master` declares itself the vehicle classification SSOT.
 - `renman` identifies itself as jpkerp6 and documents OCR ingestion plus later reuse of selected v5 logic.
