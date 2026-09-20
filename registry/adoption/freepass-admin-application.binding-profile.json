@@ -12,11 +12,11 @@
       "ports": [
         {
           "port_id": "application.repository",
-          "adapter_id": "freepass-admin.file-application"
+          "repository_id": "freepass-admin.application-repository"
         },
         {
           "port_id": "product.read",
-          "adapter_id": "freepass-admin.file-product-read"
+          "repository_id": "freepass-admin.product-repository"
         }
       ]
     }
