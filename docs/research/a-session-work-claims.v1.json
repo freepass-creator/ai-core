@@ -63,6 +63,12 @@
         "coordination:*"
       ],
       "reason": "Routing and AI Core coordination writes can legitimately mutate AI Core main while the coordination task is in progress."
+    },
+    "evidence_contract": {
+      "current": "v2",
+      "active_from": "2026-09-20T02:35:00Z",
+      "legacy_rule": "Claims created before active_from may complete under the historical nonempty evidence_refs rule.",
+      "v2_rule": "New claims require revision-bound subject evidence for guarded scopes and at least one remotely verifiable GitHub commit or CI proof."
     }
   },
   "claims": [
@@ -255,7 +261,8 @@
       "claimed_at": "2026-09-20T02:35:00Z",
       "lease_until": "2026-09-20T03:35:00Z",
       "completed_at": null,
-      "evidence_refs": []
+      "evidence_refs": [],
+      "evidence_contract": "v2"
     }
   ]
 }
