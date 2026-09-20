@@ -1,0 +1,179 @@
+{
+  "schema": "ai-core-a-session-review-queue/v1",
+  "status": "DERIVED_REVIEW_QUEUE_NOT_CANONICAL",
+  "session": "B",
+  "observed_at": "2026-09-20T01:28:20Z",
+  "generated_from": {
+    "evidence_observed_at": "2026-09-20T01:18:00Z",
+    "routing_observed_at": "2026-09-20T01:28:20Z",
+    "inbox_observed_at": "2026-09-20T01:23:30Z"
+  },
+  "policy": {
+    "source_only": "This queue is derived from A Evidence, Routing and receiver Inbox state. Do not hand-edit it as authority.",
+    "review_only": "The pack prepares evidence and questions but cannot review or decide for B/C/D.",
+    "resolved_history": "CLOSED routes remain in the queue as RESOLVED evidence history."
+  },
+  "items": [
+    {
+      "pack_id": "ui.freepass-sales-b-conformance::B",
+      "route_id": "ui.freepass-sales-b-conformance::B",
+      "finding_id": "ui.freepass-sales-b-conformance",
+      "target_session": "B",
+      "queue_status": "READY_FOR_REVIEW",
+      "classification": "CORE_GT_PROJECT",
+      "evidence_level": "PROJECT_VERIFIED",
+      "finding_status": "MIGRATION_REQUIRED",
+      "source_evidence_revision": "2f305bbcffea20acd08b7187ecede6fc1a1f23bf",
+      "summary": "FreePass Sales maps to the AI Core B UI/UX consumer contract but remains MAPPED rather than revision-bound conformant because locale, RTL, IME and complete rendered evidence are still missing.",
+      "route_priority": null,
+      "evidence_bundle": {
+        "revision_evidence": [
+          {
+            "repository": "freepass-creator/freepass-sales",
+            "revision": "2ec46bb2e88b10a31915b68ec77b2eecbdac57bd",
+            "evidence_types": [
+              "CODE",
+              "DOC",
+              "TEST",
+              "CI"
+            ]
+          }
+        ],
+        "source_registry": null,
+        "migration": {
+          "target_repository": "freepass-creator/freepass-sales",
+          "breaking_impact": [
+            "MAPPED UI can be misreported as PILOT or CONFORMANT without revision-bound evidence.",
+            "Localization, RTL, IME and responsive behavior can be overstated outside the verified matrix.",
+            "A copied product mapping can be mistaken for B canonical behavior."
+          ],
+          "verification_needs": [
+            "Keep exact-head consumer mapping CI green.",
+            "Produce a revision-bound B4 conformance receipt.",
+            "Complete locale, RTL and IME probes required by the consumer mapping.",
+            "Retain full rendered evidence for the declared viewport matrix.",
+            "Bind production-conformance claims to an exact released revision."
+          ]
+        },
+        "difference_reason": null,
+        "state_history": [
+          {
+            "status": "MIGRATION_REQUIRED",
+            "observed_at": "2026-09-20T01:18:00Z",
+            "reason": "Sales B consumer mapping is CI-verified at exact head, but the project still lacks the revision-bound conformance evidence required to move beyond MAPPED."
+          }
+        ]
+      },
+      "receiver_snapshot": {
+        "receiver_status": "ACKNOWLEDGED",
+        "acknowledgement": {
+          "session": "B",
+          "ai_core_revision": "5328feac88a2a6a1d8f919b7d2d524dc59a53044",
+          "observed_at": "2026-09-20T01:23:30Z",
+          "evidence_refs": [
+            "docs/research/a-session-evidence-registry.v1.json#ui.freepass-sales-b-conformance",
+            "docs/research/a-session-routing-receipts.v1.json#ui.freepass-sales-b-conformance::B",
+            "docs/research/a-session-receiver-workers.v1.json"
+          ]
+        },
+        "review": null,
+        "decision": null,
+        "central_route_status": "RECEIVED",
+        "central_decision": null,
+        "feedback": {
+          "state": "PENDING",
+          "recorded_at": null,
+          "note": null
+        }
+      },
+      "review_questions": [
+        "Does the current project evidence satisfy every listed verification need?",
+        "Is production/runtime evidence exact-revision and strong enough to close the migration gap?",
+        "Should the receiver keep HOLD, accept closure evidence, reject the gap, or mark it SUPERSEDED?"
+      ],
+      "authority": {
+        "pack_is_derived": true,
+        "may_change_canon": false,
+        "decision_owner": "B",
+        "automatic_decision_forbidden": true
+      }
+    },
+    {
+      "pack_id": "ui.machine-conformance-gate::B",
+      "route_id": "ui.machine-conformance-gate::B",
+      "finding_id": "ui.machine-conformance-gate",
+      "target_session": "B",
+      "queue_status": "READY_FOR_REVIEW",
+      "classification": "PROJECT_GT_CORE",
+      "evidence_level": "CROSS_PROJECT_VERIFIED",
+      "finding_status": "ROUTED",
+      "source_evidence_revision": "432dcb0aa0fd62ac7698108284bced4138c32238",
+      "summary": "Machine-enforced semantic UI role/token conformance against effective implementation selectors.",
+      "route_priority": null,
+      "evidence_bundle": {
+        "revision_evidence": [
+          {
+            "repository": "freepass-creator/fp-settlement",
+            "revision": "b406da67a9cb2b85b5572a7f5d28d350ca84cb58",
+            "evidence_types": [
+              "CODE",
+              "TEST"
+            ]
+          },
+          {
+            "repository": "freepass-creator/teamjpkwork",
+            "revision": "75bb285a241b68c13acbe532c30d6d91110f8082",
+            "evidence_types": [
+              "CODE",
+              "TEST",
+              "DOC"
+            ]
+          }
+        ],
+        "source_registry": "docs/research/a-session-promotion-matrix.v1.json",
+        "migration": null,
+        "difference_reason": null,
+        "state_history": [
+          {
+            "status": "ROUTED",
+            "observed_at": "2026-09-19T00:00:00Z",
+            "reason": "Independent project evidence satisfies A cross-project routing threshold."
+          }
+        ]
+      },
+      "receiver_snapshot": {
+        "receiver_status": "ACKNOWLEDGED",
+        "acknowledgement": {
+          "session": "B",
+          "ai_core_revision": "5328feac88a2a6a1d8f919b7d2d524dc59a53044",
+          "observed_at": "2026-09-20T01:23:30Z",
+          "evidence_refs": [
+            "docs/research/a-session-evidence-registry.v1.json#ui.machine-conformance-gate",
+            "docs/research/a-session-routing-receipts.v1.json#ui.machine-conformance-gate::B",
+            "docs/research/a-session-receiver-workers.v1.json"
+          ]
+        },
+        "review": null,
+        "decision": null,
+        "central_route_status": "RECEIVED",
+        "central_decision": null,
+        "feedback": {
+          "state": "PENDING",
+          "recorded_at": null,
+          "note": null
+        }
+      },
+      "review_questions": [
+        "Is the behavior reusable outside the source project rather than domain-specific?",
+        "Does the evidence support the current maturity level and exact revisions?",
+        "Should the receiver ADOPT, HOLD, REJECT or mark the route SUPERSEDED?"
+      ],
+      "authority": {
+        "pack_is_derived": true,
+        "may_change_canon": false,
+        "decision_owner": "B",
+        "automatic_decision_forbidden": true
+      }
+    }
+  ]
+}
