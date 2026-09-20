@@ -51,3 +51,46 @@ This is the cross-session lock. The local Work Ledger file lock remains useful f
 ## Notification rule
 
 Duplicate or already-completed work is silent. User notification remains limited to meaningful new discovery, evidence-level change, migration gap, contradiction, stale revision requiring action, or a coordination failure that prevents reliable audit progress.
+
+
+## Executable commands
+
+Check or acquire a claim:
+
+```bash
+npm run a:claim -- status \
+  --repository freepass-creator/freepass-sales \
+  --revision <exact-sha> \
+  --scope repo-rescan
+
+npm run a:claim -- claim \
+  --repository freepass-creator/freepass-sales \
+  --revision <exact-sha> \
+  --scope repo-rescan \
+  --owner A-session-sales-1 \
+  --lease-minutes 60
+```
+
+Finish the claimed work with revision-bound evidence:
+
+```bash
+npm run a:claim -- complete \
+  --claim-id <claim-id> \
+  --evidence commit:<sha> \
+  --evidence ci:<run-id>
+```
+
+Stop without completion:
+
+```bash
+npm run a:claim -- abandon --claim-id <claim-id>
+npm run a:claim -- supersede --claim-id <claim-id>
+```
+
+Validate the coordination registry:
+
+```bash
+npm run a:claim:validate
+```
+
+The client performs optimistic GitHub SHA writes. If another session wins the write first, the client refetches and re-evaluates once rather than blindly overwriting the registry.
