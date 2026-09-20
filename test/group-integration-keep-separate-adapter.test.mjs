@@ -152,3 +152,17 @@ test('verifier fails when project authority cannot be proven unchanged',async()=
     assert.equal(results.find(x=>x.name==='PROJECT_AUTHORITY_UNCHANGED').status,'FAIL');
   });
 });
+
+test('adapter rejects a preflight sealed for a different repository',async()=>{
+  await withWorkspace(async root=>{
+    const adapter=createKeepSeparateMetadataAdapter({workspaceRoot:root});
+    await assert.rejects(
+      adapter.execute({
+        packet:packet(),
+        preflight:preflight({repository:'freepass-creator/other-sales'}),
+        attempt_id:'attempt-1',
+      }),
+      /KEEP_SEPARATE_PREFLIGHT_REPOSITORY_MISMATCH/,
+    );
+  });
+});
