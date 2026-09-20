@@ -201,14 +201,14 @@ Completed additionally:
 
 Current authority status:
 
-- Work lifecycle: CANONICAL in D Registry; D Workflow Engine is now the primary new-write admission authority, while Work Ledger verifier retains append-only history/hash/schema/revision/evidence compatibility enforcement
+- Work lifecycle: CANONICAL in D Registry; normal new Work transitions now execute through generic D `engine.decide()` and return canonical transition/audit/revision decisions, while Work Ledger persists raw domain events and retains append-only history/hash/schema/revision/evidence compatibility enforcement
 - Order Task lifecycle: CANONICAL in D Registry and D Engine authoritative for target state
 - Capability Execution lifecycle: CANONICAL in D Registry and D Engine authoritative for RESERVED -> RESULT
 - Workflow bridges: SHADOW until project-level bridge evidence and dispatch semantics mature
 
 Still not completed:
 
-- move remaining duplicated workflow guard logic out of runtime if-branches where parity and stable public errors can be proven
+- continue migrating remaining project/domain transition callers from inspection-only checks to generic D decision execution where parity and stable public errors can be proven
 - continue separating D workflow decision authority from Ledger storage/history verification without weakening hash/schema/revision/evidence rules
 - migrate business-project domain workflows into the Registry
 - validate domain bridges across FreePass Sales / ERP / Admin / Self Quote and other projects
