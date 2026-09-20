@@ -1,6 +1,6 @@
 {
   "contract": "ai-core-ui-ux-feature-registry/v1",
-  "version": "1.1.0",
+  "version": "1.3.0",
   "normative_source": "docs/SCREEN_DESIGN_STANDARD.md",
   "global_rules": {
     "invariants": [
@@ -512,13 +512,24 @@
       ],
       "rules": [
         "Opening search must not destroy current work state.",
-        "Closing search restores prior list or screen context where practical."
+        "Closing search restores prior list or screen context where practical.",
+        "Search, filters, result count and rendered results use one query revision; UI must not present mixed snapshots as one result state."
       ],
       "verification": [
         "semantic-contract",
         "keyboard-or-equivalent",
         "mobile-desktop",
         "failure-path"
+      ],
+      "evidence": [
+        {
+          "level": "CROSS_PROJECT_VERIFIED",
+          "refs": [
+            "docs/research/GLOBAL_PRODUCT_STANDARD_EVIDENCE_2026-09-19.md#12-search-filter",
+            "docs/coordination/FREEPASS_SALES_RUNTIME_LEARNING.md",
+            "docs/coordination/ERP4_STABILITY_QUERY_LEARNING.md"
+          ]
+        }
       ]
     },
     {
@@ -771,7 +782,10 @@
       ],
       "rules": [
         "Allowed type, size and count constraints are visible.",
-        "Each file has independent progress and result; retry does not duplicate a completed upload."
+        "Each file has independent progress and result; retry does not duplicate a completed upload.",
+        "A visible file-picker action is always available; drag and drop is an optional enhancement, never the only path.",
+        "The browser accept hint is not validation proof; authoritative file validation belongs to the upload/data/security boundary.",
+        "Accepted file types and maximum size are domain profile values, not global UI constants."
       ],
       "engine_binding": "upload-job/v1",
       "verification": [
@@ -779,6 +793,21 @@
         "keyboard-or-equivalent",
         "mobile-desktop",
         "failure-path"
+      ],
+      "evidence": [
+        {
+          "level": "NORMATIVE",
+          "refs": [
+            "https://www.w3.org/WAI/WCAG22/Understanding/dragging-movements.html"
+          ]
+        },
+        {
+          "level": "PLATFORM_CONSENSUS",
+          "refs": [
+            "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input/file",
+            "docs/research/GLOBAL_PRODUCT_STANDARD_EVIDENCE_2026-09-19.md#14-file-upload--공통-규격-후보"
+          ]
+        }
       ]
     },
     {
@@ -803,7 +832,9 @@
       ],
       "rules": [
         "All available images remain addressable and representative image is explicit metadata.",
-        "Preview, removal and reordering preserve stable image identity."
+        "Preview, removal and reordering preserve stable image identity.",
+        "Image selection always has a keyboard/touch file-picker path; drag, paste or reorder gestures are enhancements.",
+        "Image preview is presentation and does not prove server-side validation, processing or durable storage."
       ],
       "engine_binding": "media-processing/v1",
       "verification": [
@@ -811,6 +842,20 @@
         "keyboard-or-equivalent",
         "mobile-desktop",
         "failure-path"
+      ],
+      "evidence": [
+        {
+          "level": "NORMATIVE",
+          "refs": [
+            "https://www.w3.org/WAI/WCAG22/Understanding/dragging-movements.html"
+          ]
+        },
+        {
+          "level": "PROJECT_VERIFIED",
+          "refs": [
+            "docs/research/GLOBAL_PRODUCT_STANDARD_EVIDENCE_2026-09-19.md#14-file-upload--공통-규격-후보"
+          ]
+        }
       ]
     },
     {
@@ -838,6 +883,20 @@
         "keyboard-or-equivalent",
         "mobile-desktop",
         "failure-path"
+      ],
+      "evidence": [
+        {
+          "level": "NORMATIVE",
+          "refs": [
+            "https://www.w3.org/WAI/WCAG22/Understanding/dragging-movements.html"
+          ]
+        },
+        {
+          "level": "PLATFORM_CONSENSUS",
+          "refs": [
+            "docs/research/GLOBAL_PRODUCT_STANDARD_EVIDENCE_2026-09-19.md#15-drag-reorder-slider"
+          ]
+        }
       ]
     },
     {
@@ -907,13 +966,61 @@
       ],
       "rules": [
         "Implements APG tab semantics including Arrow, Home and End keys.",
-        "Selected and focused are distinct states."
+        "Selected and focused are distinct states.",
+        "Automatic activation is allowed only when the panel is available without noticeable latency; latency or network-bound tabs use explicit Enter/Space activation.",
+        "Moving focus between tabs does not itself save data, launch an external action or trigger another business side effect."
       ],
       "verification": [
         "semantic-contract",
         "keyboard-or-equivalent",
         "mobile-desktop",
         "failure-path"
+      ],
+      "evidence": [
+        {
+          "level": "PLATFORM_CONSENSUS",
+          "refs": [
+            "https://www.w3.org/WAI/ARIA/apg/patterns/tabs/",
+            "docs/research/GLOBAL_PRODUCT_STANDARD_EVIDENCE_2026-09-19.md#10-tabs"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "navigation.bottom-action",
+      "family": "navigation",
+      "title": "Bottom task action boundary",
+      "kind": "pattern",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "PAGE_ACTION",
+        "RESPONSIVE",
+        "CONTROL"
+      ],
+      "required_states": [
+        "default",
+        "busy",
+        "disabled"
+      ],
+      "rules": [
+        "Task-level actions render in the bottom action boundary by default; the header remains informational unless a governed exception exists.",
+        "The action boundary accounts for safe-area and virtual-keyboard occlusion and must not obscure focused controls or validation messages.",
+        "Web and mobile preserve the same action meaning and hierarchy even when the bottom boundary changes layout."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ],
+      "evidence": [
+        {
+          "level": "CROSS_PROJECT_VERIFIED",
+          "refs": [
+            "docs/research/GLOBAL_PRODUCT_STANDARD_EVIDENCE_2026-09-19.md#7-button-action-hierarchy",
+            "docs/FREEPASS_PRODUCT_UI_PROFILE.md"
+          ]
+        }
       ]
     },
     {
@@ -1190,6 +1297,15 @@
         "keyboard-or-equivalent",
         "mobile-desktop",
         "failure-path"
+      ],
+      "evidence": [
+        {
+          "level": "CROSS_PROJECT_VERIFIED",
+          "refs": [
+            "docs/research/GLOBAL_PRODUCT_STANDARD_EVIDENCE_2026-09-19.md#12-search-filter",
+            "docs/coordination/ERP4_STABILITY_QUERY_LEARNING.md"
+          ]
+        }
       ]
     },
     {
@@ -1648,6 +1764,15 @@
         "keyboard-or-equivalent",
         "mobile-desktop",
         "failure-path"
+      ],
+      "evidence": [
+        {
+          "level": "CROSS_PROJECT_VERIFIED",
+          "refs": [
+            "docs/coordination/FREEPASS_SALES_RUNTIME_LEARNING.md#4-idempotent-save-semantics",
+            "docs/research/GLOBAL_PRODUCT_STANDARD_EVIDENCE_2026-09-19.md#17-async-save-idempotency"
+          ]
+        }
       ]
     },
     {
@@ -1669,13 +1794,23 @@
         "conflict"
       ],
       "rules": [
-        "Save is bottom-positioned and success appears only after authoritative persistence."
+        "Save is bottom-positioned and success appears only after authoritative persistence.",
+        "A disabled button is only interaction feedback; duplicate-write integrity is enforced outside the visual control."
       ],
       "verification": [
         "semantic-contract",
         "keyboard-or-equivalent",
         "mobile-desktop",
         "failure-path"
+      ],
+      "evidence": [
+        {
+          "level": "CROSS_PROJECT_VERIFIED",
+          "refs": [
+            "docs/coordination/FREEPASS_SALES_RUNTIME_LEARNING.md#4-idempotent-save-semantics",
+            "docs/research/GLOBAL_PRODUCT_STANDARD_EVIDENCE_2026-09-19.md#17-async-save-idempotency"
+          ]
+        }
       ]
     },
     {
@@ -2069,6 +2204,15 @@
         "keyboard-or-equivalent",
         "mobile-desktop",
         "failure-path"
+      ],
+      "evidence": [
+        {
+          "level": "CROSS_PROJECT_VERIFIED",
+          "refs": [
+            "docs/coordination/FREEPASS_SALES_RUNTIME_LEARNING.md#2-action-launch--business-completion",
+            "docs/research/A_SESSION_PROMOTION_MATRIX_2026-09-19.md"
+          ]
+        }
       ]
     },
     {

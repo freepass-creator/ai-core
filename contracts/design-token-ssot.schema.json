@@ -1,0 +1,326 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://freepass.local/contracts/design-token-ssot.schema.json",
+  "title": "AI Core Design Token SSOT",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "version",
+    "css_variables",
+    "roles",
+    "responsive",
+    "evidence",
+    "role_evidence"
+  ],
+  "properties": {
+    "contract": {
+      "const": "ai-core-design-token-ssot/v1"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^1\\.[0-9]+\\.[0-9]+$"
+    },
+    "css_variables": {
+      "type": "object",
+      "minProperties": 30,
+      "propertyNames": {
+        "pattern": "^[a-z0-9-]+$"
+      },
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "roles": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "control",
+        "spacing_scale",
+        "typography",
+        "focus",
+        "density",
+        "layout"
+      ],
+      "properties": {
+        "control": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "desktop_compact_px",
+            "touch_minimum_px",
+            "quick_action_preferred_px",
+            "mobile_interactive_row_minimum_px"
+          ],
+          "properties": {
+            "desktop_compact_px": {
+              "type": "integer",
+              "minimum": 24
+            },
+            "touch_minimum_px": {
+              "type": "integer",
+              "minimum": 24
+            },
+            "quick_action_preferred_px": {
+              "type": "integer",
+              "minimum": 24
+            },
+            "mobile_interactive_row_minimum_px": {
+              "type": "integer",
+              "minimum": 24
+            }
+          }
+        },
+        "spacing_scale": {
+          "type": "array",
+          "minItems": 7,
+          "uniqueItems": true,
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "typography": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "meta_px",
+            "body_compact_px",
+            "body_default_px",
+            "page_title_px",
+            "section_title_px"
+          ],
+          "properties": {
+            "meta_px": {
+              "type": "integer",
+              "minimum": 10
+            },
+            "body_compact_px": {
+              "type": "integer",
+              "minimum": 10
+            },
+            "body_default_px": {
+              "type": "integer",
+              "minimum": 10
+            },
+            "page_title_px": {
+              "type": "integer",
+              "minimum": 10
+            },
+            "section_title_px": {
+              "type": "integer",
+              "minimum": 10
+            }
+          }
+        },
+        "focus": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "ring_width_px",
+            "offset_px",
+            "contrast_minimum"
+          ],
+          "properties": {
+            "ring_width_px": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "offset_px": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "contrast_minimum": {
+              "type": "number",
+              "minimum": 3
+            }
+          }
+        },
+        "density": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "desktop_compact_row_px",
+            "desktop_standard_row_px",
+            "mobile_business_row_px"
+          ],
+          "properties": {
+            "desktop_compact_row_px": {
+              "type": "integer",
+              "minimum": 24
+            },
+            "desktop_standard_row_px": {
+              "type": "integer",
+              "minimum": 24
+            },
+            "mobile_business_row_px": {
+              "type": "integer",
+              "minimum": 24
+            }
+          }
+        },
+        "layout": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "grid_strategy",
+            "page_gutter_mobile_px",
+            "page_gutter_desktop_px",
+            "card_padding_mobile_px",
+            "card_padding_desktop_px",
+            "content_max_px"
+          ],
+          "properties": {
+            "grid_strategy": {
+              "const": "CONTENT_DRIVEN"
+            },
+            "page_gutter_mobile_px": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "page_gutter_desktop_px": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "card_padding_mobile_px": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "card_padding_desktop_px": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "content_max_px": {
+              "type": "integer",
+              "minimum": 320
+            }
+          }
+        }
+      }
+    },
+    "responsive": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "layout_strategy",
+        "compact_reference_px",
+        "regression_viewports_px",
+        "zoom_percent",
+        "reflow_percent"
+      ],
+      "properties": {
+        "layout_strategy": {
+          "const": "CONTENT_DRIVEN_WITH_REFERENCE_PROBES"
+        },
+        "compact_reference_px": {
+          "type": "integer",
+          "minimum": 320
+        },
+        "regression_viewports_px": {
+          "type": "array",
+          "minItems": 5,
+          "uniqueItems": true,
+          "items": {
+            "type": "integer",
+            "minimum": 240
+          }
+        },
+        "zoom_percent": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "integer",
+            "minimum": 100
+          }
+        },
+        "reflow_percent": {
+          "type": "integer",
+          "minimum": 200
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "level",
+          "refs"
+        ],
+        "properties": {
+          "level": {
+            "enum": [
+              "NORMATIVE",
+              "PLATFORM_CONSENSUS",
+              "CROSS_PROJECT_VERIFIED",
+              "PROJECT_VERIFIED"
+            ]
+          },
+          "refs": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "minLength": 2
+            },
+            "uniqueItems": true
+          }
+        }
+      }
+    },
+    "role_evidence": {
+      "type": "object",
+      "minProperties": 9,
+      "propertyNames": {
+        "pattern": "^[a-z0-9_.-]+$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "scope",
+          "evidence_level",
+          "refs",
+          "decision"
+        ],
+        "properties": {
+          "scope": {
+            "enum": [
+              "NORMATIVE_FLOOR",
+              "COMPANY_STANDARD",
+              "COMPATIBILITY_BASELINE"
+            ]
+          },
+          "evidence_level": {
+            "enum": [
+              "NORMATIVE",
+              "PLATFORM_CONSENSUS",
+              "CROSS_PROJECT_VERIFIED",
+              "PROJECT_VERIFIED"
+            ]
+          },
+          "refs": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 2
+            }
+          },
+          "decision": {
+            "enum": [
+              "LOCKED",
+              "ADOPTED_WITH_MIGRATION",
+              "REVIEW_REQUIRED"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

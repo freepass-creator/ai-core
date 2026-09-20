@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://freepass.local/contracts/ui-component-registry.schema.json",
+  "title": "AI Core UI Component Registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "version",
+    "feature_registry",
+    "runtime_css",
+    "components"
+  ],
+  "properties": {
+    "contract": {
+      "const": "ai-core-ui-component-registry/v1"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^1\\.[0-9]+\\.[0-9]+$"
+    },
+    "feature_registry": {
+      "const": "registry/ui-ux-features.json"
+    },
+    "runtime_css": {
+      "const": "design-system/runtime-v2.css"
+    },
+    "components": {
+      "type": "array",
+      "minItems": 33,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "feature_id",
+          "css_selector",
+          "implementation_status",
+          "contract_source"
+        ],
+        "properties": {
+          "feature_id": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:[.-][a-z0-9]+)*$"
+          },
+          "css_selector": {
+            "type": "string",
+            "minLength": 2
+          },
+          "implementation_status": {
+            "enum": [
+              "BASE_COMPAT",
+              "RUNTIME_V2",
+              "CONTRACT_ONLY"
+            ]
+          },
+          "contract_source": {
+            "type": "string",
+            "minLength": 2
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,243 @@
+{
+  "contract": "ai-core-ui-interaction-contract/v1",
+  "version": "1.1.0",
+  "feature_registry": "registry/ui-ux-features.json",
+  "constitution": "docs/UI_UX_CONSTITUTION.md",
+  "rules": {
+    "action_placement": {
+      "feature_refs": [
+        "action.primary",
+        "action.secondary",
+        "navigation.header",
+        "navigation.bottom-action"
+      ],
+      "invariants": [
+        "Task-level actions live in the bottom action boundary by default; headers carry title, context, progress and passive status.",
+        "A section exposes at most one primary action.",
+        "Dialog actions live in the dialog footer."
+      ],
+      "verification": [
+        "mobile-bottom-action",
+        "desktop-bottom-action",
+        "dialog-footer"
+      ]
+    },
+    "focus": {
+      "feature_refs": [
+        "system.focus",
+        "overlay.dialog",
+        "overlay.drawer",
+        "overlay.bottom-sheet"
+      ],
+      "invariants": [
+        "Focus is visible and not obscured.",
+        "Modal focus enters the modal boundary and returns to the invoker on close.",
+        "Sticky regions must not cover focused controls or validation messages."
+      ],
+      "verification": [
+        "keyboard-only",
+        "focus-visible",
+        "focus-return",
+        "focus-not-obscured"
+      ]
+    },
+    "search_context": {
+      "feature_refs": [
+        "form.search",
+        "navigation.restore",
+        "data.filter"
+      ],
+      "invariants": [
+        "Opening search/filter does not destroy the current work context.",
+        "Closing restores prior scroll, selection and draft where the underlying entity still exists.",
+        "Search, filter, count and results use the same query revision."
+      ],
+      "verification": [
+        "open-close-restore",
+        "scroll-restore",
+        "draft-preservation",
+        "query-revision"
+      ]
+    },
+    "single_choice_flow": {
+      "feature_refs": [
+        "navigation.stepper",
+        "form.radio",
+        "form.select"
+      ],
+      "invariants": [
+        "A single-choice step may auto-advance only after an authoritative local selection event.",
+        "A redundant Next action is omitted in auto-advance steps.",
+        "Back restores the prior selected value without inventing a new workflow state."
+      ],
+      "verification": [
+        "single-choice-auto-advance",
+        "back-restore",
+        "ime-safe"
+      ]
+    },
+    "async_write": {
+      "feature_refs": [
+        "workflow.explicit-save",
+        "workflow.autosave",
+        "workflow.conflict",
+        "feedback.retry"
+      ],
+      "invariants": [
+        "UI disabled state is not an integrity boundary.",
+        "Every write is bound to a stable entity or work key.",
+        "Stale responses may not update a different entity or a newer revision.",
+        "Retry must converge or surface a conflict; recoverable input is preserved."
+      ],
+      "verification": [
+        "duplicate-prevention",
+        "stale-response",
+        "retry-recovery",
+        "receipt"
+      ]
+    },
+    "external_action": {
+      "feature_refs": [
+        "integration.external-action",
+        "integration.notification"
+      ],
+      "invariants": [
+        "Requested, launched, server-committed and business-confirmed are distinct meanings.",
+        "Opening a phone, SMS, email or third-party app is not completion.",
+        "Verified completion requires an authoritative receipt when the business process depends on completion."
+      ],
+      "verification": [
+        "launch-vs-completion",
+        "receipt",
+        "failure-path"
+      ]
+    },
+    "responsive": {
+      "feature_refs": [
+        "system.responsive",
+        "system.safe-area-keyboard",
+        "system.reflow-orientation"
+      ],
+      "invariants": [
+        "Mobile is not a scaled desktop.",
+        "Reading order and task priority remain stable across layout changes.",
+        "Bottom actions include safe-area padding and remain reachable with the virtual keyboard.",
+        "Ordinary one-dimensional content reflows at high zoom."
+      ],
+      "verification": [
+        "360",
+        "390",
+        "412",
+        "1280",
+        "1440",
+        "200%-zoom",
+        "400%-reflow",
+        "portrait-landscape",
+        "virtual-keyboard"
+      ]
+    },
+    "accessibility": {
+      "feature_refs": [
+        "system.focus",
+        "system.contrast-preference",
+        "system.input-method"
+      ],
+      "invariants": [
+        "WCAG 2.2 AA is the minimum conformance target.",
+        "Native semantics are preferred; custom widgets implement equivalent APG semantics.",
+        "Meaning is not encoded by color alone.",
+        "Touch, pointer, keyboard and assistive input reach the same business outcome unless modality is intrinsic."
+      ],
+      "verification": [
+        "wcag2aa",
+        "keyboard-only",
+        "forced-colors",
+        "touch-target",
+        "accessible-name"
+      ]
+    },
+    "internationalization": {
+      "feature_refs": [
+        "system.localization",
+        "system.locale-formatting",
+        "system.bidi",
+        "system.text-expansion"
+      ],
+      "invariants": [
+        "Canonical values remain locale-neutral while presentation and parsing are localized.",
+        "Language and text direction are explicit metadata.",
+        "Logical start/end layout is used for directional layout.",
+        "Long translated copy may wrap without hiding required meaning or actions."
+      ],
+      "verification": [
+        "ko-KR",
+        "en-US",
+        "de-DE",
+        "ar-SA-rtl",
+        "hi-IN-numbering",
+        "mixed-bidi",
+        "long-labels"
+      ]
+    },
+    "file_image_ui": {
+      "feature_refs": [
+        "form.file-upload",
+        "form.image-upload",
+        "integration.document-preview"
+      ],
+      "invariants": [
+        "A visible file-picker action is always available; drag and drop is an enhancement.",
+        "Each file has independent validation/upload/result state.",
+        "Preview never substitutes for authoritative file validation.",
+        "Remove, retry and cancel are keyboard reachable."
+      ],
+      "verification": [
+        "picker",
+        "drag-alternative",
+        "per-file-state",
+        "retry",
+        "keyboard-only"
+      ]
+    },
+    "status_feedback": {
+      "feature_refs": [
+        "feedback.inline-error",
+        "feedback.alert",
+        "feedback.toast",
+        "feedback.progress",
+        "feedback.empty"
+      ],
+      "invariants": [
+        "Critical information remains inline and is not toast-only.",
+        "Loading, empty, error and populated states are distinct.",
+        "Status announcements do not steal focus.",
+        "Busy is not success."
+      ],
+      "verification": [
+        "loading",
+        "empty",
+        "error",
+        "populated",
+        "live-region",
+        "busy-vs-success"
+      ]
+    },
+    "input_method": {
+      "feature_refs": [
+        "system.input-method",
+        "form.text",
+        "form.combobox"
+      ],
+      "invariants": [
+        "IME composition events do not trigger destructive validation, submission or auto-advance.",
+        "Virtual keyboards must not hide the focused field or task action boundary.",
+        "Input modality does not change completion semantics."
+      ],
+      "verification": [
+        "ime-composition",
+        "virtual-keyboard",
+        "keyboard-or-equivalent"
+      ]
+    }
+  }
+}

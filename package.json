@@ -44,7 +44,8 @@
     "workflow:validate": "node scripts/validate-workflows.mjs",
     "workflow:bridge:validate": "node scripts/validate-workflow-bridges.mjs",
     "workflow:recovery:validate": "node scripts/validate-workflow-recovery-policies.mjs",
-    "uiux:validate": "node scripts/validate-ui-ux-registry.mjs"
+    "uiux:validate": "node scripts/validate-ui-ux-registry.mjs",
+    "uiux:runtime": "node scripts/validate-ui-ux-runtime.mjs"
   },
   "dependencies": {
     "ajv": "8.20.0",

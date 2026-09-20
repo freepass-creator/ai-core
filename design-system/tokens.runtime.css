@@ -1,0 +1,58 @@
+:root {
+  --color-bg: #f6f8fb;
+  --color-surface: #ffffff;
+  --color-text: #172033;
+  --color-muted: #5b6475;
+  --color-border: #c8cfda;
+  --color-control-border: #667085;
+  --color-primary: #155eef;
+  --color-primary-hover: #0b4dd8;
+  --color-danger: #b42318;
+  --color-danger-hover: #912018;
+  --color-focus: #dc6803;
+  --color-success: #067647;
+  --color-warning: #b54708;
+  --color-info-surface: #eef3fb;
+  --color-error-surface: #fff1f0;
+  --color-disabled-surface: #e4e7ec;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --shadow-sm: 0 1px 2px rgb(16 24 40 / 8%);
+  --font-sans: Inter, Pretendard, "Noto Sans KR", system-ui, sans-serif;
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-md: 16px;
+  --font-size-title: 18px;
+  --font-size-lg: 20px;
+  --line-height: 1.5;
+  --control-height-compact: 40px;
+  --control-height: 44px;
+  --control-height-touch-min: 44px;
+  --control-height-touch-preferred: 48px;
+  --row-height-mobile-min: 64px;
+  --focus-ring-width: 3px;
+  --focus-ring-offset: 2px;
+  --content-max: 1200px;
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --row-height-desktop-compact: 40px;
+  --row-height-desktop-standard: 48px;
+  --page-gutter-mobile: 12px;
+  --page-gutter-desktop: 16px;
+  --card-padding-mobile: 16px;
+  --card-padding-desktop: 24px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { color-scheme: light; }
+body { margin: 0; background: var(--color-bg); color: var(--color-text); font-family: var(--font-sans); font-size: var(--font-size-md); line-height: var(--line-height); }
+button, select, input, textarea { font: inherit; }
+:focus-visible { outline: var(--focus-ring-width) solid var(--color-focus); outline-offset: var(--focus-ring-offset); }
+.ui-tabular { font-variant-numeric: tabular-nums; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; } }
