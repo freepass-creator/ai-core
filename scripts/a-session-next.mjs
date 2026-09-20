@@ -1,6 +1,7 @@
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { claimRemote, finishRemote } from './a-session-claim.mjs';
+import { reapRemote } from './a-session-claim-health.mjs';
 
 const run = promisify(execFile);
 const DEFAULT_COORD_REPO = process.env.AI_CORE_COORDINATION_REPOSITORY || 'freepass-creator/ai-core';
@@ -47,6 +48,7 @@ export async function allocateNext({
   owner, scope='repo-rescan', leaseMinutes=60, coordRepo=DEFAULT_COORD_REPO, branch=DEFAULT_BRANCH
 } = {}) {
   if (!owner) throw new Error('OWNER_REQUIRED');
+  await reapRemote({ coordRepo, branch });
   const coverage = await readRemoteJson(coordRepo, COVERAGE_PATH, branch);
   const currentHeads = {};
 
