@@ -61,8 +61,8 @@ test('live or completed claim removes an item from available candidates',()=>{
   const item=withRevision(baseItem());
   const req=reviewClaimRequest(item,'A-session-review-c-v1');
   const claim=(state)=>({claim_id:'id',claim_key:`${req.repository}@${req.revision}::${req.scope}`,repository:req.repository,subject_revision:req.revision,scope:req.scope,owner_session:'other',state,claimed_at:'2026-09-20T00:00:00Z',lease_until:'2026-09-20T03:00:00Z',completed_at:state==='COMPLETED'?'2026-09-20T01:00:00Z':null,evidence_refs:state==='COMPLETED'?['x']:[]});
-  assert.equal(availableReviewItems([item],{claims:[claim('ACTIVE')]},new Date('2026-09-20T01:00:00Z')).length,0);
-  assert.equal(availableReviewItems([item],{claims:[claim('COMPLETED')]},new Date('2026-09-20T01:00:00Z')).length,0);
+  assert.equal(availableReviewItems([item],{claims:[claim('ACTIVE')]},new Date('2026-09-20T01:00:00Z'),'A-session-review-c-v1').length,0);
+  assert.equal(availableReviewItems([item],{claims:[claim('COMPLETED')]},new Date('2026-09-20T01:00:00Z'),'A-session-review-c-v1').length,0);
 });
 test('local allocator state validates queue identity and revision fingerprint shape',()=>{
   const item=withRevision(baseItem());
