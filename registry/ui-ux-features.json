@@ -1,6 +1,6 @@
 {
   "contract": "ai-core-ui-ux-feature-registry/v1",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "normative_source": "docs/SCREEN_DESIGN_STANDARD.md",
   "global_rules": {
     "invariants": [
@@ -1349,6 +1349,48 @@
           "level": "CROSS_PROJECT_VERIFIED",
           "refs": [
             "docs/research/GLOBAL_PRODUCT_STANDARD_EVIDENCE_2026-09-19.md#12-search-filter",
+            "docs/FREEPASS_PRODUCT_UI_PROFILE.md",
+            "docs/UI_COMPOSITION_STANDARD.md"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "data.variant-selector",
+      "family": "data",
+      "title": "Direct variant selector",
+      "kind": "pattern",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "CONTROL",
+        "DATA_SURFACE",
+        "RESPONSIVE"
+      ],
+      "required_states": [
+        "available",
+        "selected",
+        "overflow",
+        "empty"
+      ],
+      "rules": [
+        "Use for direct selection among variants that actually exist in source data, such as contract terms, trims or plans; it is not a search quick filter.",
+        "Never fabricate missing variants to fill a preferred sequence.",
+        "The selected variant is explicit and stable; changing it updates the dependent detail surface without changing unrelated search criteria.",
+        "A horizontal choice strip may scroll when options overflow, while selected state remains visible and keyboard reachable.",
+        "When one displayed variant contains multiple condition variants, expose the subordinate choices instead of silently picking or merging their conditions."
+      ],
+      "verification": [
+        "source-derived-options",
+        "selected-state",
+        "overflow-scroll",
+        "keyboard-or-equivalent",
+        "nested-variant-visibility",
+        "mobile-desktop"
+      ],
+      "evidence": [
+        {
+          "level": "PROJECT_VERIFIED",
+          "refs": [
             "docs/FREEPASS_PRODUCT_UI_PROFILE.md",
             "docs/UI_COMPOSITION_STANDARD.md"
           ]
