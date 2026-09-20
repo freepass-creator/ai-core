@@ -39,6 +39,7 @@ export function reviewScope(routeId){
 }
 
 export function reviewClaimRequest(item,owner){
+  if(!isValidASessionOwner(owner)) throw new Error('A_SESSION_OWNER_INVALID');
   if(!/^[0-9a-f]{40}$/.test(item.review_revision ?? '')) throw new Error('REVIEW_REVISION_INVALID');
   return {
     repository:'freepass-creator/ai-core',
@@ -69,8 +70,8 @@ export function rankReviewItems(queues,policy,{session='ANY'}={}){
   return items;
 }
 
-export function availableReviewItems(ranked,claims,now=new Date()){
-  return ranked.filter((item)=>evaluateClaim(claims,reviewClaimRequest(item,'availability-check'),now).action==='ACQUIRE');
+export function availableReviewItems(ranked,claims,now=new Date(),owner='A-session-review-preview-v1'){
+  return ranked.filter((item)=>evaluateClaim(claims,reviewClaimRequest(item,owner),now).action==='ACQUIRE');
 }
 
 export function validateReviewAllocatorState(queues,policy){
@@ -105,7 +106,7 @@ export async function allocateReviewNext({
   const ranked=rankReviewItems(queues,policy,{session});
 
   const claims=(await readRemoteRegistry(coordRepo,branch)).registry;
-  const available=availableReviewItems(ranked,claims,new Date());
+  const available=availableReviewItems(ranked,claims,new Date(),owner);
   if(dryRun){
     return {
       status:'DRY_RUN',
@@ -124,6 +125,7 @@ export async function allocateReviewNext({
   for(const candidate of ranked){
     const request=reviewClaimRequest(candidate,owner);
     const result=await claimRemote(request,{leaseMinutes,coordRepo,branch});
+    if(result.action==='SKIP_OWNER_BUSY') return {status:'OWNER_BUSY',session,owner,busy_claim:result.claim};
     if(result.action==='SKIP_DUPLICATE' || result.action==='SKIP_ALREADY_COMPLETED' || result.action==='SKIP_SCOPE_CONFLICT') continue;
     if(result.action!=='ACQUIRED') continue;
 
@@ -181,7 +183,7 @@ if(process.argv[1]?.endsWith('a-session-review-next.mjs')){
         dryRun:args.includes('--dry-run')
       });
       console.log(JSON.stringify(result,null,2));
-      if(result.status==='NO_UNCLAIMED_REVIEW_ITEM') process.exitCode=3;
+      if(result.status==='NO_UNCLAIMED_REVIEW_ITEM' || result.status==='OWNER_BUSY') process.exitCode=3;
     }
   }catch(error){
     console.error(`A review allocator error: ${error.message}`);
