@@ -1,3 +1,5 @@
+import { createHash } from 'node:crypto';
+
 const SHA40 = /^[0-9a-f]{40}$/;
 const REPO = /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/;
 
@@ -71,4 +73,10 @@ export async function verifyACompletionEvidenceRemote(parsed, adapters) {
     }
   }
   return { status:failures.length ? 'INVALID' : 'VALID', failures };
+}
+
+
+export function evidenceRefsDigest(refs) {
+  const normalized = [...(refs || [])];
+  return 'sha256:' + createHash('sha256').update(JSON.stringify(normalized)).digest('hex');
 }
