@@ -121,3 +121,25 @@ The allocator:
 A result of `NO_CHANGED_REPOSITORY` means there is no revision delta to audit. A result of `NO_UNCLAIMED_CHANGED_REPOSITORY` means changed work exists but other A sessions already own it; this should remain silent rather than duplicate their work.
 
 Head-unchanged runtime/deployment evidence checks are a separate scope and may still be claimed explicitly with `a:claim`.
+
+
+## Heartbeat and recovery
+
+Long-running audits must renew their lease before it expires:
+
+```bash
+npm run a:heartbeat -- \
+  --claim-id <claim-id> \
+  --owner A-session-1 \
+  --lease-minutes 60
+```
+
+Heartbeat rules:
+
+- only the recorded `owner_session` may renew the claim;
+- renewal extends `lease_until` and records `heartbeat_at`;
+- an expired claim may be recovered by the same owner only when no other live claimant has already taken the same claim key;
+- if another session already owns a live replacement claim, recovery fails closed with `CLAIM_SUPERSEDED_BY_LIVE_OWNER`;
+- GitHub blob-SHA optimistic concurrency still applies to the heartbeat write.
+
+This prevents long A audits from silently losing ownership while also preventing an expired owner from stealing work back after another session legitimately took over.
