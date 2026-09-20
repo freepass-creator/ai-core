@@ -278,9 +278,17 @@ export function createApplicationServiceRuntime({
     need(text(receiptOptions.actor),'RECEIPT_ACTOR_REQUIRED');
     need(receiptOptions.reproducibility&&typeof receiptOptions.reproducibility.deterministic==='boolean','RECEIPT_REPRODUCIBILITY_REQUIRED');
 
+    const normalizedReceiptContext={
+      ...receiptOptions,
+      reproducibility:{
+        ...receiptOptions.reproducibility,
+        executor_version:receiptOptions.reproducibility.executor_version??service.version,
+        command_ref:receiptOptions.reproducibility.command_ref??useCaseName,
+      }
+    };
     const service_result=await run(useCaseName,input,{
       ...runOptions,
-      receipt_context:receiptOptions,
+      receipt_context:normalizedReceiptContext,
     });
     const child_receipts=(service_result.port_results??[])
       .filter(item=>item.receipt?.receipt_id)
@@ -290,26 +298,22 @@ export function createApplicationServiceRuntime({
       }));
 
     const receipt=buildServiceReceipt({
-      receipt_id:receiptOptions.receipt_id,
-      operation_id:receiptOptions.operation_id??`${receiptOptions.receipt_id}.operation`,
-      operation_kind:receiptOptions.operation_kind??`${service.service_id}.${useCaseName}`,
-      actor:receiptOptions.actor,
-      executor:receiptOptions.executor??service.service_id,
+      receipt_id:normalizedReceiptContext.receipt_id,
+      operation_id:normalizedReceiptContext.operation_id??`${normalizedReceiptContext.receipt_id}.operation`,
+      operation_kind:normalizedReceiptContext.operation_kind??`${service.service_id}.${useCaseName}`,
+      actor:normalizedReceiptContext.actor,
+      executor:normalizedReceiptContext.executor??service.service_id,
       service_result,
       input,
-      input_refs:receiptOptions.input_refs??[],
-      output_refs:receiptOptions.output_refs??[],
-      evidence_refs:receiptOptions.evidence_refs??[],
+      input_refs:normalizedReceiptContext.input_refs??[],
+      output_refs:normalizedReceiptContext.output_refs??[],
+      evidence_refs:normalizedReceiptContext.evidence_refs??[],
       child_receipts,
-      proof_inputs:receiptOptions.proof_inputs??null,
-      reproducibility:{
-        ...receiptOptions.reproducibility,
-        executor_version:receiptOptions.reproducibility.executor_version??service.version,
-        command_ref:receiptOptions.reproducibility.command_ref??useCaseName,
-      },
-      milestones:receiptOptions.milestones??[],
+      proof_inputs:normalizedReceiptContext.proof_inputs??null,
+      reproducibility:normalizedReceiptContext.reproducibility,
+      milestones:normalizedReceiptContext.milestones??[],
       metrics:{
-        ...(receiptOptions.metrics??{}),
+        ...(normalizedReceiptContext.metrics??{}),
         child_receipt_count:child_receipts.length,
       },
       source_revision:service.source?.revision??null,
