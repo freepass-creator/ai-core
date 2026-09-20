@@ -113,3 +113,17 @@ AI Core therefore records the JSON file repositories as **development SHADOW evi
 Implemented on `work/ai-core-no-actions-20260920`.
 
 GitHub Actions are intentionally not used under the current user-directed mode. No VALIDATED/canonical promotion is claimed.
+
+
+## Receipt lineage
+
+`createRepositoryRuntime().invokeWithReceipt()` binds one Repository execution result to one `core-receipt/v1`.
+
+The receipt keeps two revision meanings separate:
+
+- `source_revision` = Repository implementation/contract source revision;
+- `metrics.repository_revision` = entity/storage revision returned by the Repository operation.
+
+A storage/entity revision must never be substituted for code/source revision.
+
+Receipt proof inputs may bind source/config/schema/checker dependencies through `core-proof-input-binding/v1`.
