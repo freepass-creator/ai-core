@@ -62,6 +62,7 @@ export function createExecutionLeaseRuntime({
       const version=row?.version??0;
       const state=row?.state??{max_fencing_token:0,lease:null};
       const current=state.lease;
+      if(current) validateExecutionLease(current);
       const nowMs=Number(clock());
 
       if(active(current,nowMs)){
@@ -77,7 +78,9 @@ export function createExecutionLeaseRuntime({
         };
       }
 
-      const token=(state.max_fencing_token??0)+1;
+      const maxToken=Math.max(state.max_fencing_token??0,current?.fencing_token??0);
+      need(Number.isSafeInteger(maxToken)&&maxToken<Number.MAX_SAFE_INTEGER,'EXECUTION_LEASE_FENCE_EXHAUSTED');
+      const token=maxToken+1;
       const lease={
         schema_version:'core-execution-lease/v1',
         lease_id:'lease.'+idFactory(),
