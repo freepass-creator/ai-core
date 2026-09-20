@@ -32,3 +32,4 @@ jobs:
       - run: npm run workflow:validate
       - run: npm run workflow:bridge:validate
       - run: npm run workflow:recovery:validate
+      - run: npm run uiux:validate
