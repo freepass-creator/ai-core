@@ -120,7 +120,8 @@ export function createRepositoryRuntime({
     const receipt=buildRepositoryReceipt({
       ...receiptOptions,
       repository_result,
-      input
+      input,
+      source_revision:receiptOptions.source_revision??repository.source?.revision??null
     });
     return {repository_result,receipt};
   }
