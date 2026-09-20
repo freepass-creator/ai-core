@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0.0",
+  "registry_version": "1.0.0",
+  "policies": [
+    {
+      "policy_id": "workflow.compensated-multiwrite",
+      "adoption_status": "PILOT",
+      "evidence_level": "PROJECT_VERIFIED",
+      "source_projects": [
+        "renman"
+      ],
+      "execution_mode": "SEQUENTIAL_EFFECTS",
+      "compensation_order": "REVERSE_APPLIED_ONLY",
+      "effect_contract": {
+        "compensation_declaration": "PER_EFFECT",
+        "non_compensated_reason_required": true,
+        "audit_required": true
+      },
+      "failure_outcome": {
+        "original_failure": "PRESERVE",
+        "compensation_success": "RETHROW_ORIGINAL_FAILURE",
+        "compensation_failure": "PARTIAL_STATE_ESCALATION"
+      },
+      "notes": "Each applied effect declares a domain-specific compensation or an explicit reason why compensation is not required/allowed. On failure, only successfully applied prior effects are considered and compensations run in reverse order. Compensation failure must remain visible as partial state.",
+      "source_authority": {
+        "repository": "freepass-creator/renman",
+        "revision": "262e06de09db94a116fa377ea2f5dbe024bb086b",
+        "files": [
+          {
+            "path": "lib/commit.ts",
+            "blob_sha": "e9b3e6d0b4e74cfe311c5b4ddefb9e6df96a3968"
+          },
+          {
+            "path": "tests/commit-compensated.test.ts",
+            "blob_sha": "3d9038a57b2578960f349eb8c1d28b1868c1fac4"
+          }
+        ]
+      }
+    }
+  ]
+}
