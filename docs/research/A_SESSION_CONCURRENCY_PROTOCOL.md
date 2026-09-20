@@ -94,3 +94,30 @@ npm run a:claim:validate
 ```
 
 The client performs optimistic GitHub SHA writes. If another session wins the write first, the client refetches and re-evaluates once rather than blindly overwriting the registry.
+
+
+## Automatic next-work allocation
+
+For ordinary A-session rescan work, prefer the allocator instead of manually choosing a repository:
+
+```bash
+npm run a:next -- \
+  --owner A-session-1 \
+  --scope repo-rescan \
+  --lease-minutes 60
+```
+
+The allocator:
+
+1. reads the current A repository coverage registry from AI Core main;
+2. resolves current default-branch heads for every non-self connected repository;
+3. keeps only repositories whose current revision differs from the audited revision;
+4. prioritizes `DEEP_EVIDENCE` repositories before sampled/overlap repositories;
+5. skips work already live or completed for the same `repository@revision::scope`;
+6. atomically claims the first available changed repository;
+7. rechecks the repository head immediately after claiming;
+8. if the head moved during allocation, marks the stale claim `SUPERSEDED` and retries the new revision.
+
+A result of `NO_CHANGED_REPOSITORY` means there is no revision delta to audit. A result of `NO_UNCLAIMED_CHANGED_REPOSITORY` means changed work exists but other A sessions already own it; this should remain silent rather than duplicate their work.
+
+Head-unchanged runtime/deployment evidence checks are a separate scope and may still be claimed explicitly with `a:claim`.
