@@ -108,5 +108,6 @@
     "idempotency-replay",
     "aggregate-invariants",
     "atomic-rename-write"
-  ]
+  ],
+  "port_version": "v1"
 }
