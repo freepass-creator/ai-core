@@ -2,6 +2,7 @@ import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { claimRemote, finishRemote, evaluateClaim, readRemoteRegistry } from './a-session-claim.mjs';
 import { reapRemote } from './a-session-claim-health.mjs';
+import { isValidASessionOwner, resolveASessionOwner } from './a-session-owner-policy.mjs';
 
 const run=promisify(execFile);
 const SESSIONS=['B','C','D'];
@@ -95,7 +96,7 @@ export function validateReviewAllocatorState(queues,policy){
 export async function allocateReviewNext({
   session='ANY',owner,leaseMinutes=60,coordRepo=DEFAULT_COORD_REPO,branch=DEFAULT_BRANCH,dryRun=false
 }={}){
-  if(!owner) throw new Error('OWNER_REQUIRED');
+  if(!isValidASessionOwner(owner)) throw new Error('A_SESSION_OWNER_INVALID');
   if(session!=='ANY' && !SESSIONS.includes(session)) throw new Error('SESSION_INVALID');
 
   const policy=await readRemoteJson(coordRepo,POLICY_PATH,branch);
@@ -123,13 +124,13 @@ export async function allocateReviewNext({
   for(const candidate of ranked){
     const request=reviewClaimRequest(candidate,owner);
     const result=await claimRemote(request,{leaseMinutes,coordRepo,branch});
-    if(result.action==='SKIP_DUPLICATE' || result.action==='SKIP_ALREADY_COMPLETED') continue;
+    if(result.action==='SKIP_DUPLICATE' || result.action==='SKIP_ALREADY_COMPLETED' || result.action==='SKIP_SCOPE_CONFLICT') continue;
     if(result.action!=='ACQUIRED') continue;
 
     const refreshed=await readRemoteJson(coordRepo,queuePath(candidate.target_session),branch);
     const current=refreshed.items.find((x)=>x.route_id===candidate.route_id);
     if(!current || current.queue_status!==policy.candidate_status || current.review_revision!==candidate.review_revision){
-      await finishRemote(result.claim.claim_id,'SUPERSEDED',{coordRepo,branch});
+      await finishRemote(result.claim.claim_id,'SUPERSEDED',{owner,coordRepo,branch});
       continue;
     }
 
@@ -173,7 +174,7 @@ if(process.argv[1]?.endsWith('a-session-review-next.mjs')){
     }else{
       const result=await allocateReviewNext({
         session:value(args,'--session') || 'ANY',
-        owner:value(args,'--owner') || process.env.AI_CORE_ACTOR || 'A_REVIEW',
+        owner:resolveASessionOwner(value(args,'--owner')),
         leaseMinutes:Number(value(args,'--lease-minutes') || 60),
         coordRepo:value(args,'--coord-repo') || DEFAULT_COORD_REPO,
         branch:value(args,'--branch') || DEFAULT_BRANCH,
