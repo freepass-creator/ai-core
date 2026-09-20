@@ -36,6 +36,7 @@
     "route_id_asc"
   ],
   "session_isolation": "A B/C/D reviewer should normally request its own session. ANY is allowed for coordination inspection only.",
-  "stale_guard": "After claim acquisition, re-read the queue. If status or review_revision changed, SUPERSEDE the stale claim and continue.",
-  "decision_boundary": "Allocator creates ownership only. It never writes REVIEWING, DECIDED, ADOPTED, HOLD, REJECTED or SUPERSEDED receiver decisions."
+  "stale_guard": "After claim acquisition, re-read the queue. If status or review_revision changed, SUPERSEDE the stale claim using the same stable owner and continue.",
+  "decision_boundary": "Allocator creates ownership only. It never writes REVIEWING, DECIDED, ADOPTED, HOLD, REJECTED or SUPERSEDED receiver decisions.",
+  "owner_policy": "Review allocator owners must satisfy A-session-owner-policy: A-session-<stable-unique-id>. CLI resolves only --owner or AI_CORE_A_SESSION_ID."
 }
