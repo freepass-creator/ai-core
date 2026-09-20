@@ -59,11 +59,11 @@ AI Core reverse-import/audit must treat `RETIRE` repositories as non-authoritati
 | freepass-creator/- | RETIRE | none | Empty/accidental repository; highest-priority cleanup candidate |
 | freepass-creator/freepasspartner | HOLD | unknown | Preserve until current operational use and script ownership are checked |
 | freepass-creator/welrix-proposal | REFERENCE | docshub candidate | No app entrypoint/package observed in this audit; treat as proposal/reference material until useful content is migrated to DocsHub |
-| freepass-creator/teamjpk | HOLD | unknown | Verify whether any live site/domain still points here |
+| freepass-creator/teamjpk | REFERENCE | TeamJPK corporate-site draft | Current page still has placeholder/no-op contact behavior and no deployment binding observed; preserve design/content but do not treat as live-site SSOT |
 | freepass-creator/gukminchagimpo | HOLD | unknown | Independent rental-management product; current operational ownership must be confirmed |
 | freepass-creator/billincar | HOLD | unknown | Independent ERP implementation; current user/deployment must be confirmed |
 | freepass-creator/chakhandeal | HOLD | self | Successor to RentSafe, but current business/runtime use still needs confirmation before ACTIVE/RETIRE decision |
-| freepass-creator/webtoon-studio | HOLD | self | Independent content project; keep outside core operational cleanup until current use is confirmed |
+| freepass-creator/webtoon-studio | ACTIVE | self | Independent content project with September 2026 work; keep separate from operating-stack cleanup |
 
 ## First retirement wave
 
@@ -96,6 +96,8 @@ The following repositories are the first cleanup wave because a successor is kno
 - `freepasspartner` contains a Vercel server function that password-gates an internal sales-partner tracker and proposal PDF; deployment/use must be checked before retirement.
 - `billincar` contains a daily Vercel cron that verifies driver-license status through RIMS and can update `v5/contracts`; treat it as cleanup-protected until runtime ownership is resolved.
 - `gukminchagimpo` documents itself as a Vercel + Firebase rental-management SaaS; absence of a checked Vercel project has not been proven.
+- `teamjpk` main currently contains placeholder/no-op contact behavior, so it is preserved as REFERENCE rather than treated as the live corporate-site SSOT.
+- `webtoon-studio` has current September work and is classified ACTIVE as an independent content project; its Pages workflow is manual-only.
 - `chakhandeal/HANDOVER.md` says the project is currently DEMO-only with P4-P6 incomplete; it is not a production authority but remains a live project asset.
 - The currently connected Vercel team returned zero projects during this audit. That is not sufficient evidence that historical/personal Vercel deployments do not exist, so deployment absence remains unresolved.
 
