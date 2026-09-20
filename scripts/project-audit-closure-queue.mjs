@@ -2,7 +2,7 @@ import { readFile, readdir } from 'node:fs/promises';
 import { resolve, dirname, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { inspectGitHubProject } from '../src/engine/github-project-inspector.mjs';
-import { buildProjectAuditClosureQueue, renderProjectAuditClosureQueueMarkdown } from '../src/engine/project-audit-closure-queue.mjs';
+import { buildProjectAuditClosureQueue, renderProjectAuditClosureQueueMarkdown, selectActiveProjectAuditHandoffs } from '../src/engine/project-audit-closure-queue.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2);
@@ -57,20 +57,9 @@ const [readinessRegistry,handoffs,completionReports,closureReceipts] = await Pro
   ),
 ]);
 
-function activeHandoffsByProject(records) {
-  const byProject = new Map();
-  for (const handoff of records) {
-    const current = byProject.get(handoff.project_id);
-    const currentAt = Date.parse(current?.audit_binding?.audited_at ?? '');
-    const candidateAt = Date.parse(handoff?.audit_binding?.audited_at ?? '');
-    if (!current || candidateAt > currentAt) byProject.set(handoff.project_id,handoff);
-  }
-  return [...byProject.values()];
-}
-
 const liveByProject = new Map();
 if (live) {
-  for (const handoff of activeHandoffsByProject(handoffs)) {
+  for (const handoff of selectActiveProjectAuditHandoffs(handoffs).active) {
     try {
       const capsule = await inspectGitHubProject({
         project_id:handoff.project_id,
