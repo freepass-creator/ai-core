@@ -304,3 +304,66 @@ test('retained non-compensatable prior effect is skipped but not undone on later
     reason:'append-only audit stays'
   }]);
 });
+
+
+test('duplicate uncompensated success across attempts blocks resume',()=>{
+  const secondSuccess=bindExecutionAttempt(identity,{
+    attemptId:'attempt-duplicate',
+    attemptSequence:2,
+    executionPath:'FALLBACK',
+    parentAttemptId:'attempt-1'
+  });
+  const evidence=[
+    record(actionReceipt({id:'receipt.a.success.1',effectId:'a',execution:attempt1})),
+    record(actionReceipt({
+      id:'receipt.a.success.2',
+      effectId:'a',
+      execution:secondSuccess,
+      endedAt:'2026-09-20T10:00:05Z'
+    }))
+  ];
+  const plan=planEffectResume({
+    effects,
+    target_execution:attempt2,
+    evidence_records:evidence
+  });
+  assert.equal(plan.status,'HOLD');
+  assert.equal(plan.reason,'DUPLICATE_EFFECT_SUCCESS_EVIDENCE');
+  assert.equal(plan.blocking_effect_id,'a');
+  assert.deepEqual(plan.blocking_receipt_refs,[
+    'receipt.a.success.1',
+    'receipt.a.success.2'
+  ]);
+});
+
+test('duplicate success that was later compensated does not block rerun',()=>{
+  const secondSuccess=bindExecutionAttempt(identity,{
+    attemptId:'attempt-duplicate',
+    attemptSequence:2,
+    executionPath:'FALLBACK',
+    parentAttemptId:'attempt-1'
+  });
+  const evidence=[
+    record(actionReceipt({id:'receipt.a.success.1',effectId:'a',execution:attempt1})),
+    record(actionReceipt({
+      id:'receipt.a.success.2',
+      effectId:'a',
+      execution:secondSuccess,
+      endedAt:'2026-09-20T10:00:05Z'
+    })),
+    record(actionReceipt({
+      id:'receipt.a.compensated.after-duplicate',
+      effectId:'a',
+      phase:'COMPENSATION',
+      execution:secondSuccess,
+      endedAt:'2026-09-20T10:00:06Z'
+    }))
+  ];
+  const plan=planEffectResume({
+    effects,
+    target_execution:attempt2,
+    evidence_records:evidence
+  });
+  assert.equal(plan.status,'RESUMABLE');
+  assert.equal(plan.resume_from_effect_id,'a');
+});
