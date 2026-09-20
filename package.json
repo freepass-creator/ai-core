@@ -71,7 +71,8 @@
     "a:claims:reap": "node scripts/a-session-claim-health.mjs reap",
     "audit:freshness": "node scripts/project-audit-freshness.mjs",
     "audit:queue": "node scripts/project-audit-refresh-queue.mjs",
-    "audit:workbook": "node scripts/project-audit-workbook.mjs"
+    "audit:workbook": "node scripts/project-audit-workbook.mjs",
+    "audit:portfolio": "node scripts/project-audit-portfolio.mjs"
   },
   "dependencies": {
     "ajv": "8.20.0",
