@@ -18,7 +18,7 @@ export function validateExecutionLease(lease){
   need(text(lease.identity_digest),'EXECUTION_LEASE_IDENTITY_DIGEST_REQUIRED');
   need(text(lease.attempt_id),'EXECUTION_LEASE_ATTEMPT_ID_REQUIRED');
   need(text(lease.owner_id),'EXECUTION_LEASE_OWNER_REQUIRED');
-  need(Number.isInteger(lease.fencing_token)&&lease.fencing_token>=1,'EXECUTION_LEASE_FENCE_INVALID');
+  need(Number.isSafeInteger(lease.fencing_token)&&lease.fencing_token>=1,'EXECUTION_LEASE_FENCE_INVALID');
   need(['ACTIVE','RELEASED','EXPIRED','SUPERSEDED'].includes(lease.state),'EXECUTION_LEASE_STATE_INVALID');
   need(text(lease.claimed_at)&&text(lease.lease_until),'EXECUTION_LEASE_TIME_REQUIRED');
   return {status:'VALID'};
