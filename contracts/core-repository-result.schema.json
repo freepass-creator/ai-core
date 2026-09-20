@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.freepass.ai/core/repository-result/v1",
+  "title": "AI Core Repository Result v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "repository_id",
+    "repository_version",
+    "operation_id",
+    "correlation_id",
+    "status",
+    "error_code",
+    "data",
+    "revision",
+    "evidence_refs",
+    "started_at",
+    "ended_at"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "core-repository-result/v1"
+    },
+    "repository_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "repository_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "operation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "correlation_id": {
+      "$ref": "https://schemas.freepass.ai/core/types/v1#/$defs/correlation_id"
+    },
+    "status": {
+      "enum": [
+        "SUCCEEDED",
+        "HOLD",
+        "FAILED"
+      ]
+    },
+    "error_code": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[A-Z][A-Z0-9_]*$"
+    },
+    "data": {},
+    "revision": {
+      "type": [
+        "string",
+        "integer",
+        "null"
+      ]
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "started_at": {
+      "$ref": "https://schemas.freepass.ai/core/types/v1#/$defs/datetime"
+    },
+    "ended_at": {
+      "$ref": "https://schemas.freepass.ai/core/types/v1#/$defs/datetime"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "SUCCEEDED"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "error_code": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "enum": [
+              "HOLD",
+              "FAILED"
+            ]
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "error_code": {
+            "not": {
+              "type": "null"
+            }
+          }
+        }
+      }
+    }
+  ]
+}
