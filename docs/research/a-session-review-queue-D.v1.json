@@ -2,11 +2,11 @@
   "schema": "ai-core-a-session-review-queue/v1",
   "status": "DERIVED_REVIEW_QUEUE_NOT_CANONICAL",
   "session": "D",
-  "observed_at": "2026-09-20T01:28:20Z",
+  "observed_at": "2026-09-20T11:12:00Z",
   "generated_from": {
-    "evidence_observed_at": "2026-09-20T01:18:00Z",
-    "routing_observed_at": "2026-09-20T01:28:20Z",
-    "inbox_observed_at": "2026-09-20T01:28:20Z"
+    "evidence_observed_at": "2026-09-20T11:12:00Z",
+    "routing_observed_at": "2026-09-20T11:12:00Z",
+    "inbox_observed_at": "2026-09-20T11:12:00Z"
   },
   "policy": {
     "source_only": "This queue is derived from A Evidence, Routing and receiver Inbox state. Do not hand-edit it as authority.",
@@ -285,6 +285,66 @@
         "Does the current project evidence satisfy every listed verification need?",
         "Is production/runtime evidence exact-revision and strong enough to close the migration gap?",
         "Should the receiver keep HOLD, accept closure evidence, reject the gap, or mark it SUPERSEDED?"
+      ],
+      "authority": {
+        "pack_is_derived": true,
+        "may_change_canon": false,
+        "decision_owner": "D",
+        "automatic_decision_forbidden": true
+      }
+    },
+    {
+      "pack_id": "workflow.capability-cutover-no-dual-run::D",
+      "route_id": "workflow.capability-cutover-no-dual-run::D",
+      "finding_id": "workflow.capability-cutover-no-dual-run",
+      "target_session": "D",
+      "queue_status": "WAITING_ACK",
+      "classification": "PROJECT_GT_CORE",
+      "evidence_level": "PROJECT_VERIFIED",
+      "finding_status": "ROUTED",
+      "source_evidence_revision": "9772723ace7ff8c315ab135c933111b4539aacb5",
+      "summary": "Capability ownership cutover must verify the replacement against the same source while preventing dual scheduled execution, then disable the old path only after successful replacement evidence.",
+      "route_priority": null,
+      "evidence_bundle": {
+        "revision_evidence": [
+          {
+            "repository": "freepass-creator/aiops",
+            "revision": "dd47662ec6e92a689cbc4b8a50504e6013845ff9",
+            "evidence_types": [
+              "CODE",
+              "DOC"
+            ]
+          }
+        ],
+        "source_registry": "docs/research/a-session-promotion-matrix.v1.json",
+        "migration": null,
+        "difference_reason": null,
+        "state_history": [
+          {
+            "status": "ROUTED",
+            "observed_at": "2026-09-20T11:12:00Z",
+            "reason": "AIOps now contains the replacement RTDB backup engine and an explicit no-dual-run cutover gate; route to D without changing D canon."
+          }
+        ]
+      },
+      "receiver_snapshot": {
+        "receiver_status": "PENDING",
+        "acknowledgement": null,
+        "review": null,
+        "decision": null,
+        "central_route_status": "SENT",
+        "central_decision": null,
+        "feedback": {
+          "state": "PENDING",
+          "recorded_at": null,
+          "note": null
+        }
+      },
+      "review_questions": [
+        "Is the behavior reusable outside the source project rather than domain-specific?",
+        "Does the evidence support the current maturity level and exact revisions?",
+        "Is a second independent project required before broader adoption?",
+        "Should the receiver ADOPT, HOLD, REJECT or mark the route SUPERSEDED?"
       ],
       "authority": {
         "pack_is_derived": true,
