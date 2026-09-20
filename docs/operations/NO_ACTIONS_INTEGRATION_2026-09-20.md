@@ -76,3 +76,49 @@ Cross-lane refinement:
 - GitHub Actions were intentionally not run.
 - Current integration is **IMPLEMENTED / NOT CI VERIFIED**.
 - Validation can be run later locally or in a single controlled verification pass when the user chooses.
+
+## Next-cycle runtime convergence
+
+Added after the initial A/B/C/D bundle:
+
+### C runtime convergence
+- `src/engine/port-runtime.mjs`
+  - verified binding/profile enforcement
+  - project-scoped adapter enforcement
+  - side-effect idempotency guard
+  - adapter timeout/failure normalization
+  - declared Connector facade
+  - `invokeWithReceipt()`
+- `src/engine/connector-runtime.mjs`
+  - low-level transport only
+  - timeout/abort and transport failure normalization
+  - no retryability/business semantics
+- `src/contracts/adapter-receipt.mjs`
+  - deterministic input/output digest
+  - adapter-result → core receipt
+  - proof-input binding support
+
+### D runtime convergence
+- adapter result → workflow retry/hold/failure bridge
+- executable sequential compensated effects
+- reverse compensation of applied effects only
+- compensation failure → explicit PARTIAL_STATE / ESCALATE
+
+### B runtime convergence
+- operation feedback projection from D outcome to canonical feedback features
+- technical success is not displayed as business completion without verified completion evidence
+
+### A adoption evidence
+FreePass Estimate current shadow evidence refreshed to:
+`b526fdc73e812dcb0594d10caf2123bbade1d38b`
+
+Shadow chain now includes:
+Engine → Port → Adapter → Connector → Adapter Result → Receipt / Proof Input Binding.
+
+Current branch audit:
+- GitHub workflow changes: none
+- contract duplicate ids: none observed
+- workflow primitive duplicate ids: none observed
+- canonical promotion: not claimed
+- CI: not run by user direction
+
