@@ -14,7 +14,7 @@ Each review claim uses the existing A work-claim registry:
 
 - repository: `freepass-creator/ai-core`
 - subject revision: the review item's deterministic 40-hex `review_revision`
-- scope: `review/<route_id>`
+- scope: `coordination:review-<normalized-route-id>`
 - owner: the B/C/D review session
 - lease / heartbeat / stale reaper: existing A claim machinery
 
@@ -80,3 +80,8 @@ It cannot write:
 - REJECTED;
 - SUPERSEDED receiver decisions;
 - B/C/D canonical standards.
+
+
+## Canonical scope alignment
+
+Review claims use the existing A scope policy. Route ids are normalized into `coordination:review-...`; no new claim-scope family is introduced. This means review allocation participates in the same overlap, lease, heartbeat and stale-reaper rules as the rest of A-session coordination.
