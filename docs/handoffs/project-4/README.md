@@ -10,7 +10,7 @@ Project 4 converts revision-bound audits into **read-only implementation/discove
 | Project | Bound revision | CI | Implementation | Discovery | Packet |
 |---|---|---:|---:|---:|---|
 | FreePass Admin | `2747ef32e96c550d7dea05c58ee012880cb42dd3` | UNKNOWN | 4 | 0 | `FREEPASS_ADMIN_AUDIT_HANDOFF_2026-09-20.md` |
-| FreePass ERP4 | `1b31af44fac362085649c13d155e4e0c089ae929` | PASS | 4 | 0 | `FREEPASS_ERP4_AUDIT_HANDOFF_2026-09-20.md` |
+| FreePass ERP4 | `f7c89b7b995d8d98ea04606405e68b158fb4256f` | UNKNOWN | 4 | 0 | `FREEPASS_ERP4_AUDIT_HANDOFF_2026-09-20.md` |
 | FreePass Estimate | `57a75aaeaa8b91f14c6bc22faa01e745daaa3112` | UNKNOWN | 3 | 1 | `FREEPASS_ESTIMATE_AUDIT_HANDOFF_2026-09-20.md` |
 | AIOps | `03dd804962eb4e345b7a34b3e0e97e8bc6d5efe3` | UNKNOWN | 4 | 1 | `AIOPS_AUDIT_HANDOFF_2026-09-20.md` |
 
