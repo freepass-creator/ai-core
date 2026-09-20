@@ -29,6 +29,12 @@ export function validateAdapterContract(adapter){
   need(typeof adapter.health_check==='string'&&adapter.health_check.length>0,'ADAPTER_HEALTH_CHECK_REQUIRED');
   if(adapter.side_effects===true) need(adapter.idempotency!=='UNSUPPORTED','SIDE_EFFECT_ADAPTER_IDEMPOTENCY_UNSUPPORTED');
   need(Number.isInteger(adapter.timeout_ms)&&adapter.timeout_ms>0,'ADAPTER_TIMEOUT_INVALID');
+  if(adapter.connector_binding!=null){
+    need(text(adapter.connector_binding.connector_id)&&adapter.connector_binding.connector_id.includes('.'),'ADAPTER_CONNECTOR_ID_REQUIRED');
+    need(text(adapter.connector_binding.connector_version),'ADAPTER_CONNECTOR_VERSION_REQUIRED');
+    need(Array.isArray(adapter.connector_binding.operation_ids)&&adapter.connector_binding.operation_ids.length>0,'ADAPTER_CONNECTOR_OPERATIONS_REQUIRED');
+    need(new Set(adapter.connector_binding.operation_ids).size===adapter.connector_binding.operation_ids.length,'ADAPTER_CONNECTOR_OPERATION_DUPLICATE');
+  }
   return {status:'VALID'};
 }
 
