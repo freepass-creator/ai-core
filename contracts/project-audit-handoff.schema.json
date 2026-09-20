@@ -1,0 +1,178 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.freepass.ai/project-audit-handoff/v1",
+  "title": "AI Core Project Audit Handoff v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "status",
+    "project_id",
+    "repository",
+    "default_branch",
+    "audit_binding",
+    "counts",
+    "project_work",
+    "standard_work",
+    "no_project_action",
+    "execution_boundary",
+    "blockers",
+    "rule"
+  ],
+  "properties": {
+    "schema": { "const": "ai-core-project-audit-handoff/v1" },
+    "status": { "enum": ["READY", "HOLD_STALE_AUDIT"] },
+    "project_id": { "type": "string", "minLength": 1 },
+    "repository": { "type": "string", "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$" },
+    "default_branch": { "type": "string", "minLength": 1 },
+    "audit_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "subject_revision",
+        "standard_baseline_revision",
+        "audited_at",
+        "ci_status",
+        "ci_run_id",
+        "branch_protected",
+        "live_status",
+        "live_revision"
+      ],
+      "properties": {
+        "subject_revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "standard_baseline_revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "audited_at": { "type": "string", "format": "date-time" },
+        "ci_status": { "enum": ["PASS", "FAIL", "UNKNOWN"] },
+        "ci_run_id": { "type": ["integer", "null"] },
+        "branch_protected": { "type": ["boolean", "null"] },
+        "live_status": { "enum": ["CURRENT", "STALE", "HOLD", "UNOBSERVED"] },
+        "live_revision": {
+          "oneOf": [
+            { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+            { "type": "null" }
+          ]
+        }
+      }
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "project_implementation",
+        "project_discovery",
+        "core_candidate_review",
+        "standard_research",
+        "no_project_action"
+      ],
+      "properties": {
+        "project_implementation": { "type": "integer", "minimum": 0 },
+        "project_discovery": { "type": "integer", "minimum": 0 },
+        "core_candidate_review": { "type": "integer", "minimum": 0 },
+        "standard_research": { "type": "integer", "minimum": 0 },
+        "no_project_action": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "project_work": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["implementation", "discovery"],
+      "properties": {
+        "implementation": { "type": "array", "items": { "$ref": "#/$defs/task" } },
+        "discovery": { "type": "array", "items": { "$ref": "#/$defs/task" } }
+      }
+    },
+    "standard_work": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["core_candidate_review", "research"],
+      "properties": {
+        "core_candidate_review": { "type": "array", "items": { "$ref": "#/$defs/task" } },
+        "research": { "type": "array", "items": { "$ref": "#/$defs/task" } }
+      }
+    },
+    "no_project_action": { "type": "array", "items": { "$ref": "#/$defs/task" } },
+    "execution_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "auto_write_project_repo",
+        "auto_open_project_pr",
+        "auto_promote_core_standard",
+        "auto_deploy",
+        "production_mutation"
+      ],
+      "properties": {
+        "auto_write_project_repo": { "const": false },
+        "auto_open_project_pr": { "const": false },
+        "auto_promote_core_standard": { "const": false },
+        "auto_deploy": { "const": false },
+        "production_mutation": { "const": false }
+      }
+    },
+    "blockers": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+    "rule": { "type": "string", "minLength": 1 }
+  },
+  "$defs": {
+    "task": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "bucket",
+        "priority",
+        "axis",
+        "verdict",
+        "standard_owner",
+        "evidence",
+        "gaps",
+        "next_action",
+        "instruction"
+      ],
+      "properties": {
+        "bucket": {
+          "enum": [
+            "PROJECT_IMPLEMENTATION",
+            "PROJECT_DISCOVERY",
+            "CORE_CANDIDATE_REVIEW",
+            "STANDARD_RESEARCH",
+            "NO_PROJECT_ACTION"
+          ]
+        },
+        "priority": { "enum": ["P1", "P2", "P3", "NONE"] },
+        "axis": {
+          "enum": [
+            "ui-ux",
+            "data-ssot",
+            "engine-adapter",
+            "api-event-error",
+            "workflow",
+            "security-audit",
+            "qa-observability",
+            "build-deploy-governance"
+          ]
+        },
+        "verdict": {
+          "enum": [
+            "CORE_MATCH",
+            "PROJECT_AHEAD",
+            "MIGRATION_GAP",
+            "RESEARCH_ADVISORY",
+            "UNKNOWN"
+          ]
+        },
+        "standard_owner": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["lane", "owner"],
+          "properties": {
+            "lane": { "type": "string", "minLength": 1 },
+            "owner": { "type": "string", "minLength": 1 }
+          }
+        },
+        "evidence": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "gaps": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "next_action": { "type": "string", "minLength": 1 },
+        "instruction": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}
