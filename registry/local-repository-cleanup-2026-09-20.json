@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0",
+  "observed_at": "2026-09-20T20:25:00+09:00",
+  "archive_root": "C:\\dev\\_archive\\2026-09-20",
+  "deletion_performed": false,
+  "moves": [
+    {
+      "repository": "freepass-creator/-",
+      "classification": "RETIRED_CANDIDATE",
+      "retirement_gate": "READY_FOR_ARCHIVE",
+      "source_path": "C:\\dev\\-",
+      "archive_path": "C:\\dev\\_archive\\2026-09-20\\repositories\\-",
+      "branch": "main",
+      "head": null,
+      "commit_state": "unborn branch; no commits",
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": null,
+      "behind": null,
+      "running_process_references": 0,
+      "recent_codex_cwd_references": 0,
+      "reparse_point": false,
+      "backup_manifest": "C:\\dev\\_archive\\2026-09-20\\backups\\dash-empty-repository.manifest.json",
+      "backup_zip": "C:\\dev\\_archive\\2026-09-20\\backups\\dash-empty-repository.zip",
+      "backup_zip_sha256": "1cdfc58f144d5ac2e9e771e0f21953ff22902fea0255addafd345b2c0f0a5b78",
+      "source_file_count": 18,
+      "backup_entry_count": 18,
+      "post_move_file_count": 18,
+      "post_move_hash_mismatches": 0,
+      "restore_command": "Move-Item -LiteralPath 'C:\\dev\\_archive\\2026-09-20\\repositories\\-' -Destination 'C:\\dev'"
+    }
+  ],
+  "held_examples": [
+    {
+      "path": "C:\\dev\\jpkerp-v4",
+      "reason": "retirement gate is BLOCKED"
+    },
+    {
+      "path": "C:\\dev\\jpkerp5",
+      "reason": "dirty/unpushed state and retirement gate is BLOCKED"
+    },
+    {
+      "path": "C:\\dev\\workcontrol",
+      "reason": "dirty/unpushed state, protected operational family, and no machine retirement gate"
+    },
+    {
+      "path": "C:\\dev\\rentsafe",
+      "reason": "external deployment/domain/secrets binding check remains open"
+    }
+  ]
+}

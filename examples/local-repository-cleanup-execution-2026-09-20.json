@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "executed_at": "2026-09-20T20:25:00+09:00",
+  "source_path_before_move": "C:\\dev\\-",
+  "archive_path_after_move": "C:\\dev\\_archive\\2026-09-20\\repositories\\-",
+  "move_method": "PowerShell Move-Item with LiteralPath after Resolve-Path containment and reparse-point checks",
+  "move_command": "Move-Item -LiteralPath 'C:\\dev\\-' -Destination 'C:\\dev\\_archive\\2026-09-20\\repositories'",
+  "source_exists_after_move": false,
+  "archive_exists_after_move": true,
+  "archive_reparse_point": false,
+  "source_file_count": 18,
+  "backup_zip_entry_count": 18,
+  "post_move_file_count": 18,
+  "post_move_hash_mismatches": 0,
+  "backup_zip_sha256": "1cdfc58f144d5ac2e9e771e0f21953ff22902fea0255addafd345b2c0f0a5b78",
+  "deletion_performed": false,
+  "independent_review": {
+    "cursor_agent_initial": "HOLD; findings accepted and corrected",
+    "claude": "UNAVAILABLE_WEEKLY_LIMIT",
+    "gemini_cli": "UNAVAILABLE_ACCOUNT_403"
+  }
+}

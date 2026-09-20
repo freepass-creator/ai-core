@@ -1,0 +1,1613 @@
+{
+  "schema_version": "1.0",
+  "observed_at": "2026-09-20T20:20:00+09:00",
+  "root": "C:\\dev",
+  "archive_root": "C:\\dev\\_archive\\2026-09-20",
+  "source_documents": [
+    "docs/REPO_MULTI_AI_DUPLICATION_AUDIT_2026-09-20.md",
+    "docs/REPOSITORY_LIFECYCLE_AUDIT_2026-09-20.md",
+    "docs/RETIREMENT_WAVE_1_2026-09-20.md",
+    "examples/repository-lifecycle-2026-09-20.json",
+    "examples/retirement-wave-1-2026-09-20.json",
+    "registry/projects.json"
+  ],
+  "policy": {
+    "delete": false,
+    "active_hold_unknown_move": false,
+    "require_backup_manifest": true,
+    "require_literal_path_move": true,
+    "reparse_points_auto_move": false
+  },
+  "repositories": [
+    {
+      "path": "C:\\dev\\_받은자료",
+      "classification": "UNKNOWN",
+      "repository_remote": null,
+      "branch": null,
+      "head": null,
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": null,
+      "behind": null,
+      "worktree_paths": null,
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "not a Git checkout",
+        "origin remote missing or unreadable"
+      ]
+    },
+    {
+      "path": "C:\\dev\\_worktrees",
+      "classification": "UNKNOWN",
+      "repository_remote": null,
+      "branch": null,
+      "head": null,
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": null,
+      "behind": null,
+      "worktree_paths": null,
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "not a Git checkout",
+        "origin remote missing or unreadable"
+      ]
+    },
+    {
+      "path": "C:\\dev\\_wt",
+      "classification": "UNKNOWN",
+      "repository_remote": null,
+      "branch": null,
+      "head": null,
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": null,
+      "behind": null,
+      "worktree_paths": null,
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "not a Git checkout",
+        "origin remote missing or unreadable"
+      ]
+    },
+    {
+      "path": "C:\\dev\\_wt-base",
+      "classification": "UNKNOWN",
+      "repository_remote": null,
+      "branch": null,
+      "head": null,
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": null,
+      "behind": null,
+      "worktree_paths": null,
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "not a Git checkout",
+        "origin remote missing or unreadable"
+      ]
+    },
+    {
+      "path": "C:\\dev\\_wt-devcenter-whitelabel-final",
+      "classification": "UNKNOWN",
+      "repository_remote": null,
+      "branch": null,
+      "head": null,
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": null,
+      "behind": null,
+      "worktree_paths": null,
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "not a Git checkout",
+        "origin remote missing or unreadable"
+      ]
+    },
+    {
+      "path": "C:\\dev\\_wt-fence",
+      "classification": "UNKNOWN",
+      "repository_remote": null,
+      "branch": null,
+      "head": null,
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": null,
+      "behind": null,
+      "worktree_paths": null,
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "not a Git checkout",
+        "origin remote missing or unreadable"
+      ]
+    },
+    {
+      "path": "C:\\dev\\-",
+      "classification": "RETIRED_CANDIDATE",
+      "repository_remote": "https://github.com/freepass-creator/-.git",
+      "branch": "main",
+      "head": null,
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": null,
+      "behind": null,
+      "worktree_paths": null,
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "reparse_point": false,
+      "retirement_gate": "READY_FOR_ARCHIVE",
+      "move_eligible": true,
+      "blockers": []
+    },
+    {
+      "path": "C:\\dev\\.claude",
+      "classification": "UNKNOWN",
+      "repository_remote": null,
+      "branch": null,
+      "head": null,
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": null,
+      "behind": null,
+      "worktree_paths": null,
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "not a Git checkout",
+        "origin remote missing or unreadable"
+      ]
+    },
+    {
+      "path": "C:\\dev\\.wt-est",
+      "classification": "ACTIVE",
+      "repository_remote": "https://github.com/freepass-creator/freepasserp4.git",
+      "branch": "feat/estimate-new-used",
+      "head": "fd8522a38c86298ae7b0113bccdc3b288ef97f8a",
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": 13,
+      "behind": 0,
+      "worktree_paths": "C:/dev/freepasserp4\r\nHEAD 595abaefa72ab0d5ee14414fec8998fd632ec488\r\nbranch refs/heads/feat/spring-atom-monitor\r\n\r\nworktree C:/dev/.wt-est\r\nHEAD fd8522a38c86298ae7b0113bccdc3b288ef97f8a\r\nbranch refs/heads/feat/estimate-new-used\r\n\r\nworktree C:/dev/.wt-rp012\r\nHEAD d1fa2d5e2e035ca7e3f5cab873f8186ba2138835\r\nbranch refs/heads/fix/rp012-deposit-column\r\n\r\nworktree C:/dev/.wt-test\r\nHEAD c4c43a43e86d4cc372db33f42da409589a7bc93d\r\ndetached\r\n\r\nworktree C:/dev/fp-shop-pr\r\nHEAD 96a24707ed8e769393f3a7cb6656de0f0c280f2d\r\nbranch refs/heads/main\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-31c8280\r\nHEAD 31c82800f2fc30954d6fae7e5907d9c1f62ba962\r\ndetached\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-9a70768\r\nHEAD 9a707682009269436c15c5431a978912ffb04c2a\r\ndetached\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-cce3ce0\r\nHEAD 6e30cf3b5c63fc903c3dd918828d16bcc068d394\r\ndetached\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-photo-production\r\nHEAD 4f6a889bb0edfcef72c65da62e2ec5ba3df70f35\r\nbranch refs/heads/codex/photo-download-production\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-supplier-main\r\nHEAD 0b5c04764b502d6c5294b7b814e04d9d82abe1f1\r\nbranch refs/heads/codex/supplier-filter-column\r\n\r\nworktree C:/dev/freepasserp4/tmp/wt-stl-atoms\r\nHEAD 8d1cd6f63aa5f7d490a0c277755eaaa578ac141a\r\nbranch refs/heads/feat/settlement-from-atoms\r\n\r\nworktree C:/dev/freepasserp4-rtdb-current\r\nHEAD d8954261ac1b5271bccb141fc9c3c4acdba2ca6d\r\nbranch refs/heads/codex/rtdb-cutover-current\r\n\r\nworktree C:/dev/freepasserp4-ui-deploy\r\nHEAD a466b0aa3fb4ecbb7d08d6e9806e917953b18397\r\ndetached\r\n\r\nworktree C:/dev/freepasserp4-wt-f86check\r\nHEAD f17747a549cf7857c28932373ada0bfb8eb7d7da\r\nbranch refs/heads/claude/f86-freshness-checker-spec\r\n\r\nworktree C:/dev/worktrees/freepass-source-registry-current\r\nHEAD fed7cce004668170919d26bb128619ed4c248122\r\nbranch refs/heads/codex/source-registry-current",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "unpushed commits present",
+        "duplicate remote checkout requires canonical-path proof"
+      ]
+    },
+    {
+      "path": "C:\\dev\\.wt-est2",
+      "classification": "UNKNOWN",
+      "repository_remote": null,
+      "branch": null,
+      "head": null,
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": null,
+      "behind": null,
+      "worktree_paths": null,
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "not a Git checkout",
+        "origin remote missing or unreadable"
+      ]
+    },
+    {
+      "path": "C:\\dev\\.wt-g0",
+      "classification": "ACTIVE",
+      "repository_remote": "https://github.com/freepass-creator/ai-core.git",
+      "branch": "fix/g0-episode-declaration",
+      "head": "4311a1668286a0815c5f3475cb314b47767e4489",
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": 0,
+      "behind": 0,
+      "worktree_paths": "C:/dev/ai-core\r\nHEAD 4f0ad7dc227f45515680c7d1e80af6d698ed7863\r\nbranch refs/heads/docs/chat-github-handoff-policy-20260920\r\n\r\nworktree C:/dev/.wt-g0\r\nHEAD 4311a1668286a0815c5f3475cb314b47767e4489\r\nbranch refs/heads/fix/g0-episode-declaration\r\n\r\nworktree C:/dev/.wt40\r\nHEAD cb53be0d4b7cb5a00bd73aa153ecbd857b911ba3\r\nbranch refs/heads/fix/g0-control-tower-parity\r\n\r\nworktree C:/dev/.wtmain\r\nHEAD 804bf1269684dbc6c28ee6cdf774e234842f3bbd\r\nbranch refs/heads/fix/main-episode-quotepath\r\n\r\nworktree C:/dev/ai-core/.claude/worktrees/agent-a0050210a1ace8d23\r\nHEAD 215a8ee74523667c5bf099ed068e9aaa572a53b5\r\nbranch refs/heads/work/order-work-submitter\r\n\r\nworktree C:/dev/ai-core/.claude/worktrees/agent-ad06b95678028fc9b\r\nHEAD 215a8ee74523667c5bf099ed068e9aaa572a53b5\r\nbranch refs/heads/demo/order-to-projection\r\n\r\nworktree C:/dev/ai-core/.claude/worktrees/agent-ad91bffe5bdedaa2a\r\nHEAD 215a8ee74523667c5bf099ed068e9aaa572a53b5\r\nbranch refs/heads/worktree-agent-ad91bffe5bdedaa2a\r\n\r\nworktree C:/dev/ai-core/.claude/worktrees/jolly-margulis-b8d52b\r\nHEAD 67bc09ec0c401eb7f4f9396771d7355020c8e057\r\ndetached\r\n\r\nworktree C:/dev/ai-core/.claude/worktrees/silly-booth-d83a39\r\nHEAD ecce1093eefe9c52bea0befc5fa7c56d2d8a7565\r\ndetached\r\n\r\nworktree C:/dev/ai-core-control-tower\r\nHEAD c41ab556c074489f52615d6dadf27efa45316db7\r\nbranch refs/heads/docs/2026-09-16-review\r\n\r\nworktree C:/dev/ai-core-order-investigate\r\nHEAD 215a8ee74523667c5bf099ed068e9aaa572a53b5\r\ndetached\r\n\r\nworktree C:/Users/admin/.codex/worktrees/1e61/ai-core\r\nHEAD 628465d851400f58a71337452b70da649bb9b5b1\r\nbranch refs/heads/codex/order-control-integration\r\n\r\nworktree C:/Users/admin/.codex/worktrees/293f/ai-core\r\nHEAD d46f8c42350064bf7aca5b370884fb37bebff3e1\r\nbranch refs/heads/codex/ai-core-main-sync-20260920\r\n\r\nworktree C:/Users/admin/.codex/worktrees/852a/ai-core\r\nHEAD f08e79e2be5fb9e5dd4e4e152b0b34f576136a8e\r\nbranch refs/heads/codex/self-evolution-evidence\r\n\r\nworktree C:/Users/admin/.codex/worktrees/9514/ai-core\r\nHEAD 8c61a6cd6ae25d5cf6ee093062d84ebb1e008f21\r\ndetached\r\n\r\nworktree C:/Users/admin/.codex/worktrees/bc3e/ai-core\r\nHEAD f6ab4fd572eb003945beafa5e8722321a4b2fb81\r\nbranch refs/heads/codex/ai-core-usable-flow-20260920\r\n\r\nworktree C:/Users/admin/.codex/worktrees/d111/ai-core\r\nHEAD f6ab4fd572eb003945beafa5e8722321a4b2fb81\r\ndetached\r\n\r\nworktree C:/Users/admin/AppData/Local/Temp/claude/pr37\r\nHEAD 41d6047cde595f5b83f85ffc0e7dcaa462c57a1c\r\ndetached\r\n\r\nworktree C:/Users/admin/AppData/Local/Temp/pr22-merge\r\nHEAD 628465d851400f58a71337452b70da649bb9b5b1\r\ndetached\r\n\r\nworktree C:/Users/admin/AppData/Local/Temp/pr22-merge2\r\nHEAD 215a8ee74523667c5bf099ed068e9aaa572a53b5\r\ndetached",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "duplicate remote checkout requires canonical-path proof"
+      ]
+    },
+    {
+      "path": "C:\\dev\\.wt-newcar",
+      "classification": "UNKNOWN",
+      "repository_remote": null,
+      "branch": null,
+      "head": null,
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": null,
+      "behind": null,
+      "worktree_paths": null,
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "not a Git checkout",
+        "origin remote missing or unreadable"
+      ]
+    },
+    {
+      "path": "C:\\dev\\.wt-rp012",
+      "classification": "ACTIVE",
+      "repository_remote": "https://github.com/freepass-creator/freepasserp4.git",
+      "branch": "fix/rp012-deposit-column",
+      "head": "d1fa2d5e2e035ca7e3f5cab873f8186ba2138835",
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": 0,
+      "behind": 0,
+      "worktree_paths": "C:/dev/freepasserp4\r\nHEAD 595abaefa72ab0d5ee14414fec8998fd632ec488\r\nbranch refs/heads/feat/spring-atom-monitor\r\n\r\nworktree C:/dev/.wt-est\r\nHEAD fd8522a38c86298ae7b0113bccdc3b288ef97f8a\r\nbranch refs/heads/feat/estimate-new-used\r\n\r\nworktree C:/dev/.wt-rp012\r\nHEAD d1fa2d5e2e035ca7e3f5cab873f8186ba2138835\r\nbranch refs/heads/fix/rp012-deposit-column\r\n\r\nworktree C:/dev/.wt-test\r\nHEAD c4c43a43e86d4cc372db33f42da409589a7bc93d\r\ndetached\r\n\r\nworktree C:/dev/fp-shop-pr\r\nHEAD 96a24707ed8e769393f3a7cb6656de0f0c280f2d\r\nbranch refs/heads/main\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-31c8280\r\nHEAD 31c82800f2fc30954d6fae7e5907d9c1f62ba962\r\ndetached\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-9a70768\r\nHEAD 9a707682009269436c15c5431a978912ffb04c2a\r\ndetached\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-cce3ce0\r\nHEAD 6e30cf3b5c63fc903c3dd918828d16bcc068d394\r\ndetached\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-photo-production\r\nHEAD 4f6a889bb0edfcef72c65da62e2ec5ba3df70f35\r\nbranch refs/heads/codex/photo-download-production\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-supplier-main\r\nHEAD 0b5c04764b502d6c5294b7b814e04d9d82abe1f1\r\nbranch refs/heads/codex/supplier-filter-column\r\n\r\nworktree C:/dev/freepasserp4/tmp/wt-stl-atoms\r\nHEAD 8d1cd6f63aa5f7d490a0c277755eaaa578ac141a\r\nbranch refs/heads/feat/settlement-from-atoms\r\n\r\nworktree C:/dev/freepasserp4-rtdb-current\r\nHEAD d8954261ac1b5271bccb141fc9c3c4acdba2ca6d\r\nbranch refs/heads/codex/rtdb-cutover-current\r\n\r\nworktree C:/dev/freepasserp4-ui-deploy\r\nHEAD a466b0aa3fb4ecbb7d08d6e9806e917953b18397\r\ndetached\r\n\r\nworktree C:/dev/freepasserp4-wt-f86check\r\nHEAD f17747a549cf7857c28932373ada0bfb8eb7d7da\r\nbranch refs/heads/claude/f86-freshness-checker-spec\r\n\r\nworktree C:/dev/worktrees/freepass-source-registry-current\r\nHEAD fed7cce004668170919d26bb128619ed4c248122\r\nbranch refs/heads/codex/source-registry-current",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "duplicate remote checkout requires canonical-path proof"
+      ]
+    },
+    {
+      "path": "C:\\dev\\.wt-slim",
+      "classification": "UNKNOWN",
+      "repository_remote": null,
+      "branch": null,
+      "head": null,
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": null,
+      "behind": null,
+      "worktree_paths": null,
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "not a Git checkout",
+        "origin remote missing or unreadable"
+      ]
+    },
+    {
+      "path": "C:\\dev\\.wt-test",
+      "classification": "ACTIVE",
+      "repository_remote": "https://github.com/freepass-creator/freepasserp4.git",
+      "branch": "",
+      "head": "c4c43a43e86d4cc372db33f42da409589a7bc93d",
+      "dirty_tracked_count": 1,
+      "untracked_count": 0,
+      "ahead": null,
+      "behind": null,
+      "worktree_paths": "C:/dev/freepasserp4\r\nHEAD 595abaefa72ab0d5ee14414fec8998fd632ec488\r\nbranch refs/heads/feat/spring-atom-monitor\r\n\r\nworktree C:/dev/.wt-est\r\nHEAD fd8522a38c86298ae7b0113bccdc3b288ef97f8a\r\nbranch refs/heads/feat/estimate-new-used\r\n\r\nworktree C:/dev/.wt-rp012\r\nHEAD d1fa2d5e2e035ca7e3f5cab873f8186ba2138835\r\nbranch refs/heads/fix/rp012-deposit-column\r\n\r\nworktree C:/dev/.wt-test\r\nHEAD c4c43a43e86d4cc372db33f42da409589a7bc93d\r\ndetached\r\n\r\nworktree C:/dev/fp-shop-pr\r\nHEAD 96a24707ed8e769393f3a7cb6656de0f0c280f2d\r\nbranch refs/heads/main\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-31c8280\r\nHEAD 31c82800f2fc30954d6fae7e5907d9c1f62ba962\r\ndetached\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-9a70768\r\nHEAD 9a707682009269436c15c5431a978912ffb04c2a\r\ndetached\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-cce3ce0\r\nHEAD 6e30cf3b5c63fc903c3dd918828d16bcc068d394\r\ndetached\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-photo-production\r\nHEAD 4f6a889bb0edfcef72c65da62e2ec5ba3df70f35\r\nbranch refs/heads/codex/photo-download-production\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-supplier-main\r\nHEAD 0b5c04764b502d6c5294b7b814e04d9d82abe1f1\r\nbranch refs/heads/codex/supplier-filter-column\r\n\r\nworktree C:/dev/freepasserp4/tmp/wt-stl-atoms\r\nHEAD 8d1cd6f63aa5f7d490a0c277755eaaa578ac141a\r\nbranch refs/heads/feat/settlement-from-atoms\r\n\r\nworktree C:/dev/freepasserp4-rtdb-current\r\nHEAD d8954261ac1b5271bccb141fc9c3c4acdba2ca6d\r\nbranch refs/heads/codex/rtdb-cutover-current\r\n\r\nworktree C:/dev/freepasserp4-ui-deploy\r\nHEAD a466b0aa3fb4ecbb7d08d6e9806e917953b18397\r\ndetached\r\n\r\nworktree C:/dev/freepasserp4-wt-f86check\r\nHEAD f17747a549cf7857c28932373ada0bfb8eb7d7da\r\nbranch refs/heads/claude/f86-freshness-checker-spec\r\n\r\nworktree C:/dev/worktrees/freepass-source-registry-current\r\nHEAD fed7cce004668170919d26bb128619ed4c248122\r\nbranch refs/heads/codex/source-registry-current",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "tracked changes present",
+        "duplicate remote checkout requires canonical-path proof"
+      ]
+    },
+    {
+      "path": "C:\\dev\\.wt40",
+      "classification": "ACTIVE",
+      "repository_remote": "https://github.com/freepass-creator/ai-core.git",
+      "branch": "fix/g0-control-tower-parity",
+      "head": "cb53be0d4b7cb5a00bd73aa153ecbd857b911ba3",
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": 0,
+      "behind": 0,
+      "worktree_paths": "C:/dev/ai-core\r\nHEAD 4f0ad7dc227f45515680c7d1e80af6d698ed7863\r\nbranch refs/heads/docs/chat-github-handoff-policy-20260920\r\n\r\nworktree C:/dev/.wt-g0\r\nHEAD 4311a1668286a0815c5f3475cb314b47767e4489\r\nbranch refs/heads/fix/g0-episode-declaration\r\n\r\nworktree C:/dev/.wt40\r\nHEAD cb53be0d4b7cb5a00bd73aa153ecbd857b911ba3\r\nbranch refs/heads/fix/g0-control-tower-parity\r\n\r\nworktree C:/dev/.wtmain\r\nHEAD 804bf1269684dbc6c28ee6cdf774e234842f3bbd\r\nbranch refs/heads/fix/main-episode-quotepath\r\n\r\nworktree C:/dev/ai-core/.claude/worktrees/agent-a0050210a1ace8d23\r\nHEAD 215a8ee74523667c5bf099ed068e9aaa572a53b5\r\nbranch refs/heads/work/order-work-submitter\r\n\r\nworktree C:/dev/ai-core/.claude/worktrees/agent-ad06b95678028fc9b\r\nHEAD 215a8ee74523667c5bf099ed068e9aaa572a53b5\r\nbranch refs/heads/demo/order-to-projection\r\n\r\nworktree C:/dev/ai-core/.claude/worktrees/agent-ad91bffe5bdedaa2a\r\nHEAD 215a8ee74523667c5bf099ed068e9aaa572a53b5\r\nbranch refs/heads/worktree-agent-ad91bffe5bdedaa2a\r\n\r\nworktree C:/dev/ai-core/.claude/worktrees/jolly-margulis-b8d52b\r\nHEAD 67bc09ec0c401eb7f4f9396771d7355020c8e057\r\ndetached\r\n\r\nworktree C:/dev/ai-core/.claude/worktrees/silly-booth-d83a39\r\nHEAD ecce1093eefe9c52bea0befc5fa7c56d2d8a7565\r\ndetached\r\n\r\nworktree C:/dev/ai-core-control-tower\r\nHEAD c41ab556c074489f52615d6dadf27efa45316db7\r\nbranch refs/heads/docs/2026-09-16-review\r\n\r\nworktree C:/dev/ai-core-order-investigate\r\nHEAD 215a8ee74523667c5bf099ed068e9aaa572a53b5\r\ndetached\r\n\r\nworktree C:/Users/admin/.codex/worktrees/1e61/ai-core\r\nHEAD 628465d851400f58a71337452b70da649bb9b5b1\r\nbranch refs/heads/codex/order-control-integration\r\n\r\nworktree C:/Users/admin/.codex/worktrees/293f/ai-core\r\nHEAD d46f8c42350064bf7aca5b370884fb37bebff3e1\r\nbranch refs/heads/codex/ai-core-main-sync-20260920\r\n\r\nworktree C:/Users/admin/.codex/worktrees/852a/ai-core\r\nHEAD f08e79e2be5fb9e5dd4e4e152b0b34f576136a8e\r\nbranch refs/heads/codex/self-evolution-evidence\r\n\r\nworktree C:/Users/admin/.codex/worktrees/9514/ai-core\r\nHEAD 8c61a6cd6ae25d5cf6ee093062d84ebb1e008f21\r\ndetached\r\n\r\nworktree C:/Users/admin/.codex/worktrees/bc3e/ai-core\r\nHEAD f6ab4fd572eb003945beafa5e8722321a4b2fb81\r\nbranch refs/heads/codex/ai-core-usable-flow-20260920\r\n\r\nworktree C:/Users/admin/.codex/worktrees/d111/ai-core\r\nHEAD f6ab4fd572eb003945beafa5e8722321a4b2fb81\r\ndetached\r\n\r\nworktree C:/Users/admin/AppData/Local/Temp/claude/pr37\r\nHEAD 41d6047cde595f5b83f85ffc0e7dcaa462c57a1c\r\ndetached\r\n\r\nworktree C:/Users/admin/AppData/Local/Temp/pr22-merge\r\nHEAD 628465d851400f58a71337452b70da649bb9b5b1\r\ndetached\r\n\r\nworktree C:/Users/admin/AppData/Local/Temp/pr22-merge2\r\nHEAD 215a8ee74523667c5bf099ed068e9aaa572a53b5\r\ndetached",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "duplicate remote checkout requires canonical-path proof"
+      ]
+    },
+    {
+      "path": "C:\\dev\\.wtmain",
+      "classification": "ACTIVE",
+      "repository_remote": "https://github.com/freepass-creator/ai-core.git",
+      "branch": "fix/main-episode-quotepath",
+      "head": "804bf1269684dbc6c28ee6cdf774e234842f3bbd",
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": 0,
+      "behind": 0,
+      "worktree_paths": "C:/dev/ai-core\r\nHEAD 4f0ad7dc227f45515680c7d1e80af6d698ed7863\r\nbranch refs/heads/docs/chat-github-handoff-policy-20260920\r\n\r\nworktree C:/dev/.wt-g0\r\nHEAD 4311a1668286a0815c5f3475cb314b47767e4489\r\nbranch refs/heads/fix/g0-episode-declaration\r\n\r\nworktree C:/dev/.wt40\r\nHEAD cb53be0d4b7cb5a00bd73aa153ecbd857b911ba3\r\nbranch refs/heads/fix/g0-control-tower-parity\r\n\r\nworktree C:/dev/.wtmain\r\nHEAD 804bf1269684dbc6c28ee6cdf774e234842f3bbd\r\nbranch refs/heads/fix/main-episode-quotepath\r\n\r\nworktree C:/dev/ai-core/.claude/worktrees/agent-a0050210a1ace8d23\r\nHEAD 215a8ee74523667c5bf099ed068e9aaa572a53b5\r\nbranch refs/heads/work/order-work-submitter\r\n\r\nworktree C:/dev/ai-core/.claude/worktrees/agent-ad06b95678028fc9b\r\nHEAD 215a8ee74523667c5bf099ed068e9aaa572a53b5\r\nbranch refs/heads/demo/order-to-projection\r\n\r\nworktree C:/dev/ai-core/.claude/worktrees/agent-ad91bffe5bdedaa2a\r\nHEAD 215a8ee74523667c5bf099ed068e9aaa572a53b5\r\nbranch refs/heads/worktree-agent-ad91bffe5bdedaa2a\r\n\r\nworktree C:/dev/ai-core/.claude/worktrees/jolly-margulis-b8d52b\r\nHEAD 67bc09ec0c401eb7f4f9396771d7355020c8e057\r\ndetached\r\n\r\nworktree C:/dev/ai-core/.claude/worktrees/silly-booth-d83a39\r\nHEAD ecce1093eefe9c52bea0befc5fa7c56d2d8a7565\r\ndetached\r\n\r\nworktree C:/dev/ai-core-control-tower\r\nHEAD c41ab556c074489f52615d6dadf27efa45316db7\r\nbranch refs/heads/docs/2026-09-16-review\r\n\r\nworktree C:/dev/ai-core-order-investigate\r\nHEAD 215a8ee74523667c5bf099ed068e9aaa572a53b5\r\ndetached\r\n\r\nworktree C:/Users/admin/.codex/worktrees/1e61/ai-core\r\nHEAD 628465d851400f58a71337452b70da649bb9b5b1\r\nbranch refs/heads/codex/order-control-integration\r\n\r\nworktree C:/Users/admin/.codex/worktrees/293f/ai-core\r\nHEAD d46f8c42350064bf7aca5b370884fb37bebff3e1\r\nbranch refs/heads/codex/ai-core-main-sync-20260920\r\n\r\nworktree C:/Users/admin/.codex/worktrees/852a/ai-core\r\nHEAD f08e79e2be5fb9e5dd4e4e152b0b34f576136a8e\r\nbranch refs/heads/codex/self-evolution-evidence\r\n\r\nworktree C:/Users/admin/.codex/worktrees/9514/ai-core\r\nHEAD 8c61a6cd6ae25d5cf6ee093062d84ebb1e008f21\r\ndetached\r\n\r\nworktree C:/Users/admin/.codex/worktrees/bc3e/ai-core\r\nHEAD f6ab4fd572eb003945beafa5e8722321a4b2fb81\r\nbranch refs/heads/codex/ai-core-usable-flow-20260920\r\n\r\nworktree C:/Users/admin/.codex/worktrees/d111/ai-core\r\nHEAD f6ab4fd572eb003945beafa5e8722321a4b2fb81\r\ndetached\r\n\r\nworktree C:/Users/admin/AppData/Local/Temp/claude/pr37\r\nHEAD 41d6047cde595f5b83f85ffc0e7dcaa462c57a1c\r\ndetached\r\n\r\nworktree C:/Users/admin/AppData/Local/Temp/pr22-merge\r\nHEAD 628465d851400f58a71337452b70da649bb9b5b1\r\ndetached\r\n\r\nworktree C:/Users/admin/AppData/Local/Temp/pr22-merge2\r\nHEAD 215a8ee74523667c5bf099ed068e9aaa572a53b5\r\ndetached",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "duplicate remote checkout requires canonical-path proof"
+      ]
+    },
+    {
+      "path": "C:\\dev\\새 폴더",
+      "classification": "UNKNOWN",
+      "repository_remote": null,
+      "branch": null,
+      "head": null,
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": null,
+      "behind": null,
+      "worktree_paths": null,
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "not a Git checkout",
+        "origin remote missing or unreadable"
+      ]
+    },
+    {
+      "path": "C:\\dev\\주차등록",
+      "classification": "UNKNOWN",
+      "repository_remote": null,
+      "branch": null,
+      "head": null,
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": null,
+      "behind": null,
+      "worktree_paths": null,
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "not a Git checkout",
+        "origin remote missing or unreadable"
+      ]
+    },
+    {
+      "path": "C:\\dev\\프리패스_지분인수",
+      "classification": "UNKNOWN",
+      "repository_remote": null,
+      "branch": null,
+      "head": null,
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": null,
+      "behind": null,
+      "worktree_paths": null,
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "not a Git checkout",
+        "origin remote missing or unreadable"
+      ]
+    },
+    {
+      "path": "C:\\dev\\ai-core",
+      "classification": "ACTIVE",
+      "repository_remote": "https://github.com/freepass-creator/ai-core.git",
+      "branch": "docs/chat-github-handoff-policy-20260920",
+      "head": "4f0ad7dc227f45515680c7d1e80af6d698ed7863",
+      "dirty_tracked_count": 0,
+      "untracked_count": 1,
+      "ahead": 0,
+      "behind": 0,
+      "worktree_paths": "C:/dev/ai-core\r\nHEAD 4f0ad7dc227f45515680c7d1e80af6d698ed7863\r\nbranch refs/heads/docs/chat-github-handoff-policy-20260920\r\n\r\nworktree C:/dev/.wt-g0\r\nHEAD 4311a1668286a0815c5f3475cb314b47767e4489\r\nbranch refs/heads/fix/g0-episode-declaration\r\n\r\nworktree C:/dev/.wt40\r\nHEAD cb53be0d4b7cb5a00bd73aa153ecbd857b911ba3\r\nbranch refs/heads/fix/g0-control-tower-parity\r\n\r\nworktree C:/dev/.wtmain\r\nHEAD 804bf1269684dbc6c28ee6cdf774e234842f3bbd\r\nbranch refs/heads/fix/main-episode-quotepath\r\n\r\nworktree C:/dev/ai-core/.claude/worktrees/agent-a0050210a1ace8d23\r\nHEAD 215a8ee74523667c5bf099ed068e9aaa572a53b5\r\nbranch refs/heads/work/order-work-submitter\r\n\r\nworktree C:/dev/ai-core/.claude/worktrees/agent-ad06b95678028fc9b\r\nHEAD 215a8ee74523667c5bf099ed068e9aaa572a53b5\r\nbranch refs/heads/demo/order-to-projection\r\n\r\nworktree C:/dev/ai-core/.claude/worktrees/agent-ad91bffe5bdedaa2a\r\nHEAD 215a8ee74523667c5bf099ed068e9aaa572a53b5\r\nbranch refs/heads/worktree-agent-ad91bffe5bdedaa2a\r\n\r\nworktree C:/dev/ai-core/.claude/worktrees/jolly-margulis-b8d52b\r\nHEAD 67bc09ec0c401eb7f4f9396771d7355020c8e057\r\ndetached\r\n\r\nworktree C:/dev/ai-core/.claude/worktrees/silly-booth-d83a39\r\nHEAD ecce1093eefe9c52bea0befc5fa7c56d2d8a7565\r\ndetached\r\n\r\nworktree C:/dev/ai-core-control-tower\r\nHEAD c41ab556c074489f52615d6dadf27efa45316db7\r\nbranch refs/heads/docs/2026-09-16-review\r\n\r\nworktree C:/dev/ai-core-order-investigate\r\nHEAD 215a8ee74523667c5bf099ed068e9aaa572a53b5\r\ndetached\r\n\r\nworktree C:/Users/admin/.codex/worktrees/1e61/ai-core\r\nHEAD 628465d851400f58a71337452b70da649bb9b5b1\r\nbranch refs/heads/codex/order-control-integration\r\n\r\nworktree C:/Users/admin/.codex/worktrees/293f/ai-core\r\nHEAD d46f8c42350064bf7aca5b370884fb37bebff3e1\r\nbranch refs/heads/codex/ai-core-main-sync-20260920\r\n\r\nworktree C:/Users/admin/.codex/worktrees/852a/ai-core\r\nHEAD f08e79e2be5fb9e5dd4e4e152b0b34f576136a8e\r\nbranch refs/heads/codex/self-evolution-evidence\r\n\r\nworktree C:/Users/admin/.codex/worktrees/9514/ai-core\r\nHEAD 8c61a6cd6ae25d5cf6ee093062d84ebb1e008f21\r\ndetached\r\n\r\nworktree C:/Users/admin/.codex/worktrees/bc3e/ai-core\r\nHEAD f6ab4fd572eb003945beafa5e8722321a4b2fb81\r\nbranch refs/heads/codex/ai-core-usable-flow-20260920\r\n\r\nworktree C:/Users/admin/.codex/worktrees/d111/ai-core\r\nHEAD f6ab4fd572eb003945beafa5e8722321a4b2fb81\r\ndetached\r\n\r\nworktree C:/Users/admin/AppData/Local/Temp/claude/pr37\r\nHEAD 41d6047cde595f5b83f85ffc0e7dcaa462c57a1c\r\ndetached\r\n\r\nworktree C:/Users/admin/AppData/Local/Temp/pr22-merge\r\nHEAD 628465d851400f58a71337452b70da649bb9b5b1\r\ndetached\r\n\r\nworktree C:/Users/admin/AppData/Local/Temp/pr22-merge2\r\nHEAD 215a8ee74523667c5bf099ed068e9aaa572a53b5\r\ndetached",
+      "process_ids": [
+        27376,
+        27176
+      ],
+      "recent_codex_cwd": true,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "untracked files present",
+        "running process references path",
+        "recent Codex task cwd references path",
+        "protected operational family pending explicit activity proof",
+        "duplicate remote checkout requires canonical-path proof"
+      ]
+    },
+    {
+      "path": "C:\\dev\\ai-core-audit",
+      "classification": "ACTIVE",
+      "repository_remote": "https://github.com/freepass-creator/ai-core.git",
+      "branch": "feature/cognitive-runtime-v0.6",
+      "head": "4178339dec64d44de54bda66b5060af5e220b887",
+      "dirty_tracked_count": 0,
+      "untracked_count": 1,
+      "ahead": 0,
+      "behind": 0,
+      "worktree_paths": "C:/dev/ai-core-audit\r\nHEAD 4178339dec64d44de54bda66b5060af5e220b887\r\nbranch refs/heads/feature/cognitive-runtime-v0.6",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "untracked files present",
+        "protected operational family pending explicit activity proof",
+        "duplicate remote checkout requires canonical-path proof"
+      ]
+    },
+    {
+      "path": "C:\\dev\\ai-core-control-tower",
+      "classification": "ACTIVE",
+      "repository_remote": "https://github.com/freepass-creator/ai-core.git",
+      "branch": "docs/2026-09-16-review",
+      "head": "c41ab556c074489f52615d6dadf27efa45316db7",
+      "dirty_tracked_count": 0,
+      "untracked_count": 1,
+      "ahead": 3,
+      "behind": 0,
+      "worktree_paths": "C:/dev/ai-core\r\nHEAD 4f0ad7dc227f45515680c7d1e80af6d698ed7863\r\nbranch refs/heads/docs/chat-github-handoff-policy-20260920\r\n\r\nworktree C:/dev/.wt-g0\r\nHEAD 4311a1668286a0815c5f3475cb314b47767e4489\r\nbranch refs/heads/fix/g0-episode-declaration\r\n\r\nworktree C:/dev/.wt40\r\nHEAD cb53be0d4b7cb5a00bd73aa153ecbd857b911ba3\r\nbranch refs/heads/fix/g0-control-tower-parity\r\n\r\nworktree C:/dev/.wtmain\r\nHEAD 804bf1269684dbc6c28ee6cdf774e234842f3bbd\r\nbranch refs/heads/fix/main-episode-quotepath\r\n\r\nworktree C:/dev/ai-core/.claude/worktrees/agent-a0050210a1ace8d23\r\nHEAD 215a8ee74523667c5bf099ed068e9aaa572a53b5\r\nbranch refs/heads/work/order-work-submitter\r\n\r\nworktree C:/dev/ai-core/.claude/worktrees/agent-ad06b95678028fc9b\r\nHEAD 215a8ee74523667c5bf099ed068e9aaa572a53b5\r\nbranch refs/heads/demo/order-to-projection\r\n\r\nworktree C:/dev/ai-core/.claude/worktrees/agent-ad91bffe5bdedaa2a\r\nHEAD 215a8ee74523667c5bf099ed068e9aaa572a53b5\r\nbranch refs/heads/worktree-agent-ad91bffe5bdedaa2a\r\n\r\nworktree C:/dev/ai-core/.claude/worktrees/jolly-margulis-b8d52b\r\nHEAD 67bc09ec0c401eb7f4f9396771d7355020c8e057\r\ndetached\r\n\r\nworktree C:/dev/ai-core/.claude/worktrees/silly-booth-d83a39\r\nHEAD ecce1093eefe9c52bea0befc5fa7c56d2d8a7565\r\ndetached\r\n\r\nworktree C:/dev/ai-core-control-tower\r\nHEAD c41ab556c074489f52615d6dadf27efa45316db7\r\nbranch refs/heads/docs/2026-09-16-review\r\n\r\nworktree C:/dev/ai-core-order-investigate\r\nHEAD 215a8ee74523667c5bf099ed068e9aaa572a53b5\r\ndetached\r\n\r\nworktree C:/Users/admin/.codex/worktrees/1e61/ai-core\r\nHEAD 628465d851400f58a71337452b70da649bb9b5b1\r\nbranch refs/heads/codex/order-control-integration\r\n\r\nworktree C:/Users/admin/.codex/worktrees/293f/ai-core\r\nHEAD d46f8c42350064bf7aca5b370884fb37bebff3e1\r\nbranch refs/heads/codex/ai-core-main-sync-20260920\r\n\r\nworktree C:/Users/admin/.codex/worktrees/852a/ai-core\r\nHEAD f08e79e2be5fb9e5dd4e4e152b0b34f576136a8e\r\nbranch refs/heads/codex/self-evolution-evidence\r\n\r\nworktree C:/Users/admin/.codex/worktrees/9514/ai-core\r\nHEAD 8c61a6cd6ae25d5cf6ee093062d84ebb1e008f21\r\ndetached\r\n\r\nworktree C:/Users/admin/.codex/worktrees/bc3e/ai-core\r\nHEAD f6ab4fd572eb003945beafa5e8722321a4b2fb81\r\nbranch refs/heads/codex/ai-core-usable-flow-20260920\r\n\r\nworktree C:/Users/admin/.codex/worktrees/d111/ai-core\r\nHEAD f6ab4fd572eb003945beafa5e8722321a4b2fb81\r\ndetached\r\n\r\nworktree C:/Users/admin/AppData/Local/Temp/claude/pr37\r\nHEAD 41d6047cde595f5b83f85ffc0e7dcaa462c57a1c\r\ndetached\r\n\r\nworktree C:/Users/admin/AppData/Local/Temp/pr22-merge\r\nHEAD 628465d851400f58a71337452b70da649bb9b5b1\r\ndetached\r\n\r\nworktree C:/Users/admin/AppData/Local/Temp/pr22-merge2\r\nHEAD 215a8ee74523667c5bf099ed068e9aaa572a53b5\r\ndetached",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "untracked files present",
+        "unpushed commits present",
+        "protected operational family pending explicit activity proof",
+        "duplicate remote checkout requires canonical-path proof"
+      ]
+    },
+    {
+      "path": "C:\\dev\\AI-CORE-GROUP",
+      "classification": "UNKNOWN",
+      "repository_remote": null,
+      "branch": null,
+      "head": null,
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": null,
+      "behind": null,
+      "worktree_paths": null,
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "not a Git checkout",
+        "origin remote missing or unreadable",
+        "protected operational family pending explicit activity proof"
+      ]
+    },
+    {
+      "path": "C:\\dev\\ai-core-order-investigate",
+      "classification": "ACTIVE",
+      "repository_remote": "https://github.com/freepass-creator/ai-core.git",
+      "branch": "",
+      "head": "215a8ee74523667c5bf099ed068e9aaa572a53b5",
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": null,
+      "behind": null,
+      "worktree_paths": "C:/dev/ai-core\r\nHEAD 4f0ad7dc227f45515680c7d1e80af6d698ed7863\r\nbranch refs/heads/docs/chat-github-handoff-policy-20260920\r\n\r\nworktree C:/dev/.wt-g0\r\nHEAD 4311a1668286a0815c5f3475cb314b47767e4489\r\nbranch refs/heads/fix/g0-episode-declaration\r\n\r\nworktree C:/dev/.wt40\r\nHEAD cb53be0d4b7cb5a00bd73aa153ecbd857b911ba3\r\nbranch refs/heads/fix/g0-control-tower-parity\r\n\r\nworktree C:/dev/.wtmain\r\nHEAD 804bf1269684dbc6c28ee6cdf774e234842f3bbd\r\nbranch refs/heads/fix/main-episode-quotepath\r\n\r\nworktree C:/dev/ai-core/.claude/worktrees/agent-a0050210a1ace8d23\r\nHEAD 215a8ee74523667c5bf099ed068e9aaa572a53b5\r\nbranch refs/heads/work/order-work-submitter\r\n\r\nworktree C:/dev/ai-core/.claude/worktrees/agent-ad06b95678028fc9b\r\nHEAD 215a8ee74523667c5bf099ed068e9aaa572a53b5\r\nbranch refs/heads/demo/order-to-projection\r\n\r\nworktree C:/dev/ai-core/.claude/worktrees/agent-ad91bffe5bdedaa2a\r\nHEAD 215a8ee74523667c5bf099ed068e9aaa572a53b5\r\nbranch refs/heads/worktree-agent-ad91bffe5bdedaa2a\r\n\r\nworktree C:/dev/ai-core/.claude/worktrees/jolly-margulis-b8d52b\r\nHEAD 67bc09ec0c401eb7f4f9396771d7355020c8e057\r\ndetached\r\n\r\nworktree C:/dev/ai-core/.claude/worktrees/silly-booth-d83a39\r\nHEAD ecce1093eefe9c52bea0befc5fa7c56d2d8a7565\r\ndetached\r\n\r\nworktree C:/dev/ai-core-control-tower\r\nHEAD c41ab556c074489f52615d6dadf27efa45316db7\r\nbranch refs/heads/docs/2026-09-16-review\r\n\r\nworktree C:/dev/ai-core-order-investigate\r\nHEAD 215a8ee74523667c5bf099ed068e9aaa572a53b5\r\ndetached\r\n\r\nworktree C:/Users/admin/.codex/worktrees/1e61/ai-core\r\nHEAD 628465d851400f58a71337452b70da649bb9b5b1\r\nbranch refs/heads/codex/order-control-integration\r\n\r\nworktree C:/Users/admin/.codex/worktrees/293f/ai-core\r\nHEAD d46f8c42350064bf7aca5b370884fb37bebff3e1\r\nbranch refs/heads/codex/ai-core-main-sync-20260920\r\n\r\nworktree C:/Users/admin/.codex/worktrees/852a/ai-core\r\nHEAD f08e79e2be5fb9e5dd4e4e152b0b34f576136a8e\r\nbranch refs/heads/codex/self-evolution-evidence\r\n\r\nworktree C:/Users/admin/.codex/worktrees/9514/ai-core\r\nHEAD 8c61a6cd6ae25d5cf6ee093062d84ebb1e008f21\r\ndetached\r\n\r\nworktree C:/Users/admin/.codex/worktrees/bc3e/ai-core\r\nHEAD f6ab4fd572eb003945beafa5e8722321a4b2fb81\r\nbranch refs/heads/codex/ai-core-usable-flow-20260920\r\n\r\nworktree C:/Users/admin/.codex/worktrees/d111/ai-core\r\nHEAD f6ab4fd572eb003945beafa5e8722321a4b2fb81\r\ndetached\r\n\r\nworktree C:/Users/admin/AppData/Local/Temp/claude/pr37\r\nHEAD 41d6047cde595f5b83f85ffc0e7dcaa462c57a1c\r\ndetached\r\n\r\nworktree C:/Users/admin/AppData/Local/Temp/pr22-merge\r\nHEAD 628465d851400f58a71337452b70da649bb9b5b1\r\ndetached\r\n\r\nworktree C:/Users/admin/AppData/Local/Temp/pr22-merge2\r\nHEAD 215a8ee74523667c5bf099ed068e9aaa572a53b5\r\ndetached",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "protected operational family pending explicit activity proof",
+        "duplicate remote checkout requires canonical-path proof"
+      ]
+    },
+    {
+      "path": "C:\\dev\\aiops",
+      "classification": "ACTIVE",
+      "repository_remote": "https://github.com/freepass-creator/aiops.git",
+      "branch": "chore/untrack-wonja-data",
+      "head": "d12f6d4afba48450391981c37fe3bda5da14b02f",
+      "dirty_tracked_count": 0,
+      "untracked_count": 1,
+      "ahead": 0,
+      "behind": 0,
+      "worktree_paths": "C:/dev/aiops\r\nHEAD d12f6d4afba48450391981c37fe3bda5da14b02f\r\nbranch refs/heads/chore/untrack-wonja-data\r\n\r\nworktree C:/dev/aiops/.claude/worktrees/amazing-williams-2cd89c\r\nHEAD baa18bcc2807cb3c2268d7e26df63b78db434a36\r\nbranch refs/heads/claude/amazing-williams-2cd89c\r\n\r\nworktree C:/Users/admin/.codex/worktrees/0381/aiops\r\nHEAD 83698f4b294c82fb8a4dd5392157ccd4fb03e3b8\r\ndetached\r\n\r\nworktree C:/Users/admin/.codex/worktrees/0f97/aiops\r\nHEAD 83698f4b294c82fb8a4dd5392157ccd4fb03e3b8\r\ndetached\r\n\r\nworktree C:/Users/admin/.codex/worktrees/291d/aiops\r\nHEAD 83698f4b294c82fb8a4dd5392157ccd4fb03e3b8\r\ndetached\r\n\r\nworktree C:/Users/admin/.codex/worktrees/35b5/aiops\r\nHEAD 83698f4b294c82fb8a4dd5392157ccd4fb03e3b8\r\ndetached\r\n\r\nworktree C:/Users/admin/.codex/worktrees/95a1/aiops\r\nHEAD 83698f4b294c82fb8a4dd5392157ccd4fb03e3b8\r\ndetached\r\n\r\nworktree C:/Users/admin/.codex/worktrees/ebf7/aiops\r\nHEAD 8738e446d43bc4bb7f75ecbc36be9249765837f6\r\ndetached\r\n\r\nworktree C:/Users/admin/.cursor/worktrees/aiops/penalty-incremental-review\r\nHEAD 64ec26641632a4472bf15589efa6ce93d7ecd119\r\nbranch refs/heads/penalty-incremental-review",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "untracked files present",
+        "protected operational family pending explicit activity proof"
+      ]
+    },
+    {
+      "path": "C:\\dev\\billincar",
+      "classification": "HOLD",
+      "repository_remote": "https://github.com/freepass-creator/billincar.git",
+      "branch": "main",
+      "head": "b84cd4c035286fca7cd372b9aaa5d99a49561b32",
+      "dirty_tracked_count": 0,
+      "untracked_count": 1,
+      "ahead": 0,
+      "behind": 0,
+      "worktree_paths": "C:/dev/billincar\r\nHEAD b84cd4c035286fca7cd372b9aaa5d99a49561b32\r\nbranch refs/heads/main",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "untracked files present"
+      ]
+    },
+    {
+      "path": "C:\\dev\\car-subscription-business",
+      "classification": "UNKNOWN",
+      "repository_remote": null,
+      "branch": null,
+      "head": null,
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": null,
+      "behind": null,
+      "worktree_paths": null,
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "not a Git checkout",
+        "origin remote missing or unreadable"
+      ]
+    },
+    {
+      "path": "C:\\dev\\casemap",
+      "classification": "ACTIVE",
+      "repository_remote": "https://github.com/freepass-creator/casemap-private.git",
+      "branch": "main",
+      "head": "2b08ada31c863faf1451e6b24b7f28101857e85b",
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": 0,
+      "behind": 0,
+      "worktree_paths": "C:/dev/casemap\r\nHEAD 2b08ada31c863faf1451e6b24b7f28101857e85b\r\nbranch refs/heads/main",
+      "process_ids": [
+        9872
+      ],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "running process references path",
+        "protected operational family pending explicit activity proof"
+      ]
+    },
+    {
+      "path": "C:\\dev\\chakhandeal",
+      "classification": "HOLD",
+      "repository_remote": "https://github.com/freepass-creator/chakhandeal.git",
+      "branch": "cursor/freepass-esign-issue-20260808",
+      "head": "ce56c92f84dd3813a2a04ec4ee4ba215fc78f333",
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": 8,
+      "behind": 0,
+      "worktree_paths": "C:/dev/chakhandeal\r\nHEAD ce56c92f84dd3813a2a04ec4ee4ba215fc78f333\r\nbranch refs/heads/cursor/freepass-esign-issue-20260808",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "unpushed commits present"
+      ]
+    },
+    {
+      "path": "C:\\dev\\ci_center",
+      "classification": "ACTIVE",
+      "repository_remote": "https://github.com/freepass-creator/ci_center.git",
+      "branch": "main",
+      "head": "bb341c26fcc401446f2d431e9ff07e4af687a50b",
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": 0,
+      "behind": 0,
+      "worktree_paths": "C:/dev/ci_center\r\nHEAD bb341c26fcc401446f2d431e9ff07e4af687a50b\r\nbranch refs/heads/main",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": []
+    },
+    {
+      "path": "C:\\dev\\devcenter",
+      "classification": "ACTIVE",
+      "repository_remote": "https://github.com/freepass-creator/devcenter.git",
+      "branch": "디자인/뮤카-구독사업기획안",
+      "head": "a2f3f3f173bdac4f0d88f1eecfe20d29cce096ab",
+      "dirty_tracked_count": 1,
+      "untracked_count": 0,
+      "ahead": 0,
+      "behind": 0,
+      "worktree_paths": "C:/dev/devcenter\r\nHEAD a2f3f3f173bdac4f0d88f1eecfe20d29cce096ab\r\nbranch refs/heads/디자인/뮤카-구독사업기획안",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "tracked changes present"
+      ]
+    },
+    {
+      "path": "C:\\dev\\docshub",
+      "classification": "ACTIVE",
+      "repository_remote": "https://github.com/freepass-creator/docshub.git",
+      "branch": "main",
+      "head": "ef06ca3e22c130a7bf416457057b1877b45dc98d",
+      "dirty_tracked_count": 0,
+      "untracked_count": 1,
+      "ahead": null,
+      "behind": null,
+      "worktree_paths": "C:/dev/docshub\r\nHEAD ef06ca3e22c130a7bf416457057b1877b45dc98d\r\nbranch refs/heads/main",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "untracked files present",
+        "protected operational family pending explicit activity proof"
+      ]
+    },
+    {
+      "path": "C:\\dev\\email",
+      "classification": "UNKNOWN",
+      "repository_remote": null,
+      "branch": null,
+      "head": null,
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": null,
+      "behind": null,
+      "worktree_paths": null,
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "not a Git checkout",
+        "origin remote missing or unreadable"
+      ]
+    },
+    {
+      "path": "C:\\dev\\encar-sise",
+      "classification": "UNKNOWN",
+      "repository_remote": null,
+      "branch": "main",
+      "head": "828c919f5cc4adbd3996f91e3ed431fef0152c0e",
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": null,
+      "behind": null,
+      "worktree_paths": "C:/dev/encar-sise\r\nHEAD 828c919f5cc4adbd3996f91e3ed431fef0152c0e\r\nbranch refs/heads/main",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "origin remote missing or unreadable"
+      ]
+    },
+    {
+      "path": "C:\\dev\\fp-freepass",
+      "classification": "UNKNOWN",
+      "repository_remote": null,
+      "branch": null,
+      "head": null,
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": null,
+      "behind": null,
+      "worktree_paths": null,
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "not a Git checkout",
+        "origin remote missing or unreadable"
+      ]
+    },
+    {
+      "path": "C:\\dev\\fp-settle",
+      "classification": "UNKNOWN",
+      "repository_remote": null,
+      "branch": null,
+      "head": null,
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": null,
+      "behind": null,
+      "worktree_paths": null,
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "not a Git checkout",
+        "origin remote missing or unreadable"
+      ]
+    },
+    {
+      "path": "C:\\dev\\fp-settlement",
+      "classification": "ACTIVE",
+      "repository_remote": "https://github.com/freepass-creator/fp-settlement.git",
+      "branch": "work/claude/settlement-ui-v1",
+      "head": "5adcdc2bda5c7b1b77528fb12eab419147380a9d",
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": 0,
+      "behind": 0,
+      "worktree_paths": "C:/dev/fp-settlement\r\nHEAD 5adcdc2bda5c7b1b77528fb12eab419147380a9d\r\nbranch refs/heads/work/claude/settlement-ui-v1",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": []
+    },
+    {
+      "path": "C:\\dev\\fp-shop-pr",
+      "classification": "ACTIVE",
+      "repository_remote": "https://github.com/freepass-creator/freepasserp4.git",
+      "branch": "main",
+      "head": "96a24707ed8e769393f3a7cb6656de0f0c280f2d",
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": 0,
+      "behind": 51,
+      "worktree_paths": "C:/dev/freepasserp4\r\nHEAD 595abaefa72ab0d5ee14414fec8998fd632ec488\r\nbranch refs/heads/feat/spring-atom-monitor\r\n\r\nworktree C:/dev/.wt-est\r\nHEAD fd8522a38c86298ae7b0113bccdc3b288ef97f8a\r\nbranch refs/heads/feat/estimate-new-used\r\n\r\nworktree C:/dev/.wt-rp012\r\nHEAD d1fa2d5e2e035ca7e3f5cab873f8186ba2138835\r\nbranch refs/heads/fix/rp012-deposit-column\r\n\r\nworktree C:/dev/.wt-test\r\nHEAD c4c43a43e86d4cc372db33f42da409589a7bc93d\r\ndetached\r\n\r\nworktree C:/dev/fp-shop-pr\r\nHEAD 96a24707ed8e769393f3a7cb6656de0f0c280f2d\r\nbranch refs/heads/main\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-31c8280\r\nHEAD 31c82800f2fc30954d6fae7e5907d9c1f62ba962\r\ndetached\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-9a70768\r\nHEAD 9a707682009269436c15c5431a978912ffb04c2a\r\ndetached\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-cce3ce0\r\nHEAD 6e30cf3b5c63fc903c3dd918828d16bcc068d394\r\ndetached\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-photo-production\r\nHEAD 4f6a889bb0edfcef72c65da62e2ec5ba3df70f35\r\nbranch refs/heads/codex/photo-download-production\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-supplier-main\r\nHEAD 0b5c04764b502d6c5294b7b814e04d9d82abe1f1\r\nbranch refs/heads/codex/supplier-filter-column\r\n\r\nworktree C:/dev/freepasserp4/tmp/wt-stl-atoms\r\nHEAD 8d1cd6f63aa5f7d490a0c277755eaaa578ac141a\r\nbranch refs/heads/feat/settlement-from-atoms\r\n\r\nworktree C:/dev/freepasserp4-rtdb-current\r\nHEAD d8954261ac1b5271bccb141fc9c3c4acdba2ca6d\r\nbranch refs/heads/codex/rtdb-cutover-current\r\n\r\nworktree C:/dev/freepasserp4-ui-deploy\r\nHEAD a466b0aa3fb4ecbb7d08d6e9806e917953b18397\r\ndetached\r\n\r\nworktree C:/dev/freepasserp4-wt-f86check\r\nHEAD f17747a549cf7857c28932373ada0bfb8eb7d7da\r\nbranch refs/heads/claude/f86-freshness-checker-spec\r\n\r\nworktree C:/dev/worktrees/freepass-source-registry-current\r\nHEAD fed7cce004668170919d26bb128619ed4c248122\r\nbranch refs/heads/codex/source-registry-current",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "duplicate remote checkout requires canonical-path proof"
+      ]
+    },
+    {
+      "path": "C:\\dev\\fp4-spring-pr",
+      "classification": "UNKNOWN",
+      "repository_remote": null,
+      "branch": null,
+      "head": null,
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": null,
+      "behind": null,
+      "worktree_paths": null,
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "not a Git checkout",
+        "origin remote missing or unreadable"
+      ]
+    },
+    {
+      "path": "C:\\dev\\fp4-spring-pr2",
+      "classification": "UNKNOWN",
+      "repository_remote": null,
+      "branch": null,
+      "head": null,
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": null,
+      "behind": null,
+      "worktree_paths": null,
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "not a Git checkout",
+        "origin remote missing or unreadable"
+      ]
+    },
+    {
+      "path": "C:\\dev\\freeepasserp2",
+      "classification": "RETIRED_CANDIDATE",
+      "repository_remote": "https://github.com/freepass-creator/freeepasserp2.git",
+      "branch": "main",
+      "head": "0c57fe5047fba5d953d1962ee438000aa746a781",
+      "dirty_tracked_count": 0,
+      "untracked_count": 1,
+      "ahead": 0,
+      "behind": 0,
+      "worktree_paths": "C:/dev/freeepasserp2\r\nHEAD 0c57fe5047fba5d953d1962ee438000aa746a781\r\nbranch refs/heads/main",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": "READY_AFTER_DEPLOYMENT_CHECK",
+      "move_eligible": false,
+      "blockers": [
+        "untracked files present",
+        "retirement gate: READY_AFTER_DEPLOYMENT_CHECK"
+      ]
+    },
+    {
+      "path": "C:\\dev\\freepass-sales",
+      "classification": "ACTIVE",
+      "repository_remote": "https://github.com/freepass-creator/freepass-sales.git",
+      "branch": "main",
+      "head": "dd4b5f2c59e834429e360a868464f89d4bb47edf",
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": 0,
+      "behind": 0,
+      "worktree_paths": "C:/dev/freepass-sales\r\nHEAD dd4b5f2c59e834429e360a868464f89d4bb47edf\r\nbranch refs/heads/main",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "protected operational family pending explicit activity proof",
+        "duplicate remote checkout requires canonical-path proof"
+      ]
+    },
+    {
+      "path": "C:\\dev\\freepasserp",
+      "classification": "RETIRED_CANDIDATE",
+      "repository_remote": "https://github.com/freepass-creator/freepasserp.git",
+      "branch": "master",
+      "head": "33fbc426a42e66621636187a5a2e8b05de7f2d54",
+      "dirty_tracked_count": 0,
+      "untracked_count": 1,
+      "ahead": 0,
+      "behind": 0,
+      "worktree_paths": "C:/dev/freepasserp\r\nHEAD 33fbc426a42e66621636187a5a2e8b05de7f2d54\r\nbranch refs/heads/master",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": "READY_AFTER_DEPLOYMENT_CHECK",
+      "move_eligible": false,
+      "blockers": [
+        "untracked files present",
+        "retirement gate: READY_AFTER_DEPLOYMENT_CHECK"
+      ]
+    },
+    {
+      "path": "C:\\dev\\freepasserp.com",
+      "classification": "ACTIVE",
+      "repository_remote": "https://github.com/freepass-creator/freepass-admin.git",
+      "branch": "work/claude/esign-center-v1",
+      "head": "878646bb0459acf0007e0f7f36dfe0c2900c6e6a",
+      "dirty_tracked_count": 0,
+      "untracked_count": 1,
+      "ahead": 0,
+      "behind": 0,
+      "worktree_paths": "C:/dev/freepasserp.com\r\nHEAD 878646bb0459acf0007e0f7f36dfe0c2900c6e6a\r\nbranch refs/heads/work/claude/esign-center-v1",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "untracked files present"
+      ]
+    },
+    {
+      "path": "C:\\dev\\freepasserp3",
+      "classification": "REFERENCE",
+      "repository_remote": "https://github.com/freepass-creator/freepasserp3.git",
+      "branch": "master",
+      "head": "a4fddcc187a9ad46fdb93260fc43d7058d08cadc",
+      "dirty_tracked_count": 1,
+      "untracked_count": 0,
+      "ahead": 0,
+      "behind": 0,
+      "worktree_paths": "C:/dev/freepasserp3\r\nHEAD a4fddcc187a9ad46fdb93260fc43d7058d08cadc\r\nbranch refs/heads/master",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "tracked changes present"
+      ]
+    },
+    {
+      "path": "C:\\dev\\freepasserp4",
+      "classification": "ACTIVE",
+      "repository_remote": "https://github.com/freepass-creator/freepasserp4.git",
+      "branch": "feat/spring-atom-monitor",
+      "head": "595abaefa72ab0d5ee14414fec8998fd632ec488",
+      "dirty_tracked_count": 1,
+      "untracked_count": 0,
+      "ahead": 16,
+      "behind": 46,
+      "worktree_paths": "C:/dev/freepasserp4\r\nHEAD 595abaefa72ab0d5ee14414fec8998fd632ec488\r\nbranch refs/heads/feat/spring-atom-monitor\r\n\r\nworktree C:/dev/.wt-est\r\nHEAD fd8522a38c86298ae7b0113bccdc3b288ef97f8a\r\nbranch refs/heads/feat/estimate-new-used\r\n\r\nworktree C:/dev/.wt-rp012\r\nHEAD d1fa2d5e2e035ca7e3f5cab873f8186ba2138835\r\nbranch refs/heads/fix/rp012-deposit-column\r\n\r\nworktree C:/dev/.wt-test\r\nHEAD c4c43a43e86d4cc372db33f42da409589a7bc93d\r\ndetached\r\n\r\nworktree C:/dev/fp-shop-pr\r\nHEAD 96a24707ed8e769393f3a7cb6656de0f0c280f2d\r\nbranch refs/heads/main\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-31c8280\r\nHEAD 31c82800f2fc30954d6fae7e5907d9c1f62ba962\r\ndetached\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-9a70768\r\nHEAD 9a707682009269436c15c5431a978912ffb04c2a\r\ndetached\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-cce3ce0\r\nHEAD 6e30cf3b5c63fc903c3dd918828d16bcc068d394\r\ndetached\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-photo-production\r\nHEAD 4f6a889bb0edfcef72c65da62e2ec5ba3df70f35\r\nbranch refs/heads/codex/photo-download-production\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-supplier-main\r\nHEAD 0b5c04764b502d6c5294b7b814e04d9d82abe1f1\r\nbranch refs/heads/codex/supplier-filter-column\r\n\r\nworktree C:/dev/freepasserp4/tmp/wt-stl-atoms\r\nHEAD 8d1cd6f63aa5f7d490a0c277755eaaa578ac141a\r\nbranch refs/heads/feat/settlement-from-atoms\r\n\r\nworktree C:/dev/freepasserp4-rtdb-current\r\nHEAD d8954261ac1b5271bccb141fc9c3c4acdba2ca6d\r\nbranch refs/heads/codex/rtdb-cutover-current\r\n\r\nworktree C:/dev/freepasserp4-ui-deploy\r\nHEAD a466b0aa3fb4ecbb7d08d6e9806e917953b18397\r\ndetached\r\n\r\nworktree C:/dev/freepasserp4-wt-f86check\r\nHEAD f17747a549cf7857c28932373ada0bfb8eb7d7da\r\nbranch refs/heads/claude/f86-freshness-checker-spec\r\n\r\nworktree C:/dev/worktrees/freepass-source-registry-current\r\nHEAD fed7cce004668170919d26bb128619ed4c248122\r\nbranch refs/heads/codex/source-registry-current",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "tracked changes present",
+        "unpushed commits present",
+        "protected operational family pending explicit activity proof",
+        "duplicate remote checkout requires canonical-path proof"
+      ]
+    },
+    {
+      "path": "C:\\dev\\freepasserp4-rtdb-current",
+      "classification": "ACTIVE",
+      "repository_remote": "https://github.com/freepass-creator/freepasserp4.git",
+      "branch": "codex/rtdb-cutover-current",
+      "head": "d8954261ac1b5271bccb141fc9c3c4acdba2ca6d",
+      "dirty_tracked_count": 0,
+      "untracked_count": 1,
+      "ahead": 0,
+      "behind": 0,
+      "worktree_paths": "C:/dev/freepasserp4\r\nHEAD 595abaefa72ab0d5ee14414fec8998fd632ec488\r\nbranch refs/heads/feat/spring-atom-monitor\r\n\r\nworktree C:/dev/.wt-est\r\nHEAD fd8522a38c86298ae7b0113bccdc3b288ef97f8a\r\nbranch refs/heads/feat/estimate-new-used\r\n\r\nworktree C:/dev/.wt-rp012\r\nHEAD d1fa2d5e2e035ca7e3f5cab873f8186ba2138835\r\nbranch refs/heads/fix/rp012-deposit-column\r\n\r\nworktree C:/dev/.wt-test\r\nHEAD c4c43a43e86d4cc372db33f42da409589a7bc93d\r\ndetached\r\n\r\nworktree C:/dev/fp-shop-pr\r\nHEAD 96a24707ed8e769393f3a7cb6656de0f0c280f2d\r\nbranch refs/heads/main\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-31c8280\r\nHEAD 31c82800f2fc30954d6fae7e5907d9c1f62ba962\r\ndetached\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-9a70768\r\nHEAD 9a707682009269436c15c5431a978912ffb04c2a\r\ndetached\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-cce3ce0\r\nHEAD 6e30cf3b5c63fc903c3dd918828d16bcc068d394\r\ndetached\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-photo-production\r\nHEAD 4f6a889bb0edfcef72c65da62e2ec5ba3df70f35\r\nbranch refs/heads/codex/photo-download-production\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-supplier-main\r\nHEAD 0b5c04764b502d6c5294b7b814e04d9d82abe1f1\r\nbranch refs/heads/codex/supplier-filter-column\r\n\r\nworktree C:/dev/freepasserp4/tmp/wt-stl-atoms\r\nHEAD 8d1cd6f63aa5f7d490a0c277755eaaa578ac141a\r\nbranch refs/heads/feat/settlement-from-atoms\r\n\r\nworktree C:/dev/freepasserp4-rtdb-current\r\nHEAD d8954261ac1b5271bccb141fc9c3c4acdba2ca6d\r\nbranch refs/heads/codex/rtdb-cutover-current\r\n\r\nworktree C:/dev/freepasserp4-ui-deploy\r\nHEAD a466b0aa3fb4ecbb7d08d6e9806e917953b18397\r\ndetached\r\n\r\nworktree C:/dev/freepasserp4-wt-f86check\r\nHEAD f17747a549cf7857c28932373ada0bfb8eb7d7da\r\nbranch refs/heads/claude/f86-freshness-checker-spec\r\n\r\nworktree C:/dev/worktrees/freepass-source-registry-current\r\nHEAD fed7cce004668170919d26bb128619ed4c248122\r\nbranch refs/heads/codex/source-registry-current",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "untracked files present",
+        "protected operational family pending explicit activity proof",
+        "duplicate remote checkout requires canonical-path proof"
+      ]
+    },
+    {
+      "path": "C:\\dev\\freepasserp4-ui-deploy",
+      "classification": "ACTIVE",
+      "repository_remote": "https://github.com/freepass-creator/freepasserp4.git",
+      "branch": "",
+      "head": "a466b0aa3fb4ecbb7d08d6e9806e917953b18397",
+      "dirty_tracked_count": 1,
+      "untracked_count": 0,
+      "ahead": null,
+      "behind": null,
+      "worktree_paths": "C:/dev/freepasserp4\r\nHEAD 595abaefa72ab0d5ee14414fec8998fd632ec488\r\nbranch refs/heads/feat/spring-atom-monitor\r\n\r\nworktree C:/dev/.wt-est\r\nHEAD fd8522a38c86298ae7b0113bccdc3b288ef97f8a\r\nbranch refs/heads/feat/estimate-new-used\r\n\r\nworktree C:/dev/.wt-rp012\r\nHEAD d1fa2d5e2e035ca7e3f5cab873f8186ba2138835\r\nbranch refs/heads/fix/rp012-deposit-column\r\n\r\nworktree C:/dev/.wt-test\r\nHEAD c4c43a43e86d4cc372db33f42da409589a7bc93d\r\ndetached\r\n\r\nworktree C:/dev/fp-shop-pr\r\nHEAD 96a24707ed8e769393f3a7cb6656de0f0c280f2d\r\nbranch refs/heads/main\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-31c8280\r\nHEAD 31c82800f2fc30954d6fae7e5907d9c1f62ba962\r\ndetached\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-9a70768\r\nHEAD 9a707682009269436c15c5431a978912ffb04c2a\r\ndetached\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-cce3ce0\r\nHEAD 6e30cf3b5c63fc903c3dd918828d16bcc068d394\r\ndetached\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-photo-production\r\nHEAD 4f6a889bb0edfcef72c65da62e2ec5ba3df70f35\r\nbranch refs/heads/codex/photo-download-production\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-supplier-main\r\nHEAD 0b5c04764b502d6c5294b7b814e04d9d82abe1f1\r\nbranch refs/heads/codex/supplier-filter-column\r\n\r\nworktree C:/dev/freepasserp4/tmp/wt-stl-atoms\r\nHEAD 8d1cd6f63aa5f7d490a0c277755eaaa578ac141a\r\nbranch refs/heads/feat/settlement-from-atoms\r\n\r\nworktree C:/dev/freepasserp4-rtdb-current\r\nHEAD d8954261ac1b5271bccb141fc9c3c4acdba2ca6d\r\nbranch refs/heads/codex/rtdb-cutover-current\r\n\r\nworktree C:/dev/freepasserp4-ui-deploy\r\nHEAD a466b0aa3fb4ecbb7d08d6e9806e917953b18397\r\ndetached\r\n\r\nworktree C:/dev/freepasserp4-wt-f86check\r\nHEAD f17747a549cf7857c28932373ada0bfb8eb7d7da\r\nbranch refs/heads/claude/f86-freshness-checker-spec\r\n\r\nworktree C:/dev/worktrees/freepass-source-registry-current\r\nHEAD fed7cce004668170919d26bb128619ed4c248122\r\nbranch refs/heads/codex/source-registry-current",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "tracked changes present",
+        "protected operational family pending explicit activity proof",
+        "duplicate remote checkout requires canonical-path proof"
+      ]
+    },
+    {
+      "path": "C:\\dev\\freepasserp4-ui-source",
+      "classification": "UNKNOWN",
+      "repository_remote": null,
+      "branch": null,
+      "head": null,
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": null,
+      "behind": null,
+      "worktree_paths": null,
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "not a Git checkout",
+        "origin remote missing or unreadable",
+        "protected operational family pending explicit activity proof"
+      ]
+    },
+    {
+      "path": "C:\\dev\\freepasserp4-ui-upload",
+      "classification": "ACTIVE",
+      "repository_remote": "https://github.com/freepass-creator/freepasserp4.git",
+      "branch": "",
+      "head": "a466b0aa3fb4ecbb7d08d6e9806e917953b18397",
+      "dirty_tracked_count": 1,
+      "untracked_count": 0,
+      "ahead": null,
+      "behind": null,
+      "worktree_paths": "C:/dev/freepasserp4\r\nHEAD 595abaefa72ab0d5ee14414fec8998fd632ec488\r\nbranch refs/heads/feat/spring-atom-monitor\r\n\r\nworktree C:/dev/.wt-est\r\nHEAD fd8522a38c86298ae7b0113bccdc3b288ef97f8a\r\nbranch refs/heads/feat/estimate-new-used\r\n\r\nworktree C:/dev/.wt-rp012\r\nHEAD d1fa2d5e2e035ca7e3f5cab873f8186ba2138835\r\nbranch refs/heads/fix/rp012-deposit-column\r\n\r\nworktree C:/dev/.wt-test\r\nHEAD c4c43a43e86d4cc372db33f42da409589a7bc93d\r\ndetached\r\n\r\nworktree C:/dev/fp-shop-pr\r\nHEAD 96a24707ed8e769393f3a7cb6656de0f0c280f2d\r\nbranch refs/heads/main\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-31c8280\r\nHEAD 31c82800f2fc30954d6fae7e5907d9c1f62ba962\r\ndetached\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-9a70768\r\nHEAD 9a707682009269436c15c5431a978912ffb04c2a\r\ndetached\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-cce3ce0\r\nHEAD 6e30cf3b5c63fc903c3dd918828d16bcc068d394\r\ndetached\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-photo-production\r\nHEAD 4f6a889bb0edfcef72c65da62e2ec5ba3df70f35\r\nbranch refs/heads/codex/photo-download-production\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-supplier-main\r\nHEAD 0b5c04764b502d6c5294b7b814e04d9d82abe1f1\r\nbranch refs/heads/codex/supplier-filter-column\r\n\r\nworktree C:/dev/freepasserp4/tmp/wt-stl-atoms\r\nHEAD 8d1cd6f63aa5f7d490a0c277755eaaa578ac141a\r\nbranch refs/heads/feat/settlement-from-atoms\r\n\r\nworktree C:/dev/freepasserp4-rtdb-current\r\nHEAD d8954261ac1b5271bccb141fc9c3c4acdba2ca6d\r\nbranch refs/heads/codex/rtdb-cutover-current\r\n\r\nworktree C:/dev/freepasserp4-ui-deploy\r\nHEAD a466b0aa3fb4ecbb7d08d6e9806e917953b18397\r\ndetached\r\n\r\nworktree C:/dev/freepasserp4-wt-f86check\r\nHEAD f17747a549cf7857c28932373ada0bfb8eb7d7da\r\nbranch refs/heads/claude/f86-freshness-checker-spec\r\n\r\nworktree C:/dev/worktrees/freepass-source-registry-current\r\nHEAD fed7cce004668170919d26bb128619ed4c248122\r\nbranch refs/heads/codex/source-registry-current",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "tracked changes present",
+        "protected operational family pending explicit activity proof",
+        "duplicate remote checkout requires canonical-path proof"
+      ]
+    },
+    {
+      "path": "C:\\dev\\freepasserp4-wt-f86check",
+      "classification": "ACTIVE",
+      "repository_remote": "https://github.com/freepass-creator/freepasserp4.git",
+      "branch": "claude/f86-freshness-checker-spec",
+      "head": "f17747a549cf7857c28932373ada0bfb8eb7d7da",
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": 0,
+      "behind": 0,
+      "worktree_paths": "C:/dev/freepasserp4\r\nHEAD 595abaefa72ab0d5ee14414fec8998fd632ec488\r\nbranch refs/heads/feat/spring-atom-monitor\r\n\r\nworktree C:/dev/.wt-est\r\nHEAD fd8522a38c86298ae7b0113bccdc3b288ef97f8a\r\nbranch refs/heads/feat/estimate-new-used\r\n\r\nworktree C:/dev/.wt-rp012\r\nHEAD d1fa2d5e2e035ca7e3f5cab873f8186ba2138835\r\nbranch refs/heads/fix/rp012-deposit-column\r\n\r\nworktree C:/dev/.wt-test\r\nHEAD c4c43a43e86d4cc372db33f42da409589a7bc93d\r\ndetached\r\n\r\nworktree C:/dev/fp-shop-pr\r\nHEAD 96a24707ed8e769393f3a7cb6656de0f0c280f2d\r\nbranch refs/heads/main\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-31c8280\r\nHEAD 31c82800f2fc30954d6fae7e5907d9c1f62ba962\r\ndetached\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-9a70768\r\nHEAD 9a707682009269436c15c5431a978912ffb04c2a\r\ndetached\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-cce3ce0\r\nHEAD 6e30cf3b5c63fc903c3dd918828d16bcc068d394\r\ndetached\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-photo-production\r\nHEAD 4f6a889bb0edfcef72c65da62e2ec5ba3df70f35\r\nbranch refs/heads/codex/photo-download-production\r\n\r\nworktree C:/dev/freepasserp4/tmp/deploy-supplier-main\r\nHEAD 0b5c04764b502d6c5294b7b814e04d9d82abe1f1\r\nbranch refs/heads/codex/supplier-filter-column\r\n\r\nworktree C:/dev/freepasserp4/tmp/wt-stl-atoms\r\nHEAD 8d1cd6f63aa5f7d490a0c277755eaaa578ac141a\r\nbranch refs/heads/feat/settlement-from-atoms\r\n\r\nworktree C:/dev/freepasserp4-rtdb-current\r\nHEAD d8954261ac1b5271bccb141fc9c3c4acdba2ca6d\r\nbranch refs/heads/codex/rtdb-cutover-current\r\n\r\nworktree C:/dev/freepasserp4-ui-deploy\r\nHEAD a466b0aa3fb4ecbb7d08d6e9806e917953b18397\r\ndetached\r\n\r\nworktree C:/dev/freepasserp4-wt-f86check\r\nHEAD f17747a549cf7857c28932373ada0bfb8eb7d7da\r\nbranch refs/heads/claude/f86-freshness-checker-spec\r\n\r\nworktree C:/dev/worktrees/freepass-source-registry-current\r\nHEAD fed7cce004668170919d26bb128619ed4c248122\r\nbranch refs/heads/codex/source-registry-current",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "protected operational family pending explicit activity proof",
+        "duplicate remote checkout requires canonical-path proof"
+      ]
+    },
+    {
+      "path": "C:\\dev\\freepasshomepage",
+      "classification": "ACTIVE",
+      "repository_remote": "https://github.com/freepass-creator/freepasshomepage.git",
+      "branch": "main",
+      "head": "104a1bdc449ab1b158968b2e085846f428410839",
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": 0,
+      "behind": 0,
+      "worktree_paths": "C:/dev/freepasshomepage\r\nHEAD 104a1bdc449ab1b158968b2e085846f428410839\r\nbranch refs/heads/main",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": []
+    },
+    {
+      "path": "C:\\dev\\gemini-verify",
+      "classification": "UNKNOWN",
+      "repository_remote": null,
+      "branch": null,
+      "head": null,
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": null,
+      "behind": null,
+      "worktree_paths": null,
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "not a Git checkout",
+        "origin remote missing or unreadable"
+      ]
+    },
+    {
+      "path": "C:\\dev\\jpkerp",
+      "classification": "RETIRED_CANDIDATE",
+      "repository_remote": "https://github.com/freepass-creator/jpkerp.git",
+      "branch": "master",
+      "head": "e6de03adbac98a33da7d844fb8fb197ff885e7cb",
+      "dirty_tracked_count": 0,
+      "untracked_count": 1,
+      "ahead": 0,
+      "behind": 0,
+      "worktree_paths": "C:/dev/jpkerp\r\nHEAD e6de03adbac98a33da7d844fb8fb197ff885e7cb\r\nbranch refs/heads/master",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": "READY_AFTER_EXTERNAL_BINDING_CHECK",
+      "move_eligible": false,
+      "blockers": [
+        "untracked files present",
+        "retirement gate: READY_AFTER_EXTERNAL_BINDING_CHECK"
+      ]
+    },
+    {
+      "path": "C:\\dev\\jpkerp-v4",
+      "classification": "RETIRED_CANDIDATE",
+      "repository_remote": "https://github.com/freepass-creator/jpkerp-v4.git",
+      "branch": "main",
+      "head": "8e72823454732a0d6bceddf8be646ad3c9cc83ff",
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": 0,
+      "behind": 0,
+      "worktree_paths": "C:/dev/jpkerp-v4\r\nHEAD 8e72823454732a0d6bceddf8be646ad3c9cc83ff\r\nbranch refs/heads/main",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": "BLOCKED",
+      "move_eligible": false,
+      "blockers": [
+        "retirement gate: BLOCKED"
+      ]
+    },
+    {
+      "path": "C:\\dev\\jpkerp2",
+      "classification": "RETIRED_CANDIDATE",
+      "repository_remote": "https://github.com/freepass-creator/jpkerp2.git",
+      "branch": "main",
+      "head": "6e1e9aee68fd2c3e6d2fd640e670860b60ee1d15",
+      "dirty_tracked_count": 0,
+      "untracked_count": 1,
+      "ahead": 0,
+      "behind": 0,
+      "worktree_paths": "C:/dev/jpkerp2\r\nHEAD 6e1e9aee68fd2c3e6d2fd640e670860b60ee1d15\r\nbranch refs/heads/main",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": "READY_AFTER_EXTERNAL_BINDING_CHECK",
+      "move_eligible": false,
+      "blockers": [
+        "untracked files present",
+        "retirement gate: READY_AFTER_EXTERNAL_BINDING_CHECK"
+      ]
+    },
+    {
+      "path": "C:\\dev\\jpkerp5",
+      "classification": "RETIRED_CANDIDATE",
+      "repository_remote": "https://github.com/freepass-creator/jpkerp5.git",
+      "branch": "main",
+      "head": "13aebe8f9eaad65d9d40c0925b4081b916438b35",
+      "dirty_tracked_count": 1,
+      "untracked_count": 0,
+      "ahead": 2,
+      "behind": 0,
+      "worktree_paths": "C:/dev/jpkerp5\r\nHEAD 13aebe8f9eaad65d9d40c0925b4081b916438b35\r\nbranch refs/heads/main",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": "BLOCKED",
+      "move_eligible": false,
+      "blockers": [
+        "tracked changes present",
+        "unpushed commits present",
+        "retirement gate: BLOCKED"
+      ]
+    },
+    {
+      "path": "C:\\dev\\jpkerp6-마이그레이션",
+      "classification": "UNKNOWN",
+      "repository_remote": null,
+      "branch": null,
+      "head": null,
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": null,
+      "behind": null,
+      "worktree_paths": null,
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "not a Git checkout",
+        "origin remote missing or unreadable"
+      ]
+    },
+    {
+      "path": "C:\\dev\\mailtool",
+      "classification": "UNKNOWN",
+      "repository_remote": null,
+      "branch": null,
+      "head": null,
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": null,
+      "behind": null,
+      "worktree_paths": null,
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "not a Git checkout",
+        "origin remote missing or unreadable"
+      ]
+    },
+    {
+      "path": "C:\\dev\\mewcar",
+      "classification": "ACTIVE",
+      "repository_remote": "https://github.com/freepass-creator/mewcar.git",
+      "branch": "main",
+      "head": "95c13ab0473f6ca59ed40ffba359e707ad17dd95",
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": 0,
+      "behind": 0,
+      "worktree_paths": "C:/dev/mewcar\r\nHEAD 95c13ab0473f6ca59ed40ffba359e707ad17dd95\r\nbranch refs/heads/main",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": []
+    },
+    {
+      "path": "C:\\dev\\renman",
+      "classification": "REFERENCE",
+      "repository_remote": "https://github.com/freepass-creator/renman.git",
+      "branch": "reborn/2026-08-21",
+      "head": "adcb74311928feae368aa5aadab084f27792eec9",
+      "dirty_tracked_count": 1,
+      "untracked_count": 0,
+      "ahead": 0,
+      "behind": 0,
+      "worktree_paths": "C:/dev/renman\r\nHEAD adcb74311928feae368aa5aadab084f27792eec9\r\nbranch refs/heads/reborn/2026-08-21",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "tracked changes present"
+      ]
+    },
+    {
+      "path": "C:\\dev\\renman-v2",
+      "classification": "UNKNOWN",
+      "repository_remote": null,
+      "branch": "main",
+      "head": null,
+      "dirty_tracked_count": 0,
+      "untracked_count": 1,
+      "ahead": null,
+      "behind": null,
+      "worktree_paths": null,
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "origin remote missing or unreadable",
+        "untracked files present"
+      ]
+    },
+    {
+      "path": "C:\\dev\\rentsafe",
+      "classification": "RETIRED_CANDIDATE",
+      "repository_remote": "https://github.com/freepass-creator/rentsafe.git",
+      "branch": "main",
+      "head": "92753b538f46bc565e955be06c78f9947b93c528",
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": 0,
+      "behind": 0,
+      "worktree_paths": "C:/dev/rentsafe\r\nHEAD 92753b538f46bc565e955be06c78f9947b93c528\r\nbranch refs/heads/main",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": "READY_AFTER_EXTERNAL_BINDING_CHECK",
+      "move_eligible": false,
+      "blockers": [
+        "retirement gate: READY_AFTER_EXTERNAL_BINDING_CHECK"
+      ]
+    },
+    {
+      "path": "C:\\dev\\sales",
+      "classification": "ACTIVE",
+      "repository_remote": "https://github.com/freepass-creator/freepass-sales.git",
+      "branch": "main",
+      "head": "94b81c4266963340fc79be9a5a9c4d59056a3cd1",
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": null,
+      "behind": null,
+      "worktree_paths": "C:/dev/sales\r\nHEAD 94b81c4266963340fc79be9a5a9c4d59056a3cd1\r\nbranch refs/heads/main\r\n\r\nworktree C:/dev/sales-mail-automation\r\nHEAD a3766a61f6bb24b3e66ea77ab4200d0ae9c6ac21\r\nbranch refs/heads/codex/mail-intake-automation\r\n\r\nworktree C:/Users/admin/.codex/worktrees/a354/sales\r\nHEAD ad87bf6cf1781f1aaa7be60c61a28def9ef97a71\r\ndetached\r\n\r\nworktree C:/Users/admin/.codex/worktrees/f995/sales\r\nHEAD b3128ce3677fae6132329af6c022e38abb170505\r\ndetached\r\n\r\nworktree C:/Users/admin/Documents/Codex/2026-09-14/new-chat/work/sales-integrated\r\nHEAD a4fe4f02971ee1b0bce3bcb971cf6e429e044418\r\ndetached",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "protected operational family pending explicit activity proof",
+        "duplicate remote checkout requires canonical-path proof"
+      ]
+    },
+    {
+      "path": "C:\\dev\\sales-mail-automation",
+      "classification": "ACTIVE",
+      "repository_remote": "https://github.com/freepass-creator/freepass-sales.git",
+      "branch": "codex/mail-intake-automation",
+      "head": "a3766a61f6bb24b3e66ea77ab4200d0ae9c6ac21",
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": 20,
+      "behind": 0,
+      "worktree_paths": "C:/dev/sales\r\nHEAD 94b81c4266963340fc79be9a5a9c4d59056a3cd1\r\nbranch refs/heads/main\r\n\r\nworktree C:/dev/sales-mail-automation\r\nHEAD a3766a61f6bb24b3e66ea77ab4200d0ae9c6ac21\r\nbranch refs/heads/codex/mail-intake-automation\r\n\r\nworktree C:/Users/admin/.codex/worktrees/a354/sales\r\nHEAD ad87bf6cf1781f1aaa7be60c61a28def9ef97a71\r\ndetached\r\n\r\nworktree C:/Users/admin/.codex/worktrees/f995/sales\r\nHEAD b3128ce3677fae6132329af6c022e38abb170505\r\ndetached\r\n\r\nworktree C:/Users/admin/Documents/Codex/2026-09-14/new-chat/work/sales-integrated\r\nHEAD a4fe4f02971ee1b0bce3bcb971cf6e429e044418\r\ndetached",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "unpushed commits present",
+        "protected operational family pending explicit activity proof",
+        "duplicate remote checkout requires canonical-path proof"
+      ]
+    },
+    {
+      "path": "C:\\dev\\sheetops",
+      "classification": "UNKNOWN",
+      "repository_remote": null,
+      "branch": null,
+      "head": null,
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": null,
+      "behind": null,
+      "worktree_paths": null,
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "not a Git checkout",
+        "origin remote missing or unreadable"
+      ]
+    },
+    {
+      "path": "C:\\dev\\sonogong-estimator",
+      "classification": "REFERENCE",
+      "repository_remote": "https://github.com/freepass-creator/sonogong-estimator.git",
+      "branch": "main",
+      "head": "fd65e6d8f9d2ffb865896b4b65442e3d2210570a",
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": 9,
+      "behind": 0,
+      "worktree_paths": "C:/dev/sonogong-estimator\r\nHEAD fd65e6d8f9d2ffb865896b4b65442e3d2210570a\r\nbranch refs/heads/main",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "unpushed commits present",
+        "protected operational family pending explicit activity proof"
+      ]
+    },
+    {
+      "path": "C:\\dev\\ssot-hub",
+      "classification": "UNKNOWN",
+      "repository_remote": null,
+      "branch": null,
+      "head": null,
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": null,
+      "behind": null,
+      "worktree_paths": null,
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "not a Git checkout",
+        "origin remote missing or unreadable"
+      ]
+    },
+    {
+      "path": "C:\\dev\\switchdebt",
+      "classification": "UNKNOWN",
+      "repository_remote": null,
+      "branch": null,
+      "head": null,
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": null,
+      "behind": null,
+      "worktree_paths": null,
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "not a Git checkout",
+        "origin remote missing or unreadable"
+      ]
+    },
+    {
+      "path": "C:\\dev\\teamjpkwork",
+      "classification": "ACTIVE",
+      "repository_remote": "https://github.com/freepass-creator/teamjpkwork.git",
+      "branch": "main",
+      "head": "75bb285a241b68c13acbe532c30d6d91110f8082",
+      "dirty_tracked_count": 1,
+      "untracked_count": 0,
+      "ahead": 0,
+      "behind": 0,
+      "worktree_paths": "C:/dev/teamjpkwork\r\nHEAD 75bb285a241b68c13acbe532c30d6d91110f8082\r\nbranch refs/heads/main\r\n\r\nworktree C:/dev/teamjpkwork-atom-check\r\nHEAD c6363e07e769c999bd3bf4339de8ca95ca7ebc54\r\ndetached",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "tracked changes present",
+        "duplicate remote checkout requires canonical-path proof"
+      ]
+    },
+    {
+      "path": "C:\\dev\\teamjpkwork-atom-check",
+      "classification": "ACTIVE",
+      "repository_remote": "https://github.com/freepass-creator/teamjpkwork.git",
+      "branch": "",
+      "head": "c6363e07e769c999bd3bf4339de8ca95ca7ebc54",
+      "dirty_tracked_count": 1,
+      "untracked_count": 0,
+      "ahead": null,
+      "behind": null,
+      "worktree_paths": "C:/dev/teamjpkwork\r\nHEAD 75bb285a241b68c13acbe532c30d6d91110f8082\r\nbranch refs/heads/main\r\n\r\nworktree C:/dev/teamjpkwork-atom-check\r\nHEAD c6363e07e769c999bd3bf4339de8ca95ca7ebc54\r\ndetached",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "tracked changes present",
+        "duplicate remote checkout requires canonical-path proof"
+      ]
+    },
+    {
+      "path": "C:\\dev\\webtoon-studio",
+      "classification": "ACTIVE",
+      "repository_remote": "https://github.com/freepass-creator/webtoon-studio.git",
+      "branch": "work/claude/face-pipeline",
+      "head": "389c0c117b02708ab84154089858311173228f43",
+      "dirty_tracked_count": 1,
+      "untracked_count": 0,
+      "ahead": null,
+      "behind": null,
+      "worktree_paths": "C:/dev/webtoon-studio\r\nHEAD 389c0c117b02708ab84154089858311173228f43\r\nbranch refs/heads/work/claude/face-pipeline",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "tracked changes present"
+      ]
+    },
+    {
+      "path": "C:\\dev\\welrix-proposal",
+      "classification": "REFERENCE",
+      "repository_remote": "https://github.com/freepass-creator/welrix-proposal.git",
+      "branch": "main",
+      "head": "de8899d8a94be4e25a8d050ff3273c47122c1517",
+      "dirty_tracked_count": 1,
+      "untracked_count": 0,
+      "ahead": 0,
+      "behind": 0,
+      "worktree_paths": "C:/dev/welrix-proposal\r\nHEAD de8899d8a94be4e25a8d050ff3273c47122c1517\r\nbranch refs/heads/main",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "tracked changes present"
+      ]
+    },
+    {
+      "path": "C:\\dev\\welrixtable",
+      "classification": "REFERENCE",
+      "repository_remote": "https://github.com/freepass-creator/welrixtable.git",
+      "branch": "main",
+      "head": "d08ab976d96fd57f11e11d18e1b3a206890b2960",
+      "dirty_tracked_count": 0,
+      "untracked_count": 1,
+      "ahead": 0,
+      "behind": 0,
+      "worktree_paths": "C:/dev/welrixtable\r\nHEAD d08ab976d96fd57f11e11d18e1b3a206890b2960\r\nbranch refs/heads/main",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "untracked files present",
+        "protected operational family pending explicit activity proof"
+      ]
+    },
+    {
+      "path": "C:\\dev\\workcontrol",
+      "classification": "RETIRED_CANDIDATE",
+      "repository_remote": "https://github.com/freepass-creator/workcontrol.git",
+      "branch": "main",
+      "head": "cbfa6ba4630dd0bcb18feb50f5f3a19009a0cddb",
+      "dirty_tracked_count": 1,
+      "untracked_count": 0,
+      "ahead": 2,
+      "behind": 0,
+      "worktree_paths": "C:/dev/workcontrol\r\nHEAD cbfa6ba4630dd0bcb18feb50f5f3a19009a0cddb\r\nbranch refs/heads/main",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "tracked changes present",
+        "unpushed commits present",
+        "protected operational family pending explicit activity proof"
+      ]
+    },
+    {
+      "path": "C:\\dev\\worknavi",
+      "classification": "ACTIVE",
+      "repository_remote": "https://github.com/freepass-creator/teamjpkwork.git",
+      "branch": "main",
+      "head": "ad8ac5cb226d18986e016ea0dfa8e9b3227e0868",
+      "dirty_tracked_count": 1,
+      "untracked_count": 0,
+      "ahead": 0,
+      "behind": 0,
+      "worktree_paths": "C:/dev/worknavi\r\nHEAD ad8ac5cb226d18986e016ea0dfa8e9b3227e0868\r\nbranch refs/heads/main\r\n\r\nworktree C:/dev/worknavi-answer-packets\r\nHEAD 5b73a588397437240e5a72974ac5682b6de492bd\r\nbranch refs/heads/codex/firestore-answer-packets\r\n\r\nworktree C:/dev/worknavi-security\r\nHEAD 1cfcb8d426f083743086cab682ca483b41e3d511\r\nbranch refs/heads/codex/security-failclosed",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "tracked changes present",
+        "duplicate remote checkout requires canonical-path proof"
+      ]
+    },
+    {
+      "path": "C:\\dev\\worknavi-answer-packets",
+      "classification": "ACTIVE",
+      "repository_remote": "https://github.com/freepass-creator/teamjpkwork.git",
+      "branch": "codex/firestore-answer-packets",
+      "head": "5b73a588397437240e5a72974ac5682b6de492bd",
+      "dirty_tracked_count": 1,
+      "untracked_count": 0,
+      "ahead": null,
+      "behind": null,
+      "worktree_paths": "C:/dev/worknavi\r\nHEAD ad8ac5cb226d18986e016ea0dfa8e9b3227e0868\r\nbranch refs/heads/main\r\n\r\nworktree C:/dev/worknavi-answer-packets\r\nHEAD 5b73a588397437240e5a72974ac5682b6de492bd\r\nbranch refs/heads/codex/firestore-answer-packets\r\n\r\nworktree C:/dev/worknavi-security\r\nHEAD 1cfcb8d426f083743086cab682ca483b41e3d511\r\nbranch refs/heads/codex/security-failclosed",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "tracked changes present",
+        "duplicate remote checkout requires canonical-path proof"
+      ]
+    },
+    {
+      "path": "C:\\dev\\worknavi-security",
+      "classification": "ACTIVE",
+      "repository_remote": "https://github.com/freepass-creator/teamjpkwork.git",
+      "branch": "codex/security-failclosed",
+      "head": "1cfcb8d426f083743086cab682ca483b41e3d511",
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": null,
+      "behind": null,
+      "worktree_paths": "C:/dev/worknavi\r\nHEAD ad8ac5cb226d18986e016ea0dfa8e9b3227e0868\r\nbranch refs/heads/main\r\n\r\nworktree C:/dev/worknavi-answer-packets\r\nHEAD 5b73a588397437240e5a72974ac5682b6de492bd\r\nbranch refs/heads/codex/firestore-answer-packets\r\n\r\nworktree C:/dev/worknavi-security\r\nHEAD 1cfcb8d426f083743086cab682ca483b41e3d511\r\nbranch refs/heads/codex/security-failclosed",
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "duplicate remote checkout requires canonical-path proof"
+      ]
+    },
+    {
+      "path": "C:\\dev\\worktrees",
+      "classification": "UNKNOWN",
+      "repository_remote": null,
+      "branch": null,
+      "head": null,
+      "dirty_tracked_count": 0,
+      "untracked_count": 0,
+      "ahead": null,
+      "behind": null,
+      "worktree_paths": null,
+      "process_ids": [],
+      "recent_codex_cwd": false,
+      "retirement_gate": null,
+      "move_eligible": false,
+      "blockers": [
+        "not a Git checkout",
+        "origin remote missing or unreadable"
+      ]
+    }
+  ]
+}
