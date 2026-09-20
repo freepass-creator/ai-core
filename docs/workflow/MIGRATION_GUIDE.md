@@ -242,3 +242,17 @@ First real business-project SHADOW model:
 
 Promotion remains SHADOW until the source project binds the D contract or runs a project-side parity adapter. The Core must not claim runtime cutover merely because source-derived parity fixtures pass here.
 
+
+
+### D6 source-side adoption checkpoint — FreePass Admin
+
+FreePass Admin merged source-side D binding at `2aede7df82591470308f25bd3ccd4e5358aa7c3c` and exact-head backend-check `35480824168` passed typecheck, full tests and build.
+
+D records this as:
+
+- workflow adoption status: `SHADOW`
+- adoption evidence stage: `SOURCE_PARITY_VERIFIED`
+- projection adoption status: `SHADOW`
+- projection evidence stage: `SOURCE_PARITY_VERIFIED`
+
+The distinction is deliberate. Project-side parity proves model equivalence, not runtime authority. The next promotion gate is `RUNTIME_PILOT`, which requires selected Admin writes to invoke D decisions without weakening source persistence, audit, error compatibility or rollback.
