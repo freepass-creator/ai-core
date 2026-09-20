@@ -1,0 +1,81 @@
+{
+  "schema_version": "1.0",
+  "observed_at": "2026-09-20T10:05:00Z",
+  "default_retirement_action": "ARCHIVE",
+  "repositories": [
+    {
+      "repository": "freepass-creator/-",
+      "gate": "READY_FOR_ARCHIVE",
+      "blockers": [],
+      "notes": [
+        "wrong-repo Webtoon PR #1 closed",
+        "stale PR branch retained as history"
+      ]
+    },
+    {
+      "repository": "freepass-creator/rentsafe",
+      "gate": "READY_AFTER_EXTERNAL_BINDING_CHECK",
+      "blockers": [
+        "confirm no old deployment/domain/secrets"
+      ],
+      "successor": "freepass-creator/chakhandeal"
+    },
+    {
+      "repository": "freepass-creator/jpkerp",
+      "gate": "READY_AFTER_EXTERNAL_BINDING_CHECK",
+      "blockers": [
+        "confirm no external runtime binding"
+      ],
+      "branches": [
+        "master",
+        "main",
+        "archive-v1"
+      ]
+    },
+    {
+      "repository": "freepass-creator/jpkerp2",
+      "gate": "BLOCKED",
+      "blockers": [
+        "old Firebase/Storage/runtime binding check",
+        "divergent redesign-v3 preservation"
+      ],
+      "successors": [
+        "freepass-creator/renman",
+        "freepass-creator/vehicle-master"
+      ]
+    },
+    {
+      "repository": "freepass-creator/jpkerp-v4",
+      "gate": "BLOCKED",
+      "blockers": [
+        "daily Vercel SMS cron shutdown/migration verification"
+      ]
+    },
+    {
+      "repository": "freepass-creator/freeepasserp2",
+      "gate": "BLOCKED",
+      "blockers": [
+        "Firebase rules binding check",
+        "Vercel deployment binding check"
+      ]
+    },
+    {
+      "repository": "freepass-creator/freepasserp",
+      "gate": "BLOCKED",
+      "blockers": [
+        "Firebase rules binding check",
+        "Vercel deployment binding check"
+      ]
+    },
+    {
+      "repository": "freepass-creator/jpkerp5",
+      "gate": "BLOCKED",
+      "blockers": [
+        "daily RIMS license cron owner/cutover",
+        "Firebase RTDB binding",
+        "independent freepass-erp-flask branch preservation"
+      ],
+      "candidate_successor_runtime": "freepass-creator/billincar"
+    }
+  ]
+}
