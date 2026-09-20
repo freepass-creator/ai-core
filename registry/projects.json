@@ -1,6 +1,6 @@
 {
   "schema_version": "1.1",
-  "observed_at": "2026-09-20T10:55:00Z",
+  "observed_at": "2026-09-20T11:10:00Z",
   "projects": [
     {
       "project_id": "ai-core",
@@ -45,13 +45,13 @@
       "repository": "freepass-creator/aiops",
       "default_branch": "main",
       "local_path": "C:\\dev\\aiops",
-      "head_revision": "c37a422765e784cdd843f36efb4be5328d7df4bb",
+      "head_revision": "dd47662ec6e92a689cbc4b8a50504e6013845ff9",
       "authoritative_sources": [
         {
           "kind": "GIT",
           "ref": "freepass-creator/aiops",
-          "revision": "c37a422765e784cdd843f36efb4be5328d7df4bb",
-          "observed_at": "2026-09-19T03:42:00Z"
+          "revision": "dd47662ec6e92a689cbc4b8a50504e6013845ff9",
+          "observed_at": "2026-09-20T11:10:00Z"
         }
       ],
       "commands": {
@@ -67,10 +67,9 @@
         "lib/seungin.mjs 행위등급 (local/drive-add/protected)"
       ],
       "known_blockers": [
-        "push blocked: history contains commits >100MB (lib/wonja/자금일보원자.json etc, 2026-09-03), 221 commits ahead of origin/main as of 2026-09-17 (was 189 on 2026-09-16), needs history surgery -- deferred",
-        "no build script; this project has no compile/bundle step",
-        "aiops-daily/aiops-gwataeryo-retry/aiops-gwataeryo-saebyeok scheduled tasks were Disabled since 2026-09-10 (root cause fixed and committed 2026-09-16, tasks not yet re-enabled pending user check)",
-        "2026-09-19: penalty change-charge main now includes review-digest binding, reviewed-package auto-transition, review-pending watchdog status, and read-only `npm run penalty:health` at 45b401dd; actual Windows Task Scheduler Enabled/LastRun/LastTaskResult remains operationally unverified from GitHub."
+        "Actual Windows Task Scheduler Enabled/LastRun/LastTaskResult remains operationally unverified from GitHub.",
+        "Security exact-subject SHADOW is on main, but recent GitHub Actions jobs have an observed runner-entry failure mode with zero executed steps; code-level CI enforcement must be re-observed when runners execute.",
+        "Historical local checkout/history-surgery state has not been re-observed after current main advanced; do not reuse the old local-ahead count as current fact."
       ]
     },
     {
@@ -204,13 +203,13 @@
       "repository": "freepass-creator/freepass-admin",
       "default_branch": "main",
       "local_path": null,
-      "head_revision": "fb85037969a6c2f4596350b9c66303025be6f19d",
+      "head_revision": "2747ef32e96c550d7dea05c58ee012880cb42dd3",
       "authoritative_sources": [
         {
           "kind": "GIT",
           "ref": "freepass-creator/freepass-admin",
-          "revision": "fb85037969a6c2f4596350b9c66303025be6f19d",
-          "observed_at": "2026-09-19T10:35:12Z"
+          "revision": "2747ef32e96c550d7dea05c58ee012880cb42dd3",
+          "observed_at": "2026-09-20T11:10:00Z"
         }
       ],
       "commands": {
@@ -225,11 +224,10 @@
         "production-deployment"
       ],
       "known_blockers": [
-        "Verified backend code baseline at 3f1812c6968f57494c1e8204e7a67d54e1c1f3ea: npm ci, typecheck, test and build PASS in GitHub Actions run 35437766677. Current repository head adds only control/evidence documents after that code baseline.",
-        "Production persistence adapter is not implemented/verified; current file repository proves atomic semantics only inside one Node process.",
-        "Production auth/permission binding is not implemented/verified; ActorProvider contract exists but no approved production adapter is bound.",
+        "Production persistence adapter is not implemented/verified on canonical main.",
+        "Production auth/permission binding is not implemented/verified; ActorProvider/authorization remains intentionally unbound for production.",
         "Production audit retention/sink, runtime smoke, deployment target and rollback remain unverified.",
-        "UI/UX redesign remains intentionally HOLD until the AI Core/DevCenter common UI/UX standard is finalized."
+        "Electronic-contract implementation was CI-verified on feature lineage and merged into work/gpt/esign-port-plan-r1, not canonical main; it requires a bounded replay/reintegration against current main before it can count as main functionality."
       ]
     },
     {
@@ -242,13 +240,13 @@
       "repository": "freepass-creator/freepass-estimate",
       "default_branch": "main",
       "local_path": null,
-      "head_revision": "034f183bda462a2a2efa799213f6c3ceade6524a",
+      "head_revision": "57a75aaeaa8b91f14c6bc22faa01e745daaa3112",
       "authoritative_sources": [
         {
           "kind": "GIT",
           "ref": "freepass-creator/freepass-estimate#main",
-          "revision": "034f183bda462a2a2efa799213f6c3ceade6524a",
-          "observed_at": "2026-09-20T10:55:00Z"
+          "revision": "57a75aaeaa8b91f14c6bc22faa01e745daaa3112",
+          "observed_at": "2026-09-20T11:10:00Z"
         }
       ],
       "commands": {
@@ -263,7 +261,8 @@
       ],
       "known_blockers": [
         "Production proof remains HOLD: no verified production deployment/live revision observation is currently bound to FreePass Estimate main.",
-        "FreePass Standard new-car regression remains fail-closed for three Hyundai NEXO cases because hydrogen cost policy is not approved."
+        "FreePass Standard new-car regression remains fail-closed for three Hyundai NEXO cases because hydrogen cost policy is not approved.",
+        "QA SHADOW is now present on canonical main, but recent Actions runs have a runner-entry failure mode with zero executed steps; exact-main CI execution should be re-observed when runners execute."
       ]
     },
     {
@@ -337,13 +336,13 @@
       "repository": "freepass-creator/freepasserp4",
       "default_branch": "main",
       "local_path": "C:\\dev\\freepasserp4",
-      "head_revision": "2d9fd07075aae7d6d64687fabbf61126e166c34c",
+      "head_revision": "06e18ff52e14ec4e3670361d89a873913be4f51b",
       "authoritative_sources": [
         {
           "kind": "GIT",
           "ref": "freepass-creator/freepasserp4",
-          "revision": "2d9fd07075aae7d6d64687fabbf61126e166c34c",
-          "observed_at": "2026-09-19T10:21:46Z"
+          "revision": "06e18ff52e14ec4e3670361d89a873913be4f51b",
+          "observed_at": "2026-09-20T11:10:00Z"
         }
       ],
       "commands": {
@@ -360,9 +359,10 @@
       ],
       "required_approvals": [],
       "known_blockers": [
-        "no test script in package.json",
-        "checked out on feat/spring-atom-monitor, not default branch",
-        "50+ active git worktrees scattered across C:\\dev\\freepasserp4-*, .wt-*, _wt-*, worktrees\\*, fp-*, C:\\tmp\\*, and a Codex-managed worktree -- not inventoried in full, several unmerged branches identified as salvage candidates (fix/sonokong-rent-plate-classification, codex/rtdb-cutover-current) but not verified against current tip"
+        "There is no single package.json test script; CI/checker-manifest owns the required checker set.",
+        "Large historical worktree/branch accumulation remains a cleanup and salvage risk; do not infer all worktrees are obsolete without revision comparison.",
+        "Main is not branch-protected in the latest observed GitHub project audit.",
+        "QA/Governance SHADOW is on main and had successful dedicated + existing CI at its source revision, but production revision/runtime proof remains external."
       ]
     },
     {
