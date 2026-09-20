@@ -80,6 +80,7 @@ export async function executeCompensatedEffectsWithReceipts({
       proof_inputs:result.proof_inputs??null,
       started_at:started,
       ended_at:iso(clock),
+      execution:result.execution??receipt.execution??null,
     });
     actionReceipts.push({phase:'EFFECT',effect_id:effect.effect_id,receipt:actionReceipt});
     return {...result,workflow_receipt_ref:actionReceipt.receipt_id};
@@ -120,6 +121,7 @@ export async function executeCompensatedEffectsWithReceipts({
       proof_inputs:result.proof_inputs??null,
       started_at:started,
       ended_at:iso(clock),
+      execution:result.execution??receipt.execution??null,
     });
     actionReceipts.push({phase:'COMPENSATION',effect_id:step.effect_id,receipt:actionReceipt});
     return {...result,workflow_receipt_ref:actionReceipt.receipt_id};
@@ -150,6 +152,7 @@ export async function executeCompensatedEffectsWithReceipts({
     proof_inputs:receipt.proof_inputs??null,
     started_at:overallStarted,
     ended_at:iso(clock),
+    execution:receipt.execution??null,
   });
 
   return {
