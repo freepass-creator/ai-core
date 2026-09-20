@@ -299,9 +299,21 @@ export function createCapabilityExecutionCoordinator({
     const project=projects.get(row.project_id);
     need(project&&text(project.local_path),'PROJECT_LOCAL_PATH_REQUIRED');
     const before=new Map(JSON.parse(row.before_receipts_json??'[]'));
-    const observed=await receiptReader.reconcile(project.local_path,capability.receipt,before);
+    const observed=await receiptReader.reconcile(
+      project.local_path,
+      capability.receipt,
+      before,
+      {expectedIdentity:requestId},
+    );
     if(observed.status==='HOLD'&&observed.reason==='EXECUTION_RECEIPT_MISSING'){
       return {status:'HOLD',reason:'EXECUTION_OUTCOME_UNKNOWN',reconciled:false};
+    }
+    if(observed.identity_verified!==true){
+      return {
+        status:'HOLD',
+        reason:observed.reason??'EXECUTION_RECEIPT_IDENTITY_UNVERIFIED',
+        reconciled:false,
+      };
     }
 
     const ref=observed.path?relativeReceiptRef(project.local_path,observed.path):null;
