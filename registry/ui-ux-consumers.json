@@ -10,7 +10,7 @@
     {
       "id": "freepass-sales",
       "repository": "freepass-creator/freepass-sales",
-      "observed_revision": "a0014b748b0f94aaa99e54ec939ef21f372c2c67",
+      "observed_revision": "7ae42cc7d9665149f4c234f3855fa7194acd86fe",
       "relation": "CANONICAL_CONSUMER",
       "adoption_status": "MAPPED",
       "feature_refs": [
@@ -68,7 +68,7 @@
     {
       "id": "freepass-estimate",
       "repository": "freepass-creator/freepass-estimate",
-      "observed_revision": "076833ebfe4e089f4e75656a0540dacb451ec6da",
+      "observed_revision": "df8783c9a4a62abd2ca6acaccba993c5887ca3a7",
       "relation": "CANONICAL_CONSUMER",
       "adoption_status": "MAPPED",
       "feature_refs": [
