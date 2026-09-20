@@ -245,3 +245,79 @@ export function buildProjectAuditClosureQueue({
     rule:'Completion progress and audit closure progress are intentionally separate. A project may report 100% complete while audit closure remains 0% until a successor v2 audit and live freshness verify the original handoff axes.',
   };
 }
+
+
+export function renderProjectAuditClosureQueueMarkdown(queue) {
+  need(queue?.schema === 'ai-core-project-audit-closure-queue/v1', 'AUDIT_CLOSURE_QUEUE_SCHEMA_INVALID');
+
+  const t = queue.totals;
+  const lines = [
+    '# Project 4 — Closure Status',
+    '',
+    '## Portfolio',
+    '',
+    `- projects: **${t.projects}**`,
+    `- actionable tasks: **${t.actionable_tasks}** (implementation ${t.implementation_tasks} / discovery ${t.discovery_tasks})`,
+    `- project-reported complete: **${t.reported_complete_tasks}/${t.actionable_tasks} (${t.reported_complete_percent}%)**`,
+    `- audit-closed: **${t.audit_closed_tasks}/${t.actionable_tasks} (${t.audit_closed_percent}%)**`,
+    `- handoff issued: **${t.handoff_issued}**`,
+    `- partial: **${t.open_partial}**`,
+    `- re-audit required: **${t.re_audit_required}**`,
+    `- re-audit gaps remain: **${t.re_audit_gaps_remain}**`,
+    `- stale handoff: **${t.handoff_stale}**`,
+    `- closed verified: **${t.closed_verified}**`,
+    '',
+    '## Projects',
+    '',
+    '| Project | Stage | Live | Reported | Audit closed | Next |',
+    '|---|---|---|---:|---:|---|',
+  ];
+
+  for (const item of queue.items) {
+    lines.push(
+      `| ${item.project_id} | ${item.stage} | ${item.live_status} | ${item.completion_progress.reported_complete_percent}% | ${item.audit_closure_progress.closed_percent}% | ${item.next_action.replace(/\|/g,'/')} |`
+    );
+  }
+
+  lines.push(
+    '',
+    '## Detail',
+    '',
+  );
+
+  for (const item of queue.items) {
+    lines.push(
+      `### ${item.project_id}`,
+      '',
+      `- repository: \`${item.repository}\``,
+      `- handoff revision: \`${item.handoff_revision}\``,
+      `- live revision: ${item.live_revision ? `\`${item.live_revision}\`` : 'unobserved'}`,
+      `- stage: **${item.stage}**`,
+      `- project-reported complete: ${item.completion_progress.reported_complete}/${item.completion_progress.total} (${item.completion_progress.reported_complete_percent}%)`,
+      `- audit closed: ${item.audit_closure_progress.closed}/${item.audit_closure_progress.total} (${item.audit_closure_progress.closed_percent}%)`,
+      `- implementation tasks: ${item.implementation_tasks}`,
+      `- discovery tasks: ${item.discovery_tasks}`,
+      `- next: ${item.next_action}`,
+    );
+    if (item.blockers.length) {
+      lines.push('- blockers:', ...item.blockers.map(blocker => `  - ${blocker}`));
+    }
+    lines.push('');
+  }
+
+  lines.push(
+    '## Interpretation',
+    '',
+    'Project-reported completion and audit closure are deliberately different. A project can report 100% completion while audit closure stays 0% until a successor v2 audit at that result revision is live-current and closes the original handoff axes.',
+    '',
+    '## Safety boundary',
+    '',
+    '- no automatic project write',
+    '- no automatic project merge',
+    '- no automatic Core promotion',
+    '- no deployment',
+    '- no production mutation',
+  );
+
+  return lines.join('\n') + '\n';
+}
