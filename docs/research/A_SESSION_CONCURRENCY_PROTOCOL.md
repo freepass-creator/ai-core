@@ -243,3 +243,32 @@ If an owner already has a live claim, a new claim request returns:
 The allocator returns `OWNER_BUSY` together with the owner's existing claim rather than misreporting that no work is available.
 
 The claim validator reports `LIVE_OWNER_DUPLICATE`, and claim health reports `MULTIPLE_LIVE_CLAIMS_FOR_OWNER` if the registry ever contains more than one live claim for the same owner.
+
+
+## Completion revision guard
+
+For repository inspection work, ownership is revision-bound at both the start and the finish.
+
+Guarded scopes:
+
+- `repo-rescan`
+- `runtime-evidence:*`
+- `migration-gap:*`
+
+Before a guarded claim can move to `COMPLETED`, the claim client resolves the repository's current default-branch head again.
+
+If the current head still equals `subject_revision`, completion may proceed.
+
+If the head moved:
+
+- the claim does **not** become `COMPLETED`;
+- it becomes `SUPERSEDED`;
+- `superseded_reason = SUBJECT_HEAD_MOVED`;
+- `expected_subject_revision` and `superseded_by_revision` are recorded;
+- the newer revision becomes a separate claimable work item.
+
+If the current head cannot be resolved, completion fails closed with `SUBJECT_HEAD_CHECK_FAILED`.
+
+`routing:*` and `coordination:*` are exempt because those tasks may legitimately mutate AI Core main while they are being performed.
+
+This closes the stale-finish gap: an audit cannot start at revision X, ignore a later revision Y, and still close X as if it were current.
