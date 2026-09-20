@@ -1,5 +1,8 @@
-# AI Core project entrypoint
+# AI Core entrypoint for Gemini
 
-Start at [the AI continuation guide](docs/coordination/AI_CONTINUATION.md). Then read [WORK_READ_FIRST.md](WORK_READ_FIRST.md) and [the common AI entrypoint](docs/coordination/CROSS_AI_ENTRYPOINT.md). They are the shared instructions; do not create a separate session ledger or copy their state here.
+Do not keep a separate Gemini task list or session ledger here.
 
-Read the coordinator's current scoped work packet. A read-only packet, role name or intake claim does not authorize execution. Missing canonical linkage, scope, freshness or execution authority means HOLD. Respect explicitly assigned checkout and file ownership. Do not change global trust, login or approval settings.
+- When Gemini participates through the one designated GitHub chat, start at [`docs/coordination/AI_CONTINUATION.md`](docs/coordination/AI_CONTINUATION.md).
+- When Gemini is explicitly assigned local analysis, start at [`WORK_READ_FIRST.md`](WORK_READ_FIRST.md) and use only the provided, minimum necessary sources.
+
+Read the current scoped packet and remote revision before acting. Google access, a role, packet or clone grants no deployment, external-write, completion or live-data authority. Missing target, revision, ownership, freshness or permission means HOLD. Return evidence pointers and unresolved items to the same designated conversation.

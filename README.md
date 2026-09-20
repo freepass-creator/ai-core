@@ -2,6 +2,13 @@
 
 AI Core is the group headquarters for user orders, shared memory, planning, routing, approvals, evidence and follow-through.
 
+## 두 개의 단일 입구
+
+- **로컬/Codex 작업:** 사용자는 하나의 지정된 로컬 대화에서만 지시한다. 작업자는 [WORK_READ_FIRST.md](WORK_READ_FIRST.md)에서 시작해 실제 checkout, 파일, 명령, 테스트와 로컬 증거를 다룬다.
+- **GitHub 채팅 작업:** 사용자는 하나의 지정된 채팅에서만 지시한다. 채팅 AI는 [AI_CONTINUATION.md](docs/coordination/AI_CONTINUATION.md)에서 시작해 GitHub 정본의 문서·코드·검토·PR 작업을 이어간다.
+
+두 입구는 같은 업무를 동시에 구현하지 않는다. 시작할 때 최신 remote revision과 현재 담당을 확인하고, 끝날 때 commit·검증·HOLD·다음 담당을 남긴다. 다른 AI용 `CLAUDE.md`, `GEMINI.md`와 세부 문서는 이 두 입구를 가리키는 포인터이지 별도 지시함이나 별도 원장이 아니다.
+
 ## 현재 작업: 공통 AI 오더 데스크
 
 통합 기준: PR #20의 work 원장이 업무 상태의 정본이고 PR #21의 OrderStore는 접수·claim 기록이다. 읽기 어댑터와 임시 DB의 후보→확인→work 연결은 [격리 통합 실험](docs/integration/INTEGRATION_STATUS.md)으로 검증한다. 영속 매핑·outbox는 미완이므로 운영 연결과 실행·최종 완료는 HOLD다. 사용자는 말로만 요청하고 기술 입력은 담당 AI가 처리한다.

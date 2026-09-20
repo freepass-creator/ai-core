@@ -2,6 +2,19 @@
 
 This is the single start point for an AI that needs to continue or advise on AI Core work. GitHub contains reviewed, minimized work context and evidence pointers. It is not the canonical business ledger and does not contain every conversation.
 
+## GitHub 채팅의 단일 입구
+
+사용자는 GitHub 기반 작업을 하나의 지정된 채팅에서만 지시한다. 이 문서가 그 채팅과 GitHub를 통해 참여하는 AI의 유일한 시작점이다. 새 채팅·새 업무 원장·동일 업무의 별도 상태표를 만들지 않는다. 다른 AI가 필요하면 현재 채팅이 하나의 대상 work와 revision, 허용 파일, 기대 반환물을 고정해 넘긴다.
+
+역할 경계는 다음과 같다.
+
+- GitHub 채팅: remote 정본의 문서·코드·검토·PR과 commit 증거를 담당한다.
+- 로컬/Codex 단일 대화: 실제 checkout, 로컬 앱·파일, 명령 실행, Windows/기기 검증과 비공개 자료를 담당한다.
+- 어느 쪽도 상대가 수행한 작업을 추정하지 않는다. `LOCAL_ONLY`, `REMOTE_VERIFIED`, `HOLD`를 구분하고 commit SHA·테스트·미검증을 인계한다.
+- 민감 원문과 로컬 `docs/context` 전문은 GitHub로 복사하지 않는다. 공개 가능한 최소 레코드와 증거 포인터만 남긴다.
+
+채팅 작업이 끝날 때는 같은 채팅에 `대상 revision / 변경 commit / 실행한 검증 / 남은 HOLD / 로컬에서 할 다음 한 가지`를 남긴다. 로컬 결과를 받을 때도 같은 형식으로 현재 remote와 다시 대조한다.
+
 ## If you can read this repository
 
 1. Read `WORK_READ_FIRST.md`, then `docs/coordination/AI_CORE_SESSION_OPERATING_DIRECTIVE_2026-09-19.md`, then `docs/coordination/CROSS_AI_ENTRYPOINT.md`. If assigned an Order/A/B/C/D role, follow that role's ownership and implementation mandate from the session directive.
