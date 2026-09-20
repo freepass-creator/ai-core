@@ -109,3 +109,16 @@ test('같은 execution identity의 terminal receipt만 복구한다', async () =
   assert.equal(out.state,'COMPLETED');
   assert.equal(out.identity_verified,true);
 });
+
+test('동시 변경 receipt 중 더 최신인 다른 identity가 있어도 exact identity를 복구한다', async () => {
+  const f=fake();
+  const bound={...config,identity_field:'request_id'};
+  const before=await f.reader.snapshot('/project',bound);
+  f.files.set('실행기록-a.json',{mtimeMs:998,value:{schema:'gwataeryo-run-manifest/v1',state:'COMPLETED',request_id:'exec-a'}});
+  f.files.set('실행기록-b.json',{mtimeMs:999,value:{schema:'gwataeryo-run-manifest/v1',state:'COMPLETED',request_id:'exec-b'}});
+  const out=await f.reader.reconcile('/project',bound,before,{expectedIdentity:'exec-a'});
+  assert.equal(out.status,'SUCCEEDED');
+  assert.equal(out.receipt.request_id,'exec-a');
+  assert.ok(out.path.endsWith('실행기록-a.json'));
+  assert.equal(out.identity_verified,true);
+});
