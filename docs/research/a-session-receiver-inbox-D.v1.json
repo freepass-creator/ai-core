@@ -2,7 +2,7 @@
   "schema": "ai-core-a-session-receiver-inbox/v1",
   "status": "RESEARCH_RECEIVER_INBOX_NOT_CANONICAL",
   "session": "D",
-  "observed_at": "2026-09-20T01:28:20Z",
+  "observed_at": "2026-09-20T11:12:00Z",
   "policy": {
     "source_of_truth": "A Routing Receipt Registry defines delivery; this inbox records receiver-side acknowledgement/review/decision only.",
     "conservative_default": "New routes enter as PENDING and remain unacknowledged until the target session writes revision-bound evidence.",
@@ -240,6 +240,24 @@
           "observed_at": "2026-09-20T01:28:20Z",
           "basis_revision": "75b003a4dd5bc2f4bc2d1b8211409895d1e8940a",
           "reason": "Adopted as a PROJECT_VERIFIED PILOT primitive plus Sales SHADOW progression. Sales-specific labels remain project-owned and second-project evidence is required before COMMON_ADOPTED."
+        }
+      ]
+    },
+    {
+      "route_id": "workflow.capability-cutover-no-dual-run::D",
+      "finding_id": "workflow.capability-cutover-no-dual-run",
+      "source_evidence_revision": "9772723ace7ff8c315ab135c933111b4539aacb5",
+      "delivered_at": "2026-09-20T11:12:00Z",
+      "receiver_status": "PENDING",
+      "acknowledgement": null,
+      "review": null,
+      "decision": null,
+      "history": [
+        {
+          "status": "PENDING",
+          "observed_at": "2026-09-20T11:12:00Z",
+          "basis_revision": "9772723ace7ff8c315ab135c933111b4539aacb5",
+          "reason": "Seeded from the A Routing Receipt Registry; D acknowledgement and review are intentionally pending."
         }
       ]
     }
