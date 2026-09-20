@@ -143,3 +143,23 @@ Heartbeat rules:
 - GitHub blob-SHA optimistic concurrency still applies to the heartbeat write.
 
 This prevents long A audits from silently losing ownership while also preventing an expired owner from stealing work back after another session legitimately took over.
+
+
+## Expired-claim reaper
+
+Expired ACTIVE claims are not considered live, but leaving them marked ACTIVE makes the coordination ledger hard to read. The reaper normalizes them to terminal history:
+
+```bash
+npm run a:claims:health
+npm run a:claims:reap
+```
+
+Rules:
+
+- `health` classifies live, expired-active, completed, abandoned and superseded claims and reports multiple-live-key anomalies;
+- `reap` changes only expired `ACTIVE` claims to `ABANDONED` with `abandon_reason = LEASE_EXPIRED`;
+- terminal claims are never rewritten by the reaper;
+- the write uses the same GitHub blob-SHA optimistic concurrency and retries only after refetching on a conflict;
+- `a:next` runs the reaper before changed-repository allocation, so abandoned stale ownership is normalized before a new claim is selected.
+
+The reaper is cleanup, not ownership theft. A live lease remains untouched.
