@@ -179,3 +179,25 @@ Current Admin receipt/proof adoption stays SHADOW.
 No workflow completion is inferred from receipt creation.
 
 Actions: NOT USED.
+
+
+## Compensation receipt lineage cycle
+
+Scope: C receipt evidence + D compensated-effect wrapper only.
+
+Added:
+- `src/contracts/workflow-execution-receipt.mjs`
+- `src/workflow/compensation-receipt-runtime.mjs`
+- `test/workflow-compensation-receipt.test.mjs`
+- `docs/workflow/COMPENSATION_RECEIPT_LINEAGE.md`
+
+Receipt chain:
+`multiwrite parent -> EFFECT/COMPENSATION receipt -> optional lower-level execution receipt`
+
+Semantics:
+- all effects success -> parent SUCCEEDED
+- original failure + successful compensation -> parent FAILED; original failure preserved
+- compensation failure -> parent PARTIAL; D action remains ESCALATE
+- lower-level receipts are referenced, not copied
+
+Actions: NOT USED.
