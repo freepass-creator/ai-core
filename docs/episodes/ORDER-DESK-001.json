@@ -57,6 +57,7 @@
     "contracts/ui-pattern-registry.schema.json",
     "contracts/ui-screen-manifest.schema.json",
     "contracts/ui-ux-consumer-conformance.schema.json",
+    "contracts/ui-ux-consumer-manifest.schema.json",
     "contracts/ui-ux-feature-registry.schema.json",
     "contracts/ui-ux-governance.schema.json",
     "contracts/work-ledger-event.schema.json",
@@ -197,6 +198,7 @@
     "examples/project-registry.json",
     "examples/ui-globalization.html",
     "examples/ui-screen.manifest.json",
+    "examples/ui-ux-consumer.manifest.json",
     "examples/work-ledger.jsonl",
     "memory/CURRENT.md",
     "memory/EMAIL_INDEX.json",
@@ -280,6 +282,7 @@
     "src/engine/project-capsule.mjs",
     "src/engine/project-runtime.mjs",
     "src/engine/result-envelope.mjs",
+    "src/engine/ui-ux-consumer-manifest.mjs",
     "src/engine/ui-ux-registry.mjs",
     "src/engine/ui-ux-runtime.mjs",
     "src/improvement/evaluate-evolution-jsonl.mjs",
@@ -360,6 +363,7 @@
     "test/run-control-tower.test.mjs",
     "test/shared-orders.test.mjs",
     "test/ui-globalization.test.mjs",
+    "test/ui-ux-consumer-manifest.test.mjs",
     "test/ui-ux-registry.test.mjs",
     "test/ui-ux-runtime.test.mjs",
     "test/validate-project-registry.test.mjs",
@@ -461,6 +465,7 @@
     "2026-09-19 B-session evidence boundary: common CSS implementation changes were deferred because the existing UI-PATTERNS browser receipt is source-hash-bound; B1 keeps the normative/machine UI/UX contract and validation rules, while rendered CSS changes require a fresh browser receipt in a later lane.",
     "2026-09-19 Order B1 closeout integration: universal UI/UX feature registry and globalization baseline reconciled with canonical C/D-enabled main; exact changed_files will be rebuilt from the merged Git tree.",
     "2026-09-19 Order B1 closeout: changed_files rebuilt from full recursive Git tree diff 7b63024c5dd0..0578ebae8d7d after UI/UX registry merge with canonical main.",
-    "2026-09-19 B-session B2: executable UI/UX layers added on stacked PR #95 — machine token provenance, component/pattern/screen contracts, runtime-v2 CSS, governance/consumer conformance gates and A-session evidence promotion. changed_files regenerated from the exact base_revision diff; this inventory update does not broaden the historical episode scope."
+    "2026-09-19 B-session B2: executable UI/UX layers added on stacked PR #95 — machine token provenance, component/pattern/screen contracts, runtime-v2 CSS, governance/consumer conformance gates and A-session evidence promotion. changed_files regenerated from the exact base_revision diff; this inventory update does not broaden the historical episode scope.",
+    "2026-09-19 B-session B3: per-product UI/UX consumer manifest contract and ERP4 MAPPED adoption evidence added; changed_files regenerated from the exact base_revision diff for repository verifier parity."
   ]
 }
