@@ -43,8 +43,7 @@ function normalizeIssues(value,coreCode=null){
   return issues;
 }
 
-function resolveConnectorFacade(adapter,connectors,correlation_id,auth_context,execution){
-  const binding=adapter.connector_binding;
+export function createBoundConnectorFacade({binding,connectors,correlation_id,auth_context=null,execution=null}={}){
   if(binding==null) return null;
   const runtime=connectors?.get?.(binding.connector_id)??connectors?.[binding.connector_id];
   need(runtime,'CONNECTOR_RUNTIME_MISSING',{connector_id:binding.connector_id});
@@ -63,6 +62,10 @@ function resolveConnectorFacade(adapter,connectors,correlation_id,auth_context,e
       return runtime.invoke(operationId,request,{correlation_id,auth_context,execution,signal});
     }
   });
+}
+
+function resolveConnectorFacade(adapter,connectors,correlation_id,auth_context,execution){
+  return createBoundConnectorFacade({binding:adapter.connector_binding,connectors,correlation_id,auth_context,execution});
 }
 
 export function createAdapterInvocationRuntime({
