@@ -129,7 +129,8 @@
       "head": "fd8522a38c86298ae7b0113bccdc3b288ef97f8a",
       "branch": "feat/estimate-new-used",
       "dirty_count": 0,
-      "decision": "HOLD_13_UNPUBLISHED_COMMITS"
+      "decision": "EXECUTED_RELOCATED_WITH_COMPLETE_BUNDLE",
+      "destination": "C:\\dev\\_worktrees\\freepasserp4\\estimate-new-used"
     },
     {
       "path": "C:\\dev\\.wt-rp012",
@@ -369,5 +370,45 @@
     ],
     "all_sources_absent": true,
     "all_destinations_present": true
+  },
+  "unpublished_estimate_relocation": {
+    "manifest": "C:\\Users\\admin\\DevArchive\\erp4-root-cleanup\\2026-09-20\\unpublished-estimate-worktree\\manifest.json",
+    "manifest_sha256": "820FA4F30ED84A88D165CA3F75BD836D498EFF036F0A97298394AC46688A2540",
+    "record": {
+      "schema_version": 1,
+      "created_at": "2026-09-20T20:18:14.313278+09:00",
+      "source": "C:\\dev\\.wt-est",
+      "destination": "C:\\dev\\_worktrees\\freepasserp4\\estimate-new-used",
+      "branch": "feat/estimate-new-used",
+      "head": "fd8522a38c86298ae7b0113bccdc3b288ef97f8a",
+      "upstream": "origin/feat/estimate-new-used",
+      "ahead": 13,
+      "behind": 0,
+      "bundle": "C:\\Users\\admin\\DevArchive\\erp4-root-cleanup\\2026-09-20\\unpublished-estimate-worktree\\estimate-new-used.bundle",
+      "bundle_sha256": "76CA91D67404BFD5681D845FB7725DB136C6820644326215337EE08B0F51389C",
+      "bundle_verified": true,
+      "restore_commands": [
+        "git -C 'C:\\dev\\freepasserp4' worktree remove 'C:\\dev\\_worktrees\\freepasserp4\\estimate-new-used'",
+        "git -C 'C:\\dev\\freepasserp4' worktree add 'C:\\dev\\.wt-est' 'feat/estimate-new-used'"
+      ]
+    },
+    "bundle_complete_history": true,
+    "post_move_head_verified": true,
+    "post_move_clean": true
+  },
+  "estimate_junction_repair": {
+    "old_residual": {
+      "source": "C:\\dev\\.wt-est",
+      "destination": "C:\\Users\\admin\\DevArchive\\erp4-root-cleanup\\2026-09-20\\post-worktree-residual-shells\\.wt-est",
+      "metadata_sha256": "A96E8BFE6EC4A319F8668EA31972DA8478F496E0CEB1826BE0D2CF8A80D02B2A",
+      "junction_target": "C:\\dev\\.wt-newcar\\node_modules",
+      "junction_target_status": "BROKEN_AFTER_PRIOR_STUB_ARCHIVE",
+      "restore_command": "Move-Item -LiteralPath 'C:\\Users\\admin\\DevArchive\\erp4-root-cleanup\\2026-09-20\\post-worktree-residual-shells\\.wt-est' -Destination 'C:\\dev\\.wt-est'"
+    },
+    "residual_manifest": "C:\\Users\\admin\\DevArchive\\erp4-root-cleanup\\2026-09-20\\post-worktree-residual-shells\\estimate-residual-manifest.json",
+    "residual_manifest_sha256": "15A72EA9596FD5ECD8B33CFDF775B84C1E4DD78A0ABB79BDCB827E8F5BBE392A",
+    "new_junction": "C:\\dev\\_worktrees\\freepasserp4\\estimate-new-used\\node_modules",
+    "new_target": "C:\\dev\\freepasserp4\\node_modules",
+    "new_target_verified": true
   }
 }

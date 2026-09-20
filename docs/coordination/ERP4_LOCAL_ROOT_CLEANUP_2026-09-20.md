@@ -50,10 +50,17 @@ All three recreated worktrees retained their exact HEAD and were clean. Git remo
 - Worktree manifest SHA-256: `80B8F1F0E2875D8252E77AE8ECEFF0B8CBC8131EC6CF425FE7F83C1CF874C27E`
 - Residual-shell manifest SHA-256: `914CFBB0D09051775B2D71E4EE11D32E02AFBC2F1A0B73280C1C1513B0478852`
 
+The clean `feat/estimate-new-used` worktree was subsequently relocated from `C:\dev\.wt-est` to `C:\dev\_worktrees\freepasserp4\estimate-new-used`. Its 13 commits were ahead of the remote branch, so the full branch history was first captured in a verified Git bundle. The recreated worktree retained HEAD `fd8522a3`, remained clean, and received a direct `node_modules` junction to the canonical ERP4 dependency directory.
+
+The old `.wt-est` shell exposed a chained junction to the previously archived `.wt-newcar\node_modules` path. That old junction was already broken, so its exact metadata was recorded and archived instead of being reused. The replacement points directly to `C:\dev\freepasserp4\node_modules`.
+
+- Unpublished-branch manifest SHA-256: `820FA4F30ED84A88D165CA3F75BD836D498EFF036F0A97298394AC46688A2540`
+- Estimate residual-shell manifest SHA-256: `15A72EA9596FD5ECD8B33CFDF775B84C1E4DD78A0ABB79BDCB827E8F5BBE392A`
+
 ## HOLD set
 
 - Dirty worktrees: canonical ERP4, `.wt-test`, `freepasserp4-rtdb-current`, both UI directories, `freepass-source-registry-current`, and every registered worktree under `freepasserp4\tmp`.
-- `.wt-est` remains HOLD because its branch has 13 commits that are not contained in any fetched remote branch. The other three previously clean root-level worktrees were safely relocated as recorded above.
+- The four clean root-level worktrees were safely relocated as recorded above. The unpublished estimate branch remains local-only but is protected by a complete verified bundle; publishing or merging those 13 commits is a separate code-review decision.
 - `_wt-base` has historical ERP4 attribution but its current ownership still needs revalidation. Other generic `_wt*` directories were not proven to belong to ERP4. All remain untouched.
 - `freepasserp4-ui-source`, its ZIP, and the UI upload/deploy pair require a secret-excluding full-tree comparison before archival.
 - `freepasserp4-rtdb-current` is migration debt. Firestore-only outputs must be extracted and verified before archival; RTDB remains permanently retired.
