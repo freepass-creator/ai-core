@@ -66,12 +66,61 @@ export async function executeEffectResume({
   for(const action of plan.actions){
     if(action.action!=='RUN') continue;
     const effect=effectById.get(action.effect_id);
-    if(before_effect) await before_effect(effect,{
-      correlation_id,
-      target_execution,
-      current_attempt,
-      resume_plan:plan,
-    });
+    if(before_effect){
+      try{
+        await before_effect(effect,{
+          correlation_id,
+          target_execution,
+          current_attempt,
+          resume_plan:plan,
+        });
+      }catch(error){
+        const gateCode=text(error?.code)?error.code:'EXECUTION_GATE_REJECTED';
+        const appliedSet=new Set([...priorAppliedIds,...newAppliedIds]);
+        const appliedInOrder=effects.filter(item=>appliedSet.has(item.effect_id)).map(item=>item.effect_id);
+        const executionResult={
+          status:'HOLD',
+          action:'HOLD',
+          correlation_id,
+          failed_effect_id:effect.effect_id,
+          original_error_code:gateCode,
+          applied_effect_ids:appliedInOrder,
+          effect_results:effectResults,
+          compensation_plan:null,
+          compensation_results:[],
+          compensation_outcome:null,
+        };
+        const parentReceipt=buildCompensationExecutionReceipt({
+          receipt_id:receipt.receipt_id,
+          operation_id:receipt.operation_id??`${receipt.receipt_id}.operation`,
+          operation_kind:receipt.operation_kind??'workflow.effect-resume',
+          actor:receipt.actor,
+          executor:receipt.executor,
+          correlation_id,
+          execution_result:executionResult,
+          input:receipt.input??effects,
+          input_refs:receipt.input_refs??[],
+          output_refs:receipt.output_refs??[],
+          evidence_refs:receipt.evidence_refs??[],
+          source_revision:receipt.source_revision??null,
+          reproducibility:receipt.reproducibility,
+          action_receipts:[...priorActionRefs,...actionReceipts],
+          proof_inputs:receipt.proof_inputs??null,
+          started_at:overallStarted,
+          ended_at:iso(clock),
+          execution:current_attempt??receipt.execution??null,
+        });
+        return {
+          status:'HOLD',
+          reason:gateCode,
+          executed:newAppliedIds.length>0,
+          plan,
+          execution_result:executionResult,
+          receipt:parentReceipt,
+          action_receipts:actionReceipts.map(x=>x.receipt),
+        };
+      }
+    }
     const started=iso(clock);
     let result;
     try{
@@ -129,13 +178,66 @@ export async function executeEffectResume({
     const compensationResults=[];
 
     for(const step of compensationPlan.steps){
-      if(before_compensation) await before_compensation(step,{
-        correlation_id,
-        original_error_code:originalError,
-        target_execution,
-        current_attempt,
-        resume_plan:plan,
-      });
+      if(before_compensation){
+        try{
+          await before_compensation(step,{
+            correlation_id,
+            original_error_code:originalError,
+            target_execution,
+            current_attempt,
+            resume_plan:plan,
+          });
+        }catch(error){
+          const gateCode=text(error?.code)?error.code:'COMPENSATION_GATE_REJECTED';
+          const compensationOutcome=resolveCompensationOutcome({
+            original_error_code:originalError,
+            plan:compensationPlan,
+            compensation_results:compensationResults,
+          });
+          const executionResult={
+            status:'PARTIAL_STATE',
+            action:'ESCALATE',
+            correlation_id,
+            failed_effect_id:effect.effect_id,
+            original_error_code:originalError,
+            applied_effect_ids:appliedInOrder,
+            effect_results:effectResults,
+            compensation_plan:compensationPlan,
+            compensation_results:compensationResults,
+            compensation_outcome:compensationOutcome,
+            gate_error_code:gateCode,
+          };
+          const parentReceipt=buildCompensationExecutionReceipt({
+            receipt_id:receipt.receipt_id,
+            operation_id:receipt.operation_id??`${receipt.receipt_id}.operation`,
+            operation_kind:receipt.operation_kind??'workflow.effect-resume',
+            actor:receipt.actor,
+            executor:receipt.executor,
+            correlation_id,
+            execution_result:executionResult,
+            input:receipt.input??effects,
+            input_refs:receipt.input_refs??[],
+            output_refs:receipt.output_refs??[],
+            evidence_refs:receipt.evidence_refs??[],
+            source_revision:receipt.source_revision??null,
+            reproducibility:receipt.reproducibility,
+            action_receipts:[...priorActionRefs,...actionReceipts],
+            proof_inputs:receipt.proof_inputs??null,
+            started_at:overallStarted,
+            ended_at:iso(clock),
+            execution:current_attempt??receipt.execution??null,
+          });
+          return {
+            status:'PARTIAL_STATE',
+            reason:gateCode,
+            executed:true,
+            plan,
+            execution_result:executionResult,
+            receipt:parentReceipt,
+            action_receipts:actionReceipts.map(x=>x.receipt),
+          };
+        }
+      }
       const compStarted=iso(clock);
       let compensation;
       try{
