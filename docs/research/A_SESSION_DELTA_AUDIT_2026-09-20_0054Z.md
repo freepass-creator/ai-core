@@ -223,3 +223,57 @@ Before treating a future scan as “no change,” compare current default-branch
 - `freepasserp4 = 14056f8c2c3a7cc973d956b4f23929a4c420fb98`
 
 If either head advances, inspect code/contracts/tests/workflows/runtime evidence again. If neither advances, do not re-notify on these same findings unless production/runtime evidence changes independently.
+
+---
+
+## 01:13Z follow-up — FreePass Admin D6 workflow shadow
+
+The Admin head advanced again after the prior C-adoption audit:
+
+- previous audited head: `77f682af680528124096e4f7871504a3596c8990`
+- observed head: `2aede7df82591470308f25bd3ccd4e5358aa7c3c`
+- delta: **7 commits ahead / 0 behind**
+- exact-head `backend-check` run `35480824168`: **success**
+
+Material additions are limited and revision-bound:
+
+- `contracts/ai-core/application-workflow.shadow.json`
+- `docs/AI_CORE_WORKFLOW_ADOPTION_2026-09-20.md`
+- `src/adapters/ai-core/workflow-shadow.ts`
+- `src/adapters/ai-core/__tests__/workflow-shadow.test.ts`
+
+The binding pins AI Core D revision `d47c25a596b7185f2dcb81cc2e88566fd4d7bd45`, workflow `freepass-admin.application-lifecycle@0.1.0`, and projection `freepass-admin.application.status@0.1.0`. It keeps `FREEPASS_ADMIN_DOMAIN` as runtime authority and explicitly sets `writes_routed_through_ai_core_engine = false` while enabling CI projection-parity checking.
+
+Tests execute the real Admin Application Service through submit, documents, balance, contract, delivery and cancellation paths. They verify that documents/balance remain facts rather than writable status transitions, cancellation is authoritative, post-cancellation mutation remains rejected, and a corrupted stored status that disagrees with the D-derived projection fails closed with `AI_CORE_WORKFLOW_SHADOW_DRIFT`.
+
+### Classification: **Core > Project**, evidence-level improvement
+
+Candidate/gap id: `workflow.admin-runtime-binding`.
+
+This is not a new Project > Core pattern. The project is consuming the D5 workflow/projection model that AI Core already owns. The meaningful change is that D is no longer only a Core-side model: Admin now provides source-side, exact-revision SHADOW parity evidence with green CI.
+
+Residual migration/backport gap:
+
+- Admin domain code, not the AI Core Workflow Engine, remains runtime write authority;
+- parity tests prove projection equivalence, not command/guard enforcement by Core at runtime;
+- cutover error mapping, persistence/audit atomicity and rollback are not yet proven;
+- no exact production runtime/deployment evidence was observed for D authority.
+
+Breaking/operational impact if SHADOW is treated as cut over:
+
+- two authorities can be conflated even though only Admin actually writes state;
+- runtime command/guard semantics can diverge despite projection parity;
+- cancellation/rejection and persistence side effects may differ during a later cutover;
+- rollback and audit atomicity can be assumed without evidence.
+
+Verification needed before promotion beyond SHADOW:
+
+1. approved runtime binding from Admin use cases into the D decision/engine boundary;
+2. stable error mapping during cutover;
+3. persistence + audit atomicity proof;
+4. tested rollback/compensation path;
+5. exact-revision CI plus production runtime/deployment evidence.
+
+Route: **D migration/adoption verification**. C remains relevant only to the persistence/audit verification boundary; A makes no D/C canonical edit.
+
+For the next no-change scan, treat `freepass-admin = 2aede7df82591470308f25bd3ccd4e5358aa7c3c` as already audited unless the head or runtime evidence changes.
