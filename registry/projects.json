@@ -1,6 +1,6 @@
 {
   "schema_version": "1.1",
-  "observed_at": "2026-09-20T11:20:00Z",
+  "observed_at": "2026-09-20T11:25:00Z",
   "projects": [
     {
       "project_id": "ai-core",
@@ -305,13 +305,13 @@
       "repository": "freepass-creator/freepass-sales",
       "default_branch": "main",
       "local_path": "C:\\dev\\sales",
-      "head_revision": "e8a96166e0961455119d9721501f26ecda229d03",
+      "head_revision": "e98e3e9854012b9043f7fbe7b4168ce772047e39",
       "authoritative_sources": [
         {
           "kind": "GIT",
           "ref": "freepass-creator/freepass-sales",
-          "revision": "e8a96166e0961455119d9721501f26ecda229d03",
-          "observed_at": "2026-09-20T10:50:00Z"
+          "revision": "e98e3e9854012b9043f7fbe7b4168ce772047e39",
+          "observed_at": "2026-09-20T11:25:00Z"
         }
       ],
       "commands": {
@@ -322,8 +322,10 @@
       "deploy_targets": [],
       "required_approvals": [],
       "known_blockers": [
-        "second checkout at C:\\dev\\sales-mail-automation on branch codex/mail-intake-automation carries 21 commits not on main (SMS promotion workflow, sales UI rework across 19 files) -- not reviewed or merged, real feature work at risk of being lost/forgotten",
-        "npm test at that branch tip intermittently fails at 검토/추가반례검증.cjs -- confirmed via bisect (2026-09-16) to be a PRE-EXISTING flaky focus-loss race in 웹/app.js (시트그리기다시 re-render drops focus), present at the branch base already, not introduced by any of the 21 commits. Does not block reviewing/merging those commits; worth fixing separately."
+        "MyData server ingestion/contact-sync code is on canonical main, but production Cloud Run region, runtime/scheduler service accounts, private source bucket and Secret Manager OAuth/Excel values are not yet bound or verified.",
+        "MyData execution remains HOLD: no approved AI Core external-mutation adapter/receipt is bound and no real Gmail/Firestore/Contacts production run was performed by the replay.",
+        "Recent GitHub Actions runs have an observed runner-entry failure mode with zero executed steps; current-main CI should be re-observed when runners execute.",
+        "Historical secondary Sales checkout/branches still contain additional SMS/UI work that has not been fully re-observed against current main."
       ]
     },
     {

@@ -522,6 +522,25 @@
         "freepass-creator/aiops/lib/ai-core-insurance-adapter.mjs"
       ],
       "capability_id": "operations.insurance-status"
+    },
+    {
+      "work_type_id": "sales-mydata-intake",
+      "name": "마이데이터 수집",
+      "domain": "sales",
+      "aliases": [
+        "마이데이터 수집",
+        "메일 DB 수집",
+        "고객 DB 메일 수집",
+        "연락처 동기화"
+      ],
+      "target_project_id": "freepass-sales",
+      "approval_boundary": "PROJECT_RULES",
+      "completion_condition": "서버 수집 작업의 source 보존, lead merge, 연락처 동기화 결과와 중복/복구 evidence를 반환한다.",
+      "source_pointers": [
+        "registry/projects.json",
+        "freepass-creator/freepass-sales/server/"
+      ],
+      "capability_id": "sales.mydata-intake"
     }
   ]
 }
