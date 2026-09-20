@@ -246,7 +246,7 @@
     },
     {
       "id": "core.execution-lease.v1",
-      "domain": "ENGINE_ADAPTER",
+      "domain": "DATA",
       "path": "contracts/core-execution-lease.schema.json",
       "status": "EXPERIMENTAL",
       "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
