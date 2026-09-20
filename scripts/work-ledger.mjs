@@ -28,29 +28,36 @@ function eventHash(event) {
   return `sha256:${createHash('sha256').update(JSON.stringify(canonical(content))).digest('hex')}`;
 }
 
-function parseLedgerEvents(text) {
-  return text.trim()
-    ? text.trim().split(/\r?\n/).map(line => JSON.parse(line))
-    : [];
-}
-
 export function inspectLedgerEventWithWorkflow(text, event) {
-  let replay;
-  try {
-    replay = workflowAdmission.replay(parseLedgerEvents(text));
-  } catch {
-    return { eligible: false, reasons: ['WORKFLOW_REPLAY_PARSE_FAILED'] };
-  }
-
-  if (replay.status !== 'VALID') {
+  const current = verifyLedgerText(text);
+  if (current.status !== 'VALID') {
     return {
       eligible: false,
-      reasons: ['WORKFLOW_REPLAY_INVALID'],
-      replay,
+      reasons: ['WORKFLOW_LEDGER_INVALID'],
+      ledger_errors: current.errors,
     };
   }
 
-  return workflowAdmission.inspect(replay.projection, event);
+  if (event?.type === 'CREATED') {
+    return workflowAdmission.inspect(null, event);
+  }
+
+  const prior = current.work?.[event?.work_id] ?? null;
+  const projection = prior
+    ? {
+        entity_id: event.work_id,
+        revision: prior.event_count ?? 0,
+        states: { lifecycle: prior.state },
+        project_id: prior.project_id,
+        subject_revision: prior.subject_revision,
+        verification_captured: prior.verification_captured === true,
+        verified_revision: prior.verified_revision ?? null,
+        revisions: [...(prior.revisions ?? [])],
+        event_count: prior.event_count ?? 0,
+      }
+    : null;
+
+  return workflowAdmission.inspect(projection, event);
 }
 
 export function verifyLedgerText(text) {
@@ -109,7 +116,15 @@ export function verifyLedgerText(text) {
     // New writes are blocked in appendLedgerEvent below; only CREATED/REOBSERVED can add a revision.
     const revisions = [...(prior?.revisions ?? [])];
     if ((event.type === 'CREATED' || event.type === 'REOBSERVED') && event.subject_revision && revisions.at(-1) !== event.subject_revision) revisions.push(event.subject_revision);
-    workStates.set(event.work_id, { state: event.to_state, project_id: event.project_id, subject_revision: event.subject_revision, revisions });
+    workStates.set(event.work_id, {
+      state: event.to_state,
+      project_id: event.project_id,
+      subject_revision: event.subject_revision,
+      revisions,
+      verification_captured: verifiedAt.has(event.work_id),
+      verified_revision: verifiedAt.has(event.work_id) ? verifiedAt.get(event.work_id) : null,
+      event_count: (prior?.event_count ?? 0) + 1,
+    });
     head = storedHash;
   }
   return { status: errors.length ? 'INVALID' : 'VALID', head, event_count: events.length, work: Object.fromEntries(workStates), errors };
