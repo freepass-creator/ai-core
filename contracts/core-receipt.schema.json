@@ -211,6 +211,34 @@
     "proof_input_binding": {
       "$ref": "https://schemas.freepass.ai/core/proof-input-binding/v1",
       "description": "Optional proof freshness binding. If any bound source/checker/fixture/config/schema/dependency input changes, the prior proof is stale until rerun."
+    },
+    "child_receipts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "receipt_ref",
+          "relation"
+        ],
+        "properties": {
+          "receipt_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "relation": {
+            "enum": [
+              "PORT",
+              "ADAPTER",
+              "REPOSITORY",
+              "EFFECT",
+              "COMPENSATION",
+              "OTHER"
+            ]
+          }
+        }
+      },
+      "description": "Optional child execution receipts that contributed to this result. References do not imply workflow completion."
     }
   }
 }
