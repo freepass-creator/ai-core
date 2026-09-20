@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.freepass.ai/security/promotion-gate/v1",
+  "title": "AI Core Security Audit Promotion Gate v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "candidate_profile_ref",
+    "target_maturity",
+    "promotion_status",
+    "gates"
+  ],
+  "properties": {
+    "schema_version": {"const": "security-audit-promotion-gate/v1"},
+    "candidate_profile_ref": {"type": "string", "minLength": 1},
+    "target_maturity": {"enum": ["CANONICAL_PARTIAL", "MACHINE_ENFORCED"]},
+    "promotion_status": {"enum": ["HOLD", "READY"]},
+    "gates": {
+      "type": "array",
+      "minItems": 7,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "status", "evidence_refs", "note"],
+        "properties": {
+          "id": {
+            "enum": [
+              "core_machine_validation",
+              "aiops_semantic_representation",
+              "erp4_policy_consumption",
+              "independent_non_aiops_consumer",
+              "audit_redaction_consumer_test",
+              "branch_check_enforcement",
+              "canonical_owner_authorization"
+            ]
+          },
+          "status": {"enum": ["PASS", "PENDING", "HOLD", "BLOCKED_EXTERNAL"]},
+          "evidence_refs": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {"type": "string", "minLength": 1}
+          },
+          "note": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  }
+}
