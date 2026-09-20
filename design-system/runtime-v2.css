@@ -476,3 +476,38 @@
     min-inline-size: var(--control-height-touch-min);
   }
 }
+
+
+/* Direct source-derived variant selector: terms, trims, plans, etc.
+   This is not a search quick-filter surface. */
+.ui-variant-selector {
+  display: flex;
+  gap: var(--space-2);
+  overflow-x: auto;
+  padding-block: var(--space-1);
+  scroll-snap-type: inline proximity;
+}
+
+.ui-variant-selector > a,
+.ui-variant-selector > button,
+.ui-variant-selector > [role="option"] {
+  min-block-size: var(--control-height-touch-min);
+  min-inline-size: max-content;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding-inline: var(--space-3);
+  border: 1px solid var(--color-control-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  text-decoration: none;
+  scroll-snap-align: start;
+}
+
+.ui-variant-selector > [aria-current="true"],
+.ui-variant-selector > [aria-selected="true"],
+.ui-variant-selector > [data-selected="true"] {
+  font-weight: 700;
+  border-color: currentColor;
+}
