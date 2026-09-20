@@ -1,0 +1,295 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://freepass.local/contracts/ui-ux-conformance-receipt.schema.json",
+  "title": "AI Core UI/UX Conformance Receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "version",
+    "claim_level",
+    "status",
+    "product",
+    "ai_core",
+    "observed_at",
+    "runner",
+    "required_matrix",
+    "feature_results",
+    "source_hashes",
+    "artifacts"
+  ],
+  "properties": {
+    "contract": {
+      "const": "ai-core-ui-ux-conformance-receipt/v1"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^1\\.[0-9]+\\.[0-9]+$"
+    },
+    "claim_level": {
+      "enum": [
+        "PILOT",
+        "CONFORMANT"
+      ]
+    },
+    "status": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "HOLD"
+      ]
+    },
+    "product": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "repository",
+        "subject_revision",
+        "manifest_path"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 2
+        },
+        "repository": {
+          "type": "string",
+          "pattern": "^[^/]+/[^/]+$"
+        },
+        "subject_revision": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "manifest_path": {
+          "const": ".ai-core/ui-ux.consumer.json"
+        }
+      }
+    },
+    "ai_core": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository",
+        "revision",
+        "feature_registry_version",
+        "status"
+      ],
+      "properties": {
+        "repository": {
+          "const": "freepass-creator/ai-core"
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "feature_registry_version": {
+          "type": "string",
+          "pattern": "^1\\.[0-9]+\\.[0-9]+$"
+        },
+        "status": {
+          "enum": [
+            "CANDIDATE_PR",
+            "CANONICAL"
+          ]
+        }
+      }
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "runner": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "os",
+        "browser",
+        "browser_version",
+        "command"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "GITHUB_ACTIONS",
+            "LOCAL_CONTROLLED",
+            "OTHER_CONTROLLED"
+          ]
+        },
+        "os": {
+          "type": "string",
+          "minLength": 2
+        },
+        "browser": {
+          "type": "string",
+          "minLength": 2
+        },
+        "browser_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "command": {
+          "type": "string",
+          "minLength": 2
+        },
+        "workflow_run": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 2
+        }
+      }
+    },
+    "required_matrix": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "viewports",
+        "locales",
+        "input_modes",
+        "preferences",
+        "states"
+      ],
+      "properties": {
+        "viewports": {
+          "type": "array",
+          "minItems": 5,
+          "uniqueItems": true,
+          "items": {
+            "type": "integer",
+            "minimum": 240
+          }
+        },
+        "locales": {
+          "type": "array",
+          "minItems": 4,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 2
+          }
+        },
+        "input_modes": {
+          "type": "array",
+          "minItems": 4,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 2
+          }
+        },
+        "preferences": {
+          "type": "array",
+          "minItems": 3,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 2
+          }
+        },
+        "states": {
+          "type": "array",
+          "minItems": 4,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 2
+          }
+        }
+      }
+    },
+    "feature_results": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "feature_id",
+          "status",
+          "checks",
+          "evidence"
+        ],
+        "properties": {
+          "feature_id": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:[.-][a-z0-9]+)*$"
+          },
+          "status": {
+            "enum": [
+              "PASS",
+              "FAIL",
+              "HOLD"
+            ]
+          },
+          "checks": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 2
+            }
+          },
+          "evidence": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 2
+            }
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "source_hashes": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "minLength": 1
+      },
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[a-f0-9]{64}$"
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "kind",
+          "ref"
+        ],
+        "properties": {
+          "kind": {
+            "enum": [
+              "LOG",
+              "JSON",
+              "SCREENSHOT",
+              "VIDEO",
+              "A11Y_REPORT",
+              "VISUAL_DIFF"
+            ]
+          },
+          "ref": {
+            "type": "string",
+            "minLength": 2
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        }
+      }
+    }
+  }
+}
