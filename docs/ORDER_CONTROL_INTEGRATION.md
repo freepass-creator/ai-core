@@ -33,6 +33,8 @@ SQLite와 work ledger 두 저장소 사이에 원자적 트랜잭션이 있다�
 
 원장 append와 control snapshot 갱신 사이에도 요구 변경이 들어올 수 있다. snapshot을 쓰기 직전에 현재 OrderStore의 `requirement_revision`과 요구 digest를 영속 binding에 다시 대조한다. 둘 중 하나라도 다르면 이전 revision의 원장 이벤트는 불변 이력으로 보존하되 현재 snapshot에는 투영하지 않고 outbox를 `HOLD`로 기록한다. 이후 새 revision은 reroute와 별도 Work intake를 거쳐야 하며, 예전 Work의 제목·요구·READY 상태를 새 revision에 섞지 않는다.
 
+snapshot 파일 교체 뒤 outbox 승인 전에 중단된 재시도도 예외가 아니다. 기존 Work 항목을 발견하면 ID·프로젝트·SHA만 대조하지 않고 전체 snapshot을 Control Tower로 다시 검증한 뒤에만 `SNAPSHOT_WRITTEN`으로 승격한다. 불완전하거나 손상된 기존 항목은 `CONTROL_SNAPSHOT_INVALID` HOLD로 남긴다.
+
 ## 브랜치 통합 순서
 
 1. #20의 공통 계약과 원장 변경을 먼저 검토·고정한다. 위 커밋 이후 변경됐다면 다시 대조한다.

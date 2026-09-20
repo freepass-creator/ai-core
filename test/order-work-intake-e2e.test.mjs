@@ -194,3 +194,25 @@ test('revision changed after ledger append is held before snapshot projection',a
   assert.equal(ledger.status,'VALID');
   assert.equal(ledger.event_count,1,'immutable old-revision history remains evidence, not current projection');
 });
+
+test('retry refuses a corrupt snapshot left between file write and outbox acknowledgement',async t=>{
+  const f=await fixture(t);
+  const order=await (await f.post('/api/orders',orderInput({title:'보고서 제작',intent:'보고서 만들어'}))).json();
+  const linked=await (await f.post(`/api/orders/${order.id}/work-intake`)).json();
+  assert.equal(linked.status,'WORK_LINKED');
+
+  const snapshot=JSON.parse(readFileSync(f.snapshotPath,'utf8'));
+  delete snapshot.items[0].authorization;
+  writeFileSync(f.snapshotPath,JSON.stringify(snapshot,null,2));
+  f.store.db.prepare(
+    "UPDATE work_intake_outbox SET state='LEDGER_OBSERVED',version=version+1 WHERE command_id=?"
+  ).run(linked.command_id);
+
+  const retried=await (await f.post(`/api/orders/${order.id}/work-intake`)).json();
+  assert.equal(retried.status,'HOLD');
+  assert.equal(retried.reason,'CONTROL_SNAPSHOT_INVALID');
+  assert.equal(retried.work_id,linked.work_id);
+  const outbox=f.store.db.prepare('SELECT state,reason FROM work_intake_outbox WHERE command_id=?').get(linked.command_id);
+  assert.equal(outbox.state,'HOLD');
+  assert.equal(outbox.reason,'CONTROL_SNAPSHOT_INVALID');
+});
