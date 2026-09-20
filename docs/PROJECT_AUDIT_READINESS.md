@@ -202,3 +202,37 @@ This command:
 6. treats inspection failure as HOLD, never CURRENT.
 
 The current four-pilot portfolio includes one useful registry-lag case: ERP4 can remain live-current while the central project registry is stale. A later live ERP4 head automatically makes the saved audit STALE until a newer v2 result supersedes it.
+
+
+## Revision-bound project handoff
+
+Project 4 can convert one active v2 audit into an implementation/discovery handoff only after live freshness re-check:
+
+```bash
+npm run audit:handoff -- <project_id>
+npm run audit:handoff -- <project_id> --format md
+npm run audit:handoff -- <project_id> --format md --require-ready
+```
+
+Routing is verdict-driven:
+
+- `MIGRATION_GAP` -> project implementation
+- `UNKNOWN` -> project discovery
+- `PROJECT_AHEAD` -> standard-owner candidate review
+- `RESEARCH_ADVISORY` -> standard research
+- `CORE_MATCH` -> no project remediation
+
+A stale project revision or stale AI Core audit baseline produces `HOLD_STALE_AUDIT` and blocks handoff execution.
+
+Machine contract:
+
+- `contracts/project-audit-handoff.schema.json`
+
+Current human-readable Project 4 handoffs:
+
+- `docs/handoffs/project-4/FREEPASS_ADMIN_AUDIT_HANDOFF_2026-09-20.md`
+- `docs/handoffs/project-4/FREEPASS_ERP4_AUDIT_HANDOFF_2026-09-20.md`
+- `docs/handoffs/project-4/FREEPASS_ESTIMATE_AUDIT_HANDOFF_2026-09-20.md`
+- `docs/handoffs/project-4/AIOPS_AUDIT_HANDOFF_2026-09-20.md`
+
+Project 4 routes work only. Consumer-repository writes, consumer PRs, canonical promotion, deploy and production mutation remain disabled.
