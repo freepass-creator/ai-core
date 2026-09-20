@@ -163,3 +163,26 @@ Rules:
 - `a:next` runs the reaper before changed-repository allocation, so abandoned stale ownership is normalized before a new claim is selected.
 
 The reaper is cleanup, not ownership theft. A live lease remains untouched.
+
+
+## Canonical scope policy
+
+New ACTIVE claims must use one of these canonical scope forms:
+
+- `repo-rescan`
+- `runtime-evidence:<surface>`
+- `migration-gap:<finding-id>`
+- `routing:<finding-id>`
+- `coordination:<topic>`
+
+This prevents alias-based duplicate work such as one session claiming `repo-rescan` while another calls the same inspection `audit`.
+
+Live overlap rules on the same repository revision:
+
+- identical canonical scopes always conflict;
+- `repo-rescan` also conflicts with `runtime-evidence:*` and `migration-gap:*`;
+- `routing:*` and `coordination:*` only conflict with the same exact scope.
+
+A completed claim suppresses only the same exact scope. This is intentional: deployment/runtime evidence may change while the repository revision stays the same, so a past repo audit must not permanently prevent a later runtime-evidence check.
+
+Historical terminal claims may retain older noncanonical scope names for audit history. New ACTIVE claims using an unknown alias fail with `CLAIM_SCOPE_INVALID`.
