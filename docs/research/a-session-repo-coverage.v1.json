@@ -133,15 +133,16 @@
     {
       "repository": "freepass-creator/freepass-admin",
       "default_branch": "main",
-      "observed_head": "77f682af680528124096e4f7871504a3596c8990",
+      "observed_head": "2aede7df82591470308f25bd3ccd4e5358aa7c3c",
       "audit_state": "DEEP_EVIDENCE",
       "independence": "INDEPENDENT_UNLESS_CANDIDATE_SPECIFIC_LINEAGE_IS_FOUND",
       "findings": [
         "engine.boundary",
         "data.snapshot-revision",
-        "api.stable-error-code"
+        "api.stable-error-code",
+        "BACKPORT: D workflow runtime binding"
       ],
-      "note": "A-session re-observed Admin at 77f682af680528124096e4f7871504a3596c8990 after C Application Service SHADOW/PARTIAL adoption. Production binding verification remains a Core > Project gap."
+      "note": "A-session re-observed Admin at 2aede7df82591470308f25bd3ccd4e5358aa7c3c. C Application Service remains SHADOW/PARTIAL, and D workflow/projection parity is now exact-head CI verified in SHADOW mode while Admin domain remains runtime write authority."
     },
     {
       "repository": "freepass-creator/freepass-estimate",
@@ -158,15 +159,18 @@
     {
       "repository": "freepass-creator/freepass-sales",
       "default_branch": "main",
-      "observed_head": "fe69f76d81f4b9acd6f67f7b3f4ef5619f5e33d1",
+      "observed_head": "2ec46bb2e88b10a31915b68ec77b2eecbdac57bd",
       "audit_state": "DEEP_EVIDENCE",
       "independence": "INDEPENDENT_UNLESS_CANDIDATE_SPECIFIC_LINEAGE_IS_FOUND",
       "findings": [
         "engine.repository-idempotency",
         "workflow.launch-vs-completion",
-        "workflow.hold-resume"
+        "workflow.hold-resume",
+        "workflow.forward-skip-evidence-integrity",
+        "BACKPORT: B conformance receipt",
+        "BACKPORT: C Sales shadow runtime binding"
       ],
-      "note": null
+      "note": "A-session re-observed Sales at 2ec46bb2e88b10a31915b68ec77b2eecbdac57bd. Forward-skip evidence integrity is routed to D/C; B conformance and C runtime receipt binding remain Core > Project migration gaps."
     },
     {
       "repository": "freepass-creator/freepasserp",
@@ -192,7 +196,7 @@
     {
       "repository": "freepass-creator/freepasserp4",
       "default_branch": "main",
-      "observed_head": "3b98649ff49a24376aca4b24590c15d36b95a8f6",
+      "observed_head": "f01b91c7f68fc2f55d8d642bc3d39f5e07368967",
       "audit_state": "DEEP_EVIDENCE",
       "independence": "INDEPENDENT_UNLESS_CANDIDATE_SPECIFIC_LINEAGE_IS_FOUND",
       "findings": [
@@ -203,7 +207,7 @@
         "BACKPORT: C shadow production binding and receipt enforcement",
         "BACKPORT: SSOT Source Contract main-push path parity"
       ],
-      "note": "A-session re-observed ERP4 through Audit80 at 3b98649ff49a24376aca4b24590c15d36b95a8f6. C shadow adoption is implemented/CI-verified but not production-enforced; Audit80 adds a main-push CI path-coverage gap."
+      "note": "A-session re-observed ERP4 at f01b91c7f68fc2f55d8d642bc3d39f5e07368967. Latest delta is Audit80 docs-only ledger evidence; C shadow production binding, receipt enforcement, audit metadata consistency, and main-push path parity gaps remain open."
     },
     {
       "repository": "freepass-creator/freepasshomepage",
