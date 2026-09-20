@@ -155,3 +155,27 @@ Admin file persistence facts preserved:
 - development filesystem evidence only; no production Firestore behavior inferred
 
 Actions: NOT USED.
+
+
+## Receipt lineage cycle
+
+Scope: C runtime + FreePass Admin SHADOW only. No Sales/ERP4/Workflow ownership changes.
+
+Added:
+- Repository `invokeWithReceipt()`
+- `src/contracts/repository-receipt.mjs`
+- `src/contracts/service-receipt.mjs`
+- Application Service `runWithReceipt()`
+- optional `core-receipt/v1.child_receipts[]`
+
+Lineage:
+`Service Receipt -> child Adapter/Repository Receipts -> Result/Evidence/Proof Inputs`
+
+Revision semantics:
+- receipt `source_revision` = implementation/source revision
+- Repository entity/storage revision = `metrics.repository_revision`
+
+Current Admin receipt/proof adoption stays SHADOW.
+No workflow completion is inferred from receipt creation.
+
+Actions: NOT USED.
