@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://freepass.local/contracts/workflow-effect-receipt-binding/v1",
+  "title": "AI Core Workflow Effect Receipt Binding v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "binding_id",
+    "effect_id",
+    "phase",
+    "selector",
+    "child_relation",
+    "require_execution_binding",
+    "partial_policy",
+    "proof_policy"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "workflow-effect-receipt-binding/v1"
+    },
+    "binding_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9._-]*$"
+    },
+    "effect_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "phase": {
+      "enum": [
+        "EFFECT",
+        "COMPENSATION"
+      ]
+    },
+    "selector": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "operation_kind"
+      ],
+      "properties": {
+        "operation_kind": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9._-]*$"
+        },
+        "executor": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_revision": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "child_relation": {
+      "enum": [
+        "PORT",
+        "ADAPTER",
+        "REPOSITORY",
+        "OTHER"
+      ]
+    },
+    "require_execution_binding": {
+      "const": true
+    },
+    "partial_policy": {
+      "const": "HOLD"
+    },
+    "proof_policy": {
+      "const": "PRESERVE_AND_REVERIFY"
+    },
+    "compensation_action": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "phase": {
+            "const": "COMPENSATION"
+          }
+        },
+        "required": [
+          "phase"
+        ]
+      },
+      "then": {
+        "required": [
+          "compensation_action"
+        ]
+      }
+    }
+  ]
+}
