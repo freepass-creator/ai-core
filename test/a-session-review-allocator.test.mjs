@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { reviewRevision } from '../scripts/a-session-review-pack.mjs';
-import { scoreReviewItem, rankReviewItems, reviewClaimRequest, availableReviewItems, validateReviewAllocatorState } from '../scripts/a-session-review-next.mjs';
+import { scoreReviewItem, rankReviewItems, reviewScope, reviewClaimRequest, availableReviewItems, validateReviewAllocatorState } from '../scripts/a-session-review-next.mjs';
 
 const baseItem=(overrides={})=>({
   route_id:'x::C',finding_id:'x',target_session:'C',queue_status:'READY_FOR_REVIEW',
@@ -54,7 +54,8 @@ test('claim identity binds to review fingerprint and route scope',()=>{
   const req=reviewClaimRequest(item,'C-review');
   assert.equal(req.repository,'freepass-creator/ai-core');
   assert.equal(req.revision,item.review_revision);
-  assert.equal(req.scope,'review/x::C');
+  assert.equal(reviewScope('x::C'),'coordination:review-x--c');
+  assert.equal(req.scope,'coordination:review-x--c');
 });
 test('live or completed claim removes an item from available candidates',()=>{
   const item=withRevision(baseItem());
