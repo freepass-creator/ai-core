@@ -1032,3 +1032,182 @@ main에는:
 그 전까지는 현재 branch/Repo를 이름만 보고 삭제하지 않는다.
 
 **전수 감사 상태: 36 / 36 Repo 확인 완료.**
+
+
+---
+
+## 19. 상태 정본 간 Drift — Repository Lifecycle vs Project Runtime
+
+전수 감사 후 AI Core 내부의 기존 정본들을 대조한 결과,
+중복 문제는 branch/file 수준뿐 아니라 **상태 모델 수준**에도 존재한다.
+
+### 서로 다른 두 상태축
+
+`docs/REPOSITORY_LIFECYCLE_AUDIT_2026-09-20.md` 및
+`examples/repository-lifecycle-2026-09-20.json`의 상태는
+**repository의 생명주기/권위성**을 뜻한다.
+
+- ACTIVE = 현재 제품/본사 정본
+- REFERENCE = 현재 runtime SSOT는 아니지만 참조 필요
+- HOLD = 현재 사용/배포/소유권이 미확정
+- RETIRE = 비정본, 신규 작업 금지
+
+반면 `registry/projects.json`의 상태는
+AI Core runtime에서 **실제 실행 허용 여부**에도 직접 사용된다.
+
+`src/engine/project-runtime.mjs`는
+`project.status === 'ACTIVE'`인 프로젝트만 실행 가능하게 한다.
+
+따라서 현재 같은 단어 `ACTIVE / HOLD / REFERENCE / RETIRE`가
+다음 두 의미축에 동시에 사용된다.
+
+1. Repository lifecycle / authority
+2. AI Core execution readiness / activation
+
+이 둘은 논리적으로 독립될 수 있다.
+
+예:
+- FreePass Estimate는 현재 제품 정본이라는 의미에서는 ACTIVE일 수 있지만
+  canonical implementation이 아직 main에 합쳐지지 않아 runtime execution은 HOLD일 수 있다.
+- WelrixTable은 장기 제품 권위는 REFERENCE지만
+  현재 실행 가능한 신차 견적 runtime이라는 의미에서는 ACTIVE일 수 있다.
+
+즉 단순 status 문자열 비교로 한쪽을 다른 쪽에 덮어쓰면 안 된다.
+
+### 현재 수치
+
+- Repository lifecycle register: **36 repos**
+- `registry/projects.json`: **17 projects**
+- Project Registry observed_at: **2026-09-19T10:46:16Z**
+- Lifecycle register: **2026-09-20 기준**
+
+Lifecycle에는 있으나 Project Registry에는 아직 없는 Repo: **19개**
+
+- `freepass-creator/-`
+- `freepass-creator/billincar`
+- `freepass-creator/chakhandeal`
+- `freepass-creator/ci_center`
+- `freepass-creator/freeepasserp2`
+- `freepass-creator/freepasserp`
+- `freepass-creator/freepasserp3`
+- `freepass-creator/freepasspartner`
+- `freepass-creator/gukminchagimpo`
+- `freepass-creator/jpkerp`
+- `freepass-creator/jpkerp-v4`
+- `freepass-creator/jpkerp2`
+- `freepass-creator/jpkerp5`
+- `freepass-creator/renman`
+- `freepass-creator/rentsafe`
+- `freepass-creator/teamjpk`
+- `freepass-creator/vehicle-master`
+- `freepass-creator/webtoon-studio`
+- `freepass-creator/welrix-proposal`
+
+이 누락은 곧바로 오류를 의미하지 않는다.
+Project Registry는 실행 대상으로 편입한 project subset일 수 있다.
+다만 새 AI가 `registry/projects.json`만 읽으면 전체 Repo 지형을 17개로 오해할 수 있다.
+
+### 동일 Repo의 상태 문자열 불일치
+
+두 레지스트리에 모두 존재하는 Repo 중 12개는 status 문자열이 다르다.
+
+| Repository | Lifecycle | Project Registry |
+|---|---|---|
+| casemap-private | ACTIVE | HOLD |
+| devcenter | ACTIVE | HOLD |
+| docshub | ACTIVE | HOLD |
+| fp-settlement | ACTIVE | HOLD |
+| freepass-admin | ACTIVE | HOLD |
+| freepass-estimate | ACTIVE | HOLD |
+| freepasshomepage | ACTIVE | HOLD |
+| mewcar-jbwoori-proposal | ACTIVE | REFERENCE |
+| sonogong-estimator | REFERENCE | HOLD |
+| teamjpkwork | ACTIVE | HOLD |
+| welrixtable | REFERENCE | ACTIVE |
+| workcontrol | RETIRE | HOLD |
+
+이 표는 "어느 쪽이 틀렸다"는 판정이 아니다.
+현재 구조에서 같은 vocabulary를 서로 다른 의미축에 재사용하고 있다는 evidence다.
+
+### 특히 주의할 사례
+
+#### WelrixTable
+
+Lifecycle:
+- REFERENCE
+- 장기 estimator authority는 FreePass Estimate
+
+Project Registry:
+- ACTIVE
+- 현재 실행 가능한 new-car quote runtime
+
+이 차이는 의도된 dual-axis로 해석 가능하다.
+다만 `ACTIVE`라는 단어 하나만 보면 새 AI가 WelrixTable을
+장기 제품 정본으로 다시 승격시킬 위험이 있다.
+
+#### FreePass Estimate
+
+Lifecycle:
+- ACTIVE
+
+Project Registry:
+- HOLD
+
+Project Registry blocker에는
+`work/ui-baseline`이 canonical implementation이고
+default `main`은 initialization commit이라는 사실이 이미 기록되어 있다.
+
+따라서 이 차이는
+"제품 authority는 현재 / runtime activation은 미완료"라는 의미로 해석 가능하다.
+
+#### WorkControl
+
+Lifecycle:
+- RETIRE
+
+Project Registry:
+- HOLD
+
+둘 다 실행 차단 방향이지만 의미가 다르다.
+
+- RETIRE = 신규 작업 금지, 비정본
+- HOLD = 아직 source-review / activation 미완료
+
+현재 lifecycle audit은 WorkControl 기능이 TeamJPKWork + AIOps로 이전됐음을 근거로
+RETIRE로 판정하고 있으므로 Project Registry 쪽 HOLD 설명은 시간상 stale일 가능성이 있다.
+
+### 설계상 핵심 Gap
+
+현재 가장 큰 문제는 상태값 자체가 아니라
+**한 필드 이름 `status`가 두 종류의 상태를 표현한다는 점**이다.
+
+향후 구조 후보:
+
+- `repository_lifecycle_status`
+  - ACTIVE / REFERENCE / HOLD / RETIRE
+
+- `execution_readiness_status`
+  - ACTIVE / HOLD / DISABLED / NOT_REGISTERED 등
+
+또는 Project Registry가 lifecycle status와 execution readiness를
+서로 다른 필드로 명시해야 한다.
+
+이번 작업에서는 schema, registry, runtime을 수정하지 않았다.
+
+---
+
+## 20. 이번 단계 결론
+
+Repo/branch 중복 감사 이후 확인된 다음 계층의 문제는
+**"여러 AI가 서로 다른 정본을 만든다"뿐 아니라
+"같은 AI Core 안에서도 서로 다른 정본 문서가 같은 단어를 다른 뜻으로 사용한다"**는 점이다.
+
+따라서 다음 정리 작업의 우선순위는 단순 branch 삭제보다 앞에 다음을 두는 것이 안전하다.
+
+1. repository lifecycle과 execution readiness의 상태축 분리
+2. Project Registry 17개와 Repository Lifecycle 36개의 관계 명시
+3. default branch mismatch 프로젝트의 canonical head 확정
+4. 그 뒤에 branch cleanup / legacy archive
+
+현재도 내용만 기록했으며,
+registry/schema/runtime/status 값은 변경하지 않았다.
