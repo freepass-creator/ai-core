@@ -310,7 +310,7 @@ export function startServer({
           return json(200, durable);
         }
         if (rerouteMatch) {
-          const order = store.get(capabilityRunMatch?.[1] ?? rerouteMatch[1]);
+          const order = store.get(rerouteMatch[1]);
           const config = routingConfig ?? await defaultRoutingConfig();
           const validation = validateWorkMap(config.workMap, config.projectRegistry, config.capabilityRegistry);
           if (validation.status !== 'VALID') throw new OrderError('WORK_MAP_INVALID', '업무 지도를 확인해야 합니다.', 503);
