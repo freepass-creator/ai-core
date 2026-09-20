@@ -1,0 +1,28 @@
+{
+  "schema_version":"governance-profile-registry/v1",
+  "status":"CANDIDATE_NOT_CANONICAL",
+  "release_state_model":[
+    "SOURCE_COMMITTED",
+    "CI_VERIFIED",
+    "BUILD_CREATED",
+    "DEPLOYMENT_READY",
+    "PRODUCTION_OBSERVED",
+    "RELEASE_VERIFIED"
+  ],
+  "repository_lifecycle":[
+    "ACTIVE",
+    "REFERENCE",
+    "HOLD",
+    "RETIRE"
+  ],
+  "rules":{
+    "merge_is_not_deploy":true,
+    "deployment_ready_is_not_production_proof":true,
+    "verified_release_requires_revision_match":true,
+    "verified_release_requires_rollback":true,
+    "unknown_observation_is_not_absence":true,
+    "expired_exception_is_not_active":true,
+    "retire_is_non_authoritative":true,
+    "reference_requires_declared_purpose":true
+  }
+}
