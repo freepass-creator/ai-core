@@ -6,6 +6,7 @@ export function validateRepositoryContract(repository){
   need(text(repository.repository_id)&&repository.repository_id.includes('.'),'REPOSITORY_ID_REQUIRED');
   need(text(repository.repository_version),'REPOSITORY_VERSION_REQUIRED');
   need(text(repository.port_id)&&repository.port_id.includes('.'),'REPOSITORY_PORT_REQUIRED');
+  need(/^v[1-9][0-9]*$/.test(repository.port_version??''),'REPOSITORY_PORT_VERSION_REQUIRED');
   need(repository?.source?.locator&&repository?.source?.revision,'REPOSITORY_SOURCE_REVISION_REQUIRED');
   need(text(repository.entity_scope),'REPOSITORY_ENTITY_SCOPE_REQUIRED');
   need(Array.isArray(repository.operations)&&repository.operations.length>0,'REPOSITORY_OPERATIONS_REQUIRED');
