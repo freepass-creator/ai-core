@@ -168,8 +168,8 @@ Current expected rollup for the four active v2 pilots:
 - CORE_MATCH: 15
 - MIGRATION_GAP: 15
 - UNKNOWN: 2
-- exact-head CI PASS: 0
-- exact-head CI UNKNOWN: 4 (Admin, ERP4 current audit-doc head, Estimate, AIOps)
+- exact-head CI PASS: 1 (ERP4 r5)
+- exact-head CI UNKNOWN: 3 (Admin, Estimate, AIOps)
 - branch protection false: 4
 - registry drift requiring live freshness review: ERP4 only
 
@@ -281,3 +281,33 @@ Current machine-issued handoffs:
 - `docs/handoffs/project-4/aiops.handoff.json`
 
 A completion report is evidence returned by the project. It is not proof that the audit finding disappeared. Only a successor revision-bound audit can close the finding.
+
+
+## Closure queue dashboard
+
+The closure queue rolls active handoffs, completion reports and closure receipts into one operational view.
+
+```bash
+npm run audit:closure-queue
+npm run audit:closure-queue -- --live --format md
+```
+
+Machine contract:
+
+- `contracts/project-audit-closure-queue.schema.json`
+
+Current refreshed snapshot:
+
+- `docs/handoffs/project-4/closure-status-2026-09-20-r2.json`
+- `docs/handoffs/project-4/CLOSURE_STATUS_2026-09-20-r2.md`
+
+Current state:
+- 4 active projects
+- 5 handoff records
+- 1 superseded ERP4 handoff
+- 17 actionable tasks
+- 0/17 project-reported complete
+- 0/17 audit-closed
+- 4 live-current active handoffs
+
+The queue does not infer completion from commits or CI. It waits for a completion report, successor audit and verified closure receipt.
