@@ -181,3 +181,24 @@ Important project-specific observations:
 - AIOps current main contains Security SHADOW and read-only Insurance evidence adapter work, but required verification remains fragmented and the Insurance workflow has no main-push trigger.
 
 These are audit findings only. Project 4 does not change the consumer projects from this audit lane.
+
+
+## Live portfolio verification
+
+Use the live portfolio command when the registry may lag or several audited repositories may have moved:
+
+```bash
+npm run audit:portfolio:live
+npm run audit:portfolio:live -- --require-current
+```
+
+This command:
+
+1. selects the active saved audit per project;
+2. re-inspects every audited repository at its live default-branch HEAD;
+3. applies project-revision and Core-standard freshness together;
+4. reports CURRENT / STALE / HOLD per project;
+5. keeps registry drift separate from live project freshness;
+6. treats inspection failure as HOLD, never CURRENT.
+
+The current four-pilot portfolio includes one useful registry-lag case: ERP4 can remain live-current while the central project registry is stale. A later live ERP4 head automatically makes the saved audit STALE until a newer v2 result supersedes it.
