@@ -31,12 +31,18 @@ export function scoreReviewItem(item,policy){
   return { score:Object.values(components).reduce((a,b)=>a+b,0), components };
 }
 
+export function reviewScope(routeId){
+  const id=`review-${routeId}`.toLowerCase().replace(/::/g,'--').replace(/[^a-z0-9._-]+/g,'-').replace(/^-+|-+$/g,'');
+  if(!/^[a-z0-9][a-z0-9._-]*$/.test(id)) throw new Error('REVIEW_SCOPE_INVALID');
+  return `coordination:${id}`;
+}
+
 export function reviewClaimRequest(item,owner){
   if(!/^[0-9a-f]{40}$/.test(item.review_revision ?? '')) throw new Error('REVIEW_REVISION_INVALID');
   return {
     repository:'freepass-creator/ai-core',
     revision:item.review_revision,
-    scope:`review/${item.route_id}`,
+    scope:reviewScope(item.route_id),
     owner
   };
 }
