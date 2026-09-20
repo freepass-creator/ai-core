@@ -1,6 +1,6 @@
 {
   "schema": "ai-core-a-session-repo-coverage/v1",
-  "observed_on": "2026-09-19",
+  "observed_on": "2026-09-20",
   "repository_count": 36,
   "policy": {
     "unchanged_head": "Skip full re-audit unless deployment/runtime/external evidence changed.",
@@ -192,14 +192,16 @@
     {
       "repository": "freepass-creator/freepasserp4",
       "default_branch": "main",
-      "observed_head": "44a67cedc5f0d3e38efc68f1e8f84e6c28ab97b3",
+      "observed_head": "606a761683345869400274e4dea360908d2622bf",
       "audit_state": "DEEP_EVIDENCE",
       "independence": "INDEPENDENT_UNLESS_CANDIDATE_SPECIFIC_LINEAGE_IS_FOUND",
       "findings": [
         "workflow.recovery-slot-no-replay",
-        "release.production-revision-proof"
+        "release.production-revision-proof",
+        "BACKPORT: audit metadata consistency validator",
+        "Different: scheduler.logical-slot-observability (failure/runtime evidence only)"
       ],
-      "note": null
+      "note": "Advanced by latest A-session Audit79 evidence to 606a761683345869400274e4dea360908d2622bf. Final delta is audit metadata only; no durable Project > Core implementation evidence. Audit metadata consistency backport gap remains."
     },
     {
       "repository": "freepass-creator/freepasshomepage",
