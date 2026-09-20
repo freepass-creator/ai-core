@@ -176,6 +176,21 @@ receipt는 최소 다음 질문에 답해야 한다.
 
 “버튼 클릭됨”, “명령 전송됨”은 업무 성공 증거가 아니다.
 
+### 8.1 Proof input freshness
+
+검증 결과가 source revision 하나만 보았다는 이유로 계속 유효하다고 가정하지 않는다.
+
+`core-proof-input-binding/v1`은 proof에 사용된 원본, checker 구현, fixture, config, schema, dependency를 각각 digest/revision에 결속하고 canonical input-set digest를 만든다.
+
+- 동일 input set → `CURRENT`
+- 구성 입력 추가/삭제 또는 digest/revision 변경 → `STALE`
+- binding 자체의 digest 불일치 → `INVALID`
+
+`STALE`은 업무 실패가 아니라 **과거 PASS가 현재 입력을 더 이상 증명하지 못한다**는 뜻이다. 다시 검증하기 전에는 current evidence로 집계하지 않는다.
+
+`core-receipt/v1`은 optional `proof_input_binding`으로 이 계약을 연결할 수 있다. 세부 규격은 `docs/CORE_PROOF_INPUT_BINDING.md`를 따른다.
+
+
 ## 9. Version / compatibility / migration
 
 v1 내부:
