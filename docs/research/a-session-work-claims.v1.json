@@ -1,7 +1,7 @@
 {
   "schema": "ai-core-a-session-work-claims/v1",
   "status": "RESEARCH_COORDINATION_NOT_CANONICAL",
-  "observed_at": "2026-09-20T02:47:00Z",
+  "observed_at": "2026-09-20T02:51:00Z",
   "policy": {
     "claim_key": "<repository>@<subject_revision>::<scope>",
     "live_claim": "state=ACTIVE and lease_until > observed_at",
@@ -272,12 +272,20 @@
       "subject_revision": "3c2817a9ed789756013b3f6115e38881c1e432b4",
       "scope": "coordination:evidence-contract-v2",
       "owner_session": "A-session-evidence-v2-0235",
-      "state": "ACTIVE",
+      "state": "COMPLETED",
       "claimed_at": "2026-09-20T02:35:00Z",
       "lease_until": "2026-09-20T03:35:00Z",
-      "completed_at": null,
-      "evidence_refs": [],
-      "evidence_contract": "v2"
+      "completed_at": "2026-09-20T02:51:00Z",
+      "evidence_refs": [
+        "commit:freepass-creator/ai-core@763e69c2646b810c3aec7b2c09b480f86547b31c"
+      ],
+      "evidence_contract": "v2",
+      "evidence_verification": {
+        "status": "VERIFIED",
+        "verifier": "github-connector-v2",
+        "verified_at": "2026-09-20T02:50:00Z",
+        "refs_digest": "sha256:23f7d5b2453db587a52f846fe21769806518a50024c3c537f012985cff3b1ff4"
+      }
     }
   ]
 }
