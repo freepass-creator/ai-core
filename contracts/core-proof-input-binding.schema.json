@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.freepass.ai/core/proof-input-binding/v1",
+  "title": "AI Core Proof Input Binding v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "algorithm",
+    "inputs",
+    "input_set_digest"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "core-proof-input-binding/v1"
+    },
+    "algorithm": {
+      "const": "CANONICAL_SHA256_V1"
+    },
+    "inputs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "role",
+          "ref",
+          "digest"
+        ],
+        "properties": {
+          "role": {
+            "enum": [
+              "SOURCE",
+              "CHECKER",
+              "FIXTURE",
+              "CONFIG",
+              "SCHEMA",
+              "DEPENDENCY",
+              "OTHER"
+            ]
+          },
+          "ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "digest": {
+            "$ref": "https://schemas.freepass.ai/core/types/v1#/$defs/checksum"
+          },
+          "revision": {
+            "anyOf": [
+              {
+                "$ref": "https://schemas.freepass.ai/core/types/v1#/$defs/revision"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "input_set_digest": {
+      "$ref": "https://schemas.freepass.ai/core/types/v1#/$defs/checksum"
+    }
+  }
+}
