@@ -64,6 +64,17 @@ FreePass 화면도 검색창·세부필터·퀵필터를 임기응변으로 조�
 - 상품찾기의 1/6/12/24/36/60개월 shortcut은 현재 FreePass Admin 공통 quick filter로 보지 않는다.
 - 접수/정산의 상태 탭은 상품 검색 shortcut과 구분되는 workflow 상태 navigation/filter다.
 
+## 5-2. 상품 기간은 Quick Filter가 아니라 Variant Selector
+
+FreePass 상품의 계약기간은 고정 목록이 아니다.
+
+- 공급사 Offer에 실제 존재하는 `termMonths`만 표시한다.
+- 13개월·27개월 등 비정형 기간도 그대로 표시한다.
+- 같은 기간에 주행거리·보증금·가격·정책이 다르면 하위 Offer variant로 분리한다.
+- 기간 선택줄은 AI Core `data.variant-selector`를 사용한다.
+- 최종 선택 Offer ID가 접수 Snapshot으로 이어진다.
+- 12/24/36/48/60 같은 관행값을 UI가 임의 생성하지 않는다.
+
 ## 6. 목록은 정보밀도와 클릭영역을 분리
 
 Sales 기준:
