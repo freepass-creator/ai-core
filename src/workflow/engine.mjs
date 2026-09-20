@@ -253,6 +253,7 @@ export function createWorkflowEngine(workflow, {
     const baseContext = {
       ...(guard_context && typeof guard_context === 'object' ? guard_context : {}),
       actor,
+      reason,
       permissions,
       facts,
       evidence,
