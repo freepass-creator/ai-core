@@ -205,6 +205,27 @@ SLA breach names an event and may point to an escalation transition.
 
 Declaring timing metadata does not itself schedule a job. The automation runner consumes it.
 
+### 10.1 Schedule timing assessment
+
+스케줄 기반 실행은 예정 logical slot, 실제 dispatch, execution attempt, eventual completion을 분리한다.
+
+`workflow.schedule-timing-assessment`는 현재 `PROPOSED`이며 회사 공통 late/missed 임계값을 갖지 않는다. Domain policy가 `late_after_ms`와 `missed_after_ms`를 명시해야만 timing classification을 계산할 수 있다.
+
+- dispatch 관측 + late threshold 이내 → `ON_TIME`
+- dispatch 관측 + late threshold 초과 → `LATE`
+- dispatch 미관측 + miss threshold 이전 → `UNKNOWN`
+- dispatch 미관측 + miss threshold 도달 → `MISSED`
+
+C는 `core.schedule-observation/v1`로 관측 envelope를 소유하고, D는 threshold/assessment policy를 소유한다. C 계약이 AVAILABLE이고 구현 근거가 생기기 전에는 PILOT으로 승격하지 않는다.
+
+Machine authority:
+
+- `contracts/workflow-schedule-timing.schema.json`
+- `registry/workflow-schedule-timing-policies.json`
+- `src/workflow/schedule-timing.mjs`
+- `scripts/validate-workflow-schedule-timing-policies.mjs`
+
+
 ## 11. Automation Pattern
 
 Modes:
