@@ -25,6 +25,7 @@ addFormats(ajv);
 for(const schema of schemas) ajv.addSchema(schema);
 
 const errors=[];
+if(registry.status!=='CANONICAL_PARTIAL') errors.push({code:'STANDARD_MATURITY_NOT_PROMOTED',status:registry.status});
 const expectedRelease=[
   'SOURCE_COMMITTED','CI_VERIFIED','BUILD_CREATED',
   'DEPLOYMENT_READY','PRODUCTION_OBSERVED','RELEASE_VERIFIED'
@@ -37,8 +38,8 @@ for(const state of ['ACTIVE','REFERENCE','HOLD','RETIRE']){
 }
 
 console.log(JSON.stringify({
-  status:errors.length?'INVALID':'VALID_CANDIDATE',
-  canonical:false,
+  status:errors.length?'INVALID':'VALID_CANONICAL_PARTIAL',
+  canonical:'PARTIAL',
   schemas:schemaPaths,
   release_states:registry.release_state_model,
   repository_lifecycle:registry.repository_lifecycle,

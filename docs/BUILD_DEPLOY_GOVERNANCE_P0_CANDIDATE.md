@@ -1,8 +1,8 @@
-# AI Core Build / Deploy / Governance P0 Candidate
+# AI Core Build / Deploy / Governance P0 — Canonical Partial Baseline
 
-Status: `CANDIDATE / NOT CANONICAL / NO DEPLOYMENT AUTHORITY`
+Status: `CANONICAL_PARTIAL / NO DEPLOYMENT AUTHORITY`
 
-This candidate converts repeated project evidence and the existing Shared Release Gate into machine-readable governance contracts.
+This canonical partial baseline converts repeated project evidence and the existing Shared Release Gate into machine-readable governance contracts.
 
 It does not change repository lifecycle decisions, project deployment commands, branch protection, production targets or the current audit-readiness maturity.
 
@@ -32,11 +32,11 @@ Projects continue to own:
 The new `docs/REPOSITORY_LIFECYCLE_AUDIT_2026-09-20.md` and
 `examples/repository-lifecycle-2026-09-20.json` remain the current observed repository classification.
 
-This candidate does not rewrite that register.
+This baseline does not rewrite that register.
 
 It only adds a generic record contract so future ACTIVE/REFERENCE/HOLD/RETIRE decisions can be machine-checked for missing authority, reference purpose and retirement gates.
 
-## P0 contracts
+## Canonical partial P0 contracts
 
 ### 1. Build Manifest
 
@@ -214,3 +214,10 @@ This candidate does not:
 - force SemVer on projects without a public versioned contract;
 - require an SBOM for every internal script;
 - modify current project registry or capability registry.
+
+## Promotion evidence — 2026-09-20
+
+- ERP4 Governance SHADOW merged to main at `06e18ff52e14ec4e3670361d89a873913be4f51b`; dedicated SHADOW and existing CI were PASS.
+- FreePass Admin Governance SHADOW merged to main at `2747ef32e96c550d7dea05c58ee012880cb42dd3` and intentionally preserves HOLD for unverified production auth/persistence/deploy/runtime smoke.
+- Repository lifecycle and execution readiness are now distinct in Project Registry v1.1.
+- Production release verification still requires live target observation and rollback proof, so this axis is not MACHINE_ENFORCED yet.
