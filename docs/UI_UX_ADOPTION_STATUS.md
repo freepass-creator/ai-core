@@ -24,6 +24,14 @@ Status: `MAPPED`
 
 ERP4 PR #435 pins AI Core B Feature Registry v1.3.0, declares its shared feature bindings in `.ai-core/ui-ux.consumer.json`, and the full ERP4 CI including the new `uiux:map` gate and Production build passed at revision `de8823e754ee9f03c9d95a62fc031610cb7859c2`. This establishes a canonical mapping relationship, but not yet PILOT/CONFORMANT browser-globalization evidence.
 
+### FreePass Admin
+
+Observed revision: `c16e55e0e449e74aa4403861be89bcbb5f77ee97`
+
+Status: `MAPPED`
+
+FreePass Admin PR #35 pins AI Core Feature Registry v1.3.0, records 11 common feature bindings, pins the user-approved Admin visual authority, and connects Development Center Design Hub compile/visual inputs. The current Next UI is explicitly not claimed PILOT or CONFORMANT because it still differs from the approved rev 5 visual authority and has no browser visual receipt yet.
+
 ## Promotion path
 
 `EVIDENCE_ONLY → MAPPED → PILOT → CONFORMANT`
