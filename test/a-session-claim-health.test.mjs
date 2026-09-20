@@ -54,3 +54,21 @@ test('health flags multiple live claims for the same claim key',()=>{
   assert.equal(h.status,'ATTENTION');
   assert.ok(h.anomalies.some(x=>x.code==='MULTIPLE_LIVE_CLAIMS'));
 });
+
+
+test('health flags one owner with multiple live claims',()=> {
+  const r=registry([
+    claim({claim_id:'A-owner-1',owner_session:'A-session-owner-shared'}),
+    claim({
+      claim_id:'A-owner-2',
+      claim_key:'freepass-creator/y@bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb::coordination:docs',
+      repository:'freepass-creator/y',
+      subject_revision:'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
+      scope:'coordination:docs',
+      owner_session:'A-session-owner-shared'
+    })
+  ]);
+  const h=claimHealth(r,new Date('2026-09-20T01:30:00Z'));
+  assert.equal(h.status,'ATTENTION');
+  assert.ok(h.anomalies.some(x=>x.code==='MULTIPLE_LIVE_CLAIMS_FOR_OWNER'));
+});
