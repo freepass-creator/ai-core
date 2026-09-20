@@ -67,7 +67,7 @@ npm run a:claim -- claim \
   --repository freepass-creator/freepass-sales \
   --revision <exact-sha> \
   --scope repo-rescan \
-  --owner A-session-sales-1 \
+  --owner A-session-sales-a01 \
   --lease-minutes 60
 ```
 
@@ -102,7 +102,7 @@ For ordinary A-session rescan work, prefer the allocator instead of manually cho
 
 ```bash
 npm run a:next -- \
-  --owner A-session-1 \
+  --owner A-session-sales-a01 \
   --scope repo-rescan \
   --lease-minutes 60
 ```
@@ -130,7 +130,7 @@ Long-running audits must renew their lease before it expires:
 ```bash
 npm run a:heartbeat -- \
   --claim-id <claim-id> \
-  --owner A-session-1 \
+  --owner A-session-sales-a01 \
   --lease-minutes 60
 ```
 
@@ -186,3 +186,41 @@ Live overlap rules on the same repository revision:
 A completed claim suppresses only the same exact scope. This is intentional: deployment/runtime evidence may change while the repository revision stays the same, so a past repo audit must not permanently prevent a later runtime-evidence check.
 
 Historical terminal claims may retain older noncanonical scope names for audit history. New ACTIVE claims using an unknown alias fail with `CLAIM_SCOPE_INVALID`.
+
+
+## Stable owner identity
+
+Every mutable A-session claim operation is bound to a stable session owner.
+
+Allowed source:
+
+- explicit `--owner <A-session-id>`, or
+- environment variable `AI_CORE_A_SESSION_ID`.
+
+Required format:
+
+`A-session-<stable-unique-id>`
+
+Examples:
+
+- `A-session-sales-a01`
+- `A-session-admin-b02`
+- `A-session-gap-repair-chat`
+
+Generic identities such as `A_SESSION`, `A-session-current-chat`, `A-session-default`, or an underspecified `A-session-1` are rejected.
+
+Owner binding applies to:
+
+- claim acquisition;
+- heartbeat / lease renewal;
+- completion;
+- abandon;
+- supersede.
+
+A different owner cannot close or renew another live claim merely by knowing its claim id. The only owner-bypassing mutation is automated expired-lease reaping, which may change an already expired ACTIVE claim to `ABANDONED / LEASE_EXPIRED`.
+
+For automated sessions, set a stable session-scoped value before running claim commands:
+
+```bash
+export AI_CORE_A_SESSION_ID=A-session-sales-a01
+```
