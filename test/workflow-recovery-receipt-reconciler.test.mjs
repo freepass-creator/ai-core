@@ -1,8 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createExecutionIdentity, bindExecutionAttempt } from '../src/contracts/execution-identity.mjs';
+import { buildProofInputBinding } from '../src/contracts/proof-input-binding.mjs';
 import { reconcileRecoveryReceipts } from '../src/workflow/recovery-receipt-reconciler.mjs';
 import { executeWithRecoveryGuard } from '../src/workflow/recovery-execution-guard.mjs';
+import { guardRetryDecisionWithReceipts } from '../src/workflow/retry-receipt-guard.mjs';
 
 const identity=createExecutionIdentity({
   logicalExecutionId:'logical.quote.slot-1',
@@ -34,6 +36,7 @@ function receipt({
   attemptSequence=1,
   identityValue=identity,
   operationKind='quote.refresh',
+  proofBinding=null,
 }){
   return {
     schema_version:'core-receipt/v1',
@@ -61,7 +64,8 @@ function receipt({
       attemptId,
       attemptSequence,
       executionPath
-    })
+    }),
+    ...(proofBinding?{proof_input_binding:proofBinding}:{})
   };
 }
 
@@ -246,4 +250,120 @@ test('execution guard calls executor exactly once only after ALLOW_RECOVERY',asy
   assert.equal(result.status,'EXECUTED');
   assert.equal(result.executed,true);
   assert.equal(calls,1);
+});
+
+
+test('proof-bound authoritative success without freshness inputs is held',()=>{
+  const proofBinding=buildProofInputBinding([
+    {role:'SOURCE',ref:'source',digest:'sha256:'+'3'.repeat(64),revision:'git:source'}
+  ]);
+  const result=reconcileRecoveryReceipts({
+    target_execution:target,
+    evidence_records:[{
+      source:'NATIVE_EXECUTION',
+      terminal_authority:true,
+      receipt:receipt({id:'receipt.unverified.proof',proofBinding})
+    }]
+  });
+  assert.equal(result.action,'HOLD');
+  assert.equal(result.reason,'AUTHORITATIVE_EVIDENCE_UNVERIFIED');
+});
+
+test('proof-bound success is accepted only when current inputs verify CURRENT',()=>{
+  const inputs=[
+    {role:'SOURCE',ref:'source',digest:'sha256:'+'4'.repeat(64),revision:'git:source'}
+  ];
+  const proofBinding=buildProofInputBinding(inputs);
+  const result=reconcileRecoveryReceipts({
+    target_execution:target,
+    evidence_records:[{
+      source:'NATIVE_EXECUTION',
+      terminal_authority:true,
+      current_proof_inputs:inputs,
+      receipt:receipt({id:'receipt.verified.proof',proofBinding})
+    }]
+  });
+  assert.equal(result.action,'SUPPRESS_REPLAY');
+  assert.equal(result.reason,'SUCCESS_EVIDENCE_PRESENT');
+});
+
+test('same attempt conflicting terminal receipts are held',()=>{
+  const sameAttempt='attempt-conflict';
+  const result=reconcileRecoveryReceipts({
+    target_execution:target,
+    evidence_records:[
+      {
+        source:'NATIVE_EXECUTION',
+        terminal_authority:true,
+        proof_status:'CURRENT',
+        receipt:receipt({id:'receipt.conflict.success',attemptId:sameAttempt,status:'SUCCEEDED'})
+      },
+      {
+        source:'DOWNSTREAM_TERMINAL_EVIDENCE',
+        terminal_authority:true,
+        proof_status:'CURRENT',
+        receipt:receipt({id:'receipt.conflict.failed',attemptId:sameAttempt,status:'FAILED'})
+      }
+    ]
+  });
+  assert.equal(result.action,'HOLD');
+  assert.equal(result.reason,'CONFLICTING_TERMINAL_EVIDENCE');
+  assert.equal(result.conflicts[0].attempt_id,sameAttempt);
+});
+
+test('retry decision is suppressed by authoritative success evidence',()=>{
+  const guarded=guardRetryDecisionWithReceipts({
+    retry_decision:{action:'RETRY',error_code:'UPSTREAM_UNAVAILABLE',next_attempt:2,retry_after_ms:1000},
+    target_execution:target,
+    evidence_records:[{
+      source:'NATIVE_EXECUTION',
+      terminal_authority:true,
+      proof_status:'CURRENT',
+      receipt:receipt({id:'receipt.retry.success'})
+    }]
+  });
+  assert.equal(guarded.action,'SUPPRESS_RETRY');
+  assert.equal(guarded.original_retry_action,'RETRY');
+  assert.equal(guarded.replay_guard,'SUPPRESSED');
+});
+
+test('retry decision becomes HOLD on partial or ambiguous evidence',()=>{
+  const guarded=guardRetryDecisionWithReceipts({
+    retry_decision:{action:'RETRY',error_code:'UPSTREAM_UNAVAILABLE',next_attempt:2,retry_after_ms:1000},
+    target_execution:target,
+    evidence_records:[{
+      source:'DOWNSTREAM_TERMINAL_EVIDENCE',
+      terminal_authority:true,
+      proof_status:'CURRENT',
+      receipt:receipt({id:'receipt.retry.partial',status:'PARTIAL'})
+    }]
+  });
+  assert.equal(guarded.action,'HOLD');
+  assert.equal(guarded.replay_guard,'HOLD');
+});
+
+test('retry decision is preserved only when reconciliation allows recovery',()=>{
+  const guarded=guardRetryDecisionWithReceipts({
+    retry_decision:{action:'RETRY',error_code:'UPSTREAM_UNAVAILABLE',next_attempt:2,retry_after_ms:1000},
+    target_execution:target,
+    evidence_records:[{
+      source:'NATIVE_EXECUTION',
+      terminal_authority:true,
+      proof_status:'CURRENT',
+      receipt:receipt({id:'receipt.retry.failed',status:'FAILED'})
+    }]
+  });
+  assert.equal(guarded.action,'RETRY');
+  assert.equal(guarded.replay_guard,'ALLOWED');
+  assert.equal(guarded.reconciliation.action,'ALLOW_RECOVERY');
+});
+
+test('non-retry workflow decision bypasses replay guard unchanged',()=>{
+  const guarded=guardRetryDecisionWithReceipts({
+    retry_decision:{action:'ESCALATE',error_code:'FINAL_FAILURE'},
+    target_execution:target,
+    evidence_records:[]
+  });
+  assert.equal(guarded.action,'ESCALATE');
+  assert.equal(guarded.replay_guard,'NOT_APPLICABLE');
 });
