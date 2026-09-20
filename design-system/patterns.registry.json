@@ -1,6 +1,6 @@
 {
   "contract": "ai-core-ui-pattern-registry/v1",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "feature_registry": "registry/ui-ux-features.json",
   "component_registry": "design-system/components.registry.json",
   "patterns": [
@@ -162,6 +162,17 @@
       "implementation_status": "CONTRACT_ONLY",
       "component_feature_refs": [],
       "contract_source": "registry/ui-ux-features.json#data.virtual-list"
+    },
+    {
+      "feature_id": "data.master-detail",
+      "layer": "pattern",
+      "implementation_status": "RUNTIME_V2",
+      "component_feature_refs": [
+        "action.link"
+      ],
+      "contract_source": "registry/ui-ux-features.json#data.master-detail",
+      "css_selector": ".ui-master-detail",
+      "notes": "Desktop multi-pane, mobile single-pane drill-in. Pane visibility is declared by data-mobile-view."
     },
     {
       "feature_id": "data.detail",
