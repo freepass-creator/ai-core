@@ -20,6 +20,7 @@ export function buildRepositoryReceipt({
   milestones=[],
   metrics=null,
   source_revision=null,
+  execution=null,
 }={}){
   need(text(receipt_id),'RECEIPT_ID_REQUIRED');
   need(text(operation_id),'RECEIPT_OPERATION_ID_REQUIRED');
@@ -61,7 +62,8 @@ export function buildRepositoryReceipt({
       executor_version:reproducibility.executor_version,
       environment_revision:reproducibility.environment_revision??null,
       command_ref:reproducibility.command_ref??null
-    }
+    },
+    ...(execution?{execution:structuredClone(execution)}:{})
   };
   if(Array.isArray(milestones)&&milestones.length) receipt.milestones=structuredClone(milestones);
   const mergedMetrics={
