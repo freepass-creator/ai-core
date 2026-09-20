@@ -6,10 +6,12 @@ import { readFile } from 'node:fs/promises';
 import { bridgeLegacyAdapterResult } from '../src/contracts/legacy-adapter-bridge.mjs';
 
 const types=JSON.parse(await readFile(new URL('../contracts/core-types.schema.json',import.meta.url),'utf8'));
+const executionIdentity=JSON.parse(await readFile(new URL('../contracts/core-execution-identity.schema.json',import.meta.url),'utf8'));
 const resultSchema=JSON.parse(await readFile(new URL('../contracts/core-adapter-result.schema.json',import.meta.url),'utf8'));
 const ajv=new Ajv2020({allErrors:true,strict:false});
 addFormats(ajv);
 ajv.addSchema(types);
+ajv.addSchema(executionIdentity);
 ajv.addSchema(resultSchema);
 const validate=ajv.getSchema('https://schemas.freepass.ai/core/adapter-result/v1');
 

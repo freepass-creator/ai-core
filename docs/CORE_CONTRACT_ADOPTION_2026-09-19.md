@@ -6,7 +6,7 @@
 - AI Core Core Contract P0: PR #94
 - adoption registry: `registry/core-contract-adoption.json`
 - project count: 4
-- canonical C contracts accounted per project: 25
+- canonical C contracts accounted per project: 26
 - total assessment cells: 100
 
 ## 1. 판정 의미
@@ -326,3 +326,19 @@ Domain Engine
 - Sales: MIGRATE / P1
 
 Binding Profile에는 optional `service_bindings`를 additive하게 추가했다.
+
+## 12. Logical Execution Identity backfill — 2026-09-20
+
+D의 recovery no-replay pilot가 요구하는 공통 전제조건을 C가 별도 계약으로 일반화했다.
+
+추가:
+- `core.execution-identity.v1`
+- `contracts/core-execution-identity.schema.json`
+- `src/contracts/execution-identity.mjs`
+- 기존 Request / Adapter Result / Receipt / Event의 optional `execution` binding
+
+경계:
+- C는 동일 logical execution과 attempt identity만 정의한다.
+- D는 fallback/retry/recovery eligibility와 replay 금지 의미를 계속 소유한다.
+- 현재 4개 프로젝트는 모두 `MIGRATE / NONE`으로 시작하며 실제 프로젝트 revision 검증 전에는 SHADOW/VALIDATED로 올리지 않는다.
+- ERP4는 recovery pilot의 직접 선행조건이므로 P0, Admin/Sales/Estimate는 P1로 기록한다.
