@@ -256,3 +256,19 @@ D records this as:
 - projection evidence stage: `SOURCE_PARITY_VERIFIED`
 
 The distinction is deliberate. Project-side parity proves model equivalence, not runtime authority. The next promotion gate is `RUNTIME_PILOT`, which requires selected Admin writes to invoke D decisions without weakening source persistence, audit, error compatibility or rollback.
+
+### D7 project workflow checkpoint — FreePass Sales
+
+FreePass Sales exact head `2ec46bb2e88b10a31915b68ec77b2eecbdac57bd` contributes the first project-verified monotonic forward-skip pattern.
+
+D7 adds:
+
+- `workflow.forward-skip-evidence-integrity` as PILOT / PROJECT_VERIFIED
+- `freepass-sales.lead-progress-lifecycle@0.1.0` as SHADOW
+- `freepass-sales.lead.core-progress@0.1.0` progression contract as SHADOW
+- generic progression planner and semantic validator
+
+The reusable part is not the Sales funnel labels. It is the rule that later valid progress may skip intermediate milestones without fabricating completion evidence, while explicitly recording any logically implied prerequisite with provenance.
+
+Sales runtime remains authoritative. Source-side D parity/binding is a later gate.
+
