@@ -14,6 +14,7 @@ const auditFiles = [
   '../docs/audits/freepasserp4-v2-2026-09-20.json',
   '../docs/audits/freepasserp4-v2-2026-09-20-r2.json',
   '../docs/audits/freepasserp4-v2-2026-09-20-r3.json',
+  '../docs/audits/freepasserp4-v2-2026-09-20-r4.json',
   '../docs/audits/freepass-estimate-v2-2026-09-20.json',
   '../docs/audits/aiops-v2-2026-09-20.json',
 ];
@@ -27,7 +28,7 @@ test('live portfolio marks exact matching active audits CURRENT', async () => {
 
   const activeRevision = new Map([
     ['freepass-admin','2747ef32e96c550d7dea05c58ee012880cb42dd3'],
-    ['freepasserp4','1b31af44fac362085649c13d155e4e0c089ae929'],
+    ['freepasserp4','f7c89b7b995d8d98ea04606405e68b158fb4256f'],
     ['freepass-estimate','57a75aaeaa8b91f14c6bc22faa01e745daaa3112'],
     ['aiops','03dd804962eb4e345b7a34b3e0e97e8bc6d5efe3'],
   ]);
@@ -77,7 +78,7 @@ test('live portfolio turns moved project head into STALE even when registry has 
         ? 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
         : ({
             'freepass-admin':'2747ef32e96c550d7dea05c58ee012880cb42dd3',
-            'freepasserp4':'1b31af44fac362085649c13d155e4e0c089ae929',
+            'freepasserp4':'f7c89b7b995d8d98ea04606405e68b158fb4256f',
             'freepass-estimate':'57a75aaeaa8b91f14c6bc22faa01e745daaa3112',
           })[project_id],
       observed_at:'2026-09-20T11:50:00.000Z',
@@ -109,7 +110,7 @@ test('live inspection failure is HOLD and never current', async () => {
     inspectProject: async ({project_id,repository,default_branch}) => {
       if (project_id === 'freepass-admin') throw new Error('GITHUB_UNAVAILABLE');
       const revisions = {
-        'freepasserp4':'1b31af44fac362085649c13d155e4e0c089ae929',
+        'freepasserp4':'f7c89b7b995d8d98ea04606405e68b158fb4256f',
         'freepass-estimate':'57a75aaeaa8b91f14c6bc22faa01e745daaa3112',
         'aiops':'03dd804962eb4e345b7a34b3e0e97e8bc6d5efe3',
       };
