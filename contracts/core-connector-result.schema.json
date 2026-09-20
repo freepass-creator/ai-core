@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.freepass.ai/core/connector-result/v1",
+  "title": "AI Core Connector Result v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "connector_id",
+    "connector_version",
+    "operation_id",
+    "correlation_id",
+    "status",
+    "failure_kind",
+    "data",
+    "evidence_refs",
+    "started_at",
+    "ended_at"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "core-connector-result/v1"
+    },
+    "connector_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "connector_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "operation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "correlation_id": {
+      "$ref": "https://schemas.freepass.ai/core/types/v1#/$defs/correlation_id"
+    },
+    "status": {
+      "enum": [
+        "SUCCEEDED",
+        "FAILED"
+      ]
+    },
+    "failure_kind": {
+      "anyOf": [
+        {
+          "enum": [
+            "TIMEOUT",
+            "UNAVAILABLE",
+            "AUTH",
+            "PROTOCOL",
+            "ABORTED",
+            "UNKNOWN"
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "data": {},
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "raw_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "started_at": {
+      "$ref": "https://schemas.freepass.ai/core/types/v1#/$defs/datetime"
+    },
+    "ended_at": {
+      "$ref": "https://schemas.freepass.ai/core/types/v1#/$defs/datetime"
+    },
+    "execution": {
+      "$ref": "https://schemas.freepass.ai/core/execution-identity/v1#/$defs/binding"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "SUCCEEDED"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "failure_kind": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "FAILED"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "failure_kind": {
+            "not": {
+              "type": "null"
+            }
+          }
+        }
+      }
+    }
+  ]
+}
