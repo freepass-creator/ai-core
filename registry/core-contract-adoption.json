@@ -391,7 +391,7 @@
             "freepass-creator/freepass-admin@2aede7df82591470308f25bd3ccd4e5358aa7c3c:contracts/ai-core/file-product-read.adapter.json",
             "freepass-creator/freepass-admin@2aede7df82591470308f25bd3ccd4e5358aa7c3c:src/adapters/store/repositories.ts"
           ],
-          "action": "Development file repository adapters are shadow-bound to explicit filesystem Connector operations; no production persistence cutover is claimed.",
+          "action": "Existing file Adapter contracts remain valid compatibility/evidence artifacts, but the new Service Runtime binds persistence ports directly to Repository contracts. Do not duplicate repository atomicity/concurrency semantics in Adapter.",
           "artifact_refs": [
             "registry/adoption/freepass-admin-file-application.adapter.json",
             "registry/adoption/freepass-admin-file-product-read.adapter.json"
@@ -405,9 +405,11 @@
           "evidence_refs": [
             "freepass-creator/freepass-admin@2aede7df82591470308f25bd3ccd4e5358aa7c3c:contracts/ai-core/development.binding-profile.json"
           ],
-          "action": "Current development binding is intentionally PARTIAL: application.repository and product.read resolve, actor.provider does not. Service Runtime must HOLD before execution.",
+          "action": "Current development Service binding now points application.repository and product.read directly to Repository contracts. actor.provider remains unresolved and verification_state remains PARTIAL, so strict Service Runtime stays HOLD.",
           "artifact_refs": [
             "registry/adoption/freepass-admin-application.binding-profile.json",
+            "registry/adoption/freepass-admin-application.repository.json",
+            "registry/adoption/freepass-admin-product.repository.json",
             "test/freepass-admin-service-binding.test.mjs"
           ]
         },
@@ -595,9 +597,43 @@
             "src/engine/connector-runtime.mjs"
           ],
           "action": "Represent low-level filesystem transport outcomes separately from AppError/Core error mapping when runtime adoption proceeds."
+        },
+        {
+          "contract_id": "core.repository.v1",
+          "classification": "CORE_MATCH",
+          "binding_state": "SHADOW",
+          "priority": "P0",
+          "evidence_refs": [
+            "freepass-creator/freepass-admin@2aede7df82591470308f25bd3ccd4e5358aa7c3c:src/adapters/store/repositories.ts",
+            "freepass-creator/freepass-admin@2aede7df82591470308f25bd3ccd4e5358aa7c3c:src/adapters/store/json-file-store.ts",
+            "freepass-creator/freepass-admin@2aede7df82591470308f25bd3ccd4e5358aa7c3c:src/services/applications.ts"
+          ],
+          "artifact_refs": [
+            "registry/adoption/freepass-admin-application.repository.json",
+            "registry/adoption/freepass-admin-product.repository.json",
+            "test/repository-runtime.test.mjs",
+            "test/application-service-repository-runtime.test.mjs"
+          ],
+          "action": "Shadow-model persistence separately from Adapter semantics: atomic file replacement, process-serialized writes, repository idempotency ownership and product version behavior are explicit."
+        },
+        {
+          "contract_id": "core.repository-result.v1",
+          "classification": "MIGRATE",
+          "binding_state": "SHADOW",
+          "priority": "P1",
+          "evidence_refs": [
+            "freepass-creator/freepass-admin@2aede7df82591470308f25bd3ccd4e5358aa7c3c:src/adapters/store/repositories.ts",
+            "freepass-creator/freepass-admin@2aede7df82591470308f25bd3ccd4e5358aa7c3c:src/domain/errors.ts"
+          ],
+          "artifact_refs": [
+            "contracts/core-repository-result.schema.json",
+            "src/engine/repository-runtime.mjs",
+            "test/repository-runtime.test.mjs"
+          ],
+          "action": "Normalize repository operation outcomes to a stable persistence result without letting Repository invent workflow retry/completion semantics."
         }
       ],
-      "next_gate": "Bind actor.provider with revision-bound source evidence and a real adapter before any Service Runtime validation. Then run service/binding/connector tests and only promote the relevant C cells from SHADOW to VALIDATED; production persistence remains separate."
+      "next_gate": "Provide a real revision-bound actor.provider implementation before Service validation. Persistence ports are now modeled as direct Repository bindings; after actor binding, run Service/Repository/Connector contract tests and only then promote relevant C cells beyond SHADOW."
     },
     {
       "project_id": "freepass-sales",
