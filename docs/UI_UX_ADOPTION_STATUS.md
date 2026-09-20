@@ -20,9 +20,9 @@ Sales supplied proven lessons for save/idempotency, external-action completion b
 
 Observed revision: `2d9fd07075aae7d6d64687fabbf61126e166c34c`
 
-Status: `EVIDENCE_ONLY`
+Status: `MAPPED`
 
-ERP4 supplied proven lessons for search/filter/sort/list same-snapshot behavior, stabilization gates and responsive operational integrity. That does **not** mean ERP4 has already consumed the B2 runtime.
+ERP4 PR #435 pins AI Core B Feature Registry v1.3.0, declares its shared feature bindings in `.ai-core/ui-ux.consumer.json`, and the full ERP4 CI including the new `uiux:map` gate and Production build passed at revision `de8823e754ee9f03c9d95a62fc031610cb7859c2`. This establishes a canonical mapping relationship, but not yet PILOT/CONFORMANT browser-globalization evidence.
 
 ## Promotion path
 

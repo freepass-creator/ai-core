@@ -29,9 +29,9 @@
     {
       "id": "freepasserp4",
       "repository": "freepass-creator/freepasserp4",
-      "observed_revision": "2d9fd07075aae7d6d64687fabbf61126e166c34c",
-      "relation": "EVIDENCE_SOURCE",
-      "adoption_status": "EVIDENCE_ONLY",
+      "observed_revision": "de8823e754ee9f03c9d95a62fc031610cb7859c2",
+      "relation": "CANONICAL_CONSUMER",
+      "adoption_status": "MAPPED",
       "feature_refs": [
         "form.search",
         "data.filter",
@@ -45,7 +45,9 @@
       "conformance_revision": null,
       "conformance_receipts": [],
       "evidence_refs": [
-        "docs/coordination/ERP4_STABILITY_QUERY_LEARNING.md"
+        "docs/coordination/ERP4_STABILITY_QUERY_LEARNING.md",
+        "https://github.com/freepass-creator/freepasserp4/pull/435",
+        "https://github.com/freepass-creator/freepasserp4/actions/runs/35443854623"
       ]
     }
   ]
