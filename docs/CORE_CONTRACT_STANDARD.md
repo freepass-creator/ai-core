@@ -144,6 +144,20 @@ Engine/Port/Adapter/Binding Profile 계약은 `src/engine/port-runtime.mjs`에�
 실행 구현은 `src/engine/connector-runtime.mjs`, 세부 규격은 `docs/CORE_CONNECTOR_RUNTIME.md`를 따른다.
 
 
+### 4.3 Application Service Runtime
+
+`core-application-service/v1`의 use case와 Binding Profile의 `service_bindings`는 `src/engine/application-service-runtime.mjs`에서 실행 경계로 연결한다.
+
+- required Service port는 모두 정확히 binding되어야 한다.
+- strict 실행은 `PASSED_WITHIN_SCOPE` profile만 허용한다.
+- actor/idempotency 요구는 Port를 열기 전에 검사한다.
+- Engine Port Runtime과 동일한 Adapter/Connector invocation boundary를 재사용한다.
+- Service가 선언하지 않은 error code를 새 공통 오류처럼 만들지 않는다.
+- Service Runtime은 workflow state나 실행 권한을 만들지 않는다.
+
+FreePass Admin current SHADOW는 `actor.provider`가 아직 미연결이므로 전체 Service Runtime이 HOLD다. 세부 규격은 `docs/CORE_APPLICATION_SERVICE_RUNTIME.md`를 따른다.
+
+
 ## 5. API
 
 HTTP method/status semantics를 임의 재정의하지 않는다.
