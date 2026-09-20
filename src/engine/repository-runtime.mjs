@@ -121,7 +121,8 @@ export function createRepositoryRuntime({
       ...receiptOptions,
       repository_result,
       input,
-      source_revision:receiptOptions.source_revision??repository.source?.revision??null
+      source_revision:receiptOptions.source_revision??repository.source?.revision??null,
+      execution:receiptOptions.execution??invokeOptions.execution??null
     });
     return {repository_result,receipt};
   }
