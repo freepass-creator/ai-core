@@ -39,6 +39,13 @@ export function validateAWorkClaims(registry) {
     if (!STATES.has(claim?.state)) add(errors,'STATE_INVALID',p + '/state');
     if (!validDate(claim?.claimed_at)) add(errors,'CLAIMED_AT_INVALID',p + '/claimed_at');
     if (!validDate(claim?.lease_until)) add(errors,'LEASE_UNTIL_INVALID',p + '/lease_until');
+    if (claim?.heartbeat_at != null) {
+      if (!validDate(claim.heartbeat_at)) add(errors,'HEARTBEAT_AT_INVALID',p + '/heartbeat_at');
+      else {
+        if (validDate(claim.claimed_at) && Date.parse(claim.heartbeat_at) < Date.parse(claim.claimed_at)) add(errors,'HEARTBEAT_BEFORE_CLAIM',p + '/heartbeat_at');
+        if (validDate(claim.lease_until) && Date.parse(claim.heartbeat_at) > Date.parse(claim.lease_until)) add(errors,'HEARTBEAT_AFTER_LEASE',p + '/heartbeat_at');
+      }
+    }
 
     if (claim?.state === 'ACTIVE' && validDate(claim.lease_until) && Date.parse(claim.lease_until) > observedAt) {
       const prior = liveByKey.get(claim.claim_key);
