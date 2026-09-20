@@ -7,7 +7,7 @@ function machine() {
   const workflow = {
     workflow_id: 'test.contract-lifecycle',
     version: '1.0.0',
-    adoption_status: 'PILOT',
+    adoption_status: 'CANONICAL',
     owner: 'test',
     description: 'Test fixture',
     state_axes: [{
@@ -425,3 +425,55 @@ test('validator requires provenance for SHADOW workflows and same-state REOBSERV
   assert.ok(result.errors.some(item => item.code === 'SHADOW_SOURCE_AUTHORITY_REQUIRED'));
   assert.ok(result.errors.some(item => item.code === 'REOBSERVE_MUST_PRESERVE_STATE'));
 });
+
+test('workflow maturity distinguishes source parity from runtime PILOT authority', () => {
+  const sourceParity = structuredClone(machine());
+  sourceParity.adoption_status = 'SHADOW';
+  sourceParity.source_authority = {
+    repository: 'example/source',
+    revision: 'a'.repeat(40),
+    files: [{ path: 'src/workflow.ts', blob_sha: 'b'.repeat(40) }],
+  };
+  sourceParity.adoption_evidence = {
+    stage: 'SOURCE_PARITY_VERIFIED',
+    repository: 'example/source',
+    revision: 'c'.repeat(40),
+    verification: {
+      kind: 'CI',
+      conclusion: 'SUCCESS',
+      run_id: 1,
+      files: [{ path: 'test/workflow.test.ts', blob_sha: 'd'.repeat(40) }],
+    },
+  };
+
+  let result = validateWorkflowRegistry({
+    schema_version: '1.0.0',
+    registry_version: '1.0.0',
+    primitives: [],
+    workflows: [sourceParity],
+  });
+  assert.equal(result.status, 'VALID', JSON.stringify(result.errors));
+
+  const falseRuntime = structuredClone(sourceParity);
+  falseRuntime.adoption_evidence.stage = 'RUNTIME_PILOT';
+  result = validateWorkflowRegistry({
+    schema_version: '1.0.0',
+    registry_version: '1.0.0',
+    primitives: [],
+    workflows: [falseRuntime],
+  });
+  assert.equal(result.status, 'INVALID');
+  assert.ok(result.errors.some(item => item.code === 'SHADOW_WORKFLOW_CANNOT_CLAIM_RUNTIME_ADOPTION'));
+
+  const pilotWithoutEvidence = structuredClone(machine());
+  pilotWithoutEvidence.adoption_status = 'PILOT';
+  result = validateWorkflowRegistry({
+    schema_version: '1.0.0',
+    registry_version: '1.0.0',
+    primitives: [],
+    workflows: [pilotWithoutEvidence],
+  });
+  assert.equal(result.status, 'INVALID');
+  assert.ok(result.errors.some(item => item.code === 'PILOT_WORKFLOW_ADOPTION_EVIDENCE_REQUIRED'));
+});
+

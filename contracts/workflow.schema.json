@@ -214,6 +214,9 @@
           "items": {
             "$ref": "#/$defs/factGroup"
           }
+        },
+        "adoption_evidence": {
+          "$ref": "#/$defs/adoptionEvidence"
         }
       }
     },
@@ -842,6 +845,89 @@
         },
         "description": {
           "type": "string"
+        }
+      }
+    },
+    "adoptionEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "stage",
+        "repository",
+        "revision",
+        "verification"
+      ],
+      "properties": {
+        "stage": {
+          "enum": [
+            "SOURCE_MODELED",
+            "SOURCE_PARITY_VERIFIED",
+            "RUNTIME_PILOT",
+            "RUNTIME_CANONICAL"
+          ]
+        },
+        "repository": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "verification": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "conclusion",
+            "files"
+          ],
+          "properties": {
+            "kind": {
+              "enum": [
+                "CI",
+                "RUNTIME"
+              ]
+            },
+            "conclusion": {
+              "enum": [
+                "SUCCESS",
+                "FAILURE",
+                "HOLD"
+              ]
+            },
+            "run_id": {
+              "type": [
+                "integer",
+                "string"
+              ]
+            },
+            "observed_at": {
+              "type": "string"
+            },
+            "files": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "path",
+                  "blob_sha"
+                ],
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "blob_sha": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{40}$"
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }

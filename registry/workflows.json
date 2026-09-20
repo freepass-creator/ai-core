@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "registry_version": "1.10.0",
+  "registry_version": "1.11.0",
   "primitives": [
     {
       "primitive_id": "workflow.fact-vs-state",
@@ -2892,7 +2892,7 @@
       "version": "0.1.0",
       "adoption_status": "SHADOW",
       "owner": "D-session-workflow-standard",
-      "description": "FreePass Admin Application aggregate lifecycle. Progress flags are independent facts; only cancellation is authoritative lifecycle state. RECEIVED/CONTRACTED/DELIVERED are derived projections.",
+      "description": "FreePass Admin Application aggregate lifecycle. Progress flags are independent facts; only cancellation is authoritative lifecycle state. RECEIVED/CONTRACTED/DELIVERED are derived projections. Source-side SHADOW parity is verified in FreePass Admin CI.",
       "state_axes": [
         {
           "axis_id": "lifecycle",
@@ -3013,7 +3013,7 @@
       "obligations": [],
       "source_authority": {
         "repository": "freepass-creator/freepass-admin",
-        "revision": "77f682af680528124096e4f7871504a3596c8990",
+        "revision": "2aede7df82591470308f25bd3ccd4e5358aa7c3c",
         "files": [
           {
             "path": "src/domain/application/types.ts",
@@ -3030,8 +3030,45 @@
           {
             "path": "src/services/__tests__/applications.test.ts",
             "blob_sha": "da229a328a4b49e3223b70ff68c0542013fc38f7"
+          },
+          {
+            "path": "contracts/ai-core/application-workflow.shadow.json",
+            "blob_sha": "fb5534b2f3832e8976bd39565f47ea5c8a99a90c"
+          },
+          {
+            "path": "src/adapters/ai-core/workflow-shadow.ts",
+            "blob_sha": "6221b529093f51cba3c9fc4d80b3d3ef9d9ecc18"
+          },
+          {
+            "path": "src/adapters/ai-core/__tests__/workflow-shadow.test.ts",
+            "blob_sha": "f6734a72128bae646167041e28ac2f8218fbe18b"
           }
         ]
+      },
+      "adoption_evidence": {
+        "stage": "SOURCE_PARITY_VERIFIED",
+        "repository": "freepass-creator/freepass-admin",
+        "revision": "2aede7df82591470308f25bd3ccd4e5358aa7c3c",
+        "verification": {
+          "kind": "CI",
+          "conclusion": "SUCCESS",
+          "run_id": 35480824168,
+          "observed_at": "2026-09-20T01:13:56Z",
+          "files": [
+            {
+              "path": "contracts/ai-core/application-workflow.shadow.json",
+              "blob_sha": "fb5534b2f3832e8976bd39565f47ea5c8a99a90c"
+            },
+            {
+              "path": "src/adapters/ai-core/workflow-shadow.ts",
+              "blob_sha": "6221b529093f51cba3c9fc4d80b3d3ef9d9ecc18"
+            },
+            {
+              "path": "src/adapters/ai-core/__tests__/workflow-shadow.test.ts",
+              "blob_sha": "f6734a72128bae646167041e28ac2f8218fbe18b"
+            }
+          ]
+        }
       }
     }
   ]
