@@ -58,7 +58,7 @@ AI Core reverse-import/audit must treat `RETIRE` repositories as non-authoritati
 | freepass-creator/workcontrol | HOLD | teamjpkwork + aiops | Do not retire yet: current AIOPS README still assigns control judgement/daily-routine responsibility to workcontrol |
 | freepass-creator/- | RETIRE | none | Empty/accidental repository; highest-priority cleanup candidate |
 | freepass-creator/freepasspartner | HOLD | unknown | Preserve until current operational use and script ownership are checked |
-| freepass-creator/welrix-proposal | HOLD | docshub candidate | Likely document/reference material; verify DocsHub migration/completion before retirement |
+| freepass-creator/welrix-proposal | REFERENCE | docshub candidate | No app entrypoint/package observed in this audit; treat as proposal/reference material until useful content is migrated to DocsHub |
 | freepass-creator/teamjpk | HOLD | unknown | Verify whether any live site/domain still points here |
 | freepass-creator/gukminchagimpo | HOLD | unknown | Independent rental-management product; current operational ownership must be confirmed |
 | freepass-creator/billincar | HOLD | unknown | Independent ERP implementation; current user/deployment must be confirmed |
@@ -92,6 +92,10 @@ The following repositories are the first cleanup wave because a successor is kno
 - `docs/GROUP_OPERATING_MODEL.md` already records `jpkerp5` as a RETIRE/폐기 target and says it must not be used as a new integration source.
 - `jpkerp-v4/vercel.json` configures a daily Vercel cron for `/api/sms/cron/daily`; the route sends automated overdue/expiry/inspection/insurance SMS, so shutdown verification is mandatory.
 - `freepasserp` and `freeepasserp2` both contain Firebase rules and Vercel build/route configuration.
+- `freepasspartner` contains a Vercel server function that password-gates an internal sales-partner tracker and proposal PDF; deployment/use must be checked before retirement.
+- `billincar` contains a daily Vercel cron that verifies driver-license status through RIMS and can update `v5/contracts`; treat it as cleanup-protected until runtime ownership is resolved.
+- `gukminchagimpo` documents itself as a Vercel + Firebase rental-management SaaS; absence of a checked Vercel project has not been proven.
+- `chakhandeal/HANDOVER.md` says the project is currently DEMO-only with P4-P6 incomplete; it is not a production authority but remains a live project asset.
 - The currently connected Vercel team returned zero projects during this audit. That is not sufficient evidence that historical/personal Vercel deployments do not exist, so deployment absence remains unresolved.
 
 ## Next audit
