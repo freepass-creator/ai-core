@@ -1,6 +1,6 @@
 {
-  "schema_version": "1.0",
-  "observed_at": "2026-09-20T10:05:00Z",
+  "schema_version": "1.1",
+  "observed_at": "2026-09-20T10:20:00Z",
   "default_retirement_action": "ARCHIVE",
   "repositories": [
     {
@@ -9,7 +9,7 @@
       "blockers": [],
       "notes": [
         "wrong-repo Webtoon PR #1 closed",
-        "stale PR branch retained as history"
+        "stale branch preserved by repository archive"
       ]
     },
     {
@@ -18,31 +18,37 @@
       "blockers": [
         "confirm no old deployment/domain/secrets"
       ],
-      "successor": "freepass-creator/chakhandeal"
+      "successor": "freepass-creator/chakhandeal",
+      "scheduled_workflows": []
     },
     {
       "repository": "freepass-creator/jpkerp",
       "gate": "READY_AFTER_EXTERNAL_BINDING_CHECK",
       "blockers": [
-        "confirm no external runtime binding"
+        "confirm no old deployment/domain still serves this shared jpkerp Firebase client"
       ],
       "branches": [
         "master",
         "main",
         "archive-v1"
-      ]
+      ],
+      "backend_lineage": "jpkerp"
     },
     {
       "repository": "freepass-creator/jpkerp2",
-      "gate": "BLOCKED",
+      "gate": "READY_AFTER_EXTERNAL_BINDING_CHECK",
       "blockers": [
-        "old Firebase/Storage/runtime binding check",
-        "divergent redesign-v3 preservation"
+        "confirm old jpkerp Firebase/Storage/domain runtime is no longer served from this client"
+      ],
+      "branches": [
+        "main",
+        "redesign-v3"
       ],
       "successors": [
         "freepass-creator/renman",
         "freepass-creator/vehicle-master"
-      ]
+      ],
+      "backend_lineage": "jpkerp"
     },
     {
       "repository": "freepass-creator/jpkerp-v4",
@@ -53,29 +59,41 @@
     },
     {
       "repository": "freepass-creator/freeepasserp2",
-      "gate": "BLOCKED",
+      "gate": "READY_AFTER_DEPLOYMENT_CHECK",
       "blockers": [
-        "Firebase rules binding check",
-        "Vercel deployment binding check"
+        "confirm no old/private Vercel deployment is still bound"
+      ],
+      "backend_lineage": "freepasserp3",
+      "notes": [
+        "older/smaller client than freepasserp",
+        "same Firebase config and same Vercel SPA config"
       ]
     },
     {
       "repository": "freepass-creator/freepasserp",
-      "gate": "BLOCKED",
+      "gate": "READY_AFTER_DEPLOYMENT_CHECK",
       "blockers": [
-        "Firebase rules binding check",
-        "Vercel deployment binding check"
-      ]
+        "confirm no old/private Vercel deployment is still bound"
+      ],
+      "backend_lineage": "freepasserp3"
     },
     {
       "repository": "freepass-creator/jpkerp5",
       "gate": "BLOCKED",
       "blockers": [
-        "daily RIMS license cron owner/cutover",
-        "Firebase RTDB binding",
-        "independent freepass-erp-flask branch preservation"
+        "daily RIMS Vercel cron owner/cutover",
+        "daily GitHub Actions RTDB backup cutover",
+        "Firebase RTDB runtime binding",
+        "independent freepass-erp-flask branch preservation by archive"
       ],
-      "candidate_successor_runtime": "freepass-creator/billincar"
+      "candidate_successor_runtime": "freepass-creator/billincar",
+      "extracted_capabilities": [
+        {
+          "capability": "read-only RTDB backup engine",
+          "owner": "freepass-creator/aiops",
+          "schedule_migrated": false
+        }
+      ]
     }
   ]
 }
