@@ -23,6 +23,7 @@ function pointerRecord(packet,preflight){
   need(ASSET_ID.test(packet.asset_id??''),'KEEP_SEPARATE_ASSET_ID_INVALID');
   need(preflight?.schema==='ai-core-integration-preflight/v1'&&preflight.status==='SEALED','KEEP_SEPARATE_PREFLIGHT_REQUIRED');
   need(preflight.packet_id===packet.packet_id,'KEEP_SEPARATE_PREFLIGHT_PACKET_MISMATCH');
+  need(preflight.repository===packet.repository,'KEEP_SEPARATE_PREFLIGHT_REPOSITORY_MISMATCH');
   need(preflight.expected_revision===packet.expected_revision,'KEEP_SEPARATE_PREFLIGHT_REVISION_MISMATCH');
 
   return {
