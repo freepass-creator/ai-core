@@ -1,6 +1,6 @@
 {
   "contract": "ai-core-ui-interaction-contract/v1",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "feature_registry": "registry/ui-ux-features.json",
   "constitution": "docs/UI_UX_CONSTITUTION.md",
   "rules": {
@@ -14,12 +14,16 @@
       "invariants": [
         "Task-level actions live in the bottom action boundary by default; headers carry title, context, progress and passive status.",
         "A section exposes at most one primary action.",
-        "Dialog actions live in the dialog footer."
+        "Dialog actions live in the dialog footer.",
+        "The shared bottom action boundary persists across screen transitions while its action set changes with the active screen and workflow state.",
+        "A deeper mobile task may replace depth-0 navigation with contextual actions in the same bottom region and restores navigation when returning."
       ],
       "verification": [
         "mobile-bottom-action",
         "desktop-bottom-action",
-        "dialog-footer"
+        "dialog-footer",
+        "persistent-boundary",
+        "action-set-transition"
       ]
     },
     "focus": {
