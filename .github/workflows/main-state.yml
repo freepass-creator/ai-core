@@ -22,6 +22,8 @@ jobs:
       # outside CI until 2026-09-17, which is how an INVALID registry could have
       # been merged and looked fine.
       - run: npm run registry:validate registry/projects.json
+      - run: npm run a:coverage:validate
+      - run: npm run a:evidence:validate
       - run: npm run capability:validate
       - run: npm run direction:validate
       - run: npm run workmap:validate
