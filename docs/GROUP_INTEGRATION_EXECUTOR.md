@@ -66,3 +66,20 @@ That durable ref is bound into `core-receipt/v1`.
 `Inventory -> Plan (#146) -> Work Packet (#147) -> Preflight (#148) -> Executor -> independent verification -> core-receipt/v1 -> Work Ledger`
 
 Project/classification-specific mutation adapters remain separate follow-up work and should be introduced one at a time with their own evidence and rollback tests.
+
+
+## Unknown-outcome rule
+
+A thrown adapter error after authority/preflight is **not** represented as `performed=false`. The runtime cannot know whether the target changed before the error was observed, so it returns:
+
+- `effect_state: "UNKNOWN"`
+- `performed: null`
+- `outcome_known: false`
+
+If the adapter reports that it performed the operation but post-execution verification becomes unavailable, the runtime preserves:
+
+- `effect_state: "PERFORMED"`
+- `performed: true`
+- `external_effect: true`
+
+and returns HOLD. This keeps reconciliation honest and prevents a potentially mutated repository from being retried as though nothing happened.
