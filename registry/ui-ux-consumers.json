@@ -1,0 +1,52 @@
+{
+  "contract": "ai-core-ui-ux-consumers/v1",
+  "version": "1.0.0",
+  "definition_of_done": {
+    "required_conformant_consumers": 2,
+    "current_conformant_consumers": 0,
+    "status": "OPEN"
+  },
+  "consumers": [
+    {
+      "id": "freepass-sales",
+      "repository": "freepass-creator/freepass-sales",
+      "observed_revision": "fe69f76d81f4b9acd6f67f7b3f4ef5619f5e33d1",
+      "relation": "EVIDENCE_SOURCE",
+      "adoption_status": "EVIDENCE_ONLY",
+      "feature_refs": [
+        "workflow.explicit-save",
+        "workflow.autosave",
+        "integration.external-action",
+        "navigation.restore",
+        "system.input-method"
+      ],
+      "conformance_revision": null,
+      "conformance_receipts": [],
+      "evidence_refs": [
+        "docs/coordination/FREEPASS_SALES_RUNTIME_LEARNING.md"
+      ]
+    },
+    {
+      "id": "freepasserp4",
+      "repository": "freepass-creator/freepasserp4",
+      "observed_revision": "2d9fd07075aae7d6d64687fabbf61126e166c34c",
+      "relation": "EVIDENCE_SOURCE",
+      "adoption_status": "EVIDENCE_ONLY",
+      "feature_refs": [
+        "form.search",
+        "data.filter",
+        "data.sort",
+        "data.list",
+        "data.card",
+        "data.table",
+        "system.responsive",
+        "system.safe-area-keyboard"
+      ],
+      "conformance_revision": null,
+      "conformance_receipts": [],
+      "evidence_refs": [
+        "docs/coordination/ERP4_STABILITY_QUERY_LEARNING.md"
+      ]
+    }
+  ]
+}

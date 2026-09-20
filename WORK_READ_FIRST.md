@@ -60,9 +60,9 @@ AI 이름보다 최신 사용자 결정, 현재 프로젝트 정본, revision-bo
 
 ## UI/UX 공통 기능 규격을 작업하는 경우
 
-공통 UI/UX는 `docs/SCREEN_DESIGN_STANDARD.md` + `registry/ui-ux-features.json`을 먼저 읽는다. Registry가 기능별 상태·행동·검증 정본이고 `contracts/ui-ux-feature-registry.schema.json`이 기계 계약이다. `npm run uiux:validate`가 통과하지 않는 공통 기능 규격 변경은 채택하지 않는다.
+공통 UI/UX는 `docs/UI_UX_CONSTITUTION.md` → `docs/SCREEN_DESIGN_STANDARD.md` → `registry/ui-ux-features.json` 순서로 읽는다. Feature Registry가 기능별 상태·행동·검증 정본이고, `design-system/tokens.json`, `design-system/components.registry.json`, `design-system/interaction.contract.json`이 실행 가능한 projection을 제공한다. 신규 consumer는 검증된 legacy CSS를 보존한 채 `design-system/tokens.runtime.css` + `design-system/runtime-v2.css`를 staged adoption한다.
 
-프로젝트별 브랜드·밀도·아이콘·도메인 문구는 제품 profile이 소유하지만, 공통 feature ID의 상태명·완료 의미·실패/재시도·접근성·엔진/어댑터 경계는 로컬에서 임의 분기하지 않는다. 새 공통 기능은 먼저 Registry에 등록하거나 만료가 있는 예외를 남긴다.
+`npm run uiux:validate`와 `npm run uiux:runtime`가 모두 통과하지 않는 공통 규격 변경은 채택하지 않는다. 프로젝트별 브랜드·밀도·아이콘·도메인 문구는 제품 profile이 소유하지만, 공통 feature ID의 상태명·완료 의미·실패/재시도·접근성·엔진/어댑터 경계는 로컬에서 임의 분기하지 않는다. C가 데이터/API 의미를, D가 도메인 workflow를 소유하며 B는 이를 재정의하지 않는다. 새 공통 기능은 먼저 Registry에 등록하거나 만료가 있는 예외를 남긴다.
 
 ## 실제 회사 업무를 AI Core로 처리하는 경우
 

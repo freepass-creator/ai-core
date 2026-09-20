@@ -1,0 +1,54 @@
+{
+  "contract": "ai-core-ui-screen-manifest/v1",
+  "version": "1.0.0",
+  "screen_id": "example.canonical-data-form",
+  "product_profile": "GLOBAL_BASE",
+  "feature_ids": [
+    "navigation.header",
+    "form.text",
+    "form.select",
+    "feedback.inline-error",
+    "workflow.explicit-save",
+    "system.responsive",
+    "system.localization",
+    "system.focus",
+    "system.input-method"
+  ],
+  "contracts": {
+    "data_api": [
+      "C:canonical-domain-contract-placeholder"
+    ],
+    "workflow": [
+      "D:workflow-contract-placeholder"
+    ]
+  },
+  "exceptions": [],
+  "verification": {
+    "viewports": [
+      360,
+      390,
+      412,
+      1280,
+      1440
+    ],
+    "states": [
+      "default",
+      "invalid",
+      "busy",
+      "success",
+      "error"
+    ],
+    "input_modes": [
+      "keyboard",
+      "touch",
+      "pointer",
+      "ime-composition"
+    ],
+    "locales": [
+      "ko-KR",
+      "en-US",
+      "de-DE",
+      "ar-SA"
+    ]
+  }
+}

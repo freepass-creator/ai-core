@@ -10,10 +10,16 @@ This inventory separates reusable interaction contracts from product-specific vi
 
 | Asset | Current coverage | Reuse decision |
 |---|---|---|
-| `design-system/tokens.css` | color, spacing, type, radius, focus, 44px controls | extend as the common token floor |
+| `design-system/tokens.css` | historical verified compatibility tokens | preserve until migration; machine SSOT is `design-system/tokens.json` |
 | `examples/ui-components.html` | buttons, native select, populated responsive table | extend without replacing the verified examples |
 | `test/ui-components.test.mjs` | semantics, contrast and source-bound browser receipt | extend with state and interaction tests |
 | `contracts/development-form.schema.json` | UI devices/states and UX journey fields | keep as delivery planning input |
+| `design-system/tokens.json` + `tokens.runtime.css` | machine token SSOT + CSS projection | canonical B2 token source for new adoption |
+| `design-system/components.registry.json` | all 33 component-kind feature bindings | require exact Feature Registry coverage |
+| `design-system/patterns.registry.json` | all 45 pattern/workflow/surface feature bindings | distinguish B runtime shells from C/D-owned contract-only behavior |
+| `contracts/ui-screen-manifest.schema.json` | screen composition + explicit C/D references | prevent local feature/workflow invention |
+| `design-system/interaction.contract.json` | 12 cross-component interaction invariants | canonical behavior projection |
+| `design-system/runtime-v2.css` | logical direction, RTL, safe-area, forced colors, bottom action runtime | staged adoption; new browser evidence required |
 | Sales v187 audit | mobile call workflow, drafts, navigation, delayed save and SMS boundaries | reuse workflow lessons; do not copy Sales colors or shape choices |
 
 ## Common component coverage
@@ -71,3 +77,18 @@ A reusable function is not complete merely because a component exists. Before re
 - logical-direction CSS and safe-area handling when the common implementation owns layout behavior.
 
 Product-specific visual decisions stay in product profiles. Common interaction semantics do not fork locally.
+
+
+## B2 machine gate
+
+`npm run uiux:runtime` fails when:
+
+- the machine token SSOT and CSS projection drift;
+- any component-kind Feature Registry entry lacks a component binding;
+- any pattern/workflow/surface Feature Registry entry lacks a Pattern Registry projection;
+- a Screen Manifest invents a Feature ID, exception ID, C data binding or D workflow binding;
+- a component or interaction contract references an unknown feature ID;
+- locked company role values or regression probes silently change;
+- RTL logical-direction, safe-area, forced-color, reduced-motion or numeric-alignment runtime rules disappear.
+
+This gate complements `npm run uiux:validate`; it does not replace browser/visual evidence required by `docs/UI_QA_VISUAL_REGRESSION.md`.
