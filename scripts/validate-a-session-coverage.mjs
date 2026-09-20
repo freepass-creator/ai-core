@@ -1,7 +1,11 @@
 import { readFile } from 'node:fs/promises';
 
 const SHA40 = /^[0-9a-f]{40}$/;
-const REPO = /^[^\\s/]+\\/[^\\s/]+$/;
+function validRepoName(value) {
+  if (typeof value !== 'string') return false;
+  const parts = value.split('/');
+  return parts.length === 2 && parts.every((part) => part.length > 0 && part.trim() === part && !part.includes(' '));
+}
 const VALID_STATES = new Set([
   'CORE_BASELINE',
   'DEEP_EVIDENCE',
@@ -22,7 +26,8 @@ export function validateASessionCoverage(registry, headSnapshot = null) {
   if (registry.schema !== 'ai-core-a-session-repo-coverage/v1') {
     push(errors, 'SCHEMA_ID_INVALID', '/schema');
   }
-  if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(registry.observed_on ?? '')) {
+  const observedOn = registry.observed_on;
+  if (typeof observedOn !== 'string' || observedOn.length !== 10 || observedOn[4] !== '-' || observedOn[7] !== '-' || Number.isNaN(Date.parse(`${observedOn}T00:00:00Z`))) {
     push(errors, 'OBSERVED_ON_INVALID', '/observed_on');
   }
   if (!Array.isArray(registry.repositories)) {
@@ -41,7 +46,7 @@ export function validateASessionCoverage(registry, headSnapshot = null) {
       push(errors, 'REPOSITORY_ENTRY_INVALID', path);
       continue;
     }
-    if (!REPO.test(entry.repository ?? '')) {
+    if (!validRepoName(entry.repository)) {
       push(errors, 'REPOSITORY_NAME_INVALID', `${path}/repository`);
     } else {
       const key = entry.repository.toLowerCase();
@@ -100,7 +105,7 @@ export function validateASessionCoverage(registry, headSnapshot = null) {
       const snapshotMap = new Map();
       for (const [index, item] of headSnapshot.repositories.entries()) {
         const sPath = `$snapshot/repositories/${index}`;
-        if (!REPO.test(item?.repository ?? '')) {
+        if (!validRepoName(item?.repository)) {
           push(errors, 'HEAD_SNAPSHOT_REPOSITORY_INVALID', `${sPath}/repository`);
           continue;
         }
