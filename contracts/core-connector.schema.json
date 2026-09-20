@@ -1,0 +1,160 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.freepass.ai/core/connector/v1",
+  "title": "AI Core Connector Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "connector_id",
+    "connector_version",
+    "transport",
+    "provider_scope",
+    "source",
+    "operations",
+    "auth",
+    "timeout_ms",
+    "abort_supported",
+    "health_check",
+    "data_classification",
+    "verification_profile"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "core-connector-contract/v1"
+    },
+    "connector_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]*(\\.[a-z][a-z0-9_-]*)+$"
+    },
+    "connector_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "transport": {
+      "enum": [
+        "HTTP",
+        "DATABASE",
+        "QUEUE",
+        "FILESYSTEM",
+        "SDK",
+        "IPC",
+        "OTHER"
+      ]
+    },
+    "provider_scope": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "locator",
+        "revision"
+      ],
+      "properties": {
+        "locator": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "$ref": "https://schemas.freepass.ai/core/types/v1#/$defs/revision"
+        }
+      }
+    },
+    "operations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "operation_id",
+          "verb",
+          "target_ref"
+        ],
+        "properties": {
+          "operation_id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9._-]*$"
+          },
+          "verb": {
+            "type": "string",
+            "minLength": 1
+          },
+          "target_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "side_effects": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      }
+    },
+    "auth": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "credential_refs"
+      ],
+      "properties": {
+        "mode": {
+          "enum": [
+            "NONE",
+            "CREDENTIAL_REF",
+            "DELEGATED",
+            "SDK_DEFAULT"
+          ]
+        },
+        "credential_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "timeout_ms": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 300000
+    },
+    "abort_supported": {
+      "type": "boolean"
+    },
+    "health_check": {
+      "type": "string",
+      "minLength": 1
+    },
+    "data_classification": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "PUBLIC",
+          "INTERNAL",
+          "CONFIDENTIAL",
+          "PII",
+          "FINANCIAL",
+          "SECRET"
+        ]
+      }
+    },
+    "verification_profile": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}
