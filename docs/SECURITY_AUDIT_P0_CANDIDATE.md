@@ -1,10 +1,10 @@
-# AI Core Security / Audit P0 Candidate
+# AI Core Security / Audit P0 — Canonical Partial Baseline
 
-Status: `CANDIDATE / NOT CANONICAL / NO EXECUTION AUTHORITY`
+Status: `CANONICAL_PARTIAL / NO EXECUTION AUTHORITY`
 
 This candidate exists because four read-only project audits show that Security/Audit is the largest remaining Core maturity gap while multiple projects already contain reusable evidence.
 
-It does not change the current Security/Audit readiness axis from `RESEARCH_ONLY`.
+The shared contracts/policy are now a canonical partial baseline. They do not grant runtime permission or replace project authentication/authorization adapters.
 
 ## Sources generalized
 
@@ -118,9 +118,9 @@ The contract explicitly requires `sensitive_values_embedded=false`.
 
 Audit logs should say that a sensitive field changed, not copy passwords, tokens, resident numbers, bank account values, raw signatures or private documents into the audit stream.
 
-## Candidate action policies
+## Canonical partial action policies
 
-`registry/security-action-policies.candidate.json`
+`registry/security-action-policies.candidate.json` (historical filename retained; registry status is `CANONICAL_PARTIAL`)
 
 The candidate deliberately keeps policy data separate from code.
 
@@ -128,7 +128,7 @@ Important default:
 - reversible external mutation may support a tightly bound short emergency path;
 - privileged and irreversible external actions do not.
 
-This is a candidate generalization of observed project evidence, not an automatic company policy decision.
+This is the common baseline for policy shape and approval semantics; concrete action authority remains project-owned.
 
 ## Machine validation
 
@@ -145,9 +145,9 @@ The test suite includes:
 - command-bound short emergency path;
 - protected emergency rejection.
 
-## Promotion gates
+## Remaining gates to MACHINE_ENFORCED
 
-This candidate must remain non-canonical until:
+The baseline remains CANONICAL_PARTIAL until:
 
 1. schemas + semantic tests execute in AI Core CI;
 2. AIOps approval behavior can be represented without semantic loss;
@@ -167,3 +167,10 @@ This candidate does not:
 - modify project rules;
 - approve any real action;
 - read or copy private audit ledgers.
+
+## Promotion evidence — 2026-09-20
+
+- AIOps SHADOW parity merged to main at `dd47662ec6e92a689cbc4b8a50504e6013845ff9`.
+- Exact-subject digest continuity, separation of duties, BLOCK precedence, bounded emergency path and protected non-bypass are mapped without transferring runtime authority.
+- AIOps required workflow now includes the Security SHADOW test and fixes the previous push-path omission for finance/security coverage.
+- Central AI Core Actions still has a runner-entry issue; this prevents calling the axis MACHINE_ENFORCED today.
