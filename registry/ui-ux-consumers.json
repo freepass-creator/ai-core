@@ -53,7 +53,7 @@
     {
       "id": "freepass-admin",
       "repository": "freepass-creator/freepass-admin",
-      "observed_revision": "c16e55e0e449e74aa4403861be89bcbb5f77ee97",
+      "observed_revision": "02deb4df0fcb123a478519e3cbb408cd5e2ad7c6",
       "relation": "CANONICAL_CONSUMER",
       "adoption_status": "MAPPED",
       "feature_refs": [
@@ -73,6 +73,8 @@
       "conformance_receipts": [],
       "evidence_refs": [
         "https://github.com/freepass-creator/freepass-admin/pull/35",
+        "https://github.com/freepass-creator/freepass-admin/pull/37",
+        "https://github.com/freepass-creator/freepass-admin/pull/38",
         "freepass-admin/docs/DESIGN-HUB-MAPPING-2026-09-21.md",
         "freepass-admin/.ai-core/ui-ux.consumer.json"
       ]
