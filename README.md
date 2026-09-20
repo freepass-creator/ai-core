@@ -4,13 +4,13 @@ AI Core is the group headquarters for user orders, shared memory, planning, rout
 
 ## 현재 작업: 공통 AI 오더 데스크
 
-통합 기준: PR #20의 work 원장이 업무 상태의 정본이고 PR #21의 OrderStore는 접수·claim 기록이다. 읽기 어댑터와 임시 DB의 후보→확인→work 연결은 [격리 통합 실험](docs/integration/INTEGRATION_STATUS.md)으로 검증한다. 영속 매핑·outbox는 미완이므로 운영 연결과 실행·최종 완료는 HOLD다. 사용자는 말로만 요청하고 기술 입력은 담당 AI가 처리한다.
+통합 기준: Work Ledger/Control Tower가 업무 상태의 정본이고 OrderStore는 접수·claim 기록이다. 현재 main에는 routed order를 immutable binding/outbox를 거쳐 Work `RECEIVED`로 올리는 durable coordinator가 포함되어 있다. 실제 capability 실행, 운영 연결과 최종 완료는 별도 정본 gate·승인·결과 확인 없이는 HOLD다. 사용자는 말로만 요청하고 기술 입력은 담당 AI가 처리한다.
 
 2026-09-15 사용자 요청으로 `work/codex/order-control-v1`에 로컬 오더 접수·담당 배정·공통 AI 인계·처리 이력·결과 확인 기능을 구현했다. 저장소는 분리하고 모든 업무 상태와 공통 처리 기능을 AI Core에 모으는 방향이다. 이름은 임시 **이음**이며 사용자와 상의 중이다.
 
 Node.js 24.19 이상에서 격리 UI 실험은 `npm run orders:serve -- --standalone --db :memory: --port 4319`로 실행한다. CLI는 `npm run orders -- help`, 검증은 `npm test`를 사용한다. 실제 DB로의 이전이나 운영 서버 연결은 이 실험에 포함되지 않는다.
 
-현재 UI는 **접수·결과 확인을 기록하는 수동 인계 도구**다. 결과 확인 후에도 REVIEW를 유지하며 정본 CLOSED를 만들지 않는다. [공유 실행 안내](docs/SHARED_ORDER_EXECUTION.md)는 기존 접수 전송 설계 기록이다. 실제 원격 연결·자동 실행·인증된 검토자 증명은 미완이다. 아래 `main` 설명과 `DEV-EPISODE-001`은 상속한 이전 개발선의 기록이다.
+현재 UI는 **접수·결과 확인을 기록하는 수동 인계 도구**다. 결과 확인 후에도 REVIEW를 유지하며 정본 CLOSED를 만들지 않는다. 로컬 실사용 순서는 [Order Desk runbook](docs/ORDER_DESK_RUNBOOK.md), 연결 경계는 [공유 실행 안내](docs/SHARED_ORDER_EXECUTION.md)를 따른다. 실제 원격 운영 연결·자동 실행·인증된 검토자 증명은 미완이다.
 
 The adopted operating target is a **group workspace with independent subsidiaries**:
 
@@ -41,9 +41,11 @@ Implementation handoff: [Claude work packet](docs/CLAUDE_EMERGENCY_HANDOFF.md) a
 
 ## Current implementation
 
-The repository provides memory, development contracts, safe concurrent checkpoints, UI/UX samples, self-evolution gates and a fail-closed control-tower snapshot evaluator. It does not yet implement the full group workspace/runtime or monitor source systems by itself.
+The repository provides memory, development contracts, safe concurrent checkpoints, a local order desk, durable Order-to-Work intake, UI/UX samples, self-evolution gates and a fail-closed control-tower snapshot evaluator. It does not yet implement the full group workspace/runtime or monitor source systems by itself.
 
-`main`에는 실행 가능한 오케스트레이터가 없다. The evaluator only calculates gates from a supplied snapshot and always keeps execution authority external.
+The local order coordinator routes and records work but does not grant external execution authority. The evaluator calculates gates from a supplied snapshot and keeps execution authority external.
+
+`main`에는 실행 가능한 오케스트레이터가 없다. The order desk is a bounded intake, lease and handoff coordinator; it does not autonomously create app tasks, execute project work or grant authority.
 
 Conceptual route:
 

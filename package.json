@@ -6,6 +6,8 @@
   "scripts": {
     "orders": "node scripts/orders.mjs",
     "orders:serve": "node src/orders/server.mjs",
+    "orders:next": "node scripts/orders.mjs next",
+    "orders:claim-next": "node scripts/orders.mjs claim-next",
     "test:orders": "node --test test/orders.test.mjs",
     "test": "node --test --test-concurrency=1 test/*.test.mjs",
     "verify": "node scripts/verify-main-state.mjs",

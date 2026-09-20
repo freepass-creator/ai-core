@@ -3,6 +3,7 @@ import { dirname } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { OrderStore, actors } from '../src/orders/store.mjs';
 import { RemoteOrderClient, connectionOptions, localConnectionPath } from '../src/orders/client.mjs';
+import { claimNextTask, inspectNextTask, sessionPackMarkdown } from '../src/orders/session-flow.mjs';
 
 const readJson = path => JSON.parse(readFileSync(path, 'utf8').replace(/^\uFEFF/, ''));
 let store;
@@ -18,7 +19,7 @@ try {
   }
   const [action, first, second] = args;
   if (!action || action === 'help') {
-    console.log(`AI Core 공통 오더 CLI (Node 24.19 이상)\nnode scripts/orders.mjs [--endpoint URL] <command>\n  connect URL                  이 장치의 중앙 원장 연결 저장\n  meta                         원장 ID와 연결 방식 확인\n  list                         전체 오더\n  show ORDER_ID                최신 오더와 이벤트\n  create INPUT.json            오더 접수 (requestId 포함)\n  act ORDER_ID COMMAND.json    담당·확보·대기·결과·수정·완료\n  packet ORDER_ID TASK_ID       AI 공통 인계 JSON\n  actors                       AI별 강점\n  name DISPLAY_NAME            표시 이름 변경\n  export                       열람용 오더·이벤트 JSON\n\n로컬·서버 모두 같은 명령과 중앙 원장을 사용합니다.\n연결 설정이 없거나 서버가 응답하지 않으면 중단하며 로컬 DB를 만들지 않습니다.\n독립 실험만 --local --db PATH로 실행합니다.\n원격 서버는 SSH 터널로 접속합니다. docs/SHARED_ORDER_EXECUTION.md 참고.`);
+    console.log(`AI Core 공통 오더 CLI (Node 24.19 이상)\nnode scripts/orders.mjs [--endpoint URL] <command>\n  connect URL                         이 장치의 중앙 원장 연결 저장\n  meta                                원장 ID와 연결 방식 확인\n  list                                전체 오더\n  show ORDER_ID                       최신 오더와 이벤트\n  create INPUT.json                   오더 접수 (requestId 포함)\n  act ORDER_ID COMMAND.json           담당·확보·대기·결과·수정·완료\n  next ACTOR                          충돌 없이 지금 시작 가능한 다음 작업 조회\n  claim-next ACTOR                    다음 작업을 lease로 확보 (로컬 운영자 전용 출력)\n  packet ORDER_ID TASK_ID              AI 공통 인계 JSON\n  session-pack ORDER_ID TASK_ID FILE  무료 채팅/별도 세션용 로컬 Markdown 생성\n  work ORDER_ID                       정본 Work projection 조회\n  work-intake ORDER_ID                현재 requirement를 durable Work로 접수\n  capability ORDER_ID                 고정된 route의 실행 계획 조회\n  capability-run ORDER_ID INPUT.json  허용된 capability 실행 요청\n  capability-results ORDER_ID         실행 결과 영수증 조회\n  reroute ORDER_ID INPUT.json         미착수 requirement 명시적 재분류\n  actors                              AI별 강점\n  name DISPLAY_NAME                   표시 이름 변경\n  export                              열람용 오더·이벤트 JSON\n\n로컬·서버 모두 같은 명령과 중앙 원장을 사용합니다.\n연결 설정이 없거나 서버가 응답하지 않으면 중단하며 로컬 DB를 만들지 않습니다.\n독립 실험만 --local --db PATH로 실행합니다.\n원격 서버는 SSH 터널로 접속합니다. docs/SHARED_ORDER_EXECUTION.md 참고.`);
   } else if (action === 'actors') console.log(JSON.stringify(actors, null, 2));
   else {
     if ((options.local && (options.endpoint || action === 'connect')) || (options.db && !options.local)) throw new Error('독립 로컬 DB와 공유 연결 옵션은 함께 사용할 수 없습니다.');
@@ -44,7 +45,17 @@ try {
     else if (action === 'show') result = store ? { order: store.get(first), events: store.events(first) } : await client.show(first);
     else if (action === 'create') result = await client.create(readJson(first));
     else if (action === 'act') result = await client.mutate(first, readJson(second));
+    else if (action === 'next') result = await inspectNextTask(client, first);
+    else if (action === 'claim-next') result = await claimNextTask(client, first);
     else if (action === 'packet') result = await client.packet(first, second);
+    else if (action === 'session-pack') {
+      const output = args[3];
+      if (!output) throw new Error('session-pack은 ORDER_ID TASK_ID FILE이 필요합니다.');
+      const packet = await client.packet(first, second);
+      mkdirSync(dirname(output), { recursive: true });
+      writeFileSync(output, sessionPackMarkdown(packet), { encoding: 'utf8', flag: 'wx' });
+      result = { status: 'CREATED_LOCAL_ONLY', output, orderId: first, taskId: second, authority: false };
+    }
     else if (action === 'work') result = await remoteOnly('workProjection')(first);
     else if (action === 'work-intake') result = await remoteOnly('workIntake')(first);
     else if (action === 'capability') result = await remoteOnly('capabilityPlan')(first);

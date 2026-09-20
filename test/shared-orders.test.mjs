@@ -25,6 +25,7 @@ function clonedClient(dir, name, ledgerId) {
   for (const path of [
     'scripts/orders.mjs',
     'src/orders/client.mjs',
+    'src/orders/session-flow.mjs',
     'src/orders/store.mjs',
     'src/workflow/engine.mjs',
     'src/workflow/order-task-runtime.mjs',
