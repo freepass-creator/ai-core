@@ -15,6 +15,28 @@ function maxTime(...values){
   const valid=values.filter((v)=>typeof v==='string'&&!Number.isNaN(Date.parse(v)));
   return valid.sort((a,b)=>Date.parse(b)-Date.parse(a))[0] ?? null;
 }
+function canonical(value){
+  if(Array.isArray(value)) return value.map(canonical);
+  if(value && typeof value==='object'){
+    return Object.fromEntries(Object.keys(value).sort().map((key)=>[key,canonical(value[key])]));
+  }
+  return value;
+}
+function fnv1a32(text,seed){
+  let hash=seed>>>0;
+  for(let i=0;i<text.length;i++){
+    hash ^= text.charCodeAt(i);
+    hash = Math.imul(hash,0x01000193)>>>0;
+  }
+  return hash.toString(16).padStart(8,'0');
+}
+export function reviewRevision(item){
+  const payload=clone(item);
+  delete payload.review_revision;
+  const text=JSON.stringify(canonical(payload));
+  const seeds=[0x811c9dc5,0x9e3779b1,0x85ebca6b,0xc2b2ae35,0x27d4eb2f];
+  return seeds.map((seed,index)=>fnv1a32(`${index}|${text}`,seed)).join('');
+}
 function questions(finding){
   if(finding.classification==='PROJECT_GT_CORE'){
     const q=[
@@ -63,7 +85,7 @@ export function buildReviewQueues(evidence,routing,inboxes){
       if(!receiver) throw new Error(`missing receiver item ${route.route_id}`);
       if(receiver.session!==session) throw new Error(`receiver session mismatch ${route.route_id}`);
       const item=receiver.item;
-      items.push({
+      const pack={
         pack_id:route.route_id,
         route_id:route.route_id,
         finding_id:finding.id,
@@ -98,7 +120,9 @@ export function buildReviewQueues(evidence,routing,inboxes){
           decision_owner:session,
           automatic_decision_forbidden:true
         }
-      });
+      };
+      pack.review_revision=reviewRevision(pack);
+      items.push(pack);
     }
     items.sort((a,b)=>a.route_id.localeCompare(b.route_id));
     queues[session]={
@@ -114,7 +138,8 @@ export function buildReviewQueues(evidence,routing,inboxes){
       policy:{
         source_only:'This queue is derived from A Evidence, Routing and receiver Inbox state. Do not hand-edit it as authority.',
         review_only:'The pack prepares evidence and questions but cannot review or decide for B/C/D.',
-        resolved_history:'CLOSED routes remain in the queue as RESOLVED evidence history.'
+        resolved_history:'CLOSED routes remain in the queue as RESOLVED evidence history.',
+        review_revision:'40-hex deterministic content fingerprint for review-claim identity; it is not source proof or a Git revision.'
       },
       items
     };
