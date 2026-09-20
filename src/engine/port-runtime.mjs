@@ -1,3 +1,4 @@
+import { buildAdapterReceipt } from '../contracts/adapter-receipt.mjs';
 import { resolveBinding, validateAdapterContract } from '../contracts/engine-adapter-contract.mjs';
 
 const text=value=>typeof value==='string'&&value.trim()===value&&value.length>0;
@@ -166,5 +167,17 @@ export function createPortRuntime({
     }
   }
 
-  return Object.freeze({binding:Object.freeze(describe()),describe,invoke});
+  async function invokeWithReceipt(portId,input,options={}){
+    const {receipt:receiptOptions,...invokeOptions}=options;
+    need(receiptOptions&&typeof receiptOptions==='object','RECEIPT_OPTIONS_REQUIRED');
+    const adapter_result=await invoke(portId,input,invokeOptions);
+    const receipt=buildAdapterReceipt({
+      ...receiptOptions,
+      adapter_result,
+      input
+    });
+    return {adapter_result,receipt};
+  }
+
+  return Object.freeze({binding:Object.freeze(describe()),describe,invoke,invokeWithReceipt});
 }
