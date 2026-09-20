@@ -1,0 +1,23 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://schemas.freepass.ai/governance/project-observation/v1",
+  "title":"AI Core Project Observation v1",
+  "type":"object",
+  "additionalProperties":false,
+  "required":[
+    "schema_version","project_id","repository","default_branch","status","observed_at",
+    "head_revision","covered_from","source","failure_reason"
+  ],
+  "properties":{
+    "schema_version":{"const":"governance-project-observation/v1"},
+    "project_id":{"type":"string","minLength":1},
+    "repository":{"type":"string","pattern":"^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"},
+    "default_branch":{"type":"string","minLength":1},
+    "status":{"enum":["OBSERVED","UNKNOWN"]},
+    "observed_at":{"type":"string","format":"date-time"},
+    "head_revision":{"type":["string","null"],"pattern":"^[0-9a-f]{40}$"},
+    "covered_from":{"type":["string","null"],"format":"date-time"},
+    "source":{"enum":["GITHUB","CONNECTOR","LOCAL_REOBSERVATION"]},
+    "failure_reason":{"type":["string","null"]}
+  }
+}
