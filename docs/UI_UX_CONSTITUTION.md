@@ -35,6 +35,23 @@ Owns canonical domain data, IDs, API/event/error/result contracts, money/date/ti
 
 Owns domain state machines, transitions, guards, authority, retry/rollback rules and audit meaning. B renders workflow state and allowed commands; B does not create new business workflow states because a screen needs a button.
 
+## Development Center execution boundary
+
+This Constitution remains the normative UI/UX source. It is not a second project implementation center.
+
+For real project work, Development Center **Design Hub** is the official execution entrypoint. It consumes a pinned AI Core revision, selects reusable assets/patterns, applies product profiles, coordinates project changes and hands verification to Quality Hub.
+
+Therefore:
+
+- AI Core B owns common semantics and canonical machine contracts.
+- Design Hub owns execution/orchestration of design adoption across projects.
+- Projects own allowed brand/domain specialization.
+- Quality Hub owns revision-bound conformance evidence.
+- Delivery Hub owns release/runtime evidence when deployment is in scope.
+- Project-verified patterns may return as candidates; they do not become Core standard merely because Design Hub reused them.
+
+See `docs/DEVELOPMENT_CENTER_EXECUTION_HANDOFF.md`.
+
 ## Global invariants
 
 - The same `feature_id` means the same behavior in every country, product and implementation language.
