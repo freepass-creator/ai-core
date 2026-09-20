@@ -1,17 +1,17 @@
 {
   "schema_version": "1.0",
   "phase": "PHASE_1",
-  "status": "HOLD",
-  "observed_revision": "7d3adb8ed9900a8cf1844c689415be35efcb8531",
+  "status": "READY_FOR_BASELINE_LOCK",
+  "observed_revision": "0ca3140d17daf4d51df0fbc2010c4130ec3bb20d",
   "ci": {
-    "run_id": 35446311469,
-    "head_sha": "7d3adb8ed9900a8cf1844c689415be35efcb8531",
+    "run_id": 35479258525,
+    "head_sha": "0ca3140d17daf4d51df0fbc2010c4130ec3bb20d",
     "conclusion": "success"
   },
   "gates": {
     "ownership_linked": true,
-    "executable_baseline": false,
-    "registry_linkage": false,
+    "executable_baseline": true,
+    "registry_linkage": true,
     "revision_evidence": true,
     "validation_green": true,
     "no_false_completion": true
@@ -42,28 +42,33 @@
     {
       "id": "B",
       "owner": "Global UI/UX Platform",
-      "status": "HOLD",
-      "blockers": [
-        "Order has not yet verified a B-owned machine validation path and Feature Registry linkage for the Phase 1 scope.",
-        "B must return a Phase 1 gap-to-exit packet separating baseline blockers from Phase 2 enhancements."
-      ],
+      "status": "PASS",
+      "blockers": [],
       "evidence": [
         {
-          "path": "docs/SCREEN_DESIGN_STANDARD.md"
-        },
-        {
-          "path": "docs/FREEPASS_PRODUCT_UI_PROFILE.md"
-        },
-        {
-          "path": "design-system/tokens.css"
-        },
-        {
-          "path": "design-system/components.css"
-        },
-        {
           "path": "docs/UI_UX_CONSTITUTION.md",
-          "revision": "f72254485a2001b2631520ef6be60aa24d9f8dca",
-          "note": "B4 candidate chain is CI-green but remains outside main; root PR #92 must be synchronized before Phase 1 PASS."
+          "revision": "0ca3140d17daf4d51df0fbc2010c4130ec3bb20d",
+          "note": "B Global UI/UX Constitution is integrated on main after the C/D closeout sequence."
+        },
+        {
+          "path": "registry/ui-ux-features.json",
+          "revision": "0ca3140d17daf4d51df0fbc2010c4130ec3bb20d",
+          "note": "Feature Registry linkage and uiux:validate are active on main."
+        },
+        {
+          "path": "design-system/tokens.json",
+          "revision": "0ca3140d17daf4d51df0fbc2010c4130ec3bb20d",
+          "note": "Executable token/component/pattern/interaction projection stack is integrated with uiux:runtime."
+        },
+        {
+          "path": "contracts/ui-ux-conformance-receipt.schema.json",
+          "revision": "0ca3140d17daf4d51df0fbc2010c4130ec3bb20d",
+          "note": "B4 revision-bound conformance receipt contract is integrated on main."
+        },
+        {
+          "path": "docs/coordination/B_SESSION_PHASE1_RETURN_PACKET_2026-09-20.md",
+          "revision": "0ca3140d17daf4d51df0fbc2010c4130ec3bb20d",
+          "note": "B Phase 1 return packet separates baseline PASS from Phase 2 enhancements; B5 is deferred."
         }
       ]
     },
