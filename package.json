@@ -52,7 +52,8 @@
     "workflow:projection:validate": "node scripts/validate-workflow-projections.mjs",
     "a:receiver:validate": "node scripts/validate-a-session-receiver-inboxes.mjs docs/research/a-session-routing-receipts.v1.json docs/research/a-session-receiver-inbox-B.v1.json docs/research/a-session-receiver-inbox-C.v1.json docs/research/a-session-receiver-inbox-D.v1.json",
     "a:receiver:sync": "node scripts/sync-a-session-receiver-inboxes.mjs",
-    "a:routing:reconcile": "node scripts/reconcile-a-session-routing.mjs"
+    "a:routing:reconcile": "node scripts/reconcile-a-session-routing.mjs",
+    "workflow:progression:validate": "node scripts/validate-workflow-progressions.mjs"
   },
   "dependencies": {
     "ajv": "8.20.0",
