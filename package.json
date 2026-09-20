@@ -58,7 +58,8 @@
     "a:claims:validate": "node scripts/validate-a-session-work-claims.mjs docs/research/a-session-work-claims.v1.json",
     "workflow:progression:validate": "node scripts/validate-workflow-progressions.mjs",
     "a:claim": "node scripts/a-session-claim.mjs",
-    "a:claim:validate": "node scripts/validate-a-session-work-claims.mjs docs/research/a-session-work-claims.v1.json"
+    "a:claim:validate": "node scripts/validate-a-session-work-claims.mjs docs/research/a-session-work-claims.v1.json",
+    "a:next": "node scripts/a-session-next.mjs"
   },
   "dependencies": {
     "ajv": "8.20.0",
