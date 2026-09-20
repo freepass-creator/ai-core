@@ -1,0 +1,54 @@
+{
+  "schema": "ai-core-shared-extraction-candidate/v1",
+  "candidate_id": "shared.sheet-column-label.erp4-aiops.v1",
+  "capability_key": "google-sheet.column-label",
+  "target_package": "devcenter/capabilities/shared/google-sheet-column-label",
+  "source_project_count": 2,
+  "implementation_count": 2,
+  "implementations": [
+    {
+      "project_id": "freepasserp4",
+      "repository": "freepass-creator/freepasserp4",
+      "revision": "f01b91c7f68fc2f55d8d642bc3d39f5e07368967",
+      "source_ref": "sonokong/lib/sheet.mjs",
+      "source_blob_sha": "32940fd3edc5d0ec718410472a41476a921d55ff",
+      "export_name": "colL",
+      "semantic_contract_digest": "sha256:59734277ce50053e59a923c2409d95670d4c1ac396cc88382811c6c61a271dbb",
+      "behavior_digest": "sha256:7321005f0870105b014ca008ae91b350b25deecf35e9ac7c60718c75eaa8e2c0",
+      "evidence_refs": [
+        "GIT:freepass-creator/freepasserp4@f01b91c7f68fc2f55d8d642bc3d39f5e07368967",
+        "READ:sonokong/lib/sheet.mjs#colL",
+        "BLOB:32940fd3edc5d0ec718410472a41476a921d55ff"
+      ]
+    },
+    {
+      "project_id": "aiops",
+      "repository": "freepass-creator/aiops",
+      "revision": "cc440e53e90c642c42a88a70d415355056594129",
+      "source_ref": "lib/sheet.mjs",
+      "source_blob_sha": "32940fd3edc5d0ec718410472a41476a921d55ff",
+      "export_name": "colL",
+      "semantic_contract_digest": "sha256:59734277ce50053e59a923c2409d95670d4c1ac396cc88382811c6c61a271dbb",
+      "behavior_digest": "sha256:7321005f0870105b014ca008ae91b350b25deecf35e9ac7c60718c75eaa8e2c0",
+      "evidence_refs": [
+        "GIT:freepass-creator/aiops@cc440e53e90c642c42a88a70d415355056594129",
+        "READ:lib/sheet.mjs#colL",
+        "BLOB:32940fd3edc5d0ec718410472a41476a921d55ff"
+      ]
+    }
+  ],
+  "assessment": {
+    "status": "READY_FOR_EXTRACTION_REVIEW",
+    "blockers": [],
+    "semantic_contract_equal": true,
+    "behavior_equal": true,
+    "evidence_complete": true,
+    "extraction_allowed": false,
+    "package_promotion_allowed": false,
+    "source_authority_transfer": false
+  },
+  "review": {
+    "required": true,
+    "next_action": "독립 검토에서 소비자·버전·rollback 계획을 확인한 뒤 extraction Work Packet을 별도로 만듭니다."
+  }
+}
