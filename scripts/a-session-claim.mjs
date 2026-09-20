@@ -48,6 +48,28 @@ export function acquireClaim(registry, request, { now = new Date(), leaseMinutes
   return { registry:next, decision:{ action:'ACQUIRED', claim } };
 }
 
+export function renewClaim(registry, claimId, owner, { now = new Date(), leaseMinutes = 60 } = {}) {
+  const next = structuredClone(registry);
+  const claim = next.claims.find(x => x.claim_id === claimId);
+  if (!claim) throw new Error('CLAIM_NOT_FOUND');
+  if (claim.state !== 'ACTIVE') throw new Error('CLAIM_NOT_ACTIVE');
+  if (!owner || claim.owner_session !== owner) throw new Error('CLAIM_OWNER_MISMATCH');
+
+  const competing = next.claims.find(x =>
+    x.claim_id !== claimId &&
+    x.claim_key === claim.claim_key &&
+    x.state === 'ACTIVE' &&
+    Date.parse(x.lease_until) > now.getTime()
+  );
+  if (competing) throw new Error('CLAIM_SUPERSEDED_BY_LIVE_OWNER');
+
+  const recovered = Date.parse(claim.lease_until) <= now.getTime();
+  claim.lease_until = iso(addMinutes(now, leaseMinutes));
+  claim.heartbeat_at = iso(now);
+  next.observed_at = iso(now);
+  return { registry:next, claim, action:recovered ? 'RECOVERED' : 'RENEWED' };
+}
+
 export function transitionClaim(registry, claimId, state, { now = new Date(), evidenceRefs = [] } = {}) {
   const allowed = new Set(['COMPLETED','ABANDONED','SUPERSEDED']);
   if (!allowed.has(state)) throw new Error('CLAIM_TARGET_STATE_INVALID');
@@ -102,6 +124,23 @@ export async function claimRemote(request, options = {}) {
   throw new Error('CLAIM_CONFLICT_RETRY_EXHAUSTED');
 }
 
+export async function renewRemote(claimId, owner, options = {}) {
+  const attempts = options.attempts ?? 2;
+  for (let attempt=0; attempt<attempts; attempt++) {
+    const current = await readRemoteRegistry(options.coordRepo, options.branch);
+    const prepared = renewClaim(current.registry, claimId, owner, options);
+    try {
+      const result = await writeRemoteRegistry(prepared.registry, current.sha, `A: heartbeat ${claimId}`, options.coordRepo, options.branch);
+      return { action:prepared.action, claim:prepared.claim, commit_sha:result.commit?.sha ?? null };
+    } catch (error) {
+      const text = String(error?.stderr || error?.message || error);
+      if (attempt + 1 < attempts && /(409|422|sha|does not match|conflict)/i.test(text)) continue;
+      throw error;
+    }
+  }
+  throw new Error('CLAIM_CONFLICT_RETRY_EXHAUSTED');
+}
+
 export async function finishRemote(claimId, state, options = {}) {
   const attempts = options.attempts ?? 2;
   for (let attempt=0; attempt<attempts; attempt++) {
@@ -143,6 +182,16 @@ if (process.argv[1]?.endsWith('a-session-claim.mjs')) {
         console.log(JSON.stringify(result, null, 2));
         if (result.action.startsWith('SKIP_')) process.exitCode = 3;
       }
+    } else if (command === 'renew') {
+      const claimId = argValue(args,'--claim-id');
+      const owner = argValue(args,'--owner') || process.env.AI_CORE_ACTOR || 'A_SESSION';
+      if (!claimId) throw new Error('CLAIM_ID_REQUIRED');
+      const result = await renewRemote(claimId, owner, {
+        leaseMinutes:Number(argValue(args,'--lease-minutes') || 60),
+        coordRepo:argValue(args,'--coord-repo') || undefined,
+        branch:argValue(args,'--branch') || undefined
+      });
+      console.log(JSON.stringify(result, null, 2));
     } else if (command === 'complete' || command === 'abandon' || command === 'supersede') {
       const claimId = argValue(args,'--claim-id');
       if (!claimId) throw new Error('CLAIM_ID_REQUIRED');
@@ -155,7 +204,7 @@ if (process.argv[1]?.endsWith('a-session-claim.mjs')) {
       console.log(JSON.stringify(result, null, 2));
     } else {
       console.error('Usage: node scripts/a-session-claim.mjs claim|status --repository owner/repo --revision <sha> --scope <scope> [--owner <id>] [--lease-minutes 60]');
-      console.error('       node scripts/a-session-claim.mjs complete|abandon|supersede --claim-id <id> [--evidence <ref> ...]');
+      console.error('       node scripts/a-session-claim.mjs renew --claim-id <id> --owner <id> [--lease-minutes 60]');\n      console.error('       node scripts/a-session-claim.mjs complete|abandon|supersede --claim-id <id> [--evidence <ref> ...]');
       process.exit(2);
     }
   } catch (error) {
