@@ -74,7 +74,7 @@ test('routed order becomes one durable Work, snapshot item and immutable binding
   assert.equal(f.store.db.prepare('SELECT COUNT(*) AS n FROM work_intake_outbox').get().n,1);
 
   const projection=await (await fetch(`${f.url}/api/orders/${order.id}/work`)).json();
-  assert.equal(projection.status,'LINKED');
+  assert.equal(projection.status,'LINKED',JSON.stringify(projection));
   assert.equal(projection.mapping.work_id,a.work_id);
   assert.equal(projection.canonical_state,'RECEIVED');
   assert.equal(projection.execution_authorized,false);
@@ -117,7 +117,7 @@ test('an already-bound requirement cannot reroute; revised requirement gets a ne
   assert.equal(snapshot.items.length,2);
 
   const projection=await (await fetch(`${f.url}/api/orders/${order.id}/work`)).json();
-  assert.equal(projection.status,'LINKED');
+  assert.equal(projection.status,'LINKED',JSON.stringify(projection));
   assert.equal(projection.mapping.work_id,second.work_id);
   assert.equal(projection.mapping.requirement_revision,2);
   assert.equal(projection.control_result.execute.enabled,false);
@@ -154,4 +154,43 @@ test('project head drift blocks Work creation before binding or ledger write',as
   const tables=f.store.db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name IN ('coordination_bindings','work_intake_outbox')").all();
   assert.deepEqual(tables,[],'route validation must fail before producer tables are created');
   assert.equal(existsSync(f.ledgerPath),false);
+});
+
+test('revision changed after ledger append is held before snapshot projection',async t=>{
+  const f=await fixture(t);
+  const order=await (await f.post('/api/orders',orderInput())).json();
+  const originalGet=f.store.get.bind(f.store);
+  let reads=0;
+  f.store.get=(id)=>{
+    reads++;
+    if(reads===3){
+      f.store.get=originalGet;
+      const current=originalGet(id);
+      const revised=f.store.mutate(id,{
+        requestId:randomUUID(),version:current.version,action:'revise',
+        intent:'과태료 변경부과 수정',criteria:['수정된 요구만 Work에 연결된다.'],reason:'접수 중 요구 변경',
+      });
+      f.store.mutate(id,{
+        requestId:randomUUID(),version:revised.version,action:'reroute',
+        routing:{...order.routing,requirement_revision:revised.revision},
+      });
+    }
+    return originalGet(id);
+  };
+
+  const result=await (await f.post(`/api/orders/${order.id}/work-intake`)).json();
+  assert.equal(result.status,'HOLD');
+  assert.equal(result.reason,'REQUIREMENT_SUPERSEDED');
+  assert.equal(result.requirement_revision,1);
+  assert.ok(result.work_id);
+  assert.equal(existsSync(f.snapshotPath),false,'superseded requirement must not enter current snapshot');
+
+  const outbox=f.store.db.prepare(
+    'SELECT state,reason FROM work_intake_outbox WHERE order_id=? AND requirement_revision=1'
+  ).get(order.id);
+  assert.equal(outbox.state,'HOLD');
+  assert.equal(outbox.reason,'REQUIREMENT_SUPERSEDED');
+  const ledger=verifyLedgerText(readFileSync(f.ledgerPath,'utf8'));
+  assert.equal(ledger.status,'VALID');
+  assert.equal(ledger.event_count,1,'immutable old-revision history remains evidence, not current projection');
 });

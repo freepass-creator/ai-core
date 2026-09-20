@@ -240,6 +240,11 @@ export function createOrderWorkIntakeCoordinator({store,workSources,ordersDbPath
 
   async function ensureSnapshot(row,current){
     const order=store.get(row.order_id), reg=await registry();
+    need(order.revision===row.requirement_revision,'REQUIREMENT_SUPERSEDED');
+    const binding=store.db.prepare(
+      'SELECT requirement_digest FROM coordination_bindings WHERE order_id=? AND requirement_revision=?'
+    ).get(row.order_id,row.requirement_revision);
+    need(binding&&binding.requirement_digest===requirementDigest(order),'REQUIREMENT_DIGEST_CHANGED');
     const {project}=currentRoute(order,reg);
     let snapshot=await readSnapshot();
     if(snapshot===null) snapshot={schema_version:'1.0',as_of:row.event.observed_at,capacities:[],items:[]};
@@ -260,22 +265,24 @@ export function createOrderWorkIntakeCoordinator({store,workSources,ordersDbPath
 
   async function intake(orderId){
     for(let attempt=0;attempt<3;attempt++){
+      let activeRow=null;
       try{
-        let row=await prepare(orderId);
+        let row=await prepare(orderId); activeRow=row;
         if(row.state==='HOLD') return receipt(row);
         const reconciled=await reconcileLedger(row); row=reconciled.row;
+        activeRow=row;
         row=await ensureSnapshot(row,reconciled.current);
         return receipt(row);
       }catch(error){
         const reason=/^[A-Z][A-Z0-9_]+$/.test(error?.message??'')?error.message:'WORK_INTAKE_FAILED';
         const order=(()=>{try{return store.get(orderId);}catch{return null;}})();
-        const existing=order?rowByOrder(order.id,order.revision):null;
+        const existing=activeRow??(order?rowByOrder(order.id,order.revision):null);
         if(RETRYABLE.has(reason)&&attempt<2){
           await new Promise(r=>setTimeout(r,10*(attempt+1)));
           continue;
         }
         if(existing&&!RETRYABLE.has(reason)){
-          try{state(readRow(existing.command_id),'HOLD',{head:existing.observed_head,reason});}catch{}
+          try{return receipt(state(readRow(existing.command_id),'HOLD',{head:existing.observed_head,reason}));}catch{}
         }
         return hold(reason,{order_id:orderId});
       }
