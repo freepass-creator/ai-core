@@ -112,3 +112,11 @@ test('success cannot be claimed with missing or failed required verification',()
     ]}),
   }),/VERIFICATION_FAILED/);
 });
+
+test('receipt identifiers and reason codes must remain core-receipt compatible',()=>{
+  const p=packet();
+  const sealed=sealIntegrationPreflight({packet:p,observation:observation()});
+  assert.throws(()=>buildIntegrationExecutionReceipt({packet:p,preflight:sealed,execution:execution({attempt_id:'bad/id'})}),/ATTEMPT_ID_INVALID/);
+  assert.throws(()=>buildIntegrationExecutionReceipt({packet:p,preflight:sealed,execution:execution({correlation_id:'bad id'})}),/CORRELATION_INVALID/);
+  assert.throws(()=>buildIntegrationExecutionReceipt({packet:p,preflight:sealed,execution:execution({reason_code:'lowercase'})}),/REASON_CODE_INVALID/);
+});
