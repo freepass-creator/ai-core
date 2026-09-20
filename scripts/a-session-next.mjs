@@ -2,6 +2,7 @@ import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { claimRemote, finishRemote } from './a-session-claim.mjs';
 import { reapRemote } from './a-session-claim-health.mjs';
+import { isValidASessionOwner, resolveASessionOwner } from './a-session-owner-policy.mjs';
 
 const run = promisify(execFile);
 const DEFAULT_COORD_REPO = process.env.AI_CORE_COORDINATION_REPOSITORY || 'freepass-creator/ai-core';
@@ -47,7 +48,7 @@ export function changedCandidates(coverage, currentHeads) {
 export async function allocateNext({
   owner, scope='repo-rescan', leaseMinutes=60, coordRepo=DEFAULT_COORD_REPO, branch=DEFAULT_BRANCH
 } = {}) {
-  if (!owner) throw new Error('OWNER_REQUIRED');
+  if (!isValidASessionOwner(owner)) throw new Error('A_SESSION_OWNER_INVALID');
   await reapRemote({ coordRepo, branch });
   const coverage = await readRemoteJson(coordRepo, COVERAGE_PATH, branch);
   const currentHeads = {};
@@ -73,7 +74,7 @@ export async function allocateNext({
 
     const after = await repoHead(candidate.repository, candidate.default_branch);
     if (after !== candidate.current_revision) {
-      await finishRemote(result.claim.claim_id, 'SUPERSEDED', { coordRepo, branch });
+      await finishRemote(result.claim.claim_id, 'SUPERSEDED', { owner, coordRepo, branch });
       currentHeads[candidate.repository] = after;
       const retry = await claimRemote({ repository:candidate.repository, revision:after, scope, owner }, { leaseMinutes, coordRepo, branch });
       if (retry.action === 'ACQUIRED') {
@@ -116,7 +117,7 @@ if (process.argv[1]?.endsWith('a-session-next.mjs')) {
   const args=process.argv.slice(2);
   try {
     const result=await allocateNext({
-      owner:value(args,'--owner') || process.env.AI_CORE_ACTOR || 'A_SESSION',
+      owner:resolveASessionOwner(value(args,'--owner')),
       scope:value(args,'--scope') || 'repo-rescan',
       leaseMinutes:Number(value(args,'--lease-minutes') || 60),
       coordRepo:value(args,'--coord-repo') || DEFAULT_COORD_REPO,
