@@ -9,14 +9,15 @@ import { createApplicationServiceRuntime } from '../src/engine/application-servi
 async function json(path){return JSON.parse(await readFile(new URL('../'+path,import.meta.url),'utf8'));}
 
 const [
-  types, serviceSchema, portSchema, adapterSchema, connectorSchema, bindingSchema,
-  service, applicationPort, productPort, actorPort, appAdapter, productAdapter, connector, profile
+  types, serviceSchema, portSchema, adapterSchema, connectorSchema, repositorySchema, bindingSchema,
+  service, applicationPort, productPort, actorPort, appAdapter, productAdapter, connector, applicationRepository, productRepository, profile
 ]=await Promise.all([
   json('contracts/core-types.schema.json'),
   json('contracts/core-application-service.schema.json'),
   json('contracts/core-port.schema.json'),
   json('contracts/core-adapter.schema.json'),
   json('contracts/core-connector.schema.json'),
+  json('contracts/core-repository.schema.json'),
   json('contracts/core-binding-profile.schema.json'),
   json('registry/adoption/freepass-admin-application.service.json'),
   json('registry/adoption/freepass-admin-application-repository.port.json'),
@@ -25,11 +26,13 @@ const [
   json('registry/adoption/freepass-admin-file-application.adapter.json'),
   json('registry/adoption/freepass-admin-file-product-read.adapter.json'),
   json('registry/adoption/freepass-admin-json-file.connector.json'),
+  json('registry/adoption/freepass-admin-application.repository.json'),
+  json('registry/adoption/freepass-admin-product.repository.json'),
   json('registry/adoption/freepass-admin-application.binding-profile.json')
 ]);
 
 const ajv=new Ajv2020({allErrors:true,strict:false}); addFormats(ajv); ajv.addSchema(types);
-for(const schema of [serviceSchema,portSchema,adapterSchema,connectorSchema,bindingSchema]) ajv.addSchema(schema);
+for(const schema of [serviceSchema,portSchema,adapterSchema,connectorSchema,repositorySchema,bindingSchema]) ajv.addSchema(schema);
 
 test('Admin current-head SHADOW artifacts satisfy Core schemas',()=>{
   const pairs=[
@@ -40,6 +43,8 @@ test('Admin current-head SHADOW artifacts satisfy Core schemas',()=>{
     ['https://schemas.freepass.ai/core/adapter/v1',appAdapter],
     ['https://schemas.freepass.ai/core/adapter/v1',productAdapter],
     ['https://schemas.freepass.ai/core/connector/v1',connector],
+    ['https://schemas.freepass.ai/core/repository/v1',applicationRepository],
+    ['https://schemas.freepass.ai/core/repository/v1',productRepository],
     ['https://schemas.freepass.ai/core/binding-profile/v1',profile]
   ];
   for(const [id,value] of pairs){
@@ -51,18 +56,20 @@ test('Admin current-head SHADOW artifacts satisfy Core schemas',()=>{
 
 test('Admin Service binding is truthfully HOLD because actor.provider is unresolved',()=>{
   const result=resolveServiceBinding({
-    service,adapters:[appAdapter,productAdapter],profile,requireVerified:false
+    service,adapters:[appAdapter,productAdapter],repositories:[applicationRepository,productRepository],profile,requireVerified:false
   });
   assert.equal(result.status,'HOLD');
   assert.ok(result.errors.includes('PORT_UNRESOLVED:actor.provider'));
-  assert.equal(result.selected_adapters.length,2);
+  assert.equal(result.selected_adapters.length,0);
+  assert.equal(result.selected_repositories.length,2);
+  assert.deepEqual(result.selected_repositories.map(x=>x.port_id).sort(),['application.repository','product.read']);
 });
 
 test('strict Admin Service runtime also preserves PARTIAL verification as a blocker',async()=>{
   let calls=0;
   const runtime=createApplicationServiceRuntime({
-    service,adapters:[appAdapter,productAdapter],profile,
-    adapterImplementations:{},
+    service,adapters:[appAdapter,productAdapter],repositories:[applicationRepository,productRepository],profile,
+    adapterImplementations:{},repositoryImplementations:{},
     implementation:async()=>{calls++;return{status:'SUCCEEDED',data:{}};}
   });
   assert.equal(runtime.binding.status,'HOLD');
@@ -78,4 +85,15 @@ test('Admin file adapters declare only their own filesystem operations',()=>{
   assert.deepEqual(appAdapter.connector_binding.operation_ids,['application.read','application.mutate']);
   assert.deepEqual(productAdapter.connector_binding.operation_ids,['product.read']);
   assert.equal(connector.transport,'FILESYSTEM');
+});
+
+
+test('Admin Repository bindings are scoped to their own filesystem operations',()=>{
+  const appMap=Object.fromEntries(applicationRepository.connector_binding.operation_map.map(x=>[x.repository_operation_id,x.connector_operation_ids]));
+  assert.deepEqual(appMap['application.get'],['application.read']);
+  assert.deepEqual(appMap['application.create-sequenced'],['application.read','application.mutate']);
+
+  const productMap=Object.fromEntries(productRepository.connector_binding.operation_map.map(x=>[x.repository_operation_id,x.connector_operation_ids]));
+  assert.deepEqual(productMap['product.get'],['product.read']);
+  assert.deepEqual(productMap['product.save'],['product.read','product.mutate']);
 });
