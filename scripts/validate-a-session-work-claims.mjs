@@ -84,7 +84,7 @@ export function validateAWorkClaims(registry) {
         const verification = claim?.evidence_verification;
         if (!verification || verification.status !== 'VERIFIED') add(errors,'EVIDENCE_VERIFICATION_REQUIRED',p + '/evidence_verification');
         else {
-          if (verification.verifier !== 'github-remote-v2') add(errors,'EVIDENCE_VERIFIER_INVALID',p + '/evidence_verification/verifier');
+          if (!['github-remote-v2','github-connector-v2'].includes(verification.verifier)) add(errors,'EVIDENCE_VERIFIER_INVALID',p + '/evidence_verification/verifier');
           if (!validDate(verification.verified_at)) add(errors,'EVIDENCE_VERIFIED_AT_INVALID',p + '/evidence_verification/verified_at');
           const expectedDigest = evidenceRefsDigest(claim.evidence_refs);
           if (verification.refs_digest !== expectedDigest) add(errors,'EVIDENCE_REFS_DIGEST_MISMATCH',p + '/evidence_verification/refs_digest');
