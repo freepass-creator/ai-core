@@ -1,0 +1,49 @@
+{
+  "contract": "ai-core-ui-brand-themes/v1",
+  "version": "1.0.0",
+  "theme_modes": [
+    "freepass",
+    "cobrand",
+    "white-label"
+  ],
+  "invariant_roles": [
+    "semantic.success",
+    "semantic.warning",
+    "semantic.danger",
+    "semantic.focus",
+    "semantic.disabled",
+    "typography",
+    "spacing",
+    "radius",
+    "touch-target",
+    "interaction-state-semantics",
+    "haptic-motion-contract"
+  ],
+  "themes": [
+    {
+      "id": "freepass",
+      "mode": "freepass",
+      "colors": {
+        "primary": "#1B2A4A",
+        "strong": "#0F1B35",
+        "strongest": "#07111F",
+        "soft": "#E6ECF5",
+        "soft_border": "#C8D4E4"
+      },
+      "notes": "Default FreePass product theme."
+    },
+    {
+      "id": "welrix",
+      "mode": "cobrand",
+      "colors": {
+        "primary": "#C81E2A",
+        "strong": "#A3131D",
+        "strongest": "#7F1018",
+        "soft": "#FDECEE",
+        "soft_border": "#F6C4C7",
+        "partner_accent": "#E1141E"
+      },
+      "notes": "Welrix collaboration skin. Neutral surfaces and semantic status colors remain unchanged."
+    }
+  ]
+}
