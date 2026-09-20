@@ -280,8 +280,8 @@
       "project_id": "freepass-admin",
       "repository": "freepass-creator/freepass-admin",
       "source_ref": "main",
-      "subject_revision": "fb85037969a6c2f4596350b9c66303025be6f19d",
-      "phase": "INVENTORY",
+      "subject_revision": "2aede7df82591470308f25bd3ccd4e5358aa7c3c",
+      "phase": "SHADOW",
       "assessments": [
         {
           "contract_id": "core.types.v1",
@@ -357,12 +357,19 @@
         {
           "contract_id": "core.port.v1",
           "classification": "CORE_MATCH",
-          "binding_state": "NONE",
+          "binding_state": "SHADOW",
           "priority": "P0",
           "evidence_refs": [
-            "freepass-creator/freepass-admin@fb85037969a6c2f4596350b9c66303025be6f19d:contracts/BACKEND-BOUNDARIES.md"
+            "freepass-creator/freepass-admin@2aede7df82591470308f25bd3ccd4e5358aa7c3c:contracts/ai-core/application-repository.port.json",
+            "freepass-creator/freepass-admin@2aede7df82591470308f25bd3ccd4e5358aa7c3c:contracts/ai-core/product-read.port.json",
+            "freepass-creator/freepass-admin@2aede7df82591470308f25bd3ccd4e5358aa7c3c:contracts/ai-core/actor-provider.port.json"
           ],
-          "action": "Port abstraction is already explicit and technology-neutral."
+          "action": "All three Service port meanings are shadow-registered. actor.provider intentionally remains unresolved in the current binding profile.",
+          "artifact_refs": [
+            "registry/adoption/freepass-admin-application-repository.port.json",
+            "registry/adoption/freepass-admin-product-read.port.json",
+            "registry/adoption/freepass-admin-actor-provider.port.json"
+          ]
         },
         {
           "contract_id": "core.engine.v1",
@@ -377,22 +384,32 @@
         {
           "contract_id": "core.adapter.v1",
           "classification": "CORE_MATCH",
-          "binding_state": "NONE",
+          "binding_state": "SHADOW",
           "priority": "P0",
           "evidence_refs": [
-            "freepass-creator/freepass-admin@fb85037969a6c2f4596350b9c66303025be6f19d:contracts/BACKEND-BOUNDARIES.md"
+            "freepass-creator/freepass-admin@2aede7df82591470308f25bd3ccd4e5358aa7c3c:contracts/ai-core/file-application.adapter.json",
+            "freepass-creator/freepass-admin@2aede7df82591470308f25bd3ccd4e5358aa7c3c:contracts/ai-core/file-product-read.adapter.json",
+            "freepass-creator/freepass-admin@2aede7df82591470308f25bd3ccd4e5358aa7c3c:src/adapters/store/repositories.ts"
           ],
-          "action": "Adapter/Repository/Connector responsibilities match Core boundaries."
+          "action": "Development file repository adapters are shadow-bound to explicit filesystem Connector operations; no production persistence cutover is claimed.",
+          "artifact_refs": [
+            "registry/adoption/freepass-admin-file-application.adapter.json",
+            "registry/adoption/freepass-admin-file-product-read.adapter.json"
+          ]
         },
         {
           "contract_id": "core.binding-profile.v1",
           "classification": "MIGRATE",
-          "binding_state": "NONE",
+          "binding_state": "SHADOW",
           "priority": "P0",
           "evidence_refs": [
-            "freepass-creator/freepass-admin@fb85037969a6c2f4596350b9c66303025be6f19d:docs/SSOT.md"
+            "freepass-creator/freepass-admin@2aede7df82591470308f25bd3ccd4e5358aa7c3c:contracts/ai-core/development.binding-profile.json"
           ],
-          "action": "Production persistence/auth adapters are not yet bound; use an explicit binding profile when added."
+          "action": "Current development binding is intentionally PARTIAL: application.repository and product.read resolve, actor.provider does not. Service Runtime must HOLD before execution.",
+          "artifact_refs": [
+            "registry/adoption/freepass-admin-application.binding-profile.json",
+            "test/freepass-admin-service-binding.test.mjs"
+          ]
         },
         {
           "contract_id": "core.source-registry.v1",
@@ -529,12 +546,18 @@
         {
           "contract_id": "core.application-service.v1",
           "classification": "CORE_MATCH",
-          "binding_state": "NONE",
+          "binding_state": "SHADOW",
           "priority": "P0",
           "evidence_refs": [
-            "freepass-creator/freepass-admin@fb85037969a6c2f4596350b9c66303025be6f19d:src/services/applications.ts"
+            "freepass-creator/freepass-admin@2aede7df82591470308f25bd3ccd4e5358aa7c3c:contracts/ai-core/application-service.json",
+            "freepass-creator/freepass-admin@2aede7df82591470308f25bd3ccd4e5358aa7c3c:src/services/applications.ts"
           ],
-          "action": "Register submit/progress/cancel use cases as the canonical Application Service contract without moving domain rules into the service."
+          "action": "Current Admin Application Service is shadow-bound to Core. Runtime remains fail-closed until all required ports, especially actor.provider, are bound and the profile is verified.",
+          "artifact_refs": [
+            "registry/adoption/freepass-admin-application.service.json",
+            "test/application-service-runtime.test.mjs",
+            "test/freepass-admin-service-binding.test.mjs"
+          ]
         },
         {
           "contract_id": "core.execution-identity.v1",
@@ -543,9 +566,38 @@
           "priority": "P1",
           "evidence_refs": [],
           "action": "Introduce logical execution identity where retries, provider attempts, asynchronous continuation, or recovery paths can represent one business execution."
+        },
+        {
+          "contract_id": "core.connector.v1",
+          "classification": "CORE_MATCH",
+          "binding_state": "SHADOW",
+          "priority": "P1",
+          "evidence_refs": [
+            "freepass-creator/freepass-admin@2aede7df82591470308f25bd3ccd4e5358aa7c3c:src/adapters/store/json-file-store.ts",
+            "freepass-creator/freepass-admin@2aede7df82591470308f25bd3ccd4e5358aa7c3c:src/adapters/store/repositories.ts"
+          ],
+          "artifact_refs": [
+            "registry/adoption/freepass-admin-json-file.connector.json",
+            "test/freepass-admin-service-binding.test.mjs"
+          ],
+          "action": "Shadow-separate development filesystem transport from repository Adapter semantics. Connector remains development-only evidence; production Firestore is not inferred."
+        },
+        {
+          "contract_id": "core.connector-result.v1",
+          "classification": "MIGRATE",
+          "binding_state": "SHADOW",
+          "priority": "P1",
+          "evidence_refs": [
+            "freepass-creator/freepass-admin@2aede7df82591470308f25bd3ccd4e5358aa7c3c:src/adapters/store/json-file-store.ts"
+          ],
+          "artifact_refs": [
+            "contracts/core-connector-result.schema.json",
+            "src/engine/connector-runtime.mjs"
+          ],
+          "action": "Represent low-level filesystem transport outcomes separately from AppError/Core error mapping when runtime adoption proceeds."
         }
       ],
-      "next_gate": "Bind Core port/engine/adapter/source/snapshot contracts to the existing backend architecture before production persistence/auth adapters are introduced."
+      "next_gate": "Bind actor.provider with revision-bound source evidence and a real adapter before any Service Runtime validation. Then run service/binding/connector tests and only promote the relevant C cells from SHADOW to VALIDATED; production persistence remains separate."
     },
     {
       "project_id": "freepass-sales",
