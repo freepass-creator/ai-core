@@ -41,6 +41,7 @@ export function buildWorkflowActionReceipt({
   reproducibility,
   child_receipts=[],
   proof_inputs=null,
+  proof_input_binding=null,
   started_at,
   ended_at,
   metrics=null,
@@ -92,7 +93,13 @@ export function buildWorkflowActionReceipt({
       ...(metrics&&typeof metrics==='object'&&!Array.isArray(metrics)?metrics:{})
     }
   };
-  if(Array.isArray(proof_inputs)&&proof_inputs.length) receipt.proof_input_binding=buildProofInputBinding(proof_inputs);
+  need(!(Array.isArray(proof_inputs)&&proof_inputs.length&&proof_input_binding),'WORKFLOW_RECEIPT_PROOF_SOURCE_CONFLICT');
+  if(proof_input_binding){
+    need(proof_input_binding.schema_version==='core-proof-input-binding/v1','WORKFLOW_RECEIPT_PROOF_BINDING_INVALID');
+    receipt.proof_input_binding=structuredClone(proof_input_binding);
+  }else if(Array.isArray(proof_inputs)&&proof_inputs.length){
+    receipt.proof_input_binding=buildProofInputBinding(proof_inputs);
+  }
   return receipt;
 }
 
