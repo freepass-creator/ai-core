@@ -1,0 +1,82 @@
+{
+  "schema_version": "core-repository-contract/v1",
+  "repository_id": "freepass-admin.application-repository",
+  "repository_version": "1.0.0",
+  "port_id": "application.repository",
+  "project_scope": "freepass-admin",
+  "source": {
+    "locator": "freepass-creator/freepass-admin:src/adapters/store/repositories.ts",
+    "revision": "2aede7df82591470308f25bd3ccd4e5358aa7c3c"
+  },
+  "entity_scope": "application",
+  "operations": [
+    {
+      "operation_id": "application.get",
+      "kind": "READ",
+      "side_effects": false,
+      "idempotency": "NOT_APPLICABLE",
+      "expected_revision": "NOT_APPLICABLE"
+    },
+    {
+      "operation_id": "application.find-by-submission",
+      "kind": "READ",
+      "side_effects": false,
+      "idempotency": "NOT_APPLICABLE",
+      "expected_revision": "NOT_APPLICABLE"
+    },
+    {
+      "operation_id": "application.list",
+      "kind": "LIST",
+      "side_effects": false,
+      "idempotency": "NOT_APPLICABLE",
+      "expected_revision": "NOT_APPLICABLE"
+    },
+    {
+      "operation_id": "application.create-sequenced",
+      "kind": "CREATE",
+      "side_effects": true,
+      "idempotency": "SUPPORTED",
+      "expected_revision": "NOT_APPLICABLE"
+    },
+    {
+      "operation_id": "application.mutate",
+      "kind": "MUTATE",
+      "side_effects": true,
+      "idempotency": "CALLER_ENFORCED",
+      "expected_revision": "SUPPORTED"
+    }
+  ],
+  "atomicity": {
+    "scope": "SINGLE_COLLECTION",
+    "partial_write_possible": false
+  },
+  "concurrency": {
+    "mode": "PROCESS_SERIALIZED",
+    "lost_update_protection": true
+  },
+  "revision_policy": "NONE",
+  "connector_binding": {
+    "connector_id": "freepass-admin.json-file-store",
+    "connector_version": "1.0.0",
+    "operation_ids": [
+      "application.read",
+      "application.mutate"
+    ]
+  },
+  "data_classification": [
+    "INTERNAL",
+    "PII"
+  ],
+  "error_codes": [
+    "NOT_FOUND",
+    "CONFLICT",
+    "CANCELLED",
+    "PERSISTENCE_ERROR"
+  ],
+  "verification_profile": [
+    "repository-concurrency",
+    "idempotency-replay",
+    "aggregate-invariants",
+    "atomic-rename-write"
+  ]
+}
