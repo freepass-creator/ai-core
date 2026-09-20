@@ -346,13 +346,21 @@
         {
           "contract_id": "core.receipt.v1",
           "classification": "MIGRATE",
-          "binding_state": "NONE",
+          "binding_state": "SHADOW",
           "priority": "P0",
           "evidence_refs": [
-            "freepass-creator/freepass-admin@fb85037969a6c2f4596350b9c66303025be6f19d:contracts/BACKEND-BOUNDARIES.md",
-            "freepass-creator/freepass-admin@fb85037969a6c2f4596350b9c66303025be6f19d:src/adapters/store/repositories.ts"
+            "freepass-creator/freepass-admin@2aede7df82591470308f25bd3ccd4e5358aa7c3c:src/services/applications.ts",
+            "freepass-creator/freepass-admin@2aede7df82591470308f25bd3ccd4e5358aa7c3c:src/adapters/store/repositories.ts",
+            "freepass-creator/freepass-admin@2aede7df82591470308f25bd3ccd4e5358aa7c3c:src/adapters/store/json-file-store.ts"
           ],
-          "action": "Production mutations need durable execution receipts beyond audit history."
+          "action": "Core SHADOW runtime now emits Repository child receipts and a parent Application Service receipt with child_receipts lineage. This does not claim project-side durable receipt persistence or production activation.",
+          "artifact_refs": [
+            "src/contracts/repository-receipt.mjs",
+            "src/contracts/service-receipt.mjs",
+            "src/engine/repository-runtime.mjs",
+            "src/engine/application-service-runtime.mjs",
+            "test/service-receipt-lineage.test.mjs"
+          ]
         },
         {
           "contract_id": "core.port.v1",
@@ -628,12 +636,30 @@
           "artifact_refs": [
             "contracts/core-repository-result.schema.json",
             "src/engine/repository-runtime.mjs",
-            "test/repository-runtime.test.mjs"
+            "src/contracts/repository-receipt.mjs",
+            "test/repository-runtime.test.mjs",
+            "test/service-receipt-lineage.test.mjs"
           ],
-          "action": "Normalize repository operation outcomes to a stable persistence result without letting Repository invent workflow retry/completion semantics."
+          "action": "Repository runtime normalizes persistence outcomes and can bind the exact result to a child Core receipt. Entity/storage revision stays distinct from receipt source revision."
+        },
+        {
+          "contract_id": "core.proof-input-binding.v1",
+          "classification": "MIGRATE",
+          "binding_state": "SHADOW",
+          "priority": "P1",
+          "evidence_refs": [
+            "freepass-creator/freepass-admin@2aede7df82591470308f25bd3ccd4e5358aa7c3c:contracts/ai-core/application-service.json",
+            "freepass-creator/freepass-admin@2aede7df82591470308f25bd3ccd4e5358aa7c3c:src/adapters/store/repositories.ts"
+          ],
+          "artifact_refs": [
+            "src/contracts/repository-receipt.mjs",
+            "src/contracts/service-receipt.mjs",
+            "test/service-receipt-lineage.test.mjs"
+          ],
+          "action": "Receipt builders can bind Service/Repository proof inputs to source/config/schema/checker digests. No current proof is promoted until those exact inputs are supplied and verified."
         }
       ],
-      "next_gate": "Provide a real revision-bound actor.provider implementation before Service validation. Persistence ports are now modeled as direct Repository bindings; after actor binding, run Service/Repository/Connector contract tests and only then promote relevant C cells beyond SHADOW."
+      "next_gate": "Bind a real actor.provider implementation, then execute revision-bound local verification for Service/Repository/Connector plus parent-child receipt lineage. Keep receipt/proof cells SHADOW until tests actually run and project-side durability requirements are decided."
     },
     {
       "project_id": "freepass-sales",
