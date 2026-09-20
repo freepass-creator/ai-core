@@ -58,9 +58,39 @@
   "connector_binding": {
     "connector_id": "freepass-admin.json-file-store",
     "connector_version": "1.0.0",
-    "operation_ids": [
-      "application.read",
-      "application.mutate"
+    "operation_map": [
+      {
+        "repository_operation_id": "application.get",
+        "connector_operation_ids": [
+          "application.read"
+        ]
+      },
+      {
+        "repository_operation_id": "application.find-by-submission",
+        "connector_operation_ids": [
+          "application.read"
+        ]
+      },
+      {
+        "repository_operation_id": "application.list",
+        "connector_operation_ids": [
+          "application.read"
+        ]
+      },
+      {
+        "repository_operation_id": "application.create-sequenced",
+        "connector_operation_ids": [
+          "application.read",
+          "application.mutate"
+        ]
+      },
+      {
+        "repository_operation_id": "application.mutate",
+        "connector_operation_ids": [
+          "application.read",
+          "application.mutate"
+        ]
+      }
     ]
   },
   "data_classification": [
