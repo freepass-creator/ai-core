@@ -12,6 +12,7 @@ const V2_FILES = [
   '../docs/audits/freepasserp4-v2-2026-09-20.json',
   '../docs/audits/freepasserp4-v2-2026-09-20-r2.json',
   '../docs/audits/freepasserp4-v2-2026-09-20-r3.json',
+  '../docs/audits/freepasserp4-v2-2026-09-20-r4.json',
   '../docs/audits/freepass-estimate-v2-2026-09-20.json',
   '../docs/audits/aiops-v2-2026-09-20.json',
 ];
@@ -27,7 +28,7 @@ test('all four current pilot projects now have structurally valid v2 audits', as
   const readiness = await readJson('../registry/project-audit-readiness.json');
   const results = await Promise.all(V2_FILES.map(readJson));
 
-  assert.equal(results.length, 6);
+  assert.equal(results.length, 7);
   for (const result of results) {
     assert.equal(result.schema, 'ai-core-project-audit-result/v2');
     assert.equal(result.standard_baseline_revision, readiness.baseline_revision);
@@ -55,9 +56,9 @@ test('v2 portfolio supersedes all four legacy v1 pilot records', async () => {
     auditResults: [...v1, ...v2],
   });
 
-  assert.equal(queue.totals.audit_records, 10);
+  assert.equal(queue.totals.audit_records, 11);
   assert.equal(queue.totals.active_audits, 4);
-  assert.equal(queue.totals.superseded_history, 6);
+  assert.equal(queue.totals.superseded_history, 7);
   assert.equal(queue.items.every(item => item.audit_result_schema === 'ai-core-project-audit-result/v2'), true);
   assert.equal(queue.superseded_history.filter(item => item.audit_result_schema === 'ai-core-project-audit-result/v1').length, 4);
   assert.ok(queue.superseded_history.some(item => item.project_id === 'freepasserp4' && item.audit_result_schema === 'ai-core-project-audit-result/v2'));
@@ -69,7 +70,7 @@ test('v2 portfolio supersedes all four legacy v1 pilot records', async () => {
 
   // ERP4 live HEAD advanced beyond the central registry observation.
   // This is a freshness-review request, not a definite re-audit claim.
-  assert.equal(byId.get('freepasserp4').audited_revision, '1b31af44fac362085649c13d155e4e0c089ae929');
+  assert.equal(byId.get('freepasserp4').audited_revision, 'f7c89b7b995d8d98ea04606405e68b158fb4256f');
   assert.equal(byId.get('freepasserp4').registry_status, 'REGISTRY_DRIFT');
   assert.equal(byId.get('freepasserp4').freshness_review_required, true);
   assert.equal(byId.get('freepasserp4').re_audit_candidate, false);
