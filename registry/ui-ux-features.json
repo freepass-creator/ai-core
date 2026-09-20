@@ -1,6 +1,6 @@
 {
   "contract": "ai-core-ui-ux-feature-registry/v1",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "normative_source": "docs/SCREEN_DESIGN_STANDARD.md",
   "global_rules": {
     "invariants": [
@@ -1005,6 +1005,9 @@
       ],
       "rules": [
         "Task-level actions render in the bottom action boundary by default; the header remains informational unless a governed exception exists.",
+        "The bottom action boundary is a shared persistent UI region: screen changes replace its action set rather than creating unrelated local CTA bars.",
+        "At deeper task levels the bar exposes the current secondary/danger action and the single current primary action; the primary meaning follows workflow state.",
+        "When a product uses a depth-0 mobile navigation mode in the same bottom region, entering detail/work replaces navigation buttons with contextual actions and returning restores navigation.",
         "The action boundary accounts for safe-area and virtual-keyboard occlusion and must not obscure focused controls or validation messages.",
         "Web and mobile preserve the same action meaning and hierarchy even when the bottom boundary changes layout."
       ],
@@ -1012,7 +1015,9 @@
         "semantic-contract",
         "keyboard-or-equivalent",
         "mobile-desktop",
-        "failure-path"
+        "failure-path",
+        "action-set-transition",
+        "persistent-boundary"
       ],
       "evidence": [
         {
