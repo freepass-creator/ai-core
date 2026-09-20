@@ -1,7 +1,7 @@
 {
   "schema": "ai-core-a-session-routing-receipts/v1",
   "status": "RESEARCH_ROUTING_RECEIPTS_NOT_CANONICAL",
-  "observed_at": "2026-09-20T01:28:20Z",
+  "observed_at": "2026-09-20T11:12:00Z",
   "policy": {
     "canonical_boundary": "A may record route delivery and receiver decisions but cannot change B/C/D canonical standards.",
     "one_receipt_per_route": "Every Evidence Registry finding route must have exactly one routing receipt.",
@@ -612,6 +612,29 @@
           "observed_at": "2026-09-20T01:28:20Z",
           "evidence_revision": "75b003a4dd5bc2f4bc2d1b8211409895d1e8940a",
           "reason": "Receiver decision reconciled: Adopted as a PROJECT_VERIFIED PILOT primitive plus Sales SHADOW progression. Sales-specific labels remain project-owned and second-project evidence is required before COMMON_ADOPTED."
+        }
+      ]
+    },
+    {
+      "route_id": "workflow.capability-cutover-no-dual-run::D",
+      "finding_id": "workflow.capability-cutover-no-dual-run",
+      "target_session": "D",
+      "route_status": "SENT",
+      "source_evidence_revision": "9772723ace7ff8c315ab135c933111b4539aacb5",
+      "routed_at": "2026-09-20T11:12:00Z",
+      "receiver": null,
+      "decision": null,
+      "feedback": {
+        "state": "PENDING",
+        "recorded_at": null,
+        "note": null
+      },
+      "history": [
+        {
+          "status": "SENT",
+          "observed_at": "2026-09-20T11:12:00Z",
+          "evidence_revision": "9772723ace7ff8c315ab135c933111b4539aacb5",
+          "reason": "A incremental AIOps rescan routed a project-verified capability cutover no-dual-run candidate for D review; no canonical decision is implied."
         }
       ]
     }
