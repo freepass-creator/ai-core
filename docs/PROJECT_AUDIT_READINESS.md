@@ -1,4 +1,4 @@
-# Project Audit Readiness Gate v1.1
+# Project Audit Readiness Gate v1.2
 
 Status: `READ_ONLY_AUDIT_READY / PARTIAL_CANONICAL_AXES`
 
@@ -34,16 +34,45 @@ The audit gate does not:
 - promote HOLD execution readiness;
 - infer production from CI.
 
+## Project 4 execution boundary
+
+Project 4 owns the audit-readiness and read-only audit planning path. It consumes canonical standards owned elsewhere but does not rewrite them.
+
+The execution sequence is:
+
+1. read `registry/projects.json`;
+2. inspect the target repository at its exact default-branch HEAD;
+3. build a revision-bound Project Capsule;
+4. combine that capsule with `registry/project-audit-readiness.json`;
+5. emit an eight-axis audit plan;
+6. preserve `CANONICAL_PARTIAL` gaps as hard limitations.
+
+A `CANONICAL_PARTIAL` axis may run its declared machine checks, but `conformance_pass_allowed` remains false until that axis is MACHINE_ENFORCED. This prevents a green local check from being promoted into a group-wide conformance claim.
+
+The Project 4 lane does not edit Security/Audit, QA/Observability, or Build/Deploy/Governance contract semantics. Those standards remain owned by their respective standard lanes.
+
 ## Current remaining global blocker
 
 AI Core GitHub Actions has an observed runner-entry failure mode where jobs can terminate with zero executed steps. Until central validators execute reliably at the exact main revision, Security, QA/Observability and Governance remain CANONICAL_PARTIAL rather than MACHINE_ENFORCED.
 
-Run:
+## Commands
+
+Read the current standard readiness:
 
 ```bash
-node scripts/project-audit-readiness.mjs
-node scripts/project-audit-readiness.mjs --require-pilot
-node scripts/project-audit-readiness.mjs --require-full
+npm run audit:readiness
+npm run audit:readiness:pilot
+npm run audit:readiness:full
 ```
 
-`--require-full` must continue to fail until all eight axes are MACHINE_ENFORCED.
+`audit:readiness:full` must continue to fail until all eight axes are MACHINE_ENFORCED.
+
+Build a revision-bound audit plan for one registered project:
+
+```bash
+npm run audit:plan -- <project_id>
+npm run audit:plan -- <project_id> --require-ready
+npm run audit:plan -- <project_id> --output artifacts/audit/<project_id>.json
+```
+
+The audit-plan command is read-only. It inspects GitHub through the existing Project Capsule inspector, binds the exact subject revision into evidence, and emits no project writes or production mutations.
