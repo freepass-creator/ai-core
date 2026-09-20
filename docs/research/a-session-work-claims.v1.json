@@ -1,7 +1,7 @@
 {
   "schema": "ai-core-a-session-work-claims/v1",
   "status": "RESEARCH_COORDINATION_NOT_CANONICAL",
-  "observed_at": "2026-09-20T02:41:00Z",
+  "observed_at": "2026-09-20T02:23:00Z",
   "policy": {
     "claim_key": "<repository>@<subject_revision>::<scope>",
     "live_claim": "state=ACTIVE and lease_until > observed_at",
@@ -208,6 +208,19 @@
         "commit:44c474128e8a3d07ca85b415761c5c282a0698d3",
         "commit:6761127e43a94b1dfc361542073cb50bdfd88375"
       ]
+    },
+    {
+      "claim_id": "A-CLAIM-20260920-0223-COMPLETION-HEAD-GUARD",
+      "claim_key": "freepass-creator/ai-core@506c6739d345dc17a5ac95adf457d82741ec918d::coordination:completion-head-guard",
+      "repository": "freepass-creator/ai-core",
+      "subject_revision": "506c6739d345dc17a5ac95adf457d82741ec918d",
+      "scope": "coordination:completion-head-guard",
+      "owner_session": "A-session-completion-head-guard-0223",
+      "state": "ACTIVE",
+      "claimed_at": "2026-09-20T02:23:00Z",
+      "lease_until": "2026-09-20T03:23:00Z",
+      "completed_at": null,
+      "evidence_refs": []
     }
   ]
 }
