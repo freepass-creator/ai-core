@@ -86,3 +86,54 @@ test('same owner cannot hold two live claims on different work items', () => {
   const result = validateAWorkClaims(r);
   assert.ok(result.errors.some(x => x.code === 'LIVE_OWNER_DUPLICATE'));
 });
+
+
+test('activation boundary requires evidence contract v2 for new claims', () => {
+  const r = base();
+  r.policy={ evidence_contract:{ active_from:'2026-09-20T02:35:00Z' } };
+  r.observed_at='2026-09-20T02:40:00Z';
+  r.claims=[claim({
+    claim_id:'A-v2-required',
+    claimed_at:'2026-09-20T02:36:00Z',
+    lease_until:'2026-09-20T03:36:00Z'
+  })];
+  const result=validateAWorkClaims(r);
+  assert.ok(result.errors.some(x=>x.code==='EVIDENCE_CONTRACT_V2_REQUIRED'));
+});
+
+test('completed v2 claim rejects weak evidence refs', () => {
+  const r = base();
+  r.policy={ evidence_contract:{ active_from:'2026-09-20T02:35:00Z' } };
+  r.observed_at='2026-09-20T02:40:00Z';
+  r.claims=[claim({
+    claim_id:'A-v2-bad',
+    state:'COMPLETED',
+    claimed_at:'2026-09-20T02:36:00Z',
+    lease_until:'2026-09-20T02:38:00Z',
+    completed_at:'2026-09-20T02:39:00Z',
+    evidence_contract:'v2',
+    evidence_refs:['commit:abc']
+  })];
+  const result=validateAWorkClaims(r);
+  assert.ok(result.errors.some(x=>x.code==='COMPLETION_EVIDENCE_V2_INVALID'));
+});
+
+test('completed v2 guarded claim accepts exact subject and full commit proof', () => {
+  const r = base();
+  r.policy={ evidence_contract:{ active_from:'2026-09-20T02:35:00Z' } };
+  r.observed_at='2026-09-20T02:40:00Z';
+  const revision='2ec46bb2e88b10a31915b68ec77b2eecbdac57bd';
+  r.claims=[claim({
+    claim_id:'A-v2-good',
+    state:'COMPLETED',
+    claimed_at:'2026-09-20T02:36:00Z',
+    lease_until:'2026-09-20T02:38:00Z',
+    completed_at:'2026-09-20T02:39:00Z',
+    evidence_contract:'v2',
+    evidence_refs:[
+      `subject:freepass-creator/freepass-sales@${revision}`,
+      'commit:freepass-creator/ai-core@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+    ]
+  })];
+  assert.equal(validateAWorkClaims(r).status,'VALID');
+});
