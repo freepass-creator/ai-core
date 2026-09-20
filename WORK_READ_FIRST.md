@@ -17,10 +17,11 @@ AI Core 작업을 시작할 때 전체 Gmail/전체 Chat/전체 연구 branch를
 통합 관련 문서를 읽을 때 아래 순서를 현재 정본으로 취급한다.
 
 1. `WORK_READ_FIRST.md` — 현재 최우선 목표와 진입점.
-2. `docs/AI_CORE_INTEGRATION_EXECUTION_DIRECTIVE.md` — 지금 실제로 무엇을 합치고/연결할지 실행 기준.
-3. `docs/GROUP_OPERATING_MODEL.md` — 본사·센터·자회사 구조 SSOT.
-4. `docs/AI_CORE_OPERATING_PLAYBOOK.md` — 실제 회사 업무를 AI Core에서 처리하는 방식.
-5. `docs/CONTROL_TOWER.md` + `docs/WORK_LEDGER.md` — 현재 업무 상태/판정 런타임.
+2. [`docs/PROJECT_PARTITION_AS_IS_2026-09-20.md`](docs/PROJECT_PARTITION_AS_IS_2026-09-20.md) — 현재 가진 저장소·기능 기준 프로젝트와 파트 구분.
+3. `docs/AI_CORE_INTEGRATION_EXECUTION_DIRECTIVE.md` — 지금 실제로 무엇을 합치고/연결할지 실행 기준.
+4. `docs/GROUP_OPERATING_MODEL.md` — 본사·센터·자회사 구조 SSOT.
+5. `docs/AI_CORE_OPERATING_PLAYBOOK.md` — 실제 회사 업무를 AI Core에서 처리하는 방식.
+6. `docs/CONTROL_TOWER.md` + `docs/WORK_LEDGER.md` — 현재 업무 상태/판정 런타임.
 
 ### A/B/C/D 세션 공통 미션
 
