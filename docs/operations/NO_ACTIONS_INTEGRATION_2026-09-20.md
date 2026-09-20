@@ -231,3 +231,24 @@ Rules:
 Compensation parent receipts now carry execution identity and can directly feed recovery reconciliation.
 
 Actions: NOT USED.
+
+
+## Effect resume replay cycle
+
+Scope: D effect-level recovery planning only.
+
+Added:
+- `src/workflow/effect-resume-planner.mjs`
+- `src/workflow/effect-resume-runtime.mjs`
+- `test/workflow-effect-resume.test.mjs`
+- `docs/workflow/EFFECT_RESUME_REPLAY.md`
+
+Rules:
+- prior successful/uncompensated effect -> SKIP
+- prior successful/compensated effect -> RUN again
+- prior failed/unobserved effect -> RUN
+- failed compensation, stale/unverified proof, out-of-order success, duplicate uncompensated success -> HOLD
+- resumed failure compensates the full applied set across attempts, including prior skipped successes
+- retained non-compensatable effects remain explicit
+
+Actions: NOT USED.
