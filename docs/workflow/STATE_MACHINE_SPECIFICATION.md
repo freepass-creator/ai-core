@@ -187,6 +187,27 @@ Use semantic recovery correctly:
 - `RESTORE`: reopen or restore a terminal domain object under an explicit rule.
 - `CORRECTION`: append a corrected fact/event while preserving the original history.
 
+### 9.1 Sequential multi-effect compensation
+
+여러 effect를 순차 적용하는 write path는 트랜잭션처럼 가장해서는 안 된다. `workflow.compensated-multiwrite` PILOT은 다음을 요구한다.
+
+1. 각 effect는 domain-specific compensation을 `REQUIRED`로 선언하거나, compensation이 `NOT_REQUIRED / FORBIDDEN`인 이유를 명시한다.
+2. 후속 effect 실패 시 실제로 적용된 이전 effect만 대상으로 한다.
+3. required compensation은 적용 역순으로 실행한다.
+4. compensation 성공은 원래 실패를 성공으로 바꾸지 않는다. 원래 실패는 그대로 보고한다.
+5. compensation 실패/누락은 `PARTIAL_STATE`로 명시하고 escalation 대상으로 남긴다.
+6. effect와 compensation 모두 audit evidence를 남긴다.
+
+Machine authority:
+
+- `contracts/workflow-compensation.schema.json`
+- `registry/workflow-compensation-policies.json`
+- `src/workflow/compensation.mjs`
+- `scripts/validate-workflow-compensation-policies.mjs`
+
+첫 근거는 Renman이며, 두 번째 독립 프로젝트 전까지 `PILOT / PROJECT_VERIFIED`를 유지한다.
+
+
 ## 10. Timeout / SLA / Escalation
 
 Timeout and SLA are distinct.
