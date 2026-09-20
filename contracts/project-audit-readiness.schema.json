@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.freepass.ai/project-audit-readiness/v1",
+  "title": "AI Core Project Audit Readiness Registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "baseline_revision", "axes"],
+  "properties": {
+    "schema": {"const": "ai-core-project-audit-readiness/v1"},
+    "baseline_revision": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "axes": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "maturity", "canonical_sources", "machine_checks", "gaps"],
+        "properties": {
+          "id": {
+            "enum": [
+              "ui-ux",
+              "data-ssot",
+              "engine-adapter",
+              "api-event-error",
+              "workflow",
+              "security-audit",
+              "qa-observability",
+              "build-deploy-governance"
+            ]
+          },
+          "maturity": {"enum": ["MACHINE_ENFORCED", "CANONICAL_PARTIAL", "RESEARCH_ONLY", "MISSING"]},
+          "canonical_sources": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+          "machine_checks": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+          "gaps": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+        }
+      }
+    }
+  }
+}
