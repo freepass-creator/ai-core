@@ -1,7 +1,7 @@
 {
   "schema": "ai-core-a-session-routing-receipts/v1",
   "status": "RESEARCH_ROUTING_RECEIPTS_NOT_CANONICAL",
-  "observed_at": "2026-09-20T01:23:30Z",
+  "observed_at": "2026-09-20T01:28:20Z",
   "policy": {
     "canonical_boundary": "A may record route delivery and receiver decisions but cannot change B/C/D canonical standards.",
     "one_receipt_per_route": "Every Evidence Registry finding route must have exactly one routing receipt.",
@@ -432,7 +432,7 @@
       "route_id": "workflow.admin-runtime-binding::D",
       "finding_id": "workflow.admin-runtime-binding",
       "target_session": "D",
-      "route_status": "RECEIVED",
+      "route_status": "CLOSED",
       "source_evidence_revision": "2f305bbcffea20acd08b7187ecede6fc1a1f23bf",
       "routed_at": "2026-09-20T01:18:00Z",
       "receiver": {
@@ -445,11 +445,22 @@
           "docs/research/a-session-receiver-workers.v1.json"
         ]
       },
-      "decision": null,
+      "decision": {
+        "outcome": "HOLD",
+        "reason": "HOLD until an approved Admin write scope invokes D runtime decisions with stable errors, persistence/audit atomicity, rollback and exact runtime evidence.",
+        "ai_core_revision": "0055b40c10af2c63d23977efaeccae683a451b62",
+        "decided_at": "2026-09-20T01:28:20Z",
+        "evidence_refs": [
+          "registry/workflows.json#freepass-admin.application-lifecycle",
+          "registry/workflow-projections.json#freepass-admin.application.status",
+          "docs/workflow/FREEPASS_ADMIN_APPLICATION_SHADOW.md",
+          "docs/workflow/STATE_MACHINE_SPECIFICATION.md"
+        ]
+      },
       "feedback": {
-        "state": "PENDING",
-        "recorded_at": null,
-        "note": null
+        "state": "RECORDED",
+        "recorded_at": "2026-09-20T01:28:20Z",
+        "note": "Receiver D decision HOLD reconciled into A routing. A Evidence Registry state remains separately reviewable."
       },
       "history": [
         {
@@ -463,6 +474,12 @@
           "observed_at": "2026-09-20T01:23:30Z",
           "evidence_revision": "5328feac88a2a6a1d8f919b7d2d524dc59a53044",
           "reason": "Receiver acknowledgement reconciled from the session inbox."
+        },
+        {
+          "status": "CLOSED",
+          "observed_at": "2026-09-20T01:28:20Z",
+          "evidence_revision": "0055b40c10af2c63d23977efaeccae683a451b62",
+          "reason": "Receiver decision reconciled: HOLD until an approved Admin write scope invokes D runtime decisions with stable errors, persistence/audit atomicity, rollback and exact runtime evidence."
         }
       ]
     },
@@ -546,7 +563,7 @@
       "route_id": "workflow.forward-skip-evidence-integrity::D",
       "finding_id": "workflow.forward-skip-evidence-integrity",
       "target_session": "D",
-      "route_status": "RECEIVED",
+      "route_status": "CLOSED",
       "source_evidence_revision": "2f305bbcffea20acd08b7187ecede6fc1a1f23bf",
       "routed_at": "2026-09-20T01:18:00Z",
       "receiver": {
@@ -559,11 +576,23 @@
           "docs/research/a-session-receiver-workers.v1.json"
         ]
       },
-      "decision": null,
+      "decision": {
+        "outcome": "ADOPTED",
+        "reason": "Adopted as a PROJECT_VERIFIED PILOT primitive plus Sales SHADOW progression. Sales-specific labels remain project-owned and second-project evidence is required before COMMON_ADOPTED.",
+        "ai_core_revision": "75b003a4dd5bc2f4bc2d1b8211409895d1e8940a",
+        "decided_at": "2026-09-20T01:28:20Z",
+        "evidence_refs": [
+          "contracts/workflow-progression.schema.json",
+          "registry/workflow-progressions.json",
+          "registry/workflows.json#workflow.forward-skip-evidence-integrity",
+          "docs/workflow/FREEPASS_SALES_FORWARD_SKIP_SHADOW.md",
+          "test/workflow-progression.test.mjs"
+        ]
+      },
       "feedback": {
-        "state": "PENDING",
-        "recorded_at": null,
-        "note": null
+        "state": "RECORDED",
+        "recorded_at": "2026-09-20T01:28:20Z",
+        "note": "Receiver D decision ADOPTED reconciled into A routing. A Evidence Registry state remains separately reviewable."
       },
       "history": [
         {
@@ -577,6 +606,12 @@
           "observed_at": "2026-09-20T01:23:30Z",
           "evidence_revision": "5328feac88a2a6a1d8f919b7d2d524dc59a53044",
           "reason": "Receiver acknowledgement reconciled from the session inbox."
+        },
+        {
+          "status": "CLOSED",
+          "observed_at": "2026-09-20T01:28:20Z",
+          "evidence_revision": "75b003a4dd5bc2f4bc2d1b8211409895d1e8940a",
+          "reason": "Receiver decision reconciled: Adopted as a PROJECT_VERIFIED PILOT primitive plus Sales SHADOW progression. Sales-specific labels remain project-owned and second-project evidence is required before COMMON_ADOPTED."
         }
       ]
     }
