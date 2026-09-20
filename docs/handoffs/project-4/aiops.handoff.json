@@ -1,0 +1,216 @@
+{
+  "schema": "ai-core-project-audit-handoff/v1",
+  "status": "READY",
+  "project_id": "aiops",
+  "repository": "freepass-creator/aiops",
+  "default_branch": "main",
+  "audit_binding": {
+    "subject_revision": "03dd804962eb4e345b7a34b3e0e97e8bc6d5efe3",
+    "standard_baseline_revision": "d995d30e9b830894d53349c2196707bfbd1b6ad0",
+    "audited_at": "2026-09-20T11:36:00.000Z",
+    "ci_status": "UNKNOWN",
+    "ci_run_id": null,
+    "branch_protected": false,
+    "live_status": "CURRENT",
+    "live_revision": "03dd804962eb4e345b7a34b3e0e97e8bc6d5efe3"
+  },
+  "counts": {
+    "project_implementation": 4,
+    "project_discovery": 1,
+    "core_candidate_review": 0,
+    "standard_research": 0,
+    "no_project_action": 3
+  },
+  "project_work": {
+    "implementation": [
+      {
+        "bucket": "PROJECT_IMPLEMENTATION",
+        "priority": "P1",
+        "axis": "workflow",
+        "verdict": "MIGRATION_GAP",
+        "standard_owner": {
+          "lane": "D",
+          "owner": "Workflow Standard"
+        },
+        "evidence": [
+          "Penalty execution has explicit HOLD/FAILED/SUCCEEDED handling, lease/authority gates and terminal-manifest semantics.",
+          "AIOps operational docs distinguish review pending, transition failure and protected execution states.",
+          "No inspected current-main artifact binds these business lifecycles to a canonical AI Core D workflow/projection consumer contract."
+        ],
+        "gaps": [
+          "Project workflow semantics are strong but not revision-bound to a selected canonical D state machine.",
+          "Actual scheduler runtime state remains an external observation."
+        ],
+        "next_action": "Choose one bounded AIOps lifecycle and add D SHADOW parity while preserving current operational runtime authority.",
+        "instruction": "Choose one bounded AIOps lifecycle and add D SHADOW parity while preserving current operational runtime authority."
+      },
+      {
+        "bucket": "PROJECT_IMPLEMENTATION",
+        "priority": "P1",
+        "axis": "security-audit",
+        "verdict": "MIGRATION_GAP",
+        "standard_owner": {
+          "lane": "SECURITY",
+          "owner": "Security/Audit Standard"
+        },
+        "evidence": [
+          "GIT:freepass-creator/aiops@03dd804962eb4e345b7a34b3e0e97e8bc6d5efe3:docs/AI_CORE_SECURITY_P0_SHADOW_2026-09-20.md maps AIOps action grades to Core risk classes without transferring authority.",
+          "GIT:freepass-creator/aiops@03dd804962eb4e345b7a34b3e0e97e8bc6d5efe3:lib/ai-core-security-shadow.mjs preserves exact-subject approval, independent review, human approval, TTL and emergency-path restrictions.",
+          "GIT:freepass-creator/aiops@03dd804962eb4e345b7a34b3e0e97e8bc6d5efe3:test/ai-core-security-shadow.test.mjs covers self-review rejection, emergency command binding and protected-action emergency denial."
+        ],
+        "gaps": [
+          "The project SHADOW targets an earlier Security P0 candidate revision rather than the current AI Core audit baseline.",
+          "No exact-head Actions run exists for the audited latest AIOps main revision.",
+          "Canonical partial Security policy does not grant real permissions; lib/seungin.mjs remains runtime authority.",
+          "Group-wide secret/dependency/source/SBOM enforcement is still incomplete."
+        ],
+        "next_action": "Refresh Security SHADOW to the current canonical partial baseline and re-observe exact-main CI without weakening the existing AIOps approval model.",
+        "instruction": "Refresh Security SHADOW to the current canonical partial baseline and re-observe exact-main CI without weakening the existing AIOps approval model."
+      },
+      {
+        "bucket": "PROJECT_IMPLEMENTATION",
+        "priority": "P1",
+        "axis": "qa-observability",
+        "verdict": "MIGRATION_GAP",
+        "standard_owner": {
+          "lane": "QA",
+          "owner": "QA/Observability Standard"
+        },
+        "evidence": [
+          "Penalty health/manifest logic and insurance evidence freshness distinguish stale, blocked, failed and successful states.",
+          "AIOps has focused test suites for penalty, finance, security and insurance adapters.",
+          "Current package.json keeps the default npm test much narrower than the full AI Core-related suite."
+        ],
+        "gaps": [
+          "No unified checker manifest declares all required/manual/pending AIOps suites.",
+          "Default npm test omits the penalty executor, security shadow and insurance adapter suites.",
+          "The latest insurance adapter workflow has no main push trigger and exact-head Actions are absent.",
+          "Production/scheduler health remains external runtime evidence."
+        ],
+        "next_action": "Create one project verification manifest/entrypoint that includes the focused AI Core suites, add main-push coverage for the insurance adapter, and keep production health separate from repository CI.",
+        "instruction": "Create one project verification manifest/entrypoint that includes the focused AI Core suites, add main-push coverage for the insurance adapter, and keep production health separate from repository CI."
+      },
+      {
+        "bucket": "PROJECT_IMPLEMENTATION",
+        "priority": "P1",
+        "axis": "build-deploy-governance",
+        "verdict": "MIGRATION_GAP",
+        "standard_owner": {
+          "lane": "GOVERNANCE",
+          "owner": "Build/Deploy/Governance Standard"
+        },
+        "evidence": [
+          "AIOps correctly documents that the repository has no build artifact and separates operational execution from source review.",
+          "Security and penalty workflows have main push coverage for their owned paths.",
+          "The new insurance adapter has a dedicated focused workflow and read-only safety boundary."
+        ],
+        "gaps": [
+          "Exact-head Actions run is absent for current main.",
+          "The insurance adapter workflow is PR/manual only and does not run on main push.",
+          "Required verification is fragmented across npm test and multiple focused workflows.",
+          "Main branch protection is false.",
+          "Actual Windows scheduler/runtime state is external to GitHub evidence."
+        ],
+        "next_action": "Unify required verification, add main-push coverage for insurance and stabilize required checks before branch protection; do not infer scheduler health from GitHub.",
+        "instruction": "Unify required verification, add main-push coverage for insurance and stabilize required checks before branch protection; do not infer scheduler health from GitHub."
+      }
+    ],
+    "discovery": [
+      {
+        "bucket": "PROJECT_DISCOVERY",
+        "priority": "P2",
+        "axis": "ui-ux",
+        "verdict": "UNKNOWN",
+        "standard_owner": {
+          "lane": "B",
+          "owner": "Global UI/UX Standard"
+        },
+        "evidence": [
+          "The audited AIOps surface is primarily operational CLI, automation, ledgers and adapters rather than one bounded product UI consumer."
+        ],
+        "gaps": [
+          "No material revision-bound AI Core UI/UX consumer surface was established for this audit."
+        ],
+        "next_action": "Audit a concrete AIOps UI separately if an active product surface becomes material; do not invent UI conformance for CLI-only workflows.",
+        "instruction": "Establish revision-bound evidence before implementation. Audit a concrete AIOps UI separately if an active product surface becomes material; do not invent UI conformance for CLI-only workflows."
+      }
+    ]
+  },
+  "standard_work": {
+    "core_candidate_review": [],
+    "research": []
+  },
+  "no_project_action": [
+    {
+      "bucket": "NO_PROJECT_ACTION",
+      "priority": "NONE",
+      "axis": "data-ssot",
+      "verdict": "CORE_MATCH",
+      "standard_owner": {
+        "lane": "C",
+        "owner": "Core Contract Standard"
+      },
+      "evidence": [
+        "AIOps separates source facts, operational ledgers and read-only aggregate/projection adapters rather than treating AI Core as a second operational SSOT.",
+        "The insurance read adapter consumes existing generated evidence files and fails closed on missing, malformed or stale evidence.",
+        "Penalty execution requires terminal run manifests and revision-bound receipts rather than process exit alone."
+      ],
+      "gaps": [
+        "Some runtime evidence files and scheduler state remain local/external and cannot be proven current from GitHub alone."
+      ],
+      "next_action": "Keep external/local evidence as source truth and expose only revision/freshness/evidence pointers to AI Core.",
+      "instruction": "No project remediation is requested from this audit finding."
+    },
+    {
+      "bucket": "NO_PROJECT_ACTION",
+      "priority": "NONE",
+      "axis": "engine-adapter",
+      "verdict": "CORE_MATCH",
+      "standard_owner": {
+        "lane": "C",
+        "owner": "Core Contract Standard"
+      },
+      "evidence": [
+        "GIT:freepass-creator/aiops@03dd804962eb4e345b7a34b3e0e97e8bc6d5efe3:docs/AI_CORE_INSURANCE_ADAPTER.md explicitly keeps existing AIOps insurance engines authoritative and exposes only a read-only status adapter.",
+        "GIT:freepass-creator/aiops@03dd804962eb4e345b7a34b3e0e97e8bc6d5efe3:lib/ai-core-insurance-adapter.mjs fails closed on stale/missing evidence and has external_effect=false.",
+        "Penalty adapters/executor preserve existing AIOps engine authority and require authority receipt + leases + terminal manifest before success."
+      ],
+      "gaps": [
+        "Insurance mutation remains intentionally separate from the read-only capability.",
+        "Some additional operational domains remain HOLD or unbound."
+      ],
+      "next_action": "Continue capability-by-capability adapters and keep read-only evidence/status separate from mutation engines.",
+      "instruction": "No project remediation is requested from this audit finding."
+    },
+    {
+      "bucket": "NO_PROJECT_ACTION",
+      "priority": "NONE",
+      "axis": "api-event-error",
+      "verdict": "CORE_MATCH",
+      "standard_owner": {
+        "lane": "C",
+        "owner": "Core Contract Standard"
+      },
+      "evidence": [
+        "Operational adapters return stable blocker/result codes such as INSURANCE_EVIDENCE_STALE, INSURANCE_HIGH_RISK_MISMATCH and PENALTY_RUN_MANIFEST_MISSING.",
+        "Penalty execution distinguishes HOLD, FAILED and SUCCEEDED from terminal manifest state instead of relying on process exit.",
+        "Audit envelopes and receipts preserve evidence locations/digests without copying sensitive raw content."
+      ],
+      "gaps": [
+        "No material public HTTP transport boundary was established in this audit.",
+        "OpenAPI/RFC 9457/CloudEvents transport profiles are not material to the inspected CLI/adapter paths."
+      ],
+      "next_action": "Preserve stable blocker/result semantics and apply HTTP transport profiles only to actual APIs.",
+      "instruction": "No project remediation is requested from this audit finding."
+    }
+  ],
+  "execution_boundary": {
+    "auto_write_project_repo": false,
+    "auto_open_project_pr": false,
+    "auto_promote_core_standard": false,
+    "auto_deploy": false,
+    "production_mutation": false
+  },
+  "blockers": [],
+  "rule": "Project implementation work comes only from MIGRATION_GAP findings. UNKNOWN creates discovery work, PROJECT_AHEAD routes evidence to the standard owner, and CORE_MATCH never creates a project remediation task. A stale audit cannot authorize handoff execution."
+}
