@@ -15,7 +15,7 @@ const claim = (overrides = {}) => ({
   repository:'freepass-creator/freepass-sales',
   subject_revision:'2ec46bb2e88b10a31915b68ec77b2eecbdac57bd',
   scope:'repo-rescan',
-  owner_session:'A-session-one',
+  owner_session:'A-session-owner-one',
   state:'ACTIVE',
   claimed_at:'2026-09-20T01:20:00Z',
   lease_until:'2026-09-20T02:20:00Z',
@@ -32,7 +32,7 @@ test('one live claim is valid', () => {
 
 test('two live claims for same revision and scope are rejected', () => {
   const r = base();
-  r.claims = [claim(), claim({ claim_id:'A-002', owner_session:'A-session-two' })];
+  r.claims = [claim(), claim({ claim_id:'A-002', owner_session:'A-session-owner-two' })];
   const result = validateAWorkClaims(r);
   assert.equal(result.status, 'INVALID');
   assert.ok(result.errors.some(x => x.code === 'LIVE_CLAIM_DUPLICATE'));
@@ -41,8 +41,8 @@ test('two live claims for same revision and scope are rejected', () => {
 test('expired claim does not block a new live claim', () => {
   const r = base();
   r.claims = [
-    claim({ claim_id:'A-old', owner_session:'A-old', lease_until:'2026-09-20T01:25:00Z' }),
-    claim({ claim_id:'A-new', owner_session:'A-new' })
+    claim({ claim_id:'A-session-owner-old', owner_session:'A-session-owner-old', lease_until:'2026-09-20T01:25:00Z' }),
+    claim({ claim_id:'A-session-owner-new', owner_session:'A-session-owner-new' })
   ];
   assert.equal(validateAWorkClaims(r).status, 'VALID');
 });
@@ -57,4 +57,12 @@ test('completed claim requires completion evidence', () => {
   })];
   const result = validateAWorkClaims(r);
   assert.ok(result.errors.some(x => x.code === 'COMPLETION_EVIDENCE_REQUIRED'));
+});
+
+
+test('generic active owner is rejected', () => {
+  const r = base();
+  r.claims = [claim({ owner_session:'A_SESSION' })];
+  const result = validateAWorkClaims(r);
+  assert.ok(result.errors.some(x => x.code === 'ACTIVE_OWNER_NOT_STABLE'));
 });
