@@ -1,7 +1,7 @@
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { randomUUID } from 'node:crypto';
-import { isCanonicalASessionScope, aSessionScopesConflict } from './a-session-scope-policy.mjs';
+import { isCanonicalASessionScope, aSessionScopesConflict, requiresSubjectHeadGuard } from './a-session-scope-policy.mjs';
 import { isValidASessionOwner, resolveASessionOwner } from './a-session-owner-policy.mjs';
 
 const run = promisify(execFile);
@@ -14,6 +14,20 @@ function addMinutes(date, minutes) { return new Date(date.getTime() + minutes * 
 
 export function claimKey({ repository, revision, scope }) {
   return `${repository}@${revision}::${scope}`;
+}
+
+export function completionHeadDecision(claim, currentHead) {
+  if (!requiresSubjectHeadGuard(claim?.scope)) return { action:'ALLOW_COMPLETION' };
+  if (!currentHead) return { action:'BLOCK_COMPLETION', reason:'SUBJECT_HEAD_UNKNOWN' };
+  if (currentHead !== claim.subject_revision) {
+    return {
+      action:'SUPERSEDE',
+      reason:'SUBJECT_HEAD_MOVED',
+      expected_revision:claim.subject_revision,
+      current_revision:currentHead
+    };
+  }
+  return { action:'ALLOW_COMPLETION' };
 }
 
 export function evaluateClaim(registry, request, now = new Date()) {
@@ -122,6 +136,13 @@ async function ghApi(args) {
   return (await run('gh', ['api', ...args], { encoding:'utf8', maxBuffer:16*1024*1024 })).stdout;
 }
 
+async function currentRepositoryHead(repository) {
+  const meta = JSON.parse(await ghApi([`repos/${repository}`]));
+  const branch = meta.default_branch;
+  if (!branch) throw new Error('SUBJECT_DEFAULT_BRANCH_UNKNOWN');
+  return (await ghApi([`repos/${repository}/commits/${encodeURIComponent(branch)}`, '--jq', '.sha'])).trim();
+}
+
 export async function readRemoteRegistry(coordRepo = DEFAULT_COORD_REPO, branch = DEFAULT_BRANCH) {
   const raw = JSON.parse(await ghApi([`repos/${coordRepo}/contents/${CLAIM_PATH}`, '-X', 'GET', '-f', `ref=${branch}`]));
   const content = Buffer.from(raw.content.replace(/\n/g,''), 'base64').toString('utf8');
@@ -178,10 +199,42 @@ export async function finishRemote(claimId, state, options = {}) {
   const attempts = options.attempts ?? 2;
   for (let attempt=0; attempt<attempts; attempt++) {
     const current = await readRemoteRegistry(options.coordRepo, options.branch);
-    const prepared = transitionClaim(current.registry, claimId, state, options);
+    const existing = current.registry.claims.find(x => x.claim_id === claimId);
+    if (!existing) throw new Error('CLAIM_NOT_FOUND');
+
+    let effectiveState = state;
+    let guard = null;
+    if (state === 'COMPLETED' && requiresSubjectHeadGuard(existing.scope)) {
+      let head;
+      try {
+        head = await currentRepositoryHead(existing.repository);
+      } catch (error) {
+        const wrapped = new Error('SUBJECT_HEAD_CHECK_FAILED');
+        wrapped.cause = error;
+        throw wrapped;
+      }
+      guard = completionHeadDecision(existing, head);
+      if (guard.action === 'BLOCK_COMPLETION') throw new Error(guard.reason);
+      if (guard.action === 'SUPERSEDE') effectiveState = 'SUPERSEDED';
+    }
+
+    const prepared = transitionClaim(current.registry, claimId, effectiveState, options);
+    if (guard?.action === 'SUPERSEDE') {
+      prepared.claim.superseded_reason = guard.reason;
+      prepared.claim.superseded_by_revision = guard.current_revision;
+      prepared.claim.expected_subject_revision = guard.expected_revision;
+    }
     try {
-      const result = await writeRemoteRegistry(prepared.registry, current.sha, `A: ${state.toLowerCase()} ${claimId}`, options.coordRepo, options.branch);
-      return { action:state, claim:prepared.claim, commit_sha:result.commit?.sha ?? null };
+      const message = guard?.action === 'SUPERSEDE'
+        ? `A: supersede stale claim ${claimId}`
+        : `A: ${effectiveState.toLowerCase()} ${claimId}`;
+      const result = await writeRemoteRegistry(prepared.registry, current.sha, message, options.coordRepo, options.branch);
+      return {
+        action:guard?.action === 'SUPERSEDE' ? 'SUPERSEDED_HEAD_MOVED' : effectiveState,
+        claim:prepared.claim,
+        head_guard:guard,
+        commit_sha:result.commit?.sha ?? null
+      };
     } catch (error) {
       const text = String(error?.stderr || error?.message || error);
       if (attempt + 1 < attempts && /(409|422|sha|does not match|conflict)/i.test(text)) continue;
