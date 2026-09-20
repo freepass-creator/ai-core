@@ -88,7 +88,6 @@ function computeDigests({effects,bindings,receipts,target_execution,current_proo
     logical_execution_id:target_execution.logical_execution_id,
     identity_digest:target_execution.identity_digest,
     target_execution_digest:targetExecutionDigest,
-    target_execution_digest:targetExecutionDigest,
     effects_digest:effectsDigest,
     bindings_digest:bindingsDigest,
     receipts_digest:receiptsDigest,
@@ -96,6 +95,7 @@ function computeDigests({effects,bindings,receipts,target_execution,current_proo
     planner_result_digest:plannerResultDigest,
   });
   return {
+    target_execution_digest:targetExecutionDigest,
     effects_digest:effectsDigest,
     bindings_digest:bindingsDigest,
     receipts_digest:receiptsDigest,
