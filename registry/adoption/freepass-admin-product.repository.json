@@ -77,5 +77,6 @@
     "read-contract",
     "product-version",
     "atomic-rename-write"
-  ]
+  ],
+  "port_version": "v1"
 }
