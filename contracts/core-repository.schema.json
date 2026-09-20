@@ -1,0 +1,230 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.freepass.ai/core/repository/v1",
+  "title": "AI Core Repository Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "repository_id",
+    "repository_version",
+    "port_id",
+    "project_scope",
+    "source",
+    "entity_scope",
+    "operations",
+    "atomicity",
+    "concurrency",
+    "revision_policy",
+    "data_classification",
+    "error_codes",
+    "verification_profile"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "core-repository-contract/v1"
+    },
+    "repository_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]*(\\.[a-z][a-z0-9_-]*)+$"
+    },
+    "repository_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "port_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]*(\\.[a-z][a-z0-9_-]*)+$"
+    },
+    "project_scope": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "locator",
+        "revision"
+      ],
+      "properties": {
+        "locator": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "$ref": "https://schemas.freepass.ai/core/types/v1#/$defs/revision"
+        }
+      }
+    },
+    "entity_scope": {
+      "type": "string",
+      "minLength": 1
+    },
+    "operations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "operation_id",
+          "kind",
+          "side_effects",
+          "idempotency",
+          "expected_revision"
+        ],
+        "properties": {
+          "operation_id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9._-]*$"
+          },
+          "kind": {
+            "enum": [
+              "READ",
+              "LIST",
+              "CREATE",
+              "MUTATE",
+              "UPSERT",
+              "DELETE"
+            ]
+          },
+          "side_effects": {
+            "type": "boolean"
+          },
+          "idempotency": {
+            "enum": [
+              "REQUIRED",
+              "SUPPORTED",
+              "NOT_APPLICABLE"
+            ]
+          },
+          "expected_revision": {
+            "enum": [
+              "REQUIRED",
+              "SUPPORTED",
+              "NOT_APPLICABLE"
+            ]
+          }
+        }
+      }
+    },
+    "atomicity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scope",
+        "partial_write_possible"
+      ],
+      "properties": {
+        "scope": {
+          "enum": [
+            "NONE",
+            "SINGLE_OPERATION",
+            "SINGLE_AGGREGATE",
+            "SINGLE_COLLECTION",
+            "MULTI_ENTITY_TRANSACTION"
+          ]
+        },
+        "partial_write_possible": {
+          "type": "boolean"
+        }
+      }
+    },
+    "concurrency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "lost_update_protection"
+      ],
+      "properties": {
+        "mode": {
+          "enum": [
+            "NONE",
+            "PROCESS_SERIALIZED",
+            "OPTIMISTIC_REVISION",
+            "PESSIMISTIC_LOCK",
+            "PROVIDER_TRANSACTION"
+          ]
+        },
+        "lost_update_protection": {
+          "type": "boolean"
+        }
+      }
+    },
+    "revision_policy": {
+      "enum": [
+        "NONE",
+        "MONOTONIC_INTEGER",
+        "OPAQUE_TOKEN",
+        "EXPECTED_REVISION"
+      ]
+    },
+    "connector_binding": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "connector_id",
+        "connector_version",
+        "operation_ids"
+      ],
+      "properties": {
+        "connector_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]*(\\.[a-z][a-z0-9_-]*)+$"
+        },
+        "connector_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "operation_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9._-]*$"
+          }
+        }
+      }
+    },
+    "data_classification": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "PUBLIC",
+          "INTERNAL",
+          "CONFIDENTIAL",
+          "PII",
+          "FINANCIAL",
+          "SECRET"
+        ]
+      }
+    },
+    "error_codes": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Z][A-Z0-9_]*$"
+      }
+    },
+    "verification_profile": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}
