@@ -1,0 +1,16 @@
+{
+  "schema_version": "core-port-contract/v1",
+  "port_id": "quote.provider.calculate",
+  "port_version": "v1",
+  "semantics": "Calculate a quote through the revision-bound authoritative provider selected by the project/channel profile without changing canonical quote meaning.",
+  "direction": "QUERY",
+  "input_schema": "freepass-quote-request/v1",
+  "output_schema": "freepass-quote-result/v1",
+  "side_effects": false,
+  "idempotency": "NOT_APPLICABLE",
+  "error_codes": [
+    "DOMAIN_VALIDATION_FAILED",
+    "UPSTREAM_UNAVAILABLE",
+    "UPSTREAM_INVALID_RESPONSE"
+  ]
+}
