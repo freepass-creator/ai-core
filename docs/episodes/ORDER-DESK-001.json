@@ -158,6 +158,7 @@
     "docs/inventory/C-DEV-2026-09-15.json",
     "docs/research/API_EVENT_ERROR_STANDARD_FINDINGS_2026-09-19.md",
     "docs/research/AUTH_SECURITY_AUDIT_CROSS_REPO_FINDINGS_2026-09-19.md",
+    "docs/research/A_SESSION_DELTA_AUDIT_2026-09-20_0054Z.md",
     "docs/research/A_SESSION_DISCOVERY_DEVCENTER_PROOF_INPUT_BINDING_2026-09-19.md",
     "docs/research/A_SESSION_DISCOVERY_ERP4_RECOVERY_SLOT_REPLAY_2026-09-19.md",
     "docs/research/A_SESSION_DISCOVERY_FP_SETTLEMENT_UI_CONFORMANCE_2026-09-19.md",
@@ -181,6 +182,7 @@
     "docs/research/A_SESSION_PROMOTION_MATRIX_2026-09-19.md",
     "docs/research/A_SESSION_REPO_COVERAGE_2026-09-19.md",
     "docs/research/A_SESSION_RESCAN_2026-09-20.md",
+    "docs/research/A_SESSION_ROUTING_RECEIPTS_V1_2026-09-20.md",
     "docs/research/BUILD_DEPLOY_GOVERNANCE_CROSS_REPO_FINDINGS_2026-09-19.md",
     "docs/research/DATA_SSOT_CROSS_REPO_FINDINGS_2026-09-19.md",
     "docs/research/ENGINE_ADAPTER_CROSS_REPO_FINDINGS_2026-09-19.md",
@@ -191,6 +193,7 @@
     "docs/research/a-session-head-snapshot.v1.json",
     "docs/research/a-session-promotion-matrix.v1.json",
     "docs/research/a-session-repo-coverage.v1.json",
+    "docs/research/a-session-routing-receipts.v1.json",
     "docs/research/global-product-standard-evidence.v1.json",
     "docs/reviews/ORDER_DESK_REVIEW.md",
     "docs/reviews/SHARED_ORDER_REVIEW.md",
@@ -258,6 +261,7 @@
     "scripts/run-control-tower.mjs",
     "scripts/validate-a-session-coverage.mjs",
     "scripts/validate-a-session-evidence.mjs",
+    "scripts/validate-a-session-routing.mjs",
     "scripts/validate-capability-registry.mjs",
     "scripts/validate-core-contract-adoption.mjs",
     "scripts/validate-core-contracts.mjs",
@@ -324,6 +328,7 @@
     "src/workflow/work-ledger-shadow.mjs",
     "test/a-session-coverage.test.mjs",
     "test/a-session-evidence.test.mjs",
+    "test/a-session-routing.test.mjs",
     "test/ai-continuation-pack.test.mjs",
     "test/capability-convergence.test.mjs",
     "test/capability-execution-api.test.mjs",
@@ -484,6 +489,7 @@
     "2026-09-19 B-session B3: per-product UI/UX consumer manifest contract and ERP4 MAPPED adoption evidence added; changed_files regenerated from the exact base_revision diff for repository verifier parity.",
     "2026-09-19 B-session B4: revision-bound UI/UX PILOT/CONFORMANT receipt schema, semantic validator, evidence matrix and immutable receipt guidance added; changed_files regenerated from exact base revision.",
     "2026-09-20 B-session Phase 1 closeout: final return packet added on top of B2/B3-integrated main; B5 consumer-promotion gate is explicitly deferred to Phase 2 and is not a Phase 1 blocker.",
-    "2026-09-20 A-session v2 on current main: coverage freshness gate and Evidence Registry v1 are carried forward onto D3-integrated main. A now machine-checks stale observed heads and material finding classification/routing/state history. This is research routing only; B/C/D canonical authority remains unchanged."
+    "2026-09-20 A-session v2 on current main: coverage freshness gate and Evidence Registry v1 are carried forward onto D3-integrated main. A now machine-checks stale observed heads and material finding classification/routing/state history. This is research routing only; B/C/D canonical authority remains unchanged.",
+    "2026-09-20 A-session routing receipts v1: every A Evidence Registry B/C/D route now requires exactly one machine receipt. SENT is conservative until finding-specific receiver revision evidence exists; CLOSED additionally requires explicit receiver decision and A feedback. The post-snapshot Admin/ERP4 delta audit file is also added to successor inventory to repair main-state exact-diff parity."
   ]
 }
