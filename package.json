@@ -76,7 +76,8 @@
     "audit:portfolio:live": "node scripts/project-audit-live-portfolio.mjs",
     "audit:handoff": "node scripts/project-audit-handoff.mjs",
     "audit:completion-template": "node scripts/project-audit-completion-template.mjs",
-    "audit:closure": "node scripts/project-audit-closure.mjs"
+    "audit:closure": "node scripts/project-audit-closure.mjs",
+    "audit:closure-queue": "node scripts/project-audit-closure-queue.mjs"
   },
   "dependencies": {
     "ajv": "8.20.0",
