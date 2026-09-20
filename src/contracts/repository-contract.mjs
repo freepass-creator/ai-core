@@ -38,8 +38,20 @@ export function validateRepositoryContract(repository){
   if(repository.connector_binding!=null){
     need(text(repository.connector_binding.connector_id)&&repository.connector_binding.connector_id.includes('.'),'REPOSITORY_CONNECTOR_ID_REQUIRED');
     need(text(repository.connector_binding.connector_version),'REPOSITORY_CONNECTOR_VERSION_REQUIRED');
-    need(Array.isArray(repository.connector_binding.operation_ids)&&repository.connector_binding.operation_ids.length>0,'REPOSITORY_CONNECTOR_OPERATIONS_REQUIRED');
-    need(new Set(repository.connector_binding.operation_ids).size===repository.connector_binding.operation_ids.length,'REPOSITORY_CONNECTOR_OPERATION_DUPLICATE');
+    need(Array.isArray(repository.connector_binding.operation_map)&&repository.connector_binding.operation_map.length>0,'REPOSITORY_CONNECTOR_OPERATION_MAP_REQUIRED');
+    const repositoryOperationIds=new Set(repository.operations.map(op=>op.operation_id));
+    const mapped=new Set();
+    for(const item of repository.connector_binding.operation_map){
+      need(text(item?.repository_operation_id),'REPOSITORY_CONNECTOR_OPERATION_ID_REQUIRED');
+      need(repositoryOperationIds.has(item.repository_operation_id),`REPOSITORY_CONNECTOR_UNKNOWN_OPERATION:${item.repository_operation_id}`);
+      need(!mapped.has(item.repository_operation_id),`REPOSITORY_CONNECTOR_OPERATION_MAP_DUPLICATE:${item.repository_operation_id}`);
+      mapped.add(item.repository_operation_id);
+      need(Array.isArray(item.connector_operation_ids)&&item.connector_operation_ids.length>0,'REPOSITORY_CONNECTOR_OPERATIONS_REQUIRED');
+      need(new Set(item.connector_operation_ids).size===item.connector_operation_ids.length,`REPOSITORY_CONNECTOR_OPERATION_DUPLICATE:${item.repository_operation_id}`);
+    }
+    for(const operation of repository.operations){
+      need(mapped.has(operation.operation_id),`REPOSITORY_CONNECTOR_OPERATION_UNMAPPED:${operation.operation_id}`);
+    }
   }
 
   return {status:'VALID'};
