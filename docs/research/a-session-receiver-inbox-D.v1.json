@@ -2,7 +2,7 @@
   "schema": "ai-core-a-session-receiver-inbox/v1",
   "status": "RESEARCH_RECEIVER_INBOX_NOT_CANONICAL",
   "session": "D",
-  "observed_at": "2026-09-20T01:18:00Z",
+  "observed_at": "2026-09-20T01:26:17Z",
   "policy": {
     "source_of_truth": "A Routing Receipt Registry defines delivery; this inbox records receiver-side acknowledgement/review/decision only.",
     "conservative_default": "New routes enter as PENDING and remain unacknowledged until the target session writes revision-bound evidence.",
@@ -51,16 +51,65 @@
       "finding_id": "workflow.admin-runtime-binding",
       "source_evidence_revision": "2f305bbcffea20acd08b7187ecede6fc1a1f23bf",
       "delivered_at": "2026-09-20T01:18:00Z",
-      "receiver_status": "PENDING",
-      "acknowledgement": null,
-      "review": null,
-      "decision": null,
+      "receiver_status": "DECIDED",
+      "acknowledgement": {
+        "session": "D",
+        "ai_core_revision": "0055b40c10af2c63d23977efaeccae683a451b62",
+        "observed_at": "2026-09-20T01:19:53Z",
+        "evidence_refs": [
+          "registry/workflows.json",
+          "registry/workflow-projections.json",
+          "docs/workflow/FREEPASS_ADMIN_APPLICATION_SHADOW.md",
+          "docs/workflow/STATE_MACHINE_SPECIFICATION.md"
+        ]
+      },
+      "review": {
+        "ai_core_revision": "0055b40c10af2c63d23977efaeccae683a451b62",
+        "started_at": "2026-09-20T01:19:53Z",
+        "evidence_refs": [
+          "registry/workflows.json",
+          "registry/workflow-projections.json",
+          "docs/workflow/FREEPASS_ADMIN_APPLICATION_SHADOW.md",
+          "docs/workflow/STATE_MACHINE_SPECIFICATION.md"
+        ],
+        "note": "D6 proved source-side parity but also proved that FreePass Admin domain code still owns runtime writes."
+      },
+      "decision": {
+        "outcome": "HOLD",
+        "ai_core_revision": "0055b40c10af2c63d23977efaeccae683a451b62",
+        "decided_at": "2026-09-20T01:19:53Z",
+        "evidence_refs": [
+          "registry/workflows.json",
+          "registry/workflow-projections.json",
+          "docs/workflow/FREEPASS_ADMIN_APPLICATION_SHADOW.md",
+          "docs/workflow/STATE_MACHINE_SPECIFICATION.md"
+        ],
+        "reason": "HOLD until an approved Admin write path actually invokes D decision authority with stable errors, persistence/audit atomicity, rollback and exact runtime evidence."
+      },
       "history": [
         {
           "status": "PENDING",
           "observed_at": "2026-09-20T01:18:00Z",
           "basis_revision": "2f305bbcffea20acd08b7187ecede6fc1a1f23bf",
           "reason": "Seeded from the refreshed A Routing Receipt Registry; no receiver acknowledgement exists yet."
+        },
+        {
+          "status": "ACKNOWLEDGED",
+          "observed_at": "2026-09-20T01:19:53Z",
+          "basis_revision": "0055b40c10af2c63d23977efaeccae683a451b62",
+          "reason": "D session acknowledged the routed finding with revision-bound canonical review evidence."
+        },
+        {
+          "status": "REVIEWING",
+          "observed_at": "2026-09-20T01:19:53Z",
+          "basis_revision": "0055b40c10af2c63d23977efaeccae683a451b62",
+          "reason": "D session reviewed the finding against current Workflow Standard and source implementation evidence."
+        },
+        {
+          "status": "DECIDED",
+          "observed_at": "2026-09-20T01:19:53Z",
+          "basis_revision": "0055b40c10af2c63d23977efaeccae683a451b62",
+          "reason": "HOLD until an approved Admin write path actually invokes D decision authority with stable errors, persistence/audit atomicity, rollback and exact runtime evidence."
         }
       ]
     },
@@ -87,16 +136,68 @@
       "finding_id": "workflow.forward-skip-evidence-integrity",
       "source_evidence_revision": "2f305bbcffea20acd08b7187ecede6fc1a1f23bf",
       "delivered_at": "2026-09-20T01:18:00Z",
-      "receiver_status": "PENDING",
-      "acknowledgement": null,
-      "review": null,
-      "decision": null,
+      "receiver_status": "DECIDED",
+      "acknowledgement": {
+        "session": "D",
+        "ai_core_revision": "b1f500c21287efc1205e3ad12204f3eea8cf5db2",
+        "observed_at": "2026-09-20T01:26:17Z",
+        "evidence_refs": [
+          "registry/workflows.json",
+          "registry/workflow-progressions.json",
+          "contracts/workflow-progression.schema.json",
+          "docs/workflow/FREEPASS_SALES_FORWARD_SKIP_SHADOW.md",
+          "test/workflow-progression.test.mjs"
+        ]
+      },
+      "review": {
+        "ai_core_revision": "b1f500c21287efc1205e3ad12204f3eea8cf5db2",
+        "started_at": "2026-09-20T01:26:17Z",
+        "evidence_refs": [
+          "registry/workflows.json",
+          "registry/workflow-progressions.json",
+          "contracts/workflow-progression.schema.json",
+          "docs/workflow/FREEPASS_SALES_FORWARD_SKIP_SHADOW.md",
+          "test/workflow-progression.test.mjs"
+        ],
+        "note": "Sales source semantics were generalized without importing product-specific labels as company-wide states."
+      },
+      "decision": {
+        "outcome": "ADOPTED",
+        "ai_core_revision": "b1f500c21287efc1205e3ad12204f3eea8cf5db2",
+        "decided_at": "2026-09-20T01:26:17Z",
+        "evidence_refs": [
+          "registry/workflows.json",
+          "registry/workflow-progressions.json",
+          "contracts/workflow-progression.schema.json",
+          "docs/workflow/FREEPASS_SALES_FORWARD_SKIP_SHADOW.md",
+          "test/workflow-progression.test.mjs"
+        ],
+        "reason": "Adopted into D as a PROJECT_VERIFIED PILOT primitive plus Sales SHADOW progression; second independent project evidence is still required before common adoption."
+      },
       "history": [
         {
           "status": "PENDING",
           "observed_at": "2026-09-20T01:18:00Z",
           "basis_revision": "2f305bbcffea20acd08b7187ecede6fc1a1f23bf",
           "reason": "Seeded from the refreshed A Routing Receipt Registry; no receiver acknowledgement exists yet."
+        },
+        {
+          "status": "ACKNOWLEDGED",
+          "observed_at": "2026-09-20T01:26:17Z",
+          "basis_revision": "b1f500c21287efc1205e3ad12204f3eea8cf5db2",
+          "reason": "D session acknowledged the routed finding with revision-bound canonical review evidence."
+        },
+        {
+          "status": "REVIEWING",
+          "observed_at": "2026-09-20T01:26:17Z",
+          "basis_revision": "b1f500c21287efc1205e3ad12204f3eea8cf5db2",
+          "reason": "D session reviewed the finding against current Workflow Standard and source implementation evidence."
+        },
+        {
+          "status": "DECIDED",
+          "observed_at": "2026-09-20T01:26:17Z",
+          "basis_revision": "b1f500c21287efc1205e3ad12204f3eea8cf5db2",
+          "reason": "Adopted into D as a PROJECT_VERIFIED PILOT primitive plus Sales SHADOW progression; second independent project evidence is still required before common adoption."
         }
       ]
     }
