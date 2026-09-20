@@ -158,3 +158,32 @@ test('verification failure prevents SUCCEEDED receipt from being represented',as
   assert.equal(result.reason,'INTEGRATION_SUCCESS_VERIFICATION_FAILED');
   assert.equal(result.receipt,null);
 });
+
+test('adapter exception after authority is treated as unknown effect, never as not-performed',async()=>{
+  const e=executor({
+    adapters:new Map([['KEEP_SEPARATE',{execute:async()=>{throw new Error('connection lost after write');}}]]),
+  });
+  const result=await e.run({
+    packet:packet(),authority:{},perform:true,attempt_id:'attempt-1',actor:'worker',correlation_id:'corr-1',
+  });
+  assert.equal(result.status,'HOLD');
+  assert.equal(result.reason,'INTEGRATION_EXECUTION_OUTCOME_UNKNOWN');
+  assert.equal(result.effect_state,'UNKNOWN');
+  assert.equal(result.performed,null);
+  assert.equal(result.outcome_known,false);
+});
+
+test('post-execution verification failure preserves performed effect state',async()=>{
+  const e=executor({
+    verifyExecution:async()=>{throw new Error('verifier unavailable');},
+  });
+  const result=await e.run({
+    packet:packet(),authority:{},perform:true,attempt_id:'attempt-1',actor:'worker',correlation_id:'corr-1',
+  });
+  assert.equal(result.status,'HOLD');
+  assert.equal(result.reason,'INTEGRATION_POST_EXECUTION_VERIFICATION_UNAVAILABLE');
+  assert.equal(result.effect_state,'PERFORMED');
+  assert.equal(result.performed,true);
+  assert.equal(result.external_effect,true);
+  assert.equal(result.outcome_known,true);
+});
