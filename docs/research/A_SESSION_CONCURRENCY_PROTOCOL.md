@@ -272,3 +272,36 @@ If the current head cannot be resolved, completion fails closed with `SUBJECT_HE
 `routing:*` and `coordination:*` are exempt because those tasks may legitimately mutate AI Core main while they are being performed.
 
 This closes the stale-finish gap: an audit cannot start at revision X, ignore a later revision Y, and still close X as if it were current.
+
+
+## Completion evidence contract v2
+
+Claims created after the v2 activation boundary carry `evidence_contract = v2`.
+
+Allowed evidence refs:
+
+- `subject:<owner/repo>@<40sha>`
+- `commit:<owner/repo>@<40sha>`
+- `ci:<owner/repo>#<run-id>@<40sha>`
+
+Rules:
+
+- `repo-rescan`, `runtime-evidence:*`, and `migration-gap:*` must include the exact `subject:<repository>@<subject_revision>` ref.
+- every v2 completion requires at least one verifiable `commit` or `ci` proof;
+- subject/commit refs are remotely checked for commit existence;
+- CI refs are remotely checked for run existence, exact `head_sha`, and `conclusion = success`;
+- malformed, missing, failed, or mismatched evidence fails closed;
+- weak refs such as `commit:abc` are invalid.
+
+Successful v2 completion stores an `evidence_verification` receipt containing:
+
+- `status = VERIFIED`
+- verifier identity
+- `verified_at`
+- SHA-256 digest of the ordered `evidence_refs`
+
+Normal claim-client completion writes `verifier = github-remote-v2`.
+
+Bootstrap or recovery work that is explicitly verified through the connected GitHub interface may record `github-connector-v2`. This is an administrative recovery path, not the default completion path.
+
+The validator recomputes the refs digest and rejects a missing or tampered verification receipt.
