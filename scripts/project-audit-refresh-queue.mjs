@@ -33,7 +33,7 @@ const queue = buildProjectAuditRefreshQueue({
 
 process.stdout.write(JSON.stringify(queue, null, 2) + '\n');
 
-if (process.argv.includes('--require-clean') && queue.totals.re_audit_candidates > 0) {
+if (process.argv.includes('--require-clean') && queue.totals.action_required > 0) {
   process.exitCode = 1;
 }
 
