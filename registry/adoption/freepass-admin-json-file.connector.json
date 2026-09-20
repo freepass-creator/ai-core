@@ -1,0 +1,53 @@
+{
+  "schema_version": "core-connector-contract/v1",
+  "connector_id": "freepass-admin.json-file-store",
+  "connector_version": "1.0.0",
+  "transport": "FILESYSTEM",
+  "provider_scope": "development-json-file-store",
+  "source": {
+    "locator": "freepass-creator/freepass-admin:src/adapters/store/json-file-store.ts",
+    "revision": "2aede7df82591470308f25bd3ccd4e5358aa7c3c"
+  },
+  "operations": [
+    {
+      "operation_id": "application.read",
+      "verb": "READ",
+      "target_ref": "FPA_DATA_DIR/applications.json",
+      "side_effects": false
+    },
+    {
+      "operation_id": "application.mutate",
+      "verb": "ATOMIC_RENAME_WRITE",
+      "target_ref": "FPA_DATA_DIR/applications.json",
+      "side_effects": true
+    },
+    {
+      "operation_id": "product.read",
+      "verb": "READ",
+      "target_ref": "FPA_DATA_DIR/products.json",
+      "side_effects": false
+    },
+    {
+      "operation_id": "product.mutate",
+      "verb": "ATOMIC_RENAME_WRITE",
+      "target_ref": "FPA_DATA_DIR/products.json",
+      "side_effects": true
+    }
+  ],
+  "auth": {
+    "mode": "NONE",
+    "credential_refs": []
+  },
+  "timeout_ms": 5000,
+  "abort_supported": false,
+  "health_check": "freepass-admin repository/service contract tests",
+  "data_classification": [
+    "INTERNAL",
+    "PII"
+  ],
+  "verification_profile": [
+    "repository-concurrency",
+    "atomic-rename-write",
+    "idempotency-replay"
+  ]
+}
