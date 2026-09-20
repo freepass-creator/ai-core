@@ -24,7 +24,7 @@ function orderBody(fp4){
   };
 }
 
-test('RESERVED recovery는 예약 당시 receipt 계약을 고정해 현재 capability 삭제 뒤에도 재실행 없이 복구한다',async t=>{
+test('RESERVED recovery는 예약 당시 receipt와 project binding을 고정해 registry drift에 fail closed 한다',async t=>{
   const root=mkdtempSync(join(tmpdir(),'capability-historical-recovery-'));
   const projectRegistry=structuredClone(baseProjects);
   const capabilityRegistry=structuredClone(baseCapabilities);
@@ -80,11 +80,16 @@ test('RESERVED recovery는 예약 당시 receipt 계약을 고정해 현재 capa
 
   const execution=createCapabilityExecutionCoordinator({store:started.store,projectRegistry});
   const requestId='exec-historical-receipt-contract';
+  const driftRequestId='exec-historical-project-binding';
   const input={a:1};
   const reserved=await execution.reserve({
     requestId,orderId:order.id,workId:linked.work_id,capability:verify,input,perform:true,
   });
+  const driftReserved=await execution.reserve({
+    requestId:driftRequestId,orderId:order.id,workId:linked.work_id,capability:verify,input,perform:true,
+  });
   assert.equal(reserved.status,'RESERVED');
+  assert.equal(driftReserved.status,'RESERVED');
   assert.equal(runs,0);
 
   assert.throws(()=>started.store.db.prepare(
@@ -95,6 +100,9 @@ test('RESERVED recovery는 예약 당시 receipt 계약을 고정해 현재 capa
   mkdirSync(receiptDir,{recursive:true});
   writeFileSync(join(receiptDir,'run-completed.json'),JSON.stringify({
     schema:'historical-run/v1',state:'COMPLETED',request_id:requestId,
+  }));
+  writeFileSync(join(receiptDir,'run-binding-drift.json'),JSON.stringify({
+    schema:'historical-run/v1',state:'COMPLETED',request_id:driftRequestId,
   }));
 
   const current=started.store.get(order.id);
@@ -116,8 +124,26 @@ test('RESERVED recovery는 예약 당시 receipt 계약을 고정해 현재 capa
   assert.deepEqual(replayed.artifact_refs,['tmp/original-receipts/run-completed.json']);
   assert.equal(runs,0,'historical receipt recovery must not execute the capability again');
 
+  // A project registry move must not retarget an already-reserved execution at a new root.
+  fp4.local_path=join(root,'moved-freepasserp4');
+  const driftReplayResponse=await post(`/api/orders/${order.id}/capability/run`,{
+    requestId:driftRequestId,perform:true,input,
+  });
+  assert.equal(driftReplayResponse.status,409);
+  const driftReplay=await driftReplayResponse.json();
+  assert.deepEqual(driftReplay,{
+    status:'HOLD',
+    reason:'PROJECT_RECOVERY_BINDING_DRIFT',
+    reconciled:false,
+  });
+  assert.equal(runs,0,'project binding drift must never trigger capability re-execution');
+
   const results=await (await fetch(`${started.url}/api/orders/${order.id}/capability/results`)).json();
-  assert.equal(results.length,1);
-  assert.equal(results[0].state,'RESULT');
-  assert.equal(results[0].reason,'RECONCILED_FROM_TERMINAL_RECEIPT');
+  assert.equal(results.length,2);
+  const recoveredResult=results.find(item=>item.request_id===requestId);
+  const heldResult=results.find(item=>item.request_id===driftRequestId);
+  assert.equal(recoveredResult?.state,'RESULT');
+  assert.equal(recoveredResult?.reason,'RECONCILED_FROM_TERMINAL_RECEIPT');
+  assert.equal(heldResult?.state,'RESERVED');
+  assert.equal(heldResult?.reason,null);
 });
