@@ -4,6 +4,7 @@ export function claimHealth(registry, now = new Date()) {
   const nowMs = now.getTime();
   const summary = { live:[], expired_active:[], completed:[], abandoned:[], superseded:[], anomalies:[] };
   const liveByKey = new Map();
+  const liveByOwner = new Map();
   for (const claim of registry.claims || []) {
     if (claim.state === 'ACTIVE') {
       if (Date.parse(claim.lease_until) > nowMs) {
@@ -11,6 +12,9 @@ export function claimHealth(registry, now = new Date()) {
         const prior = liveByKey.get(claim.claim_key);
         if (prior) summary.anomalies.push({ code:'MULTIPLE_LIVE_CLAIMS', claim_key:claim.claim_key, claim_ids:[prior.claim_id,claim.claim_id] });
         else liveByKey.set(claim.claim_key, claim);
+        const ownerPrior = liveByOwner.get(claim.owner_session);
+        if (ownerPrior) summary.anomalies.push({ code:'MULTIPLE_LIVE_CLAIMS_FOR_OWNER', owner_session:claim.owner_session, claim_ids:[ownerPrior.claim_id,claim.claim_id] });
+        else liveByOwner.set(claim.owner_session, claim);
       } else {
         summary.expired_active.push(claim);
       }
