@@ -70,6 +70,8 @@ export async function executePreparedEffectResumeFromReceipts({
   receipt,
   execute_effect,
   execute_compensation,
+  before_effect=null,
+  before_compensation=null,
   clock=Date.now,
 }={}){
   const freshness=verifyEffectResumePlan(prepared_plan,{
@@ -132,6 +134,8 @@ export async function executePreparedEffectResumeFromReceipts({
     receipt,
     execute_effect,
     execute_compensation,
+    before_effect,
+    before_compensation,
     clock,
   });
 
