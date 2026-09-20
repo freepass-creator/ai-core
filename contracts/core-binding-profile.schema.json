@@ -127,8 +127,7 @@
               "type": "object",
               "additionalProperties": false,
               "required": [
-                "port_id",
-                "adapter_id"
+                "port_id"
               ],
               "properties": {
                 "port_id": {
@@ -138,8 +137,34 @@
                 "adapter_id": {
                   "type": "string",
                   "pattern": "^[a-z][a-z0-9_-]*(\\.[a-z][a-z0-9_-]*)+$"
+                },
+                "repository_id": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9_-]*(\\.[a-z][a-z0-9_-]*)+$"
                 }
-              }
+              },
+              "oneOf": [
+                {
+                  "required": [
+                    "adapter_id"
+                  ],
+                  "not": {
+                    "required": [
+                      "repository_id"
+                    ]
+                  }
+                },
+                {
+                  "required": [
+                    "repository_id"
+                  ],
+                  "not": {
+                    "required": [
+                      "adapter_id"
+                    ]
+                  }
+                }
+              ]
             }
           }
         }
