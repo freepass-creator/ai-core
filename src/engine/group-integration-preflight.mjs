@@ -8,6 +8,8 @@ const canonical=value=>Array.isArray(value)?value.map(canonical):value&&typeof v
 const digest=value=>`sha256:${createHash('sha256').update(JSON.stringify(canonical(value))).digest('hex')}`;
 const iso=value=>new Date(value).toISOString();
 const RECEIPT_STATUSES=new Set(['SUCCEEDED','HOLD','FAILED','PARTIAL']);
+const STABLE_ID=/^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/;
+const REASON_CODE=/^[A-Z][A-Z0-9_]*$/;
 
 function operationKind(classification){
   return `group.integration.${String(classification??'').toLowerCase().replaceAll('_','-')}`;
@@ -70,6 +72,7 @@ function verificationSummary(packet,results){
 
 export function buildIntegrationExecutionReceipt({packet,preflight,execution}={}){
   need(packet?.schema==='ai-core-integration-work-packet/v1','INTEGRATION_WORK_PACKET_REQUIRED');
+  need(STABLE_ID.test(packet.packet_id??''),'INTEGRATION_PACKET_ID_INVALID');
   need(preflight?.schema==='ai-core-integration-preflight/v1'&&preflight.status==='SEALED','INTEGRATION_PREFLIGHT_SEAL_REQUIRED');
   need(preflight.packet_id===packet.packet_id,'INTEGRATION_PREFLIGHT_PACKET_MISMATCH');
   need(preflight.expected_revision===packet.expected_revision,'INTEGRATION_PREFLIGHT_REVISION_MISMATCH');
@@ -77,10 +80,10 @@ export function buildIntegrationExecutionReceipt({packet,preflight,execution}={}
 
   const status=clean(execution.status);
   need(RECEIPT_STATUSES.has(status),'INTEGRATION_EXECUTION_STATUS_INVALID');
-  need(nonempty(execution.attempt_id),'INTEGRATION_EXECUTION_ATTEMPT_ID_REQUIRED');
+  need(nonempty(execution.attempt_id)&&STABLE_ID.test(execution.attempt_id),'INTEGRATION_EXECUTION_ATTEMPT_ID_INVALID');
   need(nonempty(execution.actor),'INTEGRATION_EXECUTION_ACTOR_REQUIRED');
   need(nonempty(execution.executor),'INTEGRATION_EXECUTION_EXECUTOR_REQUIRED');
-  need(nonempty(execution.correlation_id),'INTEGRATION_EXECUTION_CORRELATION_REQUIRED');
+  need(nonempty(execution.correlation_id)&&STABLE_ID.test(execution.correlation_id),'INTEGRATION_EXECUTION_CORRELATION_INVALID');
   need(Number.isFinite(Date.parse(execution.started_at)),'INTEGRATION_EXECUTION_STARTED_AT_INVALID');
   need(Number.isFinite(Date.parse(execution.ended_at)),'INTEGRATION_EXECUTION_ENDED_AT_INVALID');
   need(Date.parse(execution.ended_at)>=Date.parse(execution.started_at),'INTEGRATION_EXECUTION_TIME_ORDER_INVALID');
@@ -94,6 +97,9 @@ export function buildIntegrationExecutionReceipt({packet,preflight,execution}={}
     need(verification.missing.length===0,'INTEGRATION_SUCCESS_VERIFICATION_MISSING');
     need(verification.failed.length===0,'INTEGRATION_SUCCESS_VERIFICATION_FAILED');
   }
+
+  const reasonCode=execution.reason_code==null?null:clean(execution.reason_code);
+  if(reasonCode!==null) need(REASON_CODE.test(reasonCode),'INTEGRATION_EXECUTION_REASON_CODE_INVALID');
 
   const outputRefs=[...(execution.output_refs??[])].map(clean).filter(Boolean);
   const evidenceRefs=[
@@ -128,7 +134,7 @@ export function buildIntegrationExecutionReceipt({packet,preflight,execution}={}
     executor:clean(execution.executor),
     correlation_id:clean(execution.correlation_id),
     status,
-    reason_code:execution.reason_code==null?null:clean(execution.reason_code),
+    reason_code:reasonCode,
     input:{
       digest:preflight.seal_digest,
       refs:[
