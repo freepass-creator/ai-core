@@ -70,9 +70,7 @@ export function renewClaim(registry, claimId, owner, { now = new Date(), leaseMi
   const claim = next.claims.find(x => x.claim_id === claimId);
   if (!claim) throw new Error('CLAIM_NOT_FOUND');
   if (claim.state !== 'ACTIVE') throw new Error('CLAIM_NOT_ACTIVE');
-  if (!isValidASessionOwner(owner)) throw new Error('A_SESSION_OWNER_INVALID');
   if (claim.owner_session !== owner) throw new Error('CLAIM_OWNER_MISMATCH');
-  if (!owner || claim.owner_session !== owner) throw new Error('CLAIM_OWNER_MISMATCH');
 
   const competing = next.claims.find(x =>
     x.claim_id !== claimId &&
@@ -98,6 +96,8 @@ export function transitionClaim(registry, claimId, state, { now = new Date(), ev
   const claim = next.claims.find(x => x.claim_id === claimId);
   if (!claim) throw new Error('CLAIM_NOT_FOUND');
   if (claim.state !== 'ACTIVE') throw new Error('CLAIM_NOT_ACTIVE');
+  if (!isValidASessionOwner(owner)) throw new Error('A_SESSION_OWNER_INVALID');
+  if (claim.owner_session !== owner) throw new Error('CLAIM_OWNER_MISMATCH');
   if (state === 'COMPLETED' && evidenceRefs.length === 0) throw new Error('COMPLETION_EVIDENCE_REQUIRED');
   claim.state = state;
   claim.completed_at = iso(now);
