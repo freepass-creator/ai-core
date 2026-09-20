@@ -7,6 +7,8 @@
 
 **Freepass**는 하나의 사업 프로젝트이고, 아래 다섯 제품·서비스로 나눈다.
 
+**대표 얼굴과 기본 진입 서비스는 `Freepass ERP.com`이다.** 화이트라벨 판매 화면이 고객·영업자·제휴 채널이 Freepass를 처음 만나는 메인 제품이고, Admin·Sales·Estimate·Data는 이 메인 서비스를 운영하고 확장하는 전문 제품이다.
+
 ```text
 Freepass
 ├─ Freepass ERP.com     영업자용 화이트라벨 판매 플랫폼
@@ -45,9 +47,11 @@ Freepass
 ### Freepass ERP.com
 
 - Freepass ERP 4의 최종 진화 제품이다.
+- Freepass 제품군의 메인 얼굴이자 기본 진입점이다.
 - 영업자와 제휴 채널이 차량·상품을 검색한다.
 - 고객에게 보여줄 카탈로그와 상품 상세를 제공한다.
 - 화이트라벨별 브랜드·노출 정책을 적용한다.
+- 새 판매·채널 기능은 먼저 ERP.com에서 어떤 얼굴로 제공되는지 판단하고, 내부 운영 기능만 Admin·Sales·Estimate로 보낸다.
 - 상품 원문과 정제 규칙을 직접 편집하는 데이터 관리 화면은 두지 않는다.
 
 ### Freepass Admin

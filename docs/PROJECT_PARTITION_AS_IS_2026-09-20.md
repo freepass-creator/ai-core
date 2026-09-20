@@ -32,7 +32,7 @@
 
 | 파트 | 현행 자산 | 현재 확인된 역할 | 판정 |
 |---|---|---|---|
-| 판매 플랫폼 | `freepass-creator/freepasserp4` | `Freepass ERP 1~4`가 화이트라벨로 진화한 현재 최종본. 영업자가 차량을 찾고 고객에게 카탈로그를 보여주는 `freepasserp.com` | **제품 최종본** |
+| 판매 플랫폼 | `freepass-creator/freepasserp4` | `Freepass ERP 1~4`가 화이트라벨로 진화한 현재 최종본. 영업자가 차량을 찾고 고객에게 카탈로그를 보여주는 `freepasserp.com` | **제품 최종본·Freepass 메인 얼굴** |
 | 관리자 | `freepass-creator/freepass-admin` (현재 로컬 체크아웃 `C:\dev\freepasserp.com`) | 내부 관리자의 상품찾기·접수·계약·정산 화면 | 이미 분리된 내부 제품 |
 | 영업 | `freepass-creator/freepass-sales` (`C:\dev\sales`) | 모바일 영업 CRM, 고객·통화·후속조치·견적/계약진행 | 독립 파트 |
 | 견적기 | `freepass-creator/freepass-estimate` | 고객 조건에 맞는 차량·상품 견적 생성 | 이미 분리된 내부 제품. 로컬 최상위 체크아웃은 미확인 |
