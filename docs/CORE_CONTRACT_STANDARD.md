@@ -320,3 +320,12 @@ logical execution identity는 `operation_kind + logical_slot + subject_scope + s
 C는 identity/binding 형식만 소유한다. fallback 허용 조건, retry exhaustion, ambiguous outcome HOLD, replay suppression 같은 workflow 의미는 D가 소유한다.
 
 상세 규격과 runtime helper는 `docs/CORE_EXECUTION_IDENTITY.md`, `src/contracts/execution-identity.mjs`를 따른다.
+
+### 19.1 Scheduled execution observation
+
+`core-schedule-observation/v1`은 예정 logical slot, 실제 dispatch/run identity, execution attempt, downstream completion을 서로 다른 사실로 기록한다.
+
+C는 이 관측 형식과 identity binding만 소유한다. `ON_TIME / LATE / MISSED / UNKNOWN` 같은 timing assessment는 반드시 D가 소유한 `policy_ref`에 결속되어야 하며, C가 임의의 late/miss threshold를 정하지 않는다.
+
+세부 규격은 `docs/CORE_SCHEDULE_OBSERVATION.md`를 따른다.
+
