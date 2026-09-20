@@ -57,9 +57,20 @@ const [readinessRegistry,handoffs,completionReports,closureReceipts] = await Pro
   ),
 ]);
 
+function activeHandoffsByProject(records) {
+  const byProject = new Map();
+  for (const handoff of records) {
+    const current = byProject.get(handoff.project_id);
+    const currentAt = Date.parse(current?.audit_binding?.audited_at ?? '');
+    const candidateAt = Date.parse(handoff?.audit_binding?.audited_at ?? '');
+    if (!current || candidateAt > currentAt) byProject.set(handoff.project_id,handoff);
+  }
+  return [...byProject.values()];
+}
+
 const liveByProject = new Map();
 if (live) {
-  for (const handoff of handoffs) {
+  for (const handoff of activeHandoffsByProject(handoffs)) {
     try {
       const capsule = await inspectGitHubProject({
         project_id:handoff.project_id,
