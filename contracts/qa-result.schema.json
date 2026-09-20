@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.freepass.ai/qa/result/v1",
+  "title": "AI Core QA Result v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required":[
+    "schema_version","project_id","subject_revision","environment","suite",
+    "proof_level","started_at","ended_at","checks","evidence_refs","limitations"
+  ],
+  "properties":{
+    "schema_version":{"const":"qa-result/v1"},
+    "project_id":{"type":"string","minLength":1},
+    "subject_revision":{"type":"string","minLength":1},
+    "environment":{"enum":["LOCAL","CI","EMULATOR","PREVIEW","PRODUCTION"]},
+    "suite":{"type":"string","minLength":1},
+    "proof_level":{"enum":["FIXTURE","SYNTHETIC","EMULATOR","PREVIEW","PRODUCTION"]},
+    "target":{
+      "type":["object","null"],
+      "additionalProperties":false,
+      "required":["target_id","observed_revision"],
+      "properties":{
+        "target_id":{"type":"string","minLength":1},
+        "observed_revision":{"type":["string","null"]}
+      }
+    },
+    "started_at":{"type":"string","format":"date-time"},
+    "ended_at":{"type":"string","format":"date-time"},
+    "checks":{
+      "type":"array",
+      "items":{
+        "type":"object",
+        "additionalProperties":false,
+        "required":["checker_id","status","detail","evidence_refs"],
+        "properties":{
+          "checker_id":{"type":"string","minLength":1},
+          "status":{"enum":["PASS","FAIL","SKIP","UNKNOWN"]},
+          "detail":{"type":"string","minLength":1},
+          "evidence_refs":{"type":"array","uniqueItems":true,"items":{"type":"string","minLength":1}}
+        }
+      }
+    },
+    "evidence_refs":{"type":"array","uniqueItems":true,"items":{"type":"string","minLength":1}},
+    "limitations":{"type":"array","uniqueItems":true,"items":{"type":"string","minLength":1}}
+  }
+}

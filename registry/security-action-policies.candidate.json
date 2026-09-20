@@ -1,0 +1,86 @@
+{
+  "schema_version": "security-action-policy-registry/v1",
+  "status": "CANDIDATE_NOT_CANONICAL",
+  "policies": [
+    {
+      "schema_version": "security-action-policy/v1",
+      "policy_id": "security.read-only",
+      "risk_class": "READ_ONLY",
+      "external_effect": false,
+      "reversible": true,
+      "independent_review_count": 0,
+      "human_approval_required": false,
+      "emergency_override": {
+        "allowed": false,
+        "bypass_independent_review": false,
+        "command_binding_required": false,
+        "max_ttl_seconds": 0
+      },
+      "audit_criticality": "TELEMETRY_BEST_EFFORT"
+    },
+    {
+      "schema_version": "security-action-policy/v1",
+      "policy_id": "security.local-mutation",
+      "risk_class": "LOCAL_MUTATION",
+      "external_effect": false,
+      "reversible": true,
+      "independent_review_count": 0,
+      "human_approval_required": false,
+      "emergency_override": {
+        "allowed": false,
+        "bypass_independent_review": false,
+        "command_binding_required": false,
+        "max_ttl_seconds": 0
+      },
+      "audit_criticality": "REQUIRED_AUDIT"
+    },
+    {
+      "schema_version": "security-action-policy/v1",
+      "policy_id": "security.reversible-external",
+      "risk_class": "REVERSIBLE_EXTERNAL_MUTATION",
+      "external_effect": true,
+      "reversible": true,
+      "independent_review_count": 1,
+      "human_approval_required": true,
+      "emergency_override": {
+        "allowed": true,
+        "bypass_independent_review": true,
+        "command_binding_required": true,
+        "max_ttl_seconds": 900
+      },
+      "audit_criticality": "REQUIRED_AUDIT"
+    },
+    {
+      "schema_version": "security-action-policy/v1",
+      "policy_id": "security.privileged-mutation",
+      "risk_class": "PRIVILEGED_MUTATION",
+      "external_effect": true,
+      "reversible": false,
+      "independent_review_count": 1,
+      "human_approval_required": true,
+      "emergency_override": {
+        "allowed": false,
+        "bypass_independent_review": false,
+        "command_binding_required": true,
+        "max_ttl_seconds": 0
+      },
+      "audit_criticality": "EVIDENTIARY"
+    },
+    {
+      "schema_version": "security-action-policy/v1",
+      "policy_id": "security.irreversible-external",
+      "risk_class": "IRREVERSIBLE_EXTERNAL_ACTION",
+      "external_effect": true,
+      "reversible": false,
+      "independent_review_count": 1,
+      "human_approval_required": true,
+      "emergency_override": {
+        "allowed": false,
+        "bypass_independent_review": false,
+        "command_binding_required": true,
+        "max_ttl_seconds": 0
+      },
+      "audit_criticality": "EVIDENTIARY"
+    }
+  ]
+}

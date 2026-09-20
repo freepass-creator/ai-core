@@ -1,0 +1,24 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://schemas.freepass.ai/governance/decision-record/v1",
+  "title":"AI Core Governance Decision Record v1",
+  "type":"object",
+  "additionalProperties":false,
+  "required":[
+    "schema_version","decision_id","decided_at","owner","context","decision",
+    "alternatives","consequences","supersedes","superseded_by","related_refs"
+  ],
+  "properties":{
+    "schema_version":{"const":"governance-decision-record/v1"},
+    "decision_id":{"type":"string","minLength":1},
+    "decided_at":{"type":"string","format":"date-time"},
+    "owner":{"type":"string","minLength":1},
+    "context":{"type":"string","minLength":1},
+    "decision":{"type":"string","minLength":1},
+    "alternatives":{"type":"array","items":{"type":"string","minLength":1}},
+    "consequences":{"type":"array","items":{"type":"string","minLength":1}},
+    "supersedes":{"type":"array","uniqueItems":true,"items":{"type":"string","minLength":1}},
+    "superseded_by":{"type":["string","null"]},
+    "related_refs":{"type":"array","uniqueItems":true,"items":{"type":"string","minLength":1}}
+  }
+}
