@@ -159,7 +159,7 @@
     {
       "repository": "freepass-creator/freepass-sales",
       "default_branch": "main",
-      "observed_head": "2ec46bb2e88b10a31915b68ec77b2eecbdac57bd",
+      "observed_head": "e8a96166e0961455119d9721501f26ecda229d03",
       "audit_state": "DEEP_EVIDENCE",
       "independence": "INDEPENDENT_UNLESS_CANDIDATE_SPECIFIC_LINEAGE_IS_FOUND",
       "findings": [
@@ -170,7 +170,7 @@
         "BACKPORT: B conformance receipt",
         "BACKPORT: C Sales shadow runtime binding"
       ],
-      "note": "A-session re-observed Sales at 2ec46bb2e88b10a31915b68ec77b2eecbdac57bd. Forward-skip evidence integrity is routed to D/C; B conformance and C runtime receipt binding remain Core > Project migration gaps."
+      "note": "A-session re-observed FreePass Sales at e8a96166e0961455119d9721501f26ecda229d03. The delta from 2ec46bb2e88b10a31915b68ec77b2eecbdac57bd is the source-side D Workflow Progression SHADOW binding plus CI enforcement; Sales CI 35481914375 succeeded. This strengthens existing workflow.forward-skip-evidence-integrity evidence to project SOURCE_PARITY_VERIFIED but creates no new independent promotion candidate. B conformance receipt and C runtime receipt binding remain Core > Project migration gaps; no production cutover is claimed."
     },
     {
       "repository": "freepass-creator/freepasserp",
