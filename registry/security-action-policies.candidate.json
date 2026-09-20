@@ -1,6 +1,6 @@
 {
   "schema_version": "security-action-policy-registry/v1",
-  "status": "CANDIDATE_NOT_CANONICAL",
+  "status": "CANONICAL_PARTIAL",
   "policies": [
     {
       "schema_version": "security-action-policy/v1",
