@@ -34,16 +34,7 @@ function parseLedgerEvents(text) {
     : [];
 }
 
-export function inspectLedgerEventWithWorkflow(text, event) {
-  const current = verifyLedgerText(text);
-  if (current.status !== 'VALID') {
-    return {
-      eligible: false,
-      reasons: ['WORKFLOW_LEDGER_INVALID'],
-      ledger_errors: current.errors,
-    };
-  }
-
+function inspectLedgerEventAgainstCurrent(text, current, event) {
   if (event?.type === 'CREATED') {
     return workflowAdmission.inspect(null, event);
   }
@@ -82,6 +73,18 @@ export function inspectLedgerEventWithWorkflow(text, event) {
     : null;
 
   return workflowAdmission.inspect(projection, event);
+}
+
+export function inspectLedgerEventWithWorkflow(text, event) {
+  const current = verifyLedgerText(text);
+  if (current.status !== 'VALID') {
+    return {
+      eligible: false,
+      reasons: ['WORKFLOW_LEDGER_INVALID'],
+      ledger_errors: current.errors,
+    };
+  }
+  return inspectLedgerEventAgainstCurrent(text, current, event);
 }
 
 export function verifyLedgerText(text) {
@@ -146,6 +149,68 @@ export function verifyLedgerText(text) {
   return { status: errors.length ? 'INVALID' : 'VALID', head, event_count: events.length, work: Object.fromEntries(workStates), errors };
 }
 
+function decideLedgerAppendAgainstCurrent(text, current, event) {
+  const workflowInspection = inspectLedgerEventAgainstCurrent(text, current, event);
+
+  const record = { ...event, previous_hash: current.head };
+  record.event_hash = eventHash(record);
+  const candidateText = `${text.trim()}${text.trim() ? '\n' : ''}${JSON.stringify(record)}\n`;
+  const candidate = verifyLedgerText(candidateText);
+  const prior = current.work?.[event?.work_id] ?? null;
+
+  let rejectionCode = null;
+
+  if (!workflowInspection.eligible) {
+    // Before D3 this was an imperative append-only precheck. D now owns the rule
+    // through work.subject-revision-same; keep the old public error code stable.
+    if (prior
+      && event?.type !== 'REOBSERVED'
+      && event?.type !== 'CREATED'
+      && event?.subject_revision !== prior.subject_revision) {
+      rejectionCode = 'REVISION_CHANGE_REQUIRES_REOBSERVED';
+    } else if (candidate.status !== 'VALID') {
+      // Historical/storage verifier translates existing public Ledger errors
+      // such as TRANSITION_NOT_ALLOWED and REOBSERVE_EVIDENCE_REQUIRED.
+      rejectionCode = candidate.errors[0]?.code ?? 'EVENT_INVALID';
+    } else {
+      // D is intentionally stricter than the historical reader. Fail closed and
+      // expose the inspection instead of silently letting legacy readability
+      // become new-write authority.
+      rejectionCode = 'WORKFLOW_DECISION_MISMATCH';
+    }
+  } else if (candidate.status !== 'VALID') {
+    // D owns workflow semantics; the Ledger verifier still owns event schema,
+    // hash-chain/history compatibility and storage-integrity constraints.
+    rejectionCode = candidate.errors[0]?.code ?? 'EVENT_INVALID';
+  }
+
+  return {
+    accepted: rejectionCode === null,
+    rejection_code: rejectionCode,
+    workflow_inspection: workflowInspection,
+    candidate_verification: candidate,
+    record,
+  };
+}
+
+export function decideLedgerAppend(text, event) {
+  const current = verifyLedgerText(text);
+  if (current.status !== 'VALID') {
+    return {
+      accepted: false,
+      rejection_code: 'LEDGER_INVALID',
+      workflow_inspection: {
+        eligible: false,
+        reasons: ['WORKFLOW_LEDGER_INVALID'],
+        ledger_errors: current.errors,
+      },
+      candidate_verification: null,
+      record: null,
+    };
+  }
+  return decideLedgerAppendAgainstCurrent(text, current, event);
+}
+
 export async function appendLedgerEvent(path, event, expectedHead = null) {
   const lockPath = `${path}.lock`;
   let lock;
@@ -162,31 +227,20 @@ export async function appendLedgerEvent(path, event, expectedHead = null) {
     if (current.status !== 'VALID') throw new Error('LEDGER_INVALID');
     if (current.head !== expectedHead) throw new Error('LEDGER_HEAD_CHANGED');
 
-    const prior = current.work?.[event.work_id] ?? null;
-    if (prior && event.type !== 'REOBSERVED' && event.type !== 'CREATED'
-      && event.subject_revision !== prior.subject_revision) {
-      throw new Error('REVISION_CHANGE_REQUIRES_REOBSERVED');
-    }
-
-    const workflowInspection = inspectLedgerEventWithWorkflow(text, event);
-
-    const record = { ...event, previous_hash: current.head };
-    record.event_hash = eventHash(record);
-    const candidateText = `${text.trim()}${text.trim() ? '\n' : ''}${JSON.stringify(record)}\n`;
-    const candidate = verifyLedgerText(candidateText);
-    if (candidate.status !== 'VALID') throw new Error(candidate.errors[0]?.code ?? 'EVENT_INVALID');
-
-    // Phase 2 authority migration: every new append must also be accepted by the
-    // D Workflow Engine. The legacy verifier remains in place for hash-chain,
-    // evidence and historical compatibility. A disagreement fails closed.
-    if (!workflowInspection.eligible) {
-      const error = new Error('WORKFLOW_DECISION_MISMATCH');
-      error.workflow_inspection = workflowInspection;
+    // D3: D Workflow Engine is the primary new-write workflow admission.
+    // The historical Ledger verifier remains a storage/history compatibility
+    // backstop and stable-error translator, not a second business state machine.
+    const decision = decideLedgerAppendAgainstCurrent(text, current, event);
+    if (!decision.accepted) {
+      const error = new Error(decision.rejection_code ?? 'EVENT_INVALID');
+      error.workflow_inspection = decision.workflow_inspection;
+      error.candidate_errors = decision.candidate_verification?.errors ?? [];
       throw error;
     }
+
     const writer = await open(path, 'a');
-    try { await writer.writeFile(`${JSON.stringify(record)}\n`, 'utf8'); await writer.sync(); } finally { await writer.close(); }
-    return { head: record.event_hash, event: record };
+    try { await writer.writeFile(`${JSON.stringify(decision.record)}\n`, 'utf8'); await writer.sync(); } finally { await writer.close(); }
+    return { head: decision.record.event_hash, event: decision.record };
   } finally {
     await lock?.close();
     await unlink(lockPath).catch(() => {});
