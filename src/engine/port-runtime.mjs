@@ -108,10 +108,10 @@ export function createPortRuntime({
     if(adapter.side_effects===true&&adapter.idempotency==='REQUIRED') need(text(idempotency_key),'IDEMPOTENCY_KEY_REQUIRED');
     const impl=normalizeImplementation(implementations,adapter.adapter_id);
     need(impl,'ADAPTER_IMPLEMENTATION_MISSING',{adapter_id:adapter.adapter_id});
-    const connector=resolveConnectorFacade(adapter,connectors,correlation_id,auth_context,execution);
 
     const startedAt=iso(clock);
     try{
+      const connector=resolveConnectorFacade(adapter,connectors,correlation_id,auth_context,execution);
       const raw=await withTimeout(impl.invoke({
         input,
         port_id:portId,
