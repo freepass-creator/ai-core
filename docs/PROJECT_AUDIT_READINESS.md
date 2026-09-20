@@ -236,3 +236,48 @@ Current human-readable Project 4 handoffs:
 - `docs/handoffs/project-4/AIOPS_AUDIT_HANDOFF_2026-09-20.md`
 
 Project 4 routes work only. Consumer-repository writes, consumer PRs, canonical promotion, deploy and production mutation remain disabled.
+
+
+## Completion and closure lifecycle
+
+Project 4 does not treat "implementation completed" as "audit closed".
+
+The closure loop is:
+
+```
+Handoff Packet
+→ Completion Report
+→ successor Audit Result v2
+→ live freshness check
+→ Closure Receipt
+```
+
+Commands:
+
+```bash
+npm run audit:completion-template -- <handoff.json> <result_revision>
+npm run audit:closure -- <handoff.json> <completion.json>
+npm run audit:closure -- <handoff.json> <completion.json> --successor <successor-audit.json>
+npm run audit:closure -- <handoff.json> <completion.json> --successor <successor-audit.json> --format md --require-closed
+```
+
+Closure states:
+
+- `OPEN_PARTIAL` — project work is still partial/not done
+- `REAUDIT_REQUIRED` — project reports completion but no successor v2 audit exists
+- `REAUDIT_GAPS_REMAIN` — successor audit still reports unresolved handoff axes
+- `CLOSED_VERIFIED` — successor v2 audit matches the completion revision, the Core audit baseline is current, live freshness is CURRENT, and all original implementation/discovery axes are audit-closed
+
+Machine contracts:
+
+- `contracts/project-audit-completion-report.schema.json`
+- `contracts/project-audit-closure-receipt.schema.json`
+
+Current machine-issued handoffs:
+
+- `docs/handoffs/project-4/freepass-admin.handoff.json`
+- `docs/handoffs/project-4/freepasserp4.handoff.json`
+- `docs/handoffs/project-4/freepass-estimate.handoff.json`
+- `docs/handoffs/project-4/aiops.handoff.json`
+
+A completion report is evidence returned by the project. It is not proof that the audit finding disappeared. Only a successor revision-bound audit can close the finding.
