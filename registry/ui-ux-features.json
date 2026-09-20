@@ -1,6 +1,6 @@
 {
   "contract": "ai-core-ui-ux-feature-registry/v1",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "normative_source": "docs/SCREEN_DESIGN_STANDARD.md",
   "global_rules": {
     "invariants": [
@@ -9,7 +9,8 @@
       "Top is informational and bottom is actionable for task-level actions unless a documented platform or accessibility exception applies.",
       "Every asynchronous action separates request-started, authoritative completion, failure and retry or receipt states.",
       "Every data surface defines loading, empty, error and populated states before it is considered complete.",
-      "New reusable UI/UX functionality must be added to this registry before adoption; unregistered common behavior is not a new local standard."
+      "New reusable UI/UX functionality must be added to this registry before adoption; unregistered common behavior is not a new local standard.",
+      "Reusable screen composition must select a registered composition pattern instead of inventing local search/filter/action placement."
     ],
     "product_owned": [
       "Brand colors within contrast requirements",
@@ -1304,6 +1305,52 @@
           "refs": [
             "docs/research/GLOBAL_PRODUCT_STANDARD_EVIDENCE_2026-09-19.md#12-search-filter",
             "docs/coordination/ERP4_STABILITY_QUERY_LEARNING.md"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "data.search-discovery",
+      "family": "data",
+      "title": "Search and discovery composition",
+      "kind": "pattern",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "CONTROL",
+        "DATA_SURFACE",
+        "RESPONSIVE"
+      ],
+      "required_states": [
+        "search-only",
+        "search-filter",
+        "search-quick",
+        "search-filter-quick"
+      ],
+      "rules": [
+        "Choose exactly one registered search composition mode per surface; do not assemble search, filter and quick controls ad hoc.",
+        "Search Only is the default when free-text search is sufficient.",
+        "Search + Filter is used when secondary structured criteria are necessary but not repeatedly toggled during ordinary work.",
+        "Search + Quick is used only when a small stable set of high-frequency mutually understandable criteria materially reduces repeated work.",
+        "Search + Filter + Quick is reserved for high-volume surfaces where both structured secondary criteria and proven high-frequency quick criteria are required.",
+        "Filter trigger is visually adjacent to the search field; quick filters, when justified, occupy a separate row immediately below the search row.",
+        "Applied structured filters remain visible or count-visible, removable and bound to the same query revision as result count and results.",
+        "Do not duplicate the same criterion in search parsing, quick filters and detailed filters with independent conflicting state."
+      ],
+      "verification": [
+        "composition-mode-declared",
+        "no-ad-hoc-control-placement",
+        "query-revision",
+        "mobile-desktop",
+        "applied-filter-visibility",
+        "quick-filter-justification"
+      ],
+      "evidence": [
+        {
+          "level": "CROSS_PROJECT_VERIFIED",
+          "refs": [
+            "docs/research/GLOBAL_PRODUCT_STANDARD_EVIDENCE_2026-09-19.md#12-search-filter",
+            "docs/FREEPASS_PRODUCT_UI_PROFILE.md",
+            "docs/UI_COMPOSITION_STANDARD.md"
           ]
         }
       ]
