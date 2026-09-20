@@ -11,13 +11,14 @@ AI Core UI/UX is a behavioral and implementation contract, not a mood board. A c
 1. `docs/SCREEN_DESIGN_STANDARD.md` — human-readable accessibility and interaction floor.
 2. `registry/ui-ux-features.json` — stable feature IDs, required states, shared behavior and verification.
 3. `design-system/tokens.json` — machine-readable Design Token SSOT.
-4. `design-system/components.registry.json` — all component-kind feature projections.
-5. `design-system/patterns.registry.json` — all pattern/workflow/surface projections with B runtime vs contract-only ownership.
-6. `design-system/interaction.contract.json` — cross-component interaction invariants.
-7. `contracts/ui-screen-manifest.schema.json` — consumer screen composition contract with explicit C/D bindings.
-8. `registry/ui-ux-governance.json` — temporary exception and deprecation registry.
-9. `registry/ui-ux-consumers.json` — real-product adoption/conformance status; evidence sources are not automatically conformant consumers.
-10. Product profiles — brand, density, icon family, domain copy and allowed exceptions.
+4. `design-system/brand-themes.registry.json` — product/co-brand/white-label brand-color theme registry. Semantic state roles remain invariant.
+5. `design-system/components.registry.json` — all component-kind feature projections.
+6. `design-system/patterns.registry.json` — all pattern/workflow/surface projections with B runtime vs contract-only ownership.
+7. `design-system/interaction.contract.json` — cross-component interaction invariants.
+8. `contracts/ui-screen-manifest.schema.json` — consumer screen composition contract with explicit C/D bindings.
+9. `registry/ui-ux-governance.json` — temporary exception and deprecation registry.
+10. `registry/ui-ux-consumers.json` — real-product adoption/conformance status; evidence sources are not automatically conformant consumers.
+11. Product profiles — brand, density, icon family, domain copy and allowed exceptions.
 
 A lower layer may specialize presentation but may not redefine the meaning of a higher-layer feature.
 
