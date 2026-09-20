@@ -69,7 +69,14 @@ export async function allocateNext({
       owner
     }, { leaseMinutes, coordRepo, branch });
 
-    if (result.action === 'SKIP_DUPLICATE' || result.action === 'SKIP_ALREADY_COMPLETED') continue;
+    if (result.action === 'SKIP_OWNER_BUSY') {
+      return {
+        status:'OWNER_BUSY',
+        claim:result.claim,
+        unknown_repositories:unknown
+      };
+    }
+    if (result.action === 'SKIP_DUPLICATE' || result.action === 'SKIP_ALREADY_COMPLETED' || result.action === 'SKIP_SCOPE_CONFLICT') continue;
     if (result.action !== 'ACQUIRED') continue;
 
     const after = await repoHead(candidate.repository, candidate.default_branch);
@@ -124,7 +131,7 @@ if (process.argv[1]?.endsWith('a-session-next.mjs')) {
       branch:value(args,'--branch') || DEFAULT_BRANCH
     });
     console.log(JSON.stringify(result,null,2));
-    if (result.status === 'NO_UNCLAIMED_CHANGED_REPOSITORY') process.exitCode=3;
+    if (result.status === 'NO_UNCLAIMED_CHANGED_REPOSITORY' || result.status === 'OWNER_BUSY') process.exitCode=3;
     if (result.unknown_repositories?.length) process.exitCode=Math.max(process.exitCode || 0,2);
   } catch (error) {
     console.error(`A allocator error: ${error.message}`);
