@@ -272,3 +272,18 @@ The reusable part is not the Sales funnel labels. It is the rule that later vali
 
 Sales runtime remains authoritative. Source-side D parity/binding is a later gate.
 
+### D8 source-side adoption checkpoint — FreePass Sales
+
+FreePass Sales merged source-side D progression binding at `e8a96166e0961455119d9721501f26ecda229d03` and exact-head Sales CI `35481914375` passed syntax/static checks, B/C adoption checks, D progression parity, browser regression and mobile capture.
+
+D records this as:
+
+- Sales workflow adoption status: `SHADOW`
+- workflow evidence stage: `SOURCE_PARITY_VERIFIED`
+- progression adoption status: `SHADOW`
+- progression evidence stage: `SOURCE_PARITY_VERIFIED`
+
+D8 also aligns Progression maturity enforcement with Workflow/Projection: `SOURCE_PARITY_VERIFIED` requires successful CI evidence, and duplicate source/evidence paths fail validation.
+
+The next promotion gate is `RUNTIME_PILOT`, not automatic promotion from green parity. A selected Sales write boundary must actually invoke D progression authority while preserving source behavior and rollback.
+
