@@ -44,9 +44,26 @@
   "connector_binding": {
     "connector_id": "freepass-admin.json-file-store",
     "connector_version": "1.0.0",
-    "operation_ids": [
-      "product.read",
-      "product.mutate"
+    "operation_map": [
+      {
+        "repository_operation_id": "product.get",
+        "connector_operation_ids": [
+          "product.read"
+        ]
+      },
+      {
+        "repository_operation_id": "product.list",
+        "connector_operation_ids": [
+          "product.read"
+        ]
+      },
+      {
+        "repository_operation_id": "product.save",
+        "connector_operation_ids": [
+          "product.read",
+          "product.mutate"
+        ]
+      }
     ]
   },
   "data_classification": [
