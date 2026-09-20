@@ -33,7 +33,13 @@ Before the move, all five paths were confirmed to have no `.git` entry and were 
 
 `C:\dev\freepasserp4-ui-upload` and `C:\dev\freepasserp4-ui-deploy` both point to the same Git worktree metadata directory. Their three modified files and binary Git patches are identical; the patch SHA-256 is `EA1CD6F00988E582C58519EB638F926EC0CB98FF82C68FC2137A78665439E7A9`.
 
-They are not directory-identical. Excluding `.git`, `node_modules`, and `.next`, deploy has 34 additional paths (primarily Vercel output), while upload has `.env.local` and `.vercel/README.txt`. Because `.env.local` can contain local configuration and the copied `.git` pointer creates alias risk, both directories remain **HOLD** until a secret-safe content backup and explicit canonical-copy choice are completed.
+They are not directory-identical. Excluding `.git`, `node_modules`, and `.next`, deploy has 34 additional paths (primarily Vercel output), while upload has `.env.local` and `.vercel/README.txt`.
+
+The upload directory was not registered by `git worktree list`; its `.git` file merely aliased the registered deploy worktree metadata. Its 1,591 files were hashed without printing `.env.local`, and the whole directory was moved into a user-profile archive restricted to the current user, SYSTEM, and Administrators. The copied `.git` pointer was renamed to `.git.pointer.disabled` in the archive to prevent accidental Git operations against the live deploy metadata. The registered `freepasserp4-ui-deploy` worktree remains at HEAD `a466b0aa` with its original three modifications.
+
+- Sensitive UI alias manifest SHA-256: `B19E5056CC47F3E5FFB5B88D51968BAA2F2D8A89CD2E5A9C33F07B9E3F92B761`
+- `freepasserp4-ui-source` remains HOLD pending a full provenance comparison.
+- The previously inventoried `freepasserp4-ui-source.zip` was absent on the follow-up pass; no deletion or move of that ZIP was performed by this task.
 
 ## Executed Git worktree relocation
 
@@ -62,7 +68,7 @@ The old `.wt-est` shell exposed a chained junction to the previously archived `.
 - Dirty worktrees: canonical ERP4, `.wt-test`, `freepasserp4-rtdb-current`, both UI directories, `freepass-source-registry-current`, and every registered worktree under `freepasserp4\tmp`.
 - The four clean root-level worktrees were safely relocated as recorded above. The unpublished estimate branch remains local-only but is protected by a complete verified bundle; publishing or merging those 13 commits is a separate code-review decision.
 - `_wt-base` has historical ERP4 attribution but its current ownership still needs revalidation. Other generic `_wt*` directories were not proven to belong to ERP4. All remain untouched.
-- `freepasserp4-ui-source`, its ZIP, and the UI upload/deploy pair require a secret-excluding full-tree comparison before archival.
+- `freepasserp4-ui-source` remains HOLD pending a secret-excluding full-tree comparison. The registered UI deploy worktree remains HOLD because it is dirty.
 - `freepasserp4-rtdb-current` is migration debt. Firestore-only outputs must be extracted and verified before archival; RTDB remains permanently retired.
 - Service-account JSON files remain untouched. Their consumers must be changed to an approved secure path before any credential file is moved.
 

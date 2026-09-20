@@ -113,7 +113,7 @@
       ".env.local",
       ".vercel/README.txt"
     ],
-    "decision": "HOLD_SECRET_SAFE_BACKUP_AND_CANONICAL_SELECTION_REQUIRED",
+    "decision": "EXECUTED_ARCHIVED_UNREGISTERED_UPLOAD_ALIAS_DEPLOY_REMAINS_HOLD",
     "deploy_unique_path_count": 34,
     "deploy_unique_path_sample": [
       ".vercel/.env.production.local",
@@ -121,7 +121,25 @@
       ".vercel/build.stdout.log",
       ".vercel/output/config.json"
     ],
-    "upload_git_registration": "NOT_SEPARATELY_REGISTERED_ALIASES_DEPLOY_GITDIR"
+    "upload_git_registration": "NOT_SEPARATELY_REGISTERED_ALIASES_DEPLOY_GITDIR",
+    "archived_upload_alias": {
+      "source": "C:\\dev\\freepasserp4-ui-upload",
+      "destination": "C:\\Users\\admin\\DevArchive\\erp4-root-cleanup\\2026-09-20\\sensitive-ui-alias\\freepasserp4-ui-upload",
+      "manifest": "C:\\Users\\admin\\DevArchive\\erp4-root-cleanup\\2026-09-20\\sensitive-ui-alias\\manifest.json",
+      "manifest_sha256": "B19E5056CC47F3E5FFB5B88D51968BAA2F2D8A89CD2E5A9C33F07B9E3F92B761",
+      "file_count": 1591,
+      "total_bytes": 27983648,
+      "git_pointer_disabled": true,
+      "acl": "CURRENT_USER_SYSTEM_ADMINISTRATORS_FULL_CONTROL_ONLY",
+      "env_contents_read": false,
+      "source_absent": true,
+      "archive_present": true,
+      "registered_deploy_unchanged": true,
+      "restore_commands": [
+        "Rename-Item -LiteralPath 'C:\\Users\\admin\\DevArchive\\erp4-root-cleanup\\2026-09-20\\sensitive-ui-alias\\freepasserp4-ui-upload\\.git.pointer.disabled' -NewName '.git'",
+        "Move-Item -LiteralPath 'C:\\Users\\admin\\DevArchive\\erp4-root-cleanup\\2026-09-20\\sensitive-ui-alias\\freepasserp4-ui-upload' -Destination 'C:\\dev\\freepasserp4-ui-upload'"
+      ]
+    }
   },
   "registered_worktrees": [
     {
