@@ -35,10 +35,25 @@ Before the move, all five paths were confirmed to have no `.git` entry and were 
 
 They are not directory-identical. Excluding `.git`, `node_modules`, and `.next`, deploy has 34 additional paths (primarily Vercel output), while upload has `.env.local` and `.vercel/README.txt`. Because `.env.local` can contain local configuration and the copied `.git` pointer creates alias risk, both directories remain **HOLD** until a secret-safe content backup and explicit canonical-copy choice are completed.
 
+## Executed Git worktree relocation
+
+After a fresh remote fetch, three clean worktrees had their exact HEAD reachable from the named remote branch. Each branch was exported to a verified Git bundle outside `C:\dev`, recorded in a restore manifest, removed with `git worktree remove`, and recreated with `git worktree add`:
+
+| Old path | New path | Branch | HEAD |
+| --- | --- | --- | --- |
+| `C:\dev\.wt-rp012` | `C:\dev\_worktrees\freepasserp4\rp012` | `fix/rp012-deposit-column` | `d1fa2d5e` |
+| `C:\dev\fp-shop-pr` | `C:\dev\_worktrees\freepasserp4\shop-main` | `main` | `96a24707` |
+| `C:\dev\freepasserp4-wt-f86check` | `C:\dev\_worktrees\freepasserp4\f86check` | `claude/f86-freshness-checker-spec` | `f17747a5` |
+
+All three recreated worktrees retained their exact HEAD and were clean. Git removal left a `node_modules` junction shell at two old paths; those shells were separately archived after confirming that they contained no other entry.
+
+- Worktree manifest SHA-256: `80B8F1F0E2875D8252E77AE8ECEFF0B8CBC8131EC6CF425FE7F83C1CF874C27E`
+- Residual-shell manifest SHA-256: `914CFBB0D09051775B2D71E4EE11D32E02AFBC2F1A0B73280C1C1513B0478852`
+
 ## HOLD set
 
 - Dirty worktrees: canonical ERP4, `.wt-test`, `freepasserp4-rtdb-current`, both UI directories, `freepass-source-registry-current`, and every registered worktree under `freepasserp4\tmp`.
-- Clean registered worktrees: `.wt-est`, `.wt-rp012`, `fp-shop-pr`, and `freepasserp4-wt-f86check`. These require branch publication checks plus a fresh active-session/process check immediately before `git worktree remove` and `git worktree add` recreation under `C:\dev\_worktrees\freepasserp4`.
+- `.wt-est` remains HOLD because its branch has 13 commits that are not contained in any fetched remote branch. The other three previously clean root-level worktrees were safely relocated as recorded above.
 - `_wt-base` has historical ERP4 attribution but its current ownership still needs revalidation. Other generic `_wt*` directories were not proven to belong to ERP4. All remain untouched.
 - `freepasserp4-ui-source`, its ZIP, and the UI upload/deploy pair require a secret-excluding full-tree comparison before archival.
 - `freepasserp4-rtdb-current` is migration debt. Firestore-only outputs must be extracted and verified before archival; RTDB remains permanently retired.

@@ -129,14 +129,15 @@
       "head": "fd8522a38c86298ae7b0113bccdc3b288ef97f8a",
       "branch": "feat/estimate-new-used",
       "dirty_count": 0,
-      "decision": "HOLD_ACTIVE_AND_PUBLICATION_RECHECK"
+      "decision": "HOLD_13_UNPUBLISHED_COMMITS"
     },
     {
       "path": "C:\\dev\\.wt-rp012",
       "head": "d1fa2d5e2e035ca7e3f5cab873f8186ba2138835",
       "branch": "fix/rp012-deposit-column",
       "dirty_count": 0,
-      "decision": "HOLD_ACTIVE_AND_PUBLICATION_RECHECK"
+      "decision": "EXECUTED_RELOCATED",
+      "destination": "C:\\dev\\_worktrees\\freepasserp4\\rp012"
     },
     {
       "path": "C:\\dev\\.wt-test",
@@ -150,7 +151,8 @@
       "head": "96a24707ed8e769393f3a7cb6656de0f0c280f2d",
       "branch": "main",
       "dirty_count": 0,
-      "decision": "HOLD_ACTIVE_AND_PUBLICATION_RECHECK"
+      "decision": "EXECUTED_RELOCATED",
+      "destination": "C:\\dev\\_worktrees\\freepasserp4\\shop-main"
     },
     {
       "path": "C:\\dev\\freepasserp4-rtdb-current",
@@ -171,7 +173,8 @@
       "head": "f17747a549cf7857c28932373ada0bfb8eb7d7da",
       "branch": "claude/f86-freshness-checker-spec",
       "dirty_count": 0,
-      "decision": "HOLD_ACTIVE_AND_PUBLICATION_RECHECK"
+      "decision": "EXECUTED_RELOCATED",
+      "destination": "C:\\dev\\_worktrees\\freepasserp4\\f86check"
     },
     {
       "path": "C:\\dev\\worktrees\\freepass-source-registry-current",
@@ -299,5 +302,72 @@
       ],
       "decision": "HOLD_SECURE_PATH_AND_CONSUMER_REWRITE_REQUIRED"
     }
-  ]
+  ],
+  "executed_worktree_relocations": [
+    {
+      "source": "C:\\dev\\.wt-rp012",
+      "destination": "C:\\dev\\_worktrees\\freepasserp4\\rp012",
+      "branch": "fix/rp012-deposit-column",
+      "head": "d1fa2d5e2e035ca7e3f5cab873f8186ba2138835",
+      "remote_contains": "origin/fix/rp012-deposit-column",
+      "bundle": "C:\\Users\\admin\\DevArchive\\erp4-root-cleanup\\2026-09-20\\published-clean-worktrees\\rp012.bundle",
+      "bundle_sha256": "4CEA83A79DF3BC6AD00A5487A92F740DED4F2C43D474590163D37C04A79EAD2C",
+      "restore_commands": [
+        "git -C 'C:\\dev\\freepasserp4' worktree remove 'C:\\dev\\_worktrees\\freepasserp4\\rp012'",
+        "git -C 'C:\\dev\\freepasserp4' worktree add 'C:\\dev\\.wt-rp012' 'fix/rp012-deposit-column'"
+      ]
+    },
+    {
+      "source": "C:\\dev\\fp-shop-pr",
+      "destination": "C:\\dev\\_worktrees\\freepasserp4\\shop-main",
+      "branch": "main",
+      "head": "96a24707ed8e769393f3a7cb6656de0f0c280f2d",
+      "remote_contains": "origin/main",
+      "bundle": "C:\\Users\\admin\\DevArchive\\erp4-root-cleanup\\2026-09-20\\published-clean-worktrees\\shop-main.bundle",
+      "bundle_sha256": "31EB83E726EE012565E782ABFB5DBAFAF74A3827DFFC2B76431511C5F2995C0D",
+      "restore_commands": [
+        "git -C 'C:\\dev\\freepasserp4' worktree remove 'C:\\dev\\_worktrees\\freepasserp4\\shop-main'",
+        "git -C 'C:\\dev\\freepasserp4' worktree add 'C:\\dev\\fp-shop-pr' 'main'"
+      ]
+    },
+    {
+      "source": "C:\\dev\\freepasserp4-wt-f86check",
+      "destination": "C:\\dev\\_worktrees\\freepasserp4\\f86check",
+      "branch": "claude/f86-freshness-checker-spec",
+      "head": "f17747a549cf7857c28932373ada0bfb8eb7d7da",
+      "remote_contains": "origin/claude/f86-freshness-checker-spec",
+      "bundle": "C:\\Users\\admin\\DevArchive\\erp4-root-cleanup\\2026-09-20\\published-clean-worktrees\\f86check.bundle",
+      "bundle_sha256": "AE7B9169A789107D3FB698444DBDAEE9BD1817069E91A38C8B3891B0E6AB1C65",
+      "restore_commands": [
+        "git -C 'C:\\dev\\freepasserp4' worktree remove 'C:\\dev\\_worktrees\\freepasserp4\\f86check'",
+        "git -C 'C:\\dev\\freepasserp4' worktree add 'C:\\dev\\freepasserp4-wt-f86check' 'claude/f86-freshness-checker-spec'"
+      ]
+    }
+  ],
+  "worktree_relocation_archive": {
+    "manifest": "C:\\Users\\admin\\DevArchive\\erp4-root-cleanup\\2026-09-20\\published-clean-worktrees\\manifest.json",
+    "manifest_sha256": "80B8F1F0E2875D8252E77AE8ECEFF0B8CBC8131EC6CF425FE7F83C1CF874C27E",
+    "bundles_verified": true,
+    "post_move_clean": true
+  },
+  "residual_shell_archive": {
+    "manifest": "C:\\Users\\admin\\DevArchive\\erp4-root-cleanup\\2026-09-20\\post-worktree-residual-shells\\manifest.json",
+    "manifest_sha256": "914CFBB0D09051775B2D71E4EE11D32E02AFBC2F1A0B73280C1C1513B0478852",
+    "entries": [
+      {
+        "source": "C:\\dev\\fp-shop-pr",
+        "destination": "C:\\Users\\admin\\DevArchive\\erp4-root-cleanup\\2026-09-20\\post-worktree-residual-shells\\fp-shop-pr",
+        "metadata_sha256": "88BFFC4A2E98794D586C0296BDBA4F48505742C03496FCFF07C5C5A06B7237AB",
+        "restore_command": "Move-Item -LiteralPath 'C:\\Users\\admin\\DevArchive\\erp4-root-cleanup\\2026-09-20\\post-worktree-residual-shells\\fp-shop-pr' -Destination 'C:\\dev\\fp-shop-pr'"
+      },
+      {
+        "source": "C:\\dev\\freepasserp4-wt-f86check",
+        "destination": "C:\\Users\\admin\\DevArchive\\erp4-root-cleanup\\2026-09-20\\post-worktree-residual-shells\\freepasserp4-wt-f86check",
+        "metadata_sha256": "A4145E0F528D7D5CC7FA957F82D50E8BA4AD76C4F9D0B6178B080C4E11DED18D",
+        "restore_command": "Move-Item -LiteralPath 'C:\\Users\\admin\\DevArchive\\erp4-root-cleanup\\2026-09-20\\post-worktree-residual-shells\\freepasserp4-wt-f86check' -Destination 'C:\\dev\\freepasserp4-wt-f86check'"
+      }
+    ],
+    "all_sources_absent": true,
+    "all_destinations_present": true
+  }
 }
