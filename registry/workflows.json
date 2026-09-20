@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "registry_version": "1.12.0",
+  "registry_version": "1.13.0",
   "primitives": [
     {
       "primitive_id": "workflow.fact-vs-state",
@@ -145,6 +145,16 @@
         "freepass-sales"
       ],
       "notes": "Verified in FreePass Sales. Second independent project evidence is required before COMMON_ADOPTED."
+    },
+    {
+      "primitive_id": "workflow.compensated-multiwrite",
+      "status": "PILOT",
+      "meaning": "When sequential side effects partially apply and a later effect fails, compensate only the already-applied effects in reverse order using domain-declared compensations; compensation failure must escalate visible partial state.",
+      "evidence_level": "PROJECT_VERIFIED",
+      "source_projects": [
+        "renman"
+      ],
+      "notes": "Verified in Renman. Each effect owns its domain compensation or explicit non-compensated reason. Second independent project evidence is required before COMMON_ADOPTED."
     }
   ],
   "workflows": [
