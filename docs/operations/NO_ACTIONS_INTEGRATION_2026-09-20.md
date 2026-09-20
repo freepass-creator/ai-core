@@ -311,3 +311,32 @@ Rules:
 - array reordering for set-like receipt/binding/proof inputs does not stale the plan
 
 Actions: NOT USED.
+
+
+## Execution lease fencing cycle
+
+Scope: prepared effect-resume execution coordination only.
+
+Added:
+- `core.execution-lease/v1`
+- `src/contracts/execution-lease.mjs`
+- `src/workflow/execution-lease-runtime.mjs`
+- `src/workflow/execution-fenced-resume-runtime.mjs`
+- `test/workflow-execution-lease.test.mjs`
+- `test/workflow-execution-fenced-resume.test.mjs`
+- `docs/workflow/EXECUTION_LEASE_FENCING.md`
+
+Rules:
+- logical execution lease store must support atomic CAS
+- new acquisition increments monotonic fencing token
+- expired/released lease never resets fencing sequence
+- same-owner duplicate invocation does not piggyback a live lease
+- prepared plan is reverified after lease acquisition
+- lease/fence is checked and renewed before each effect/compensation
+- stale fencing token blocks side effects
+- gate loss before effect -> HOLD with prior receipt evidence preserved
+- gate loss before compensation -> PARTIAL_STATE / ESCALATE
+- stale worker cannot release a newer worker's lease
+- external sinks should enforce the passed fencing token when provider/storage supports it
+
+Actions: NOT USED.
