@@ -1,21 +1,34 @@
+import { verifyProofInputBinding } from '../contracts/proof-input-binding.mjs';
 import { sameLogicalExecution } from '../contracts/execution-identity.mjs';
 
 const SOURCES=new Set(['NATIVE_EXECUTION','RECOVERY_HISTORY','DOWNSTREAM_TERMINAL_EVIDENCE','EXTERNAL_AUTHORITY']);
-const PROOF=new Set(['CURRENT','UNBOUND','STALE','INVALID']);
+const PROOF=new Set(['CURRENT','UNBOUND','UNVERIFIED','STALE','INVALID']);
 const need=(condition,code,details={})=>{if(!condition){const error=new Error(code);error.code=code;error.details=details;throw error;}};
 
 function recordShape(record,index){
   need(record&&typeof record==='object','RECOVERY_EVIDENCE_RECORD_INVALID',{index});
   need(SOURCES.has(record.source),'RECOVERY_EVIDENCE_SOURCE_INVALID',{index});
   need(typeof record.terminal_authority==='boolean','RECOVERY_TERMINAL_AUTHORITY_REQUIRED',{index});
-  need(PROOF.has(record.proof_status??'UNBOUND'),'RECOVERY_PROOF_STATUS_INVALID',{index});
   const receipt=record.receipt;
   need(receipt?.schema_version==='core-receipt/v1','RECOVERY_RECEIPT_SCHEMA_INVALID',{index});
   need(['SUCCEEDED','HOLD','FAILED','PARTIAL'].includes(receipt.status),'RECOVERY_RECEIPT_STATUS_INVALID',{index});
+
+  let proofStatus='UNBOUND';
+  if(receipt.proof_input_binding){
+    if(Array.isArray(record.current_proof_inputs)&&record.current_proof_inputs.length){
+      proofStatus=verifyProofInputBinding(receipt.proof_input_binding,record.current_proof_inputs).status;
+    }else{
+      proofStatus=record.proof_status??'UNVERIFIED';
+    }
+  }else if(record.proof_status!=null){
+    proofStatus=record.proof_status;
+  }
+  need(PROOF.has(proofStatus),'RECOVERY_PROOF_STATUS_INVALID',{index});
+
   return {
     source:record.source,
     terminal_authority:record.terminal_authority,
-    proof_status:record.proof_status??'UNBOUND',
+    proof_status:proofStatus,
     receipt
   };
 }
@@ -55,8 +68,37 @@ export function reconcileRecoveryReceipts({
   }
 
   const authoritative=matching.filter(record=>record.terminal_authority===true);
-  const staleAuthoritative=authoritative.filter(record=>['STALE','INVALID'].includes(record.proof_status));
-  const currentAuthoritative=authoritative.filter(record=>!['STALE','INVALID'].includes(record.proof_status));
+  const staleAuthoritative=authoritative.filter(record=>['STALE','INVALID','UNVERIFIED'].includes(record.proof_status));
+  const currentAuthoritative=authoritative.filter(record=>!['STALE','INVALID','UNVERIFIED'].includes(record.proof_status));
+
+  const byAttempt=new Map();
+  for(const record of currentAuthoritative){
+    const attemptId=record.receipt.execution?.attempt_id;
+    if(!attemptId) continue;
+    if(!byAttempt.has(attemptId)) byAttempt.set(attemptId,[]);
+    byAttempt.get(attemptId).push(record);
+  }
+  const conflictingAttempts=[];
+  for(const [attemptId,records] of byAttempt.entries()){
+    const statuses=new Set(records.map(record=>record.receipt.status));
+    if(statuses.has('SUCCEEDED')&&[...statuses].some(status=>status!=='SUCCEEDED')){
+      conflictingAttempts.push({
+        attempt_id:attemptId,
+        receipt_refs:records.map(record=>record.receipt.receipt_id),
+        statuses:[...statuses].sort(),
+      });
+    }
+  }
+  if(conflictingAttempts.length){
+    return {
+      action:'HOLD',
+      reason:'CONFLICTING_TERMINAL_EVIDENCE',
+      logical_execution_id:target_execution.logical_execution_id,
+      conflicts:conflictingAttempts,
+      matching_receipt_count:matching.length,
+      foreign_receipt_count:foreign.length,
+    };
+  }
 
   const successes=currentAuthoritative.filter(record=>record.receipt.status==='SUCCEEDED');
   const partialOrHold=currentAuthoritative.filter(record=>['PARTIAL','HOLD'].includes(record.receipt.status));
@@ -91,7 +133,7 @@ export function reconcileRecoveryReceipts({
   if(staleAuthoritative.length){
     return {
       action:'HOLD',
-      reason:'AUTHORITATIVE_EVIDENCE_STALE',
+      reason:staleAuthoritative.some(record=>record.proof_status==='UNVERIFIED')?'AUTHORITATIVE_EVIDENCE_UNVERIFIED':'AUTHORITATIVE_EVIDENCE_STALE',
       logical_execution_id:target_execution.logical_execution_id,
       blocking_receipt_refs:staleAuthoritative.map(record=>record.receipt.receipt_id),
       matching_receipt_count:matching.length,
