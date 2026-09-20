@@ -35,3 +35,20 @@ Product-specific patches, entity names and storage code are not imported.
 ## Maturity
 
 This remains `PILOT / PROJECT_VERIFIED` until a second independent project demonstrates the same generic pattern. It must not be promoted to COMMON_ADOPTED from one implementation alone.
+
+
+## Executable runtime
+
+`src/workflow/compensation.mjs` now exposes `executeCompensatedEffects()`.
+
+Runtime semantics:
+- effects execute sequentially;
+- only `SUCCEEDED` effects enter the applied set;
+- first HOLD/FAILED effect stops forward execution;
+- only already-applied effects are considered for compensation;
+- required compensation runs in reverse applied order;
+- successful compensation preserves the original failure and returns `RETHROW_ORIGINAL_FAILURE`;
+- failed/missing compensation returns explicit `PARTIAL_STATE / ESCALATE`;
+- effect and compensation results may carry receipt references; the runtime preserves them instead of collapsing evidence.
+
+The runtime does not choose business effects or grant authority. The caller supplies the effect executor and compensation executor.
