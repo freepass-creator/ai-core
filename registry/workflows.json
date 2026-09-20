@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "registry_version": "1.12.0",
+  "registry_version": "1.13.0",
   "primitives": [
     {
       "primitive_id": "workflow.fact-vs-state",
@@ -3086,7 +3086,7 @@
       "version": "0.1.0",
       "adoption_status": "SHADOW",
       "owner": "D-session-workflow-standard",
-      "description": "FreePass Sales durable business progress lifecycle extracted from pipeline SSOT. Contact outcomes are separate and must not regress proven business progress. Forward skip semantics are governed by workflow-progressions.json.",
+      "description": "FreePass Sales durable business progress lifecycle extracted from pipeline SSOT. Contact outcomes are separate and must not regress proven business progress. Forward skip semantics are governed by workflow-progressions.json. Source-side D SHADOW parity is verified in Sales CI.",
       "state_axes": [
         {
           "axis_id": "progress",
@@ -3719,7 +3719,7 @@
       "obligations": [],
       "source_authority": {
         "repository": "freepass-creator/freepass-sales",
-        "revision": "2ec46bb2e88b10a31915b68ec77b2eecbdac57bd",
+        "revision": "e8a96166e0961455119d9721501f26ecda229d03",
         "files": [
           {
             "path": "웹/pipeline.js",
@@ -3732,26 +3732,42 @@
           {
             "path": "검토/pipeline시뮬레이션.mjs",
             "blob_sha": "867dab5d4a27ffa25352b7daa65e386b86f08788"
+          },
+          {
+            "path": "contracts/ai-core/sales-workflow-progression.shadow.json",
+            "blob_sha": "d68241790d9c7fc28714fa3bcf3ec52f4c566769"
+          },
+          {
+            "path": "웹/workflow-progression-shadow.js",
+            "blob_sha": "38ae302a9c27d181ad58245fd6edde6ec8a9d37d"
+          },
+          {
+            "path": "검토/workflow-progression-shadow.test.mjs",
+            "blob_sha": "d55493a4ae81f7b464cecb6e689f82a8bb90bfe2"
           }
         ]
       },
       "adoption_evidence": {
-        "stage": "SOURCE_MODELED",
+        "stage": "SOURCE_PARITY_VERIFIED",
         "repository": "freepass-creator/freepass-sales",
-        "revision": "2ec46bb2e88b10a31915b68ec77b2eecbdac57bd",
+        "revision": "e8a96166e0961455119d9721501f26ecda229d03",
         "verification": {
           "kind": "CI",
           "conclusion": "SUCCESS",
-          "run_id": 35480676884,
-          "observed_at": "2026-09-20T01:09:59Z",
+          "run_id": 35481914375,
+          "observed_at": "2026-09-20T01:39:43Z",
           "files": [
             {
-              "path": "웹/pipeline.js",
-              "blob_sha": "efea7051ba6b619e78cd82e9d3cf7eaf06abb4cd"
+              "path": "contracts/ai-core/sales-workflow-progression.shadow.json",
+              "blob_sha": "d68241790d9c7fc28714fa3bcf3ec52f4c566769"
             },
             {
-              "path": "검토/pipeline검증.mjs",
-              "blob_sha": "aea8f06107d2c73fb8d688626427f379c35ce8a3"
+              "path": "웹/workflow-progression-shadow.js",
+              "blob_sha": "38ae302a9c27d181ad58245fd6edde6ec8a9d37d"
+            },
+            {
+              "path": "검토/workflow-progression-shadow.test.mjs",
+              "blob_sha": "d55493a4ae81f7b464cecb6e689f82a8bb90bfe2"
             }
           ]
         }
