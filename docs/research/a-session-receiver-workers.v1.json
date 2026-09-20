@@ -1,0 +1,36 @@
+{
+  "schema": "ai-core-a-session-receiver-workers/v1",
+  "status": "RESEARCH_RECEIVER_WORKERS_NOT_CANONICAL",
+  "policy": {
+    "auto_ack_scope": "ACKNOWLEDGED means the receiver intake worker has read and bound the route at an exact AI Core revision. It is not substantive acceptance.",
+    "no_auto_review": "Workers may not create REVIEWING state without explicit session review evidence.",
+    "no_auto_decision": "Workers may never create DECIDED state or choose ADOPTED/HOLD/REJECTED/SUPERSEDED automatically.",
+    "reconciliation": "After mechanical ACK, the worker reconciles A central Routing Receipt from SENT to RECEIVED using the same revision-bound acknowledgement."
+  },
+  "workers": [
+    {
+      "session": "B",
+      "enabled": true,
+      "inbox_path": "docs/research/a-session-receiver-inbox-B.v1.json",
+      "auto_ack": true,
+      "auto_review": false,
+      "auto_decide": false
+    },
+    {
+      "session": "C",
+      "enabled": true,
+      "inbox_path": "docs/research/a-session-receiver-inbox-C.v1.json",
+      "auto_ack": true,
+      "auto_review": false,
+      "auto_decide": false
+    },
+    {
+      "session": "D",
+      "enabled": true,
+      "inbox_path": "docs/research/a-session-receiver-inbox-D.v1.json",
+      "auto_ack": true,
+      "auto_review": false,
+      "auto_decide": false
+    }
+  ]
+}
