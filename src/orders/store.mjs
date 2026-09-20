@@ -93,6 +93,9 @@ export class OrderStore {
       CREATE TABLE IF NOT EXISTS events (sequence INTEGER PRIMARY KEY AUTOINCREMENT, order_id TEXT NOT NULL, document TEXT NOT NULL);
       CREATE INDEX IF NOT EXISTS events_order ON events(order_id, sequence);
       CREATE TABLE IF NOT EXISTS receipts (key TEXT PRIMARY KEY, digest TEXT NOT NULL, response TEXT NOT NULL);
+      CREATE TABLE IF NOT EXISTS source_receipts (source_ref TEXT PRIMARY KEY, digest TEXT NOT NULL, order_id TEXT NOT NULL);
+      CREATE TRIGGER IF NOT EXISTS source_receipt_no_update BEFORE UPDATE ON source_receipts BEGIN SELECT RAISE(ABORT,'SOURCE_RECEIPT_IMMUTABLE'); END;
+      CREATE TRIGGER IF NOT EXISTS source_receipt_no_delete BEFORE DELETE ON source_receipts BEGIN SELECT RAISE(ABORT,'SOURCE_RECEIPT_IMMUTABLE'); END;
       CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL);`);
     this.db.prepare('INSERT OR IGNORE INTO settings(key,value) VALUES (?,?)').run('ledger-id', `ledger-${randomUUID()}`);
   }
@@ -133,17 +136,28 @@ export class OrderStore {
     return order;
   }
   create(input) {
-    const { requestId, title, intent, project, kind = 'general', criteria, source = 'local', routing: routingInput = null } = input;
+    const { requestId, title, intent, project, kind = 'general', criteria, source = 'local', sourceRef: sourceRefInput = null, routing: routingInput = null } = input;
     return this.transact(requestId, { action: 'create', ...input }, () => {
       need(Object.hasOwn(plans, kind), 'INVALID_KIND', '작업 종류를 선택하세요.');
       const cleanProject = text(project, '프로젝트', 300);
       const route = routing(routingInput, cleanProject);
-      const order = { id: `ORD-${randomUUID()}`, title: text(title, '제목', 200), intent: text(intent, '요청'), project: cleanProject, kind,
-        criteria: lines(criteria, '완료 조건'), source: text(source, '출처', 1000), routing: route,
+      const clean = { title: text(title, '제목', 200), intent: text(intent, '요청'), project: cleanProject, kind,
+        criteria: lines(criteria, '완료 조건'), source: text(source, '출처', 1000), routing: route };
+      const sourceRef = sourceRefInput === null ? null : text(sourceRefInput, '원문 접수 키', 300);
+      if (sourceRef !== null) {
+        const previous = this.db.prepare('SELECT digest,order_id FROM source_receipts WHERE source_ref=?').get(sourceRef);
+        if (previous) {
+          need(previous.digest === digest(clean), 'SOURCE_REF_CONFLICT', '같은 원문 접수 키가 다른 내용에 사용됐습니다.', 409);
+          return this.get(previous.order_id);
+        }
+      }
+      const order = { id: `ORD-${randomUUID()}`, ...clean,
         revision: 1, version: 1, status: 'NEW', createdAt: this.stamp(), updatedAt: this.stamp(),
         tasks: plans[kind].map(([role, title, assigned], i) => ({ id: `T${i + 1}`, role, title, assigned, status: 'PENDING', attempt: 0, lease: null, report: null, blockedReason: null })),
         closure: null };
-      return this.save(order, 'CREATED', 'user', { intent: order.intent, criteria: order.criteria, source: order.source, routing: order.routing, plan: order.tasks });
+      const saved = this.save(order, 'CREATED', 'user', { intent: order.intent, criteria: order.criteria, source: order.source, sourceRef, routing: order.routing, plan: order.tasks });
+      if (sourceRef !== null) this.db.prepare('INSERT INTO source_receipts VALUES (?,?,?)').run(sourceRef, digest(clean), order.id);
+      return saved;
     });
   }
   mutate(id, command) {

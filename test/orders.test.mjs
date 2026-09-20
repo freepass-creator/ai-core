@@ -23,6 +23,17 @@ test('retry is durable across reopen; altered payload cannot reuse intake key', 
   assert.deepEqual(s.create(req), first); assert.equal(s.list().length, 1); assert.equal(s.events(first.id).length, 1);
   assert.throws(() => s.create({ ...req, title: '다른 오더' }), fails('IDEMPOTENCY_CONFLICT'));
 });
+test('opaque source reference deduplicates the same instruction across session request IDs', t => {
+  const s = fixture(t); const sourceRef = 'codex-task:opaque-message-001';
+  const first = s.create(input({ sourceRef }));
+  const repeated = s.create(input({ sourceRef }));
+  assert.equal(repeated.id, first.id);
+  assert.equal(s.list().length, 1);
+  assert.equal(s.events(first.id).length, 1);
+  assert.throws(() => s.create(input({ sourceRef, intent: '같은 키의 다른 지시' })), fails('SOURCE_REF_CONFLICT'));
+  assert.throws(() => s.db.exec('UPDATE source_receipts SET order_id=\'ORD-rebound\''), /SOURCE_RECEIPT_IMMUTABLE/);
+  assert.throws(() => s.db.exec('DELETE FROM source_receipts'), /SOURCE_RECEIPT_IMMUTABLE/);
+});
 test('same order serializes writers; stale command and failed transaction preserve records', t => {
   const s = fixture(t); const o = s.create(input()); const c = command(o, 'claim', { taskId: 'T1', actor: 'codex' }); const current = s.mutate(o.id, c);
   assert.deepEqual(s.mutate(o.id, c), current);
@@ -103,6 +114,20 @@ test('two processes sharing SQLite deduplicate simultaneous intake', async t => 
     const child = spawn(process.execPath, ['--input-type=module', '-e', script]); let out = '', error = ''; child.stdout.on('data', c => out += c); child.stderr.on('data', c => error += c); child.on('error', reject); child.on('close', code => code === 0 ? resolve(out.trim()) : reject(new Error(error)));
   });
   const ids = await Promise.all([run(), run()]); assert.equal(ids[0], ids[1]); assert.equal(s.list().length, 1);
+});
+test('two sessions with different request IDs cannot duplicate one opaque source instruction', async t => {
+  const dir = mkdtempSync(join(tmpdir(), 'ai-core-source-process-')); const path = join(dir, 'orders.sqlite');
+  const base = input({ sourceRef: 'chat-message:opaque-concurrent-001' });
+  const s = new OrderStore(path); t.after(() => { s.close(); rmSync(dir, { recursive: true, force: true }); });
+  const run = requestId => new Promise((resolve, reject) => {
+    const payload = { ...base, requestId };
+    const script = `import {OrderStore} from ${JSON.stringify(new URL('../src/orders/store.mjs', import.meta.url).href)}; const s=new OrderStore(${JSON.stringify(path)}); console.log(s.create(${JSON.stringify(payload)}).id); s.close();`;
+    const child = spawn(process.execPath, ['--input-type=module', '-e', script]); let out = '', error = '';
+    child.stdout.on('data', c => out += c); child.stderr.on('data', c => error += c); child.on('error', reject);
+    child.on('close', code => code === 0 ? resolve(out.trim()) : reject(new Error(error)));
+  });
+  const ids = await Promise.all([run(randomUUID()), run(randomUUID())]);
+  assert.equal(ids[0], ids[1]); assert.equal(s.list().length, 1); assert.equal(s.events(ids[0]).length, 1);
 });
 test('HTTP and direct CLI store share truth; cross-origin, bad host and malformed writes fail', async t => {
   const dir = mkdtempSync(join(tmpdir(), 'ai-core-http-'));
