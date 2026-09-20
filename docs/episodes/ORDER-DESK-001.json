@@ -446,7 +446,20 @@
     "test/workflow-state-machine.test.mjs",
     "web/orders/app.js",
     "web/orders/index.html",
-    "web/orders/style.css"
+    "web/orders/style.css",
+    "scripts/a-session-claim-health.mjs",
+    "scripts/a-session-evidence-contract.mjs",
+    "scripts/a-session-owner-policy.mjs",
+    "scripts/a-session-scope-policy.mjs",
+    "test/a-session-claim-health.test.mjs",
+    "test/a-session-evidence-contract.test.mjs",
+    "test/a-session-owner-policy.test.mjs",
+    "test/a-session-scope-policy.test.mjs",
+    "contracts/ui-ux-machine-conformance.schema.json",
+    "docs/UI_UX_MACHINE_CONFORMANCE.md",
+    "scripts/validate-ui-ux-machine-conformance.mjs",
+    "src/engine/ui-ux-machine-conformance.mjs",
+    "test/ui-ux-machine-conformance.test.mjs"
   ],
   "verification": {
     "behavior_tests": "Shared/client focused suite: 22 passed, 0 failed. Full suite result is recorded in SHARED-ORDER-VERIFICATION.json.",
