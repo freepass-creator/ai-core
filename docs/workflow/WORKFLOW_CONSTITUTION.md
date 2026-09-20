@@ -165,3 +165,25 @@ A fallback/recovery implementation that opts into the pilot must:
 D owns these workflow semantics. C owns the shared identity contract. A supplies revision-bound project evidence.
 
 A single production incident is sufficient to create a PILOT and negative controls, but not sufficient to declare a company-wide common standard.
+## 10. Derived workflow projection rule
+
+A derived workflow projection is a read model computed from authoritative state and facts. It is **not independently writable state**.
+
+Rules:
+
+1. Projects must not model a display/aggregate label as a lifecycle transition merely because UI stores or shows the label.
+2. Projection precedence is explicit and machine-readable.
+3. Projection rules may read workflow states and declared facts only.
+4. A projection never dispatches a command or grants transition authority.
+5. If a source project derives a label from facts, D models those facts separately and preserves the derivation instead of inventing a fake state machine.
+6. SHADOW projection contracts are pinned to exact project source authority and remain non-canonical until project-side adoption/parity evidence exists.
+
+Machine authority:
+
+- `contracts/workflow-projection.schema.json`
+- `registry/workflow-projections.json`
+- `src/workflow/projection.mjs`
+- `scripts/validate-workflow-projections.mjs`
+
+FreePass Admin Application is the first project-level SHADOW consumer: authoritative lifecycle is `ACTIVE -> CANCELLED`, while `RECEIVED / CONTRACTED / DELIVERED` are derived from progress facts.
+

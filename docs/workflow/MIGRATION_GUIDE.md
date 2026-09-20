@@ -227,3 +227,18 @@ Promotion gate:
 5. Negative tests prove successful logical work cannot be replayed by another execution path.
 
 Until all gates pass, projects may adopt the pilot explicitly, but D must not claim it as company-wide common behavior.
+
+### D5 project workflow checkpoint — FreePass Admin
+
+First real business-project SHADOW model:
+
+- `freepass-admin.application-lifecycle@0.1.0`
+- authoritative lifecycle: `ACTIVE -> CANCELLED`
+- progress booleans remain facts, not transitions
+- `application.status` is registered in `workflow-projections.json`
+- projection order: CANCELLED -> DELIVERED -> CONTRACTED -> RECEIVED
+- documents/balance facts intentionally do not advance status
+- source pinned to FreePass Admin exact head `77f682af680528124096e4f7871504a3596c8990`
+
+Promotion remains SHADOW until the source project binds the D contract or runs a project-side parity adapter. The Core must not claim runtime cutover merely because source-derived parity fixtures pass here.
+
