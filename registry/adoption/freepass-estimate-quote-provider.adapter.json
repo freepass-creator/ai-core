@@ -70,5 +70,13 @@
     "freepass-estimate:apps/new/scripts/check-provider-runtime-policy.mjs",
     "freepass-estimate:apps/new/scripts/test-provider-routing.mjs",
     "freepass-estimate:apps/new/scripts/check-ai-core-contract-shadow.mjs"
-  ]
+  ],
+  "connector_binding": {
+    "connector_id": "freepass-estimate.quote-http",
+    "connector_version": "1.0.0",
+    "operation_ids": [
+      "quote.standard",
+      "quote.external"
+    ]
+  }
 }
