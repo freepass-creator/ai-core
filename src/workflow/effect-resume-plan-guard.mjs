@@ -77,6 +77,7 @@ function computeDigests({effects,bindings,receipts,target_execution,current_proo
   need(Array.isArray(receipts),'RESUME_PLAN_RECEIPTS_REQUIRED');
   need(target_execution&&text(target_execution.logical_execution_id)&&text(target_execution.identity_digest),'RESUME_PLAN_EXECUTION_REQUIRED');
 
+  const targetExecutionDigest=canonicalDigest(target_execution);
   const effectsDigest=canonicalDigest(effects);
   const bindingsDigest=canonicalDigest(sortedBindings(bindings));
   const receiptsDigest=canonicalDigest(receiptDescriptors(receipts));
@@ -86,6 +87,8 @@ function computeDigests({effects,bindings,receipts,target_execution,current_proo
     algorithm:ALGORITHM,
     logical_execution_id:target_execution.logical_execution_id,
     identity_digest:target_execution.identity_digest,
+    target_execution_digest:targetExecutionDigest,
+    target_execution_digest:targetExecutionDigest,
     effects_digest:effectsDigest,
     bindings_digest:bindingsDigest,
     receipts_digest:receiptsDigest,
@@ -135,6 +138,7 @@ export function prepareEffectResumePlan({
     plan_id:planId(digests.plan_digest),
     logical_execution_id:target_execution.logical_execution_id,
     identity_digest:target_execution.identity_digest,
+    target_execution_digest:digests.target_execution_digest,
     ...digests,
     prepared_at,
     planner_result:plannerResult,
@@ -176,6 +180,7 @@ export function verifyEffectResumePlan(preparedPlan,{
     algorithm:preparedPlan.algorithm,
     logical_execution_id:preparedPlan.logical_execution_id,
     identity_digest:preparedPlan.identity_digest,
+    target_execution_digest:preparedPlan.target_execution_digest,
     effects_digest:preparedPlan.effects_digest,
     bindings_digest:preparedPlan.bindings_digest,
     receipts_digest:preparedPlan.receipts_digest,
@@ -187,7 +192,8 @@ export function verifyEffectResumePlan(preparedPlan,{
   }
 
   if(preparedPlan.logical_execution_id!==target_execution.logical_execution_id
-    || preparedPlan.identity_digest!==target_execution.identity_digest){
+    || preparedPlan.identity_digest!==target_execution.identity_digest
+    || preparedPlan.target_execution_digest!==current.target_execution_digest){
     changes.push('TARGET_EXECUTION_CHANGED');
   }
   if(preparedPlan.effects_digest!==current.effects_digest) changes.push('EFFECTS_CHANGED');
