@@ -3,7 +3,8 @@ import { open, readFile, unlink } from 'node:fs/promises';
 import { readFileSync } from 'node:fs';
 import Ajv2020 from 'ajv/dist/2020.js';
 import addFormats from 'ajv-formats';
-import { lifecycleGraph } from '../src/workflow/registry.mjs';
+import { getWorkflow, lifecycleGraph } from '../src/workflow/registry.mjs';
+import { createWorkLedgerShadow } from '../src/workflow/work-ledger-shadow.mjs';
 
 const schema = JSON.parse(readFileSync(new URL('../contracts/work-ledger-event.schema.json', import.meta.url), 'utf8'));
 const ajv = new Ajv2020({ allErrors: true, strict: false });
@@ -14,6 +15,7 @@ const graph = lifecycleGraph(WORKFLOW_ID);
 const transitions = graph.transitions;
 export const REOBSERVABLE = graph.reobservable;
 const VERIFIED_PATH = graph.verifiedPath;
+const workflowAdmission = createWorkLedgerShadow(getWorkflow(WORKFLOW_ID));
 
 function canonical(value) {
   if (Array.isArray(value)) return value.map(canonical);
@@ -24,6 +26,31 @@ function canonical(value) {
 function eventHash(event) {
   const { event_hash: ignored, ...content } = event;
   return `sha256:${createHash('sha256').update(JSON.stringify(canonical(content))).digest('hex')}`;
+}
+
+function parseLedgerEvents(text) {
+  return text.trim()
+    ? text.trim().split(/\r?\n/).map(line => JSON.parse(line))
+    : [];
+}
+
+export function inspectLedgerEventWithWorkflow(text, event) {
+  let replay;
+  try {
+    replay = workflowAdmission.replay(parseLedgerEvents(text));
+  } catch {
+    return { eligible: false, reasons: ['WORKFLOW_REPLAY_PARSE_FAILED'] };
+  }
+
+  if (replay.status !== 'VALID') {
+    return {
+      eligible: false,
+      reasons: ['WORKFLOW_REPLAY_INVALID'],
+      replay,
+    };
+  }
+
+  return workflowAdmission.inspect(replay.projection, event);
 }
 
 export function verifyLedgerText(text) {
@@ -110,11 +137,22 @@ export async function appendLedgerEvent(path, event, expectedHead = null) {
       throw new Error('REVISION_CHANGE_REQUIRES_REOBSERVED');
     }
 
+    const workflowInspection = inspectLedgerEventWithWorkflow(text, event);
+
     const record = { ...event, previous_hash: current.head };
     record.event_hash = eventHash(record);
     const candidateText = `${text.trim()}${text.trim() ? '\n' : ''}${JSON.stringify(record)}\n`;
     const candidate = verifyLedgerText(candidateText);
     if (candidate.status !== 'VALID') throw new Error(candidate.errors[0]?.code ?? 'EVENT_INVALID');
+
+    // Phase 2 authority migration: every new append must also be accepted by the
+    // D Workflow Engine. The legacy verifier remains in place for hash-chain,
+    // evidence and historical compatibility. A disagreement fails closed.
+    if (!workflowInspection.eligible) {
+      const error = new Error('WORKFLOW_DECISION_MISMATCH');
+      error.workflow_inspection = workflowInspection;
+      throw error;
+    }
     const writer = await open(path, 'a');
     try { await writer.writeFile(`${JSON.stringify(record)}\n`, 'utf8'); await writer.sync(); } finally { await writer.close(); }
     return { head: record.event_hash, event: record };
