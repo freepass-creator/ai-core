@@ -1,3 +1,4 @@
+import { buildRepositoryReceipt } from '../contracts/repository-receipt.mjs';
 import { validateRepositoryContract } from '../contracts/repository-contract.mjs';
 import { createBoundConnectorFacade } from './adapter-invocation-runtime.mjs';
 
@@ -112,11 +113,24 @@ export function createRepositoryRuntime({
     }
   }
 
+  async function invokeWithReceipt(operationId,input,options={}){
+    const {receipt:receiptOptions,...invokeOptions}=options;
+    need(receiptOptions&&typeof receiptOptions==='object','RECEIPT_OPTIONS_REQUIRED');
+    const repository_result=await invoke(operationId,input,invokeOptions);
+    const receipt=buildRepositoryReceipt({
+      ...receiptOptions,
+      repository_result,
+      input
+    });
+    return {repository_result,receipt};
+  }
+
   return Object.freeze({
     repository_id:repository.repository_id,
     repository_version:repository.repository_version,
     port_id:repository.port_id,
     operations:Object.freeze([...operations.keys()]),
     invoke,
+    invokeWithReceipt,
   });
 }
