@@ -130,6 +130,26 @@ export function planEffectResume({
       receiptTime(latestCompensationSuccess.receipt)>=receiptTime(latestEffectSuccess.receipt)
     );
 
+    const uncompensatedSuccesses=effectSuccesses.filter(success=>{
+      const successTime=receiptTime(success.receipt);
+      return !compensationSuccesses.some(comp=>receiptTime(comp.receipt)>=successTime);
+    });
+    const successAttempts=new Set(
+      uncompensatedSuccesses
+        .map(record=>record.receipt.execution?.attempt_id)
+        .filter(text)
+    );
+    if(uncompensatedSuccesses.length>1&&successAttempts.size>1){
+      return {
+        status:'HOLD',
+        reason:'DUPLICATE_EFFECT_SUCCESS_EVIDENCE',
+        actions,
+        blocking_effect_id:effect.effect_id,
+        blocking_receipt_refs:uncompensatedSuccesses.map(x=>x.receipt.receipt_id),
+        foreign_receipt_count:foreign_count,
+      };
+    }
+
     if(effectSuccesses.length&&effectFailures.length&&!compensated){
       const latestEffect=latest(effectReceipts);
       const status=latestEffect?.receipt.status;
