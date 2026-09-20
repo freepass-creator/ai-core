@@ -323,3 +323,111 @@ test('current prepared plan executes normally',async()=>{
   assert.equal(out.status,'SUCCEEDED');
   assert.deepEqual(calls,['notify']);
 });
+
+
+test('same logical execution with a different attempt makes prepared plan stale',()=>{
+  const source=sourceReceipt({proof:false});
+  const prepared=prepareEffectResumeFromReceipts({
+    effects,bindings,receipts:[source],target_execution:attempt2,
+    prepared_at:'2026-09-20T13:11:00Z'
+  });
+  const attempt3=bindExecutionAttempt(identity,{
+    attemptId:'attempt-plan-3',
+    attemptSequence:3,
+    executionPath:'FALLBACK',
+    parentAttemptId:'attempt-plan-2'
+  });
+  const verified=verifyEffectResumePlan(prepared,{
+    effects,bindings,receipts:[source],target_execution:attempt3
+  });
+  assert.equal(verified.status,'STALE');
+  assert.ok(verified.changes.includes('TARGET_EXECUTION_CHANGED'));
+});
+
+test('tampered prepared planner result is detected even when current inputs are unchanged',()=>{
+  const source=sourceReceipt({proof:false});
+  const prepared=prepareEffectResumeFromReceipts({
+    effects,bindings,receipts:[source],target_execution:attempt2,
+    prepared_at:'2026-09-20T13:12:00Z'
+  });
+  const tampered=structuredClone(prepared);
+  tampered.planner_result.reason='MANUALLY_CHANGED';
+  const verified=verifyEffectResumePlan(tampered,{
+    effects,bindings,receipts:[source],target_execution:attempt2
+  });
+  assert.equal(verified.status,'STALE');
+  assert.ok(verified.changes.includes('PLAN_ARTIFACT_TAMPERED'));
+});
+
+test('tampered component digest is detected independently',()=>{
+  const source=sourceReceipt({proof:false});
+  const prepared=prepareEffectResumeFromReceipts({
+    effects,bindings,receipts:[source],target_execution:attempt2,
+    prepared_at:'2026-09-20T13:13:00Z'
+  });
+  const tampered=structuredClone(prepared);
+  tampered.effects_digest='sha256:'+'f'.repeat(64);
+  const verified=verifyEffectResumePlan(tampered,{
+    effects,bindings,receipts:[source],target_execution:attempt2
+  });
+  assert.equal(verified.status,'STALE');
+  assert.ok(verified.changes.includes('PLAN_COMPONENT_DIGEST_MISMATCH'));
+  assert.ok(verified.changes.includes('EFFECTS_CHANGED'));
+});
+
+test('proof input ordering alone does not stale a prepared plan',()=>{
+  const source=sourceReceipt({
+    proof:true
+  });
+  const twoInputs=[
+    {role:'CONFIG',ref:'config',digest:'sha256:'+'c'.repeat(64),revision:'git:c1'},
+    ...proofInputs
+  ];
+  const sourceWithTwoInputs=buildRepositoryReceipt({
+    receipt_id:'receipt.plan.proof-order',
+    operation_id:'receipt.plan.proof-order.op',
+    operation_kind:'entity.create',
+    actor:'system:test',
+    executor:'demo.repository',
+    repository_result:{
+      schema_version:'core-repository-result/v1',
+      repository_id:'demo.repository',
+      repository_version:'1.0.0',
+      operation_id:'entity.create',
+      correlation_id:'corr-plan',
+      status:'SUCCEEDED',
+      error_code:null,
+      data:{saved:'entity-1'},
+      revision:'r1',
+      evidence_refs:[],
+      started_at:'2026-09-20T13:00:00Z',
+      ended_at:'2026-09-20T13:00:01Z'
+    },
+    input:{id:'entity-1'},
+    proof_inputs:twoInputs,
+    reproducibility:{
+      deterministic:true,
+      executor_version:'1.0.0',
+      environment_revision:'git:r1',
+      command_ref:'entity.create'
+    },
+    source_revision:'git:r1',
+    execution:attempt1
+  });
+  const prepared=prepareEffectResumeFromReceipts({
+    effects,bindings,receipts:[sourceWithTwoInputs],target_execution:attempt2,
+    current_proof_inputs_by_receipt:{
+      [sourceWithTwoInputs.receipt_id]:twoInputs
+    },
+    prepared_at:'2026-09-20T13:14:00Z'
+  });
+  const reversed=[...twoInputs].reverse();
+  const verified=verifyEffectResumePlan(prepared,{
+    effects,bindings,receipts:[sourceWithTwoInputs],target_execution:attempt2,
+    current_proof_inputs_by_receipt:{
+      [sourceWithTwoInputs.receipt_id]:reversed
+    }
+  });
+  assert.equal(verified.status,'CURRENT');
+  assert.deepEqual(verified.changes,[]);
+});
