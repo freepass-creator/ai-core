@@ -66,3 +66,23 @@ test('generic active owner is rejected', () => {
   const result = validateAWorkClaims(r);
   assert.ok(result.errors.some(x => x.code === 'ACTIVE_OWNER_NOT_STABLE'));
 });
+
+
+test('same owner cannot hold two live claims on different work items', () => {
+  const r = base();
+  r.claims = [
+    claim({ claim_id:'A-101', owner_session:'A-session-owner-shared' }),
+    {
+      ...claim({
+        claim_id:'A-102',
+        owner_session:'A-session-owner-shared',
+        repository:'freepass-creator/freepass-admin',
+        subject_revision:'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+        scope:'coordination:docs'
+      }),
+      claim_key:'freepass-creator/freepass-admin@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa::coordination:docs'
+    }
+  ];
+  const result = validateAWorkClaims(r);
+  assert.ok(result.errors.some(x => x.code === 'LIVE_OWNER_DUPLICATE'));
+});
