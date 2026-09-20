@@ -1,15 +1,32 @@
 {
   "schema": "ai-core-a-session-work-claims/v1",
   "status": "RESEARCH_COORDINATION_NOT_CANONICAL",
-  "observed_at": "2026-09-20T02:10:00Z",
+  "observed_at": "2026-09-20T02:16:00Z",
   "policy": {
     "claim_key": "<repository>@<subject_revision>::<scope>",
     "live_claim": "state=ACTIVE and lease_until > observed_at",
-    "duplicate_rule": "If another live claim exists for the same claim_key, do not inspect or mutate that work item; return SKIP_DUPLICATE.",
+    "duplicate_rule": "If another live claim conflicts by canonical scope on the same repository revision, do not inspect or mutate that overlapping work item.",
     "completed_rule": "If the same claim_key is already COMPLETED and the repository subject revision is unchanged, do not repeat the audit.",
     "optimistic_lock": "Every mutation must use the current GitHub blob SHA. On SHA conflict, refetch the registry and re-evaluate before retrying.",
     "revision_guard": "Before material writes, re-check the repository head. If it moved, abandon or supersede the old claim and claim the new revision.",
-    "canonical_boundary": "Claims coordinate A-session research only and never change B/C/D canonical standards."
+    "canonical_boundary": "Claims coordinate A-session research only and never change B/C/D canonical standards.",
+    "scope_policy": {
+      "canonical_scopes": [
+        "repo-rescan",
+        "runtime-evidence:<surface>",
+        "migration-gap:<finding-id>",
+        "routing:<finding-id>",
+        "coordination:<topic>"
+      ],
+      "active_scope_requirement": "New ACTIVE claims must use a canonical scope. Historical terminal claims may retain legacy scopes for audit history.",
+      "live_conflict": [
+        "same canonical scope conflicts on the same repository revision",
+        "repo-rescan conflicts with runtime-evidence:* on the same repository revision",
+        "repo-rescan conflicts with migration-gap:* on the same repository revision",
+        "routing:* and coordination:* only conflict with the same exact scope"
+      ],
+      "completion_rule": "COMPLETED suppresses only the same exact claim scope. Runtime/deployment evidence may change independently without a repository revision change."
+    }
   },
   "claims": [
     {
