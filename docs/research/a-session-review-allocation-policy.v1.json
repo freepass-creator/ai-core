@@ -1,0 +1,43 @@
+{
+  "schema": "ai-core-a-session-review-allocation-policy/v1",
+  "status": "RESEARCH_REVIEW_ALLOCATION_NOT_CANONICAL",
+  "candidate_status": "READY_FOR_REVIEW",
+  "claim_binding": {
+    "repository": "freepass-creator/ai-core",
+    "scope_prefix": "coordination:review-",
+    "revision_field": "review_revision",
+    "revision_semantics": "Deterministic 40-hex review-pack fingerprint, not source proof and not required to be a Git commit.",
+    "scope_semantics": "Canonical A coordination scope derived from normalized route id; compatible with a-session-scope-policy."
+  },
+  "weights": {
+    "classification": {
+      "CORE_GT_PROJECT": 400,
+      "PROJECT_GT_CORE": 300,
+      "DIFFERENT": 200
+    },
+    "evidence_level": {
+      "CROSS_PROJECT_VERIFIED": 100,
+      "FAILURE_RUNTIME_EVIDENCE": 80,
+      "PROJECT_VERIFIED": 70,
+      "PLATFORM_CONSENSUS": 50,
+      "PROPOSED": 20
+    },
+    "route_priority": {
+      "PRIMARY": 120,
+      "SECONDARY": -20,
+      "NONE": 0
+    },
+    "breaking_impact_each": 8,
+    "verification_need_each": 5
+  },
+  "tie_breaks": [
+    "score_desc",
+    "acknowledged_at_asc",
+    "route_id_asc"
+  ],
+  "session_isolation": "A B/C/D reviewer should normally request its own session. ANY is allowed for coordination inspection only.",
+  "stale_guard": "After claim acquisition, re-read the queue. If status or review_revision changed, SUPERSEDE the stale claim using the same stable owner and continue.",
+  "decision_boundary": "Allocator creates ownership only. It never writes REVIEWING, DECIDED, ADOPTED, HOLD, REJECTED or SUPERSEDED receiver decisions.",
+  "owner_policy": "Stable A-session owner identity is mandatory and one_live_claim_per_owner applies. A busy owner cannot allocate a second review until completion/abandon/supersede or lease expiry.",
+  "owner_busy_result": "OWNER_BUSY"
+}
