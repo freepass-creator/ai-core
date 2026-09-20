@@ -73,3 +73,33 @@ npm run audit:handoff -- <project_id> --format md
 - no scheduler enablement
 - no production mutation
 - stale audit/handoff → HOLD
+
+
+## Machine issuance records
+
+Each human-readable handoff has a machine JSON issuance record:
+
+- `freepass-admin.handoff.json`
+- `freepasserp4.handoff.json`
+- `freepass-estimate.handoff.json`
+- `aiops.handoff.json`
+
+Do not reconstruct a closure from prose if the JSON issuance record exists.
+
+## Return / closure loop
+
+1. Generate a completion report template from the issued JSON:
+   ```bash
+   npm run audit:completion-template -- <handoff.json> <result_revision>
+   ```
+2. Project owner fills each actionable task as `DONE`, `PARTIAL`, `NOT_DONE`, or `NOT_APPLICABLE` with evidence and remaining gaps.
+3. Without a successor audit, closure status can be at most `REAUDIT_REQUIRED`.
+4. Run a successor v2 audit at the returned result revision.
+5. Re-check live project freshness.
+6. Build the closure receipt:
+   ```bash
+   npm run audit:closure -- <handoff.json> <completion.json> --successor <successor-audit.json> --require-closed
+   ```
+7. Only `CLOSED_VERIFIED` closes the handoff.
+
+A project statement such as "done", a merged PR, or a green CI run does not by itself close an audit finding.
