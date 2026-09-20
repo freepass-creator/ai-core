@@ -29,6 +29,8 @@ export function collectUsedClasses(sourceText) {
   const patterns = [
     /\bclass(?:Name)?\s*=\s*"([^"]*)"/g,
     /\bclass(?:Name)?\s*=\s*'([^']*)'/g,
+    /\bclassName\s*=\s*\{\s*"([^"]*)"\s*\}/g,
+    /\bclassName\s*=\s*\{\s*'([^']*)'\s*\}/g,
     /\bclassName\s*=\s*\{\s*`([\s\S]*?)`\s*\}/g
   ];
   for (const pattern of patterns) {
