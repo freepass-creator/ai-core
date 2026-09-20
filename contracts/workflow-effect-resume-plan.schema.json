@@ -10,6 +10,7 @@
     "plan_id",
     "logical_execution_id",
     "identity_digest",
+    "target_execution_digest",
     "effects_digest",
     "bindings_digest",
     "receipts_digest",
@@ -69,6 +70,10 @@
     "planner_result": {
       "type": "object",
       "additionalProperties": true
+    },
+    "target_execution_digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
     }
   }
 }
