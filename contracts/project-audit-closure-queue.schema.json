@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.freepass.ai/project-audit-closure-queue/v1",
+  "title": "AI Core Project Audit Closure Queue v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema","totals","items","superseded_handoffs","permissions","rule"],
+  "properties": {
+    "schema": { "const": "ai-core-project-audit-closure-queue/v1" },
+    "totals": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "projects","handoffs","superseded_handoffs",
+        "implementation_tasks","discovery_tasks","actionable_tasks",
+        "reported_complete_tasks","audit_closed_tasks",
+        "handoff_issued","open_partial","re_audit_required",
+        "re_audit_gaps_remain","handoff_stale","hold",
+        "closed_verified","action_required",
+        "reported_complete_percent","audit_closed_percent"
+      ],
+      "properties": {
+        "projects": { "type": "integer", "minimum": 0 },
+        "handoffs": { "type": "integer", "minimum": 0 },
+        "superseded_handoffs": { "type": "integer", "minimum": 0 },
+        "implementation_tasks": { "type": "integer", "minimum": 0 },
+        "discovery_tasks": { "type": "integer", "minimum": 0 },
+        "actionable_tasks": { "type": "integer", "minimum": 0 },
+        "reported_complete_tasks": { "type": "integer", "minimum": 0 },
+        "audit_closed_tasks": { "type": "integer", "minimum": 0 },
+        "handoff_issued": { "type": "integer", "minimum": 0 },
+        "open_partial": { "type": "integer", "minimum": 0 },
+        "re_audit_required": { "type": "integer", "minimum": 0 },
+        "re_audit_gaps_remain": { "type": "integer", "minimum": 0 },
+        "handoff_stale": { "type": "integer", "minimum": 0 },
+        "hold": { "type": "integer", "minimum": 0 },
+        "closed_verified": { "type": "integer", "minimum": 0 },
+        "action_required": { "type": "integer", "minimum": 0 },
+        "reported_complete_percent": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "audit_closed_percent": { "type": "integer", "minimum": 0, "maximum": 100 }
+      }
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "project_id","repository","handoff_revision",
+          "standard_baseline_revision","handoff_audited_at",
+          "live_status","live_revision","stage",
+          "completion_revision","completion_at","successor_audit_revision",
+          "completion_progress","audit_closure_progress",
+          "implementation_tasks","discovery_tasks",
+          "blockers","next_action","closed","action_required"
+        ],
+        "properties": {
+          "project_id": { "type": "string", "minLength": 1 },
+          "repository": { "type": "string", "minLength": 1 },
+          "handoff_revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+          "standard_baseline_revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+          "handoff_audited_at": { "type": "string", "format": "date-time" },
+          "live_status": { "enum": ["CURRENT","STALE","HOLD","UNOBSERVED"] },
+          "live_revision": {
+            "oneOf": [
+              { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+              { "type": "null" }
+            ]
+          },
+          "stage": {
+            "enum": [
+              "HANDOFF_ISSUED","OPEN_PARTIAL","REAUDIT_REQUIRED",
+              "REAUDIT_GAPS_REMAIN","HANDOFF_STALE","HOLD","CLOSED_VERIFIED"
+            ]
+          },
+          "completion_revision": {
+            "oneOf": [
+              { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+              { "type": "null" }
+            ]
+          },
+          "completion_at": { "type": ["string","null"], "format": "date-time" },
+          "successor_audit_revision": {
+            "oneOf": [
+              { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+              { "type": "null" }
+            ]
+          },
+          "completion_progress": { "type": "object" },
+          "audit_closure_progress": { "type": "object" },
+          "implementation_tasks": { "type": "integer", "minimum": 0 },
+          "discovery_tasks": { "type": "integer", "minimum": 0 },
+          "blockers": { "type": "array", "items": { "type": "string" } },
+          "next_action": { "type": "string", "minLength": 1 },
+          "closed": { "type": "boolean" },
+          "action_required": { "type": "boolean" }
+        }
+      }
+    },
+    "superseded_handoffs": { "type": "array", "items": { "type": "object" } },
+    "permissions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "auto_write_project_repo","auto_merge_project_pr",
+        "auto_promote_core_standard","auto_deploy","production_mutation"
+      ],
+      "properties": {
+        "auto_write_project_repo": { "const": false },
+        "auto_merge_project_pr": { "const": false },
+        "auto_promote_core_standard": { "const": false },
+        "auto_deploy": { "const": false },
+        "production_mutation": { "const": false }
+      }
+    },
+    "rule": { "type": "string", "minLength": 1 }
+  }
+}
