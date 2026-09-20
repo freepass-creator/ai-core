@@ -52,4 +52,4 @@ node --check src/engine/group-integration-preflight.mjs
 node --test test/group-integration-preflight.test.mjs
 ```
 
-Isolated verification for this change: syntax PASS and 6/6 focused tests PASS.
+Isolated verification for this change: syntax PASS and 7/7 focused tests PASS. Stable ID and reason-code compatibility with core-receipt/v1 are also enforced.
