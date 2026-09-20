@@ -1,0 +1,144 @@
+{
+  "schema": "ai-core-project-audit-result/v1",
+  "project_id": "aiops",
+  "repository": "freepass-creator/aiops",
+  "subject_revision": "c37a422765e784cdd843f36efb4be5328d7df4bb",
+  "source_proof": {
+    "default_branch": "main",
+    "ci": {
+      "status": "PASS",
+      "run_id": 35419155299,
+      "revision": "c37a422765e784cdd843f36efb4be5328d7df4bb"
+    },
+    "branch_protected": false
+  },
+  "findings": [
+    {
+      "axis": "ui-ux",
+      "verdict": "UNKNOWN",
+      "evidence": [
+        "The audited AIOps surface is primarily operational CLI, automation, ledgers and adapters rather than a bounded product UI consumer."
+      ],
+      "gaps": [
+        "No revision-bound AI Core UI/UX consumer surface was established as material to this audit."
+      ],
+      "next_action": "Do not invent a UI conformance project for CLI/automation code. Audit a concrete AIOps user interface separately if one becomes an active product surface."
+    },
+    {
+      "axis": "data-ssot",
+      "verdict": "CORE_MATCH",
+      "evidence": [
+        "AIOps distinguishes source facts, canonical finance/receivable projections and operational event ledgers.",
+        "Read-only finance adapters fail closed when cash or receivable sources are stale or missing.",
+        "Finance adapter projection deliberately omits customer names and vehicle numbers from aggregate AI Core results.",
+        "Operational ledger guidance uses append-only correction/cancellation rather than rewriting past events."
+      ],
+      "gaps": [
+        "Some operational sources remain local/runtime-dependent and cannot be proven current from GitHub alone."
+      ],
+      "next_action": "Keep source freshness and non-PII projection rules; bind runtime source observations to revision/evidence without copying raw sensitive data into Core."
+    },
+    {
+      "axis": "engine-adapter",
+      "verdict": "CORE_MATCH",
+      "evidence": [
+        "AI Core penalty execution uses the existing AIOps engine through a project-module adapter rather than duplicating the engine.",
+        "Executor requires an AI Core authority receipt before acquiring drive/firestore/sheet leases.",
+        "Process exit alone is insufficient; a new terminal gwataeryo-run-manifest/v1 must exist before success is returned.",
+        "COMPLETED_WITH_HOLD and FAILED remain distinct from SUCCEEDED.",
+        "Cash and receivable adapters are read-only and preserve stale-source HOLD behavior."
+      ],
+      "gaps": [
+        "Insurance adapter remains HOLD and should not be inferred from adjacent operational code."
+      ],
+      "next_action": "Continue capability-by-capability binding; preserve AIOps engine authority and terminal receipt semantics instead of copying operational logic into AI Core."
+    },
+    {
+      "axis": "api-event-error",
+      "verdict": "CORE_MATCH",
+      "evidence": [
+        "Adapters return stable machine blockers such as CASH_SOURCE_GAPS and RECEIVABLE_SOURCE_STALE_* rather than relying on mutable prose.",
+        "Penalty execution distinguishes invalid AI Core context, executor identity, unresolved ledger, missing terminal manifest, HOLD and FAILED states.",
+        "Audit/event guidance separates append-only events from current projections and uses correction events instead of in-place history rewriting."
+      ],
+      "gaps": [
+        "No material public HTTP API boundary was established in this audit, so OpenAPI/HTTP transport conformance was not scored."
+      ],
+      "next_action": "Keep stable blocker/result semantics. Apply the future canonical HTTP profile only to actual API boundaries rather than forcing CLI workflows into HTTP-shaped contracts."
+    },
+    {
+      "axis": "workflow",
+      "verdict": "MIGRATION_GAP",
+      "evidence": [
+        "AIOps distinguishes human completion claims from evidence-verified completion.",
+        "Penalty change-charge flow distinguishes review pending from technical transition failure.",
+        "Scheduler health distinguishes REVIEW_PENDING, TRANSITION_FAILED, QUOTA_BLOCKED and disabled tasks.",
+        "Operational docs define append-only completion history and recurring work reopening as new work rather than reviving old rows."
+      ],
+      "gaps": [
+        "The inspected workflow semantics are not bound as an AI Core D workflow/projection consumer at the audited revision.",
+        "Actual Windows Task Scheduler Enabled/LastRun/LastTaskResult cannot be proven from GitHub."
+      ],
+      "next_action": "Choose one bounded AIOps lifecycle, preferably penalty review/dispatch or hold-resume scheduling, and add D SHADOW parity while keeping current runtime authority."
+    },
+    {
+      "axis": "security-audit",
+      "verdict": "RESEARCH_ADVISORY",
+      "evidence": [
+        "lib/seungin.mjs classifies actions by risk rather than by storage technology alone.",
+        "Review/approval is bound to plan SHA, template SHA and target digest; changed subjects invalidate old approval.",
+        "Self-review is rejected and independent reviewer substitution is supported.",
+        "Approvals have TTL; emergency approval can be command-bound and cannot open protected actions.",
+        "Approval records use an append-only hash chain plus a second audit ledger cross-check to detect tampering or full ledger reconstruction.",
+        "Tests exercise stale approval, self-review, BLOCK precedence, TTL expiry, command binding, tamper detection and non-overridable protected actions."
+      ],
+      "gaps": [
+        "AI Core Security/Audit axis is still RESEARCH_ONLY and cannot issue a normative pass.",
+        "test/seungin.test.mjs and test/with-lease-seungin.test.mjs are not included in the current npm test or AI Core Penalty Adapter CI workflow.",
+        "Current approval/audit runtime files are local coordination evidence and were not independently inspected."
+      ],
+      "next_action": "Use exact-subject approval, separation-of-duties, TTL, non-overridable action class and dual-ledger tamper evidence as reverse-import inputs for the canonical Security/Audit profile; separately wire their regression tests into required CI before treating the project implementation as continuously enforced."
+    },
+    {
+      "axis": "qa-observability",
+      "verdict": "RESEARCH_ADVISORY",
+      "evidence": [
+        "Penalty health models task disabled, review pending, transition failure, quota block and success as distinct operational states.",
+        "Read-only penalty:health exposes scheduler readiness without mutating scheduler state.",
+        "Terminal run manifests make process completion independently checkable.",
+        "Finance adapters fail closed on stale source dates rather than presenting stale figures as current."
+      ],
+      "gaps": [
+        "AI Core QA/Observability axis remains RESEARCH_ONLY.",
+        "Actual scheduler state and heartbeat freshness were not independently observed from the user's Windows host.",
+        "Repository-wide verification is fragmented: npm test does not include the approval/lease integration tests.",
+        "No canonical OpenTelemetry/health/freshness envelope is bound across the repository."
+      ],
+      "next_action": "Reverse-import health state separation, freshness fail-closed and terminal-manifest proof into the future Core QA/Observability profile; add a checker manifest or unified verification entrypoint so omitted suites cannot silently look green."
+    },
+    {
+      "axis": "build-deploy-governance",
+      "verdict": "MIGRATION_GAP",
+      "evidence": [
+        "Latest AI Core Penalty Adapter workflow run 35419155299 passed penalty and finance adapter suites at the exact audited revision.",
+        "AIOps intentionally has no build artifact and documents build as not applicable.",
+        "Project registry revision matches current main."
+      ],
+      "gaps": [
+        "main branch protection currently reports protected=false.",
+        "ai-core-penalty.yml pull_request paths include lib/ai-core-finance-adapters.mjs and its test, but push paths omit them; a future finance-only main change may skip the dedicated workflow.",
+        "test/seungin.test.mjs and test/with-lease-seungin.test.mjs are not required by current CI.",
+        "No repository-wide checker manifest declares required/manual/not-applicable suites.",
+        "Actual local scheduler enablement remains outside GitHub evidence."
+      ],
+      "next_action": "Fix the finance push-path asymmetry, make approval/lease regression suites required, add an explicit checker manifest/unified verify command, and enable branch protection only after required checks are stable."
+    }
+  ],
+  "limitations": [
+    "Audit is read-only and covers aiops main at c37a422765e784cdd843f36efb4be5328d7df4bb.",
+    "Open PR #6 insurance adapter is not treated as main evidence.",
+    "Security/Audit and QA/Observability are research-only AI Core axes and therefore remain advisory.",
+    "Actual Windows Task Scheduler state, local coordination ledgers and live Google/Firebase resources were not independently observed.",
+    "A passing dedicated workflow does not prove omitted approval/lease suites are enforced."
+  ]
+}

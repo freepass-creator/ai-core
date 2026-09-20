@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.freepass.ai/observability/job-status/v1",
+  "title": "AI Core Background Job Status v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required":[
+    "schema_version","job_id","environment","subject_revision","schedule_state",
+    "last_started_at","last_completed_at","last_success_at","next_due_at",
+    "last_result","heartbeat_at","lease_owner","run_revision","checkpoint_ref",
+    "terminal_evidence_ref"
+  ],
+  "properties":{
+    "schema_version":{"const":"observability-job-status/v1"},
+    "job_id":{"type":"string","minLength":1},
+    "environment":{"type":"string","minLength":1},
+    "subject_revision":{"type":"string","minLength":1},
+    "schedule_state":{"enum":["ENABLED","DISABLED","UNKNOWN"]},
+    "last_started_at":{"type":["string","null"],"format":"date-time"},
+    "last_completed_at":{"type":["string","null"],"format":"date-time"},
+    "last_success_at":{"type":["string","null"],"format":"date-time"},
+    "next_due_at":{"type":["string","null"],"format":"date-time"},
+    "last_result":{"enum":["SUCCEEDED","HOLD","FAILED","REVIEW_PENDING","UNKNOWN"]},
+    "heartbeat_at":{"type":["string","null"],"format":"date-time"},
+    "lease_owner":{"type":["string","null"]},
+    "run_revision":{"type":["string","null"]},
+    "checkpoint_ref":{"type":["string","null"]},
+    "terminal_evidence_ref":{"type":["string","null"]}
+  }
+}
