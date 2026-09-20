@@ -1,0 +1,29 @@
+{
+  "schema_version": "core-binding-profile/v1",
+  "profile_id": "freepass-admin.development.current",
+  "project_id": "freepass-admin",
+  "environment": "development-shadow",
+  "subject_revision": "2aede7df82591470308f25bd3ccd4e5358aa7c3c",
+  "engine_bindings": [],
+  "service_bindings": [
+    {
+      "service_id": "freepass.application.service",
+      "service_version": "1.0.0",
+      "ports": [
+        {
+          "port_id": "application.repository",
+          "adapter_id": "freepass-admin.file-application"
+        },
+        {
+          "port_id": "product.read",
+          "adapter_id": "freepass-admin.file-product-read"
+        }
+      ]
+    }
+  ],
+  "config_refs": [
+    "FPA_DATA_DIR"
+  ],
+  "secret_refs": [],
+  "verification_state": "PARTIAL"
+}
