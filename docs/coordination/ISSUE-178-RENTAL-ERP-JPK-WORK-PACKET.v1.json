@@ -1,0 +1,228 @@
+{
+  "schema": "ai-core-integration-work-packet/v1",
+  "packet_id": "ISSUE-178-RENTAL-ERP-JPK-WORK",
+  "issue_ref": "freepass-creator/ai-core#178",
+  "created_at": "2026-09-20T00:00:00Z",
+  "intent": "Design-only packet for a fail-closed Rental ERP to JPK Work integration",
+  "execution_authorized": false,
+  "authority": {
+    "status": "PENDING",
+    "required": "explicit user approval immediately before any implementation or deployment"
+  },
+  "privacy": {
+    "real_data_accessed": false,
+    "allowed_inputs": [
+      "repository metadata",
+      "README",
+      "schema",
+      "API source",
+      "jobs/connectors",
+      "workflow/deploy metadata"
+    ],
+    "forbidden_payloads": [
+      "customer name",
+      "phone",
+      "resident registration number",
+      "raw ERP record",
+      "real penalty notice"
+    ]
+  },
+  "boundaries": {
+    "rental_erp": {
+      "repository": "freepass-creator/renman",
+      "revision": "262e06de09db94a116fa377ea2f5dbe024bb086b",
+      "firebase_project_id": "renman-dd0a2",
+      "role": "DOMAIN_AUTHORITY"
+    },
+    "jpk_work": {
+      "repository": "freepass-creator/teamjpkwork",
+      "revision": "75bb285a241b68c13acbe532c30d6d91110f8082",
+      "firebase_project_id": "teamjpkwork",
+      "role": "WORK_COORDINATION_AUTHORITY"
+    },
+    "existing_bridge": {
+      "repository": "freepass-creator/aiops",
+      "revision": "03dd804962eb4e345b7a34b3e0e97e8bc6d5efe3",
+      "role": "SHADOW_REFERENCE_ONLY"
+    },
+    "contract_authority": {
+      "repository": "freepass-creator/ai-core",
+      "revision": "9b520f3e1f79b54813159b4deb0f020d8ca64bde",
+      "role": "CONTRACT_AUTHORITY"
+    }
+  },
+  "pilot": {
+    "task_type": "PENALTY_EVIDENCE_REPAIR.v1",
+    "reason": "Highest code reuse across ERP penalty intake/match/reassign, AIOps guard/projector/bridge, and JPK Work penalty/task paths; lower first-step mutation risk than money or vehicle-state changes",
+    "excluded_initial_actions": [
+      "external authority dispatch",
+      "amount mutation",
+      "receivable allocation",
+      "contract close",
+      "vehicle return state transition"
+    ]
+  },
+  "invariants": [
+    "JPK Work stores references and minimal summaries, not ERP domain records",
+    "JPK Work never writes ERP storage directly",
+    "A task cannot enter COMPLETED without a matching SUCCEEDED ERP receipt and verified ERP requery postcondition",
+    "PARTIAL, HOLD, FAILED, timeout, malformed receipt, revision conflict, or requery mismatch fail closed",
+    "event_id and idempotency_key prevent duplicate tasks and duplicate ERP mutation",
+    "claim authority, task completion authority, and ERP mutation authority remain separate"
+  ],
+  "minimum_fields": [
+    "event_id",
+    "idempotency_key",
+    "entity_type",
+    "entity_id",
+    "source_revision",
+    "task_type",
+    "summary",
+    "due_at",
+    "assignee",
+    "authority_required",
+    "status",
+    "action_request",
+    "execution_receipt",
+    "evidence_refs"
+  ],
+  "work_items": [
+    {
+      "id": "178-A",
+      "repository": "freepass-creator/ai-core",
+      "pinned_revision": "9b520f3e1f79b54813159b4deb0f020d8ca64bde",
+      "objective": "Define versioned event, task, claim, action request, receipt binding, and verification fixtures",
+      "planned_changes": [
+        "add integration schemas",
+        "add synthetic positive and negative fixtures",
+        "add schema validation tests"
+      ],
+      "blockers": [],
+      "readiness": "READY_FOR_REVIEW",
+      "required_verification": [
+        "duplicate event fixture",
+        "revision conflict fixture",
+        "partial receipt fixture",
+        "receipt/requery mismatch fixture"
+      ]
+    },
+    {
+      "id": "178-B",
+      "repository": "freepass-creator/renman",
+      "pinned_revision": "262e06de09db94a116fa377ea2f5dbe024bb086b",
+      "objective": "Expose penalty event outbox, minimal read projection, allowlisted action endpoint, execution receipt, and postcondition query",
+      "planned_changes": [
+        "reuse atomic-event and penalty modules",
+        "compare-and-set expected_source_revision",
+        "append domain audit event",
+        "return core-receipt/v1"
+      ],
+      "blockers": [
+        "178-A contract approval"
+      ],
+      "readiness": "HOLD",
+      "required_verification": [
+        "same idempotency key mutates once",
+        "revision mismatch performs no write",
+        "receipt output refs resolve",
+        "requery is authorization scoped"
+      ]
+    },
+    {
+      "id": "178-C",
+      "repository": "freepass-creator/teamjpkwork",
+      "pinned_revision": "75bb285a241b68c13acbe532c30d6d91110f8082",
+      "objective": "Implement minimal task inbox/upsert, claim lease, action request, receipt consumer, and fail-closed completion guard",
+      "planned_changes": [
+        "prevent direct human final close for integrated tasks",
+        "store no ERP raw payload",
+        "retain immutable task audit",
+        "verify ERP postcondition before COMPLETED"
+      ],
+      "blockers": [
+        "178-A contract approval",
+        "178-B test adapter"
+      ],
+      "readiness": "HOLD",
+      "required_verification": [
+        "two claimers yield one claim",
+        "missing receipt cannot complete",
+        "successful receipt without matching requery cannot complete",
+        "PII denylist scan"
+      ]
+    },
+    {
+      "id": "178-D",
+      "repository": "freepass-creator/aiops",
+      "pinned_revision": "03dd804962eb4e345b7a34b3e0e97e8bc6d5efe3",
+      "objective": "Wrap existing penalty task projector and TeamJPKwork bridge as SHADOW comparison only",
+      "planned_changes": [
+        "no canonical ERP writes",
+        "emit parity report",
+        "compare create/update/supersede/close projections"
+      ],
+      "blockers": [
+        "178-A through 178-C"
+      ],
+      "readiness": "HOLD",
+      "required_verification": [
+        "legacy tasks preserved",
+        "no write authority",
+        "difference report contains references only"
+      ]
+    },
+    {
+      "id": "178-E",
+      "repository": "cross-repo",
+      "pinned_revision": null,
+      "objective": "Run synthetic end-to-end and fault-injection verification",
+      "planned_changes": [
+        "event to task",
+        "claim to action request",
+        "ERP receipt",
+        "ERP requery",
+        "fail-closed recovery"
+      ],
+      "blockers": [
+        "178-B through 178-D"
+      ],
+      "readiness": "HOLD",
+      "required_verification": [
+        "timeout",
+        "duplicate delivery",
+        "out-of-order revision",
+        "partial application",
+        "malformed receipt",
+        "stale requery",
+        "connector retry"
+      ]
+    },
+    {
+      "id": "178-F",
+      "repository": "freepass-creator/teamjpkwork",
+      "pinned_revision": "75bb285a241b68c13acbe532c30d6d91110f8082",
+      "objective": "Plan retirement or read-only isolation of domain copies after pilot stabilization",
+      "planned_changes": [
+        "inventory lib/penalty and ERP stores",
+        "mark ownership",
+        "remove direct domain writes only after replacement proof"
+      ],
+      "blockers": [
+        "stable pilot and explicit migration approval"
+      ],
+      "readiness": "HOLD",
+      "required_verification": [
+        "zero direct JPK Work ERP writes",
+        "rollback and recovery plan",
+        "canonical ERP parity"
+      ]
+    }
+  ],
+  "global_preconditions": [
+    "re-read all pinned repository revisions immediately before implementation",
+    "move packet to HOLD if any evidence file changed",
+    "obtain explicit execution authority",
+    "use synthetic fixtures only until a separately approved pilot"
+  ],
+  "next_start_here": "Review and approve 178-A contract fixtures for PENALTY_EVIDENCE_REPAIR.v1; do not implement or deploy from this packet."
+}
