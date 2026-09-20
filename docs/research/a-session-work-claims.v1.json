@@ -1,7 +1,7 @@
 {
   "schema": "ai-core-a-session-work-claims/v1",
   "status": "RESEARCH_COORDINATION_NOT_CANONICAL",
-  "observed_at": "2026-09-20T02:35:00Z",
+  "observed_at": "2026-09-20T02:47:00Z",
   "policy": {
     "claim_key": "<repository>@<subject_revision>::<scope>",
     "live_claim": "state=ACTIVE and lease_until > observed_at",
@@ -68,7 +68,22 @@
       "current": "v2",
       "active_from": "2026-09-20T02:35:00Z",
       "legacy_rule": "Claims created before active_from may complete under the historical nonempty evidence_refs rule.",
-      "v2_rule": "New claims require revision-bound subject evidence for guarded scopes and at least one remotely verifiable GitHub commit or CI proof."
+      "allowed_refs": [
+        "subject:<owner/repo>@<40sha>",
+        "commit:<owner/repo>@<40sha>",
+        "ci:<owner/repo>#<run-id>@<40sha>"
+      ],
+      "guarded_scope_requirement": "repo-rescan/runtime-evidence/migration-gap completion requires exact subject:<repository>@<subject_revision>.",
+      "proof_requirement": "Every v2 completion requires at least one commit or ci ref.",
+      "remote_verification": "commit/subject refs must resolve; ci refs must exist, match head_sha, and conclude success.",
+      "verification_receipt": {
+        "required": true,
+        "verifiers": [
+          "github-remote-v2",
+          "github-connector-v2"
+        ],
+        "digest": "sha256(JSON.stringify(evidence_refs))"
+      }
     }
   },
   "claims": [
