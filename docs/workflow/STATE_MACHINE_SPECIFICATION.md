@@ -289,6 +289,15 @@ A workflow being registered does not make its state names universal.
 
 The registry supports `CANONICAL | SHADOW | PILOT | DEPRECATED` domain adoption states.
 
+Maturity semantics are evidence-bound:
+
+- **SHADOW** — D has a model, but the source project remains runtime authority. A SHADOW may be `SOURCE_MODELED` or `SOURCE_PARITY_VERIFIED`.
+- **PILOT** — the source project actually routes an approved runtime scope through the D decision/projection contract. `RUNTIME_PILOT` evidence is mandatory.
+- **CANONICAL** — D is the authoritative workflow runtime for the declared scope. Internal AI Core workflows may already be canonical without cross-repository adoption evidence.
+- **DEPRECATED** — retained for migration/history and not for new adoption.
+
+A green source-side parity test does **not** by itself turn SHADOW into PILOT.
+
 ## 16. Obligation Pattern
 
 The schema supports:
