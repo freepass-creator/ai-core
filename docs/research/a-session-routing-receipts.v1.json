@@ -1,7 +1,7 @@
 {
   "schema": "ai-core-a-session-routing-receipts/v1",
   "status": "RESEARCH_ROUTING_RECEIPTS_NOT_CANONICAL",
-  "observed_at": "2026-09-20T01:18:00Z",
+  "observed_at": "2026-09-20T01:22:18Z",
   "policy": {
     "canonical_boundary": "A may record route delivery and receiver decisions but cannot change B/C/D canonical standards.",
     "one_receipt_per_route": "Every Evidence Registry finding route must have exactly one routing receipt.",
@@ -14,10 +14,19 @@
       "route_id": "audit.metadata-consistency-validator::C",
       "finding_id": "audit.metadata-consistency-validator",
       "target_session": "C",
-      "route_status": "SENT",
+      "route_status": "RECEIVED",
       "source_evidence_revision": "432dcb0aa0fd62ac7698108284bced4138c32238",
       "routed_at": "2026-09-20T00:56:35Z",
-      "receiver": null,
+      "receiver": {
+        "session": "C",
+        "ai_core_revision": "7f2159d71540fe6dbce9d35b919f5d8466f636ef",
+        "observed_at": "2026-09-20T01:22:18Z",
+        "evidence_refs": [
+          "docs/research/a-session-evidence-registry.v1.json#audit.metadata-consistency-validator",
+          "docs/research/a-session-routing-receipts.v1.json#audit.metadata-consistency-validator::C",
+          "docs/research/a-session-receiver-workers.v1.json"
+        ]
+      },
       "decision": null,
       "feedback": {
         "state": "PENDING",
@@ -30,6 +39,12 @@
           "observed_at": "2026-09-20T00:56:35Z",
           "evidence_revision": "432dcb0aa0fd62ac7698108284bced4138c32238",
           "reason": "Initialized from the current A Evidence Registry route. No finding-specific receiver receipt is recorded yet."
+        },
+        {
+          "status": "RECEIVED",
+          "observed_at": "2026-09-20T01:22:18Z",
+          "evidence_revision": "7f2159d71540fe6dbce9d35b919f5d8466f636ef",
+          "reason": "Receiver acknowledgement reconciled from the session inbox."
         }
       ]
     },
@@ -37,10 +52,19 @@
       "route_id": "audit.metadata-consistency-validator::D",
       "finding_id": "audit.metadata-consistency-validator",
       "target_session": "D",
-      "route_status": "SENT",
+      "route_status": "RECEIVED",
       "source_evidence_revision": "432dcb0aa0fd62ac7698108284bced4138c32238",
       "routed_at": "2026-09-20T00:56:35Z",
-      "receiver": null,
+      "receiver": {
+        "session": "D",
+        "ai_core_revision": "7f2159d71540fe6dbce9d35b919f5d8466f636ef",
+        "observed_at": "2026-09-20T01:22:18Z",
+        "evidence_refs": [
+          "docs/research/a-session-evidence-registry.v1.json#audit.metadata-consistency-validator",
+          "docs/research/a-session-routing-receipts.v1.json#audit.metadata-consistency-validator::D",
+          "docs/research/a-session-receiver-workers.v1.json"
+        ]
+      },
       "decision": null,
       "feedback": {
         "state": "PENDING",
@@ -53,6 +77,12 @@
           "observed_at": "2026-09-20T00:56:35Z",
           "evidence_revision": "432dcb0aa0fd62ac7698108284bced4138c32238",
           "reason": "Initialized from the current A Evidence Registry route. No finding-specific receiver receipt is recorded yet."
+        },
+        {
+          "status": "RECEIVED",
+          "observed_at": "2026-09-20T01:22:18Z",
+          "evidence_revision": "7f2159d71540fe6dbce9d35b919f5d8466f636ef",
+          "reason": "Receiver acknowledgement reconciled from the session inbox."
         }
       ]
     },
@@ -60,10 +90,19 @@
       "route_id": "core-contract.admin-production-binding::C",
       "finding_id": "core-contract.admin-production-binding",
       "target_session": "C",
-      "route_status": "SENT",
+      "route_status": "RECEIVED",
       "source_evidence_revision": "432dcb0aa0fd62ac7698108284bced4138c32238",
       "routed_at": "2026-09-20T00:54:00Z",
-      "receiver": null,
+      "receiver": {
+        "session": "C",
+        "ai_core_revision": "7f2159d71540fe6dbce9d35b919f5d8466f636ef",
+        "observed_at": "2026-09-20T01:22:18Z",
+        "evidence_refs": [
+          "docs/research/a-session-evidence-registry.v1.json#core-contract.admin-production-binding",
+          "docs/research/a-session-routing-receipts.v1.json#core-contract.admin-production-binding::C",
+          "docs/research/a-session-receiver-workers.v1.json"
+        ]
+      },
       "decision": null,
       "feedback": {
         "state": "PENDING",
@@ -76,6 +115,12 @@
           "observed_at": "2026-09-20T00:54:00Z",
           "evidence_revision": "432dcb0aa0fd62ac7698108284bced4138c32238",
           "reason": "Initialized from the current A Evidence Registry route. No finding-specific receiver receipt is recorded yet."
+        },
+        {
+          "status": "RECEIVED",
+          "observed_at": "2026-09-20T01:22:18Z",
+          "evidence_revision": "7f2159d71540fe6dbce9d35b919f5d8466f636ef",
+          "reason": "Receiver acknowledgement reconciled from the session inbox."
         }
       ]
     },
@@ -83,10 +128,19 @@
       "route_id": "core-contract.erp5-receipt-enforcement::C",
       "finding_id": "core-contract.erp5-receipt-enforcement",
       "target_session": "C",
-      "route_status": "SENT",
+      "route_status": "RECEIVED",
       "source_evidence_revision": "432dcb0aa0fd62ac7698108284bced4138c32238",
       "routed_at": "2026-09-20T00:54:00Z",
-      "receiver": null,
+      "receiver": {
+        "session": "C",
+        "ai_core_revision": "7f2159d71540fe6dbce9d35b919f5d8466f636ef",
+        "observed_at": "2026-09-20T01:22:18Z",
+        "evidence_refs": [
+          "docs/research/a-session-evidence-registry.v1.json#core-contract.erp5-receipt-enforcement",
+          "docs/research/a-session-routing-receipts.v1.json#core-contract.erp5-receipt-enforcement::C",
+          "docs/research/a-session-receiver-workers.v1.json"
+        ]
+      },
       "decision": null,
       "feedback": {
         "state": "PENDING",
@@ -99,6 +153,12 @@
           "observed_at": "2026-09-20T00:54:00Z",
           "evidence_revision": "432dcb0aa0fd62ac7698108284bced4138c32238",
           "reason": "Initialized from the current A Evidence Registry route. No finding-specific receiver receipt is recorded yet."
+        },
+        {
+          "status": "RECEIVED",
+          "observed_at": "2026-09-20T01:22:18Z",
+          "evidence_revision": "7f2159d71540fe6dbce9d35b919f5d8466f636ef",
+          "reason": "Receiver acknowledgement reconciled from the session inbox."
         }
       ]
     },
@@ -106,10 +166,19 @@
       "route_id": "core-contract.sales-shadow-runtime-binding::C",
       "finding_id": "core-contract.sales-shadow-runtime-binding",
       "target_session": "C",
-      "route_status": "SENT",
+      "route_status": "RECEIVED",
       "source_evidence_revision": "2f305bbcffea20acd08b7187ecede6fc1a1f23bf",
       "routed_at": "2026-09-20T01:18:00Z",
-      "receiver": null,
+      "receiver": {
+        "session": "C",
+        "ai_core_revision": "7f2159d71540fe6dbce9d35b919f5d8466f636ef",
+        "observed_at": "2026-09-20T01:22:18Z",
+        "evidence_refs": [
+          "docs/research/a-session-evidence-registry.v1.json#core-contract.sales-shadow-runtime-binding",
+          "docs/research/a-session-routing-receipts.v1.json#core-contract.sales-shadow-runtime-binding::C",
+          "docs/research/a-session-receiver-workers.v1.json"
+        ]
+      },
       "decision": null,
       "feedback": {
         "state": "PENDING",
@@ -122,6 +191,12 @@
           "observed_at": "2026-09-20T01:18:00Z",
           "evidence_revision": "2f305bbcffea20acd08b7187ecede6fc1a1f23bf",
           "reason": "Initialized from the refreshed A Evidence Registry route; no finding-specific receiver acknowledgement exists yet."
+        },
+        {
+          "status": "RECEIVED",
+          "observed_at": "2026-09-20T01:22:18Z",
+          "evidence_revision": "7f2159d71540fe6dbce9d35b919f5d8466f636ef",
+          "reason": "Receiver acknowledgement reconciled from the session inbox."
         }
       ]
     },
@@ -129,10 +204,19 @@
       "route_id": "governance.erp5-shadow-main-push-path::C",
       "finding_id": "governance.erp5-shadow-main-push-path",
       "target_session": "C",
-      "route_status": "SENT",
+      "route_status": "RECEIVED",
       "source_evidence_revision": "432dcb0aa0fd62ac7698108284bced4138c32238",
       "routed_at": "2026-09-20T00:56:35Z",
-      "receiver": null,
+      "receiver": {
+        "session": "C",
+        "ai_core_revision": "7f2159d71540fe6dbce9d35b919f5d8466f636ef",
+        "observed_at": "2026-09-20T01:22:18Z",
+        "evidence_refs": [
+          "docs/research/a-session-evidence-registry.v1.json#governance.erp5-shadow-main-push-path",
+          "docs/research/a-session-routing-receipts.v1.json#governance.erp5-shadow-main-push-path::C",
+          "docs/research/a-session-receiver-workers.v1.json"
+        ]
+      },
       "decision": null,
       "feedback": {
         "state": "PENDING",
@@ -145,6 +229,12 @@
           "observed_at": "2026-09-20T00:56:35Z",
           "evidence_revision": "432dcb0aa0fd62ac7698108284bced4138c32238",
           "reason": "Initialized from the current A Evidence Registry route. No finding-specific receiver receipt is recorded yet."
+        },
+        {
+          "status": "RECEIVED",
+          "observed_at": "2026-09-20T01:22:18Z",
+          "evidence_revision": "7f2159d71540fe6dbce9d35b919f5d8466f636ef",
+          "reason": "Receiver acknowledgement reconciled from the session inbox."
         }
       ]
     },
@@ -152,10 +242,19 @@
       "route_id": "result.proof-input-digest-binding::C",
       "finding_id": "result.proof-input-digest-binding",
       "target_session": "C",
-      "route_status": "SENT",
+      "route_status": "RECEIVED",
       "source_evidence_revision": "432dcb0aa0fd62ac7698108284bced4138c32238",
       "routed_at": "2026-09-19T00:00:00Z",
-      "receiver": null,
+      "receiver": {
+        "session": "C",
+        "ai_core_revision": "7f2159d71540fe6dbce9d35b919f5d8466f636ef",
+        "observed_at": "2026-09-20T01:22:18Z",
+        "evidence_refs": [
+          "docs/research/a-session-evidence-registry.v1.json#result.proof-input-digest-binding",
+          "docs/research/a-session-routing-receipts.v1.json#result.proof-input-digest-binding::C",
+          "docs/research/a-session-receiver-workers.v1.json"
+        ]
+      },
       "decision": null,
       "feedback": {
         "state": "PENDING",
@@ -168,6 +267,12 @@
           "observed_at": "2026-09-19T00:00:00Z",
           "evidence_revision": "432dcb0aa0fd62ac7698108284bced4138c32238",
           "reason": "Initialized from the current A Evidence Registry route. No finding-specific receiver receipt is recorded yet."
+        },
+        {
+          "status": "RECEIVED",
+          "observed_at": "2026-09-20T01:22:18Z",
+          "evidence_revision": "7f2159d71540fe6dbce9d35b919f5d8466f636ef",
+          "reason": "Receiver acknowledgement reconciled from the session inbox."
         }
       ]
     },
@@ -175,10 +280,19 @@
       "route_id": "scheduler.logical-slot-observability::C",
       "finding_id": "scheduler.logical-slot-observability",
       "target_session": "C",
-      "route_status": "SENT",
+      "route_status": "RECEIVED",
       "source_evidence_revision": "432dcb0aa0fd62ac7698108284bced4138c32238",
       "routed_at": "2026-09-20T00:00:00Z",
-      "receiver": null,
+      "receiver": {
+        "session": "C",
+        "ai_core_revision": "7f2159d71540fe6dbce9d35b919f5d8466f636ef",
+        "observed_at": "2026-09-20T01:22:18Z",
+        "evidence_refs": [
+          "docs/research/a-session-evidence-registry.v1.json#scheduler.logical-slot-observability",
+          "docs/research/a-session-routing-receipts.v1.json#scheduler.logical-slot-observability::C",
+          "docs/research/a-session-receiver-workers.v1.json"
+        ]
+      },
       "decision": null,
       "feedback": {
         "state": "PENDING",
@@ -191,6 +305,12 @@
           "observed_at": "2026-09-20T00:00:00Z",
           "evidence_revision": "432dcb0aa0fd62ac7698108284bced4138c32238",
           "reason": "Initialized from the current A Evidence Registry route. No finding-specific receiver receipt is recorded yet."
+        },
+        {
+          "status": "RECEIVED",
+          "observed_at": "2026-09-20T01:22:18Z",
+          "evidence_revision": "7f2159d71540fe6dbce9d35b919f5d8466f636ef",
+          "reason": "Receiver acknowledgement reconciled from the session inbox."
         }
       ]
     },
@@ -198,10 +318,19 @@
       "route_id": "scheduler.logical-slot-observability::D",
       "finding_id": "scheduler.logical-slot-observability",
       "target_session": "D",
-      "route_status": "SENT",
+      "route_status": "RECEIVED",
       "source_evidence_revision": "432dcb0aa0fd62ac7698108284bced4138c32238",
       "routed_at": "2026-09-20T00:00:00Z",
-      "receiver": null,
+      "receiver": {
+        "session": "D",
+        "ai_core_revision": "7f2159d71540fe6dbce9d35b919f5d8466f636ef",
+        "observed_at": "2026-09-20T01:22:18Z",
+        "evidence_refs": [
+          "docs/research/a-session-evidence-registry.v1.json#scheduler.logical-slot-observability",
+          "docs/research/a-session-routing-receipts.v1.json#scheduler.logical-slot-observability::D",
+          "docs/research/a-session-receiver-workers.v1.json"
+        ]
+      },
       "decision": null,
       "feedback": {
         "state": "PENDING",
@@ -214,6 +343,12 @@
           "observed_at": "2026-09-20T00:00:00Z",
           "evidence_revision": "432dcb0aa0fd62ac7698108284bced4138c32238",
           "reason": "Initialized from the current A Evidence Registry route. No finding-specific receiver receipt is recorded yet."
+        },
+        {
+          "status": "RECEIVED",
+          "observed_at": "2026-09-20T01:22:18Z",
+          "evidence_revision": "7f2159d71540fe6dbce9d35b919f5d8466f636ef",
+          "reason": "Receiver acknowledgement reconciled from the session inbox."
         }
       ]
     },
@@ -221,10 +356,19 @@
       "route_id": "ui.freepass-sales-b-conformance::B",
       "finding_id": "ui.freepass-sales-b-conformance",
       "target_session": "B",
-      "route_status": "SENT",
+      "route_status": "RECEIVED",
       "source_evidence_revision": "2f305bbcffea20acd08b7187ecede6fc1a1f23bf",
       "routed_at": "2026-09-20T01:18:00Z",
-      "receiver": null,
+      "receiver": {
+        "session": "B",
+        "ai_core_revision": "7f2159d71540fe6dbce9d35b919f5d8466f636ef",
+        "observed_at": "2026-09-20T01:22:18Z",
+        "evidence_refs": [
+          "docs/research/a-session-evidence-registry.v1.json#ui.freepass-sales-b-conformance",
+          "docs/research/a-session-routing-receipts.v1.json#ui.freepass-sales-b-conformance::B",
+          "docs/research/a-session-receiver-workers.v1.json"
+        ]
+      },
       "decision": null,
       "feedback": {
         "state": "PENDING",
@@ -237,6 +381,12 @@
           "observed_at": "2026-09-20T01:18:00Z",
           "evidence_revision": "2f305bbcffea20acd08b7187ecede6fc1a1f23bf",
           "reason": "Initialized from the refreshed A Evidence Registry route; no finding-specific receiver acknowledgement exists yet."
+        },
+        {
+          "status": "RECEIVED",
+          "observed_at": "2026-09-20T01:22:18Z",
+          "evidence_revision": "7f2159d71540fe6dbce9d35b919f5d8466f636ef",
+          "reason": "Receiver acknowledgement reconciled from the session inbox."
         }
       ]
     },
@@ -244,10 +394,19 @@
       "route_id": "ui.machine-conformance-gate::B",
       "finding_id": "ui.machine-conformance-gate",
       "target_session": "B",
-      "route_status": "SENT",
+      "route_status": "RECEIVED",
       "source_evidence_revision": "432dcb0aa0fd62ac7698108284bced4138c32238",
       "routed_at": "2026-09-19T00:00:00Z",
-      "receiver": null,
+      "receiver": {
+        "session": "B",
+        "ai_core_revision": "7f2159d71540fe6dbce9d35b919f5d8466f636ef",
+        "observed_at": "2026-09-20T01:22:18Z",
+        "evidence_refs": [
+          "docs/research/a-session-evidence-registry.v1.json#ui.machine-conformance-gate",
+          "docs/research/a-session-routing-receipts.v1.json#ui.machine-conformance-gate::B",
+          "docs/research/a-session-receiver-workers.v1.json"
+        ]
+      },
       "decision": null,
       "feedback": {
         "state": "PENDING",
@@ -260,6 +419,12 @@
           "observed_at": "2026-09-19T00:00:00Z",
           "evidence_revision": "432dcb0aa0fd62ac7698108284bced4138c32238",
           "reason": "Initialized from the current A Evidence Registry route. No finding-specific receiver receipt is recorded yet."
+        },
+        {
+          "status": "RECEIVED",
+          "observed_at": "2026-09-20T01:22:18Z",
+          "evidence_revision": "7f2159d71540fe6dbce9d35b919f5d8466f636ef",
+          "reason": "Receiver acknowledgement reconciled from the session inbox."
         }
       ]
     },
@@ -267,10 +432,19 @@
       "route_id": "workflow.admin-runtime-binding::D",
       "finding_id": "workflow.admin-runtime-binding",
       "target_session": "D",
-      "route_status": "SENT",
+      "route_status": "RECEIVED",
       "source_evidence_revision": "2f305bbcffea20acd08b7187ecede6fc1a1f23bf",
       "routed_at": "2026-09-20T01:18:00Z",
-      "receiver": null,
+      "receiver": {
+        "session": "D",
+        "ai_core_revision": "7f2159d71540fe6dbce9d35b919f5d8466f636ef",
+        "observed_at": "2026-09-20T01:22:18Z",
+        "evidence_refs": [
+          "docs/research/a-session-evidence-registry.v1.json#workflow.admin-runtime-binding",
+          "docs/research/a-session-routing-receipts.v1.json#workflow.admin-runtime-binding::D",
+          "docs/research/a-session-receiver-workers.v1.json"
+        ]
+      },
       "decision": null,
       "feedback": {
         "state": "PENDING",
@@ -283,6 +457,12 @@
           "observed_at": "2026-09-20T01:18:00Z",
           "evidence_revision": "2f305bbcffea20acd08b7187ecede6fc1a1f23bf",
           "reason": "Initialized from the refreshed A Evidence Registry route; no finding-specific receiver acknowledgement exists yet."
+        },
+        {
+          "status": "RECEIVED",
+          "observed_at": "2026-09-20T01:22:18Z",
+          "evidence_revision": "7f2159d71540fe6dbce9d35b919f5d8466f636ef",
+          "reason": "Receiver acknowledgement reconciled from the session inbox."
         }
       ]
     },
@@ -290,10 +470,19 @@
       "route_id": "workflow.compensated-multiwrite::D",
       "finding_id": "workflow.compensated-multiwrite",
       "target_session": "D",
-      "route_status": "SENT",
+      "route_status": "RECEIVED",
       "source_evidence_revision": "432dcb0aa0fd62ac7698108284bced4138c32238",
       "routed_at": "2026-09-19T00:00:00Z",
-      "receiver": null,
+      "receiver": {
+        "session": "D",
+        "ai_core_revision": "7f2159d71540fe6dbce9d35b919f5d8466f636ef",
+        "observed_at": "2026-09-20T01:22:18Z",
+        "evidence_refs": [
+          "docs/research/a-session-evidence-registry.v1.json#workflow.compensated-multiwrite",
+          "docs/research/a-session-routing-receipts.v1.json#workflow.compensated-multiwrite::D",
+          "docs/research/a-session-receiver-workers.v1.json"
+        ]
+      },
       "decision": null,
       "feedback": {
         "state": "PENDING",
@@ -306,6 +495,12 @@
           "observed_at": "2026-09-19T00:00:00Z",
           "evidence_revision": "432dcb0aa0fd62ac7698108284bced4138c32238",
           "reason": "Initialized from the current A Evidence Registry route. No finding-specific receiver receipt is recorded yet."
+        },
+        {
+          "status": "RECEIVED",
+          "observed_at": "2026-09-20T01:22:18Z",
+          "evidence_revision": "7f2159d71540fe6dbce9d35b919f5d8466f636ef",
+          "reason": "Receiver acknowledgement reconciled from the session inbox."
         }
       ]
     },
@@ -313,10 +508,19 @@
       "route_id": "workflow.forward-skip-evidence-integrity::C",
       "finding_id": "workflow.forward-skip-evidence-integrity",
       "target_session": "C",
-      "route_status": "SENT",
+      "route_status": "RECEIVED",
       "source_evidence_revision": "2f305bbcffea20acd08b7187ecede6fc1a1f23bf",
       "routed_at": "2026-09-20T01:18:00Z",
-      "receiver": null,
+      "receiver": {
+        "session": "C",
+        "ai_core_revision": "7f2159d71540fe6dbce9d35b919f5d8466f636ef",
+        "observed_at": "2026-09-20T01:22:18Z",
+        "evidence_refs": [
+          "docs/research/a-session-evidence-registry.v1.json#workflow.forward-skip-evidence-integrity",
+          "docs/research/a-session-routing-receipts.v1.json#workflow.forward-skip-evidence-integrity::C",
+          "docs/research/a-session-receiver-workers.v1.json"
+        ]
+      },
       "decision": null,
       "feedback": {
         "state": "PENDING",
@@ -329,6 +533,12 @@
           "observed_at": "2026-09-20T01:18:00Z",
           "evidence_revision": "2f305bbcffea20acd08b7187ecede6fc1a1f23bf",
           "reason": "Initialized from the refreshed A Evidence Registry route; no finding-specific receiver acknowledgement exists yet."
+        },
+        {
+          "status": "RECEIVED",
+          "observed_at": "2026-09-20T01:22:18Z",
+          "evidence_revision": "7f2159d71540fe6dbce9d35b919f5d8466f636ef",
+          "reason": "Receiver acknowledgement reconciled from the session inbox."
         }
       ]
     },
@@ -336,10 +546,19 @@
       "route_id": "workflow.forward-skip-evidence-integrity::D",
       "finding_id": "workflow.forward-skip-evidence-integrity",
       "target_session": "D",
-      "route_status": "SENT",
+      "route_status": "RECEIVED",
       "source_evidence_revision": "2f305bbcffea20acd08b7187ecede6fc1a1f23bf",
       "routed_at": "2026-09-20T01:18:00Z",
-      "receiver": null,
+      "receiver": {
+        "session": "D",
+        "ai_core_revision": "7f2159d71540fe6dbce9d35b919f5d8466f636ef",
+        "observed_at": "2026-09-20T01:22:18Z",
+        "evidence_refs": [
+          "docs/research/a-session-evidence-registry.v1.json#workflow.forward-skip-evidence-integrity",
+          "docs/research/a-session-routing-receipts.v1.json#workflow.forward-skip-evidence-integrity::D",
+          "docs/research/a-session-receiver-workers.v1.json"
+        ]
+      },
       "decision": null,
       "feedback": {
         "state": "PENDING",
@@ -352,6 +571,12 @@
           "observed_at": "2026-09-20T01:18:00Z",
           "evidence_revision": "2f305bbcffea20acd08b7187ecede6fc1a1f23bf",
           "reason": "Initialized from the refreshed A Evidence Registry route; no finding-specific receiver acknowledgement exists yet."
+        },
+        {
+          "status": "RECEIVED",
+          "observed_at": "2026-09-20T01:22:18Z",
+          "evidence_revision": "7f2159d71540fe6dbce9d35b919f5d8466f636ef",
+          "reason": "Receiver acknowledgement reconciled from the session inbox."
         }
       ]
     }
