@@ -86,6 +86,28 @@ export function planEffectResume({
     const compensationSuccesses=compensationReceipts.filter(record=>record.receipt.status==='SUCCEEDED');
     const compensationFailures=compensationReceipts.filter(record=>record.receipt.status!=='SUCCEEDED');
 
+    if(compensationSuccesses.length&&!effectSuccesses.length){
+      return {
+        status:'HOLD',
+        reason:'COMPENSATION_WITHOUT_EFFECT_SUCCESS',
+        actions,
+        blocking_effect_id:effect.effect_id,
+        blocking_receipt_refs:compensationSuccesses.map(x=>x.receipt.receipt_id),
+        foreign_receipt_count:foreign_count,
+      };
+    }
+
+    if(compensationSuccesses.length&&effect.compensation_mode!=='REQUIRED'){
+      return {
+        status:'HOLD',
+        reason:'UNEXPECTED_COMPENSATION_EVIDENCE',
+        actions,
+        blocking_effect_id:effect.effect_id,
+        blocking_receipt_refs:compensationSuccesses.map(x=>x.receipt.receipt_id),
+        foreign_receipt_count:foreign_count,
+      };
+    }
+
     if(effectBlocks.length||compensationFailures.length){
       return {
         status:'HOLD',
