@@ -1,0 +1,59 @@
+{
+  "candidate_id": "shared.krw-display.erp4-welrix.v1",
+  "capability_key": "display.krw",
+  "target_package": "devcenter/capabilities/shared/krw-display",
+  "implementations": [
+    {
+      "project_id": "freepasserp4",
+      "repository": "freepass-creator/freepasserp4",
+      "revision": "f01b91c7f68fc2f55d8d642bc3d39f5e07368967",
+      "source_ref": "lib/format.ts",
+      "source_blob_sha": "f56678883830ab02330d021c8bc45ab388106eca",
+      "export_name": "wonKo",
+      "semantic_contract": {
+        "input_domain": "unknown coerced with Number",
+        "output": "ko-KR integer + 원",
+        "rounding": "nearest-won",
+        "negative_policy": "clamp-zero",
+        "invalid_policy": "zero",
+        "side_effect": "none"
+      },
+      "behavior_cases": [
+        {"case_id": "zero", "input": 0, "output": "0원"},
+        {"case_id": "positive-decimal", "input": 1234.6, "output": "1,235원"},
+        {"case_id": "negative-one", "input": -1, "output": "0원"}
+      ],
+      "evidence_refs": [
+        "GIT:freepass-creator/freepasserp4@f01b91c7f68fc2f55d8d642bc3d39f5e07368967",
+        "READ:lib/format.ts#wonKo",
+        "BLOB:f56678883830ab02330d021c8bc45ab388106eca"
+      ]
+    },
+    {
+      "project_id": "welrixtable",
+      "repository": "freepass-creator/welrixtable",
+      "revision": "56affca1fc4e419000afe3e42f8821e5458d2071",
+      "source_ref": "src/lib/format.js",
+      "source_blob_sha": "f732e17dcd0b98da25ba12707c1f1ab2d89ea9c0",
+      "export_name": "krw",
+      "semantic_contract": {
+        "input_domain": "number-like consumed by Math.round",
+        "output": "ko-KR integer + 원",
+        "rounding": "nearest-won",
+        "negative_policy": "preserve-negative",
+        "invalid_policy": "zero-for-falsy",
+        "side_effect": "none"
+      },
+      "behavior_cases": [
+        {"case_id": "zero", "input": 0, "output": "0원"},
+        {"case_id": "positive-decimal", "input": 1234.6, "output": "1,235원"},
+        {"case_id": "negative-one", "input": -1, "output": "-1원"}
+      ],
+      "evidence_refs": [
+        "GIT:freepass-creator/welrixtable@56affca1fc4e419000afe3e42f8821e5458d2071",
+        "READ:src/lib/format.js#krw",
+        "BLOB:f732e17dcd0b98da25ba12707c1f1ab2d89ea9c0"
+      ]
+    }
+  ]
+}
