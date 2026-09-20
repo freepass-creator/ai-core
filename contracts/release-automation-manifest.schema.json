@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.freepass.ai/release/automation-manifest/v1",
+  "title": "AI Core Release Automation Manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "project_id", "repository", "canonical_branch", "ci",
+    "preview", "production", "revision_readback", "live_verification", "retry_policy"
+  ],
+  "properties": {
+    "schema_version": { "const": "release-automation-manifest/v1" },
+    "project_id": { "type": "string", "minLength": 1 },
+    "repository": { "type": "string", "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$" },
+    "canonical_branch": { "type": "string", "minLength": 1 },
+    "ci": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["commands"],
+      "properties": {
+        "commands": {
+          "type": "array", "minItems": 1, "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "preview": { "$ref": "#/$defs/target" },
+    "production": { "$ref": "#/$defs/target" },
+    "revision_readback": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "url", "json_field"],
+      "properties": {
+        "mode": { "enum": ["NONE", "HTTP_JSON"] },
+        "url": { "type": ["string", "null"] },
+        "json_field": { "type": ["string", "null"] }
+      }
+    },
+    "live_verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "urls"],
+      "properties": {
+        "mode": { "enum": ["NONE", "HTTP"] },
+        "urls": {
+          "type": "array", "uniqueItems": true,
+          "items": { "type": "string", "format": "uri", "pattern": "^https://" }
+        }
+      }
+    },
+    "retry_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["deduplicate_by", "max_attempts_per_revision"],
+      "properties": {
+        "deduplicate_by": { "const": "repository+environment+revision" },
+        "max_attempts_per_revision": { "type": "integer", "minimum": 1, "maximum": 3 }
+      }
+    }
+  },
+  "$defs": {
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "provider", "environment", "required_secret_names"],
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "provider": { "enum": ["UNCONFIGURED", "VERCEL", "FIREBASE_HOSTING", "GITHUB_PAGES"] },
+        "environment": { "type": "string", "minLength": 1 },
+        "required_secret_names": {
+          "type": "array", "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]*$" }
+        }
+      }
+    }
+  }
+}

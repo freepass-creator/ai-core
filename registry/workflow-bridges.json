@@ -120,7 +120,7 @@
         "files": [
           {
             "path": "src/engine/capability-execution-coordinator.mjs",
-            "blob_sha": "6c0b3e893bbb44bb1707eeca4a47839d50ba15dd"
+            "blob_sha": "ad1404d5ce50a4c198a6a4bc56485cb56ebff123"
           }
         ]
       }
@@ -161,7 +161,7 @@
         "files": [
           {
             "path": "src/engine/capability-execution-coordinator.mjs",
-            "blob_sha": "6c0b3e893bbb44bb1707eeca4a47839d50ba15dd"
+            "blob_sha": "ad1404d5ce50a4c198a6a4bc56485cb56ebff123"
           },
           {
             "path": "src/engine/execution-receipt.mjs",

@@ -1,0 +1,60 @@
+name: Release Gate
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.repository }}-${{ github.ref }}-${{ github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.19.0
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - name: Create revision-bound release status
+        run: >-
+          npm run release:status --
+          --event "${{ github.event_name }}"
+          --ref "${{ github.ref }}"
+          --revision "${{ github.sha }}"
+          --repository "${{ github.repository }}"
+          --attempt "${{ github.run_attempt }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-status-${{ github.sha }}
+          path: .release/status.json
+          if-no-files-found: error
+          retention-days: 30
+
+  production-admission:
+    if: github.event_name == 'push' && github.run_attempt == 1
+    needs: verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.19.0
+          cache: npm
+      - run: npm ci
+      - name: Require a configured provider, revision readback and live verification
+        run: >-
+          npm run release:status --
+          --event "${{ github.event_name }}"
+          --ref "${{ github.ref }}"
+          --revision "${{ github.sha }}"
+          --repository "${{ github.repository }}"
+          --attempt "${{ github.run_attempt }}"
+          --strict true

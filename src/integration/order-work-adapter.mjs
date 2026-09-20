@@ -59,7 +59,8 @@ export function createOrderWorkAdapter({ readContext, verifyLedgerText, runContr
     const work = Object.hasOwn(ledger.work ?? {}, mapping.work_id) ? ledger.work[mapping.work_id] : null;
     need(project && item && work, 'CANONICAL_LINK_MISSING');
     if (candidate && !existing) need(work.state === 'RECEIVED', 'NEW_LINK_REQUIRES_RECEIVED');
-    need(project.status === 'ACTIVE', 'PROJECT_NOT_ACTIVE');
+    need((project.execution_readiness_status ?? project.status) === 'ACTIVE', 'PROJECT_NOT_ACTIVE');
+    need((project.repository_lifecycle_status ?? project.status) !== 'RETIRE', 'PROJECT_RETIRED');
     need(item.project_id === mapping.project_id && work.project_id === mapping.project_id, 'WORK_PROJECT_MISMATCH');
     // Registry head, snapshot and ledger must all describe the SAME current revision.
     need(revision(work.subject_revision) && [project.head_revision, item.subject_revision].every(value => value === work.subject_revision), 'SUBJECT_REVISION_STALE');

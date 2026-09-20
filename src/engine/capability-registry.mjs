@@ -23,7 +23,7 @@ export function projectIndex(projectRegistry) {
 
 export function validateCapabilityRegistryReferences(registry, projectRegistry) {
   need(registry?.schema_version === '1.0' && Array.isArray(registry.capabilities), 'CAPABILITY_REGISTRY_INVALID');
-  need(projectRegistry?.schema_version === '1.0' && Array.isArray(projectRegistry.projects), 'PROJECT_REGISTRY_INVALID');
+  need(['1.0', '1.1'].includes(projectRegistry?.schema_version) && Array.isArray(projectRegistry.projects), 'PROJECT_REGISTRY_INVALID');
   const projects = projectIndex(projectRegistry);
   const caps = capabilityIndex(registry);
 
@@ -62,6 +62,14 @@ export function validateCapabilityRegistryReferences(registry, projectRegistry) 
     }
   }
   return { status:'VALID', capability_count:caps.size, project_count:projects.size };
+}
+
+export function projectExecutionStatus(project) {
+  return project?.execution_readiness_status ?? project?.status ?? null;
+}
+
+export function projectLifecycleStatus(project) {
+  return project?.repository_lifecycle_status ?? project?.status ?? null;
 }
 
 export function capabilitySupportsProject(capability, projectId) {

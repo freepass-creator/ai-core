@@ -6,6 +6,7 @@ import { pathToFileURL } from 'node:url';
 const execFileAsync=promisify(execFile);
 const need=(c,code)=>{if(!c) throw new Error(code);};
 const safeToken=t=>typeof t==='string'&&t.length>0&&!/[;&|><\r\n]/.test(t);
+const executionStatus=project=>project?.execution_readiness_status??project?.status??null;
 
 export function parseRegistryCommand(command){
   need(typeof command==='string'&&command.trim(),'PROJECT_COMMAND_UNAVAILABLE');
@@ -28,7 +29,7 @@ export function createProjectRuntime({
   importModule=async p=>import(pathToFileURL(p).href),
 }={}){
   async function assertProject(project){
-    need(project&&project.execution_readiness_status==='ACTIVE','PROJECT_NOT_EXECUTION_READY');
+    need(project&&executionStatus(project)==='ACTIVE','PROJECT_NOT_EXECUTION_READY');
     need(typeof project.local_path==='string'&&project.local_path.length>0&&isAbsolute(project.local_path),'PROJECT_LOCAL_PATH_REQUIRED');
     const head=await readHead(project.local_path); need(head===project.head_revision,'PROJECT_REVISION_STALE');
     const dirty=await readDirtyPaths(project.local_path); need(Array.isArray(dirty)&&dirty.length===0,'PROJECT_WORKTREE_DIRTY');

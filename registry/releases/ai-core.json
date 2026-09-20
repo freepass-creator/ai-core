@@ -1,0 +1,34 @@
+{
+  "schema_version": "release-automation-manifest/v1",
+  "project_id": "ai-core",
+  "repository": "freepass-creator/ai-core",
+  "canonical_branch": "main",
+  "ci": {
+    "commands": ["npm ci", "npm test"]
+  },
+  "preview": {
+    "enabled": false,
+    "provider": "UNCONFIGURED",
+    "environment": "preview",
+    "required_secret_names": []
+  },
+  "production": {
+    "enabled": false,
+    "provider": "UNCONFIGURED",
+    "environment": "production",
+    "required_secret_names": []
+  },
+  "revision_readback": {
+    "mode": "NONE",
+    "url": null,
+    "json_field": null
+  },
+  "live_verification": {
+    "mode": "NONE",
+    "urls": []
+  },
+  "retry_policy": {
+    "deduplicate_by": "repository+environment+revision",
+    "max_attempts_per_revision": 1
+  }
+}
