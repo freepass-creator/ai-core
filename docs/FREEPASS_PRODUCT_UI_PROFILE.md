@@ -50,6 +50,20 @@ Sales에서 검증된 규칙:
 - 상세에서 검색/이동해도 draft 보존
 - 필터 dialog 종료 시 invoker로 focus 복귀
 
+## 5-1. 검색·필터 composition은 AI Core 공식 mode를 선택한다
+
+상위 정본: `docs/UI_COMPOSITION_STANDARD.md`
+
+FreePass 화면도 검색창·세부필터·퀵필터를 임기응변으로 조합하지 않는다.
+
+- 기본은 가장 가벼운 mode부터 선택한다.
+- 관리자 상품찾기 기본값은 **SEARCH_FILTER**.
+- 세부필터 trigger는 검색창과 같은 row의 trailing 위치.
+- quick filter는 반복 사용 근거가 있을 때만 검색창 아래 별도 row.
+- 검색 parser가 읽은 structured condition은 적용 조건으로 되돌려 보여 주며 detailed filter와 별도 state로 충돌시키지 않는다.
+- 상품찾기의 1/6/12/24/36/60개월 shortcut은 현재 FreePass Admin 공통 quick filter로 보지 않는다.
+- 접수/정산의 상태 탭은 상품 검색 shortcut과 구분되는 workflow 상태 navigation/filter다.
+
 ## 6. 목록은 정보밀도와 클릭영역을 분리
 
 Sales 기준:
