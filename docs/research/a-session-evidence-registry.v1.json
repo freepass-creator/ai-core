@@ -1,7 +1,7 @@
 {
   "schema": "ai-core-a-session-evidence-registry/v1",
   "status": "RESEARCH_ROUTING_INDEX_NOT_CANONICAL",
-  "observed_at": "2026-09-20T00:56:35Z",
+  "observed_at": "2026-09-20T01:18:00Z",
   "policy": {
     "canonical_boundary": "A records evidence and routing only. B/C/D canonical standards may be changed only by their owning sessions.",
     "project_gt_core": "Generalize reusable project implementation and route candidate with exact revision evidence.",
@@ -323,6 +323,175 @@
           "status": "MIGRATION_REQUIRED",
           "observed_at": "2026-09-20T00:56:35Z",
           "reason": "Audit80 proves pull-request and main-push path filters are asymmetric for the new C shadow surfaces."
+        }
+      ]
+    },
+    {
+      "id": "workflow.forward-skip-evidence-integrity",
+      "classification": "PROJECT_GT_CORE",
+      "current_status": "ROUTED",
+      "evidence_level": "PROJECT_VERIFIED",
+      "routes": [
+        "D",
+        "C"
+      ],
+      "route_priority": {
+        "D": "PRIMARY",
+        "C": "SECONDARY"
+      },
+      "summary": "Permit valid monotonic forward workflow skips without fabricating skipped completion evidence, while recording explicit inferred-prerequisite provenance when later verified facts logically imply a prerequisite.",
+      "revision_evidence": [
+        {
+          "repository": "freepass-creator/freepass-sales",
+          "revision": "2ec46bb2e88b10a31915b68ec77b2eecbdac57bd",
+          "evidence_types": [
+            "CODE",
+            "DOC",
+            "TEST",
+            "CI"
+          ]
+        }
+      ],
+      "state_history": [
+        {
+          "status": "ROUTED",
+          "observed_at": "2026-09-20T01:18:00Z",
+          "reason": "Sales exact-head code, tests and CI prove forward-skip evidence integrity; routed to D primary and C provenance review without any canonical edit."
+        }
+      ]
+    },
+    {
+      "id": "ui.freepass-sales-b-conformance",
+      "classification": "CORE_GT_PROJECT",
+      "current_status": "MIGRATION_REQUIRED",
+      "evidence_level": "PROJECT_VERIFIED",
+      "routes": [
+        "B"
+      ],
+      "summary": "FreePass Sales maps to the AI Core B UI/UX consumer contract but remains MAPPED rather than revision-bound conformant because locale, RTL, IME and complete rendered evidence are still missing.",
+      "revision_evidence": [
+        {
+          "repository": "freepass-creator/freepass-sales",
+          "revision": "2ec46bb2e88b10a31915b68ec77b2eecbdac57bd",
+          "evidence_types": [
+            "CODE",
+            "DOC",
+            "TEST",
+            "CI"
+          ]
+        }
+      ],
+      "migration": {
+        "target_repository": "freepass-creator/freepass-sales",
+        "breaking_impact": [
+          "MAPPED UI can be misreported as PILOT or CONFORMANT without revision-bound evidence.",
+          "Localization, RTL, IME and responsive behavior can be overstated outside the verified matrix.",
+          "A copied product mapping can be mistaken for B canonical behavior."
+        ],
+        "verification_needs": [
+          "Keep exact-head consumer mapping CI green.",
+          "Produce a revision-bound B4 conformance receipt.",
+          "Complete locale, RTL and IME probes required by the consumer mapping.",
+          "Retain full rendered evidence for the declared viewport matrix.",
+          "Bind production-conformance claims to an exact released revision."
+        ]
+      },
+      "state_history": [
+        {
+          "status": "MIGRATION_REQUIRED",
+          "observed_at": "2026-09-20T01:18:00Z",
+          "reason": "Sales B consumer mapping is CI-verified at exact head, but the project still lacks the revision-bound conformance evidence required to move beyond MAPPED."
+        }
+      ]
+    },
+    {
+      "id": "core-contract.sales-shadow-runtime-binding",
+      "classification": "CORE_GT_PROJECT",
+      "current_status": "MIGRATION_REQUIRED",
+      "evidence_level": "PROJECT_VERIFIED",
+      "routes": [
+        "C"
+      ],
+      "summary": "FreePass Sales implements and tests fail-closed customer-search and promotion receipt shadow contracts, but production read binding and durable runtime receipt persistence remain unverified.",
+      "revision_evidence": [
+        {
+          "repository": "freepass-creator/freepass-sales",
+          "revision": "2ec46bb2e88b10a31915b68ec77b2eecbdac57bd",
+          "evidence_types": [
+            "CODE",
+            "DOC",
+            "TEST",
+            "CI"
+          ]
+        }
+      ],
+      "migration": {
+        "target_repository": "freepass-creator/freepass-sales",
+        "breaking_impact": [
+          "SMS app launch can be mistaken for business completion.",
+          "A confirmed send followed by server record failure can lose durable PARTIAL evidence.",
+          "Source-read failure can be mistaken for a legitimate empty result if callers bypass the fail-closed adapter.",
+          "CI-verified shadow semantics can be mistaken for production receipt durability."
+        ],
+        "verification_needs": [
+          "Bind customer search to the intended production read boundary and prove fail-closed behavior.",
+          "Persist and retrieve promotion receipts in the real runtime.",
+          "Verify HOLD, PARTIAL and SUCCEEDED with controlled or production evidence.",
+          "Verify receipt retention and sensitive-data exclusion.",
+          "Bind runtime evidence to the exact deployed Sales revision before promotion beyond SHADOW."
+        ]
+      },
+      "state_history": [
+        {
+          "status": "MIGRATION_REQUIRED",
+          "observed_at": "2026-09-20T01:18:00Z",
+          "reason": "Sales C adapters and receipt semantics are exact-head CI verified, but production runtime binding and durable receipt evidence are not yet observed."
+        }
+      ]
+    },
+    {
+      "id": "workflow.admin-runtime-binding",
+      "classification": "CORE_GT_PROJECT",
+      "current_status": "MIGRATION_REQUIRED",
+      "evidence_level": "PROJECT_VERIFIED",
+      "routes": [
+        "D"
+      ],
+      "summary": "FreePass Admin now proves exact-revision D workflow/projection parity in SHADOW mode, but Admin domain code remains runtime write authority and Core command/guard enforcement is not cut over.",
+      "revision_evidence": [
+        {
+          "repository": "freepass-creator/freepass-admin",
+          "revision": "2aede7df82591470308f25bd3ccd4e5358aa7c3c",
+          "evidence_types": [
+            "CODE",
+            "SCHEMA",
+            "DOC",
+            "TEST",
+            "CI"
+          ]
+        }
+      ],
+      "migration": {
+        "target_repository": "freepass-creator/freepass-admin",
+        "breaking_impact": [
+          "Two workflow authorities can be conflated even though only Admin writes runtime state.",
+          "Command and guard semantics can diverge despite projection parity.",
+          "Cancellation, rejection and persistence side effects may differ during later cutover.",
+          "Rollback and audit atomicity can be assumed without runtime evidence."
+        ],
+        "verification_needs": [
+          "Bind approved Admin use cases into the D decision and workflow engine boundary.",
+          "Prove stable error mapping during cutover.",
+          "Prove persistence and audit atomicity.",
+          "Test rollback or compensation paths.",
+          "Bind exact-revision CI to production runtime and deployment evidence before promotion beyond SHADOW."
+        ]
+      },
+      "state_history": [
+        {
+          "status": "MIGRATION_REQUIRED",
+          "observed_at": "2026-09-20T01:18:00Z",
+          "reason": "Admin D projection parity is exact-head CI verified in SHADOW mode, but D is not yet the runtime write authority."
         }
       ]
     }
