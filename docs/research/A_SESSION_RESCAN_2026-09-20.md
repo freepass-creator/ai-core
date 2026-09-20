@@ -195,3 +195,46 @@ For the next no-change scan, treat these revisions as already audited even befor
 - `freepasserp4 = f01b91c7f68fc2f55d8d642bc3d39f5e07368967`
 
 New routes recorded by this follow-up are `workflow.forward-skip-evidence-integrity -> D,C`, `ui.freepass-sales-b-conformance -> B`, and `core-contract.sales-shadow-runtime-binding -> C`. A does not modify B/C/D canonical standards.
+
+
+---
+
+## 01:18Z machine-state reconciliation
+
+A full connected exact-head recompare was repeated after the Sales/Admin follow-up audit.
+
+Result:
+
+- 32 non-self repositories remain exactly at the stored audited heads.
+- `freepass-creator/freepass-sales` remains at the already-audited `2ec46bb2e88b10a31915b68ec77b2eecbdac57bd`.
+- `freepass-creator/freepass-admin` remains at the already-audited `2aede7df82591470308f25bd3ccd4e5358aa7c3c`.
+- `freepass-creator/freepasserp4` remains at the already-audited `f01b91c7f68fc2f55d8d642bc3d39f5e07368967`.
+- therefore no additional repository code/schema/test/deployment/runtime delta was discovered after the prior audit.
+
+A meaningful A-side contradiction was found instead: the prose audit already recorded the latest Sales/Admin findings, but the machine Evidence Registry, Routing Receipt Registry, receiver inboxes and exact-head coverage/snapshot had not yet absorbed those revision-bound findings.
+
+Reconciliation performed only in A coordination/research state:
+
+- Evidence Registry: `2f305bbcffea20acd08b7187ecede6fc1a1f23bf`
+  - added `workflow.forward-skip-evidence-integrity` — Project > Core, D primary / C secondary.
+  - added `ui.freepass-sales-b-conformance` — Core > Project, B migration gap.
+  - added `core-contract.sales-shadow-runtime-binding` — Core > Project, C migration gap.
+  - added `workflow.admin-runtime-binding` — Core > Project, D migration gap.
+- Routing Receipt Registry: `f685ac63843a10d9bd684af8a8271728cb23eaf6`
+  - created the five required B/C/D route receipts as `SENT`.
+- Receiver inbox synchronization:
+  - B: `92e7553c4379cc9a93169280640c51e15406f282`
+  - C: `4469ebcbcab4f437283de070a387320f182f1a88`
+  - D: `4106283d00452054b7fa1412a093dc0ab241c48f`
+  - every new receiver item remains `PENDING`; no receiver acknowledgement, review, decision or canonical change is claimed.
+- Repository coverage: `d8b66ca5cfa5b7e91bb908bf5c5571ed94035920`
+  - advanced Sales/Admin/ERP4 to their already-audited exact heads and retained their migration/finding notes.
+- Exact-head snapshot: `3350cff02fe354499c43f34e958214de0e17a321`
+  - refreshed the same three non-self heads.
+  - AI Core self is deliberately pinned to audit-start head `032820bfa965ce8a746c3a5825c1be121b0415f1`, because A registry writes mutate AI Core main during reconciliation.
+
+No B, C or D canonical standard was edited.
+
+### Next scan rule
+
+Treat the reconciled repository heads and the four newly machine-indexed findings as already audited. Do not notify again unless at least one of these changes: repository head, production/deployment/runtime evidence, receiver acknowledgement/decision, migration state, contradiction, or evidence level.
