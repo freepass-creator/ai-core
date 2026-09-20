@@ -91,6 +91,9 @@
         "type": "string",
         "minLength": 1
       }
+    },
+    "execution": {
+      "$ref": "https://schemas.freepass.ai/core/execution-identity/v1#/$defs/binding"
     }
   }
 }
