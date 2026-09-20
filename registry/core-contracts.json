@@ -215,6 +215,20 @@
       "path": "contracts/core-schedule-observation.schema.json",
       "status": "EXPERIMENTAL",
       "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
+    },
+    {
+      "id": "core.connector.v1",
+      "domain": "ENGINE_ADAPTER",
+      "path": "contracts/core-connector.schema.json",
+      "status": "EXPERIMENTAL",
+      "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
+    },
+    {
+      "id": "core.connector-result.v1",
+      "domain": "ENGINE_ADAPTER",
+      "path": "contracts/core-connector-result.schema.json",
+      "status": "EXPERIMENTAL",
+      "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
     }
   ]
 }
