@@ -73,3 +73,13 @@ const executor = createGroupIntegrationExecutor({
 The common executor still owns preflight, authority ordering, unknown-outcome handling and canonical receipt construction.
 
 No other classification is enabled by this adapter.
+
+
+## Verification evidence
+
+Isolated verification on Node completed with:
+
+- syntax check: PASS
+- focused adapter/verifier tests: 8/8 PASS
+
+The repository GitHub Actions runner-entry issue remains separate from this local isolated verification.
