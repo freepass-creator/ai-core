@@ -2,7 +2,7 @@
   "schema": "ai-core-a-session-receiver-inbox/v1",
   "status": "RESEARCH_RECEIVER_INBOX_NOT_CANONICAL",
   "session": "B",
-  "observed_at": "2026-09-20T01:04:20Z",
+  "observed_at": "2026-09-20T01:18:00Z",
   "policy": {
     "source_of_truth": "A Routing Receipt Registry defines delivery; this inbox records receiver-side acknowledgement/review/decision only.",
     "conservative_default": "New routes enter as PENDING and remain unacknowledged until the target session writes revision-bound evidence.",
@@ -10,6 +10,24 @@
     "canonical_boundary": "Session B may decide its own canonical work, but this inbox itself is coordination evidence and does not change canon."
   },
   "items": [
+    {
+      "route_id": "ui.freepass-sales-b-conformance::B",
+      "finding_id": "ui.freepass-sales-b-conformance",
+      "source_evidence_revision": "2f305bbcffea20acd08b7187ecede6fc1a1f23bf",
+      "delivered_at": "2026-09-20T01:18:00Z",
+      "receiver_status": "PENDING",
+      "acknowledgement": null,
+      "review": null,
+      "decision": null,
+      "history": [
+        {
+          "status": "PENDING",
+          "observed_at": "2026-09-20T01:18:00Z",
+          "basis_revision": "2f305bbcffea20acd08b7187ecede6fc1a1f23bf",
+          "reason": "Seeded from the refreshed A Routing Receipt Registry; no receiver acknowledgement exists yet."
+        }
+      ]
+    },
     {
       "route_id": "ui.machine-conformance-gate::B",
       "finding_id": "ui.machine-conformance-gate",
