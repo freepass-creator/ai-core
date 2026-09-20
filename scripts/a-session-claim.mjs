@@ -1,6 +1,7 @@
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { randomUUID } from 'node:crypto';
+import { isCanonicalASessionScope, aSessionScopesConflict } from './a-session-scope-policy.mjs';
 
 const run = promisify(execFile);
 const DEFAULT_COORD_REPO = process.env.AI_CORE_COORDINATION_REPOSITORY || 'freepass-creator/ai-core';
@@ -15,12 +16,25 @@ export function claimKey({ repository, revision, scope }) {
 }
 
 export function evaluateClaim(registry, request, now = new Date()) {
+  if (!isCanonicalASessionScope(request?.scope)) throw new Error('CLAIM_SCOPE_INVALID');
   const key = claimKey(request);
   const nowMs = now.getTime();
-  const same = (registry.claims || []).filter(x => x.claim_key === key);
-  const live = same.find(x => x.state === 'ACTIVE' && Date.parse(x.lease_until) > nowMs);
-  if (live) return { action:'SKIP_DUPLICATE', claim:live };
-  const done = [...same].reverse().find(x => x.state === 'COMPLETED');
+  const sameSubject = (registry.claims || []).filter(x =>
+    x.repository === request.repository &&
+    x.subject_revision === request.revision
+  );
+  const live = sameSubject.find(x =>
+    x.state === 'ACTIVE' &&
+    Date.parse(x.lease_until) > nowMs &&
+    aSessionScopesConflict(x.scope, request.scope)
+  );
+  if (live) {
+    return {
+      action:live.claim_key === key ? 'SKIP_DUPLICATE' : 'SKIP_SCOPE_CONFLICT',
+      claim:live
+    };
+  }
+  const done = [...sameSubject].reverse().find(x => x.state === 'COMPLETED' && x.claim_key === key);
   if (done) return { action:'SKIP_ALREADY_COMPLETED', claim:done };
   return { action:'ACQUIRE', claim:null };
 }
@@ -57,9 +71,11 @@ export function renewClaim(registry, claimId, owner, { now = new Date(), leaseMi
 
   const competing = next.claims.find(x =>
     x.claim_id !== claimId &&
-    x.claim_key === claim.claim_key &&
+    x.repository === claim.repository &&
+    x.subject_revision === claim.subject_revision &&
     x.state === 'ACTIVE' &&
-    Date.parse(x.lease_until) > now.getTime()
+    Date.parse(x.lease_until) > now.getTime() &&
+    aSessionScopesConflict(x.scope, claim.scope)
   );
   if (competing) throw new Error('CLAIM_SUPERSEDED_BY_LIVE_OWNER');
 
