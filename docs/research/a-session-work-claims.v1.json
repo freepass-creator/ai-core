@@ -1,7 +1,7 @@
 {
   "schema": "ai-core-a-session-work-claims/v1",
   "status": "RESEARCH_COORDINATION_NOT_CANONICAL",
-  "observed_at": "2026-09-20T02:23:00Z",
+  "observed_at": "2026-09-20T02:27:00Z",
   "policy": {
     "claim_key": "<repository>@<subject_revision>::<scope>",
     "live_claim": "state=ACTIVE and lease_until > observed_at",
@@ -26,6 +26,25 @@
         "routing:* and coordination:* only conflict with the same exact scope"
       ],
       "completion_rule": "COMPLETED suppresses only the same exact claim scope. Runtime/deployment evidence may change independently without a repository revision change."
+    },
+    "owner_policy": {
+      "source": "--owner or AI_CORE_A_SESSION_ID",
+      "format": "A-session-<stable-unique-id>",
+      "forbidden": [
+        "A_SESSION",
+        "A-session-current-chat",
+        "A-session-default",
+        "A-session-generic",
+        "underspecified A-session-1"
+      ],
+      "mutation_binding": [
+        "claim",
+        "renew",
+        "complete",
+        "abandon",
+        "supersede"
+      ],
+      "exception": "Automated expired-lease reaping may abandon an already expired ACTIVE claim without owner authority."
     }
   },
   "claims": [
