@@ -1,0 +1,31 @@
+{
+  "schema_version": "release-manifest-registry/v1",
+  "projects": [
+    {
+      "project_id": "ai-core",
+      "repository": "freepass-creator/ai-core",
+      "default_branch": "main",
+      "platform": "NONE",
+      "pull_request": {
+        "ci_commands": [["npm", "test"], ["npm", "run", "verify"]],
+        "preview": {
+          "mode": "CI_ONLY",
+          "reason": "AI Core has no registered deployable web runtime or preview target. Existing GitHub CI is the current PR proof."
+        }
+      },
+      "production": {
+        "enabled": false,
+        "reason": "No production platform, project ID, production URL, revision endpoint, rollback target, environment, or deployment secrets are registered for AI Core.",
+        "deploy_command": null,
+        "required_env": [],
+        "revision_probe": null,
+        "smoke_urls": [],
+        "max_run_attempt": 2
+      },
+      "rollback": {
+        "available": false,
+        "plan_ref": null
+      }
+    }
+  ]
+}

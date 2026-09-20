@@ -64,7 +64,10 @@
     "a:review:build": "node scripts/a-session-review-pack.mjs --write",
     "a:review:check": "node scripts/a-session-review-pack.mjs --check",
     "a:claims:health": "node scripts/a-session-claim-health.mjs health",
-    "a:claims:reap": "node scripts/a-session-claim-health.mjs reap"
+    "a:claims:reap": "node scripts/a-session-claim-health.mjs reap",
+    "release:validate": "node scripts/release-control.mjs validate",
+    "release:plan": "node scripts/release-control.mjs plan",
+    "release:deploy": "node scripts/release-control.mjs deploy"
   },
   "dependencies": {
     "ajv": "8.20.0",
