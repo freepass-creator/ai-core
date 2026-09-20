@@ -2,7 +2,7 @@
   "schema": "ai-core-a-session-receiver-inbox/v1",
   "status": "RESEARCH_RECEIVER_INBOX_NOT_CANONICAL",
   "session": "B",
-  "observed_at": "2026-09-20T01:17:00Z",
+  "observed_at": "2026-09-20T01:20:34Z",
   "policy": {
     "source_of_truth": "A Routing Receipt Registry defines delivery; this inbox records receiver-side acknowledgement/review/decision only.",
     "conservative_default": "New routes enter as PENDING and remain unacknowledged until the target session writes revision-bound evidence.",
@@ -15,8 +15,17 @@
       "finding_id": "ui.freepass-sales-b-conformance",
       "source_evidence_revision": "972c1616cac5022e0c6f74bb05f59a148c59ada9",
       "delivered_at": "2026-09-20T01:12:20Z",
-      "receiver_status": "PENDING",
-      "acknowledgement": null,
+      "receiver_status": "ACKNOWLEDGED",
+      "acknowledgement": {
+        "session": "B",
+        "ai_core_revision": "e03c42e159f70a3a329b31387215addc38aa0671",
+        "observed_at": "2026-09-20T01:20:34Z",
+        "evidence_refs": [
+          "docs/research/a-session-evidence-registry.v1.json#ui.freepass-sales-b-conformance",
+          "docs/research/a-session-routing-receipts.v1.json#ui.freepass-sales-b-conformance::B",
+          "docs/research/a-session-receiver-workers.v1.json"
+        ]
+      },
       "review": null,
       "decision": null,
       "history": [
@@ -25,6 +34,12 @@
           "observed_at": "2026-09-20T01:12:20Z",
           "basis_revision": "972c1616cac5022e0c6f74bb05f59a148c59ada9",
           "reason": "Seeded from the A Routing Receipt Registry; no receiver acknowledgement exists yet."
+        },
+        {
+          "status": "ACKNOWLEDGED",
+          "observed_at": "2026-09-20T01:20:34Z",
+          "basis_revision": "e03c42e159f70a3a329b31387215addc38aa0671",
+          "reason": "Receiver intake worker mechanically acknowledged delivery; no review or canonical decision is implied."
         }
       ]
     },
@@ -33,8 +48,17 @@
       "finding_id": "ui.machine-conformance-gate",
       "source_evidence_revision": "432dcb0aa0fd62ac7698108284bced4138c32238",
       "delivered_at": "2026-09-19T00:00:00Z",
-      "receiver_status": "PENDING",
-      "acknowledgement": null,
+      "receiver_status": "ACKNOWLEDGED",
+      "acknowledgement": {
+        "session": "B",
+        "ai_core_revision": "e03c42e159f70a3a329b31387215addc38aa0671",
+        "observed_at": "2026-09-20T01:20:34Z",
+        "evidence_refs": [
+          "docs/research/a-session-evidence-registry.v1.json#ui.machine-conformance-gate",
+          "docs/research/a-session-routing-receipts.v1.json#ui.machine-conformance-gate::B",
+          "docs/research/a-session-receiver-workers.v1.json"
+        ]
+      },
       "review": null,
       "decision": null,
       "history": [
@@ -43,6 +67,12 @@
           "observed_at": "2026-09-19T00:00:00Z",
           "basis_revision": "432dcb0aa0fd62ac7698108284bced4138c32238",
           "reason": "Seeded from the A Routing Receipt Registry; no receiver acknowledgement exists yet."
+        },
+        {
+          "status": "ACKNOWLEDGED",
+          "observed_at": "2026-09-20T01:20:34Z",
+          "basis_revision": "e03c42e159f70a3a329b31387215addc38aa0671",
+          "reason": "Receiver intake worker mechanically acknowledged delivery; no review or canonical decision is implied."
         }
       ]
     }
