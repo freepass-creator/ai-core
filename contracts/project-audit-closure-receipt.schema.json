@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.freepass.ai/project-audit-closure-receipt/v1",
+  "title": "AI Core Project Audit Closure Receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema","status","project_id","repository","handoff_binding",
+    "completion_binding","successor_audit_binding","counts","tasks",
+    "blockers","next_action","execution_boundary","rule"
+  ],
+  "properties": {
+    "schema": { "const": "ai-core-project-audit-closure-receipt/v1" },
+    "status": {
+      "enum": ["OPEN_PARTIAL","REAUDIT_REQUIRED","REAUDIT_GAPS_REMAIN","CLOSED_VERIFIED"]
+    },
+    "project_id": { "type": "string", "minLength": 1 },
+    "repository": { "type": "string", "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$" },
+    "handoff_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["subject_revision","standard_baseline_revision"],
+      "properties": {
+        "subject_revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "standard_baseline_revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" }
+      }
+    },
+    "completion_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["result_revision","completed_at"],
+      "properties": {
+        "result_revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "completed_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "successor_audit_binding": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["subject_revision","standard_baseline_revision","audited_at","live_status"],
+          "properties": {
+            "subject_revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+            "standard_baseline_revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+            "audited_at": { "type": "string", "format": "date-time" },
+            "live_status": { "enum": ["CURRENT","STALE","HOLD","UNOBSERVED"] }
+          }
+        }
+      ]
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tasks","done","partial","not_done","not_applicable","audit_closed"],
+      "properties": {
+        "tasks": { "type": "integer", "minimum": 0 },
+        "done": { "type": "integer", "minimum": 0 },
+        "partial": { "type": "integer", "minimum": 0 },
+        "not_done": { "type": "integer", "minimum": 0 },
+        "not_applicable": { "type": "integer", "minimum": 0 },
+        "audit_closed": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "tasks": { "type": "array", "items": { "type": "object" } },
+    "blockers": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+    "next_action": { "type": "string", "minLength": 1 },
+    "execution_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "auto_write_project_repo","auto_merge_project_pr",
+        "auto_promote_core_standard","auto_deploy","production_mutation"
+      ],
+      "properties": {
+        "auto_write_project_repo": { "const": false },
+        "auto_merge_project_pr": { "const": false },
+        "auto_promote_core_standard": { "const": false },
+        "auto_deploy": { "const": false },
+        "production_mutation": { "const": false }
+      }
+    },
+    "rule": { "type": "string", "minLength": 1 }
+  }
+}
