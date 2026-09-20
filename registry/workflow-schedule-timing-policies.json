@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0.0",
+  "registry_version": "0.1.0",
+  "policies": [
+    {
+      "policy_id": "workflow.schedule-timing-assessment",
+      "status": "PROPOSED",
+      "evidence_level": "FAILURE_RUNTIME_EVIDENCE",
+      "observation_contract": {
+        "contract_id": "core.schedule-observation.v1",
+        "status": "PENDING"
+      },
+      "late_after_ms": null,
+      "missed_after_ms": null,
+      "source_evidence": [
+        {
+          "repository": "freepass-creator/freepasserp4",
+          "revision": "606a761683345869400274e4dea360908d2622bf",
+          "path": "docs/ai-ssot-audit/2026-09-19-chatgpt-audit78-very-late-native-erp5-success.md",
+          "blob_sha": "f8670b39ff2542f840fff4b36cfcc9f97568b7d3"
+        },
+        {
+          "repository": "freepass-creator/freepasserp4",
+          "revision": "606a761683345869400274e4dea360908d2622bf",
+          "path": "docs/ai-ssot-audit/2026-09-19-chatgpt-audit77-1917-native-erp5-slot-missing.md",
+          "blob_sha": "a2cdec9f96a9a7f04349040351f0f98514250b4c"
+        }
+      ],
+      "notes": "Failure/runtime evidence proves that expected slot, dispatch and eventual success must remain distinct. No company-wide late/missed thresholds are locked yet. Promotion to PILOT requires a concrete policy profile plus the C observation contract to be available."
+    }
+  ]
+}
