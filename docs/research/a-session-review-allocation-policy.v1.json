@@ -38,5 +38,6 @@
   "session_isolation": "A B/C/D reviewer should normally request its own session. ANY is allowed for coordination inspection only.",
   "stale_guard": "After claim acquisition, re-read the queue. If status or review_revision changed, SUPERSEDE the stale claim using the same stable owner and continue.",
   "decision_boundary": "Allocator creates ownership only. It never writes REVIEWING, DECIDED, ADOPTED, HOLD, REJECTED or SUPERSEDED receiver decisions.",
-  "owner_policy": "Review allocator owners must satisfy A-session-owner-policy: A-session-<stable-unique-id>. CLI resolves only --owner or AI_CORE_A_SESSION_ID."
+  "owner_policy": "Stable A-session owner identity is mandatory and one_live_claim_per_owner applies. A busy owner cannot allocate a second review until completion/abandon/supersede or lease expiry.",
+  "owner_busy_result": "OWNER_BUSY"
 }
