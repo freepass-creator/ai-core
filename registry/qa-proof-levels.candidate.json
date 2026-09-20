@@ -1,36 +1,36 @@
 {
-  "schema_version":"qa-proof-level-registry/v1",
-  "status":"CANDIDATE_NOT_CANONICAL",
-  "levels":[
+  "schema_version": "qa-proof-level-registry/v1",
+  "status": "CANONICAL_PARTIAL",
+  "levels": [
     {
-      "id":"FIXTURE",
-      "rank":1,
-      "meaning":"pure unit fixture or isolated parser/engine example",
-      "may_claim_production":false
+      "id": "FIXTURE",
+      "rank": 1,
+      "meaning": "pure unit fixture or isolated parser/engine example",
+      "may_claim_production": false
     },
     {
-      "id":"SYNTHETIC",
-      "rank":2,
-      "meaning":"multi-module synthetic/integration execution without real target",
-      "may_claim_production":false
+      "id": "SYNTHETIC",
+      "rank": 2,
+      "meaning": "multi-module synthetic/integration execution without real target",
+      "may_claim_production": false
     },
     {
-      "id":"EMULATOR",
-      "rank":3,
-      "meaning":"provider/platform emulator or disposable local equivalent",
-      "may_claim_production":false
+      "id": "EMULATOR",
+      "rank": 3,
+      "meaning": "provider/platform emulator or disposable local equivalent",
+      "may_claim_production": false
     },
     {
-      "id":"PREVIEW",
-      "rank":4,
-      "meaning":"deployed non-production target with revision-bound observation",
-      "may_claim_production":false
+      "id": "PREVIEW",
+      "rank": 4,
+      "meaning": "deployed non-production target with revision-bound observation",
+      "may_claim_production": false
     },
     {
-      "id":"PRODUCTION",
-      "rank":5,
-      "meaning":"actual production target observed at an explicit revision",
-      "may_claim_production":true
+      "id": "PRODUCTION",
+      "rank": 5,
+      "meaning": "actual production target observed at an explicit revision",
+      "may_claim_production": true
     }
   ]
 }
