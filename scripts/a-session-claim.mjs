@@ -3,6 +3,7 @@ import { promisify } from 'node:util';
 import { randomUUID } from 'node:crypto';
 import { isCanonicalASessionScope, aSessionScopesConflict, requiresSubjectHeadGuard } from './a-session-scope-policy.mjs';
 import { isValidASessionOwner, resolveASessionOwner } from './a-session-owner-policy.mjs';
+import { validateACompletionEvidence, verifyACompletionEvidenceRemote } from './a-session-evidence-contract.mjs';
 
 const run = promisify(execFile);
 const DEFAULT_COORD_REPO = process.env.AI_CORE_COORDINATION_REPOSITORY || 'freepass-creator/ai-core';
@@ -82,6 +83,7 @@ export function acquireClaim(registry, request, { now = new Date(), leaseMinutes
     claimed_at:iso(now),
     lease_until:iso(addMinutes(now, leaseMinutes)),
     completed_at:null,
+    evidence_contract:'v2',
     evidence_refs:[]
   };
   const next = structuredClone(registry);
@@ -124,7 +126,17 @@ export function transitionClaim(registry, claimId, state, { now = new Date(), ev
   if (claim.state !== 'ACTIVE') throw new Error('CLAIM_NOT_ACTIVE');
   if (!isValidASessionOwner(owner)) throw new Error('A_SESSION_OWNER_INVALID');
   if (claim.owner_session !== owner) throw new Error('CLAIM_OWNER_MISMATCH');
-  if (state === 'COMPLETED' && evidenceRefs.length === 0) throw new Error('COMPLETION_EVIDENCE_REQUIRED');
+  if (state === 'COMPLETED') {
+    const evidence = validateACompletionEvidence(claim, evidenceRefs, {
+      requiresHeadGuard:requiresSubjectHeadGuard(claim.scope)
+    });
+    if (evidence.status === 'INVALID') {
+      const error = new Error('COMPLETION_EVIDENCE_INVALID');
+      error.evidence_errors = evidence.errors;
+      throw error;
+    }
+    if (claim.evidence_contract !== 'v2' && evidenceRefs.length === 0) throw new Error('COMPLETION_EVIDENCE_REQUIRED');
+  }
   claim.state = state;
   claim.completed_at = iso(now);
   claim.evidence_refs = [...evidenceRefs];
@@ -141,6 +153,24 @@ async function currentRepositoryHead(repository) {
   const branch = meta.default_branch;
   if (!branch) throw new Error('SUBJECT_DEFAULT_BRANCH_UNKNOWN');
   return (await ghApi([`repos/${repository}/commits/${encodeURIComponent(branch)}`, '--jq', '.sha'])).trim();
+}
+
+async function commitEvidenceExists(repository, sha) {
+  try {
+    await ghApi([`repos/${repository}/commits/${sha}`]);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function workflowEvidenceRun(repository, runId) {
+  try {
+    const run = JSON.parse(await ghApi([`repos/${repository}/actions/runs/${runId}`]));
+    return { head_sha:run.head_sha ?? null, conclusion:run.conclusion ?? null };
+  } catch {
+    return null;
+  }
 }
 
 export async function readRemoteRegistry(coordRepo = DEFAULT_COORD_REPO, branch = DEFAULT_BRANCH) {
@@ -204,6 +234,26 @@ export async function finishRemote(claimId, state, options = {}) {
 
     let effectiveState = state;
     let guard = null;
+    let remoteEvidence = null;
+    if (state === 'COMPLETED' && existing.evidence_contract === 'v2') {
+      const evidence = validateACompletionEvidence(existing, options.evidenceRefs ?? [], {
+        requiresHeadGuard:requiresSubjectHeadGuard(existing.scope)
+      });
+      if (evidence.status !== 'VALID') {
+        const error = new Error('COMPLETION_EVIDENCE_INVALID');
+        error.evidence_errors = evidence.errors;
+        throw error;
+      }
+      remoteEvidence = await verifyACompletionEvidenceRemote(evidence.parsed, {
+        commitExists:commitEvidenceExists,
+        workflowRun:workflowEvidenceRun
+      });
+      if (remoteEvidence.status !== 'VALID') {
+        const error = new Error('COMPLETION_EVIDENCE_UNVERIFIED');
+        error.evidence_failures = remoteEvidence.failures;
+        throw error;
+      }
+    }
     if (state === 'COMPLETED' && requiresSubjectHeadGuard(existing.scope)) {
       let head;
       try {
@@ -233,6 +283,7 @@ export async function finishRemote(claimId, state, options = {}) {
         action:guard?.action === 'SUPERSEDE' ? 'SUPERSEDED_HEAD_MOVED' : effectiveState,
         claim:prepared.claim,
         head_guard:guard,
+        evidence_verification:remoteEvidence,
         commit_sha:result.commit?.sha ?? null
       };
     } catch (error) {
