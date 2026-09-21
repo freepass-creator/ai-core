@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
-import { mkdtempSync, writeFileSync, readFileSync, rmSync } from 'node:fs';
+import fs, { mkdtempSync, writeFileSync, readFileSync, rmSync, existsSync } from 'node:fs';
+import { syncBuiltinESMExports } from 'node:module';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { startServer } from '../src/orders/server.mjs';
 import { verifyLedgerText } from '../scripts/work-ledger.mjs';
 
 const workMap=JSON.parse(readFileSync(new URL('../registry/work-map.json',import.meta.url),'utf8'));
@@ -17,13 +17,55 @@ const orderInput=()=>({
   kind:'general',criteria:['AI Core 내부 Work에 안전하게 연결된다.'],
 });
 
+const settle=outcome=>{
+  if(outcome.ok)return outcome.value;
+  throw outcome.error;
+};
+
+const waitUntil=async(predicate,timeoutMs=2000)=>{
+  const deadline=Date.now()+timeoutMs;
+  while(!predicate()){
+    if(Date.now()>=deadline)throw new Error('SNAPSHOT_RACE_BARRIER_TIMEOUT');
+    await new Promise(resolve=>setTimeout(resolve,2));
+  }
+};
+
 test('concurrent distinct routed orders preserve both Work items in the shared snapshot',async t=>{
   const root=mkdtempSync(join(tmpdir(),'order-work-intake-concurrency-'));
   const registryPath=join(root,'projects.json');
   const snapshotPath=join(root,'control-snapshot.json');
+  const lockPath=`${snapshotPath}.intake.lock`;
   const dbPath=join(root,'orders.sqlite');
   writeFileSync(registryPath,JSON.stringify(projectRegistry,null,2));
 
+  const originalReadFile=fs.promises.readFile;
+  let unlockedSnapshotReads=0;
+  let releaseSecondUnlockedRead;
+  const secondUnlockedReadSeen=new Promise(resolve=>{releaseSecondUnlockedRead=resolve;});
+  fs.promises.readFile=async(path,...args)=>{
+    if(String(path)!==snapshotPath)return originalReadFile.call(fs.promises,path,...args);
+
+    let outcome;
+    try{outcome={ok:true,value:await originalReadFile.call(fs.promises,path,...args)};}
+    catch(error){outcome={ok:false,error};}
+
+    if(existsSync(lockPath))return settle(outcome);
+
+    unlockedSnapshotReads+=1;
+    if(unlockedSnapshotReads===1){
+      await secondUnlockedReadSeen;
+      return settle(outcome);
+    }
+    if(unlockedSnapshotReads===2){
+      releaseSecondUnlockedRead();
+      await waitUntil(()=>existsSync(snapshotPath)&&!existsSync(lockPath));
+      return settle(outcome);
+    }
+    return settle(outcome);
+  };
+  syncBuiltinESMExports();
+
+  const { startServer }=await import(`../src/orders/server.mjs?snapshot-race=${randomUUID()}`);
   const started=await startServer({
     dbPath,port:0,standalone:true,routingConfig,
     workSources:{registry:registryPath,snapshot:snapshotPath},
@@ -31,6 +73,8 @@ test('concurrent distinct routed orders preserve both Work items in the shared s
   t.after(async()=>{
     started.server.closeAllConnections();
     await new Promise(r=>started.server.close(r));
+    fs.promises.readFile=originalReadFile;
+    syncBuiltinESMExports();
     rmSync(root,{recursive:true,force:true});
   });
 
@@ -52,6 +96,7 @@ test('concurrent distinct routed orders preserve both Work items in the shared s
   assert.equal(linkedA.status,'WORK_LINKED');
   assert.equal(linkedB.status,'WORK_LINKED');
   assert.notEqual(linkedA.work_id,linkedB.work_id);
+  assert.equal(unlockedSnapshotReads,0,'snapshot must never be read outside the intake lock');
 
   const ledgerPath=join(root,'work-ledger.jsonl');
   const ledger=verifyLedgerText(readFileSync(ledgerPath,'utf8'));
