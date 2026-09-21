@@ -99,18 +99,33 @@ export function validateUiUxEntrypointSemantics(entry) {
   };
 }
 
+const DESIGN_HUB_BOUND_SOURCES = {
+  feature_registry: 'registry/ui-ux-features.json',
+  tokens: 'design-system/tokens.json',
+  components: 'design-system/components.registry.json',
+  patterns: 'design-system/patterns.registry.json',
+  runtime_css: 'design-system/runtime-v2.css',
+  entrypoint: 'registry/ui-ux-entrypoint.json',
+  freepass_product_profile: 'docs/FREEPASS_PRODUCT_UI_PROFILE.md',
+  start_here: 'docs/UI_UX_START_HERE.md'
+};
+
 export function validateUiUxTargetBinding(
   entry,
   {
     coreRepository = 'freepass-creator/ai-core',
-    coreRevision,
+    currentCoreRevision,
+    currentSourceBlobs,
     designHubBinding
   } = {}
 ) {
   validateUiUxEntrypointSemantics(entry);
 
-  if (typeof coreRevision !== 'string' || coreRevision.trim() === '') {
+  if (typeof currentCoreRevision !== 'string' || currentCoreRevision.trim() === '') {
     throw new Error('UIUX_PREFLIGHT_CORE_REVISION_REQUIRED');
+  }
+  if (!currentSourceBlobs || typeof currentSourceBlobs !== 'object') {
+    throw new Error('UIUX_PREFLIGHT_SOURCE_BLOBS_REQUIRED');
   }
   if (!designHubBinding || typeof designHubBinding !== 'object') {
     throw new Error('UIUX_PREFLIGHT_DESIGN_HUB_BINDING_REQUIRED');
@@ -121,14 +136,34 @@ export function validateUiUxTargetBinding(
   if (designHubBinding?.ai_core?.repository !== coreRepository) {
     throw new Error('UIUX_DESIGN_HUB_CORE_REPOSITORY_MISMATCH');
   }
-  if (designHubBinding?.ai_core?.revision !== coreRevision) {
-    throw new Error('UIUX_DESIGN_HUB_CORE_REVISION_STALE');
+  if (
+    typeof designHubBinding?.ai_core?.revision !== 'string' ||
+    designHubBinding.ai_core.revision.trim() === ''
+  ) {
+    throw new Error('UIUX_DESIGN_HUB_BASELINE_REVISION_REQUIRED');
+  }
+
+  for (const [key, expectedPath] of Object.entries(DESIGN_HUB_BOUND_SOURCES)) {
+    const sourceBinding = designHubBinding?.sources?.[key];
+    if (!sourceBinding || typeof sourceBinding !== 'object') {
+      throw new Error(`UIUX_DESIGN_HUB_SOURCE_BINDING_MISSING:${key}`);
+    }
+    if (sourceBinding.path !== expectedPath) {
+      throw new Error(`UIUX_DESIGN_HUB_SOURCE_PATH_MISMATCH:${key}`);
+    }
+    if (typeof sourceBinding.blob_sha !== 'string' || sourceBinding.blob_sha.trim() === '') {
+      throw new Error(`UIUX_DESIGN_HUB_SOURCE_BLOB_REQUIRED:${key}`);
+    }
+    if (currentSourceBlobs[expectedPath] !== sourceBinding.blob_sha) {
+      throw new Error(`UIUX_DESIGN_HUB_SOURCE_BLOB_STALE:${key}`);
+    }
   }
 
   return {
     status: 'VALID',
     coreRepository,
-    coreRevision,
-    designHubRevision: designHubBinding.ai_core.revision
+    currentCoreRevision,
+    designHubBaselineRevision: designHubBinding.ai_core.revision,
+    verifiedSourceCount: Object.keys(DESIGN_HUB_BOUND_SOURCES).length
   };
 }
