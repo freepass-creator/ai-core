@@ -338,6 +338,7 @@
     "registry/core-event-types.json",
     "registry/directions.json",
     "registry/governance-profiles.candidate.json",
+    "registry/operating-knowledge.json",
     "registry/operations.json",
     "registry/phase1-closeout.json",
     "registry/project-audit-readiness.json",
@@ -404,6 +405,7 @@
     "scripts/validate-core-contract-adoption.mjs",
     "scripts/validate-core-contracts.mjs",
     "scripts/validate-directions.mjs",
+    "scripts/validate-operating-knowledge.mjs",
     "scripts/validate-phase1-closeout.mjs",
     "scripts/validate-project-registry.mjs",
     "scripts/validate-qa-observability-p0.mjs",
@@ -712,6 +714,7 @@
       "2026-09-22 AI academy CI repair": "Successor changed_files regenerated from the exact base revision diff after AI academy, UI UX, registry v1.1 and baseline CI repair integration. This is verifier parity and does not claim inherited work as Order Desk output."
     },
     "2026-09-22 academy:start adds an executable, revision-bound learning gate; changed_files parity includes inherited branch work and does not attribute all files to this change.",
-    "2026-09-22 portable academy starter kit composes academy:start, Project Capsule and track standards; changed_files remains verifier parity only."
+    "2026-09-22 portable academy starter kit composes academy:start, Project Capsule and track standards; changed_files remains verifier parity only.",
+    "2026-09-22 operating knowledge registry adds reusable methods and explicit do-not-ask boundaries to portable kits; changed_files remains verifier parity only."
   ]
 }

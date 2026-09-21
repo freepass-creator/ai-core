@@ -16,7 +16,7 @@ async function put(path, body) {
   }
 }
 
-export async function installAcademyStarterKit({ output, receipt, readings, coreRevision }) {
+export async function installAcademyStarterKit({ output, receipt, readings, coreRevision, operatingKnowledge = null }) {
   if (receipt?.status !== 'READY') throw new Error('READY_RECEIPT_REQUIRED');
   const files = [];
   for (const item of readings) {
@@ -37,5 +37,6 @@ export async function installAcademyStarterKit({ output, receipt, readings, core
   await put(join(output, 'WORK_RESULT.md'), result);
   await put(join(output, 'verify-kit.mjs'), verifier);
   await put(join(output, 'kit.json'), `${JSON.stringify(manifest, null, 2)}\n`);
+  if (operatingKnowledge) await put(join(output, 'OPERATING_KNOWLEDGE.json'), `${JSON.stringify(operatingKnowledge, null, 2)}\n`);
   return { status: 'INSTALLED', output, manifest, entrypoint: join(output, 'START_HERE.md') };
 }

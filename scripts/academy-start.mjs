@@ -57,7 +57,8 @@ if (receipt.target) {
 console.log(JSON.stringify(receipt, null, 2));
 if (receipt.status === 'READY' && kit) {
   const coreRevision = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: coreRoot, encoding: 'utf8', windowsHide: true }).trim();
-  const installed = await installAcademyStarterKit({ output: resolve(root, kit), receipt, readings, coreRevision });
+  const operatingKnowledge = JSON.parse(await read(join(coreRoot, 'registry', 'operating-knowledge.json')));
+  const installed = await installAcademyStarterKit({ output: resolve(root, kit), receipt, readings, coreRevision, operatingKnowledge });
   console.error(JSON.stringify(installed, null, 2));
 }
 if (receipt.status !== 'READY') process.exitCode = 3;
