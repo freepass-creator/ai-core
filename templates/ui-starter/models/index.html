@@ -9,10 +9,10 @@
 </head>
 <body class="ui-profile-freepass">
 <main class="model-index ui-stack" id="top">
-  <header class="model-head"><div><span class="ui-meta">AI Core 공통 규격</span><h1>화면 조립표</h1><p class="ui-hint">현재 FreePass·TeamJPK 화면에서 쓰는 부품을 골라 빠르게 배열합니다.</p></div><span class="ui-badge">규격 1.0</span></header>
+  <header class="model-head"><div><span class="ui-meta">AI Core 공통 규격</span><h1>화면 조립표</h1><p class="ui-hint">현재 FreePass Sales 규격을 기준으로 부품을 고르고 화면을 조립합니다.</p></div><span class="ui-badge">Sales 표준</span></header>
   <aside class="model-usage"><div><b>기본 사용법</b><p>부품을 먼저 보고 고른 다음 아래 조립 화면을 확인합니다.</p><small>예: S03 검색창과 B01 저장 버튼 사용</small></div><div><b>현재 선택</b><p id="selection-status" aria-live="polite">아래 부품을 눌러 보세요</p></div></aside>
 
-  <section aria-labelledby="catalog-title"><h2 id="catalog-title">부품 쇼룸</h2><p>먼저 필요한 부품을 고릅니다. 각 부품은 실제 상태와 적용 위치를 함께 보여줍니다.</p><nav class="catalog-groups" aria-label="부품 분류"><a href="#B">B 버튼</a><a href="#S">S 입력·검색</a><a href="#L">L 목록·표</a><a href="#C">C 내용</a><a href="#H">H 상단</a><a href="#N">N 위치·문서 이동</a><a href="#M">M 하단</a><a href="#D">D 문서</a></nav><div class="catalog-list" id="catalog-list"></div></section>
+  <section aria-labelledby="catalog-title"><h2 id="catalog-title">부품 쇼룸</h2><p><b>표준 원본: freepass-sales</b> · <code>웹/app.css</code> · <code>28db91f</code></p><p>먼저 필요한 부품을 고릅니다. 각 부품은 실제 상태와 적용 위치를 함께 보여줍니다.</p><nav class="catalog-groups" aria-label="부품 분류"><a href="#B">B 버튼</a><a href="#S">S 입력·검색</a><a href="#L">L 목록·표</a><a href="#C">C 내용</a><a href="#H">H 상단</a><a href="#N">N 위치·문서 이동</a><a href="#M">M 하단</a><a href="#D">D 문서</a></nav><div class="catalog-list" id="catalog-list"></div></section>
   <section class="model-section" aria-labelledby="brand-title"><h2 id="brand-title">브랜드 프로필</h2><label class="model-field">FreePass CI manifest version<select class="model-control" disabled><option>CI Center 정본 선택 전 · HOLD</option></select></label><p class="ui-hint" id="brand-note">원격 주소를 연결하지 않고, 확정된 manifest에서 동기화한 로컬 자산의 출처·버전·digest를 표시합니다.</p></section>
 
   <section aria-labelledby="set-title"><h2 id="set-title">부품으로 꾸민 화면</h2><p>쇼룸 부품을 조합한 화면 묶음입니다.</p><div class="set-grid" id="set-grid"></div></section>

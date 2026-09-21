@@ -2,6 +2,8 @@
 
 이 폴더는 AI Core UI/UX 규격 `{{AI_CORE_REVISION}}`에서 생성했습니다.
 
+FreePass 기본 프로필의 표준 원본은 `freepass-sales` commit `28db91f284f84ad49a588ef504cac15e52d1acb0`의 `웹/app.css`와 `웹/index.html`입니다. 다른 저장소의 부품은 적용 사례로 표시하되 기본 시각 규격을 덮지 않습니다.
+
 **상단은 상태와 제목, 하단은 이동과 실행.**
 
 **버튼과 선택은 테두리 없이, 입력과 표는 테두리 있게, 목록은 카드 하나.**

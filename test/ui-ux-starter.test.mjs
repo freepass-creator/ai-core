@@ -74,6 +74,8 @@ test("creates a revision-bound starter with established UI rules", () => {
   const catalog = JSON.parse(readFileSync(join(target, "ui-component-catalog.json"), "utf8"));
   assert.deepEqual(catalog.sets["SET-01"].components, ["H01", "S01", "L01", "M01", "B01"]);
   assert.equal(catalog.components.B01.name, "주 실행 버튼");
+  assert.equal(catalog.standard_source.repository, "freepass-sales");
+  assert.equal(catalog.standard_source.commit, "28db91f284f84ad49a588ef504cac15e52d1acb0");
   assert.equal(catalog.brand_profiles.FREEPASS.owner, "freepasshomepage CI Center");
   assert.match(catalog.brand_profiles.FREEPASS.asset_policy, /Remote hotlinks are prohibited/);
   assert.deepEqual(catalog.recipes["RENMAN-PENALTY-01"].sequence.map((step) => step.set), ["SET-03", "SET-02"]);

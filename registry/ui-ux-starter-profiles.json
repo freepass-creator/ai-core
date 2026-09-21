@@ -4,8 +4,8 @@
   "default_profile": "freepass-product",
   "profiles": {
     "freepass-product": {
-      "label": "프리패스 서비스",
-      "description": "FreePass public, sales and estimate surfaces with borderless actions, preserved-context search and single-container row lists.",
+      "label": "프리패스 세일즈 표준",
+      "description": "FreePass Sales current UI is the primary source: bright neutral surface, navy emphasis, bordered controls, borderless actions, preserved-context search and thumb-reachable bottom navigation.",
       "body_class": "ui-profile-freepass",
       "density": "comfortable"
     },

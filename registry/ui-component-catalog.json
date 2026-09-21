@@ -1,6 +1,7 @@
 {
   "contract": "ai-core-ui-component-catalog/v1",
   "version": "1.0.0",
+  "standard_source": {"repository":"freepass-sales","commit":"28db91f284f84ad49a588ef504cac15e52d1acb0","style_source":"웹/app.css","screen_source":"웹/index.html","adopted_as":"AI Core FreePass primary UI standard"},
   "id_policy": "Published IDs never change meaning. Replace only by adding deprecated and replaced_by fields.",
   "standards": [
     {"name":"WAI-ARIA Authoring Practices patterns","url":"https://www.w3.org/WAI/ARIA/apg/patterns/"},
