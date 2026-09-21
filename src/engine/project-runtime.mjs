@@ -43,6 +43,7 @@ export function createProjectRuntime({
   async function prepareCommand(capability,project){return{kind:'PROJECT_COMMAND',project_id:project.project_id,cwd:project.local_path,argv:commandFor(capability,project)};}
   async function runCommand(capability,project){
     const rev=await assertProject(project); const prepared=await prepareCommand(capability,project); const r=await runProcess({argv:prepared.argv,cwd:prepared.cwd});
+    await assertProject(project);
     const ok=(r.exit_code??0)===0;
     return{status:ok?'SUCCEEDED':'FAILED',summary:ok?`${capability.title} 실행 완료`:`${capability.title} 실행 실패`,
       data:{stdout:r.stdout??'',stderr:r.stderr??'',exit_code:r.exit_code??0},
@@ -56,6 +57,7 @@ export function createProjectRuntime({
     need(rel&&!rel.startsWith('..')&&!isAbsolute(rel),'PROJECT_MODULE_PATH_ESCAPE');
     const mod=await importModule(entry), fn=mod?.[capability.adapter.export]; need(typeof fn==='function','PROJECT_MODULE_EXPORT_MISSING');
     const value=await fn(input,structuredClone(executionContext));
+    await assertProject(project);
     if(value&&['SUCCEEDED','HOLD','FAILED'].includes(value.status)) return value;
     return{status:'SUCCEEDED',summary:`${capability.title} 완료`,data:value,evidence:[`READ: ${capability.adapter.entrypoint}#${capability.adapter.export} @${project.project_id}:${rev}`],artifacts:[],checks:[{name:capability.id,status:'PASS'}],blockers:[],external_effect:false};
   }
