@@ -1,6 +1,6 @@
 {
   "contract": "ai-core-ui-interaction-contract/v1",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "feature_registry": "registry/ui-ux-features.json",
   "constitution": "docs/UI_UX_CONSTITUTION.md",
   "rules": {
@@ -245,6 +245,35 @@
         "ime-composition",
         "virtual-keyboard",
         "keyboard-or-equivalent"
+      ]
+    },
+    "portable_task_panel": {
+      "feature_refs": [
+        "system.portable-task-panel",
+        "system.responsive",
+        "navigation.header",
+        "navigation.bottom-action",
+        "action.primary",
+        "action.secondary",
+        "action.icon",
+        "navigation.restore"
+      ],
+      "invariants": [
+        "A desktop task panel must remain completable when isolated as the active mobile panel.",
+        "Desktop-only affordances are accelerators, not unique business command paths.",
+        "A panel may consume stable entity/work context from another panel but may not require a sibling panel to remain visible for correctness.",
+        "Required task actions remain in the panel action model and preserve the same command meaning across mobile and web.",
+        "Multi-panel collapse preserves entity identity, selection, draft, workflow state and async response ownership.",
+        "When multiple panels are visible, prominent Primary actions do not compete without an explicit workflow reason."
+      ],
+      "verification": [
+        "standalone-mobile-completion",
+        "desktop-mobile-action-parity",
+        "no-hover-only",
+        "no-keyboard-only",
+        "no-sibling-dependency",
+        "state-preserving-collapse",
+        "single-active-primary"
       ]
     }
   }
