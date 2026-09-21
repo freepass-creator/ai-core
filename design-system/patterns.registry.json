@@ -320,16 +320,12 @@
       "layer": "pattern",
       "implementation_status": "CONTRACT_ONLY",
       "component_feature_refs": [
-        "navigation.header",
-        "navigation.bottom-action",
         "action.primary",
         "action.secondary",
-        "action.icon",
-        "data.card",
-        "data.list",
-        "data.detail"
+        "action.icon"
       ],
-      "contract_source": "registry/ui-ux-features.json#system.portable-task-panel"
+      "contract_source": "registry/ui-ux-features.json#system.portable-task-panel",
+      "notes": "Composes header/bottom-action/data surfaces through the screen manifest and interaction contract; component_feature_refs contains component-kind features only."
     },
     {
       "feature_id": "system.responsive",
