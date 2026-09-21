@@ -1,5 +1,7 @@
 # AI Collaboration Protocol — GPT / Codex / Claude 협업 규칙
 
+> **2026-09-21 적용 범위 변경:** 일반 AI 업무의 현재 정본은 [AI Working Standard](AI_WORKING_STANDARD.md)다. 이 문서의 고정 역할 순서와 GitHub Review Note 단계는 중요한 구조·통합 작업에서 선택적으로 재사용하며, 모든 업무의 필수 절차가 아니다. 중앙 오더나 특정 AI 순서를 새로 만들지 않고도 사용자의 현재 업무를 바로 진행할 수 있다.
+
 - 문서 버전: 1.0
 - 작성일: 2026-09-16 (Asia/Seoul)
 - 상태: `COLLABORATION OPERATING RULE`
