@@ -304,11 +304,12 @@
         "과태료 처리",
         "변경부과"
       ],
-      "target_project_id": "aiops",
+      "target_project_id": "rental-manager",
       "approval_boundary": "PROJECT_RULES",
       "completion_condition": "현재 SOP에 따라 대상/관청/차량/계약을 대조하고 실제 쓰기 전 승인 경계를 지킨다.",
       "source_pointers": [
         "registry/projects.json",
+        "freepass-creator/renman",
         "freepass-creator/aiops"
       ],
       "capability_id": "operations.penalty.prepare"

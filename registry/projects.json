@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "observed_at": "2026-09-19T10:46:16Z",
+  "observed_at": "2026-09-21T01:55:58Z",
   "projects": [
     {
       "project_id": "ai-core",
@@ -558,6 +558,39 @@
       "known_blockers": [
         "This repository is proposal-specific and must not override Mewcar business facts/decisions; use freepass-creator/mewcar as the business-content SSOT.",
         "Internal-review deliverables do not prove external approval or delivery."
+      ]
+    },
+    {
+      "project_id": "rental-manager",
+      "name": "JPK Rental Manager",
+      "organization": "SUBSIDIARY",
+      "status": "HOLD",
+      "mission": "JPK rental-car operating product for vehicles, contracts, dispatch, receivables, maintenance, accidents, insurance and penalty processing.",
+      "repository": "freepass-creator/renman",
+      "default_branch": "main",
+      "local_path": "C:\\dev\\renman",
+      "head_revision": "262e06de09db94a116fa377ea2f5dbe024bb086b",
+      "authoritative_sources": [
+        {
+          "kind": "GIT",
+          "ref": "freepass-creator/renman",
+          "revision": "262e06de09db94a116fa377ea2f5dbe024bb086b",
+          "observed_at": "2026-09-21T01:55:10Z"
+        }
+      ],
+      "commands": {
+        "install": "npm ci",
+        "test": "npm test",
+        "build": "npm run build"
+      },
+      "deploy_targets": [],
+      "required_approvals": [
+        "production-data-mutation",
+        "production-deployment"
+      ],
+      "known_blockers": [
+        "The local checkout is on reborn/2026-08-21 at adcb7431 with extensive uncommitted work while the default main head is 262e06de; canonical promotion and merge scope are not yet reconciled.",
+        "Only Vercel preview deployments were observed; the current production deployment and domain are not verified."
       ]
     }
   ]

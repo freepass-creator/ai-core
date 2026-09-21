@@ -112,6 +112,7 @@
         "finance"
       ],
       "projects": [
+        "rental-manager",
         "aiops"
       ],
       "mode": "EXTERNAL_MUTATION",
@@ -164,6 +165,7 @@
         "analysis"
       ],
       "projects": [
+        "rental-manager",
         "aiops"
       ],
       "mode": "READ_ONLY",
