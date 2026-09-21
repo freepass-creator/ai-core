@@ -1,5 +1,20 @@
 # Work / Codex — Read This First
 
+## 현재 사용자 방향 — AI 협업 지원 우선 (2026-09-21)
+
+사용자는 각 AI에서 직접 업무한다. AI Core의 고도화 목표는 그 업무에서 맥락 재설명, 자료 탐색, AI 간 인계, 중복 작업과 재작업을 줄이는 것이다. 중앙 오더 접수나 claim을 일반 업무의 필수 진입 절차로 요구하지 않는다.
+
+이 방향은 아래의 중앙 오더 창구 우선, 실제 합병·통합 우선 및 Phase 1 종료 전 다른 업무 제한을 일반 업무의 선행 조건으로 삼는 과거 지침보다 우선한다. 기존 오더 시스템을 사용 중인 업무의 원장·claim·권한 계약은 계속 지킨다. 중앙 연결 장애는 그 경로에 한정해 보고하며, 독립적으로 가능한 사용자 요청까지 막지 않는다.
+
+기본 작업 흐름:
+
+1. 현재 사용자 요청과 대상 프로젝트의 최신 지침·작업 상태를 필요한 범위만 확인한다.
+2. 기존 도구·공통 기능·검증된 패턴을 재사용하고, 충돌 없는 작업 위치와 수정 범위를 확인해 진행한다.
+3. 다른 AI의 검토가 실질적으로 필요한 경우에만 최소 맥락·정확한 대상 revision·검토 질문을 전달한다. 기존 위험별 검토 및 민감정보 제한은 유지한다.
+4. 결과에는 변경점, 실제 검증, 남은 문제와 다음 시작점을 남겨 다른 AI가 이어받을 수 있게 한다. 프로젝트별 결과는 해당 프로젝트의 기존 인계 경로를 사용한다.
+
+고도화는 실제 업무에서 발견한 불편 하나를 줄이는 작은 개선부터 진행한다. 효과는 시작 시간, 반복 설명, 인계 누락, 재작업 같은 실제 관측으로 확인한다. 중앙 서버 복구, 새 접수 절차 또는 추가 프레임워크를 기본 선행 작업으로 삼지 않는다. 외부 발송·운영 변경 등의 기존 승인 경계는 유지한다.
+
 ## Chat results must reach GitHub
 
 Work performed in a chat must follow [Chat to GitHub handoff policy](docs/CHAT_GITHUB_HANDOFF_POLICY.md). The chat is a working surface, while the relevant project repository is the durable handoff record. Preserve only reviewed minimal context and evidence pointers; do not copy sensitive raw conversations into GitHub.
@@ -95,9 +110,9 @@ OPS-P0의 분류 정본은 `registry/work-map.json` + `src/routing/work-router.m
 
 ## 기본 진입점
 
-GitHub를 통해 이어가는 AI는 [AI 공용 단일 시작점](docs/coordination/AI_CONTINUATION.md)을 먼저 읽는다. 저장소 접근이 없는 무료 채팅에는 그 문서의 최소 Markdown 내보내기만 전달한다. 이어서 [공통 시작·패킷 경계](docs/coordination/CROSS_AI_ENTRYPOINT.md)를 읽는다. 총괄은 기존 중앙 작업/담당을 조회하고 현재 패킷·실행 위치·소유 파일을 제공한다. 조회 결과는 claim/실행 승인이 아니다. 중앙 연결과 실제 claim이 없으면 HOLD로 보고한다.
+일반 업무는 위의 현재 사용자 방향에 따라 대상 프로젝트에서 바로 시작한다. AI 간 인계가 필요하면 [AI 공용 단일 시작점](docs/coordination/AI_CONTINUATION.md)의 최소 맥락 전달 방식을 재사용한다. 해당 문서와 [공통 시작·패킷 경계](docs/coordination/CROSS_AI_ENTRYPOINT.md)의 중앙 연결·claim 필수 조건은 기존 중앙 오더 경로를 사용하는 업무에 적용한다. 일반 업무를 위해 order/work ID를 새로 만들거나 추정하지 않는다.
 
-로컬·서버 작업은 `docs/SHARED_ORDER_EXECUTION.md`의 중앙 연결을 먼저 확인한다. GitHub에서 코드를 받았다고 별도의 업무 DB를 새로 만들지 않는다. `node scripts/orders.mjs meta`의 원장 ID와 현재 오더 요구 버전을 확인한 뒤 작업한다.
+기존 중앙 오더 업무를 이어받는 경우에만 `docs/SHARED_ORDER_EXECUTION.md`의 중앙 연결을 먼저 확인한다. GitHub에서 코드를 받았다고 별도의 업무 DB를 새로 만들지 않는다. 이 경로에서는 `node scripts/orders.mjs meta`의 원장 ID와 현재 오더 요구 버전을 확인한 뒤 작업한다.
 
 1. `MEMORY.md`
 2. `memory/CURRENT.md`
