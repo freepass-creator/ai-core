@@ -30,23 +30,34 @@ function render(source, values) {
   );
 }
 
-function writeNew(path, content, force) {
-  if (existsSync(path) && !force) throw new Error(`Refusing to overwrite ${path}. Use --force only after reviewing local changes.`);
-  mkdirSync(dirname(path), { recursive: true });
-  writeFileSync(path, content, "utf8");
+function escapeHtml(value) {
+  return value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;");
 }
 
-export function initStarter({ target, profile = "freepass-product", product = "New product", force = false }) {
+function writeAll(outputs, force) {
+  const conflicts = outputs.map(([path]) => path).filter((path) => existsSync(path));
+  if (conflicts.length && !force) {
+    throw new Error(`Refusing to overwrite existing starter files:\n${conflicts.map((path) => `- ${path}`).join("\n")}\nUse --force only after reviewing local changes.`);
+  }
+  for (const [path, content] of outputs) {
+    mkdirSync(dirname(path), { recursive: true });
+    writeFileSync(path, content, "utf8");
+  }
+}
+
+export function initStarter({ target, profile, product = "New product", force = false }) {
   if (!target) throw new Error("Missing --target <directory>.");
   const profiles = JSON.parse(readFileSync(join(root, "registry", "ui-ux-starter-profiles.json"), "utf8"));
-  const selected = profiles.profiles[profile];
-  if (!selected) throw new Error(`Unknown profile '${profile}'. Choose: ${Object.keys(profiles.profiles).join(", ")}`);
+  const profileId = profile ?? profiles.default_profile;
+  const selected = profiles.profiles[profileId];
+  if (!selected) throw new Error(`Unknown profile '${profileId}'. Choose: ${Object.keys(profiles.profiles).join(", ")}`);
 
   const destination = resolve(target);
   const templateDir = join(root, "templates", "ui-starter");
   const values = {
     PRODUCT_NAME: product,
-    PROFILE_ID: profile,
+    HTML_PRODUCT_NAME: escapeHtml(product),
+    PROFILE_ID: profileId,
     PROFILE_LABEL: selected.label,
     BODY_CLASS: selected.body_class,
     AI_CORE_REVISION: revision(),
@@ -58,11 +69,26 @@ export function initStarter({ target, profile = "freepass-product", product = "N
     readFileSync(join(templateDir, "product-profile.css"), "utf8"),
   ].join("\n\n");
 
-  writeNew(join(destination, "ai-core-ui.css"), css, force);
-  writeNew(join(destination, "starter.html"), render(readFileSync(join(templateDir, "starter.html"), "utf8"), values), force);
-  writeNew(join(destination, "AI_CORE_UI_STARTER.md"), render(readFileSync(join(templateDir, "README.template.md"), "utf8"), values), force);
-  writeNew(join(destination, "ai-core-ui.profile.json"), `${JSON.stringify({ contract: "ai-core-ui-starter/v1", profile, product, body_class: selected.body_class, ai_core_revision: values.AI_CORE_REVISION }, null, 2)}\n`, force);
-  return { destination, profile, files: ["ai-core-ui.css", "starter.html", "AI_CORE_UI_STARTER.md", "ai-core-ui.profile.json"] };
+  const profileJson = `${JSON.stringify({
+    contract: "ai-core-ui-starter/v1",
+    profile: profileId,
+    product,
+    body_class: selected.body_class,
+    behavior_contract: selected.behavior_contract,
+    feature_ids: profiles.shared_behavior_contract.feature_ids,
+    states: profiles.shared_behavior_contract.states,
+    viewports: profiles.shared_behavior_contract.viewports,
+    ai_core_revision: values.AI_CORE_REVISION,
+  }, null, 2)}\n`;
+  const outputs = [
+    [join(destination, "ai-core-ui.css"), css],
+    [join(destination, "starter.html"), render(readFileSync(join(templateDir, "starter.html"), "utf8"), values)],
+    [join(destination, "starter.js"), readFileSync(join(templateDir, "starter.js"), "utf8")],
+    [join(destination, "AI_CORE_UI_STARTER.md"), render(readFileSync(join(templateDir, "README.template.md"), "utf8"), values)],
+    [join(destination, "ai-core-ui.profile.json"), profileJson],
+  ];
+  writeAll(outputs, force);
+  return { destination, profile: profileId, files: ["ai-core-ui.css", "starter.html", "starter.js", "AI_CORE_UI_STARTER.md", "ai-core-ui.profile.json"] };
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

@@ -28,7 +28,7 @@ UI/UX 작업은 아래 순서를 생략하지 않는다.
 새 프로젝트는 공통 UI를 다시 만들지 말고 먼저 starter를 생성한다.
 
 ```powershell
-npm run uiux:init -- --target <프로젝트 안의 UI 폴더> --profile freepass-product --product "프로젝트 이름"
+npm run uiux:init -- --target <프로젝트 안의 UI 폴더> --profile freepass-public --product "프로젝트 이름"
 ```
 
 상세 사용법과 profile 선택 기준은 `docs/UI_UX_NEW_PROJECT_STARTER.md`를 따른다.

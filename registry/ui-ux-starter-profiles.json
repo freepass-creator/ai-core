@@ -1,25 +1,52 @@
 {
   "contract": "ai-core-ui-ux-starter-profiles/v1",
-  "version": "1.0.0",
-  "default_profile": "freepass-product",
+  "version": "1.1.0",
+  "default_profile": "freepass-public",
+  "shared_behavior_contract": {
+    "feature_ids": [
+      "action.primary",
+      "action.secondary",
+      "form.search",
+      "data.card",
+      "feedback.skeleton",
+      "feedback.empty",
+      "feedback.alert",
+      "navigation.bottom-action",
+      "system.responsive",
+      "system.focus",
+      "system.safe-area-keyboard"
+    ],
+    "states": ["loading", "empty", "error", "populated"],
+    "viewports": [360, 390, 412, 1280, 1440],
+    "invariants": [
+      "BORDERLESS_ACTIONS_WITH_VISIBLE_INPUT_BOUNDARIES",
+      "SEARCH_PRESERVES_QUERY_SELECTION_AND_DRAFT",
+      "CARD_ROW_IS_ONE_ACTION_TARGET",
+      "TOP_INFORMATION_BOTTOM_ACTION",
+      "ONE_PRIMARY_ACTION_PER_BOUNDARY"
+    ]
+  },
   "profiles": {
-    "freepass-product": {
-      "label": "FreePass product",
-      "description": "FreePass public, sales and estimate surfaces with borderless actions, preserved-context search and responsive card lists.",
-      "body_class": "ui-profile-freepass",
-      "density": "comfortable"
+    "freepass-public": {
+      "label": "FreePass public",
+      "description": "Public product, sales and estimate surfaces with comfortable density and responsive card grids.",
+      "body_class": "ui-profile-freepass-public",
+      "density": "comfortable",
+      "behavior_contract": "shared_behavior_contract"
     },
-    "internal-work": {
-      "label": "Internal work",
-      "description": "Compact operational screens with the same interaction and accessibility contract.",
-      "body_class": "ui-profile-internal",
-      "density": "compact"
+    "freepass-internal": {
+      "label": "FreePass internal",
+      "description": "Compact operational and data-management surfaces.",
+      "body_class": "ui-profile-freepass-internal",
+      "density": "compact",
+      "behavior_contract": "shared_behavior_contract"
     },
-    "mobile-work": {
-      "label": "Mobile work",
-      "description": "Field work screens optimized for one task per screen and bottom actions.",
-      "body_class": "ui-profile-mobile-work",
-      "density": "touch"
+    "freepass-mobile": {
+      "label": "FreePass mobile",
+      "description": "Field-work surfaces optimized for one task per screen and safe-area bottom actions.",
+      "body_class": "ui-profile-freepass-mobile",
+      "density": "touch",
+      "behavior_contract": "shared_behavior_contract"
     }
   }
 }
