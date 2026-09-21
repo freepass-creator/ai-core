@@ -13,6 +13,34 @@
 - dialog도 실행은 footer
 - page header에 Save/Submit/Share 같은 CTA를 되돌려 놓지 않는다
 
+## 1.1 모바일 하단 영역 — 전역 메뉴와 로컬 액션을 섞지 않는다
+
+FreePass 모바일은 하단을 두 종류로 구분한다.
+
+### 깊이 0 — 전역 하단 메뉴
+
+- 홈/목록 같은 최상위 화면에서만 노출
+- AI Core `navigation.bottom-nav` 사용
+- 최신 공통 규격의 모바일 업무행 최소 **64px** + safe-area
+- 항목은 같은 폭으로 배치
+- 선택 상태는 과한 테두리보다 옅은 면 + 문자 위계
+- 상단 헤더와 역할이 겹치는 CTA를 넣지 않는다
+
+### 깊이 1·2 — 로컬 하단 액션바
+
+- 상세/검수/입력/업무 화면에서는 전역 하단 메뉴를 숨긴다
+- AI Core `navigation.bottom-action` 사용
+- 저장/반영/다음/완료/발송 같은 task CTA는 여기 둔다
+- 화면당 Primary action은 하나
+- Primary는 **48px 권장**(44px 미만 금지)
+- 보조 1개 + 주행동 1개 조합은 FreePass 기본 비율을 **3:7**로 둔다
+- 단일 Primary만 필요한 화면은 전체 폭 사용
+- safe-area와 가상 키보드가 액션을 가리지 않게 한다
+- disabled 상태는 이유를 화면 가까이에 함께 보여준다
+
+이 규칙은 과거 FreePass 모바일 고도화에서 합의한 당근형 최신 모바일 문법을 현재 AI Core의
+`Top is informational / Bottom is actionable` 원칙에 맞춰 고정한 것이다.
+
 ## 2. 단일선택은 즉시 전진
 
 Estimate 모바일 기준:
