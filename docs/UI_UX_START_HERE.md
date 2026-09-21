@@ -17,13 +17,15 @@ UI/UX 작업은 아래 순서를 생략하지 않는다.
 - 대상 프로젝트 / 저장소
 - 대상 화면
 - 대상 프로젝트 revision
-- 사용할 **AI Core exact revision**
+- 사용할 **AI Core exact revision** — 실행/증거 identity
+- 사용할 **UI/UX source baseline** — canonical source `path + blob_sha` 집합
 - 제품 프로필
 - 실제 브랜드/CI 정본 위치
 - 구현 후 검증 viewport
 
 “AI Core 최신 거 대충”처럼 HEAD를 의미 없이 참조하지 않는다.
-실행/검증 증거는 exact revision에 묶는다.
+실행/검증 증거는 exact revision에 묶고, UI/UX 규격 신선도는 canonical source baseline의 exact blob으로 검증한다.
+AI Core HEAD가 다른 업무 커밋으로 이동했더라도 UI/UX canonical source blob이 모두 같으면 같은 UI/UX baseline으로 인정할 수 있다.
 
 ---
 
@@ -94,7 +96,7 @@ Development Center **Design Hub**다.
 ```text
 사용자 UI/UX 요청
   ↓
-AI Core exact revision 고정
+AI Core exact revision + UI/UX source baseline 고정
   ↓
 이 START HERE + 공통 규격 + 제품 프로필
   ↓
@@ -116,8 +118,9 @@ Design Hub 시작점:
 - `hubs/design/core-binding.json`
 - `docs/DESIGN-HUB-COMPILER.md`
 
-**Design Hub core-binding revision이 이번 작업에서 쓰려는 AI Core revision과 다르면 먼저 binding을 갱신/검증한다.**
-서로 다른 revision을 섞은 상태에서 “AI Core 규격 적용 완료”라고 하지 않는다.
+Design Hub `core-binding.json`의 `ai_core.revision`은 UI/UX source baseline의 provenance anchor다.
+현재 작업의 AI Core HEAD와 숫자상 같아야 하는 것은 아니다. 대신 public entrypoint가 요구하는 canonical UI/UX source 전체가 binding에 존재하고, 각 `path + blob_sha`가 현재 Core source와 exact 일치해야 한다.
+한 source라도 누락되거나 blob이 다르면 먼저 binding을 갱신/검증하고 **HOLD**한다.
 
 ---
 
@@ -166,7 +169,7 @@ FreePass 모바일은 특히 다음을 먼저 본다.
 - 제품 프로필이 필요한데 안 읽음
 - feature ID가 존재하는데 로컬 대체 패턴을 새로 만듦
 - runtime이 `CONTRACT_ONLY`인데 실제 구현이 있다고 가정함
-- Design Hub binding이 의도한 AI Core revision과 다름
+- Design Hub binding에 canonical UI/UX source가 누락되거나 `path + blob_sha`가 현재 Core source와 다름
 - 360/390/412 검증 없이 모바일 완료 주장
 - screenshot/브라우저 검토 없이 Visual QA PASS 주장
 - 프로젝트 preview만 만들어놓고 CONFORMANT라고 주장
@@ -197,6 +200,7 @@ UI 작업 시작 전에 작업 메모/PR에 최소 아래를 남긴다.
 ```text
 AI Core UI/UX preflight
 - core revision:
+- UI/UX source baseline:
 - product profile:
 - brand SSOT:
 - feature IDs:
