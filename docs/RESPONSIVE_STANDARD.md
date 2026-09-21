@@ -38,6 +38,26 @@ Responsive layout is considered reusable only when a task panel can operate in i
 
 See `docs/PORTABLE_TASK_PANEL_STANDARD_2026-09-21.md`.
 
+## Adaptive desktop productivity
+
+Web is not required to preserve the mobile visual composition when that would reduce workstation productivity.
+
+Allowed desktop adaptations include:
+
+- relational data grid/table
+- multi-select and bulk actions
+- inline row/cell actions
+- keyboard shortcuts
+- drag-and-drop with equivalent accessible action
+- persistent filters/columns/density controls
+- utility toolbar
+- side-by-side comparison
+- resizable or multiple panels
+
+These adaptations remain conformant only when they bind to the same canonical entity/work IDs, workflow states, commands, authority, validation, retries and receipts as mobile.
+
+See `docs/ADAPTIVE_WEB_STANDARD_2026-09-21.md`.
+
 ## Layout and grid
 
 - Base page gutters: 12px mobile, 16px desktop compatibility baseline.
