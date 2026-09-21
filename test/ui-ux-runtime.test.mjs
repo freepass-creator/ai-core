@@ -48,7 +48,7 @@ test('B2 runtime covers every component feature and locked global probes', () =>
   assert.equal(result.interaction_rules, 12);
   assert.ok(result.tokens >= 40);
   assert.equal(result.governance_entries, 0);
-  assert.equal(result.consumers, 2);
+  assert.equal(result.consumers, 3);
   assert.equal(result.conformant_consumers, 0);
 });
 

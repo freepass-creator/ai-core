@@ -103,7 +103,7 @@ test('privileged mutation cannot be opened by emergency approval',()=>{
     reviews:[],
     owner_approval:null,
     emergency_approval:{
-      approver_id:'user:owner',reason:'emergency',approved_at:'2026-09-20T00:00:00Z',expires_at:'2026-09-20T00:05:00Z',
+      approver_id:'user:owner',reason:'emergency',approved_at:'2026-09-20T00:00:00Z',expires_at:'2026-09-20T00:06:00Z',
     },
   });
   const result=evaluateApprovalBundle({bundle,policy:policy(bundle.policy_id),now});

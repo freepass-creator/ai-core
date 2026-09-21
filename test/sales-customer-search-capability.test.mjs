@@ -17,7 +17,7 @@ test('Sales customer search routes to the verified read-only adapter', async () 
   assert.equal(route.status, 'RESOLVED');
   assert.equal(route.target_project_id, 'freepass-sales');
   assert.equal(route.capability_id, 'sales.customer-search');
-  assert.equal(route.target_revision, 'e8a96166e0961455119d9721501f26ecda229d03');
+  assert.equal(route.target_revision, 'e98e3e9854012b9043f7fbe7b4168ce772047e39');
 
   const capability = capabilityRegistry.capabilities.find(item => item.id === 'sales.customer-search');
   assert.equal(capability.status, 'ACTIVE');

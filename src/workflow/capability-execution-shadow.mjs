@@ -206,7 +206,7 @@ export function createCapabilityExecutionShadow(workflow) {
     let ref = null;
     if (observed?.path && projectRoot) {
       const rel = relative(projectRoot, observed.path);
-      if (rel && !rel.startsWith('..') && !isAbsolute(rel)) ref = rel.replaceAll('\\\\', '/');
+      if (rel && !rel.startsWith('..') && !isAbsolute(rel)) ref = rel.replaceAll('\\', '/');
     }
 
     const result = {
