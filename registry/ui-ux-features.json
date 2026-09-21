@@ -1,6 +1,6 @@
 {
   "contract": "ai-core-ui-ux-feature-registry/v1",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "normative_source": "docs/SCREEN_DESIGN_STANDARD.md",
   "global_rules": {
     "invariants": [
@@ -2351,7 +2351,10 @@
         "Desktop multi-panel composition may add simultaneous context and accelerators but may not create desktop-only business completion semantics.",
         "Required commands must remain available without relying exclusively on hover, right-click, keyboard shortcuts, drag-and-drop or sibling-panel visibility.",
         "Panel correctness depends on stable entity/work context and canonical command/state bindings, not visual adjacency.",
-        "Wide layouts may compose list, detail/task and supporting panels; narrow layouts collapse them toward one active panel while preserving state."
+        "Wide layouts may compose list, detail/task and supporting panels; narrow layouts collapse them toward one active panel while preserving state.",
+        "Portable task panel defines a reusable business-task contract; desktop presentation may adapt beyond a literal panel when productivity requires it.",
+        "Require business capability parity across mobile and web, not identical interaction parity.",
+        "Desktop grids, bulk actions, inline actions, shortcuts and toolbars may accelerate canonical commands but may not fork workflow meaning, authority or completion semantics."
       ],
       "verification": [
         "standalone-mobile-completion",
@@ -2369,6 +2372,12 @@
             "docs/PORTABLE_TASK_PANEL_STANDARD_2026-09-21.md",
             "docs/UI_UX_USER_DECISION_2026-09-21_MOBILE_BASELINE.md",
             "docs/UI_UX_USER_DECISION_2026-09-21_WEB_PANEL_EXTENSION.md"
+          ]
+        },
+        {
+          "level": "CROSS_PROJECT_VERIFIED",
+          "refs": [
+            "docs/ADAPTIVE_WEB_STANDARD_2026-09-21.md"
           ]
         }
       ]
@@ -2394,7 +2403,9 @@
         "Treat the mobile task surface as the canonical single-panel interaction grammar; desktop reuses the same hierarchy rather than inventing a separate UI language.",
         "Use wider web viewports to compose multiple mobile-equivalent panels side by side when that reduces navigation depth or preserves work context.",
         "As width contracts, reduce simultaneous panels and converge to the mobile single-panel flow without changing action meaning, state semantics or information priority.",
-        "Do not convert card lists to dense tables solely because desktop space is available; table projection requires intrinsically relational comparison."
+        "Do not convert card lists to dense tables solely because desktop space is available; table projection requires intrinsically relational comparison.",
+        "Web may intentionally diverge from the mobile visual composition when relational comparison, bulk work or repeated desktop operations benefit from a grid, denser workspace, inline actions, shortcuts or utility toolbar.",
+        "Adaptive web presentation remains bound to the same canonical entity/work IDs, workflow state, authority, validation, retry and completion semantics as mobile."
       ],
       "verification": [
         "semantic-contract",
@@ -2421,6 +2432,12 @@
             "docs/UI_UX_USER_DECISION_2026-09-21_MOBILE_BASELINE.md",
             "docs/UI_UX_USER_DECISION_2026-09-21_WEB_PANEL_EXTENSION.md",
             "docs/FREEPASS_PRODUCT_UI_PROFILE.md"
+          ]
+        },
+        {
+          "level": "CROSS_PROJECT_VERIFIED",
+          "refs": [
+            "docs/ADAPTIVE_WEB_STANDARD_2026-09-21.md"
           ]
         }
       ]
