@@ -1,5 +1,7 @@
 # Continue AI Core work from GitHub
 
+> **Scope changed on 2026-09-21:** Follow the current [AI Working Standard](../AI_WORKING_STANDARD.md) for ordinary AI work. Use this packet and remote-continuation procedure only when handing work to an AI without repository access or continuing an existing central-order workflow.
+
 This is the single start point for an AI that needs to continue or advise on AI Core work. GitHub contains reviewed, minimized work context and evidence pointers. It is not the canonical business ledger and does not contain every conversation.
 
 ## If you can read this repository

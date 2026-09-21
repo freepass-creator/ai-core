@@ -1,6 +1,10 @@
 # AI Core
 
-AI Core is the group headquarters for user orders, shared memory, planning, routing, approvals, evidence and follow-through.
+AI Core is the shared foundation for AI-assisted work, continuity, verification and evidence-backed learning across the group.
+
+## 현재 방향: AI 협업 기반
+
+사용자는 각 AI에서 직접 업무한다. AI Core는 중앙 오더 접수를 일반 업무의 선행 조건으로 두지 않고, 어떤 AI가 작업하더라도 정본 확인·재사용·검증·인계·노하우 축적 방식이 일관되게 작동하도록 돕는다. 현재 공통 규격은 [AI Working Standard](docs/AI_WORKING_STANDARD.md)이며, 아래 오더 데스크 내용은 기존 중앙 오더 경로의 구현 상태다.
 
 ## 현재 작업: 공통 AI 오더 데스크
 

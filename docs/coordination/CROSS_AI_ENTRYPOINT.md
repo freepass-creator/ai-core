@@ -1,5 +1,7 @@
 # 공통 AI 시작·읽기 패킷 — 준비 단계
 
+> **2026-09-21 적용 범위 변경:** 일반 AI 업무의 시작 규격은 [AI Working Standard](../AI_WORKING_STANDARD.md)다. 아래 중앙 packet/claim/HOLD 계약은 기존 중앙 오더 경로를 실제로 사용하는 업무에 한정한다.
+
 현재 공용 진입점은 [AI_CONTINUATION.md](AI_CONTINUATION.md)다. 저장소 접근 AI와 private 저장소 접근이 없는 무료 채팅 경로를 그 문서에서 분리하며, 이 문서의 중앙 packet/claim/HOLD 계약을 그대로 재사용한다.
 
 ## 전용 통합 브랜치 반영 — 2026-09-15
