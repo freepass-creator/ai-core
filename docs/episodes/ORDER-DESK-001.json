@@ -715,6 +715,7 @@
     },
     "2026-09-22 academy:start adds an executable, revision-bound learning gate; changed_files parity includes inherited branch work and does not attribute all files to this change.",
     "2026-09-22 portable academy starter kit composes academy:start, Project Capsule and track standards; changed_files remains verifier parity only.",
-    "2026-09-22 operating knowledge registry adds reusable methods and explicit do-not-ask boundaries to portable kits; changed_files remains verifier parity only."
+    "2026-09-22 operating knowledge registry adds reusable methods and explicit do-not-ask boundaries to portable kits; changed_files remains verifier parity only.",
+    "2026-09-22 full operating knowledge catalog adds GitHub, Vercel, Firebase, Google Workspace, Windows, and user work style to every portable academy kit; changed_files remains verifier parity only."
   ]
 }
