@@ -8,6 +8,8 @@ AI Core is the group's **AI academy**: a shared foundation where AIs learn the s
 
 모든 AI는 디자인·규격·개발·문서·데이터·운영을 시작하기 전에 AI Core에서 `목적 → 정본 → 적용 규격 → 재사용할 노하우 → 완료 검증`을 확인하고 대상 프로젝트로 간다. 이 과정은 접수 절차가 아니라 작업 품질을 맞추는 짧은 필수 사전점검이다.
 
+문서를 읽었다고 선언하는 데서 끝내지 않는다. `npm run academy:start -- --task "<사용자 결과>" --root <대상 저장소> --track development`가 헌법·업무별 최소 규격·프로젝트 지침을 읽고 실제 Git revision과 검증 명령을 고정한 receipt를 만든다. `READY` receipt부터 작업을 시작하며, 새 자산은 재사용 판정이 없으면 `HOLD`한다.
+
 쌓여 있는 Markdown을 전부 매번 읽지 않는다. [AI 사관학교 실전 교범과 교과과정](docs/AI_ACADEMY_CURRICULUM.md)에서 업무별 최소 독서 경로를 고르고, 헌법·현행 표준·연구 후보·과거 evidence를 구분해 사용한다.
 
 이 PC의 필수 진입점인 Codex·Claude가 헌법과 교과과정에 연결됐는지는 `npm run academy:validate`로 확인한다. Gemini·Cursor 진입점은 선택 상태로만 보고하며 전체 판정을 막지 않는다. 이 검사는 규칙 파일 설치만 검증하고 로그인·한도 또는 실제 준수까지 PASS로 간주하지 않는다.
