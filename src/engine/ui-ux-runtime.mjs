@@ -149,6 +149,7 @@ export function validateUiUxRuntimeSemantics({
     'async_write',
     'external_action',
     'responsive',
+    'portable_task_panel',
     'accessibility',
     'internationalization',
     'file_image_ui',
