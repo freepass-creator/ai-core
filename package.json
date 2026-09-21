@@ -50,7 +50,7 @@
     "a:evidence:validate": "node scripts/validate-a-session-evidence.mjs docs/research/a-session-evidence-registry.v1.json",
     "a:routing:validate": "node scripts/validate-a-session-routing.mjs docs/research/a-session-routing-receipts.v1.json docs/research/a-session-evidence-registry.v1.json",
     "workflow:projection:validate": "node scripts/validate-workflow-projections.mjs",
-    "a:receiver:validate": "node scripts/validate-a-session-receiver-inboxes.mjs docs/research/a-session-receiver-inbox-B.v1.json docs/research/a-session-receiver-inbox-C.v1.json docs/research/a-session-receiver-inbox-D.v1.json",
+    "a:receiver:validate": "node scripts/validate-a-session-receiver-inboxes.mjs docs/research/a-session-routing-receipts.v1.json docs/research/a-session-receiver-inbox-B.v1.json docs/research/a-session-receiver-inbox-C.v1.json docs/research/a-session-receiver-inbox-D.v1.json",
     "a:receiver:sync": "node scripts/sync-a-session-receiver-inboxes.mjs",
     "a:routing:reconcile": "node scripts/reconcile-a-session-routing.mjs",
     "a:receiver:intake": "node scripts/a-session-receiver-worker.mjs",
