@@ -1,6 +1,6 @@
 # Portable Task Panel Standard — 2026-09-21
 
-Status: **USER-DIRECTION + AI CORE NORMATIVE CANDIDATE**
+Status: **USER-DIRECTION + AI CORE NORMATIVE BASELINE**
 Decision date: **2026-09-21**
 Scope: **AI Core UI/UX / mobile-web portability**
 Depends on:
@@ -19,16 +19,25 @@ The operational goal is:
 
 Therefore AI Core treats a task panel as a portable unit of work, not as a decorative card or desktop column.
 
+## Adaptive web clarification — 2026-09-21
+
+Portable Task Panel remains the preferred reusable **business task unit**, not a mandatory desktop visual container.
+
+- Mobile keeps the stricter panel grammar.
+- Web may transform the same task into a grid, denser workspace, inline workflow, utility toolbar or multi-panel composition when that improves desktop productivity.
+- The invariant is business portability: same command/state/workflow semantics, not pixel or interaction identity.
+- See `docs/ADAPTIVE_WEB_STANDARD_2026-09-21.md`.
+
 ## 1. Core portability invariant
 
 For every reusable task surface, ask:
 
-> **If this panel is detached from the desktop multi-panel layout and shown alone on a phone, can the user still understand state, perform the required action, recover from error, and finish the same task?**
+> **Can the same business task be projected to a mobile-complete surface without changing its canonical state, command, authority, error or completion semantics?**
 
 If the answer is no, the surface is not portable and does not satisfy this standard.
 
-A desktop panel may gain convenience from adjacent panels, keyboard shortcuts, pointer hover, larger width, or simultaneous context.
-It may not require those conveniences for the canonical business outcome.
+A desktop surface may gain convenience from adjacent panels, tables/grids, keyboard shortcuts, inline actions, pointer hover, larger width, simultaneous context or bulk controls.
+Those conveniences may change the interaction model, but they may not create a different canonical business outcome or a desktop-only business rule.
 
 ## 2. Panel anatomy
 
