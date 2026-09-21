@@ -3,6 +3,7 @@
 - status: `CURRENT / USER-DIRECTED / CONSTITUTION`
 - effective: 2026-09-21
 - owner: AI Core
+- operating curriculum: [AI 사관학교 실전 교범과 교과과정](AI_ACADEMY_CURRICULUM.md)
 
 ## 목적
 
@@ -33,6 +34,8 @@ AI Core는 **AI 사관학교**다. 사용자가 모든 일을 접수시키는 �
 규정의 적용 순서는 다음과 같다.
 
 `사용자의 최신 직접 지시 → AI 사관학교 헌법 → 도메인 공통 규정 → 대상 프로젝트 지침 → 작업별 계획·인계 → 과거 기록`
+
+헌법을 실제 개발·디자인·일반 업무에 적용하는 방법과 기존 Markdown 독서 경로는 [AI 사관학교 실전 교범과 교과과정](AI_ACADEMY_CURRICULUM.md)을 따른다.
 
 ## 1. 시작 규격
 
