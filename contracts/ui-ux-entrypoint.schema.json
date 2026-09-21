@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://teamjpk.local/ai-core/contracts/ui-ux-entrypoint.schema.json",
+  "title": "AI Core UI/UX Canonical Entrypoint",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "version",
+    "status",
+    "trigger_scope",
+    "start_document",
+    "entry_read_order",
+    "machine_sources",
+    "product_profiles",
+    "execution",
+    "mandatory_sequence",
+    "fail_closed_rules"
+  ],
+  "properties": {
+    "contract": {"const": "ai-core-ui-ux-entrypoint/v1"},
+    "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "status": {"const": "CANONICAL_ENTRYPOINT"},
+    "trigger_scope": {"const": "ANY_PROJECT_UI_UX_WORK"},
+    "start_document": {"const": "docs/UI_UX_START_HERE.md"},
+    "entry_read_order": {
+      "type": "array",
+      "minItems": 9,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "machine_sources": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "feature_registry",
+        "tokens",
+        "components",
+        "patterns",
+        "interaction_contract",
+        "runtime_css"
+      ],
+      "properties": {
+        "feature_registry": {"type": "string"},
+        "tokens": {"type": "string"},
+        "components": {"type": "string"},
+        "patterns": {"type": "string"},
+        "interaction_contract": {"type": "string"},
+        "runtime_css": {"type": "string"}
+      }
+    },
+    "product_profiles": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {"type": "string", "minLength": 1}
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "design_hub_repository",
+        "design_hub_entry",
+        "design_hub_binding",
+        "quality_hub_entry"
+      ],
+      "properties": {
+        "design_hub_repository": {"type": "string"},
+        "design_hub_entry": {"type": "string"},
+        "design_hub_binding": {"type": "string"},
+        "quality_hub_entry": {"type": "string"}
+      }
+    },
+    "mandatory_sequence": {
+      "type": "array",
+      "minItems": 10,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "fail_closed_rules": {
+      "type": "array",
+      "minItems": 7,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    }
+  }
+}

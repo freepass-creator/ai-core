@@ -6,6 +6,15 @@ Status: **B SESSION CANONICAL CANDIDATE**
 
 AI Core UI/UX is a behavioral and implementation contract, not a mood board. A consumer should be able to adopt the Core without inventing basic interaction, accessibility, responsive, localization or state-feedback decisions.
 
+## Mandatory entry rule
+
+Before applying this Constitution to any real project, start at `docs/UI_UX_START_HERE.md`.
+
+“AI Core 규격을 본다”는 표현은 임의의 문서 하나를 참고한다는 뜻이 아니다. The canonical entrypoint fixes the read order, feature mapping, product-profile lookup, Design Hub binding check and Quality Hub handoff. If that preflight is unresolved, project UI implementation is HOLD.
+
+Machine source: `registry/ui-ux-entrypoint.json`.
+Gate: `npm run uiux:preflight`.
+
 ## Normative order
 
 1. `docs/SCREEN_DESIGN_STANDARD.md` — human-readable accessibility and interaction floor.

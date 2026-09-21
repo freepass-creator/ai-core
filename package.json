@@ -44,7 +44,7 @@
     "workflow:validate": "node scripts/validate-workflows.mjs",
     "workflow:bridge:validate": "node scripts/validate-workflow-bridges.mjs",
     "workflow:recovery:validate": "node scripts/validate-workflow-recovery-policies.mjs",
-    "uiux:validate": "node scripts/validate-ui-ux-registry.mjs",
+    "uiux:validate": "node scripts/validate-ui-ux-entrypoint.mjs && node scripts/validate-ui-ux-registry.mjs",
     "uiux:runtime": "node scripts/validate-ui-ux-runtime.mjs",
     "a:coverage:validate": "node scripts/validate-a-session-coverage.mjs docs/research/a-session-repo-coverage.v1.json docs/research/a-session-head-snapshot.v1.json",
     "a:evidence:validate": "node scripts/validate-a-session-evidence.mjs docs/research/a-session-evidence-registry.v1.json",
@@ -64,7 +64,8 @@
     "a:review:build": "node scripts/a-session-review-pack.mjs --write",
     "a:review:check": "node scripts/a-session-review-pack.mjs --check",
     "a:claims:health": "node scripts/a-session-claim-health.mjs health",
-    "a:claims:reap": "node scripts/a-session-claim-health.mjs reap"
+    "a:claims:reap": "node scripts/a-session-claim-health.mjs reap",
+    "uiux:preflight": "node scripts/validate-ui-ux-entrypoint.mjs"
   },
   "dependencies": {
     "ajv": "8.20.0",
