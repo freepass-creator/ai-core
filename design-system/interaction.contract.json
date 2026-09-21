@@ -1,6 +1,6 @@
 {
   "contract": "ai-core-ui-interaction-contract/v1",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "feature_registry": "registry/ui-ux-features.json",
   "constitution": "docs/UI_UX_CONSTITUTION.md",
   "rules": {
@@ -300,6 +300,29 @@
         "selection-continuity",
         "back-restore",
         "header-continuity"
+      ]
+    },
+    "list_presentation": {
+      "feature_refs": [
+        "data.list-presentation",
+        "data.list",
+        "data.card",
+        "data.table",
+        "data.variant-selector"
+      ],
+      "invariants": [
+        "Presentation mode is selected from the information role, not from route-local visual preference.",
+        "Product identity rows with useful imagery use product-media-row; operational records use business-row.",
+        "Commercial/configuration variants whose attributes must remain together use variant-card.",
+        "Aligned multi-column analytical comparison uses data-table.",
+        "Responsive transformations preserve the declared semantic mode across desktop and mobile.",
+        "A consumer may map domain entities to modes but may not fork the mode-selection semantics."
+      ],
+      "verification": [
+        "mode-declared",
+        "domain-role-mapping",
+        "responsive-mode-parity",
+        "no-local-semantic-fork"
       ]
     }
   }
