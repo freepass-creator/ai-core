@@ -7,6 +7,7 @@
 - `docs/UI_UX_USER_DECISION_2026-09-21_WEB_PANEL_EXTENSION.md`
 
 상위 접근성 정본은 `docs/SCREEN_DESIGN_STANDARD.md`다.
+모바일↔웹 업무 이식 규격은 `docs/PORTABLE_TASK_PANEL_STANDARD_2026-09-21.md`를 따른다.
 이 문서는 FreePass Sales / Estimate / ERP4에서 반복 확인된 **FreePass 제품군 전용 UI/UX 문법**을 모은다.
 모든 픽셀을 강제하는 전사 표준이 아니라, 새 FreePass 화면이 먼저 참조할 profile이다.
 
@@ -79,6 +80,16 @@ Navigation infrastructure는 유지하되 상단 back/next icon을 기본 문법
 - 웹의 목적은 별도 desktop 디자인이 아니라 **depth 감소와 업무 편의 향상**
 - 폭이 줄어들면 panel 수를 줄이고 최종적으로 모바일 single-panel 흐름으로 수렴한다
 - 웹이라고 상단 toolbar, dense table, 별도 CTA hierarchy를 자동 생성하지 않는다
+
+## 3.2 Portable Task Panel
+
+FreePass 업무화면은 PC와 모바일에 별도 business flow를 만들지 않는다.
+
+- PC의 detail/task panel을 단독 모바일 화면으로 분리해도 같은 업무가 완료되어야 한다
+- PC의 keyboard shortcut / hover / right-click / drag / adjacent panel은 accelerator일 뿐 필수 completion path가 아니다
+- 필요한 context는 stable entity/work ID로 전달한다
+- 하단 action bar가 업무 완료 command의 공통 진입점이다
+- web multi-panel은 더 많은 context를 동시에 보여주기 위한 편의이며 business logic을 fork하지 않는다
 
 ## 4. 선택 상태는 과한 테두리보다 면/문자 위계
 
