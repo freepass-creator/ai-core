@@ -1,25 +1,78 @@
 {
   "contract": "ai-core-ui-ux-starter-profiles/v1",
-  "version": "1.0.0",
+  "version": "1.1.0",
+  "normative_sources": [
+    "docs/UI_UX_START_HERE.md",
+    "docs/UI_UX_CONSTITUTION.md",
+    "docs/SCREEN_DESIGN_STANDARD.md",
+    "design-system/interaction.contract.json",
+    "registry/ui-ux-features.json"
+  ],
+  "required_feature_ids": [
+    "action.primary",
+    "action.secondary",
+    "form.search",
+    "navigation.header",
+    "navigation.restore",
+    "navigation.bottom-action",
+    "data.list",
+    "data.card",
+    "feedback.progress",
+    "feedback.empty",
+    "feedback.inline-error",
+    "system.responsive",
+    "system.safe-area-keyboard",
+    "system.focus"
+  ],
+  "required_data_states": [
+    "loading",
+    "empty",
+    "error",
+    "populated"
+  ],
   "default_profile": "freepass-product",
   "profiles": {
     "freepass-product": {
       "label": "FreePass product",
       "description": "FreePass public, sales and estimate surfaces with borderless actions, preserved-context search and responsive card lists.",
       "body_class": "ui-profile-freepass",
-      "density": "comfortable"
+      "density": "comfortable",
+      "card_layout": "responsive-grid",
+      "bottom_action_layout": "freepass-3-7",
+      "product_profile_source": "docs/FREEPASS_PRODUCT_UI_PROFILE.md",
+      "brand_binding": {
+        "owner": "consumer",
+        "status": "REQUIRED",
+        "on_missing": "HOLD"
+      }
     },
     "internal-work": {
       "label": "Internal work",
       "description": "Compact operational screens with the same interaction and accessibility contract.",
       "body_class": "ui-profile-internal",
-      "density": "compact"
+      "density": "compact",
+      "card_layout": "single-column",
+      "bottom_action_layout": "stack-on-mobile",
+      "product_profile_source": null,
+      "brand_binding": {
+        "owner": "consumer",
+        "status": "REQUIRED",
+        "on_missing": "HOLD"
+      }
     },
     "mobile-work": {
       "label": "Mobile work",
       "description": "Field work screens optimized for one task per screen and bottom actions.",
       "body_class": "ui-profile-mobile-work",
-      "density": "touch"
+      "density": "touch",
+      "card_layout": "single-column",
+      "bottom_action_layout": "stack-on-mobile",
+      "product_profile_source": null,
+      "brand_binding": {
+        "owner": "consumer",
+        "status": "REQUIRED",
+        "on_missing": "HOLD"
+      }
     }
   }
 }

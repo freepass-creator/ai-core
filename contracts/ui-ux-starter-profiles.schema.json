@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://freepass.local/contracts/ui-ux-starter-profiles.schema.json",
+  "title": "AI Core UI/UX starter profiles",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "version",
+    "normative_sources",
+    "required_feature_ids",
+    "required_data_states",
+    "default_profile",
+    "profiles"
+  ],
+  "properties": {
+    "contract": { "const": "ai-core-ui-ux-starter-profiles/v1" },
+    "version": { "type": "string", "pattern": "^1\\.[0-9]+\\.[0-9]+$" },
+    "normative_sources": { "$ref": "#/$defs/nonEmptyUniqueStrings" },
+    "required_feature_ids": { "$ref": "#/$defs/nonEmptyUniqueStrings" },
+    "required_data_states": {
+      "type": "array",
+      "const": ["loading", "empty", "error", "populated"]
+    },
+    "default_profile": { "type": "string", "minLength": 1 },
+    "profiles": {
+      "type": "object",
+      "minProperties": 3,
+      "additionalProperties": { "$ref": "#/$defs/profile" }
+    }
+  },
+  "$defs": {
+    "nonEmptyUniqueStrings": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "label",
+        "description",
+        "body_class",
+        "density",
+        "card_layout",
+        "bottom_action_layout",
+        "product_profile_source",
+        "brand_binding"
+      ],
+      "properties": {
+        "label": { "type": "string", "minLength": 1 },
+        "description": { "type": "string", "minLength": 1 },
+        "body_class": { "type": "string", "pattern": "^ui-profile-[a-z0-9-]+$" },
+        "density": { "enum": ["comfortable", "compact", "touch"] },
+        "card_layout": { "enum": ["responsive-grid", "single-column"] },
+        "bottom_action_layout": { "enum": ["freepass-3-7", "stack-on-mobile"] },
+        "product_profile_source": {
+          "type": ["string", "null"],
+          "pattern": "^docs/[A-Z0-9_-]+\\.md$"
+        },
+        "brand_binding": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["owner", "status", "on_missing"],
+          "properties": {
+            "owner": { "const": "consumer" },
+            "status": { "const": "REQUIRED" },
+            "on_missing": { "const": "HOLD" }
+          }
+        }
+      }
+    }
+  }
+}

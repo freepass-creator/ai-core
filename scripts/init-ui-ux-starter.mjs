@@ -17,9 +17,14 @@ export function parseArgs(argv) {
 
 function revision() {
   try {
+    const status = execFileSync("git", ["status", "--porcelain", "--untracked-files=normal"], {
+      cwd: root,
+      encoding: "utf8",
+    }).trim();
+    if (status) throw new Error("dirty worktree");
     return execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim();
   } catch {
-    return "UNRESOLVED";
+    throw new Error("AI Core revision is unresolved or dirty. Generate from a clean, committed AI Core checkout.");
   }
 }
 
@@ -30,26 +35,40 @@ function render(source, values) {
   );
 }
 
-function writeNew(path, content, force) {
-  if (existsSync(path) && !force) throw new Error(`Refusing to overwrite ${path}. Use --force only after reviewing local changes.`);
+function escapeHtml(value) {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+function writeNew(path, content) {
   mkdirSync(dirname(path), { recursive: true });
   writeFileSync(path, content, "utf8");
 }
 
-export function initStarter({ target, profile = "freepass-product", product = "New product", force = false }) {
+export function initStarter({ target, profile = "freepass-product", product = "New product", force = false, coreRevision }) {
   if (!target) throw new Error("Missing --target <directory>.");
   const profiles = JSON.parse(readFileSync(join(root, "registry", "ui-ux-starter-profiles.json"), "utf8"));
   const selected = profiles.profiles[profile];
   if (!selected) throw new Error(`Unknown profile '${profile}'. Choose: ${Object.keys(profiles.profiles).join(", ")}`);
+  if (typeof product !== "string" || product.trim() === "") throw new Error("--product must be a non-empty name.");
+  const resolvedRevision = coreRevision ?? revision();
+  if (!/^[a-f0-9]{40}$/.test(resolvedRevision)) throw new Error("coreRevision must be an exact 40-character Git SHA.");
 
   const destination = resolve(target);
   const templateDir = join(root, "templates", "ui-starter");
   const values = {
     PRODUCT_NAME: product,
+    PRODUCT_NAME_HTML: escapeHtml(product),
     PROFILE_ID: profile,
     PROFILE_LABEL: selected.label,
     BODY_CLASS: selected.body_class,
-    AI_CORE_REVISION: revision(),
+    CARD_LAYOUT: selected.card_layout,
+    BOTTOM_ACTION_LAYOUT: selected.bottom_action_layout,
+    AI_CORE_REVISION: resolvedRevision,
   };
   const css = [
     readFileSync(join(root, "design-system", "tokens.runtime.css"), "utf8"),
@@ -58,11 +77,34 @@ export function initStarter({ target, profile = "freepass-product", product = "N
     readFileSync(join(templateDir, "product-profile.css"), "utf8"),
   ].join("\n\n");
 
-  writeNew(join(destination, "ai-core-ui.css"), css, force);
-  writeNew(join(destination, "starter.html"), render(readFileSync(join(templateDir, "starter.html"), "utf8"), values), force);
-  writeNew(join(destination, "AI_CORE_UI_STARTER.md"), render(readFileSync(join(templateDir, "README.template.md"), "utf8"), values), force);
-  writeNew(join(destination, "ai-core-ui.profile.json"), `${JSON.stringify({ contract: "ai-core-ui-starter/v1", profile, product, body_class: selected.body_class, ai_core_revision: values.AI_CORE_REVISION }, null, 2)}\n`, force);
-  return { destination, profile, files: ["ai-core-ui.css", "starter.html", "AI_CORE_UI_STARTER.md", "ai-core-ui.profile.json"] };
+  const outputs = {
+    "ai-core-ui.css": css,
+    "starter.html": render(readFileSync(join(templateDir, "starter.html"), "utf8"), values),
+    "starter.js": readFileSync(join(templateDir, "starter.js"), "utf8"),
+    "AI_CORE_UI_STARTER.md": render(readFileSync(join(templateDir, "README.template.md"), "utf8"), values),
+    "ai-core-ui.profile.json": `${JSON.stringify({
+      contract: "ai-core-ui-starter/v1",
+      profile,
+      product,
+      body_class: selected.body_class,
+      density: selected.density,
+      card_layout: selected.card_layout,
+      bottom_action_layout: selected.bottom_action_layout,
+      brand_binding: selected.brand_binding,
+      product_profile_source: selected.product_profile_source,
+      required_feature_ids: profiles.required_feature_ids,
+      required_data_states: profiles.required_data_states,
+      ai_core_revision: values.AI_CORE_REVISION,
+    }, null, 2)}\n`,
+  };
+
+  const existing = Object.keys(outputs).filter((file) => existsSync(join(destination, file)));
+  if (existing.length > 0 && !force) {
+    throw new Error(`Refusing to overwrite ${existing.join(", ")} in ${destination}. Use --force only after reviewing local changes.`);
+  }
+
+  for (const [file, content] of Object.entries(outputs)) writeNew(join(destination, file), content);
+  return { destination, profile, files: Object.keys(outputs) };
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

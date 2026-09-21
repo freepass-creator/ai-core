@@ -1,42 +1,85 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" dir="ltr">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{PRODUCT_NAME}}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>{{PRODUCT_NAME_HTML}}</title>
   <link rel="stylesheet" href="./ai-core-ui.css">
+  <script type="module" src="./starter.js"></script>
 </head>
 <body class="{{BODY_CLASS}}">
-  <main class="ui-page ui-stack">
+  <main class="ui-page ui-stack" data-ui-starter>
     <header class="ui-header">
       <span class="ui-meta">{{PROFILE_LABEL}}</span>
-      <h1>{{PRODUCT_NAME}}</h1>
-      <p class="ui-hint">상단은 정보, 실행은 화면 하단에 둡니다.</p>
+      <h1>{{PRODUCT_NAME_HTML}}</h1>
+      <p class="ui-hint">상단은 브랜드·제목·맥락·진행상태 같은 정보를 표시합니다.</p>
     </header>
 
-    <section class="ui-search-region" aria-labelledby="search-label">
-      <label id="search-label" for="product-search">검색</label>
-      <input class="ui-search" id="product-search" type="search" placeholder="검색어를 입력하세요">
-      <p class="ui-hint">검색을 열고 닫아도 현재 목록과 작업 내용을 유지합니다.</p>
+    <section class="ui-work-area" aria-labelledby="list-title">
+      <div class="ui-section-heading">
+        <div>
+          <h2 id="list-title">목록</h2>
+          <p class="ui-hint" data-result-count aria-live="polite">2개 항목</p>
+        </div>
+        <button class="ui-button ghost" type="button" data-search-toggle aria-expanded="false" aria-controls="starter-search">
+          검색 열기
+        </button>
+      </div>
+
+      <div class="ui-search-region" id="starter-search" hidden>
+        <label for="product-search">목록 검색</label>
+        <input class="ui-search" id="product-search" type="search" autocomplete="off" placeholder="검색어를 입력하세요">
+        <p class="ui-hint">검색을 닫아도 선택·스크롤·작성 중인 내용은 유지됩니다.</p>
+      </div>
+
+      <label class="ui-field" for="starter-draft">
+        작업 메모
+        <textarea class="ui-textarea" id="starter-draft" rows="3" placeholder="검색 전후에도 보존할 초안을 입력하세요"></textarea>
+      </label>
+
+      <div class="ui-data-surface" data-data-surface data-state="populated" aria-busy="false">
+        <div class="ui-state" data-ui-state="loading" role="status" hidden>
+          <div class="ui-stack ui-state__content">
+            <div class="ui-progress" aria-hidden="true"></div>
+            <span>목록을 불러오는 중입니다.</span>
+          </div>
+        </div>
+
+        <div class="ui-state" data-ui-state="empty" role="status" hidden>
+          <div class="ui-stack ui-state__content">
+            <strong>표시할 항목이 없습니다.</strong>
+            <span class="ui-hint">검색어나 필터를 바꾸어 보세요.</span>
+          </div>
+        </div>
+
+        <div class="ui-state ui-alert error" data-ui-state="error" role="alert" hidden>
+          <div class="ui-stack ui-state__content">
+            <strong>목록을 불러오지 못했습니다.</strong>
+            <span>작성 중인 내용은 유지됩니다. 같은 요청을 중복 완료하지 않도록 확인한 뒤 재시도하세요.</span>
+            <button class="ui-button secondary" type="button" data-retry>다시 시도</button>
+          </div>
+        </div>
+
+        <div data-ui-state="populated">
+          <ul class="ui-card-list" data-layout="{{CARD_LAYOUT}}">
+            <li class="ui-card-list__item" data-search-text="첫 번째 카드 진행 중">
+              <a class="ui-card-list__link" href="#detail-1" data-stable-id="starter-item-1">
+                <span class="ui-card-list__title">첫 번째 카드</span>
+                <span class="ui-card-list__meta">두 번째 줄에는 판단에 필요한 핵심 정보만 표시합니다.</span>
+              </a>
+            </li>
+            <li class="ui-card-list__item" data-search-text="두 번째 카드 검토 필요">
+              <a class="ui-card-list__link" href="#detail-2" data-stable-id="starter-item-2">
+                <span class="ui-card-list__title">두 번째 카드</span>
+                <span class="ui-card-list__meta">카드 전체가 하나의 충분한 클릭·키보드 영역입니다.</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
     </section>
 
-    <section aria-labelledby="list-title">
-      <h2 id="list-title">목록</h2>
-      <ul class="ui-card-list" data-layout="responsive-grid">
-        <li class="ui-card-list__item">
-          <a class="ui-card-list__link" href="#detail">
-            <span class="ui-card-list__title">카드 제목</span>
-            <span class="ui-card-list__meta">두 번째 줄에는 판단에 필요한 핵심 정보만 표시합니다.</span>
-          </a>
-        </li>
-      </ul>
-    </section>
-
-    <section class="ui-state" aria-live="polite" hidden>
-      로딩·빈 상태·오류·데이터 상태를 각각 구현합니다.
-    </section>
-
-    <footer class="ui-bottom-action">
+    <footer class="ui-bottom-action" data-action-layout="{{BOTTOM_ACTION_LAYOUT}}" aria-label="화면 작업">
       <button class="ui-button secondary" type="button">취소</button>
       <button class="ui-button" type="button">저장</button>
     </footer>
