@@ -1,6 +1,6 @@
 {
   "contract": "ai-core-ui-ux-feature-registry/v1",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "normative_source": "docs/SCREEN_DESIGN_STANDARD.md",
   "global_rules": {
     "invariants": [
@@ -1134,6 +1134,48 @@
         "keyboard-or-equivalent",
         "mobile-desktop",
         "failure-path"
+      ]
+    },
+    {
+      "id": "data.list-presentation",
+      "family": "data",
+      "title": "List presentation policy",
+      "kind": "pattern",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "DATA_SURFACE",
+        "RESPONSIVE"
+      ],
+      "required_states": [
+        "product-media-row",
+        "business-row",
+        "variant-card",
+        "data-table"
+      ],
+      "rules": [
+        "Choose presentation by information role, not by page preference or visual taste.",
+        "Use product-media-row when visual identity materially helps choose the product while fast vertical scanning still matters.",
+        "Use business-row for operational records where identity, state, amount and next-work context matter more than imagery.",
+        "Use variant-card for selecting one indivisible commercial or configuration variant whose attributes must remain together.",
+        "Use data-table for high-density relational comparison where multiple aligned columns are the primary task.",
+        "A responsive layout may reflow a presentation mode but must not silently change its semantic mode between desktop and mobile.",
+        "Consumers may style a mode through product-owned tokens but may not redefine when that mode is selected without a registered exception."
+      ],
+      "verification": [
+        "mode-declared",
+        "role-based-selection",
+        "desktop-mobile-semantic-parity",
+        "stable-entity-hit-area",
+        "no-local-mode-fork"
+      ],
+      "evidence": [
+        {
+          "level": "PROJECT_VERIFIED",
+          "refs": [
+            "docs/FREEPASS_PRODUCT_UI_PROFILE.md",
+            "docs/UI_COMPOSITION_STANDARD.md"
+          ]
+        }
       ]
     },
     {
