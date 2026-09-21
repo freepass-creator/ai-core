@@ -94,3 +94,14 @@ If no:
 - `docs/FREEPASS_PRODUCT_UI_PROFILE.md`
 - `registry/ui-ux-features.json`
 - `design-system/interaction.contract.json`
+
+
+## Canonical visual reference
+
+The 2026-09-21 mobile/web example image is stored as a persistent visual companion to this direction.
+
+- Evidence manifest: `docs/evidence/UI_UX_VISUAL_REFERENCE_2026-09-21.md`
+- Persistent Library path: `/AI Core/UIUX/2026-09-21/AI_CORE_UIUX_MOBILE_WEB_EXAMPLE_2026-09-21.png`
+- SHA-256: `a983e1c01176b96c0886d39a408e149cfc7c952a0da4c44e31362baefe8c3d7f`
+
+The image is a reference example, not a pixel-locked implementation template.
