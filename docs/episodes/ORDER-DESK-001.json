@@ -518,6 +518,10 @@
     "docs/evidence/A_SESSION_REPO_AUDIT_2026-09-21T0348Z.md",
     "docs/evidence/A_SESSION_REPO_AUDIT_2026-09-21T0428Z.md",
     "docs/evidence/A_SESSION_REPO_AUDIT_2026-09-21T0432Z.md",
+    "docs/evidence/A_SESSION_REPO_AUDIT_2026-09-21T0528Z.md",
+    "docs/operations/README.md",
+    "docs/operations/active-state-board-2026-09-21.json",
+    "docs/operations/active-state-observation-2026-09-21.json",
     "examples/business-planning-input.json",
     "examples/group-integration-plan-input.json",
     "examples/group-integration-work-packet-input.json",
@@ -527,6 +531,7 @@
     "registry/governance-profiles.candidate.json",
     "registry/project-audit-readiness.json",
     "registry/qa-proof-levels.candidate.json",
+    "registry/operations-dependencies.json",
     "registry/security-action-policies.candidate.json",
     "registry/ui-ux-entrypoint.json",
     "scripts/a-session-claim-health.mjs",
@@ -534,6 +539,7 @@
     "scripts/a-session-owner-policy.mjs",
     "scripts/a-session-scope-policy.mjs",
     "scripts/capability-readiness.mjs",
+    "scripts/operations-board.mjs",
     "scripts/project-audit-readiness.mjs",
     "scripts/project-audit.mjs",
     "scripts/shared-extraction-candidate.mjs",
@@ -555,6 +561,7 @@
     "src/engine/shared-extraction-candidate.mjs",
     "src/engine/ui-ux-entrypoint.mjs",
     "src/governance/governance-policy.mjs",
+    "src/operations/operations-board.mjs",
     "src/qa/qa-policy.mjs",
     "src/security/approval-policy.mjs",
     "test/a-session-claim-health.test.mjs",
@@ -571,6 +578,7 @@
     "test/group-integration-preflight.test.mjs",
     "test/group-integration-work-packet.test.mjs",
     "test/insurance-status-capability.test.mjs",
+    "test/operations-board.test.mjs",
     "test/project-audit-aiops-result.test.mjs",
     "test/project-audit-erp4-result.test.mjs",
     "test/project-audit-estimate-result.test.mjs",
@@ -678,6 +686,7 @@
     "2026-09-20 A-session routing receipts v1: every A Evidence Registry B/C/D route now requires exactly one machine receipt. SENT is conservative until finding-specific receiver revision evidence exists; CLOSED additionally requires explicit receiver decision and A feedback. The post-snapshot Admin/ERP4 delta audit file is also added to successor inventory to repair main-state exact-diff parity.",
     "2026-09-20 A-session receiver inbox v1 refreshed on D5 main: B/C/D have separate coordination inboxes; receiver-side ACK/REVIEW/DECISION may advance before A reconciliation, while A central receipts are forbidden from leading receiver evidence. Sync and reconcile helpers are research coordination only.",
     "2026-09-20 A-session Receiver Intake Worker v1: all 15 routed findings were mechanically acknowledged by receiver intake and reconciled to RECEIVED at worker revision 5328feac88a2a6a1d8f919b7d2d524dc59a53044. Worker can sync/ACK/reconcile only; auto review/decision is forbidden. CI dry-run must report no pending intake work.",
-    "2026-09-20 Review Pack integration repair: inherited A claim CLI usage contained a literal backslash-n outside a string and claim/allocator files were absent from successor changed_files. The newline syntax is repaired and the four inherited claim/allocator paths plus six Review Pack paths are now declared for verifier parity."
+    "2026-09-20 Review Pack integration repair: inherited A claim CLI usage contained a literal backslash-n outside a string and claim/allocator files were absent from successor changed_files. The newline syntax is repaired and the four inherited claim/allocator paths plus six Review Pack paths are now declared for verifier parity.",
+    "2026-09-21 operations state readback: added a read-only project/session/GitHub board, exact dependency revision bindings, fail-closed order roundtrip receipts and evidence-bound session closeout handoffs. The current observation records real HOLD states and does not grant merge, deploy, database-write or external-send authority. changed_files was updated for verifier parity, including the inherited A-session audit already present on main."
   ]
 }

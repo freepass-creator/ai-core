@@ -1,0 +1,33 @@
+{
+  "schema": "ai-core-operations-dependencies/v1",
+  "relationships": [
+    {
+      "dependency_id": "freepass-data-to-admin",
+      "description": "FreePass Data catalog projection consumed by FreePass Admin",
+      "producer_project_id": "freepass-data",
+      "consumer_project_ids": ["freepass-admin"],
+      "revision_policy": "Exact producer and consumer revisions plus evidence are required."
+    },
+    {
+      "dependency_id": "freepass-data-to-sales",
+      "description": "FreePass Data catalog projection consumed by FreePass Sales",
+      "producer_project_id": "freepass-data",
+      "consumer_project_ids": ["freepass-sales"],
+      "revision_policy": "Exact producer and consumer revisions plus evidence are required."
+    },
+    {
+      "dependency_id": "freepass-estimate-consumers",
+      "description": "FreePass Estimate quote contract consumed by Admin and Sales",
+      "producer_project_id": "freepass-estimate",
+      "consumer_project_ids": ["freepass-admin", "freepass-sales"],
+      "revision_policy": "Canonical main revisions and consumer contract evidence are required."
+    },
+    {
+      "dependency_id": "ai-core-to-penalty",
+      "description": "AI Core penalty order correlation consumed by AIOps",
+      "producer_project_id": "ai-core",
+      "consumer_project_ids": ["aiops"],
+      "revision_policy": "Request and terminal receipt revisions must be exact and CI-verified."
+    }
+  ]
+}

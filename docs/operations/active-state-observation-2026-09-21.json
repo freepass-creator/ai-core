@@ -1,0 +1,124 @@
+{
+  "schema": "ai-core-operations-observation/v1",
+  "observed_at": "2026-09-21T05:57:53Z",
+  "source": {
+    "registry": "registry/projects.json@16bf6b7",
+    "local": "git status/rev-parse read-only",
+    "github": "GitHub API and gh pr list read-only",
+    "sessions": "Codex task list/read read-only"
+  },
+  "projects": [
+    {
+      "project_id": "ai-core", "repository": "freepass-creator/ai-core", "default_branch": "main",
+      "registry_registered": true, "registry_path": "C:\\dev\\ai-core-control-tower", "registry_revision": "c72e081a6c6d0f9090695c724da69387e4b0356b",
+      "local": { "path": "C:\\dev\\ai-core", "exists": true, "branch": "docs/chat-github-handoff-policy-20260920", "head": "778e60cc887bbb4ea78ac181f3fc145e962a2e9a", "dirty_entries": 1 },
+      "github": { "main_head": "337418e2dec7a7d1ec6a380e45996a2dfd172ce2", "open_prs": [
+        { "number": 198, "title": "Repair AI Core main-state consistency gates", "head_revision": "dd2a59cff29b29df4ec62c9fd8cdcd17c6ab1268", "merge_state": "CLEAN", "url": "https://github.com/freepass-creator/ai-core/pull/198" }
+      ] },
+      "deployment": { "status": "UNKNOWN", "evidence": [] },
+      "next_order": "Resolve registry path/revision drift and preserve the dirty primary checkout before treating it as canonical."
+    },
+    {
+      "project_id": "freepass-data", "repository": "freepass-creator/freepass-data", "default_branch": "main",
+      "registry_registered": false,
+      "local": { "path": "C:\\dev\\freepass-data", "exists": true, "branch": "codex/local-runtime-baseline", "head": "7edf796aeefa581b5e53af7c59dd8a5def754638", "dirty_entries": 20 },
+      "github": { "main_head": "fea18ce15f523d41a9382e7ae79e702a58d3afae", "open_prs": [
+        { "number": 12, "title": "Data: implement FreePass Admin Catalog projection v1", "head_revision": "3216c1d9339af09073692f17032ed0ac964e1f91", "merge_state": "UNKNOWN", "url": "https://github.com/freepass-creator/freepass-data/pull/12" }
+      ] },
+      "deployment": { "status": "UNKNOWN", "evidence": [] },
+      "next_order": "Finish the active Firestore classification work without disturbing the 20-entry dirty checkout, then record exact consumer contract evidence."
+    },
+    {
+      "project_id": "freepass-admin", "repository": "freepass-creator/freepass-admin", "default_branch": "main",
+      "registry_registered": true, "registry_path": null, "registry_revision": "2747ef32e96c550d7dea05c58ee012880cb42dd3",
+      "local": { "path": null, "exists": false, "branch": null, "head": null, "dirty_entries": 0 },
+      "github": { "main_head": "02deb4df0fcb123a478519e3cbb408cd5e2ad7c6", "open_prs": [
+        { "number": 45, "title": "Admin P22: harden product search, intake snapshot, performance workflow", "head_revision": "fe11698c6b791b9bd80b9151841bb8a8cdf85e2d", "merge_state": "UNSTABLE", "url": "https://github.com/freepass-creator/freepass-admin/pull/45" }
+      ] },
+      "deployment": { "status": "UNKNOWN", "evidence": [] },
+      "next_order": "Bind the active Admin session to an exact repository checkout before accepting Data projection work."
+    },
+    {
+      "project_id": "freepass-sales", "repository": "freepass-creator/freepass-sales", "default_branch": "main",
+      "registry_registered": true, "registry_path": "C:\\dev\\sales", "registry_revision": "e98e3e9854012b9043f7fbe7b4168ce772047e39",
+      "local": { "path": "C:\\dev\\sales", "exists": false, "branch": null, "head": null, "dirty_entries": 0 },
+      "additional_checkouts": [
+        { "path": "C:\\Users\\admin\\.codex\\worktrees\\a354\\sales", "branch": "codex/interest-pipeline-only", "head": "5073c5d52c15f90ff4142ce34101d047b082c24a", "dirty_entries": 0 },
+        { "path": "C:\\Users\\admin\\.codex\\worktrees\\sales-v264-local\\sales", "branch": null, "head": "6557807e19b7dc0da7b08622aeb8301218ec256f", "dirty_entries": 7 }
+      ],
+      "github": { "main_head": "dac301e859a433a189ba16e68584df40261b8550", "open_prs": [
+        { "number": 15, "title": "Shared Work UI v2", "head_revision": "18cb2ae2e06159f8d2ad93a715faddabb7962bbc", "merge_state": "UNKNOWN", "url": "https://github.com/freepass-creator/freepass-sales/pull/15" }
+      ] },
+      "deployment": { "status": "UNKNOWN", "evidence": [] },
+      "next_order": "Restore or explicitly rebind the missing canonical path; keep design PR work frozen."
+    },
+    {
+      "project_id": "freepass-estimate", "repository": "freepass-creator/freepass-estimate", "default_branch": "main",
+      "registry_registered": true, "registry_path": null, "registry_revision": "57a75aaeaa8b91f14c6bc22faa01e745daaa3112",
+      "local": { "path": "C:\\dev\\sonogong-estimator", "exists": false, "branch": null, "head": null, "dirty_entries": 0 },
+      "github": { "main_head": "6d575af8d00ef43835fdbcd0cd0c1f5e26ae9140", "open_prs": [] },
+      "deployment": { "status": "UNKNOWN", "evidence": [] },
+      "next_order": "Bind the Estimate session to freepass-estimate main and capture an exact Admin/Sales consumer compatibility receipt."
+    },
+    {
+      "project_id": "aiops", "repository": "freepass-creator/aiops", "default_branch": "main",
+      "registry_registered": true, "registry_path": "C:\\dev\\aiops", "registry_revision": "03dd804962eb4e345b7a34b3e0e97e8bc6d5efe3",
+      "local": { "path": "C:\\dev\\aiops", "exists": false, "branch": null, "head": null, "dirty_entries": 0 },
+      "additional_checkouts": [
+        { "path": "C:\\dev\\backup\\2026-09-21\\legacy-repos\\aiops", "branch": "chore/untrack-wonja-data", "head": "d12f6d4afba48450391981c37fe3bda5da14b02f", "dirty_entries": 1 },
+        { "path": "C:\\Users\\admin\\.codex\\worktrees\\0f97\\aiops", "branch": null, "head": "83698f4b294c82fb8a4dd5392157ccd4fb03e3b8", "dirty_entries": 47 }
+      ],
+      "github": { "main_head": "03dd804962eb4e345b7a34b3e0e97e8bc6d5efe3", "open_prs": [
+        { "number": 9, "title": "Bind AI Core requestId to penalty terminal receipt", "head_revision": "811ecb90a7d4730c666cd6cd28bce18511151495", "merge_state": "UNSTABLE", "url": "https://github.com/freepass-creator/aiops/pull/9" }
+      ] },
+      "deployment": { "status": "HOLD", "evidence": ["Windows penalty tasks disabled and point to missing C:\\dev\\aiops"] },
+      "next_order": "Repair PR 9 CI and restore an approved execution path before any penalty runtime claim."
+    }
+  ],
+  "sessions": [
+    { "session_id": "01a0a25c-d3c3-7fe1-818f-c30b47fc1310", "project_id": "ai-core", "title": "AI Core - order control", "state": "idle", "cwd": "C:\\dev\\ai-core" },
+    { "session_id": "01a0c1ed-e4e7-7821-b86b-c410ee54673a", "project_id": "freepass-data", "title": "freepass-data - execution", "state": "active", "cwd": "C:\\dev\\freepass-data" },
+    { "session_id": "01a0c20a-04b9-77f0-af6a-b562e55ced4a", "project_id": "freepass-admin", "title": "freepass-admin - execution", "state": "active", "cwd": "C:\\dev\\ai-core" },
+    { "session_id": "01a09e68-f917-7420-bfea-fdd0435f257a", "project_id": "freepass-sales", "title": "FreePass Sales - operations", "state": "idle", "cwd": "C:\\dev\\sales" },
+    { "session_id": "01a0c1ed-ea7f-7073-8c42-cec1aaf426b9", "project_id": "freepass-estimate", "title": "freepass-estimate - execution", "state": "idle", "cwd": "C:\\dev\\sonogong-estimator" },
+    { "session_id": "01a0c1f7-3dc8-7fd0-b98c-0f8bb2e4651e", "project_id": "aiops", "title": "aiops - execution", "state": "idle", "cwd": "C:\\dev\\aiops" }
+  ],
+  "dependencies": [
+    {
+      "dependency_id": "freepass-data-to-admin", "readiness": "HOLD",
+      "bindings": [
+        { "role": "producer_pr", "project_id": "freepass-data", "revision": "3216c1d9339af09073692f17032ed0ac964e1f91" },
+        { "role": "consumer_main", "project_id": "freepass-admin", "revision": "02deb4df0fcb123a478519e3cbb408cd5e2ad7c6" }
+      ],
+      "evidence_refs": ["https://github.com/freepass-creator/freepass-data/pull/12"],
+      "next_order": "Merge is not authorized; first prove the Admin consumer against the exact producer PR revision."
+    },
+    {
+      "dependency_id": "freepass-data-to-sales", "readiness": "HOLD",
+      "bindings": [
+        { "role": "producer_main", "project_id": "freepass-data", "revision": "fea18ce15f523d41a9382e7ae79e702a58d3afae" },
+        { "role": "consumer_main", "project_id": "freepass-sales", "revision": "dac301e859a433a189ba16e68584df40261b8550" }
+      ],
+      "evidence_refs": [], "next_order": "Create a revision-bound contract/readback receipt; no current evidence proves consumption."
+    },
+    {
+      "dependency_id": "freepass-estimate-consumers", "readiness": "HOLD",
+      "bindings": [
+        { "role": "provider_main", "project_id": "freepass-estimate", "revision": "6d575af8d00ef43835fdbcd0cd0c1f5e26ae9140" },
+        { "role": "admin_main", "project_id": "freepass-admin", "revision": "02deb4df0fcb123a478519e3cbb408cd5e2ad7c6" },
+        { "role": "sales_main", "project_id": "freepass-sales", "revision": "dac301e859a433a189ba16e68584df40261b8550" }
+      ],
+      "evidence_refs": [], "next_order": "Run read-only compatibility checks at these exact revisions."
+    },
+    {
+      "dependency_id": "ai-core-to-penalty", "readiness": "HOLD",
+      "bindings": [
+        { "role": "coordinator_main", "project_id": "ai-core", "revision": "337418e2dec7a7d1ec6a380e45996a2dfd172ce2" },
+        { "role": "consumer_pr", "project_id": "aiops", "revision": "811ecb90a7d4730c666cd6cd28bce18511151495" }
+      ],
+      "evidence_refs": ["https://github.com/freepass-creator/aiops/pull/9"],
+      "next_order": "Repair failing verification and bind the terminal receipt before enabling runtime execution."
+    }
+  ],
+  "route_receipts": []
+}

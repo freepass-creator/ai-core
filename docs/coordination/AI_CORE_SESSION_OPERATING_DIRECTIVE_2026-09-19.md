@@ -1,6 +1,6 @@
 # AI Core Session Operating Directive — Order / A / B / C / D
 
-> User-confirmed operating direction — 2026-09-19 KST  
+> User-confirmed operating direction — 2026-09-19 KST; durable-truth amendment — 2026-09-21 KST
 > This directive is a cross-session mission boundary for AI Core. It does not replace project SSOT, authority gates, or revision-bound evidence.
 
 ## Current Order
@@ -210,5 +210,47 @@ Each session should report:
 - tests/validators run;
 - what remains candidate/HOLD;
 - what should be assigned next to A/B/C/D/Order.
+
+## Durable work truth and continuation
+
+This section is the authoritative AI Core rule for cross-session persistence.
+Conversation history, task titles, assistant summaries and model memory are
+transient observations. They cannot be the only record of a decision, contract,
+status, next order or completion claim.
+
+For every material work item:
+
+1. Audit the target repository's existing `SSOT`, `README`, `HANDOFF`, contract,
+   work ledger and decision-history structure before writing. Select one existing
+   authoritative path; do not create a competing summary document.
+2. Record decisions, contract changes, current status, next order and completion
+   evidence in that repository's version-controlled authoritative path or its
+   already-declared append-only ledger/history.
+3. Bind the record to the repository, path and exact Git revision. AI Core stores
+   only the routing/index pointer and cross-project dependency state; it does not
+   copy project truth into a second canon.
+4. A session closeout must name the source order, repository, authoritative path,
+   exact subject revision, verification evidence, unresolved HOLD items and next
+   order. A chat summary without those fields is not a handoff.
+5. If code, documentation, operating state, deployment readback or the indexed
+   revision disagree, report `HOLD`. Do not choose the most polished or newest
+   looking copy by inference.
+6. A rule change must preserve its decision date, affected scope and supersession
+   relationship. Historical evidence remains history; it is not silently rewritten
+   into the new rule.
+7. Merge, deploy, database writes, external sends and authority grants remain
+   separate actions. A durable record or a completed session does not authorize
+   any of them.
+
+The AI Core operations board is a derived readback of these pointers. It must
+retain `UNKNOWN`/`HOLD` when the project path, revision, evidence or consumer
+binding cannot be re-observed.
+
+## Change history
+
+| Date | Decision | Scope / impact |
+|---|---|---|
+| 2026-09-19 | Established Order/A/B/C/D mission ownership. | AI Core session roles and return packet expectations. |
+| 2026-09-21 | Prohibited conversation-only work state and required repository-owned, revision-bound continuation evidence. | All AI Core orders and every indexed project session; no new merge/deploy/write authority. |
 
 This directive remains active until superseded by a later explicit user decision.

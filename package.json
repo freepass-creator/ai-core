@@ -20,6 +20,8 @@
     "control:derive": "node scripts/derive-control-snapshot.mjs",
     "ledger:verify": "node scripts/work-ledger.mjs verify",
     "inventory:repos": "node scripts/inventory-repositories.mjs",
+    "operations:board": "node scripts/operations-board.mjs board",
+    "operations:handoff": "node scripts/operations-board.mjs handoff",
     "handoff:export": "node scripts/ai-continuation-pack.mjs export",
     "handoff:recover": "node scripts/ai-continuation-pack.mjs recover",
     "repo:preflight": "node scripts/repo-sync-preflight.mjs",
