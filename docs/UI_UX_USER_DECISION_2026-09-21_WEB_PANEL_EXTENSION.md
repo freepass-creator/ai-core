@@ -1,15 +1,28 @@
 # UI/UX User Decision — Web Panel Extension — 2026-09-21
 
-Status: **USER-LOCKED BASELINE**
+Status: **USER-LOCKED BASE INTENT / IMPLEMENTATION REFINED BY ADAPTIVE WEB STANDARD**
 Decision date: **2026-09-21**
 Scope: **AI Core UI/UX / web extension of mobile baseline**
 Base reference: `docs/UI_UX_USER_DECISION_2026-09-21_MOBILE_BASELINE.md`
 
+## Implementation refinement
+
+The original intent remains: reuse mobile task units on web and use wide screens to reduce depth.
+
+Implementation is now refined by:
+- `docs/ADAPTIVE_WEB_STANDARD_2026-09-21.md`
+
+Therefore:
+- multi-panel is the preferred default when it helps
+- web may use grid/table, multi-select, inline actions, keyboard shortcuts and utility toolbars when they materially improve desktop productivity
+- web presentation may differ from mobile
+- canonical state/command/workflow meaning must not fork
+
 ## 0. Core principle
 
-웹은 모바일과 별도의 UI/UX 문법을 만들지 않는다.
+웹은 모바일의 business task model을 재사용하되, desktop productivity를 위해 presentation과 interaction을 적응시킬 수 있다.
 
-> **모바일에 구현된 화면을 웹에도 동일한 구조와 의미로 구현한다.**
+> **모바일의 업무 의미와 command/state contract는 유지하고, 웹 구조는 생산성에 맞게 적응시킨다.**
 
 차이는 화면 폭을 활용하는 방식뿐이다.
 
