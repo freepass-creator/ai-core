@@ -16,6 +16,7 @@ Profiles:
 
 - `ai-core-ui.css`: token + component + runtime + product presentation
 - `starter.html`: 버튼, 검색, 카드 목록, 상태, 하단 액션의 의미 구조
+- `starter.js`: 검색 전환, 작업 보존, 전체 행 선택, 화면 상태와 실행 피드백의 참조 동작
 - `ai-core-ui.profile.json`: 선택 profile과 AI Core revision
 - `AI_CORE_UI_STARTER.md`: 적용 및 검증 체크리스트
 

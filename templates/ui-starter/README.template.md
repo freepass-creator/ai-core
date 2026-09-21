@@ -12,7 +12,7 @@
 
 ## Start
 
-Import `ai-core-ui.css` once in the application root. Use `starter.html` as a semantic reference; copy its structure into the project's framework rather than shipping the sample unchanged.
+Import `ai-core-ui.css` once in the application root. Use `starter.html` and `starter.js` as structure and behavior references; adapt them to the project's framework rather than shipping the sample unchanged.
 
 ## Required verification
 

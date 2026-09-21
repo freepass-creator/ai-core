@@ -16,16 +16,22 @@ test("parses starter arguments", () => {
 test("creates a revision-bound starter with established UI rules", () => {
   const target = mkdtempSync(join(tmpdir(), "ai-core-ui-"));
   const result = initStarter({ target, profile: "freepass-product", product: "Sample" });
-  assert.equal(result.files.length, 4);
+  assert.equal(result.files.length, 5);
 
   const css = readFileSync(join(target, "ai-core-ui.css"), "utf8");
   const html = readFileSync(join(target, "starter.html"), "utf8");
+  const javascript = readFileSync(join(target, "starter.js"), "utf8");
   const profile = JSON.parse(readFileSync(join(target, "ai-core-ui.profile.json"), "utf8"));
   assert.match(css, /\.ui-button\.secondary/);
   assert.match(css, /\.ui-search-region/);
   assert.match(css, /\.ui-card-list__item/);
   assert.match(html, /class="ui-profile-freepass"/);
   assert.match(html, /class="ui-bottom-action"/);
+  assert.match(html, /data-state="populated"/);
+  assert.match(html, /id="draft-note"/);
+  assert.match(javascript, /setSearchOpen/);
+  assert.match(javascript, /showState/);
+  assert.match(javascript, /aria-pressed/);
   assert.match(profile.ai_core_revision, /^[a-f0-9]{40}$/);
 });
 

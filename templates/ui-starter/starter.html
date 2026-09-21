@@ -8,38 +8,35 @@
 </head>
 <body class="{{BODY_CLASS}}">
   <main class="ui-page ui-stack">
-    <header class="ui-header">
-      <span class="ui-meta">{{PROFILE_LABEL}}</span>
-      <h1>{{PRODUCT_NAME}}</h1>
-      <p class="ui-hint">상단은 정보, 실행은 화면 하단에 둡니다.</p>
+    <header class="ui-header starter-header">
+      <div><span class="ui-meta">{{PROFILE_LABEL}}</span><h1>{{PRODUCT_NAME}}</h1><p class="ui-hint">상단에서 판단하고, 화면 하단에서 실행합니다.</p></div>
+      <button class="ui-button ghost starter-icon-button" id="search-toggle" type="button" aria-controls="search-region" aria-expanded="false">검색</button>
     </header>
-
-    <section class="ui-search-region" aria-labelledby="search-label">
-      <label id="search-label" for="product-search">검색</label>
-      <input class="ui-search" id="product-search" type="search" placeholder="검색어를 입력하세요">
-      <p class="ui-hint">검색을 열고 닫아도 현재 목록과 작업 내용을 유지합니다.</p>
+    <section class="ui-search-region" id="search-region" aria-labelledby="search-label" hidden>
+      <label id="search-label" for="product-search">차량 검색</label>
+      <div class="starter-search-row"><input class="ui-search" id="product-search" type="search" placeholder="차량·고객·상태 검색"><button class="ui-button secondary" id="search-close" type="button">닫기</button></div>
+      <p class="ui-hint">검색을 닫아도 선택 항목과 작성 중인 메모를 유지합니다.</p>
     </section>
-
     <section aria-labelledby="list-title">
-      <h2 id="list-title">목록</h2>
-      <ul class="ui-card-list" data-layout="responsive-grid">
-        <li class="ui-card-list__item">
-          <a class="ui-card-list__link" href="#detail">
-            <span class="ui-card-list__title">카드 제목</span>
-            <span class="ui-card-list__meta">두 번째 줄에는 판단에 필요한 핵심 정보만 표시합니다.</span>
-          </a>
-        </li>
+      <div class="starter-section-heading"><h2 id="list-title">진행 목록</h2><span class="ui-meta" id="result-count">3건</span></div>
+      <ul class="ui-card-list" id="work-list" data-layout="responsive-grid">
+        <li class="ui-card-list__item" data-search="그랜저 김고객 견적 확인"><button class="ui-card-list__link" type="button" data-item="그랜저 하이브리드" aria-pressed="true"><span class="ui-card-list__title">그랜저 하이브리드</span><span class="ui-card-list__meta">김고객 · 견적 확인</span><span class="ui-badge">오늘</span></button></li>
+        <li class="ui-card-list__item" data-search="카니발 이고객 서류 대기"><button class="ui-card-list__link" type="button" data-item="카니발 9인승" aria-pressed="false"><span class="ui-card-list__title">카니발 9인승</span><span class="ui-card-list__meta">이고객 · 서류 대기</span><span class="ui-badge">대기</span></button></li>
+        <li class="ui-card-list__item" data-search="쏘렌토 박고객 계약 검토"><button class="ui-card-list__link" type="button" data-item="쏘렌토 하이브리드" aria-pressed="false"><span class="ui-card-list__title">쏘렌토 하이브리드</span><span class="ui-card-list__meta">박고객 · 계약 검토</span><span class="ui-badge">검토</span></button></li>
       </ul>
     </section>
-
-    <section class="ui-state" aria-live="polite" hidden>
-      로딩·빈 상태·오류·데이터 상태를 각각 구현합니다.
+    <section class="starter-detail" aria-labelledby="detail-title">
+      <span class="ui-meta">선택 항목</span><h2 id="detail-title">그랜저 하이브리드</h2>
+      <dl class="starter-facts"><div><dt>월 납입금</dt><dd>689,000원</dd></div><div><dt>계약 기간</dt><dd>48개월</dd></div></dl>
+      <label for="draft-note">작업 메모</label><textarea id="draft-note" rows="3" placeholder="작성 중인 내용은 검색 전환 후에도 유지됩니다."></textarea>
     </section>
-
-    <footer class="ui-bottom-action">
-      <button class="ui-button secondary" type="button">취소</button>
-      <button class="ui-button" type="button">저장</button>
-    </footer>
+    <section aria-labelledby="state-title">
+      <h2 id="state-title">화면 상태 확인</h2>
+      <div class="starter-state-switcher" role="group" aria-label="화면 상태"><button class="ui-button secondary" type="button" data-show-state="populated">데이터</button><button class="ui-button secondary" type="button" data-show-state="loading">로딩</button><button class="ui-button secondary" type="button" data-show-state="empty">빈 상태</button><button class="ui-button secondary" type="button" data-show-state="error">오류</button></div>
+      <div class="ui-state" data-state="populated" aria-live="polite"><strong id="state-heading">3건을 불러왔습니다.</strong><span id="state-copy">목록에서 항목을 선택해 작업을 이어가세요.</span></div>
+    </section>
+    <footer class="ui-bottom-action"><span class="ui-hint" id="selection-summary">그랜저 하이브리드 선택됨</span><button class="ui-button" id="primary-action" type="button">변경 저장</button></footer>
   </main>
+  <script src="./starter.js"></script>
 </body>
 </html>

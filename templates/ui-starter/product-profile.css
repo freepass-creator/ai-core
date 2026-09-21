@@ -34,6 +34,19 @@
 
 .ui-search-region[hidden] { display: none; }
 
+.starter-header,
+.starter-section-heading,
+.starter-search-row,
+.ui-bottom-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.starter-search-row .ui-search { flex: 1; min-width: 0; }
+.starter-icon-button { min-width: 44px; min-height: 44px; }
+
 /* Lists are cards, while decoration stays quiet and the whole row remains actionable. */
 .ui-card-list {
   display: grid;
@@ -52,11 +65,20 @@
 
 .ui-card-list__link {
   display: grid;
+  width: 100%;
   min-height: var(--row-height-mobile-min);
+  border: 0;
   gap: var(--space-1);
   padding: var(--space-4);
   color: inherit;
   text-decoration: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ui-card-list__link[aria-pressed="true"] {
+  background: var(--color-info-surface);
+  box-shadow: inset 3px 0 0 var(--color-primary);
 }
 
 .ui-card-list__title { font-weight: 700; }
@@ -71,10 +93,32 @@
 .ui-profile-internal .ui-card-list { gap: var(--space-2); }
 .ui-profile-internal .ui-card-list__link { padding-block: var(--space-3); }
 
+.starter-detail {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.starter-detail textarea { box-sizing: border-box; width: 100%; resize: vertical; }
+.starter-facts { display: grid; gap: var(--space-2); margin: 0; }
+.starter-facts div { display: flex; justify-content: space-between; gap: var(--space-3); }
+.starter-facts dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+.starter-state-switcher { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.ui-state { display: grid; gap: var(--space-1); margin-top: var(--space-3); }
+.ui-state[data-state="error"] { background: var(--color-error-surface); }
+
 @media (min-width: 641px) {
   .ui-profile-freepass .ui-card-list[data-layout="responsive-grid"] {
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
   }
+}
+
+@media (max-width: 640px) {
+  .starter-search-row { align-items: stretch; flex-direction: column; }
+  .ui-bottom-action { padding-bottom: calc(var(--space-3) + env(safe-area-inset-bottom)); }
 }
 
 @media (forced-colors: active) {
