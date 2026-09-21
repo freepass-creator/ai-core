@@ -1,9 +1,10 @@
 # FreePass Product UI Profile — 2026-09-21
 
-상태: **USER-LOCKED MOBILE BASELINE / web extension pending**
+상태: **USER-LOCKED MOBILE + WEB BASELINE**
 
 2026-09-21 사용자 확정 원문 규칙:
 - `docs/UI_UX_USER_DECISION_2026-09-21_MOBILE_BASELINE.md`
+- `docs/UI_UX_USER_DECISION_2026-09-21_WEB_PANEL_EXTENSION.md`
 
 상위 접근성 정본은 `docs/SCREEN_DESIGN_STANDARD.md`다.
 이 문서는 FreePass Sales / Estimate / ERP4에서 반복 확인된 **FreePass 제품군 전용 UI/UX 문법**을 모은다.
@@ -65,6 +66,19 @@ Navigation infrastructure는 유지하되 상단 back/next icon을 기본 문법
 - safe-area/키보드/스크롤을 실제 상태로 검증
 - hover 없이도 같은 기능 도달
 - 긴 desktop table을 무조건 축소하지 않는다
+
+## 3.1 웹은 모바일 panel의 병렬 확장
+
+2026-09-21 사용자 확정:
+
+- 모바일의 한 화면 단위를 웹에서는 하나의 **panel**로 본다
+- 웹은 이 panel을 2개, 3개 등 동시에 배치하여 넓은 폭을 활용한다
+- 모바일과 웹의 panel 내부 UI/UX는 동일한 문법을 사용한다
+- 목록 panel을 유지한 채 상세 panel을 옆에 열어 context와 선택 상태를 보존한다
+- 필요하면 보조정보/이력 panel을 추가한다
+- 웹의 목적은 별도 desktop 디자인이 아니라 **depth 감소와 업무 편의 향상**
+- 폭이 줄어들면 panel 수를 줄이고 최종적으로 모바일 single-panel 흐름으로 수렴한다
+- 웹이라고 상단 toolbar, dense table, 별도 CTA hierarchy를 자동 생성하지 않는다
 
 ## 4. 선택 상태는 과한 테두리보다 면/문자 위계
 
@@ -165,4 +179,4 @@ ERP4:
 4. 공통 pattern을 쓰되 고정 px를 기계 복사하지 않는다.
 5. 프로젝트에서 더 나은 패턴이 검증되면 AI Core profile에 역수입한다.
 6. AI Core가 앞선 접근성/검증 규칙은 다시 각 프로젝트가 채택한다.
-7. 웹 대응 규격은 사용자가 직접 정의하기 전까지 모바일 규칙에서 임의 추론해 “확정”하지 않는다.
+7. 웹은 모바일 UI를 panel 단위로 동일하게 재사용하고, 넓은 화면에서는 multi-panel로 depth를 줄인다.
