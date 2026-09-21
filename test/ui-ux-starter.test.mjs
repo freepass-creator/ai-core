@@ -64,6 +64,8 @@ test("creates a revision-bound starter with established UI rules", () => {
   assert.match(modelIndex, /data-component=/);
   assert.match(modelIndex, /preview\.src/);
   assert.match(modelIndex, /FreePass CI manifest version/);
+  assert.match(modelIndex, /승인 자산 0개/);
+  assert.match(modelIndex, /CI 자산 미적용/);
   const modelScript = readFileSync(join(target, "models", "models.js"), "utf8");
   assert.match(modelScript, /aria-busy/);
   assert.match(modelScript, /dataset\.previewState/);
@@ -71,6 +73,8 @@ test("creates a revision-bound starter with established UI rules", () => {
   for (const width of [360, 390, 412, 1280, 1440]) assert.match(modelCss, new RegExp(`${width}px`));
   const form = readFileSync(join(target, "models", "form.html"), "utf8");
   assert.match(form, /aria-describedby="phone-error"/);
+  assert.match(form, /ui-form-grid/);
+  assert.match(form, /ui-input-with-suffix/);
   const catalog = JSON.parse(readFileSync(join(target, "ui-component-catalog.json"), "utf8"));
   assert.deepEqual(catalog.sets["SET-01"].components, ["H01", "S01", "L01", "M01", "B01"]);
   assert.equal(catalog.components.B01.name, "주 실행 버튼");
