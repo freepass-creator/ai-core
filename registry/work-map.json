@@ -265,18 +265,18 @@
         "세금계산서 화면",
         "erp 청구"
       ],
-      "target_project_id": "freepasserp4",
+      "target_project_id": "freepass-admin",
       "approval_boundary": "MERGE_APPROVAL",
       "completion_condition": "ERP 청구/지급/계산서 화면이 현재 정산 데이터 의미와 일치한다.",
       "source_pointers": [
         "registry/projects.json",
-        "freepass-creator/freepasserp4"
+        "freepass-creator/freepass-admin"
       ],
       "capability_id": "erp.settlement"
     },
     {
       "work_type_id": "settlement-system",
-      "name": "정산 전용 시스템",
+      "name": "FreePass Admin 정산",
       "domain": "settlement",
       "aliases": [
         "정산 시스템",
@@ -284,12 +284,13 @@
         "fp settlement",
         "정산"
       ],
-      "target_project_id": "fp-settlement",
+      "target_project_id": "freepass-admin",
       "approval_boundary": "PROJECT_RULES",
-      "completion_condition": "정산 프로젝트의 SSOT·실행 명령·배포 경계가 검증된 뒤 작업 결과가 남는다.",
+      "completion_condition": "FreePass Admin의 정산 SSOT·권한·실행 명령·배포 경계가 검증된 뒤 작업 결과가 남는다.",
       "source_pointers": [
         "registry/projects.json",
-        "freepass-creator/fp-settlement"
+        "freepass-creator/freepass-admin",
+        "freepass-creator/fp-settlement (reference only)"
       ],
       "capability_id": "settlement.system"
     },

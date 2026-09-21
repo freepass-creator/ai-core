@@ -40,6 +40,8 @@
 
 **구분:** `freepasserp.com`은 도메인 이름이면서 현재 제품 이름이다. 코드 계보와 GitHub 정본은 `freepasserp4`다. `Freepass Admin`, `Freepass Sales`, `Freepass Estimate`는 GitHub에서도 이미 별도 저장소로 나뉘어 있다. 현재 확인된 로컬 체크아웃은 `C:\dev\freepasserp4`, `C:\dev\freepasserp.com`(원격은 `freepass-admin`), `C:\dev\sales`이며, `freepass-estimate` 원격을 가리키는 최상위 로컬 Git 체크아웃은 이번 조사에서 발견되지 않았다. 폴더 이름만으로 제품 귀속을 바꾸지 않고 원격과 실제 체크아웃을 함께 본다.
 
+`freepass-creator/fp-settlement`의 정산 기능은 Freepass Admin에 통합됐다. 따라서 신규 정산 업무는 `freepass-admin`으로 배정하고, `fp-settlement`는 기능 이관·감사에 필요한 참조 저장소로만 보존한다.
+
 ### C. JPK — 렌터카 운영
 
 | 파트 | 현행 자산 | 현재 확인된 역할 | 판정 |
@@ -112,6 +114,7 @@ Mewcar
 - `renman-v2`: Git 원격 없는 렌터카 매니저 실험 사본. 원격 정본 확정 전 독자 정본으로 사용하지 않는다.
 - `worknavi`, `worknavi-security`, `worknavi-answer-packets`: `teamjpkwork` 원격의 작업 사본 또는 과거 갈래. 별도 프로젝트로 세지 않음.
 - `freepasserp`, `freeepasserp2`, `freepasserp3`: Freepass 과거 세대. 신규 작업 배정 금지.
+- `fp-settlement`: 정산 기능이 Freepass Admin에 통합된 이전 구현. 신규 작업 배정 금지, 이관·감사 참조로만 보존.
 - `freepasserp4-rtdb-current`, `freepasserp4-ui-deploy`, `_wt-test`: `freepasserp4` 작업 사본. 별도 프로젝트로 세지 않음.
 - `freepass-sales`, `sales-mail-automation`: `freepass-sales` 원격의 다른 체크아웃/작업 갈래. `C:\dev\sales`와 별도 제품으로 세지 않음.
 - `teamjpkwork-atom-check`: `teamjpkwork` 검증 사본. 별도 제품으로 세지 않음.

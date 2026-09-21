@@ -512,7 +512,7 @@
         "settlement"
       ],
       "projects": [
-        "freepasserp4"
+        "freepass-admin"
       ],
       "mode": "LOCAL_MUTATION",
       "priority": 74,
@@ -520,17 +520,17 @@
       "required_scopes": [],
       "walls": [],
       "result_contract": "ai-core-work-result/v1",
-      "hold_reason": "정산 화면 변경은 프로젝트 검증 profile과 연결 전이다."
+      "hold_reason": "정산 기능은 FreePass Admin에 통합됐다. Admin의 운영 persistence·권한·배포 경계 검증 전까지 변경은 HOLD다."
     },
     {
       "id": "settlement.system",
-      "title": "정산 전용 시스템",
+      "title": "FreePass Admin 정산",
       "status": "HOLD",
       "domains": [
         "settlement"
       ],
       "projects": [
-        "fp-settlement"
+        "freepass-admin"
       ],
       "mode": "LOCAL_MUTATION",
       "priority": 72,
@@ -538,7 +538,7 @@
       "required_scopes": [],
       "walls": [],
       "result_contract": "ai-core-work-result/v1",
-      "hold_reason": "FP Settlement 프로젝트가 HOLD이며 source-review가 끝나지 않았다."
+      "hold_reason": "fp-settlement는 참조용 이전 구현이며 신규 정산 업무는 FreePass Admin으로 라우팅한다. Admin 운영 경계 검증 전까지 HOLD다."
     },
     {
       "id": "finance.cash-status",

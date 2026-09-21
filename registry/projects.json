@@ -163,8 +163,8 @@
       "project_id": "fp-settlement",
       "name": "FP Settlement",
       "organization": "SUBSIDIARY",
-      "status": "HOLD",
-      "mission": "Repository discovered and indexed by AI Core; mission and operating boundaries require source review before activation.",
+      "status": "REFERENCE",
+      "mission": "Legacy settlement implementation retained as migration and audit reference after the operating settlement function was absorbed into FreePass Admin.",
       "repository": "freepass-creator/fp-settlement",
       "default_branch": "main",
       "local_path": null,
@@ -185,7 +185,7 @@
       "deploy_targets": [],
       "required_approvals": [],
       "known_blockers": [
-        "Discovered in the connected GitHub installation but not yet source-reviewed into an AI Core Project Capsule; execution remains HOLD until commands, SSOT and deployment boundaries are verified."
+        "Do not route new settlement product work here. The operating settlement UI and workflow belong to freepass-admin; reuse from this repository requires an explicit migration comparison."
       ]
     },
     {
