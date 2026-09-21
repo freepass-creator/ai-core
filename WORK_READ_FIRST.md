@@ -1,5 +1,24 @@
 # Work / Codex — Read This First
 
+## 현재 사용자 방향 — AI 협업 지원 우선 (2026-09-21)
+
+사용자는 각 AI에서 직접 업무한다. AI Core의 고도화 목표는 그 업무에서 맥락 재설명, 자료 탐색, AI 간 인계, 중복 작업과 재작업을 줄이는 것이다. 중앙 오더 접수나 claim을 일반 업무의 필수 진입 절차로 요구하지 않는다.
+
+이 방향은 아래의 중앙 오더 창구 우선, 실제 합병·통합 우선 및 Phase 1 종료 전 다른 업무 제한을 일반 업무의 선행 조건으로 삼는 과거 지침보다 우선한다. 기존 오더 시스템을 사용 중인 업무의 원장·claim·권한 계약은 계속 지킨다. 중앙 연결 장애는 그 경로에 한정해 보고하며, 독립적으로 가능한 사용자 요청까지 막지 않는다.
+
+기본 작업 흐름:
+
+1. 현재 사용자 요청과 대상 프로젝트의 최신 지침·작업 상태를 필요한 범위만 확인한다.
+2. 기존 도구·공통 기능·검증된 패턴을 재사용하고, 충돌 없는 작업 위치와 수정 범위를 확인해 진행한다.
+3. 다른 AI의 검토가 실질적으로 필요한 경우에만 최소 맥락·정확한 대상 revision·검토 질문을 전달한다. 기존 위험별 검토 및 민감정보 제한은 유지한다.
+4. 결과에는 변경점, 실제 검증, 남은 문제와 다음 시작점을 남겨 다른 AI가 이어받을 수 있게 한다. 프로젝트별 결과는 해당 프로젝트의 기존 인계 경로를 사용한다.
+
+고도화는 실제 업무에서 발견한 불편 하나를 줄이는 작은 개선부터 진행한다. 효과는 시작 시간, 반복 설명, 인계 누락, 재작업 같은 실제 관측으로 확인한다. 중앙 서버 복구, 새 접수 절차 또는 추가 프레임워크를 기본 선행 작업으로 삼지 않는다. 외부 발송·운영 변경 등의 기존 승인 경계는 유지한다.
+
+## Chat results must reach GitHub
+
+Work performed in a chat must follow [Chat to GitHub handoff policy](docs/CHAT_GITHUB_HANDOFF_POLICY.md). The chat is a working surface, while the relevant project repository is the durable handoff record. Preserve only reviewed minimal context and evidence pointers; do not copy sensitive raw conversations into GitHub.
+
 ## 비상 진입점 — 해당 작업을 계속하기 전에
 
 데이터 훼손·배포/보안 사고·AI 동시 수정·정본 불명확이 의심되면 [비상매뉴얼](docs/EMERGENCY_RUNBOOK.md)을 먼저 읽는다. 해당 작업의 추가 쓰기는 보류하고, 정상 서비스와 다른 작업은 보존한다.
@@ -13,10 +32,11 @@ AI Core 작업을 시작할 때 전체 Gmail/전체 Chat/전체 연구 branch를
 통합 관련 문서를 읽을 때 아래 순서를 현재 정본으로 취급한다.
 
 1. `WORK_READ_FIRST.md` — 현재 최우선 목표와 진입점.
-2. `docs/AI_CORE_INTEGRATION_EXECUTION_DIRECTIVE.md` — 지금 실제로 무엇을 합치고/연결할지 실행 기준.
-3. `docs/GROUP_OPERATING_MODEL.md` — 본사·센터·자회사 구조 SSOT.
-4. `docs/AI_CORE_OPERATING_PLAYBOOK.md` — 실제 회사 업무를 AI Core에서 처리하는 방식.
-5. `docs/CONTROL_TOWER.md` + `docs/WORK_LEDGER.md` — 현재 업무 상태/판정 런타임.
+2. [`docs/PROJECT_PARTITION_AS_IS_2026-09-20.md`](docs/PROJECT_PARTITION_AS_IS_2026-09-20.md) — 현재 가진 저장소·기능 기준 프로젝트와 파트 구분.
+3. `docs/AI_CORE_INTEGRATION_EXECUTION_DIRECTIVE.md` — 지금 실제로 무엇을 합치고/연결할지 실행 기준.
+4. `docs/GROUP_OPERATING_MODEL.md` — 본사·센터·자회사 구조 SSOT.
+5. `docs/AI_CORE_OPERATING_PLAYBOOK.md` — 실제 회사 업무를 AI Core에서 처리하는 방식.
+6. `docs/CONTROL_TOWER.md` + `docs/WORK_LEDGER.md` — 현재 업무 상태/판정 런타임.
 
 ### A/B/C/D 세션 공통 미션
 
@@ -58,17 +78,9 @@ AI 이름보다 최신 사용자 결정, 현재 프로젝트 정본, revision-bo
 
 공통 기능은 본사로 정리하되 고유 제품·Git·데이터 SSOT·브랜드·배포는 독립 유지한다. 비상 기능 `EMG-P0`와는 별도 작업이며, 운영 전환·삭제·권한 변경은 이 인계만으로 허용되지 않는다.
 
-## 개발 구현·고도화 요청을 처리하는 경우
-
-AI Core의 공통 Contract를 실제 프로젝트에 적용하는 개발 요청은 [Development Center 실행 인계](docs/DEVELOPMENT_CENTER_EXECUTION_HANDOFF.md)를 따른다.
-
-AI Core가 회사 공통 헌법·Contract를 소유하고, `freepass-creator/devcenter`가 **Development Center Control Plane + 7 Hubs** 구조로 실제 개발 실행을 관장한다. AI Core 안에서 같은 실행 조직을 다시 만들지 않는다.
-
-개발 요청의 흐름은 `AI Core 기준 확인 → Development Center Hub Router → Primary/Secondary Hub → 프로젝트 구현 → Quality evidence → 필요 시 Delivery evidence`다. Development Center가 등록되지 않은 새 Hub를 임의 생성하거나 프로젝트 고유 정본을 복사해 본사 정본으로 만들지 않는다.
-
 ## UI/UX 공통 기능 규격을 작업하는 경우
 
-공통 UI/UX는 `docs/UI_UX_CONSTITUTION.md` → `docs/SCREEN_DESIGN_STANDARD.md` → `registry/ui-ux-features.json` 순서로 읽는다. **실제 프로젝트 디자인 통일·화면 고도화의 실행 진입점은 Development Center의 Design Hub다.** AI Core B는 normative contract를 소유하고 Design Hub가 이를 project revision에 적용한다. Feature Registry가 기능별 상태·행동·검증 정본이고, `design-system/tokens.json`, `design-system/components.registry.json`, `design-system/interaction.contract.json`이 실행 가능한 projection을 제공한다. 신규 consumer는 검증된 legacy CSS를 보존한 채 `design-system/tokens.runtime.css` + `design-system/runtime-v2.css`를 staged adoption한다.
+공통 UI/UX는 `docs/UI_UX_CONSTITUTION.md` → `docs/SCREEN_DESIGN_STANDARD.md` → `registry/ui-ux-features.json` 순서로 읽는다. Feature Registry가 기능별 상태·행동·검증 정본이고, `design-system/tokens.json`, `design-system/components.registry.json`, `design-system/interaction.contract.json`이 실행 가능한 projection을 제공한다. 신규 consumer는 검증된 legacy CSS를 보존한 채 `design-system/tokens.runtime.css` + `design-system/runtime-v2.css`를 staged adoption한다.
 
 `npm run uiux:validate`와 `npm run uiux:runtime`가 모두 통과하지 않는 공통 규격 변경은 채택하지 않는다. 프로젝트별 브랜드·밀도·아이콘·도메인 문구는 제품 profile이 소유하지만, 공통 feature ID의 상태명·완료 의미·실패/재시도·접근성·엔진/어댑터 경계는 로컬에서 임의 분기하지 않는다. C가 데이터/API 의미를, D가 도메인 workflow를 소유하며 B는 이를 재정의하지 않는다. 새 공통 기능은 먼저 Registry에 등록하거나 만료가 있는 예외를 남긴다.
 
@@ -98,9 +110,9 @@ OPS-P0의 분류 정본은 `registry/work-map.json` + `src/routing/work-router.m
 
 ## 기본 진입점
 
-GitHub를 통해 이어가는 AI는 [AI 공용 단일 시작점](docs/coordination/AI_CONTINUATION.md)을 먼저 읽는다. 저장소 접근이 없는 무료 채팅에는 그 문서의 최소 Markdown 내보내기만 전달한다. 이어서 [공통 시작·패킷 경계](docs/coordination/CROSS_AI_ENTRYPOINT.md)를 읽는다. 총괄은 기존 중앙 작업/담당을 조회하고 현재 패킷·실행 위치·소유 파일을 제공한다. 조회 결과는 claim/실행 승인이 아니다. 중앙 연결과 실제 claim이 없으면 HOLD로 보고한다.
+일반 업무는 위의 현재 사용자 방향에 따라 대상 프로젝트에서 바로 시작한다. AI 간 인계가 필요하면 [AI 공용 단일 시작점](docs/coordination/AI_CONTINUATION.md)의 최소 맥락 전달 방식을 재사용한다. 해당 문서와 [공통 시작·패킷 경계](docs/coordination/CROSS_AI_ENTRYPOINT.md)의 중앙 연결·claim 필수 조건은 기존 중앙 오더 경로를 사용하는 업무에 적용한다. 일반 업무를 위해 order/work ID를 새로 만들거나 추정하지 않는다.
 
-로컬·서버 작업은 `docs/SHARED_ORDER_EXECUTION.md`의 중앙 연결을 먼저 확인한다. GitHub에서 코드를 받았다고 별도의 업무 DB를 새로 만들지 않는다. `node scripts/orders.mjs meta`의 원장 ID와 현재 오더 요구 버전을 확인한 뒤 작업한다.
+기존 중앙 오더 업무를 이어받는 경우에만 `docs/SHARED_ORDER_EXECUTION.md`의 중앙 연결을 먼저 확인한다. GitHub에서 코드를 받았다고 별도의 업무 DB를 새로 만들지 않는다. 이 경로에서는 `node scripts/orders.mjs meta`의 원장 ID와 현재 오더 요구 버전을 확인한 뒤 작업한다.
 
 1. `MEMORY.md`
 2. `memory/CURRENT.md`
