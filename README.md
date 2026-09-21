@@ -10,7 +10,9 @@ AI Core is the group's **AI academy**: a shared foundation where AIs learn the s
 
 쌓여 있는 Markdown을 전부 매번 읽지 않는다. [AI 사관학교 실전 교범과 교과과정](docs/AI_ACADEMY_CURRICULUM.md)에서 업무별 최소 독서 경로를 고르고, 헌법·현행 표준·연구 후보·과거 evidence를 구분해 사용한다.
 
-이 PC의 Codex·Claude·Gemini·Cursor 전역 진입점이 헌법과 교과과정에 연결됐는지는 `npm run academy:validate`로 확인한다. 이 검사는 규칙 파일 설치만 검증하며 각 AI의 로그인·한도·workspace trust 또는 실제 준수까지 PASS로 간주하지 않는다.
+이 PC의 필수 진입점인 Codex·Claude가 헌법과 교과과정에 연결됐는지는 `npm run academy:validate`로 확인한다. Gemini·Cursor 진입점은 선택 상태로만 보고하며 전체 판정을 막지 않는다. 이 검사는 규칙 파일 설치만 검증하고 로그인·한도 또는 실제 준수까지 PASS로 간주하지 않는다.
+
+기본 협업은 사용자 결정에 따라 `Codex + Claude Code`만 사용한다. Cursor와 Gemini는 설치 여부와 관계없이 자동 호출하지 않으며, 사용자가 해당 작업에서 직접 지정할 때만 사용한다.
 
 ## 현재 작업: 공통 AI 오더 데스크
 
