@@ -1,7 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { validateUiUxEntrypointSemantics } from '../src/engine/ui-ux-entrypoint.mjs';
+import {
+  validateUiUxEntrypointSemantics,
+  validateUiUxTargetBinding
+} from '../src/engine/ui-ux-entrypoint.mjs';
 
 const entry = JSON.parse(
   await readFile(new URL('../registry/ui-ux-entrypoint.json', import.meta.url), 'utf8')
@@ -31,6 +34,43 @@ test('Design Hub binding check is mandatory before implementation claims', () =>
   assert.throws(
     () => validateUiUxEntrypointSemantics(broken),
     /UIUX_ENTRY_FAIL_CLOSED_MISSING:DESIGN_HUB_BINDING_MUST_MATCH_INTENDED_CORE_REVISION/
+  );
+});
+
+test('target preflight accepts an exact Design Hub Core revision binding', () => {
+  const coreRevision = 'a'.repeat(40);
+  const designHubBinding = {
+    contract: 'devcenter-design-core-binding/v1',
+    ai_core: {
+      repository: 'freepass-creator/ai-core',
+      revision: coreRevision
+    }
+  };
+
+  const result = validateUiUxTargetBinding(entry, {
+    coreRevision,
+    designHubBinding
+  });
+
+  assert.equal(result.status, 'VALID');
+  assert.equal(result.designHubRevision, coreRevision);
+});
+
+test('target preflight fails closed when Design Hub pins a stale Core revision', () => {
+  const designHubBinding = {
+    contract: 'devcenter-design-core-binding/v1',
+    ai_core: {
+      repository: 'freepass-creator/ai-core',
+      revision: 'a'.repeat(40)
+    }
+  };
+
+  assert.throws(
+    () => validateUiUxTargetBinding(entry, {
+      coreRevision: 'b'.repeat(40),
+      designHubBinding
+    }),
+    /UIUX_DESIGN_HUB_CORE_REVISION_STALE/
   );
 });
 
