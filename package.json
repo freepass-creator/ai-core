@@ -67,6 +67,7 @@
     "a:claims:reap": "node scripts/a-session-claim-health.mjs reap",
     "uiux:preflight": "node scripts/validate-ui-ux-entrypoint.mjs",
     "academy:validate": "node scripts/validate-ai-academy-entrypoints.mjs",
+    "academy:start": "node scripts/academy-start.mjs",
     "claude:status": "node scripts/claude-usage-gate.mjs status",
     "claude:review": "node scripts/claude-usage-gate.mjs run --",
     "reuse:check": "node scripts/reuse-preflight.mjs"

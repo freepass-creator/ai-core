@@ -17,6 +17,7 @@ const entrypoints = [
 const requiredTerms = [
   'AI_WORKING_STANDARD.md',
   'AI_ACADEMY_CURRICULUM.md',
+  'academy:start',
   'next_start_here',
 ];
 const preflightTerms = [
