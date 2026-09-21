@@ -42,8 +42,8 @@ Official references:
 - Do not make a required business outcome available only through hover, right-click, drag-and-drop or a keyboard shortcut.
 - Dialog task actions also belong in the dialog footer rather than the dialog header. The header carries the dialog title and passive options only.
 - Direct-selection controls that are the content itself (vehicle, model, trim, option, row, radio, checkbox, dropdown) remain where the choice is presented; they are not treated as page CTAs.
-- Back/Next/Complete navigation in a stepped flow uses the bottom action area. For single-choice auto-advance steps, selection itself advances and a redundant Next button is omitted.
-- When an action cannot fit safely, prefer overflow or a secondary bottom sheet/menu from the bottom action area rather than moving the action into the top header.
+- On **mobile**, Back/Next/Complete navigation in a stepped flow uses the bottom action area. For single-choice auto-advance steps, selection itself advances and a redundant Next button is omitted. On web, equivalent commands may also be exposed through adaptive desktop accelerators.
+- On **mobile**, when an action cannot fit safely, prefer overflow or a secondary bottom sheet/menu from the bottom action area rather than moving the workflow action into the top header.
 - Products may deviate only when a platform convention or safety/accessibility requirement makes bottom placement materially worse; document the exception.
 
 ## Dropdown
