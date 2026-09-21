@@ -78,7 +78,7 @@
 
 .ui-card-list__link[aria-pressed="true"] {
   background: var(--color-info-surface);
-  box-shadow: inset 3px 0 0 var(--color-primary);
+  box-shadow: none;
 }
 
 .ui-card-list__title { font-weight: 700; }

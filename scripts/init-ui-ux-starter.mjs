@@ -36,7 +36,7 @@ function writeNew(path, content, force) {
   writeFileSync(path, content, "utf8");
 }
 
-export function initStarter({ target, profile = "freepass-product", product = "New product", force = false }) {
+export function initStarter({ target, profile = "freepass-product", product = "새 서비스", force = false }) {
   if (!target) throw new Error("Missing --target <directory>.");
   const profiles = JSON.parse(readFileSync(join(root, "registry", "ui-ux-starter-profiles.json"), "utf8"));
   const selected = profiles.profiles[profile];

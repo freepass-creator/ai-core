@@ -27,7 +27,6 @@ function filterRows() {
 function selectRow(row) {
   rows.forEach((candidate) => candidate.setAttribute("aria-pressed", String(candidate === row)));
   document.querySelector("#detail-title").textContent = row.dataset.item;
-  document.querySelector("#selection-summary").textContent = `${row.dataset.item} 선택됨`;
 }
 function showState(name) {
   const [heading, copy] = stateMessages[name];

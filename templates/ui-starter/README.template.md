@@ -1,8 +1,8 @@
-# {{PRODUCT_NAME}} UI baseline
+# {{PRODUCT_NAME}} 화면 기본 규격
 
 이 폴더는 AI Core UI/UX 규격 `{{AI_CORE_REVISION}}`에서 생성했습니다.
 
-- profile: `{{PROFILE_ID}}` ({{PROFILE_LABEL}})
+- 화면 유형: `{{PROFILE_ID}}` ({{PROFILE_LABEL}})
 - buttons: borderless; fill, text and spacing express hierarchy
 - search: visible input boundary; opening and closing must preserve current work
 - lists: compact card rows with a full-row action target

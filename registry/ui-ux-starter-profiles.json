@@ -4,19 +4,19 @@
   "default_profile": "freepass-product",
   "profiles": {
     "freepass-product": {
-      "label": "FreePass product",
+      "label": "프리패스 서비스",
       "description": "FreePass public, sales and estimate surfaces with borderless actions, preserved-context search and responsive card lists.",
       "body_class": "ui-profile-freepass",
       "density": "comfortable"
     },
     "internal-work": {
-      "label": "Internal work",
+      "label": "관리자 업무",
       "description": "Compact operational screens with the same interaction and accessibility contract.",
       "body_class": "ui-profile-internal",
       "density": "compact"
     },
     "mobile-work": {
-      "label": "Mobile work",
+      "label": "모바일 업무",
       "description": "Field work screens optimized for one task per screen and bottom actions.",
       "body_class": "ui-profile-mobile-work",
       "density": "touch"
