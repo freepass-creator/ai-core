@@ -14,6 +14,8 @@ AI Core is the group's **AI academy**: a shared foundation where AIs learn the s
 
 기본 협업은 사용자 결정에 따라 `Codex + Claude Code`만 사용한다. Cursor와 Gemini는 설치 여부와 관계없이 자동 호출하지 않으며, 사용자가 해당 작업에서 직접 지정할 때만 사용한다.
 
+새 파일·모듈·문서·자동화를 만들기 전에는 `npm run reuse:check -- "<만들려는 것>" --root <대상 경로>`로 기존 capability와 실제 자산을 먼저 찾는다. 기존 후보를 재사용·확장하지 않는 이유가 없으면 신규 생성을 진행하지 않는다.
+
 ## 현재 작업: 공통 AI 오더 데스크
 
 통합 기준: PR #20의 work 원장이 업무 상태의 정본이고 PR #21의 OrderStore는 접수·claim 기록이다. 읽기 어댑터와 임시 DB의 후보→확인→work 연결은 [격리 통합 실험](docs/integration/INTEGRATION_STATUS.md)으로 검증한다. 영속 매핑·outbox는 미완이므로 운영 연결과 실행·최종 완료는 HOLD다. 사용자는 말로만 요청하고 기술 입력은 담당 AI가 처리한다.
