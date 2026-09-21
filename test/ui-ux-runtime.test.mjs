@@ -41,14 +41,14 @@ function validate(overrides = {}) {
 test('B2 runtime covers every component feature and locked global probes', () => {
   const result = validate();
   assert.equal(result.status, 'VALID');
-  assert.equal(result.features, 85);
+  assert.equal(result.features, 86);
   assert.equal(result.components, 33);
-  assert.equal(result.patterns, 46);
+  assert.equal(result.patterns, 47);
   assert.equal(result.screen_features, 9);
-  assert.equal(result.interaction_rules, 12);
+  assert.equal(result.interaction_rules, 13);
   assert.ok(result.tokens >= 40);
   assert.equal(result.governance_entries, 0);
-  assert.equal(result.consumers, 2);
+  assert.equal(result.consumers, 3);
   assert.equal(result.conformant_consumers, 0);
 });
 

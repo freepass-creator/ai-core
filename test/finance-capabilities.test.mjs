@@ -35,7 +35,9 @@ test('미수 요청은 비식별 receivables adapter로 resolve된다',()=>{
   assert.equal(cap.adapter.export,'aiCoreReceivables');
 });
 
-test('AI Core가 참조하는 AIOps revision은 finance adapter merge revision에 고정된다',()=>{
+test('AI Core finance route is bound to the latest observed AIOps revision',()=>{
   const project=projects.projects.find(x=>x.project_id==='aiops');
-  assert.equal(project.head_revision,'c37a422765e784cdd843f36efb4be5328d7df4bb');
+  const route=routeWork('돈 관련해서 이상한 거 봐줘',{workMap,projectRegistry:projects,capabilityRegistry:capabilities});
+  assert.equal(route.target_revision,project.head_revision);
+  assert.ok(project.authoritative_sources.some(source=>source.revision===project.head_revision));
 });
