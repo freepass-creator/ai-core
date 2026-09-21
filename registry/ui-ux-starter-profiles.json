@@ -1,0 +1,25 @@
+{
+  "contract": "ai-core-ui-ux-starter-profiles/v1",
+  "version": "1.0.0",
+  "default_profile": "freepass-product",
+  "profiles": {
+    "freepass-product": {
+      "label": "FreePass product",
+      "description": "FreePass public, sales and estimate surfaces with borderless actions, preserved-context search and responsive card lists.",
+      "body_class": "ui-profile-freepass",
+      "density": "comfortable"
+    },
+    "internal-work": {
+      "label": "Internal work",
+      "description": "Compact operational screens with the same interaction and accessibility contract.",
+      "body_class": "ui-profile-internal",
+      "density": "compact"
+    },
+    "mobile-work": {
+      "label": "Mobile work",
+      "description": "Field work screens optimized for one task per screen and bottom actions.",
+      "body_class": "ui-profile-mobile-work",
+      "density": "touch"
+    }
+  }
+}
