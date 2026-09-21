@@ -5,7 +5,7 @@ import { readFile } from 'node:fs/promises';
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 
 test('common AI entrypoints point to the current working standard', async () => {
-  for (const path of ['WORK_READ_FIRST.md', 'CLAUDE.md', 'GEMINI.md', 'README.md']) {
+  for (const path of ['WORK_READ_FIRST.md', 'AGENTS.md', 'CLAUDE.md', 'GEMINI.md', 'README.md']) {
     const body = await read(path);
     assert.match(body, /AI_WORKING_STANDARD\.md/, `${path} must point to the current working standard`);
   }
