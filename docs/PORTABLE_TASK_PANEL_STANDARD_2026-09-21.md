@@ -52,8 +52,9 @@ A portable task panel has four semantic zones.
 
 2. **Body**
    - card list, form, detail, preview, or task content
-   - preserves the same information hierarchy across mobile/web
-   - no desktop-only hidden required information
+   - preserves the same business meaning across mobile/web
+   - desktop may use denser or comparative presentation
+   - no required business meaning may exist only as visually implied sibling context
 
 3. **Auxiliary actions**
    - filter / search / sort / share / refresh / overflow where appropriate
@@ -125,7 +126,7 @@ More simultaneous panes require a demonstrated workflow need and must not reduce
 - the same panels may appear side by side
 - list selection updates the detail panel without losing list context
 - supporting panel may be added when it removes unnecessary navigation depth
-- panel internals do not receive a second desktop-only design language
+- desktop may use a productivity-optimized presentation, while preserving the same canonical state/command/workflow semantics
 
 ### Collapse
 When width decreases:
@@ -207,9 +208,10 @@ A task panel cannot be called portable/conformant until it passes:
 - status/context are understandable without sibling panes
 
 ### Action parity
-- same canonical commands on mobile and web
-- same completion/failure meaning
-- desktop accelerator paths have mobile/touch equivalents
+- same canonical individual task outcomes and completion/failure meaning
+- desktop composite/bulk accelerators map to canonical commands rather than inventing new business semantics
+- required mobile business outcomes remain reachable through mobile controls
+- desktop-only pointer accelerators have an accessible non-pointer alternative on web
 
 ### State continuity
 - stable entity/work ID
@@ -252,7 +254,7 @@ Before approving a new business screen:
 
 ## 11. One-line rule
 
-> **Design the task once as a portable mobile-complete panel; compose more of the same panels on wide screens for speed and context.**
+> **Design the business task once so mobile can complete it; let web render that same task contract as panels or a productivity-optimized workspace.**
 
 The value of the system is not merely consistent appearance.
-It is that PC and mobile reuse the same task semantics, commands and surface structure, minimizing re-design and re-implementation.
+It is that PC and mobile reuse the same task semantics, commands and state contracts while allowing different surface structures where productivity requires them.
