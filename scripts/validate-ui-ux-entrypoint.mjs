@@ -48,10 +48,10 @@ try {
 
     const bindingPath = resolve(root, designHubRoot, entry.execution.design_hub_binding);
     const designHubBinding = JSON.parse(await readFile(bindingPath, 'utf8'));
-    let coreRevision;
+    let currentCoreRevision;
 
     try {
-      coreRevision = execFileSync('git', ['rev-parse', 'HEAD'], {
+      currentCoreRevision = execFileSync('git', ['rev-parse', 'HEAD'], {
         cwd: root,
         encoding: 'utf8'
       }).trim();
@@ -59,14 +59,35 @@ try {
       throw new Error('UIUX_PREFLIGHT_CORE_REVISION_UNAVAILABLE');
     }
 
+    const currentSourceBlobs = {};
+    for (const [key, sourceBinding] of Object.entries(designHubBinding.sources ?? {})) {
+      const sourcePath = sourceBinding?.path;
+      if (typeof sourcePath !== 'string' || sourcePath.trim() === '') continue;
+
+      try {
+        currentSourceBlobs[sourcePath] = execFileSync(
+          'git',
+          ['rev-parse', `HEAD:${sourcePath}`],
+          { cwd: root, encoding: 'utf8' }
+        ).trim();
+      } catch {
+        throw new Error(`UIUX_PREFLIGHT_SOURCE_BLOB_UNAVAILABLE:${key}`);
+      }
+    }
+
     const targetResult = validateUiUxTargetBinding(entry, {
-      coreRevision,
+      currentCoreRevision,
+      currentSourceBlobs,
       designHubBinding
     });
 
     console.log(
-      'PASS: UI/UX target preflight exact Design Hub binding ' +
-      targetResult.coreRevision
+      'PASS: UI/UX target preflight source baseline ' +
+      targetResult.designHubBaselineRevision +
+      ' matches ' +
+      targetResult.verifiedSourceCount +
+      ' declared source blobs at Core ' +
+      targetResult.currentCoreRevision
     );
   } else {
     console.log(
