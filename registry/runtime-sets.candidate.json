@@ -1,0 +1,369 @@
+{
+  "schema_version": "ai-core-runtime-set-catalog/v1",
+  "status": "CANDIDATE_HOLD",
+  "observed_at": "2026-09-21T12:50:37+09:00",
+  "observed_revision": "fe7589def35ffa0bde4e4df7714e8f4b5abae534",
+  "candidate_record": {
+    "source_type": "CHAT_THREAD",
+    "chat_thread_id": "01a0a25c-d3c3-7fe1-818f-c30b47fc1310",
+    "message_id": null,
+    "path": null,
+    "observed_at": "2026-09-21T12:50:37+09:00",
+    "claim": "Users should be able to select an existing UI set and an evidence-bound runtime set by stable spoken IDs.",
+    "existing_asset": "Existing Workflow, Capability, Engine-Adapter, Order-Work and GitHub handoff implementations are referenced rather than copied.",
+    "duplicate_of": ["src/workflow/engine.mjs", "src/engine/capability-engine.mjs", "src/contracts/engine-adapter-contract.mjs", "src/integration/order-work-adapter.mjs"],
+    "maturity": "IMPLEMENTED",
+    "decision": "PROPOSED",
+    "evidence": ["registry/capabilities.json", "registry/workflows.json", "docs/research/ENGINE_ADAPTER_CROSS_REPO_FINDINGS_2026-09-19.md"],
+    "target_project": "ai-core",
+    "next_smallest_change": "Validate the catalog and spoken selector, then obtain independent review before adoption."
+  },
+  "authority": {
+    "selection_only": true,
+    "execution_authorized": false,
+    "deployment_authorized": false,
+    "note": "This catalog reuses existing contracts and evidence. Selecting a set never grants execution, deployment, data-write or external-send authority."
+  },
+  "components": [
+    {
+      "id": "E-WORKFLOW-001",
+      "kind": "E",
+      "name": "D Workflow Engine",
+      "scope": "CORE",
+      "maturity": "STABLE",
+      "decision": "ADOPTED",
+      "source": {
+        "repository": "freepass-creator/ai-core",
+        "revision": "fe7589def35ffa0bde4e4df7714e8f4b5abae534",
+        "paths": ["src/workflow/engine.mjs", "registry/workflows.json"]
+      },
+      "applicable_projects": ["ai-core", "freepass-sales", "freepass-admin", "freepasserp4"],
+      "implementation": "Workflow transition, evidence, approval, idempotency, retry and audit decision engine.",
+      "permission_deployment_state": "Core logic is adopted; project binding and production deployment remain separate.",
+      "hold_conditions": ["Target workflow/revision is not registered", "Required permission, evidence or approval is missing"],
+      "verification_commands": ["npm run workflow:validate", "node --test test/workflow-state-machine.test.mjs"]
+    },
+    {
+      "id": "E-OPERATING-001",
+      "kind": "E",
+      "name": "Operating Capability Engine Wiring",
+      "scope": "CORE",
+      "maturity": "WIRED",
+      "decision": "ADOPTED",
+      "source": {
+        "repository": "freepass-creator/ai-core",
+        "revision": "fe7589def35ffa0bde4e4df7714e8f4b5abae534",
+        "paths": ["src/engine/operating-engine.mjs", "src/engine/control-tower-authority.mjs"]
+      },
+      "applicable_projects": ["ai-core"],
+      "implementation": "Single host wiring for capability registry, project registry, trusted work sources and authority verification.",
+      "permission_deployment_state": "ROUTING_ONLY without trusted workSources; factory never creates authority.",
+      "hold_conditions": ["Trusted workSources are absent", "Authority verifier is absent or stale"],
+      "verification_commands": ["node --test test/operating-engine.test.mjs"]
+    },
+    {
+      "id": "E-CAPABILITY-001",
+      "kind": "E",
+      "name": "Capability Engine",
+      "scope": "CORE",
+      "maturity": "VERIFIED",
+      "decision": "ADOPTED",
+      "source": {
+        "repository": "freepass-creator/ai-core",
+        "revision": "fe7589def35ffa0bde4e4df7714e8f4b5abae534",
+        "paths": ["src/engine/capability-engine.mjs", "registry/capabilities.json"]
+      },
+      "applicable_projects": ["ai-core", "freepass-sales", "aiops"],
+      "implementation": "Plans and invokes ACTIVE capability adapters with revision and authority gates.",
+      "permission_deployment_state": "Only registered ACTIVE capabilities are candidates; external mutation still needs explicit authority.",
+      "hold_conditions": ["Capability or project is not registered/ACTIVE", "Subject revision or authority is stale"],
+      "verification_commands": ["npm run capability:validate", "node --test test/order-capability-e2e.test.mjs"]
+    },
+    {
+      "id": "E-COORDINATOR-001",
+      "kind": "E",
+      "name": "Capability Execution Coordinator",
+      "scope": "CORE",
+      "maturity": "VERIFIED",
+      "decision": "ADOPTED",
+      "source": {
+        "repository": "freepass-creator/ai-core",
+        "revision": "fe7589def35ffa0bde4e4df7714e8f4b5abae534",
+        "paths": ["src/engine/capability-execution-coordinator.mjs"]
+      },
+      "applicable_projects": ["ai-core"],
+      "implementation": "Durable request reservation, immutable identity, result reconciliation and terminal receipt recording.",
+      "permission_deployment_state": "Coordinator records decisions/results but does not independently grant execution authority.",
+      "hold_conditions": ["Order/work binding is missing", "Terminal receipt or exact revision is missing"],
+      "verification_commands": ["node --test test/capability-execution-coordinator.test.mjs test/capability-execution-api.test.mjs"]
+    },
+    {
+      "id": "A-ORDER-WORK-001",
+      "kind": "A",
+      "name": "Order to Work Read Adapter",
+      "scope": "CORE",
+      "maturity": "VERIFIED",
+      "decision": "ADOPTED",
+      "source": {
+        "repository": "freepass-creator/ai-core",
+        "revision": "fe7589def35ffa0bde4e4df7714e8f4b5abae534",
+        "paths": ["src/integration/order-work-adapter.mjs", "docs/integration/ORDER_WORK_ADAPTER.md"]
+      },
+      "applicable_projects": ["ai-core"],
+      "implementation": "Reads and validates immutable order-to-work mapping and prepares review commands without sending them.",
+      "permission_deployment_state": "sent, execution_authorized and completion_authorized remain false.",
+      "hold_conditions": ["Mapping history is incomplete", "Order/work/revision/ledger head is stale"],
+      "verification_commands": ["node --test test/order-work-adapter.test.mjs"]
+    },
+    {
+      "id": "A-FIRESTORE-PATH-001",
+      "kind": "A",
+      "name": "FreePass ERP4 Firestore Path Adapter",
+      "scope": "PROJECT",
+      "maturity": "IMPLEMENTED",
+      "decision": "HOLD",
+      "source": {
+        "repository": "freepass-creator/freepasserp4",
+        "revision": "257e742d73781af89c94809770f1d4208900fba9",
+        "paths": ["lib/server/firestore-path-store.ts", "lib/server/erp5-firestore-app.ts"]
+      },
+      "applicable_projects": ["freepasserp4"],
+      "implementation": "Firestore-only path adapter with document/batch/transaction mapping and no alternate-database fallback.",
+      "permission_deployment_state": "Implementation exists on current remote main; exact production binding, credentials and deployed revision are not established by this catalog.",
+      "hold_conditions": ["Target project is not freepasserp4", "Production binding/credentials/deployed revision are unverified", "Firestore parity is incomplete"],
+      "verification_commands": ["npm run check:nortdb", "npm run check:erp5-firebase", "npm run check:release"]
+    },
+    {
+      "id": "A-FILE-APPLICATION-001",
+      "kind": "A",
+      "name": "FreePass Admin File Application Adapter",
+      "scope": "PROJECT",
+      "maturity": "VERIFIED",
+      "decision": "HOLD",
+      "local_shadow_only": true,
+      "source": {
+        "repository": "freepass-creator/freepass-admin",
+        "revision": "02deb4df0fcb123a478519e3cbb408cd5e2ad7c6",
+        "paths": ["contracts/ai-core/file-application.adapter.json", "src/adapters/store/repositories.ts"]
+      },
+      "applicable_projects": ["freepass-admin"],
+      "implementation": "Atomic JSON file repository used for development and verification only.",
+      "permission_deployment_state": "Not a production persistence binding.",
+      "hold_conditions": ["Any production or shared-user use", "Production persistence/auth/audit binding is absent"],
+      "verification_commands": ["npm run typecheck", "npm test", "npm run build"]
+    },
+    {
+      "id": "A-SALES-CUSTOMER-001",
+      "kind": "A",
+      "name": "FreePass Sales Customer Search Adapter",
+      "scope": "PROJECT",
+      "maturity": "WIRED",
+      "decision": "ADOPTED",
+      "source": {
+        "repository": "freepass-creator/freepass-sales",
+        "revision": "18a324021a783bdfa7abf33f521542ae7c0a4338",
+        "paths": ["lib/ai-core-sales-adapters.mjs", "scripts/ai-core-customer-search.py"]
+      },
+      "applicable_projects": ["freepass-sales"],
+      "implementation": "Read-only exact-match customer lookup with masked result projection and fail-closed source errors.",
+      "permission_deployment_state": "Read-only capability; live credential/service availability must be rechecked per run.",
+      "hold_conditions": ["Exact query is missing", "Sales source or credential connection fails"],
+      "verification_commands": ["npm run test:ai-core-customer-search", "npm run typecheck"]
+    },
+    {
+      "id": "A-WELRIX-QUOTE-001",
+      "kind": "A",
+      "name": "Welrix Quote Provider Adapter",
+      "scope": "PROJECT",
+      "maturity": "IMPLEMENTED",
+      "decision": "HOLD",
+      "source": {
+        "repository": "freepass-creator/welrixtable",
+        "revision": "56affca1fc4e419000afe3e42f8821e5458d2071",
+        "paths": ["src/lib/quote/engines/welrix.js"]
+      },
+      "applicable_projects": ["welrixtable", "freepass-estimate"],
+      "implementation": "Provider-specific request/result mapping including percent-to-decimal conversion and fail-closed provider errors.",
+      "permission_deployment_state": "Remote implementation exists; live provider parity and production binding are separate checks.",
+      "hold_conditions": ["Live provider parity is not checked", "Target authority is not FreePass Estimate/Welrix bounded integration"],
+      "verification_commands": ["npm run check", "npm run build", "npm run check:welrix-live"]
+    },
+    {
+      "id": "R-FIRESTORE-001",
+      "kind": "R",
+      "name": "Firestore Repository",
+      "scope": "PROJECT",
+      "maturity": "IMPLEMENTED",
+      "decision": "HOLD",
+      "source": {
+        "repository": "freepass-creator/freepasserp4",
+        "revision": "257e742d73781af89c94809770f1d4208900fba9",
+        "paths": ["lib/server/firestore-path-store.ts"]
+      },
+      "applicable_projects": ["freepasserp4"],
+      "implementation": "Firestore collection/document persistence with atomic batch and transaction boundaries.",
+      "permission_deployment_state": "Repository is project-owned; no cross-project production authority is inferred.",
+      "hold_conditions": ["Target collection/schema is unverified", "Write authority or rollback evidence is missing"],
+      "verification_commands": ["npm run check:nortdb", "npx tsx scripts/check-firestore-rules.mts"]
+    },
+    {
+      "id": "R-FILE-JSON-001",
+      "kind": "R",
+      "name": "Local JSON File Repository",
+      "scope": "PROJECT",
+      "maturity": "VERIFIED",
+      "decision": "HOLD",
+      "local_shadow_only": true,
+      "source": {
+        "repository": "freepass-creator/freepass-admin",
+        "revision": "02deb4df0fcb123a478519e3cbb408cd5e2ad7c6",
+        "paths": ["src/adapters/store/json-file-store.ts", "src/adapters/store/repositories.ts"]
+      },
+      "applicable_projects": ["freepass-admin"],
+      "implementation": "Local durable JSON repository with atomic mutation semantics.",
+      "permission_deployment_state": "Development/SHADOW only.",
+      "hold_conditions": ["Production use", "Multiple-host/shared-user use"],
+      "verification_commands": ["npm test"]
+    },
+    {
+      "id": "R-ORDER-SQLITE-001",
+      "kind": "R",
+      "name": "AI Core Order SQLite Repository",
+      "scope": "CORE",
+      "maturity": "VERIFIED",
+      "decision": "ADOPTED",
+      "source": {
+        "repository": "freepass-creator/ai-core",
+        "revision": "fe7589def35ffa0bde4e4df7714e8f4b5abae534",
+        "paths": ["src/orders/store.mjs", "src/engine/capability-execution-coordinator.mjs"]
+      },
+      "applicable_projects": ["ai-core"],
+      "implementation": "Local durable order intake and capability execution request/result persistence.",
+      "permission_deployment_state": "Order intake is not canonical business completion or external execution authority.",
+      "hold_conditions": ["Used as a substitute for project business SSOT", "Canonical Work mapping is missing"],
+      "verification_commands": ["npm run test:orders", "node --test test/capability-execution-coordinator.test.mjs"]
+    },
+    {
+      "id": "X-GITHUB-WORK-EVIDENCE-001",
+      "kind": "X",
+      "name": "GitHub Work and Evidence Connector",
+      "scope": "CORE",
+      "maturity": "WIRED",
+      "decision": "ADOPTED",
+      "source": {
+        "repository": "freepass-creator/ai-core",
+        "revision": "fe7589def35ffa0bde4e4df7714e8f4b5abae534",
+        "paths": ["src/engine/github-project-inspector.mjs", "scripts/ai-continuation-pack.mjs"]
+      },
+      "applicable_projects": ["*"],
+      "implementation": "Read-only repository revision/tree inspection plus privacy-checked handoff/proposal packets.",
+      "permission_deployment_state": "No automatic push, merge, deployment, claim or execution authority.",
+      "hold_conditions": ["GitHub revision cannot be read back", "Packet contains sensitive material", "Target order/work binding is unverified"],
+      "verification_commands": ["node --test test/github-project-inspector.test.mjs test/ai-continuation-pack.test.mjs"]
+    },
+    {
+      "id": "P-FIREBASE-FIRESTORE-001",
+      "kind": "P",
+      "name": "Firebase Firestore Provider",
+      "scope": "PROJECT",
+      "maturity": "IMPLEMENTED",
+      "decision": "HOLD",
+      "source": {
+        "repository": "freepass-creator/freepasserp4",
+        "revision": "257e742d73781af89c94809770f1d4208900fba9",
+        "paths": ["lib/server/erp5-firestore-app.ts", "firestore.rules"]
+      },
+      "applicable_projects": ["freepasserp4", "freepass-sales"],
+      "implementation": "Firestore provider boundary; exact project, credentials and rules remain project-owned.",
+      "permission_deployment_state": "No credential, rules or deployment authority is granted by catalog selection.",
+      "hold_conditions": ["Project ID/credential/rules binding is missing", "Deployed revision is not observed"],
+      "verification_commands": ["npm run check:erp5-firebase", "npx tsx scripts/check-firestore-rules.mts"]
+    },
+    {
+      "id": "P-GITHUB-001",
+      "kind": "P",
+      "name": "GitHub Provider",
+      "scope": "CORE",
+      "maturity": "WIRED",
+      "decision": "ADOPTED",
+      "source": {
+        "repository": "freepass-creator/ai-core",
+        "revision": "fe7589def35ffa0bde4e4df7714e8f4b5abae534",
+        "paths": ["src/engine/github-project-inspector.mjs"]
+      },
+      "applicable_projects": ["*"],
+      "implementation": "GitHub API provider used for exact revision and repository evidence reads.",
+      "permission_deployment_state": "Read access does not imply write, merge, release or deployment authority.",
+      "hold_conditions": ["Authentication/scope is unavailable", "Requested revision/tree is incomplete"],
+      "verification_commands": ["node --test test/github-project-inspector.test.mjs"]
+    },
+    {
+      "id": "P-WELRIX-001",
+      "kind": "P",
+      "name": "Welrix Quote Provider",
+      "scope": "PROJECT",
+      "maturity": "IMPLEMENTED",
+      "decision": "HOLD",
+      "source": {
+        "repository": "freepass-creator/welrixtable",
+        "revision": "56affca1fc4e419000afe3e42f8821e5458d2071",
+        "paths": ["src/lib/quote/engines/welrix.js"]
+      },
+      "applicable_projects": ["welrixtable", "freepass-estimate"],
+      "implementation": "Authoritative external quote calculation provider.",
+      "permission_deployment_state": "Provider contract change and production deployment require explicit approval.",
+      "hold_conditions": ["Live provider check is unavailable", "Provider contract/version is unpinned"],
+      "verification_commands": ["npm run check:welrix-live"]
+    }
+  ],
+  "runtime_sets": [
+    {
+      "id": "RUN-01",
+      "name": "표준 웹업무",
+      "status": "HOLD",
+      "recommended": true,
+      "component_ids": ["E-WORKFLOW-001", "E-OPERATING-001", "E-CAPABILITY-001", "E-COORDINATOR-001", "A-FIRESTORE-PATH-001", "R-FIRESTORE-001", "X-GITHUB-WORK-EVIDENCE-001", "P-FIREBASE-FIRESTORE-001", "P-GITHUB-001"],
+      "applicable_projects": ["freepasserp4", "freepass-admin", "freepass-sales"],
+      "actual_implementation": "Core engines and GitHub evidence connector are implemented. Firestore adapter/repository is verified as an ERP4 project implementation only; Admin production binding is absent and Sales has a separate read-only adapter.",
+      "permission_deployment_state": "No production binding or deployment is authorized.",
+      "hold_conditions": ["Choose an exact target project and revision", "Verify project-specific Firestore schema/auth/rules/deployment", "Obtain write/deploy approval when applicable"],
+      "verification_commands": ["npm run runtime-sets:validate", "npm run workflow:validate", "npm run capability:validate"]
+    },
+    {
+      "id": "RUN-02",
+      "name": "조회·모니터링",
+      "status": "HOLD",
+      "recommended": false,
+      "component_ids": ["E-OPERATING-001", "E-CAPABILITY-001", "A-SALES-CUSTOMER-001", "R-FIRESTORE-001", "X-GITHUB-WORK-EVIDENCE-001", "P-FIREBASE-FIRESTORE-001", "P-GITHUB-001"],
+      "applicable_projects": ["freepass-sales", "aiops", "freepasserp4"],
+      "actual_implementation": "Sales exact-match lookup and AI Core ACTIVE read-only capabilities exist. A generic cross-project Firestore reader does not.",
+      "permission_deployment_state": "Read-only intent; project credentials and minimum-data projection must be rechecked per run.",
+      "hold_conditions": ["Target read adapter is not registered/ACTIVE", "Credentials or live source are unavailable", "Query would expose unneeded personal data"],
+      "verification_commands": ["npm run runtime-sets:validate", "npm run capability:validate", "node --test test/sales-customer-search-capability.test.mjs test/finance-capabilities.test.mjs"]
+    },
+    {
+      "id": "RUN-03",
+      "name": "문서생성",
+      "status": "HOLD",
+      "recommended": false,
+      "component_ids": ["E-WORKFLOW-001", "E-CAPABILITY-001", "A-FILE-APPLICATION-001", "R-FILE-JSON-001", "X-GITHUB-WORK-EVIDENCE-001", "P-GITHUB-001"],
+      "applicable_projects": ["docshub", "freepass-admin", "ai-core"],
+      "actual_implementation": "Local file persistence and GitHub handoff exist, but the DocsHub production capability is HOLD and no generic document-generation adapter is ACTIVE in AI Core.",
+      "permission_deployment_state": "Local/SHADOW drafting only; external distribution remains separately approved.",
+      "hold_conditions": ["Any production/shared file persistence", "DocsHub adapter is not ACTIVE", "External send/distribution approval is absent"],
+      "verification_commands": ["npm run runtime-sets:validate", "node --test test/ai-continuation-pack.test.mjs"]
+    },
+    {
+      "id": "RUN-04",
+      "name": "AI 협업·GitHub 인계",
+      "status": "HOLD",
+      "recommended": false,
+      "component_ids": ["E-OPERATING-001", "E-CAPABILITY-001", "E-COORDINATOR-001", "A-ORDER-WORK-001", "R-ORDER-SQLITE-001", "X-GITHUB-WORK-EVIDENCE-001", "P-GITHUB-001"],
+      "applicable_projects": ["*"],
+      "actual_implementation": "Order/work mapping, durable result coordination, GitHub inspection and privacy-checked handoff packets exist.",
+      "permission_deployment_state": "Selection and handoff do not grant claim, execute, merge, deploy, send or completion authority.",
+      "hold_conditions": ["Order/work/revision binding is missing", "GitHub readback or CI evidence is missing", "Sensitive material is not minimized"],
+      "verification_commands": ["npm run runtime-sets:validate", "node --test test/order-work-adapter.test.mjs test/capability-execution-coordinator.test.mjs test/ai-continuation-pack.test.mjs"]
+    }
+  ]
+}
