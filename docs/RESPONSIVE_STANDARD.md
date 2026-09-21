@@ -26,6 +26,18 @@ The company baseline uses the same UI grammar across mobile and web.
 Canonical user decision:
 - `docs/UI_UX_USER_DECISION_2026-09-21_WEB_PANEL_EXTENSION.md`
 
+## Portable task panel gate
+
+Responsive layout is considered reusable only when a task panel can operate in isolation.
+
+- Desktop side-by-side panes are composition, not separate workflow implementations.
+- The detail/task panel must remain complete when shown alone on mobile.
+- Keyboard shortcuts, hover actions, right-click, drag-and-drop and sibling-pane visibility are optional accelerators only.
+- Stable entity/work IDs and canonical state/command bindings carry context between panes.
+- Collapsing 3 → 2 → 1 panes preserves selection, draft, workflow state, async ownership and completion meaning.
+
+See `docs/PORTABLE_TASK_PANEL_STANDARD_2026-09-21.md`.
+
 ## Layout and grid
 
 - Base page gutters: 12px mobile, 16px desktop compatibility baseline.
