@@ -45,9 +45,9 @@ test('emergency handoff is self-contained for a chat without repository context'
   assert.doesNotMatch(markdown, /\b[A-Z]:[\\/]|\\\\[^\\\s]+\\/);
   assert.doesNotMatch(markdown, /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i);
 });
-test('Claude entrypoint pins review scope, read order and proposal-only return', async () => {
+test('Claude entrypoint follows the academy constitution without forcing the retired PR22 assignment', async () => {
   const markdown = await readFile(new URL('../CLAUDE.md', import.meta.url), 'utf8');
-  for (const required of ['freepass-creator/ai-core', 'codex/order-control-integration', '1575f467b5356fe351d877da4b561cdc67af9175',
-    'Independent source review only', 'DURABLE_COORDINATION.md', 'RETURN_PACKET.md', 'PROPOSAL_ONLY', 'Do not edit files', 'weekly Claude usage-limit']) assert.ok(markdown.includes(required), required);
+  for (const required of ['WORK_READ_FIRST.md', 'AI_WORKING_STANDARD.md', 'Do not require a central order', 'next_start_here']) assert.ok(markdown.includes(required), required);
+  assert.doesNotMatch(markdown, /codex\/order-control-integration|Independent source review only|weekly Claude usage-limit/);
   assert.doesNotMatch(markdown, /execution_authorized\s*[:=]\s*true/i);
 });
