@@ -1,6 +1,6 @@
 {
   "contract": "ai-core-ui-ux-consumers/v1",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "definition_of_done": {
     "required_conformant_consumers": 2,
     "current_conformant_consumers": 0,
@@ -48,6 +48,27 @@
         "docs/coordination/ERP4_STABILITY_QUERY_LEARNING.md",
         "https://github.com/freepass-creator/freepasserp4/pull/435",
         "https://github.com/freepass-creator/freepasserp4/actions/runs/35443854623"
+      ]
+    },
+    {
+      "id": "freepass-admin",
+      "repository": "freepass-creator/freepass-admin",
+      "observed_revision": "a779fbe5bbb807a84e76362768a66ee1bc88f5d5",
+      "relation": "CANONICAL_CONSUMER",
+      "adoption_status": "MAPPED",
+      "feature_refs": [
+        "data.list-presentation",
+        "data.search-discovery",
+        "data.variant-selector",
+        "data.master-detail",
+        "navigation.bottom-action",
+        "navigation.bottom-nav"
+      ],
+      "conformance_revision": null,
+      "conformance_receipts": [],
+      "evidence_refs": [
+        "freepass-admin:docs/ui/ai-core-bindings.json",
+        "freepass-admin:docs/ui/ADMIN-UI-UX-SSOT.md"
       ]
     }
   ]
