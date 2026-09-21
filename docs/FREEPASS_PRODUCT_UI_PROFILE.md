@@ -11,13 +11,14 @@
 이 문서는 FreePass Sales / Estimate / ERP4에서 반복 확인된 **FreePass 제품군 전용 UI/UX 문법**을 모은다.
 모든 픽셀을 강제하는 전사 표준이 아니라, 새 FreePass 화면이 먼저 참조할 profile이다.
 
-## 1. 상단은 상태/정보, 하단은 실행
+## 1. 모바일은 상단 상태/정보, 하단 실행
 
-- 상단은 제목, 상태, 짧은 맥락/건수 등 표시 중심
-- 제품 UI의 뒤로가기/앞으로가기/저장/완료/공유 등 navigation/task action을 상단에 두지 않는다
-- 주요 업무 버튼은 하단 action boundary에 둔다
+- 모바일 상단은 제목, 상태, 짧은 맥락/건수 등 표시 중심
+- 모바일 제품 UI의 뒤로가기/앞으로가기/저장/완료 등 workflow action을 상단에 두지 않는다
+- 모바일 주요 업무 버튼은 하단 action boundary에 둔다
 - dialog도 실행은 footer
-- page header를 action toolbar로 사용하지 않는다
+- 웹은 Adaptive Web 규격에 따라 utility toolbar / inline action / shortcut을 생산성 accelerator로 사용할 수 있다
+- 웹 accelerator는 동일 canonical command에 연결해야 한다
 
 ## 1.1 모바일 하단 영역 — 전역 메뉴와 로컬 액션을 섞지 않는다
 
@@ -132,7 +133,7 @@ ERP4 Product Browse처럼 공개 상품 탐색은 업무 카드보다 더 여유
 - icon-only action에는 accessible name이 필요하다
 - 의미가 불명확하면 텍스트/보조설명을 함께 제공한다
 - 저장/접수/완료/반영 같은 Primary 업무 CTA를 icon-only로 축약하지 않는다
-- icon 사용을 이유로 상단을 action toolbar로 되돌리지 않는다
+- 모바일에서는 icon 사용을 이유로 상단을 action toolbar로 되돌리지 않는다; 웹은 Adaptive Web 규격을 따른다
 
 ## 7. 목록↔상세 header continuity
 
