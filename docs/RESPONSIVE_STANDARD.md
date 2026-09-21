@@ -2,7 +2,7 @@
 
 ## Principle
 
-Responsive behavior preserves **meaning, reading order and task priority** while layout adapts. Mobile is the canonical single-panel task grammar; desktop reuses that grammar and may compose multiple equivalent panels side by side.
+Responsive behavior preserves **business meaning, task priority and state continuity** while layout adapts. Mobile uses the canonical single-task grammar; desktop may compose multiple panels or use a productivity-optimized surface.
 
 ## Reference probes, not device classes
 
@@ -12,14 +12,14 @@ The shared compatibility breakpoint at 640px is a current implementation referen
 
 ## User-locked mobile → web projection — 2026-09-21
 
-The company baseline uses the same UI grammar across mobile and web.
+The company baseline uses the same business-task contract across mobile and web; visual grammar is stricter on mobile and adaptive on web.
 
 - **Mobile: one task surface = one screen/panel.**
-- **Web: the same mobile-equivalent surfaces may be shown side by side as multiple panels.**
+- **Web: the same task contract may be shown as multiple panels or transformed into a productivity-optimized desktop surface.**
 - Desktop width is used primarily to reduce navigation depth and preserve context, not to invent a separate desktop design language.
 - A list panel may remain visible while a detail panel opens beside it; a third supporting/history panel may be added when useful.
-- Panel internals preserve the mobile information hierarchy, card structure, status semantics, icon actions and bottom action hierarchy.
-- Widening the viewport does not justify moving task actions into a top toolbar.
+- Web preserves status/command semantics but may change density, card/table projection, action placement accelerators and composition.
+- Widening the viewport may justify mirroring canonical actions into inline/shortcut/toolbar accelerators when productivity improves; this must not fork workflow semantics.
 - Card lists do not automatically become dense tables on desktop. Use a table only when relational row/column comparison is intrinsic to the task.
 - As width contracts, reduce the number of simultaneous panels until the UI converges to the mobile single-panel flow.
 
