@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises';
 import { basename, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildAcademyStartReceipt, TRACK_DOCS } from '../src/academy/start-gate.mjs';
+import { installAcademyStarterKit } from '../src/academy/starter-kit.mjs';
 
 const coreRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const argv = process.argv.slice(2);
@@ -12,6 +13,7 @@ const track = value('--track') ?? 'development';
 const root = resolve(value('--root') ?? process.cwd());
 const requestedProject = value('--project');
 const create = value('--create');
+const kit = value('--kit');
 const git = args => execFileSync('git', args, { cwd: root, encoding: 'utf8', windowsHide: true }).trim();
 const read = path => readFile(path, 'utf8');
 
@@ -53,4 +55,9 @@ if (receipt.target) {
   receipt.target.display_name = basename(root);
 }
 console.log(JSON.stringify(receipt, null, 2));
+if (receipt.status === 'READY' && kit) {
+  const coreRevision = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: coreRoot, encoding: 'utf8', windowsHide: true }).trim();
+  const installed = await installAcademyStarterKit({ output: resolve(root, kit), receipt, readings, coreRevision });
+  console.error(JSON.stringify(installed, null, 2));
+}
 if (receipt.status !== 'READY') process.exitCode = 3;
