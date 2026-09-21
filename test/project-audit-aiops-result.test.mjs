@@ -25,6 +25,7 @@ test('AIOps security evidence cannot self-promote while Security/Audit remains r
     readJson('../registry/project-audit-readiness.json'),
     readJson('../docs/audits/aiops-pilot-2026-09-20.json'),
   ]);
+  readiness.axes.find(x => x.id === 'security-audit').maturity = 'RESEARCH_ONLY';
   result.findings.find(x => x.axis === 'security-audit').verdict = 'PROJECT_AHEAD';
   assert.throws(
     () => validateProjectAuditResult(result, readiness),

@@ -17,9 +17,13 @@ test('current AI Core standards are ready for read-only project audit pilot, not
   assert.equal(report.permissions.auto_remediation, false);
   assert.equal(report.permissions.canonical_promotion, false);
   assert.equal(report.permissions.production_mutation, false);
-  assert.deepEqual(report.axes.advisory_only, ['security-audit', 'qa-observability']);
-  assert.ok(report.axes.canonical_partial.includes('api-event-error'));
-  assert.ok(report.axes.canonical_partial.includes('build-deploy-governance'));
+  assert.deepEqual(report.axes.advisory_only, []);
+  assert.deepEqual(report.axes.canonical_partial, [
+    'api-event-error',
+    'security-audit',
+    'qa-observability',
+    'build-deploy-governance',
+  ]);
 });
 
 test('research-only axis can never make full conformance ready', async () => {

@@ -24,6 +24,7 @@ test('research-only axes cannot be upgraded to normative CORE_MATCH', async () =
     readJson('../registry/project-audit-readiness.json'),
     readJson('../docs/audits/freepass-admin-pilot-2026-09-20.json'),
   ]);
+  readiness.axes.find(x => x.id === 'security-audit').maturity = 'RESEARCH_ONLY';
   result.findings.find(x => x.axis === 'security-audit').verdict = 'CORE_MATCH';
   assert.throws(
     () => validateProjectAuditResult(result, readiness),
