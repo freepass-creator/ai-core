@@ -16,7 +16,7 @@ test("parses starter arguments", () => {
 test("creates a revision-bound starter with established UI rules", () => {
   const target = mkdtempSync(join(tmpdir(), "ai-core-ui-"));
   const result = initStarter({ target, profile: "freepass-product", product: "Sample" });
-  assert.equal(result.files.length, 15);
+  assert.equal(result.files.length, 16);
 
   const css = readFileSync(join(target, "ai-core-ui.css"), "utf8");
   const html = readFileSync(join(target, "starter.html"), "utf8");
@@ -60,6 +60,9 @@ test("creates a revision-bound starter with established UI rules", () => {
   assert.match(modelIndex, /처리 결과를 확인/);
   assert.match(modelIndex, /SET-01/);
   assert.match(modelIndex, /검색창만 S02로 바꿔/);
+  assert.match(modelIndex, /data-set=/);
+  assert.match(modelIndex, /data-component=/);
+  assert.match(modelIndex, /preview\.src/);
   assert.match(modelIndex, /FreePass CI manifest version/);
   const modelScript = readFileSync(join(target, "models", "models.js"), "utf8");
   assert.match(modelScript, /aria-busy/);
@@ -75,6 +78,9 @@ test("creates a revision-bound starter with established UI rules", () => {
   assert.match(catalog.brand_profiles.FREEPASS.asset_policy, /Remote hotlinks are prohibited/);
   assert.deepEqual(catalog.recipes["RENMAN-PENALTY-01"].sequence.map((step) => step.set), ["SET-03", "SET-02"]);
   assert.match(catalog.recipes["RENMAN-PENALTY-01"].mobile_rule, /M02/);
+  const inventory = JSON.parse(readFileSync(join(target, "ui-existing-pattern-inventory.json"), "utf8"));
+  assert.ok(inventory.items.length >= 400);
+  assert.deepEqual(inventory.repositories.map((item) => item.id), ["freepass-sales", "freepass-admin", "freepasserp4", "freepass-data", "teamjpkwork", "renman"]);
 });
 
 test("does not overwrite an existing starter without force", () => {
