@@ -16,7 +16,7 @@ async function put(path, body) {
   }
 }
 
-export async function installAcademyStarterKit({ output, receipt, readings, coreRevision, operatingKnowledge = null }) {
+export async function installAcademyStarterKit({ output, receipt, readings, coreRevision, operatingKnowledge = null, catalog = [] }) {
   if (receipt?.status !== 'READY') throw new Error('READY_RECEIPT_REQUIRED');
   const files = [];
   for (const item of readings) {
@@ -38,5 +38,13 @@ export async function installAcademyStarterKit({ output, receipt, readings, core
   await put(join(output, 'verify-kit.mjs'), verifier);
   await put(join(output, 'kit.json'), `${JSON.stringify(manifest, null, 2)}\n`);
   if (operatingKnowledge) await put(join(output, 'OPERATING_KNOWLEDGE.json'), `${JSON.stringify(operatingKnowledge, null, 2)}\n`);
+  const catalogIndex=[];
+  for(const item of catalog){
+    const body=`${JSON.stringify(item.data,null,2)}\n`;
+    const path=`catalog/${item.name}`;
+    await put(join(output,path),body);
+    catalogIndex.push({path,sha256:digest(body),source:item.source,core_revision:coreRevision});
+  }
+  if(catalogIndex.length) await put(join(output,'CATALOG_INDEX.json'),`${JSON.stringify({schema:'ai-core-starter-catalog/v1',generated_at:receipt.observed_at,items:catalogIndex},null,2)}\n`);
   return { status: 'INSTALLED', output, manifest, entrypoint: join(output, 'START_HERE.md') };
 }

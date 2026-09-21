@@ -12,6 +12,8 @@ AI Core is the group's **AI academy**: a shared foundation where AIs learn the s
 
 프로젝트가 독립적으로 시작할 수 있는 규격 묶음이 필요하면 같은 명령에 `--kit .ai-core`를 붙인다. `.ai-core/`에는 업무별 규격 사본, 버전·해시 manifest, 시작 안내, 완료 양식과 로컬 무결성 검사기가 설치된다.
 
+키트는 전체 프로젝트 registry, capability registry와 업무 지도를 `catalog/`에 함께 싣는다. 새 AI는 현재 관리 프로젝트와 가능한 업무를 이 목록에서 먼저 확인하고, 프로젝트 고유 정본과 최신 상태만 재관측한다.
+
 쌓여 있는 Markdown을 전부 매번 읽지 않는다. [AI 사관학교 실전 교범과 교과과정](docs/AI_ACADEMY_CURRICULUM.md)에서 업무별 최소 독서 경로를 고르고, 헌법·현행 표준·연구 후보·과거 evidence를 구분해 사용한다.
 
 이 PC의 필수 진입점인 Codex·Claude가 헌법과 교과과정에 연결됐는지는 `npm run academy:validate`로 확인한다. Gemini·Cursor 진입점은 선택 상태로만 보고하며 전체 판정을 막지 않는다. 이 검사는 규칙 파일 설치만 검증하고 로그인·한도 또는 실제 준수까지 PASS로 간주하지 않는다.
