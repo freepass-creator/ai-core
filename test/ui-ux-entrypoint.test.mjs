@@ -10,6 +10,39 @@ const entry = JSON.parse(
   await readFile(new URL('../registry/ui-ux-entrypoint.json', import.meta.url), 'utf8')
 );
 
+const boundSources = {
+  feature_registry: 'registry/ui-ux-features.json',
+  tokens: 'design-system/tokens.json',
+  components: 'design-system/components.registry.json',
+  patterns: 'design-system/patterns.registry.json',
+  runtime_css: 'design-system/runtime-v2.css',
+  entrypoint: 'registry/ui-ux-entrypoint.json',
+  freepass_product_profile: 'docs/FREEPASS_PRODUCT_UI_PROFILE.md',
+  start_here: 'docs/UI_UX_START_HERE.md'
+};
+
+function makeBinding(revision = 'a'.repeat(40)) {
+  return {
+    contract: 'devcenter-design-core-binding/v1',
+    ai_core: {
+      repository: 'freepass-creator/ai-core',
+      revision
+    },
+    sources: Object.fromEntries(
+      Object.entries(boundSources).map(([key, path], index) => [
+        key,
+        { path, blob_sha: String(index + 1).repeat(40) }
+      ])
+    )
+  };
+}
+
+function sourceBlobsFrom(binding) {
+  return Object.fromEntries(
+    Object.values(binding.sources).map(({ path, blob_sha }) => [path, blob_sha])
+  );
+}
+
 test('UI/UX work has one canonical start-here route', () => {
   const result = validateUiUxEntrypointSemantics(entry);
   assert.equal(result.status, 'VALID');
@@ -37,40 +70,32 @@ test('Design Hub binding check is mandatory before implementation claims', () =>
   );
 });
 
-test('target preflight accepts an exact Design Hub Core revision binding', () => {
-  const coreRevision = 'a'.repeat(40);
-  const designHubBinding = {
-    contract: 'devcenter-design-core-binding/v1',
-    ai_core: {
-      repository: 'freepass-creator/ai-core',
-      revision: coreRevision
-    }
-  };
-
+test('target preflight allows unrelated Core HEAD movement when bound UI/UX source blobs are unchanged', () => {
+  const designHubBinding = makeBinding('a'.repeat(40));
   const result = validateUiUxTargetBinding(entry, {
-    coreRevision,
+    currentCoreRevision: 'b'.repeat(40),
+    currentSourceBlobs: sourceBlobsFrom(designHubBinding),
     designHubBinding
   });
 
   assert.equal(result.status, 'VALID');
-  assert.equal(result.designHubRevision, coreRevision);
+  assert.equal(result.currentCoreRevision, 'b'.repeat(40));
+  assert.equal(result.designHubBaselineRevision, 'a'.repeat(40));
+  assert.equal(result.verifiedSourceCount, 8);
 });
 
-test('target preflight fails closed when Design Hub pins a stale Core revision', () => {
-  const designHubBinding = {
-    contract: 'devcenter-design-core-binding/v1',
-    ai_core: {
-      repository: 'freepass-creator/ai-core',
-      revision: 'a'.repeat(40)
-    }
-  };
+test('target preflight fails closed when a bound UI/UX source blob drifts', () => {
+  const designHubBinding = makeBinding();
+  const currentSourceBlobs = sourceBlobsFrom(designHubBinding);
+  currentSourceBlobs['design-system/tokens.json'] = 'f'.repeat(40);
 
   assert.throws(
     () => validateUiUxTargetBinding(entry, {
-      coreRevision: 'b'.repeat(40),
+      currentCoreRevision: 'b'.repeat(40),
+      currentSourceBlobs,
       designHubBinding
     }),
-    /UIUX_DESIGN_HUB_CORE_REVISION_STALE/
+    /UIUX_DESIGN_HUB_SOURCE_BLOB_STALE:tokens/
   );
 });
 
