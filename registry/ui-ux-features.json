@@ -1,6 +1,6 @@
 {
   "contract": "ai-core-ui-ux-feature-registry/v1",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "normative_source": "docs/SCREEN_DESIGN_STANDARD.md",
   "global_rules": {
     "invariants": [
@@ -2325,6 +2325,52 @@
         "keyboard-or-equivalent",
         "mobile-desktop",
         "failure-path"
+      ]
+    },
+    {
+      "id": "system.portable-task-panel",
+      "family": "system",
+      "title": "Portable task panel",
+      "kind": "pattern",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "RESPONSIVE",
+        "PAGE_ACTION",
+        "DATA_SURFACE",
+        "CONTROL"
+      ],
+      "required_states": [
+        "standalone",
+        "multi-panel",
+        "collapsed",
+        "busy",
+        "error"
+      ],
+      "rules": [
+        "A reusable task panel must remain understandable and completable when detached from a desktop multi-panel composition and shown alone on mobile.",
+        "Desktop multi-panel composition may add simultaneous context and accelerators but may not create desktop-only business completion semantics.",
+        "Required commands must remain available without relying exclusively on hover, right-click, keyboard shortcuts, drag-and-drop or sibling-panel visibility.",
+        "Panel correctness depends on stable entity/work context and canonical command/state bindings, not visual adjacency.",
+        "Wide layouts may compose list, detail/task and supporting panels; narrow layouts collapse them toward one active panel while preserving state."
+      ],
+      "verification": [
+        "standalone-mobile-completion",
+        "action-parity",
+        "state-continuity",
+        "input-modality-parity",
+        "multi-panel-collapse",
+        "no-sibling-dependency",
+        "mobile-desktop"
+      ],
+      "evidence": [
+        {
+          "level": "CROSS_PROJECT_VERIFIED",
+          "refs": [
+            "docs/PORTABLE_TASK_PANEL_STANDARD_2026-09-21.md",
+            "docs/UI_UX_USER_DECISION_2026-09-21_MOBILE_BASELINE.md",
+            "docs/UI_UX_USER_DECISION_2026-09-21_WEB_PANEL_EXTENSION.md"
+          ]
+        }
       ]
     },
     {
