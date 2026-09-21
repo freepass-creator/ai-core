@@ -2,13 +2,29 @@
 
 ## Principle
 
-Responsive behavior preserves **meaning, reading order and task priority** while layout adapts. Mobile is not a scaled desktop and desktop is not a widened mobile stack.
+Responsive behavior preserves **meaning, reading order and task priority** while layout adapts. Mobile is the canonical single-panel task grammar; desktop reuses that grammar and may compose multiple equivalent panels side by side.
 
 ## Reference probes, not device classes
 
 Required regression widths are 360 / 390 / 412 / 1280 / 1440 CSS px. They are verification probes, not a rule that all layout decisions happen exactly at those widths.
 
 The shared compatibility breakpoint at 640px is a current implementation reference. New components choose breakpoints from content pressure and record reusable changes in the Core rather than inventing product-specific device names.
+
+## User-locked mobile → web projection — 2026-09-21
+
+The company baseline uses the same UI grammar across mobile and web.
+
+- **Mobile: one task surface = one screen/panel.**
+- **Web: the same mobile-equivalent surfaces may be shown side by side as multiple panels.**
+- Desktop width is used primarily to reduce navigation depth and preserve context, not to invent a separate desktop design language.
+- A list panel may remain visible while a detail panel opens beside it; a third supporting/history panel may be added when useful.
+- Panel internals preserve the mobile information hierarchy, card structure, status semantics, icon actions and bottom action hierarchy.
+- Widening the viewport does not justify moving task actions into a top toolbar.
+- Card lists do not automatically become dense tables on desktop. Use a table only when relational row/column comparison is intrinsic to the task.
+- As width contracts, reduce the number of simultaneous panels until the UI converges to the mobile single-panel flow.
+
+Canonical user decision:
+- `docs/UI_UX_USER_DECISION_2026-09-21_WEB_PANEL_EXTENSION.md`
 
 ## Layout and grid
 
