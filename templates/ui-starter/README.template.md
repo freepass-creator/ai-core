@@ -21,6 +21,8 @@
 
 `models/index.html`에서 먼저 `SET-01`~`SET-05`를 고릅니다. `ui-component-catalog.json`의 B·S·L·C·H·N·M·D 번호로 필요한 부품만 교체한 뒤, 여섯 개 실제 화면 예시에서 HTML을 복사해 시작합니다. 공개된 번호의 의미는 바꾸지 않고, 교체할 때는 새 번호와 `deprecated`·`replaced_by`를 기록합니다.
 
+FreePass 브랜드 자산은 AI Core가 합치거나 원격 연결하지 않습니다. `freepasshomepage` CI Center가 확정한 manifest version과 digest를 고른 뒤 동기화된 로컬 자산의 출처를 남깁니다. 정본이 정해지기 전에는 `HOLD`입니다.
+
 ## Required verification
 
 키보드 이동, 보이는 포커스, 44px 터치 영역, safe area, 가상 키보드, 스크롤·작성 내용 보존은 생성기 검증 대상으로 유지합니다.

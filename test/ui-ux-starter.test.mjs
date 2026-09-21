@@ -60,6 +60,7 @@ test("creates a revision-bound starter with established UI rules", () => {
   assert.match(modelIndex, /처리 결과를 확인/);
   assert.match(modelIndex, /SET-01/);
   assert.match(modelIndex, /검색창만 S02로 바꿔/);
+  assert.match(modelIndex, /FreePass CI manifest version/);
   const modelScript = readFileSync(join(target, "models", "models.js"), "utf8");
   assert.match(modelScript, /aria-busy/);
   assert.match(modelScript, /dataset\.previewState/);
@@ -70,6 +71,8 @@ test("creates a revision-bound starter with established UI rules", () => {
   const catalog = JSON.parse(readFileSync(join(target, "ui-component-catalog.json"), "utf8"));
   assert.deepEqual(catalog.sets["SET-01"].components, ["H01", "S01", "L01", "M01", "B01"]);
   assert.equal(catalog.components.B01.name, "주 실행 버튼");
+  assert.equal(catalog.brand_profiles.FREEPASS.owner, "freepasshomepage CI Center");
+  assert.match(catalog.brand_profiles.FREEPASS.asset_policy, /Remote hotlinks are prohibited/);
   assert.deepEqual(catalog.recipes["RENMAN-PENALTY-01"].sequence.map((step) => step.set), ["SET-03", "SET-02"]);
   assert.match(catalog.recipes["RENMAN-PENALTY-01"].mobile_rule, /M02/);
 });

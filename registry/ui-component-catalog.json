@@ -8,6 +8,16 @@
     "C:/dev/docshub/양식/_화면.html",
     "C:/dev/docshub/양식/자료디자인.css"
   ],
+  "brand_profiles": {
+    "FREEPASS": {
+      "label": "FreePass CI manifest version",
+      "owner": "freepasshomepage CI Center",
+      "manifest_version": null,
+      "manifest_digest": null,
+      "asset_policy": "Use only assets synced locally from the selected manifest and retain source path, version and digest provenance. Remote hotlinks are prohibited.",
+      "status": "HOLD until CI Center selects the canonical manifest; do not merge logo candidates in AI Core."
+    }
+  },
   "components": {
     "B01": {"name":"주 실행 버튼","use":"저장·완료 등 현재 화면의 단일 핵심 실행","avoid":"단순 이동이나 보조 동작","class":"ui-button","states":["hover","focus-visible","disabled","busy"]},
     "B02": {"name":"보조 실행 버튼","use":"취소·이전·수정","avoid":"핵심 완료 동작","class":"ui-button secondary","states":["hover","focus-visible","disabled"]},
