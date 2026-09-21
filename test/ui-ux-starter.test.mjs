@@ -30,7 +30,8 @@ test("creates a revision-bound starter with established UI rules", () => {
   assert.match(css, /border: 1px solid var\(--color-border\)/);
   assert.doesNotMatch(css, /\.ui-card-list\[data-layout="responsive-grid"\]/);
   assert.match(html, /class="ui-profile-freepass"/);
-  assert.match(html, /class="ui-bottom-action"/);
+  assert.match(html, /class="ui-bottom-action starter-page-action"/);
+  assert.match(html, /aria-label="현재 페이지 실행"/);
   assert.doesNotMatch(html, /data-layout="responsive-grid"/);
   assert.match(html, /data-state="populated"/);
   assert.match(html, /id="draft-note"/);
@@ -39,6 +40,7 @@ test("creates a revision-bound starter with established UI rules", () => {
   assert.match(javascript, /aria-pressed/);
   assert.match(readme, /상단은 상태와 제목, 하단은 이동과 실행/);
   assert.match(readme, /버튼과 선택은 테두리 없이, 입력과 표는 테두리 있게, 목록은 카드 하나/);
+  assert.match(readme, /하단 이동은 아이콘, 페이지 실행은 테두리 없는 박스 버튼/);
   assert.match(profile.ai_core_revision, /^[a-f0-9]{40}$/);
 });
 

@@ -35,7 +35,8 @@
       <div class="starter-state-switcher" role="group" aria-label="화면 상태"><button class="ui-button secondary" type="button" data-show-state="populated">데이터</button><button class="ui-button secondary" type="button" data-show-state="loading">로딩</button><button class="ui-button secondary" type="button" data-show-state="empty">빈 상태</button><button class="ui-button secondary" type="button" data-show-state="error">오류</button></div>
       <div class="ui-state" data-state="populated" aria-live="polite"><strong id="state-heading">3건을 불러왔습니다.</strong><span id="state-copy">목록에서 항목을 선택해 작업을 이어가세요.</span></div>
     </section>
-    <footer class="ui-bottom-action"><button class="ui-button" id="primary-action" type="button">변경 저장</button></footer>
+    <!-- 상세·입력 화면은 page action만 둔다. 최상위 화면에서는 별도의 ui-bottom-nav에 aria-label을 가진 아이콘 이동 버튼을 둔다. -->
+    <footer class="ui-bottom-action starter-page-action" aria-label="현재 페이지 실행"><button class="ui-button" id="primary-action" type="button">변경 저장</button></footer>
   </main>
   <script src="./starter.js"></script>
 </body>

@@ -33,6 +33,19 @@
   font-weight: 700;
 }
 
+:where(.ui-profile-freepass, .ui-profile-internal, .ui-profile-mobile-work) .ui-bottom-nav > :is(a, button) {
+  border: 0;
+  background: transparent;
+  color: var(--color-muted);
+  font-weight: 600;
+}
+
+:where(.ui-profile-freepass, .ui-profile-internal, .ui-profile-mobile-work) .ui-bottom-nav > :is(a, button)[aria-current="page"] {
+  background: var(--color-info-surface);
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
 /* A search boundary is functional, so it remains visible. */
 .ui-search-region {
   display: grid;
@@ -53,6 +66,7 @@
 
 .starter-search-row .ui-search { flex: 1; min-width: 0; }
 .starter-icon-button { min-width: 44px; min-height: 44px; }
+.starter-page-action { justify-content: flex-end; }
 
 /* One bordered data container owns the list boundary; rows stay flat and actionable. */
 .ui-card-list {
