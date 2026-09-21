@@ -1,7 +1,7 @@
 {
   "schema": "ai-core-operations-board/v1",
-  "observed_at": "2026-09-21T05:57:53Z",
-  "generated_at": "2026-09-21T05:57:53Z",
+  "observed_at": "2026-09-21T06:13:34Z",
+  "generated_at": "2026-09-21T06:13:34Z",
   "source": {
     "registry": "registry/projects.json@16bf6b7",
     "local": "git status/rev-parse read-only",
@@ -21,6 +21,10 @@
       "project_id": "ai-core",
       "repository": "freepass-creator/ai-core",
       "default_branch": "main",
+      "authoritative": {
+        "path": "docs/coordination/AI_CORE_SESSION_OPERATING_DIRECTIVE_2026-09-19.md",
+        "revision": "948f31bbc8630aaea7bfc59ace9bc584a7714169"
+      },
       "registry_registered": true,
       "registry_path": "C:\\dev\\ai-core-control-tower",
       "registry_revision": "c72e081a6c6d0f9090695c724da69387e4b0356b",
@@ -31,6 +35,14 @@
         "head": "778e60cc887bbb4ea78ac181f3fc145e962a2e9a",
         "dirty_entries": 1
       },
+      "additional_checkouts": [
+        {
+          "path": "C:\\Users\\admin\\.codex\\worktrees\\operations-control-readback-20260921\\ai-core",
+          "branch": "codex/operations-control-readback-20260921",
+          "head": "948f31bbc8630aaea7bfc59ace9bc584a7714169",
+          "dirty_entries": 0
+        }
+      ],
       "github": {
         "main_head": "337418e2dec7a7d1ec6a380e45996a2dfd172ce2",
         "open_prs": [
@@ -70,6 +82,10 @@
       "project_id": "freepass-data",
       "repository": "freepass-creator/freepass-data",
       "default_branch": "main",
+      "authoritative": {
+        "path": "README.md",
+        "revision": "fea18ce15f523d41a9382e7ae79e702a58d3afae"
+      },
       "registry_registered": false,
       "local": {
         "path": "C:\\dev\\freepass-data",
@@ -116,6 +132,10 @@
       "project_id": "freepass-admin",
       "repository": "freepass-creator/freepass-admin",
       "default_branch": "main",
+      "authoritative": {
+        "path": "docs/SSOT.md",
+        "revision": "02deb4df0fcb123a478519e3cbb408cd5e2ad7c6"
+      },
       "registry_registered": true,
       "registry_path": null,
       "registry_revision": "2747ef32e96c550d7dea05c58ee012880cb42dd3",
@@ -142,15 +162,15 @@
         "status": "UNKNOWN",
         "evidence": []
       },
-      "next_order": "Bind the active Admin session to an exact repository checkout before accepting Data projection work.",
+      "next_order": "Bind the Admin session to an exact repository checkout before accepting Data projection work.",
       "session": {
         "session_id": "01a0c20a-04b9-77f0-af6a-b562e55ced4a",
         "project_id": "freepass-admin",
         "title": "freepass-admin - execution",
-        "state": "active",
+        "state": "idle",
         "cwd": "C:\\dev\\ai-core"
       },
-      "work_status": "IN_PROGRESS",
+      "work_status": "WAITING",
       "integrity": {
         "status": "HOLD",
         "reasons": [
@@ -165,6 +185,10 @@
       "project_id": "freepass-sales",
       "repository": "freepass-creator/freepass-sales",
       "default_branch": "main",
+      "authoritative": {
+        "path": "docs/SSOT.md",
+        "revision": "a8f5efda3d62d5e2943a691dd0a7feee59c30aa5"
+      },
       "registry_registered": true,
       "registry_path": "C:\\dev\\sales",
       "registry_revision": "e98e3e9854012b9043f7fbe7b4168ce772047e39",
@@ -190,7 +214,7 @@
         }
       ],
       "github": {
-        "main_head": "dac301e859a433a189ba16e68584df40261b8550",
+        "main_head": "a8f5efda3d62d5e2943a691dd0a7feee59c30aa5",
         "open_prs": [
           {
             "number": 15,
@@ -228,6 +252,10 @@
       "project_id": "freepass-estimate",
       "repository": "freepass-creator/freepass-estimate",
       "default_branch": "main",
+      "authoritative": {
+        "path": "README.md",
+        "revision": "6d575af8d00ef43835fdbcd0cd0c1f5e26ae9140"
+      },
       "registry_registered": true,
       "registry_path": null,
       "registry_revision": "57a75aaeaa8b91f14c6bc22faa01e745daaa3112",
@@ -269,6 +297,10 @@
       "project_id": "aiops",
       "repository": "freepass-creator/aiops",
       "default_branch": "main",
+      "authoritative": {
+        "path": "docs/CONTROL_PLANE.md",
+        "revision": "03dd804962eb4e345b7a34b3e0e97e8bc6d5efe3"
+      },
       "registry_registered": true,
       "registry_path": "C:\\dev\\aiops",
       "registry_revision": "03dd804962eb4e345b7a34b3e0e97e8bc6d5efe3",
@@ -371,7 +403,7 @@
         {
           "role": "consumer_main",
           "project_id": "freepass-sales",
-          "revision": "dac301e859a433a189ba16e68584df40261b8550",
+          "revision": "a8f5efda3d62d5e2943a691dd0a7feee59c30aa5",
           "observed": true
         }
       ],
@@ -402,7 +434,7 @@
         {
           "role": "sales_main",
           "project_id": "freepass-sales",
-          "revision": "dac301e859a433a189ba16e68584df40261b8550",
+          "revision": "a8f5efda3d62d5e2943a691dd0a7feee59c30aa5",
           "observed": true
         }
       ],

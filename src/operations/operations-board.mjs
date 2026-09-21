@@ -14,11 +14,15 @@ function projectRevisionSet(project) {
     project.github?.main_head,
     ...(project.github?.open_prs ?? []).map((pr) => pr.head_revision),
     project.local?.head,
+    ...(project.additional_checkouts ?? []).map((checkout) => checkout.head),
   ].filter((value) => SHA.test(value ?? '')));
 }
 
 function deriveIntegrity(project) {
   const reasons = [];
+  if (!REPOSITORY_PATH.test(project.authoritative?.path ?? '')) reasons.push('AUTHORITATIVE_PATH_MISSING');
+  if (!SHA.test(project.authoritative?.revision ?? '')) reasons.push('AUTHORITATIVE_REVISION_INVALID');
+  else if (!projectRevisionSet(project).has(project.authoritative.revision)) reasons.push('AUTHORITATIVE_REVISION_NOT_OBSERVED');
   if (project.registry_registered === false) reasons.push('PROJECT_NOT_REGISTERED');
   if (!SHA.test(project.github?.main_head ?? '')) reasons.push('GITHUB_MAIN_HEAD_UNVERIFIED');
   if (!project.local?.exists) reasons.push('LOCAL_PATH_MISSING');

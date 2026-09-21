@@ -1,5 +1,12 @@
 {
   "schema_version": "1.0",
+  "global_operating_directive": {
+    "path": "docs/coordination/AI_CORE_SESSION_OPERATING_DIRECTIVE_2026-09-19.md",
+    "revision": "948f31bbc8630aaea7bfc59ace9bc584a7714169",
+    "decision_date": "2026-09-21",
+    "scope": "repository-owned durable work truth, revision-bound session closeout and cross-session continuation",
+    "authority_boundary": "This pointer grants no merge, deploy, database-write or external-send authority."
+  },
   "무엇": "★AI Core 가 지켜보는 운영 회차 — scripts/ops-watch.mjs 가 읽는다. 지켜보기만 한다. 켜거나 돌리지 않는다.",
   "★읽기전에": [
     "여기 적힌 것은 «무엇이 언제 돌아야 하나» 라는 조직의 사실이다. 권한이 아니다.",

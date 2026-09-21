@@ -10,12 +10,14 @@ function snapshot() {
     projects: [
       {
         project_id: 'producer', repository: 'example/producer', default_branch: 'main', registry_registered: true,
+        authoritative: { path: 'docs/SSOT.md', revision: sha('a') },
         registry_path: '/producer', registry_revision: sha('a'),
         local: { path: '/producer', exists: true, branch: 'main', head: sha('a'), dirty_entries: 0 },
         github: { main_head: sha('a'), open_prs: [] }, next_order: 'continue',
       },
       {
         project_id: 'consumer', repository: 'example/consumer', default_branch: 'main', registry_registered: true,
+        authoritative: { path: 'docs/SSOT.md', revision: sha('b') },
         registry_path: '/consumer', registry_revision: sha('b'),
         local: { path: '/consumer', exists: true, branch: 'main', head: sha('b'), dirty_entries: 1 },
         github: { main_head: sha('b'), open_prs: [] }, next_order: 'clean safely',
