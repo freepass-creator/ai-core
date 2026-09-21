@@ -20,11 +20,12 @@ test('FreePass Estimate candidate audit keeps production and research boundaries
   assert.equal(summary.auto_remediation_allowed, false);
 });
 
-test('Estimate QA evidence remains advisory until Core QA becomes canonical', async () => {
+test('Estimate QA evidence remains advisory when Core QA is research-only', async () => {
   const [readiness, result] = await Promise.all([
     readJson('../registry/project-audit-readiness.json'),
     readJson('../docs/audits/freepass-estimate-pilot-2026-09-20.json'),
   ]);
+  readiness.axes.find(x => x.id === 'qa-observability').maturity = 'RESEARCH_ONLY';
   result.findings.find(x => x.axis === 'qa-observability').verdict = 'CORE_MATCH';
   assert.throws(
     () => validateProjectAuditResult(result, readiness),

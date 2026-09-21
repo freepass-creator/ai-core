@@ -100,8 +100,9 @@ test('★실제 서버 한 바퀴 — 프로젝트 이동 → 멈춤 → 재관�
   const root = mkdtempSync(join(tmpdir(), 'reobs-srv-'));
   t.after(() => rmSync(root, { recursive: true, force: true }));
   const paths = { registry: join(root, 'registry.json'), snapshot: join(root, 'snapshot.json'), mappings: join(root, 'mappings.json'), ledger: join(root, 'work.jsonl') };
-  const 등록부 = (head) => JSON.stringify({ schema_version: '1.0', observed_at: '2026-09-18T00:00:00Z', projects: [{
-    project_id: PROJECT, name: 'Demo', organization: 'HEADQUARTERS', status: 'ACTIVE', mission: 'fixture',
+  const 등록부 = (head) => JSON.stringify({ schema_version: '1.1', observed_at: '2026-09-18T00:00:00Z', projects: [{
+    project_id: PROJECT, name: 'Demo', organization: 'HEADQUARTERS',
+    repository_lifecycle_status: 'ACTIVE', execution_readiness_status: 'ACTIVE', mission: 'fixture',
     repository: 'demo-org/demo-project', default_branch: 'main', work_branches: [], local_path: null, head_revision: head,
     authoritative_sources: [{ kind: 'GIT', ref: 'demo-org/demo-project', revision: head, observed_at: '2026-09-18T00:00:00Z' }],
     commands: { install: 'npm ci', test: 'npm test', build: 'npm run build' }, deploy_targets: [], required_approvals: [], known_blockers: [] }] });

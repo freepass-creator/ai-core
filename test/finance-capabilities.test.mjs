@@ -35,7 +35,7 @@ test('미수 요청은 비식별 receivables adapter로 resolve된다',()=>{
   assert.equal(cap.adapter.export,'aiCoreReceivables');
 });
 
-test('AI Core가 참조하는 AIOps revision은 finance adapter merge revision에 고정된다',()=>{
+test('AI Core가 참조하는 AIOps revision은 보험 adapter까지 포함한 현재 검증 head에 고정된다',()=>{
   const project=projects.projects.find(x=>x.project_id==='aiops');
-  assert.equal(project.head_revision,'c37a422765e784cdd843f36efb4be5328d7df4bb');
+  assert.equal(project.head_revision,'03dd804962eb4e345b7a34b3e0e97e8bc6d5efe3');
 });

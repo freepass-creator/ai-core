@@ -20,11 +20,12 @@ test('AIOps pilot preserves strong advisory evidence without falsely promoting r
   assert.equal(summary.auto_remediation_allowed, false);
 });
 
-test('AIOps security evidence cannot self-promote while Security/Audit remains research-only', async () => {
+test('AIOps security evidence cannot self-promote when Security/Audit is research-only', async () => {
   const [readiness, result] = await Promise.all([
     readJson('../registry/project-audit-readiness.json'),
     readJson('../docs/audits/aiops-pilot-2026-09-20.json'),
   ]);
+  readiness.axes.find(x => x.id === 'security-audit').maturity = 'RESEARCH_ONLY';
   result.findings.find(x => x.axis === 'security-audit').verdict = 'PROJECT_AHEAD';
   assert.throws(
     () => validateProjectAuditResult(result, readiness),

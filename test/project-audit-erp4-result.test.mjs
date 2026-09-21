@@ -21,11 +21,12 @@ test('ERP4 pilot preserves normative vs advisory axis boundaries', async () => {
   assert.equal(summary.canonical_promotion_allowed, false);
 });
 
-test('ERP4 research-only QA evidence cannot self-promote to PROJECT_AHEAD', async () => {
+test('ERP4 QA evidence cannot self-promote when QA is research-only', async () => {
   const [readiness, result] = await Promise.all([
     readJson('../registry/project-audit-readiness.json'),
     readJson('../docs/audits/freepasserp4-pilot-2026-09-20.json'),
   ]);
+  readiness.axes.find(x => x.id === 'qa-observability').maturity = 'RESEARCH_ONLY';
   result.findings.find(x => x.axis === 'qa-observability').verdict = 'PROJECT_AHEAD';
   assert.throws(
     () => validateProjectAuditResult(result, readiness),

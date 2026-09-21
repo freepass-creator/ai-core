@@ -48,7 +48,14 @@ test('dirty tracked worktree blocks project execution before command/module invo
     runProcess:async()=>{commands++;return{exit_code:0,stdout:'',stderr:''};},
     importModule:async()=>{modules++;return{execute:async()=>({status:'SUCCEEDED',evidence:[],artifacts:[],checks:[],blockers:[],external_effect:false})};},
   });
-  const project={project_id:'sample',status:'ACTIVE',local_path:resolve('/tmp/sample'),head_revision:'a'.repeat(40),commands:{test:'npm test'}};
+  const project={
+    project_id:'sample',
+    repository_lifecycle_status:'ACTIVE',
+    execution_readiness_status:'ACTIVE',
+    local_path:resolve('/tmp/sample'),
+    head_revision:'a'.repeat(40),
+    commands:{test:'npm test'},
+  };
   const command={id:'project.verify',title:'verify',mode:'LOCAL_MUTATION',adapter:{kind:'PROJECT_REGISTRY_COMMAND',command_key:'test'}};
   await assert.rejects(runtime.runCommand(command,project),/PROJECT_WORKTREE_DIRTY/);
   const module={id:'x',title:'x',mode:'READ_ONLY',adapter:{kind:'PROJECT_MODULE',entrypoint:'lib/x.mjs',export:'execute'}};

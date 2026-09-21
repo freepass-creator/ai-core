@@ -28,7 +28,8 @@ export function runControlTower({ registry, snapshot, ledgerText }) {
     if (futureWork.has(item.id)) blockers.push('WORK_OBSERVED_AFTER_AS_OF');
     if (!project) blockers.push('PROJECT_NOT_REGISTERED');
     else {
-      if (project.status !== 'ACTIVE') blockers.push(`PROJECT_${project.status}`);
+      const readiness = project.execution_readiness_status ?? project.status;
+      if (readiness !== 'ACTIVE') blockers.push(`PROJECT_${readiness ?? 'STATUS_MISSING'}`);
       if (project.head_revision !== item.subject_revision) blockers.push('PROJECT_REVISION_STALE');
     }
     if (!ledgerWork) blockers.push('WORK_NOT_REGISTERED');

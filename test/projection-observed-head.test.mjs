@@ -17,8 +17,9 @@ const PROJECT = 'demo-project';
 const REPO = 'demo-org/demo-project';
 const WORK = 'DEMO-001';
 
-const 등록부 = (head = A, observed = '2026-09-18T00:00:00Z') => ({ schema_version: '1.0', observed_at: observed, projects: [{
-  project_id: PROJECT, name: 'Demo', organization: 'HEADQUARTERS', status: 'ACTIVE', mission: 'fixture',
+const 등록부 = (head = A, observed = '2026-09-18T00:00:00Z') => ({ schema_version: '1.1', observed_at: observed, projects: [{
+  project_id: PROJECT, name: 'Demo', organization: 'HEADQUARTERS',
+  repository_lifecycle_status: 'ACTIVE', execution_readiness_status: 'ACTIVE', mission: 'fixture',
   repository: REPO, default_branch: 'main', work_branches: [], local_path: null, head_revision: head,
   authoritative_sources: [{ kind: 'GIT', ref: REPO, revision: head, observed_at: observed }],
   commands: { install: 'npm ci', test: 'npm test', build: 'npm run build' }, deploy_targets: [], required_approvals: [], known_blockers: [] }] });

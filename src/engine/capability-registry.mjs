@@ -2,6 +2,7 @@ const need = (condition, code) => { if (!condition) throw new Error(code); };
 const nonempty = value => typeof value === 'string' && value.trim() === value && value.length > 0;
 const MODES = new Set(['READ_ONLY', 'LOCAL_MUTATION', 'EXTERNAL_MUTATION']);
 const STATUSES = new Set(['ACTIVE', 'HOLD', 'REFERENCE']);
+const PROJECT_REGISTRY_VERSIONS = new Set(['1.0', '1.1']);
 
 export function capabilityIndex(registry) {
   const map = new Map();
@@ -23,7 +24,7 @@ export function projectIndex(projectRegistry) {
 
 export function validateCapabilityRegistryReferences(registry, projectRegistry) {
   need(registry?.schema_version === '1.0' && Array.isArray(registry.capabilities), 'CAPABILITY_REGISTRY_INVALID');
-  need(projectRegistry?.schema_version === '1.0' && Array.isArray(projectRegistry.projects), 'PROJECT_REGISTRY_INVALID');
+  need(PROJECT_REGISTRY_VERSIONS.has(projectRegistry?.schema_version) && Array.isArray(projectRegistry.projects), 'PROJECT_REGISTRY_INVALID');
   const projects = projectIndex(projectRegistry);
   const caps = capabilityIndex(registry);
 

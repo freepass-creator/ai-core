@@ -39,7 +39,7 @@
     {
       "query": "고객 조회 개선해",
       "expected_work_type_id": "sales-customer-search",
-      "expected_status": "HOLD_CAPABILITY_HOLD"
+      "expected_status": "RESOLVED"
     },
     {
       "query": "프로모션 문자 수정해",
