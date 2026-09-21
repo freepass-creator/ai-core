@@ -1,6 +1,6 @@
 {
   "contract": "ai-core-ui-interaction-contract/v1",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "feature_registry": "registry/ui-ux-features.json",
   "constitution": "docs/UI_UX_CONSTITUTION.md",
   "rules": {
@@ -122,7 +122,11 @@
         "Mobile is not a scaled desktop.",
         "Reading order and task priority remain stable across layout changes.",
         "Bottom actions include safe-area padding and remain reachable with the virtual keyboard.",
-        "Ordinary one-dimensional content reflows at high zoom."
+        "Ordinary one-dimensional content reflows at high zoom.",
+        "Mobile defines the canonical single-panel task surface; desktop may compose multiple equivalent panels side by side.",
+        "Web multi-panel composition reduces navigation depth and preserves context without changing panel-internal information or action hierarchy.",
+        "As available width decreases, panel count collapses toward the mobile single-panel flow.",
+        "Desktop width alone is not sufficient reason to replace card lists with dense tables or bottom task actions with top toolbars."
       ],
       "verification": [
         "360",
@@ -133,7 +137,11 @@
         "200%-zoom",
         "400%-reflow",
         "portrait-landscape",
-        "virtual-keyboard"
+        "virtual-keyboard",
+        "web-two-panel",
+        "web-three-panel",
+        "panel-collapse-to-single",
+        "context-preservation"
       ]
     },
     "accessibility": {
