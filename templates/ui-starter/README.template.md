@@ -19,7 +19,7 @@
 
 `ai-core-ui.css`를 한 번 불러오고 `starter.html`과 `starter.js`의 블록을 업무 순서대로 배열합니다. 최상위 화면의 하단 이동은 `ui-bottom-nav`에 아이콘 버튼으로 두고 각 버튼에 `aria-label`을 제공합니다. 상세·입력·검수 화면은 `ui-bottom-action`에 primary action 하나를 둡니다. 둘 다 필요한 경우에는 서로 겹치지 않는 두 영역으로 분리합니다.
 
-`models/index.html`에서 여섯 개 표준 화면을 고르고, 용도에 맞는 HTML을 복사해 시작합니다.
+`models/index.html`에서 먼저 `SET-01`~`SET-05`를 고릅니다. `ui-component-catalog.json`의 B·S·L·C·H·N·M·D 번호로 필요한 부품만 교체한 뒤, 여섯 개 실제 화면 예시에서 HTML을 복사해 시작합니다. 공개된 번호의 의미는 바꾸지 않고, 교체할 때는 새 번호와 `deprecated`·`replaced_by`를 기록합니다.
 
 ## Required verification
 

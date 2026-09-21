@@ -1,6 +1,21 @@
+const page = document.querySelector("[data-model]");
+const main = document.querySelector('[data-region="main"]');
+const stateBox = document.querySelector(".model-state");
+if (page && main && stateBox && !document.querySelector(".model-state-switch")) {
+  main.insertAdjacentHTML("beforeend", `<div class="model-state-switch" aria-label="화면 상태 미리보기">
+    <button class="ui-button secondary" data-state-target="loading" data-state-label="불러오는 중입니다">로딩</button>
+    <button class="ui-button secondary" data-state-target="empty" data-state-label="표시할 내용이 없습니다">빈 상태</button>
+    <button class="ui-button secondary" data-state-target="error" data-state-label="내용을 불러오지 못했습니다">오류</button>
+    <button class="ui-button secondary" data-state-target="populated" data-state-label="최신 내용을 표시하고 있습니다">데이터</button>
+  </div>`);
+}
 document.querySelectorAll("[data-state-target]").forEach((button) => button.addEventListener("click", () => {
+  const state = button.dataset.stateTarget;
   const target = document.querySelector(".model-state");
-  target.dataset.state = button.dataset.stateTarget;
+  page.dataset.previewState = state;
+  main.setAttribute("aria-busy", String(state === "loading"));
+  document.querySelectorAll("[data-state-target]").forEach((item) => item.setAttribute("aria-pressed", String(item === button)));
+  target.dataset.state = state;
   target.hidden = false;
   target.querySelector("strong").textContent = button.dataset.stateLabel;
 }));

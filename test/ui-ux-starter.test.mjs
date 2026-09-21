@@ -16,7 +16,7 @@ test("parses starter arguments", () => {
 test("creates a revision-bound starter with established UI rules", () => {
   const target = mkdtempSync(join(tmpdir(), "ai-core-ui-"));
   const result = initStarter({ target, profile: "freepass-product", product: "Sample" });
-  assert.equal(result.files.length, 14);
+  assert.equal(result.files.length, 15);
 
   const css = readFileSync(join(target, "ai-core-ui.css"), "utf8");
   const html = readFileSync(join(target, "starter.html"), "utf8");
@@ -51,11 +51,27 @@ test("creates a revision-bound starter with established UI rules", () => {
     assert.match(markup, /data-region="main"/);
     assert.match(markup, /언제 사용/);
     assert.match(markup, /사용하지 않을 때/);
-    assert.match(markup, /data-states="loading empty error populated selected disabled busy"/);
+    assert.match(markup, /data-supported-states="loading empty error populated selected disabled busy"/);
+    assert.match(markup, /class="model-state"/);
+    assert.match(markup, /models\.js/);
   }
   const modelIndex = readFileSync(join(target, "models", "index.html"), "utf8");
   assert.match(modelIndex, /여러 항목을 찾고 고름/);
   assert.match(modelIndex, /처리 결과를 확인/);
+  assert.match(modelIndex, /SET-01/);
+  assert.match(modelIndex, /검색창만 S02로 바꿔/);
+  const modelScript = readFileSync(join(target, "models", "models.js"), "utf8");
+  assert.match(modelScript, /aria-busy/);
+  assert.match(modelScript, /dataset\.previewState/);
+  const modelCss = readFileSync(join(target, "models", "models.css"), "utf8");
+  for (const width of [360, 390, 412, 1280, 1440]) assert.match(modelCss, new RegExp(`${width}px`));
+  const form = readFileSync(join(target, "models", "form.html"), "utf8");
+  assert.match(form, /aria-describedby="phone-error"/);
+  const catalog = JSON.parse(readFileSync(join(target, "ui-component-catalog.json"), "utf8"));
+  assert.deepEqual(catalog.sets["SET-01"].components, ["H01", "S01", "L01", "M01", "B01"]);
+  assert.equal(catalog.components.B01.name, "주 실행 버튼");
+  assert.deepEqual(catalog.recipes["RENMAN-PENALTY-01"].sequence.map((step) => step.set), ["SET-03", "SET-02"]);
+  assert.match(catalog.recipes["RENMAN-PENALTY-01"].mobile_rule, /M02/);
 });
 
 test("does not overwrite an existing starter without force", () => {
