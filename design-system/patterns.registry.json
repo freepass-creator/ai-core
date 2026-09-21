@@ -1,6 +1,6 @@
 {
   "contract": "ai-core-ui-pattern-registry/v1",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "feature_registry": "registry/ui-ux-features.json",
   "component_registry": "design-system/components.registry.json",
   "patterns": [
@@ -86,6 +86,14 @@
         "action.link"
       ],
       "contract_source": "registry/ui-ux-features.json#navigation.restore"
+    },
+    {
+      "feature_id": "data.list-presentation",
+      "layer": "pattern",
+      "implementation_status": "CONTRACT_ONLY",
+      "component_feature_refs": [],
+      "contract_source": "registry/ui-ux-features.json#data.list-presentation",
+      "notes": "Semantic mode-selection policy. Consumers bind local visual primitives to product-media-row, business-row, variant-card or data-table."
     },
     {
       "feature_id": "data.list",
