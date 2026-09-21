@@ -4,6 +4,7 @@ import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import Ajv2020 from 'ajv/dist/2020.js';
 import {
+  getUiUxRequiredBoundSourcePaths,
   validateUiUxEntrypointSemantics,
   validateUiUxTargetBinding
 } from '../src/engine/ui-ux-entrypoint.mjs';
@@ -60,10 +61,8 @@ try {
     }
 
     const currentSourceBlobs = {};
-    for (const [key, sourceBinding] of Object.entries(designHubBinding.sources ?? {})) {
-      const sourcePath = sourceBinding?.path;
-      if (typeof sourcePath !== 'string' || sourcePath.trim() === '') continue;
-
+    const requiredSourcePaths = getUiUxRequiredBoundSourcePaths(entry, { entryPath });
+    for (const sourcePath of requiredSourcePaths) {
       try {
         currentSourceBlobs[sourcePath] = execFileSync(
           'git',
@@ -71,14 +70,15 @@ try {
           { cwd: root, encoding: 'utf8' }
         ).trim();
       } catch {
-        throw new Error(`UIUX_PREFLIGHT_SOURCE_BLOB_UNAVAILABLE:${key}`);
+        throw new Error(`UIUX_PREFLIGHT_SOURCE_BLOB_UNAVAILABLE:${sourcePath}`);
       }
     }
 
     const targetResult = validateUiUxTargetBinding(entry, {
       currentCoreRevision,
       currentSourceBlobs,
-      designHubBinding
+      designHubBinding,
+      entryPath
     });
 
     console.log(
@@ -86,7 +86,7 @@ try {
       targetResult.designHubBaselineRevision +
       ' matches ' +
       targetResult.verifiedSourceCount +
-      ' declared source blobs at Core ' +
+      ' canonical source blobs at Core ' +
       targetResult.currentCoreRevision
     );
   } else {
