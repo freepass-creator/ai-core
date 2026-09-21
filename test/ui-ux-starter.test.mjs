@@ -59,7 +59,7 @@ test("creates a revision-bound starter with established UI rules", () => {
   assert.match(modelIndex, /여러 항목을 찾고 고름/);
   assert.match(modelIndex, /처리 결과를 확인/);
   assert.match(modelIndex, /SET-01/);
-  assert.match(modelIndex, /검색창만 S02로 바꿔/);
+  assert.match(modelIndex, /부품을 먼저 보고 고른 다음/);
   assert.match(modelIndex, /data-set=/);
   assert.match(modelIndex, /data-component=/);
   assert.match(modelIndex, /preview\.src/);
