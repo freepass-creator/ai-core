@@ -30,11 +30,16 @@ Official references:
 
 ## Action placement
 
-**Top is informational; bottom is actionable.**
+**Mobile: top is informational; bottom is actionable. Web: preserve the same command semantics while allowing productivity accelerators.**
 
-- App/page headers are display-only by default: brand, page title, context, progress and non-interactive status may appear there.
-- Do not place task CTAs such as Save, Submit, Share, Send, Reset, Complete, Preview or Export in the top app/page header.
-- Primary and secondary task actions belong in a bottom action area: a sticky/fixed footer on mobile and an anchored bottom action bar on desktop.
+- On **mobile**, app/page headers are display-only by default: brand, page title, context, progress and non-interactive status may appear there.
+- On **mobile**, do not place task CTAs such as Save, Submit, Send, Reset, Complete or other workflow-changing commands in the top app/page header.
+- On **mobile**, Primary and Secondary task actions belong in the bottom action area.
+- On **web**, the same canonical task command may be exposed through a sticky footer, inline action, keyboard shortcut or utility/action toolbar when this materially improves desktop productivity.
+- A web accelerator must invoke the same canonical command and share the same permission, busy/disabled, validation, result and error semantics.
+- Search, filter, sort, column control, refresh, export, print, density and batch-selection utilities may live in a desktop utility toolbar.
+- A desktop toolbar or inline action must not create a second workflow or a desktop-only business rule.
+- Do not make a required business outcome available only through hover, right-click, drag-and-drop or a keyboard shortcut.
 - Dialog task actions also belong in the dialog footer rather than the dialog header. The header carries the dialog title and passive options only.
 - Direct-selection controls that are the content itself (vehicle, model, trim, option, row, radio, checkbox, dropdown) remain where the choice is presented; they are not treated as page CTAs.
 - Back/Next/Complete navigation in a stepped flow uses the bottom action area. For single-choice auto-advance steps, selection itself advances and a redundant Next button is omitted.
