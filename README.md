@@ -6,6 +6,8 @@ AI Core is the group's **AI academy**: a shared foundation where AIs learn the s
 
 사용자는 각 AI에서 직접 업무한다. AI Core는 **AI 사관학교**로서 어떤 AI가 작업하더라도 정본 확인·재사용·검증·인계·노하우 축적 방식이 일관되게 작동하도록 훈련 기준을 제공한다. [AI 사관학교 헌법](docs/AI_WORKING_STANDARD.md)이 최상위 공통 규격이며, 중앙 오더 접수는 일반 업무의 선행 조건이 아니다. 아래 오더 데스크 내용은 기존 중앙 오더 경로의 구현 상태다.
 
+모든 AI는 디자인·규격·개발·문서·데이터·운영을 시작하기 전에 AI Core에서 `목적 → 정본 → 적용 규격 → 재사용할 노하우 → 완료 검증`을 확인하고 대상 프로젝트로 간다. 이 과정은 접수 절차가 아니라 작업 품질을 맞추는 짧은 필수 사전점검이다.
+
 ## 현재 작업: 공통 AI 오더 데스크
 
 통합 기준: PR #20의 work 원장이 업무 상태의 정본이고 PR #21의 OrderStore는 접수·claim 기록이다. 읽기 어댑터와 임시 DB의 후보→확인→work 연결은 [격리 통합 실험](docs/integration/INTEGRATION_STATUS.md)으로 검증한다. 영속 매핑·outbox는 미완이므로 운영 연결과 실행·최종 완료는 HOLD다. 사용자는 말로만 요청하고 기술 입력은 담당 AI가 처리한다.
