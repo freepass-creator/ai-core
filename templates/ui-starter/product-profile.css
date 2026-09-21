@@ -8,8 +8,8 @@
   line-height: var(--line-height);
 }
 
-/* FreePass primary standard: freepass-sales 웹/app.css @ 28db91f. */
-.ui-profile-freepass {
+/* FreePass primary standard for web and mobile: freepass-sales 웹/app.css @ 28db91f. */
+:where(.ui-profile-freepass, .ui-profile-internal, .ui-profile-mobile-work) {
   --color-bg: #f7f8fa;
   --color-surface: #ffffff;
   --color-text: #212529;
@@ -28,7 +28,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  .ui-profile-freepass {
+  :where(.ui-profile-freepass, .ui-profile-internal, .ui-profile-mobile-work) {
     --color-bg: #18191b;
     --color-surface: #222426;
     --color-text: #f4f5f6;
@@ -74,12 +74,6 @@
 }
 
 :where(.ui-profile-freepass, .ui-profile-internal, .ui-profile-mobile-work) .ui-bottom-nav > :is(a, button)[aria-current="page"] {
-  background: var(--color-info-surface);
-  color: var(--color-primary);
-  font-weight: 700;
-}
-
-.ui-profile-freepass .ui-bottom-nav > :is(a, button)[aria-current="page"] {
   background: transparent;
   color: var(--color-primary);
   font-weight: 700;

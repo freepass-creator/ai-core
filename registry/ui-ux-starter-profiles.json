@@ -10,14 +10,14 @@
       "density": "comfortable"
     },
     "internal-work": {
-      "label": "관리자 업무",
-      "description": "Compact operational screens with the same interaction and accessibility contract.",
+      "label": "프리패스 세일즈 웹 표준",
+      "description": "FreePass Sales visual system adapted to compact 1280-1440 operational web screens.",
       "body_class": "ui-profile-internal",
       "density": "compact"
     },
     "mobile-work": {
-      "label": "모바일 업무",
-      "description": "Field work screens optimized for one task per screen and bottom actions.",
+      "label": "프리패스 세일즈 모바일 표준",
+      "description": "FreePass Sales native mobile shell for 360-480 widths, one-hand navigation and bottom actions.",
       "body_class": "ui-profile-mobile-work",
       "density": "touch"
     }
