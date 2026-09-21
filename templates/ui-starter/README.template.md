@@ -2,20 +2,21 @@
 
 이 폴더는 AI Core UI/UX 규격 `{{AI_CORE_REVISION}}`에서 생성했습니다.
 
-- 화면 유형: `{{PROFILE_ID}}` ({{PROFILE_LABEL}})
-- buttons: borderless; fill, text and spacing express hierarchy
-- search: visible input boundary; opening and closing must preserve current work
-- lists: compact card rows with a full-row action target
-- actions: one primary action in the bottom action area
-- states: loading, empty, error and populated must be separate
-- responsive checks: 360 / 390 / 412 / 1280 / 1440 px
+**상단은 상태와 제목, 하단은 이동과 실행.**
 
+**버튼과 선택은 테두리 없이, 입력과 표는 테두리 있게, 목록은 카드 하나.**
+
+```text
+┌ 상단 ─ 제목 · 현재 위치 · 상태 ┐
+│ 가운데 ─ 현재 페이지 내용      │
+└ 하단 ─ 전역 이동 또는 페이지 실행 ┘
+```
+
+- 화면 유형: `{{PROFILE_ID}}` ({{PROFILE_LABEL}})
 ## Start
 
-Import `ai-core-ui.css` once in the application root. Use `starter.html` and `starter.js` as structure and behavior references; adapt them to the project's framework rather than shipping the sample unchanged.
-
-새 화면을 다시 디자인하지 않습니다. 상단 정보, 검색·필터, 목록·상세, 상태, 하단 실행 블록을 업무 순서대로 배열하고 데이터와 문구만 바꿉니다. 선택 표시는 옅은 배경 변화만 사용합니다.
+`ai-core-ui.css`를 한 번 불러오고 `starter.html`과 `starter.js`의 블록을 업무 순서대로 배열합니다. 최상위 화면의 하단에는 전역 이동을, 상세·입력·검수 화면의 하단에는 현재 페이지의 실행을 둡니다. 둘 다 필요한 경우에는 서로 겹치지 않는 두 영역으로 분리합니다.
 
 ## Required verification
 
-Keyboard-only navigation, visible focus, 44px minimum touch targets, reduced motion, forced colors, safe area, virtual keyboard, scroll restoration and draft preservation remain required. A generated starter is a baseline, not a conformance receipt.
+키보드 이동, 보이는 포커스, 44px 터치 영역, safe area, 가상 키보드, 스크롤·작성 내용 보존은 생성기 검증 대상으로 유지합니다.

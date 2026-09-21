@@ -5,7 +5,7 @@
   "profiles": {
     "freepass-product": {
       "label": "프리패스 서비스",
-      "description": "FreePass public, sales and estimate surfaces with borderless actions, preserved-context search and responsive card lists.",
+      "description": "FreePass public, sales and estimate surfaces with borderless actions, preserved-context search and single-container row lists.",
       "body_class": "ui-profile-freepass",
       "density": "comfortable"
     },

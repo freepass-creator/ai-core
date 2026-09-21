@@ -26,6 +26,13 @@
   color: var(--color-primary);
 }
 
+:where(.ui-profile-freepass, .ui-profile-internal, .ui-profile-mobile-work) :is(.ui-sidebar, .ui-bottom-nav) [aria-current="page"] {
+  border: 0;
+  background: var(--color-info-surface);
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
 /* A search boundary is functional, so it remains visible. */
 .ui-search-region {
   display: grid;
@@ -47,21 +54,27 @@
 .starter-search-row .ui-search { flex: 1; min-width: 0; }
 .starter-icon-button { min-width: 44px; min-height: 44px; }
 
-/* Lists are cards, while decoration stays quiet and the whole row remains actionable. */
+/* One bordered data container owns the list boundary; rows stay flat and actionable. */
 .ui-card-list {
   display: grid;
-  gap: var(--space-3);
+  gap: 0;
   margin: 0;
   padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
   list-style: none;
 }
 
 .ui-card-list__item {
   border: 0;
-  border-radius: var(--radius-md);
-  background: var(--color-surface);
-  box-shadow: var(--shadow-sm);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }
+
+.ui-card-list__item + .ui-card-list__item { border-top: 1px solid var(--color-border); }
 
 .ui-card-list__link {
   display: grid;
@@ -78,19 +91,22 @@
 
 .ui-card-list__link[aria-pressed="true"] {
   background: var(--color-info-surface);
+  color: var(--color-primary);
+  font-weight: 700;
   box-shadow: none;
 }
 
 .ui-card-list__title { font-weight: 700; }
 .ui-card-list__meta { color: var(--color-muted); font-size: var(--font-size-sm); }
 
-.ui-card-list__link:hover { background: var(--color-info-surface); }
+.ui-card-list__link:hover { background: color-mix(in srgb, var(--color-info-surface) 55%, var(--color-surface)); }
+.ui-card-list__link:active { background: color-mix(in srgb, var(--color-info-surface) 80%, var(--color-surface)); }
+.ui-card-list__link[aria-pressed="true"]:hover { background: var(--color-info-surface); }
 .ui-card-list__link:focus-visible {
   outline: var(--focus-ring-width) solid var(--color-focus);
   outline-offset: var(--focus-ring-offset);
 }
 
-.ui-profile-internal .ui-card-list { gap: var(--space-2); }
 .ui-profile-internal .ui-card-list__link { padding-block: var(--space-3); }
 
 .starter-detail {
@@ -110,17 +126,12 @@
 .ui-state { display: grid; gap: var(--space-1); margin-top: var(--space-3); }
 .ui-state[data-state="error"] { background: var(--color-error-surface); }
 
-@media (min-width: 641px) {
-  .ui-profile-freepass .ui-card-list[data-layout="responsive-grid"] {
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
-  }
-}
-
 @media (max-width: 640px) {
   .starter-search-row { align-items: stretch; flex-direction: column; }
   .ui-bottom-action { padding-bottom: calc(var(--space-3) + env(safe-area-inset-bottom)); }
 }
 
 @media (forced-colors: active) {
-  .ui-card-list__item { border: 1px solid CanvasText; }
+  .ui-card-list { border-color: CanvasText; }
+  .ui-card-list__link[aria-pressed="true"] { outline: 2px solid Highlight; outline-offset: -2px; }
 }

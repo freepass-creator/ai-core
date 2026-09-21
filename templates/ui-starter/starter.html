@@ -9,7 +9,7 @@
 <body class="{{BODY_CLASS}}">
   <main class="ui-page ui-stack">
     <header class="ui-header starter-header">
-      <div><span class="ui-meta">{{PROFILE_LABEL}}</span><h1>{{PRODUCT_NAME}}</h1><p class="ui-hint">상단에서 판단하고, 화면 하단에서 실행합니다.</p></div>
+      <div><span class="ui-meta">{{PROFILE_LABEL}}</span><h1>{{PRODUCT_NAME}}</h1><p class="ui-hint">상단은 상태와 제목, 하단은 이동과 실행.</p></div>
       <button class="ui-button ghost starter-icon-button" id="search-toggle" type="button" aria-controls="search-region" aria-expanded="false">검색</button>
     </header>
     <section class="ui-search-region" id="search-region" aria-labelledby="search-label" hidden>
@@ -19,7 +19,7 @@
     </section>
     <section aria-labelledby="list-title">
       <div class="starter-section-heading"><h2 id="list-title">진행 목록</h2><span class="ui-meta" id="result-count">3건</span></div>
-      <ul class="ui-card-list" id="work-list" data-layout="responsive-grid">
+      <ul class="ui-card-list" id="work-list">
         <li class="ui-card-list__item" data-search="그랜저 김고객 견적 확인"><button class="ui-card-list__link" type="button" data-item="그랜저 하이브리드" aria-pressed="true"><span class="ui-card-list__title">그랜저 하이브리드</span><span class="ui-card-list__meta">김고객 · 견적 확인</span><span class="ui-badge">오늘</span></button></li>
         <li class="ui-card-list__item" data-search="카니발 이고객 서류 대기"><button class="ui-card-list__link" type="button" data-item="카니발 9인승" aria-pressed="false"><span class="ui-card-list__title">카니발 9인승</span><span class="ui-card-list__meta">이고객 · 서류 대기</span><span class="ui-badge">대기</span></button></li>
         <li class="ui-card-list__item" data-search="쏘렌토 박고객 계약 검토"><button class="ui-card-list__link" type="button" data-item="쏘렌토 하이브리드" aria-pressed="false"><span class="ui-card-list__title">쏘렌토 하이브리드</span><span class="ui-card-list__meta">박고객 · 계약 검토</span><span class="ui-badge">검토</span></button></li>
