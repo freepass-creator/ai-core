@@ -42,6 +42,11 @@ const candidates = rankReuseCandidates(query, [...capabilities, ...fileCandidate
 const decision = take('--decision');
 const selected = (take('--selected') ?? '').split(',').map((value) => value.trim()).filter(Boolean);
 const verdict = validateReuseDecision({ decision, selected, reason: take('--reason') ?? '', candidateCount: candidates.length });
+const nextAction = verdict.status !== 'PASS'
+  ? 'INSPECT_CANDIDATES_BEFORE_CREATING'
+  : verdict.action === 'CREATE_NEW_JUSTIFIED'
+    ? 'ACQUIRE_EXISTING_PROJECT_OR_WORK_OWNERSHIP_BEFORE_CREATING'
+    : 'CONTINUE_UNDER_EXISTING_PROJECT_WRITE_BOUNDARY';
 const output = {
   schema: 'ai-core-reuse-preflight/v1',
   query,
@@ -49,7 +54,7 @@ const output = {
   searched: { capability_registry: true, file_names: paths.length, content_matches: contentCandidates.length },
   candidates,
   verdict,
-  next_action: verdict.status === 'PASS' ? 'PROCEED_WITH_RECORDED_DECISION' : 'INSPECT_CANDIDATES_BEFORE_CREATING',
+  next_action: nextAction,
 };
 console.log(JSON.stringify(output, null, 2));
 if (verdict.status !== 'PASS') process.exitCode = 3;
