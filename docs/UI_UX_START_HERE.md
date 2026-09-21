@@ -61,18 +61,21 @@ UI/UX 작업은 아래 순서를 생략하지 않는다.
 - 넓은 웹 화면은 여러 panel을 동시에 배치해 depth를 줄이고 context를 유지
 - 상세 규칙: `docs/UI_UX_USER_DECISION_2026-09-21_WEB_PANEL_EXTENSION.md`
 
-### A-2. 2026-09-21 사용자 확정 웹 panel extension
+### A-2. 2026-09-21 사용자 확정 Adaptive Web
 
 웹 신규 설계/고도화는 아래 문서를 반드시 추가로 읽는다.
 
 - `docs/UI_UX_USER_DECISION_2026-09-21_WEB_PANEL_EXTENSION.md`
+- `docs/ADAPTIVE_WEB_STANDARD_2026-09-21.md`
 
 핵심:
-- 모바일 1화면 = 웹 1panel
-- 웹은 같은 panel을 2개/3개 등으로 병렬 배치 가능
-- 목적은 새로운 desktop 디자인이 아니라 depth 감소와 context 유지
-- panel 내부의 카드/상태/버튼/icon/action hierarchy는 모바일과 동일
-- 폭이 줄면 panel 수를 줄여 모바일 single-panel 흐름으로 수렴
+- 모바일은 강한 공통 규격
+- 웹은 같은 business task/state/command를 재사용하되 desktop productivity에 맞게 adaptive
+- multi-panel은 기본 선택지지만 절대 형태는 아님
+- 비교/정산/대량작업은 table/grid 허용
+- multi-select / bulk action / inline action / shortcut / utility toolbar 허용
+- 표현은 달라도 workflow/authority/completion 의미는 동일
+- 폭이 줄면 mobile-complete task flow로 수렴
 
 ### A-3. Portable Task Panel 규격
 
