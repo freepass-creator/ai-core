@@ -1,6 +1,6 @@
 {
   "contract": "ai-core-ui-ux-entrypoint/v1",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "status": "CANONICAL_ENTRYPOINT",
   "trigger_scope": "ANY_PROJECT_UI_UX_WORK",
   "start_document": "docs/UI_UX_START_HERE.md",
@@ -51,7 +51,7 @@
     "PRODUCT_PROFILE_REQUIRED",
     "NO_LOCAL_STANDARD_FORK",
     "CONTRACT_ONLY_RUNTIME_HOLD",
-    "DESIGN_HUB_BINDING_MUST_MATCH_INTENDED_CORE_REVISION",
+    "DESIGN_HUB_BINDING_MUST_MATCH_CANONICAL_UIUX_SOURCE_SET",
     "RESPONSIVE_PROBES_REQUIRED",
     "VISUAL_QA_REQUIRED_FOR_VERIFIED",
     "PREVIEW_IS_NOT_CONFORMANCE"
