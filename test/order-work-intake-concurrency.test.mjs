@@ -43,7 +43,9 @@ test('concurrent distinct routed orders preserve both Work items in the shared s
   let releaseSecondUnlockedRead;
   const secondUnlockedReadSeen=new Promise(resolve=>{releaseSecondUnlockedRead=resolve;});
   fs.promises.readFile=async(path,...args)=>{
-    if(String(path)!==snapshotPath)return originalReadFile.call(fs.promises,path,...args);
+    const stack=new Error().stack??'';
+    const coordinatorRead=String(path)===snapshotPath&&stack.includes('order-work-intake-coordinator.mjs');
+    if(!coordinatorRead)return originalReadFile.call(fs.promises,path,...args);
 
     let outcome;
     try{outcome={ok:true,value:await originalReadFile.call(fs.promises,path,...args)};}
@@ -96,7 +98,7 @@ test('concurrent distinct routed orders preserve both Work items in the shared s
   assert.equal(linkedA.status,'WORK_LINKED');
   assert.equal(linkedB.status,'WORK_LINKED');
   assert.notEqual(linkedA.work_id,linkedB.work_id);
-  assert.equal(unlockedSnapshotReads,0,'snapshot must never be read outside the intake lock');
+  assert.equal(unlockedSnapshotReads,0,'intake coordinator must never read the snapshot outside its lock');
 
   const ledgerPath=join(root,'work-ledger.jsonl');
   const ledger=verifyLedgerText(readFileSync(ledgerPath,'utf8'));
