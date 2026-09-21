@@ -66,7 +66,8 @@
     "a:claims:health": "node scripts/a-session-claim-health.mjs health",
     "a:claims:reap": "node scripts/a-session-claim-health.mjs reap",
     "uiux:preflight": "node scripts/validate-ui-ux-entrypoint.mjs",
-    "uiux:init": "node scripts/init-ui-ux-starter.mjs"
+    "uiux:init": "node scripts/init-ui-ux-starter.mjs",
+    "uiux:preview": "node scripts/preview-ui-ux-starter.mjs"
   },
   "dependencies": {
     "ajv": "8.20.0",
