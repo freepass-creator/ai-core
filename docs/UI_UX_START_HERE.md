@@ -57,7 +57,22 @@ UI/UX 작업은 아래 순서를 생략하지 않는다.
 - 3개 버튼 = Secondary 3 : Secondary 3 : Primary 4
 - 모바일 목록 = 서로 붙지 않는 2~3줄 card list, 첫 줄이 main
 - filter/share/search/sort 같은 보조 기능은 적절한 icon action 활용
-- 웹 대응 규격은 사용자가 별도 확정하기 전까지 임의 고정하지 않음
+- 웹은 별도 디자인 언어가 아니라 모바일 화면을 동일한 panel 단위로 재사용
+- 넓은 웹 화면은 여러 panel을 동시에 배치해 depth를 줄이고 context를 유지
+- 상세 규칙: `docs/UI_UX_USER_DECISION_2026-09-21_WEB_PANEL_EXTENSION.md`
+
+### A-2. 2026-09-21 사용자 확정 웹 panel extension
+
+웹 신규 설계/고도화는 아래 문서를 반드시 추가로 읽는다.
+
+- `docs/UI_UX_USER_DECISION_2026-09-21_WEB_PANEL_EXTENSION.md`
+
+핵심:
+- 모바일 1화면 = 웹 1panel
+- 웹은 같은 panel을 2개/3개 등으로 병렬 배치 가능
+- 목적은 새로운 desktop 디자인이 아니라 depth 감소와 context 유지
+- panel 내부의 카드/상태/버튼/icon/action hierarchy는 모바일과 동일
+- 폭이 줄면 panel 수를 줄여 모바일 single-panel 흐름으로 수렴
 
 ### B. 제품 전용 규칙
 
