@@ -29,14 +29,15 @@ Therefore:
 모바일에서 하나의 화면 단위가 웹에서는 하나의 **panel**이 된다.
 웹은 이 panel을 한 화면에 여러 개 배치하여 더 많은 정보를 동시에 볼 수 있게 한다.
 
-## 1. Mobile screen = Web panel
+## 1. Mobile task surface → Web reusable surface
 
 기본 변환 규칙:
 
-- 모바일의 1개 화면 단위 → 웹의 1개 panel
-- 모바일의 카드, 헤더, 상태표시, 입력, 보조 icon action, 하단 action hierarchy는 그대로 유지
-- 웹이라고 해서 별도의 table-first / toolbar-first / dashboard-first 디자인을 새로 만들지 않는다
-- 모바일에서 이미 확정된 정보 위계와 action 의미를 그대로 보존한다
+- 모바일의 1개 업무 단위는 웹에서 재사용 가능한 surface/panel의 출발점이 된다
+- 상태·업무 의미·command hierarchy는 유지한다
+- 웹에서는 생산성 요구에 따라 card/panel을 table/grid/workspace로 변환할 수 있다
+- toolbar/inline/bulk/shortcut은 canonical command의 accelerator로 허용한다
+- 업무 의미와 workflow를 바꾸기 위한 별도 desktop UI는 만들지 않는다
 
 즉 웹은 새로운 디자인이 아니라 **모바일 문법의 multi-panel expansion**이다.
 
@@ -58,7 +59,7 @@ Therefore:
 
 핵심은 한 panel 내부의 UI를 다시 설계하지 않는 것이다.
 
-- panel 내부는 모바일과 동일한 component hierarchy
+- panel/workspace 내부는 모바일과 같은 business semantics를 사용하되 desktop density/composition은 달라질 수 있음
 - 필요할 때만 좌우/다중 panel 배치
 - 업무 흐름에 따라 panel 추가/교체/축소
 - 한 화면에서 context를 유지하면서 다음 단계 정보를 옆 panel에 열 수 있음
@@ -84,8 +85,8 @@ Therefore:
 - 3개 버튼: Secondary 3 : Secondary 3 : Primary 4
 - filter/share/search/sort 등 보조 기능은 적절한 icon action 사용
 
-웹에서는 panel 폭에 맞게 action bar가 panel 하단에 붙을 수 있지만,
-상단 toolbar로 이동시키지 않는다.
+웹에서는 panel 하단 action bar를 유지할 수 있고, 반복 업무 생산성을 위해 동일 command를 inline/shortcut/toolbar에 mirror할 수 있다.
+단, command semantics와 상태는 하나여야 한다.
 
 ## 5. List behavior
 
@@ -123,12 +124,12 @@ multiple panels = multiple mobile-equivalent surfaces
 - 웹이라는 이유로 새 header toolbar 생성
 - 모바일 카드 목록을 근거 없이 전부 table로 전환
 - 웹에서만 별도 CTA 위치/버튼 위계 생성
-- 동일 기능을 모바일/웹에서 서로 다른 interaction model로 구현
+- 동일 업무를 모바일/웹에서 서로 다른 business workflow로 구현
 - nested page depth를 늘리는 대신 panel로 해결 가능한데 새 페이지를 계속 추가
 - panel마다 제각각 다른 디자인 체계 사용
 
 ## 8. One-line rule
 
-> **모바일 화면을 그대로 웹 panel로 확장하고, 웹의 추가 폭은 더 많은 panel을 동시에 보여주는 데 사용한다.**
+> **모바일에서 정의한 업무 단위를 웹에서 재사용하고, 웹은 multi-panel 또는 productivity surface로 확장한다.**
 
 웹 고도화의 핵심은 새로운 디자인이 아니라 **multi-panel로 depth를 줄이고 context를 유지하는 것**이다.
