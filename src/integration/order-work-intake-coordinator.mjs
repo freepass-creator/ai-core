@@ -220,20 +220,27 @@ export function createOrderWorkIntakeCoordinator({store,workSources,ordersDbPath
     catch(e){if(e.code==='ENOENT')return null;throw new Error('WORK_SOURCE_UNREADABLE_SNAPSHOT');}
   }
 
-  async function writeSnapshotAtomic(snapshot){
+  async function withSnapshotLock(fn){
     await mkdir(dirname(paths.snapshot),{recursive:true});
-    try{const st=await lstat(paths.snapshot);need(!st.isSymbolicLink(),'SNAPSHOT_SYMLINK_DENIED');}
-    catch(e){if(e.code!=='ENOENT')throw e;}
     const lockPath=`${paths.snapshot}.intake.lock`; let lock;
     try{lock=await open(lockPath,'wx');}
     catch(e){if(e.code==='EEXIST')throw new Error('SNAPSHOT_LOCKED');throw e;}
+    try{
+      try{const st=await lstat(paths.snapshot);need(!st.isSymbolicLink(),'SNAPSHOT_SYMLINK_DENIED');}
+      catch(e){if(e.code!=='ENOENT')throw e;}
+      return await fn();
+    }finally{
+      await lock?.close();
+      await unlink(lockPath).catch(()=>{});
+    }
+  }
+
+  async function writeSnapshotAtomic(snapshot){
     const tmp=join(dirname(paths.snapshot),`.${process.pid}-${Date.now()}-${Math.random().toString(16).slice(2)}.snapshot.tmp`);
     try{
       await writeFile(tmp,JSON.stringify(snapshot,null,2)+'\n','utf8');
       await rename(tmp,paths.snapshot);
     }finally{
-      await lock?.close();
-      await unlink(lockPath).catch(()=>{});
       await unlink(tmp).catch(()=>{});
     }
   }
@@ -241,19 +248,21 @@ export function createOrderWorkIntakeCoordinator({store,workSources,ordersDbPath
   async function ensureSnapshot(row,current){
     const order=store.get(row.order_id), reg=await registry();
     const {project}=currentRoute(order,reg);
-    let snapshot=await readSnapshot();
-    if(snapshot===null) snapshot={schema_version:'1.0',as_of:row.event.observed_at,capacities:[],items:[]};
-    need(snapshot?.schema_version==='1.0'&&Array.isArray(snapshot.items)&&Array.isArray(snapshot.capacities),'WORK_SOURCE_UNREADABLE_SNAPSHOT');
+    await withSnapshotLock(async()=>{
+      let snapshot=await readSnapshot();
+      if(snapshot===null) snapshot={schema_version:'1.0',as_of:row.event.observed_at,capacities:[],items:[]};
+      need(snapshot?.schema_version==='1.0'&&Array.isArray(snapshot.items)&&Array.isArray(snapshot.capacities),'WORK_SOURCE_UNREADABLE_SNAPSHOT');
 
-    const found=snapshot.items.find(x=>x.id===row.work_id);
-    if(found){
-      need(found.project_id===row.project_id&&found.subject_revision===row.subject_revision,'SNAPSHOT_ITEM_CONFLICT');
-    }else{
+      const found=snapshot.items.find(x=>x.id===row.work_id);
+      if(found){
+        need(found.project_id===row.project_id&&found.subject_revision===row.subject_revision,'SNAPSHOT_ITEM_CONFLICT');
+        return;
+      }
       snapshot={...snapshot,as_of:iso(clock),items:[...snapshot.items,snapshotItem(order,row,row.event,project)]};
       const checked=runControlTower({registry:reg,snapshot,ledgerText:current.text});
       need(checked.status!=='INVALID','CONTROL_SNAPSHOT_INVALID');
       await writeSnapshotAtomic(snapshot);
-    }
+    });
     if(row.state!=='SNAPSHOT_WRITTEN') row=state(row,'SNAPSHOT_WRITTEN',{head:current.head,reason:null,attemptHead:row.attempt_head});
     return row;
   }
