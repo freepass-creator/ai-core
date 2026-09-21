@@ -26,6 +26,8 @@ test('working standard preserves the start, result, handoff, learning and comple
     assert.ok(body.includes(field), `missing result field: ${field}`);
   }
   assert.match(body, /일반 업무를 위해 order ID, work ID, claim 또는 중앙 서버 연결을 만들지 않는다/);
+  assert.match(body, /기본 협업은 \*\*Codex \+ Claude Code\*\*만 사용한다/);
+  assert.match(body, /Cursor Agent와 Gemini CLI는 기본 협업 풀에서 제외한다/);
 });
 
 test('academy curriculum separates document classes and covers real work tracks', async () => {

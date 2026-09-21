@@ -9,10 +9,10 @@ const requiredCorePaths = [
   join(coreRoot, 'docs', 'AI_ACADEMY_CURRICULUM.md'),
 ];
 const entrypoints = [
-  { tool: 'codex', path: join(userHome, '.codex', 'AGENTS.md') },
-  { tool: 'claude', path: join(userHome, '.claude', 'CLAUDE.md') },
-  { tool: 'gemini', path: join(userHome, '.gemini', 'GEMINI.md') },
-  { tool: 'cursor', path: join(userHome, '.cursor', 'rules', 'ai-core-academy.mdc') },
+  { tool: 'codex', required: true, path: join(userHome, '.codex', 'AGENTS.md') },
+  { tool: 'claude', required: true, path: join(userHome, '.claude', 'CLAUDE.md') },
+  { tool: 'gemini', required: false, path: join(userHome, '.gemini', 'GEMINI.md') },
+  { tool: 'cursor', required: false, path: join(userHome, '.cursor', 'rules', 'ai-core-academy.mdc') },
 ];
 const requiredTerms = [
   'AI_WORKING_STANDARD.md',
@@ -45,12 +45,12 @@ for (const entry of entrypoints) {
       if (!alternatives.some((term) => body.toLowerCase().includes(term.toLowerCase()))) missing.push(alternatives.join('|'));
     }
     if (entry.tool === 'cursor' && !/alwaysApply:\s*true/.test(body)) missing.push('alwaysApply:true');
-    results.push({ target: entry.tool, path: entry.path, status: missing.length ? 'FAIL' : 'PASS', missing });
+    results.push({ target: entry.tool, required: entry.required, path: entry.path, status: missing.length ? 'FAIL' : 'PASS', missing });
   } catch (error) {
-    results.push({ target: entry.tool, path: entry.path, status: 'FAIL', missing: [error.code ?? 'READ_FAILED'] });
+    results.push({ target: entry.tool, required: entry.required, path: entry.path, status: entry.required ? 'FAIL' : 'OPTIONAL_UNAVAILABLE', missing: [error.code ?? 'READ_FAILED'] });
   }
 }
 
-const status = results.every((result) => result.status === 'PASS') ? 'PASS' : 'FAIL';
+const status = results.every((result) => result.target === 'core' ? result.status === 'PASS' : (!result.required || result.status === 'PASS')) ? 'PASS' : 'FAIL';
 console.log(JSON.stringify({ schema: 'ai-core-academy-entrypoints/v1', status, results }, null, 2));
 if (status !== 'PASS') process.exitCode = 1;
