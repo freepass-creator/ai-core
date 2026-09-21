@@ -58,7 +58,9 @@ console.log(JSON.stringify(receipt, null, 2));
 if (receipt.status === 'READY' && kit) {
   const coreRevision = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: coreRoot, encoding: 'utf8', windowsHide: true }).trim();
   const operatingKnowledge = JSON.parse(await read(join(coreRoot, 'registry', 'operating-knowledge.json')));
-  const installed = await installAcademyStarterKit({ output: resolve(root, kit), receipt, readings, coreRevision, operatingKnowledge });
+  const catalog=[];
+  for(const name of ['projects.json','capabilities.json','work-map.json']) catalog.push({name,source:`registry/${name}`,data:JSON.parse(await read(join(coreRoot,'registry',name)))});
+  const installed = await installAcademyStarterKit({ output: resolve(root, kit), receipt, readings, coreRevision, operatingKnowledge, catalog });
   console.error(JSON.stringify(installed, null, 2));
 }
 if (receipt.status !== 'READY') process.exitCode = 3;
