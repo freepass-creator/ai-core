@@ -81,7 +81,7 @@ export function validateUiUxEntrypointSemantics(entry) {
     'PRODUCT_PROFILE_REQUIRED',
     'NO_LOCAL_STANDARD_FORK',
     'CONTRACT_ONLY_RUNTIME_HOLD',
-    'DESIGN_HUB_BINDING_MUST_MATCH_INTENDED_CORE_REVISION',
+    'DESIGN_HUB_BINDING_MUST_MATCH_CANONICAL_UIUX_SOURCE_SET',
     'RESPONSIVE_PROBES_REQUIRED',
     'VISUAL_QA_REQUIRED_FOR_VERIFIED',
     'PREVIEW_IS_NOT_CONFORMANCE'
@@ -99,16 +99,26 @@ export function validateUiUxEntrypointSemantics(entry) {
   };
 }
 
-const DESIGN_HUB_BOUND_SOURCES = {
-  feature_registry: 'registry/ui-ux-features.json',
-  tokens: 'design-system/tokens.json',
-  components: 'design-system/components.registry.json',
-  patterns: 'design-system/patterns.registry.json',
-  runtime_css: 'design-system/runtime-v2.css',
-  entrypoint: 'registry/ui-ux-entrypoint.json',
-  freepass_product_profile: 'docs/FREEPASS_PRODUCT_UI_PROFILE.md',
-  start_here: 'docs/UI_UX_START_HERE.md'
-};
+function collectRequiredBoundSourcePaths(
+  entry,
+  { entryPath = 'registry/ui-ux-entrypoint.json' } = {}
+) {
+  return [
+    ...new Set([
+      entryPath,
+      ...(entry?.entry_read_order ?? []),
+      ...Object.values(entry?.product_profiles ?? {})
+    ])
+  ];
+}
+
+export function getUiUxRequiredBoundSourcePaths(
+  entry,
+  { entryPath = 'registry/ui-ux-entrypoint.json' } = {}
+) {
+  validateUiUxEntrypointSemantics(entry);
+  return collectRequiredBoundSourcePaths(entry, { entryPath });
+}
 
 export function validateUiUxTargetBinding(
   entry,
@@ -116,7 +126,8 @@ export function validateUiUxTargetBinding(
     coreRepository = 'freepass-creator/ai-core',
     currentCoreRevision,
     currentSourceBlobs,
-    designHubBinding
+    designHubBinding,
+    entryPath = 'registry/ui-ux-entrypoint.json'
   } = {}
 ) {
   validateUiUxEntrypointSemantics(entry);
@@ -143,18 +154,28 @@ export function validateUiUxTargetBinding(
     throw new Error('UIUX_DESIGN_HUB_BASELINE_REVISION_REQUIRED');
   }
 
-  for (const [key, expectedPath] of Object.entries(DESIGN_HUB_BOUND_SOURCES)) {
-    const sourceBinding = designHubBinding?.sources?.[key];
-    if (!sourceBinding || typeof sourceBinding !== 'object') {
-      throw new Error(`UIUX_DESIGN_HUB_SOURCE_BINDING_MISSING:${key}`);
+  const sourceBindingsByPath = new Map();
+  for (const [key, sourceBinding] of Object.entries(designHubBinding?.sources ?? {})) {
+    const path = sourceBinding?.path;
+    if (typeof path !== 'string' || path.trim() === '') continue;
+    if (sourceBindingsByPath.has(path)) {
+      throw new Error(`UIUX_DESIGN_HUB_SOURCE_PATH_DUPLICATE:${path}`);
     }
-    if (sourceBinding.path !== expectedPath) {
-      throw new Error(`UIUX_DESIGN_HUB_SOURCE_PATH_MISMATCH:${key}`);
+    sourceBindingsByPath.set(path, { key, sourceBinding });
+  }
+
+  const requiredSourcePaths = collectRequiredBoundSourcePaths(entry, { entryPath });
+  for (const requiredPath of requiredSourcePaths) {
+    const matched = sourceBindingsByPath.get(requiredPath);
+    if (!matched) {
+      throw new Error(`UIUX_DESIGN_HUB_REQUIRED_SOURCE_MISSING:${requiredPath}`);
     }
+
+    const { key, sourceBinding } = matched;
     if (typeof sourceBinding.blob_sha !== 'string' || sourceBinding.blob_sha.trim() === '') {
       throw new Error(`UIUX_DESIGN_HUB_SOURCE_BLOB_REQUIRED:${key}`);
     }
-    if (currentSourceBlobs[expectedPath] !== sourceBinding.blob_sha) {
+    if (currentSourceBlobs[requiredPath] !== sourceBinding.blob_sha) {
       throw new Error(`UIUX_DESIGN_HUB_SOURCE_BLOB_STALE:${key}`);
     }
   }
@@ -164,6 +185,6 @@ export function validateUiUxTargetBinding(
     coreRepository,
     currentCoreRevision,
     designHubBaselineRevision: designHubBinding.ai_core.revision,
-    verifiedSourceCount: Object.keys(DESIGN_HUB_BOUND_SOURCES).length
+    verifiedSourceCount: requiredSourcePaths.length
   };
 }
