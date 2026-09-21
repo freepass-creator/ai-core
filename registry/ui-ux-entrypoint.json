@@ -1,0 +1,59 @@
+{
+  "contract": "ai-core-ui-ux-entrypoint/v1",
+  "version": "1.0.0",
+  "status": "CANONICAL_ENTRYPOINT",
+  "trigger_scope": "ANY_PROJECT_UI_UX_WORK",
+  "start_document": "docs/UI_UX_START_HERE.md",
+  "entry_read_order": [
+    "docs/UI_UX_START_HERE.md",
+    "docs/UI_UX_CONSTITUTION.md",
+    "docs/SCREEN_DESIGN_STANDARD.md",
+    "docs/RESPONSIVE_STANDARD.md",
+    "registry/ui-ux-features.json",
+    "design-system/tokens.json",
+    "design-system/components.registry.json",
+    "design-system/patterns.registry.json",
+    "design-system/interaction.contract.json",
+    "design-system/runtime-v2.css"
+  ],
+  "machine_sources": {
+    "feature_registry": "registry/ui-ux-features.json",
+    "tokens": "design-system/tokens.json",
+    "components": "design-system/components.registry.json",
+    "patterns": "design-system/patterns.registry.json",
+    "interaction_contract": "design-system/interaction.contract.json",
+    "runtime_css": "design-system/runtime-v2.css"
+  },
+  "product_profiles": {
+    "FREEPASS": "docs/FREEPASS_PRODUCT_UI_PROFILE.md"
+  },
+  "execution": {
+    "design_hub_repository": "freepass-creator/devcenter",
+    "design_hub_entry": "hubs/design/README.md",
+    "design_hub_binding": "hubs/design/core-binding.json",
+    "quality_hub_entry": "hubs/quality/README.md"
+  },
+  "mandatory_sequence": [
+    "PIN_AI_CORE_REVISION",
+    "READ_START_HERE",
+    "READ_NORMATIVE_BASELINE",
+    "MAP_FEATURE_IDS",
+    "LOAD_MACHINE_SOURCES",
+    "LOAD_PRODUCT_PROFILE",
+    "RESOLVE_BRAND_SSOT",
+    "ROUTE_TO_DESIGN_HUB",
+    "IMPLEMENT_PROJECT",
+    "QUALITY_HUB_VERIFY",
+    "DELIVERY_VERIFY_IF_DEPLOYED"
+  ],
+  "fail_closed_rules": [
+    "BRAND_UNRESOLVED_HOLD",
+    "PRODUCT_PROFILE_REQUIRED",
+    "NO_LOCAL_STANDARD_FORK",
+    "CONTRACT_ONLY_RUNTIME_HOLD",
+    "DESIGN_HUB_BINDING_MUST_MATCH_INTENDED_CORE_REVISION",
+    "RESPONSIVE_PROBES_REQUIRED",
+    "VISUAL_QA_REQUIRED_FOR_VERIFIED",
+    "PREVIEW_IS_NOT_CONFORMANCE"
+  ]
+}
