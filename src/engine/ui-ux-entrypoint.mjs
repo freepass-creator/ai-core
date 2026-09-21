@@ -98,3 +98,37 @@ export function validateUiUxEntrypointSemantics(entry) {
     failClosedRules: failClosed.length
   };
 }
+
+export function validateUiUxTargetBinding(
+  entry,
+  {
+    coreRepository = 'freepass-creator/ai-core',
+    coreRevision,
+    designHubBinding
+  } = {}
+) {
+  validateUiUxEntrypointSemantics(entry);
+
+  if (typeof coreRevision !== 'string' || coreRevision.trim() === '') {
+    throw new Error('UIUX_PREFLIGHT_CORE_REVISION_REQUIRED');
+  }
+  if (!designHubBinding || typeof designHubBinding !== 'object') {
+    throw new Error('UIUX_PREFLIGHT_DESIGN_HUB_BINDING_REQUIRED');
+  }
+  if (designHubBinding.contract !== 'devcenter-design-core-binding/v1') {
+    throw new Error('UIUX_DESIGN_HUB_BINDING_CONTRACT_INVALID');
+  }
+  if (designHubBinding?.ai_core?.repository !== coreRepository) {
+    throw new Error('UIUX_DESIGN_HUB_CORE_REPOSITORY_MISMATCH');
+  }
+  if (designHubBinding?.ai_core?.revision !== coreRevision) {
+    throw new Error('UIUX_DESIGN_HUB_CORE_REVISION_STALE');
+  }
+
+  return {
+    status: 'VALID',
+    coreRepository,
+    coreRevision,
+    designHubRevision: designHubBinding.ai_core.revision
+  };
+}
