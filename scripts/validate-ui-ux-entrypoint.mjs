@@ -48,17 +48,15 @@ try {
 
     const bindingPath = resolve(root, designHubRoot, entry.execution.design_hub_binding);
     const designHubBinding = JSON.parse(await readFile(bindingPath, 'utf8'));
-    let coreRevision = process.env.AI_CORE_REVISION?.trim();
+    let coreRevision;
 
-    if (!coreRevision) {
-      try {
-        coreRevision = execFileSync('git', ['rev-parse', 'HEAD'], {
-          cwd: root,
-          encoding: 'utf8'
-        }).trim();
-      } catch {
-        throw new Error('UIUX_PREFLIGHT_CORE_REVISION_UNAVAILABLE');
-      }
+    try {
+      coreRevision = execFileSync('git', ['rev-parse', 'HEAD'], {
+        cwd: root,
+        encoding: 'utf8'
+      }).trim();
+    } catch {
+      throw new Error('UIUX_PREFLIGHT_CORE_REVISION_UNAVAILABLE');
     }
 
     const targetResult = validateUiUxTargetBinding(entry, {
