@@ -42,6 +42,56 @@ UI/UX 작업은 아래 순서를 생략하지 않는다.
 9. `design-system/interaction.contract.json` — cross-component invariants
 10. `design-system/runtime-v2.css` — 실제 공통 runtime CSS
 
+### A-1. 2026-09-21 사용자 확정 모바일 baseline
+
+모바일 신규 설계/고도화는 아래 날짜 문서를 반드시 추가로 읽는다.
+
+- `docs/UI_UX_USER_DECISION_2026-09-21_MOBILE_BASELINE.md`
+
+이 문서는 FreePass Sales에서 사용자가 직접 확정한 모바일 문법을 회사 기본 baseline으로 기록한다.
+
+핵심:
+- 상단 = 제목/상태/맥락 표시, 제품 UI navigation/task CTA 없음
+- 하단 = task action
+- 2개 버튼 = Secondary 3 : Primary 7
+- 3개 버튼 = Secondary 3 : Secondary 3 : Primary 4
+- 모바일 목록 = 서로 붙지 않는 2~3줄 card list, 첫 줄이 main
+- filter/share/search/sort 같은 보조 기능은 적절한 icon action 활용
+- 웹은 별도 디자인 언어가 아니라 모바일 화면을 동일한 panel 단위로 재사용
+- 넓은 웹 화면은 여러 panel을 동시에 배치해 depth를 줄이고 context를 유지
+- 상세 규칙: `docs/UI_UX_USER_DECISION_2026-09-21_WEB_PANEL_EXTENSION.md`
+
+### A-2. 2026-09-21 사용자 확정 Adaptive Web
+
+웹 신규 설계/고도화는 아래 문서를 반드시 추가로 읽는다.
+
+- `docs/UI_UX_USER_DECISION_2026-09-21_WEB_PANEL_EXTENSION.md`
+- `docs/ADAPTIVE_WEB_STANDARD_2026-09-21.md`
+
+핵심:
+- 모바일은 강한 공통 규격
+- 웹은 같은 business task/state/command를 재사용하되 desktop productivity에 맞게 adaptive
+- multi-panel은 기본 선택지지만 절대 형태는 아님
+- 비교/정산/대량작업은 table/grid 허용
+- multi-select / bulk action / inline action / shortcut / utility toolbar 허용
+- 표현은 달라도 workflow/authority/completion 의미는 동일
+- 폭이 줄면 mobile-complete task flow로 수렴
+
+### A-3. Portable Task Panel 규격
+
+모바일/웹 공통 업무화면은 아래 규격을 함께 읽는다.
+
+- `docs/PORTABLE_TASK_PANEL_STANDARD_2026-09-21.md`
+
+핵심 검증 질문:
+
+> **PC의 이 panel을 떼어내 모바일 한 화면으로 놓아도 같은 업무를 끝낼 수 있는가?**
+
+- 가능해야 portable/conformant
+- desktop keyboard/hover/drag/multi-panel은 편의 기능일 뿐 canonical completion path가 아님
+- panel은 sibling visibility가 아니라 stable entity/work context와 C/D command/state binding에 의존
+- 넓은 화면에서는 panel을 조합하고 좁아지면 같은 상태를 유지한 채 single panel로 collapse
+
 ### B. 제품 전용 규칙
 
 FreePass 제품이면 반드시 추가로:
@@ -140,8 +190,11 @@ FreePass 모바일은 특히 다음을 먼저 본다.
 - `navigation.bottom-action`
 - 주행동 1개
 - Primary 48px 권장, 44px 미만 금지
-- 보조 + 주행동이면 FreePass 기본 3:7
+- 버튼 2개면 Secondary 3 : Primary 7
+- 버튼 3개면 Secondary 3 : Secondary 3 : Primary 4
 - 저장/반영/완료/다음 CTA는 상단에 두지 않음
+- 모바일 목록은 기본적으로 간격이 있는 2~3줄 카드형이며 첫 줄이 main 정보
+- filter/share/search/sort 등 보조 기능은 의미가 명확할 때 icon action 사용
 
 ### 반응형
 

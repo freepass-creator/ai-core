@@ -1,6 +1,6 @@
 {
   "contract": "ai-core-ui-pattern-registry/v1",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "feature_registry": "registry/ui-ux-features.json",
   "component_registry": "design-system/components.registry.json",
   "patterns": [
@@ -314,6 +314,18 @@
       "implementation_status": "CONTRACT_ONLY",
       "component_feature_refs": [],
       "contract_source": "registry/ui-ux-features.json#integration.ai-action"
+    },
+    {
+      "feature_id": "system.portable-task-panel",
+      "layer": "pattern",
+      "implementation_status": "CONTRACT_ONLY",
+      "component_feature_refs": [
+        "action.primary",
+        "action.secondary",
+        "action.icon"
+      ],
+      "contract_source": "registry/ui-ux-features.json#system.portable-task-panel",
+      "notes": "Composes header/bottom-action/data surfaces through the screen manifest and interaction contract; component_feature_refs contains component-kind features only."
     },
     {
       "feature_id": "system.responsive",

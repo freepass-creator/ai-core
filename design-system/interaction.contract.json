@@ -1,6 +1,6 @@
 {
   "contract": "ai-core-ui-interaction-contract/v1",
-  "version": "1.1.0",
+  "version": "1.3.1",
   "feature_registry": "registry/ui-ux-features.json",
   "constitution": "docs/UI_UX_CONSTITUTION.md",
   "rules": {
@@ -12,14 +12,21 @@
         "navigation.bottom-action"
       ],
       "invariants": [
-        "Task-level actions live in the bottom action boundary by default; headers carry title, context, progress and passive status.",
-        "A section exposes at most one primary action.",
-        "Dialog actions live in the dialog footer."
+        "On mobile, task-level workflow actions live in the bottom action boundary by default; headers carry title, context, progress and passive status.",
+        "A section exposes at most one dominant primary business action.",
+        "Dialog task actions live in the dialog footer.",
+        "On web, canonical commands may be mirrored through sticky footer, inline action, keyboard shortcut or utility/action toolbar when this materially improves desktop productivity.",
+        "Web accelerators must share the same command, permission, busy/disabled, validation, result and error semantics as the canonical action.",
+        "Desktop utility toolbars may host search, filter, sort, column, density, refresh, export, print and batch-selection controls without creating a second workflow."
       ],
       "verification": [
         "mobile-bottom-action",
-        "desktop-bottom-action",
-        "dialog-footer"
+        "dialog-footer",
+        "web-inline-accelerator",
+        "web-shortcut-accelerator",
+        "web-utility-toolbar",
+        "canonical-command-binding",
+        "desktop-adaptive-action-binding"
       ]
     },
     "focus": {
@@ -122,7 +129,13 @@
         "Mobile is not a scaled desktop.",
         "Reading order and task priority remain stable across layout changes.",
         "Bottom actions include safe-area padding and remain reachable with the virtual keyboard.",
-        "Ordinary one-dimensional content reflows at high zoom."
+        "Ordinary one-dimensional content reflows at high zoom.",
+        "Mobile defines the canonical single-panel task surface; desktop may compose multiple equivalent panels side by side.",
+        "Web multi-panel composition reduces navigation depth and preserves context without changing panel-internal information or action hierarchy.",
+        "As available width decreases, panel count collapses toward the mobile single-panel flow.",
+        "Desktop width alone is not sufficient reason to replace card lists with dense tables or bottom task actions with top toolbars.",
+        "Desktop may choose a productivity-optimized surface instead of literal multi-panel composition when comparative, relational or bulk work dominates.",
+        "Responsive adaptation may change density, composition and interaction accelerators but not canonical workflow, authority, validation, retry or completion semantics."
       ],
       "verification": [
         "360",
@@ -133,7 +146,11 @@
         "200%-zoom",
         "400%-reflow",
         "portrait-landscape",
-        "virtual-keyboard"
+        "virtual-keyboard",
+        "web-two-panel",
+        "web-three-panel",
+        "panel-collapse-to-single",
+        "context-preservation"
       ]
     },
     "accessibility": {
@@ -237,6 +254,42 @@
         "ime-composition",
         "virtual-keyboard",
         "keyboard-or-equivalent"
+      ]
+    },
+    "portable_task_panel": {
+      "feature_refs": [
+        "system.portable-task-panel",
+        "system.responsive",
+        "navigation.header",
+        "navigation.bottom-action",
+        "action.primary",
+        "action.secondary",
+        "action.icon",
+        "navigation.restore"
+      ],
+      "invariants": [
+        "A desktop task panel must remain completable when isolated as the active mobile panel.",
+        "Desktop-only affordances are accelerators, not unique business command paths.",
+        "A panel may consume stable entity/work context from another panel but may not require a sibling panel to remain visible for correctness.",
+        "Required task actions remain in the panel action model and preserve the same command meaning across mobile and web.",
+        "Multi-panel collapse preserves entity identity, selection, draft, workflow state and async response ownership.",
+        "When multiple panels are visible, prominent Primary actions do not compete without an explicit workflow reason.",
+        "Business capability parity is required across mobile and web; identical visual or interaction parity is not.",
+        "Desktop grids, bulk actions, inline actions, shortcuts, drag-and-drop alternatives and utility toolbars may accelerate the same canonical commands.",
+        "Portable task semantics may be rendered as a non-panel desktop productivity surface when a literal panel would materially reduce efficiency."
+      ],
+      "verification": [
+        "standalone-mobile-completion",
+        "desktop-mobile-action-parity",
+        "no-hover-only",
+        "no-keyboard-only",
+        "no-sibling-dependency",
+        "state-preserving-collapse",
+        "single-active-primary",
+        "desktop-grid-projection",
+        "bulk-command-binding",
+        "shortcut-command-binding",
+        "utility-toolbar-command-binding"
       ]
     }
   }

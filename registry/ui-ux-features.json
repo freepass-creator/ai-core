@@ -1,6 +1,6 @@
 {
   "contract": "ai-core-ui-ux-feature-registry/v1",
-  "version": "1.3.0",
+  "version": "1.5.0",
   "normative_source": "docs/SCREEN_DESIGN_STANDARD.md",
   "global_rules": {
     "invariants": [
@@ -914,8 +914,9 @@
         "scrolled"
       ],
       "rules": [
-        "Header is informational by default: brand, title, context, progress and passive status.",
-        "Task CTAs do not move into the header merely to save space."
+        "On mobile, header is informational by default: brand, title, context, progress and passive status.",
+        "On mobile, workflow-changing task CTAs do not move into the header merely to save space.",
+        "On web, a utility/action toolbar may coexist with the header when it accelerates canonical commands without forking workflow semantics."
       ],
       "verification": [
         "semantic-contract",
@@ -1003,9 +1004,9 @@
         "disabled"
       ],
       "rules": [
-        "Task-level actions render in the bottom action boundary by default; the header remains informational unless a governed exception exists.",
-        "The action boundary accounts for safe-area and virtual-keyboard occlusion and must not obscure focused controls or validation messages.",
-        "Web and mobile preserve the same action meaning and hierarchy even when the bottom boundary changes layout."
+        "On mobile, task-level workflow actions render in the bottom action boundary by default.",
+        "The mobile action boundary accounts for safe-area and virtual-keyboard occlusion and must not obscure focused controls or validation messages.",
+        "Web preserves the same command meaning and primary/secondary hierarchy, but may mirror commands through inline, shortcut, sticky or toolbar accelerators for productivity."
       ],
       "verification": [
         "semantic-contract",
@@ -2328,6 +2329,61 @@
       ]
     },
     {
+      "id": "system.portable-task-panel",
+      "family": "system",
+      "title": "Portable task panel",
+      "kind": "pattern",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "RESPONSIVE",
+        "PAGE_ACTION",
+        "DATA_SURFACE",
+        "CONTROL"
+      ],
+      "required_states": [
+        "standalone",
+        "multi-panel",
+        "collapsed",
+        "busy",
+        "error"
+      ],
+      "rules": [
+        "A reusable task panel must remain understandable and completable when detached from a desktop multi-panel composition and shown alone on mobile.",
+        "Desktop multi-panel composition may add simultaneous context and accelerators but may not create desktop-only business completion semantics.",
+        "Required commands must remain available without relying exclusively on hover, right-click, keyboard shortcuts, drag-and-drop or sibling-panel visibility.",
+        "Panel correctness depends on stable entity/work context and canonical command/state bindings, not visual adjacency.",
+        "Wide layouts may compose list, detail/task and supporting panels; narrow layouts collapse them toward one active panel while preserving state.",
+        "Portable task panel defines a reusable business-task contract; desktop presentation may adapt beyond a literal panel when productivity requires it.",
+        "Require business capability parity across mobile and web, not identical interaction parity.",
+        "Desktop grids, bulk actions, inline actions, shortcuts and toolbars may accelerate canonical commands but may not fork workflow meaning, authority or completion semantics."
+      ],
+      "verification": [
+        "standalone-mobile-completion",
+        "action-parity",
+        "state-continuity",
+        "input-modality-parity",
+        "multi-panel-collapse",
+        "no-sibling-dependency",
+        "mobile-desktop"
+      ],
+      "evidence": [
+        {
+          "level": "CROSS_PROJECT_VERIFIED",
+          "refs": [
+            "docs/PORTABLE_TASK_PANEL_STANDARD_2026-09-21.md",
+            "docs/UI_UX_USER_DECISION_2026-09-21_MOBILE_BASELINE.md",
+            "docs/UI_UX_USER_DECISION_2026-09-21_WEB_PANEL_EXTENSION.md"
+          ]
+        },
+        {
+          "level": "CROSS_PROJECT_VERIFIED",
+          "refs": [
+            "docs/ADAPTIVE_WEB_STANDARD_2026-09-21.md"
+          ]
+        }
+      ]
+    },
+    {
       "id": "system.responsive",
       "family": "system",
       "title": "Responsive behavior",
@@ -2344,7 +2400,13 @@
         "zoomed"
       ],
       "rules": [
-        "Content order and task priority remain semantically stable across layout changes."
+        "Content order and task priority remain semantically stable across layout changes.",
+        "Treat the mobile task surface as the canonical single-panel interaction grammar; desktop reuses the same hierarchy rather than inventing a separate UI language.",
+        "Use wider web viewports to compose multiple mobile-equivalent panels side by side when that reduces navigation depth or preserves work context.",
+        "As width contracts, reduce simultaneous panels and converge to the mobile single-panel flow without changing action meaning, state semantics or information priority.",
+        "Do not convert card lists to dense tables solely because desktop space is available; table projection requires intrinsically relational comparison.",
+        "Web may intentionally diverge from the mobile visual composition when relational comparison, bulk work or repeated desktop operations benefit from a grid, denser workspace, inline actions, shortcuts or utility toolbar.",
+        "Adaptive web presentation remains bound to the same canonical entity/work IDs, workflow state, authority, validation, retry and completion semantics as mobile."
       ],
       "verification": [
         "semantic-contract",
@@ -2363,6 +2425,20 @@
           "level": "CROSS_PROJECT_VERIFIED",
           "refs": [
             "docs/research/GLOBAL_PRODUCT_STANDARD_EVIDENCE_2026-09-19.md"
+          ]
+        },
+        {
+          "level": "PROJECT_VERIFIED",
+          "refs": [
+            "docs/UI_UX_USER_DECISION_2026-09-21_MOBILE_BASELINE.md",
+            "docs/UI_UX_USER_DECISION_2026-09-21_WEB_PANEL_EXTENSION.md",
+            "docs/FREEPASS_PRODUCT_UI_PROFILE.md"
+          ]
+        },
+        {
+          "level": "CROSS_PROJECT_VERIFIED",
+          "refs": [
+            "docs/ADAPTIVE_WEB_STANDARD_2026-09-21.md"
           ]
         }
       ]
