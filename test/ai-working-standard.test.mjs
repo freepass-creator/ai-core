@@ -13,6 +13,8 @@ test('common AI entrypoints point to the current working standard', async () => 
 
 test('working standard preserves the start, result, handoff, learning and completion contract', async () => {
   const body = await read('docs/AI_WORKING_STANDARD.md');
+  assert.match(body, /^# AI 사관학교 헌법/m);
+  assert.match(body, /USER-DIRECTED \/ CONSTITUTION/);
   for (const heading of ['## 1. 시작 규격', '## 2. 작업 규격', '## 3. 결과 규격', '## 4. 인계 규격', '## 5. 노하우 축적 규격', '## 6. 완료 판단']) {
     assert.ok(body.includes(heading), `missing required section: ${heading}`);
   }
