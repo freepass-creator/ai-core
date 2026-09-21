@@ -67,9 +67,10 @@ export function initStarter({ target, profile = "freepass-product", product = "ì
   }
   writeNew(join(destination, "AI_CORE_UI_STARTER.md"), render(readFileSync(join(templateDir, "README.template.md"), "utf8"), values), force);
   writeNew(join(destination, "ui-component-catalog.json"), readFileSync(join(root, "registry", "ui-component-catalog.json"), "utf8"), force);
+  writeNew(join(destination, "ui-template-catalog.json"), readFileSync(join(root, "registry", "ui-template-catalog.json"), "utf8"), force);
   writeNew(join(destination, "ui-existing-pattern-inventory.json"), readFileSync(join(root, "registry", "ui-existing-pattern-inventory.json"), "utf8"), force);
   writeNew(join(destination, "ai-core-ui.profile.json"), `${JSON.stringify({ contract: "ai-core-ui-starter/v1", profile, product, body_class: selected.body_class, ai_core_revision: values.AI_CORE_REVISION }, null, 2)}\n`, force);
-  return { destination, profile, files: ["ai-core-ui.css", "starter.html", "starter.js", ...modelFiles.map((file) => `models/${file}`), "AI_CORE_UI_STARTER.md", "ui-component-catalog.json", "ui-existing-pattern-inventory.json", "ai-core-ui.profile.json"] };
+  return { destination, profile, files: ["ai-core-ui.css", "starter.html", "starter.js", ...modelFiles.map((file) => `models/${file}`), "AI_CORE_UI_STARTER.md", "ui-component-catalog.json", "ui-template-catalog.json", "ui-existing-pattern-inventory.json", "ai-core-ui.profile.json"] };
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

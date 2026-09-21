@@ -16,7 +16,7 @@ test("parses starter arguments", () => {
 test("creates a revision-bound starter with established UI rules", () => {
   const target = mkdtempSync(join(tmpdir(), "ai-core-ui-"));
   const result = initStarter({ target, profile: "freepass-product", product: "Sample" });
-  assert.equal(result.files.length, 16);
+  assert.equal(result.files.length, 17);
 
   const css = readFileSync(join(target, "ai-core-ui.css"), "utf8");
   const html = readFileSync(join(target, "starter.html"), "utf8");
@@ -66,6 +66,9 @@ test("creates a revision-bound starter with established UI rules", () => {
   assert.match(modelIndex, /FreePass CI manifest version/);
   assert.match(modelIndex, /승인 자산 0개/);
   assert.match(modelIndex, /CI 자산 미적용/);
+  assert.match(modelIndex, /앱 제작용 표준 부품 창고/);
+  assert.match(modelIndex, /warehouse-search/);
+  assert.match(modelIndex, /copy-manifest/);
   const modelScript = readFileSync(join(target, "models", "models.js"), "utf8");
   assert.match(modelScript, /aria-busy/);
   assert.match(modelScript, /dataset\.previewState/);
@@ -86,6 +89,13 @@ test("creates a revision-bound starter with established UI rules", () => {
   assert.match(catalog.brand_profiles.FREEPASS.asset_policy, /Remote hotlinks are prohibited/);
   assert.deepEqual(catalog.recipes["RENMAN-PENALTY-01"].sequence.map((step) => step.set), ["SET-03", "SET-02"]);
   assert.match(catalog.recipes["RENMAN-PENALTY-01"].mobile_rule, /M02/);
+  const templates = JSON.parse(readFileSync(join(target, "ui-template-catalog.json"), "utf8"));
+  assert.deepEqual(Object.keys(templates.layers), ["foundation", "component", "pattern", "template", "profile"]);
+  assert.ok(templates.layers.component.length >= 30);
+  assert.ok(templates.layers.template.length >= 12);
+  for (const entries of Object.values(templates.layers)) for (const entry of entries) {
+    for (const key of ["id","name","use","avoid","desktop","mobile","states","accessibility","requires","starter","sources","status"]) assert.ok(entry[key], `${entry.id} missing ${key}`);
+  }
   const inventory = JSON.parse(readFileSync(join(target, "ui-existing-pattern-inventory.json"), "utf8"));
   assert.ok(inventory.items.length >= 400);
   assert.deepEqual(inventory.repositories.map((item) => item.id), ["freepass-sales", "freepass-admin", "freepasserp4", "freepass-data", "teamjpkwork", "renman"]);
