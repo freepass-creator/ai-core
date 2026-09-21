@@ -17,6 +17,13 @@ Profiles:
 - `ai-core-ui.css`: token + component + runtime + product presentation
 - `starter.html`: 버튼, 검색, 카드 목록, 상태, 하단 액션의 의미 구조
 - `starter.js`: 검색 전환, 작업 보존, 전체 행 선택, 화면 상태와 실행 피드백의 참조 동작
+- `models/index.html`: 여섯 개 표준 화면을 한 번에 고르는 미리보기
+- `models/list.html`: 검색·필터·단일 목록 카드
+- `models/detail.html`: 한 건의 정보 확인과 페이지 실행
+- `models/form.html`: validation·disabled·busy가 있는 입력 흐름
+- `models/home.html`: 핵심 업무 진입과 아이콘 하단 이동
+- `models/select-step.html`: 단일·복수 선택 단계
+- `models/result-receipt.html`: 처리 중·성공·실패·보류 결과
 - `ai-core-ui.profile.json`: 선택 profile과 AI Core revision
 - `AI_CORE_UI_STARTER.md`: 적용 및 검증 체크리스트
 

@@ -16,7 +16,7 @@ test("parses starter arguments", () => {
 test("creates a revision-bound starter with established UI rules", () => {
   const target = mkdtempSync(join(tmpdir(), "ai-core-ui-"));
   const result = initStarter({ target, profile: "freepass-product", product: "Sample" });
-  assert.equal(result.files.length, 5);
+  assert.equal(result.files.length, 14);
 
   const css = readFileSync(join(target, "ai-core-ui.css"), "utf8");
   const html = readFileSync(join(target, "starter.html"), "utf8");
@@ -42,6 +42,20 @@ test("creates a revision-bound starter with established UI rules", () => {
   assert.match(readme, /버튼과 선택은 테두리 없이, 입력과 표는 테두리 있게, 목록은 카드 하나/);
   assert.match(readme, /하단 이동은 아이콘, 페이지 실행은 테두리 없는 박스 버튼/);
   assert.match(profile.ai_core_revision, /^[a-f0-9]{40}$/);
+
+  const models = ["list", "detail", "form", "home", "select-step", "result-receipt"];
+  for (const model of models) {
+    const markup = readFileSync(join(target, "models", `${model}.html`), "utf8");
+    assert.match(markup, new RegExp(`data-model="${model}"`));
+    assert.match(markup, /data-region="header"/);
+    assert.match(markup, /data-region="main"/);
+    assert.match(markup, /언제 사용/);
+    assert.match(markup, /사용하지 않을 때/);
+    assert.match(markup, /data-states="loading empty error populated selected disabled busy"/);
+  }
+  const modelIndex = readFileSync(join(target, "models", "index.html"), "utf8");
+  assert.match(modelIndex, /여러 항목을 찾고 고름/);
+  assert.match(modelIndex, /처리 결과를 확인/);
 });
 
 test("does not overwrite an existing starter without force", () => {
