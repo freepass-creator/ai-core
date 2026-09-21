@@ -8,6 +8,16 @@ export const REUSE_DECISIONS = new Set([
   'CREATE_NEW_JUSTIFIED',
 ]);
 
+function passReuseDecision(payload) {
+  return {
+    status: 'PASS',
+    decision_scope: 'REUSE_PREFLIGHT_ONLY',
+    write_authorized: false,
+    write_boundary: 'EXISTING_PROJECT_OR_WORK_OWNERSHIP_REQUIRED',
+    ...payload,
+  };
+}
+
 export function queryTokens(query) {
   return [...new Set(String(query ?? '').toLowerCase().match(/[\p{L}\p{N}][\p{L}\p{N}._-]{1,}/gu) ?? [])]
     .filter((token) => !STOP_WORDS.has(token));
@@ -28,9 +38,14 @@ export function validateReuseDecision({ decision, selected = [], reason = '', ca
   if (!REUSE_DECISIONS.has(decision)) return { status: 'HOLD', reason: 'REUSE_DECISION_REQUIRED' };
   if (decision === 'CREATE_NEW_JUSTIFIED') {
     if (String(reason).trim().length < 20) return { status: 'HOLD', reason: 'NEW_ASSET_REASON_TOO_SHORT' };
-    return { status: 'PASS', action: decision, searched_candidate_count: candidateCount, reason: String(reason).trim() };
+    return passReuseDecision({
+      action: decision,
+      searched_candidate_count: candidateCount,
+      reason: String(reason).trim(),
+      creation_requires_ownership: true,
+    });
   }
   if (decision === 'HOLD_UNKNOWN') return { status: 'HOLD', reason: 'REUSE_UNKNOWN' };
   if (selected.length === 0) return { status: 'HOLD', reason: 'REUSE_SELECTION_REQUIRED' };
-  return { status: 'PASS', action: decision, selected };
+  return passReuseDecision({ action: decision, selected });
 }
