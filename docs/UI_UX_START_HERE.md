@@ -74,6 +74,21 @@ UI/UX 작업은 아래 순서를 생략하지 않는다.
 - panel 내부의 카드/상태/버튼/icon/action hierarchy는 모바일과 동일
 - 폭이 줄면 panel 수를 줄여 모바일 single-panel 흐름으로 수렴
 
+### A-3. Portable Task Panel 규격
+
+모바일/웹 공통 업무화면은 아래 규격을 함께 읽는다.
+
+- `docs/PORTABLE_TASK_PANEL_STANDARD_2026-09-21.md`
+
+핵심 검증 질문:
+
+> **PC의 이 panel을 떼어내 모바일 한 화면으로 놓아도 같은 업무를 끝낼 수 있는가?**
+
+- 가능해야 portable/conformant
+- desktop keyboard/hover/drag/multi-panel은 편의 기능일 뿐 canonical completion path가 아님
+- panel은 sibling visibility가 아니라 stable entity/work context와 C/D command/state binding에 의존
+- 넓은 화면에서는 panel을 조합하고 좁아지면 같은 상태를 유지한 채 single panel로 collapse
+
 ### B. 제품 전용 규칙
 
 FreePass 제품이면 반드시 추가로:
