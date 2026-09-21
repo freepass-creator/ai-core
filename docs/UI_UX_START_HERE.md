@@ -42,6 +42,23 @@ UI/UX 작업은 아래 순서를 생략하지 않는다.
 9. `design-system/interaction.contract.json` — cross-component invariants
 10. `design-system/runtime-v2.css` — 실제 공통 runtime CSS
 
+### A-1. 2026-09-21 사용자 확정 모바일 baseline
+
+모바일 신규 설계/고도화는 아래 날짜 문서를 반드시 추가로 읽는다.
+
+- `docs/UI_UX_USER_DECISION_2026-09-21_MOBILE_BASELINE.md`
+
+이 문서는 FreePass Sales에서 사용자가 직접 확정한 모바일 문법을 회사 기본 baseline으로 기록한다.
+
+핵심:
+- 상단 = 제목/상태/맥락 표시, 제품 UI navigation/task CTA 없음
+- 하단 = task action
+- 2개 버튼 = Secondary 3 : Primary 7
+- 3개 버튼 = Secondary 3 : Secondary 3 : Primary 4
+- 모바일 목록 = 서로 붙지 않는 2~3줄 card list, 첫 줄이 main
+- filter/share/search/sort 같은 보조 기능은 적절한 icon action 활용
+- 웹 대응 규격은 사용자가 별도 확정하기 전까지 임의 고정하지 않음
+
 ### B. 제품 전용 규칙
 
 FreePass 제품이면 반드시 추가로:
@@ -140,8 +157,11 @@ FreePass 모바일은 특히 다음을 먼저 본다.
 - `navigation.bottom-action`
 - 주행동 1개
 - Primary 48px 권장, 44px 미만 금지
-- 보조 + 주행동이면 FreePass 기본 3:7
+- 버튼 2개면 Secondary 3 : Primary 7
+- 버튼 3개면 Secondary 3 : Secondary 3 : Primary 4
 - 저장/반영/완료/다음 CTA는 상단에 두지 않음
+- 모바일 목록은 기본적으로 간격이 있는 2~3줄 카드형이며 첫 줄이 main 정보
+- filter/share/search/sort 등 보조 기능은 의미가 명확할 때 icon action 사용
 
 ### 반응형
 
