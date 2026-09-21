@@ -25,6 +25,7 @@ test('Estimate QA evidence remains advisory until Core QA becomes canonical', as
     readJson('../registry/project-audit-readiness.json'),
     readJson('../docs/audits/freepass-estimate-pilot-2026-09-20.json'),
   ]);
+  readiness.axes.find(x => x.id === 'qa-observability').maturity = 'RESEARCH_ONLY';
   result.findings.find(x => x.axis === 'qa-observability').verdict = 'CORE_MATCH';
   assert.throws(
     () => validateProjectAuditResult(result, readiness),

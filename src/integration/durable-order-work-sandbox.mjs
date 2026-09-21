@@ -114,7 +114,7 @@ export async function openDurableOrderWorkSandbox({ root = null, registry, asOf,
     need(order.revision === row.requirement_revision, 'REQUIREMENT_SUPERSEDED');
     need(requirementDigest(order) === row.binding.requirement_digest, 'REQUIREMENT_DIGEST_CHANGED');
     const project = policy.projects.find(value => value.project_id === row.binding.project_id);
-    need(project?.status === 'ACTIVE' && project.head_revision === row.binding.subject_revision, 'PROJECT_REVISION_CHANGED');
+    need((project?.execution_readiness_status ?? project?.status) === 'ACTIVE' && project.head_revision === row.binding.subject_revision, 'PROJECT_REVISION_CHANGED');
     return order;
   }
   function state(row, next, head, reason = null) {
@@ -157,7 +157,7 @@ export async function openDurableOrderWorkSandbox({ root = null, registry, asOf,
       const existing = db.prepare('SELECT payload_digest FROM coordination_commands WHERE command_id=?').get(payload.command_id);
       if (existing) { need(existing.payload_digest === payloadDigest, 'COMMAND_PAYLOAD_CONFLICT'); return reconcile(payload.command_id); }
       const project = policy.projects.find(value => value.project_id === payload.project_id);
-      need(project?.status === 'ACTIVE' && project.head_revision === payload.subject_revision, 'PROJECT_REVISION_CHANGED');
+      need((project?.execution_readiness_status ?? project?.status) === 'ACTIVE' && project.head_revision === payload.subject_revision, 'PROJECT_REVISION_CHANGED');
       if (payload.operation === 'change') {
         const order = store.get(payload.order_id);
         need(order.version === payload.expected_version, 'STALE_ORDER_VERSION');

@@ -1,5 +1,5 @@
 # AI Core project entrypoint
 
-Start at [the AI continuation guide](docs/coordination/AI_CONTINUATION.md). Then read [WORK_READ_FIRST.md](WORK_READ_FIRST.md) and [the common AI entrypoint](docs/coordination/CROSS_AI_ENTRYPOINT.md). They are the shared instructions; do not create a separate session ledger or copy their state here.
+Read [WORK_READ_FIRST.md](WORK_READ_FIRST.md), then follow the current [AI Academy Constitution](docs/AI_WORKING_STANDARD.md). Work directly on the user's current task using the target project's canonical source and instructions.
 
-Read the coordinator's current scoped work packet. A read-only packet, role name or intake claim does not authorize execution. Missing canonical linkage, scope, freshness or execution authority means HOLD. Respect explicitly assigned checkout and file ownership. Do not change global trust, login or approval settings.
+Do not require a central order, work packet or claim for ordinary work. Apply those contracts only when the task explicitly continues an existing central-order workflow. Preserve repository state, permission boundaries and sensitive-data limits. Return the actual changes, verification, unresolved items and `next_start_here` so another AI can continue without rereading the whole conversation.

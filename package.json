@@ -65,7 +65,11 @@
     "a:review:check": "node scripts/a-session-review-pack.mjs --check",
     "a:claims:health": "node scripts/a-session-claim-health.mjs health",
     "a:claims:reap": "node scripts/a-session-claim-health.mjs reap",
-    "uiux:preflight": "node scripts/validate-ui-ux-entrypoint.mjs"
+    "uiux:preflight": "node scripts/validate-ui-ux-entrypoint.mjs",
+    "academy:validate": "node scripts/validate-ai-academy-entrypoints.mjs",
+    "claude:status": "node scripts/claude-usage-gate.mjs status",
+    "claude:review": "node scripts/claude-usage-gate.mjs run --",
+    "reuse:check": "node scripts/reuse-preflight.mjs"
   },
   "dependencies": {
     "ajv": "8.20.0",

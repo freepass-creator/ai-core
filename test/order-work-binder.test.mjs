@@ -23,9 +23,9 @@ const orderInput = () => ({
 });
 
 const registry = () => ({
-  schema_version: '1.0', observed_at: '2026-09-16T00:00:00Z',
+  schema_version: '1.1', observed_at: '2026-09-16T00:00:00Z',
   projects: [{
-    project_id: PROJECT, name: 'Demo', organization: 'HEADQUARTERS', status: 'ACTIVE',
+    project_id: PROJECT, name: 'Demo', organization: 'HEADQUARTERS', repository_lifecycle_status: 'ACTIVE', execution_readiness_status: 'ACTIVE',
     mission: 'fixture', repository: 'demo-org/demo-project', default_branch: 'main',
     work_branches: [], local_path: null, head_revision: SUBJECT,
     authoritative_sources: [{ kind: 'GIT', ref: 'demo-org/demo-project', revision: SUBJECT, observed_at: '2026-09-15T23:00:00Z' }],

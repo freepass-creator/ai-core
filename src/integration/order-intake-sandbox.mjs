@@ -56,7 +56,7 @@ export async function createOrderIntakeSandbox({ registry, asOf }) {
     if (normalized.status !== 'CANDIDATE_VALIDATED') return normalized;
     const intent = normalized.intent.value;
     if (!['new', 'change'].includes(intent)) return { ...hold('INTENT_READ_OR_HANDOFF_ONLY'), candidate: normalized };
-    need(pinnedRegistry.projects.some(project => project.project_id === projectId && project.status === 'ACTIVE'), 'PROJECT_NOT_REGISTERED');
+    need(pinnedRegistry.projects.some(project => project.project_id === projectId && (project.execution_readiness_status ?? project.status) === 'ACTIVE'), 'PROJECT_NOT_REGISTERED');
     need(typeof title === 'string' && title.trim() && Array.isArray(criteria) && criteria.length && criteria.every(value => typeof value === 'string' && value.trim()), 'SEMANTIC_DETAILS_REQUIRED');
     const target = intent === 'change' ? store.get(normalized.targets[0].value) : null;
     const currentMapping = target && mappings.find(row => row.mapping.order_id === target.id && row.mapping.requirement_revision === target.revision);

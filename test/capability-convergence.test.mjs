@@ -17,6 +17,11 @@ test('canonical capability registry references only registered projects',()=>{
   assert.ok(r.capability_count>=20);
 });
 
+test('capability consumers accept the canonical project registry v1.1 migration',()=>{
+  assert.equal(projects.schema_version,'1.1');
+  assert.equal(validateCapabilityRegistryReferences(capabilities,projects).status,'VALID');
+});
+
 test('Work Map uses canonical capability ids and unimplemented work is HOLD',()=>{
   const route=routeWork('ERP 상품 상세 고쳐',{workMap,projectRegistry:projects,capabilityRegistry:capabilities});
   assert.equal(route.capability_id,'erp.product');
@@ -48,7 +53,7 @@ test('dirty tracked worktree blocks project execution before command/module invo
     runProcess:async()=>{commands++;return{exit_code:0,stdout:'',stderr:''};},
     importModule:async()=>{modules++;return{execute:async()=>({status:'SUCCEEDED',evidence:[],artifacts:[],checks:[],blockers:[],external_effect:false})};},
   });
-  const project={project_id:'sample',status:'ACTIVE',local_path:resolve('/tmp/sample'),head_revision:'a'.repeat(40),commands:{test:'npm test'}};
+  const project={project_id:'sample',repository_lifecycle_status:'ACTIVE',execution_readiness_status:'ACTIVE',local_path:resolve('/tmp/sample'),head_revision:'a'.repeat(40),commands:{test:'npm test'}};
   const command={id:'project.verify',title:'verify',mode:'LOCAL_MUTATION',adapter:{kind:'PROJECT_REGISTRY_COMMAND',command_key:'test'}};
   await assert.rejects(runtime.runCommand(command,project),/PROJECT_WORKTREE_DIRTY/);
   const module={id:'x',title:'x',mode:'READ_ONLY',adapter:{kind:'PROJECT_MODULE',entrypoint:'lib/x.mjs',export:'execute'}};

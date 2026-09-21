@@ -26,6 +26,7 @@ test('ERP4 research-only QA evidence cannot self-promote to PROJECT_AHEAD', asyn
     readJson('../registry/project-audit-readiness.json'),
     readJson('../docs/audits/freepasserp4-pilot-2026-09-20.json'),
   ]);
+  readiness.axes.find(x => x.id === 'qa-observability').maturity = 'RESEARCH_ONLY';
   result.findings.find(x => x.axis === 'qa-observability').verdict = 'PROJECT_AHEAD';
   assert.throws(
     () => validateProjectAuditResult(result, readiness),

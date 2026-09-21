@@ -1,6 +1,20 @@
 # AI Core
 
-AI Core is the group headquarters for user orders, shared memory, planning, routing, approvals, evidence and follow-through.
+AI Core is the group's **AI academy**: a shared foundation where AIs learn the same working discipline through real work, preserve continuity, verify outcomes and accumulate evidence-backed knowledge.
+
+## 현재 방향: AI 협업 기반
+
+사용자는 각 AI에서 직접 업무한다. AI Core는 **AI 사관학교**로서 어떤 AI가 작업하더라도 정본 확인·재사용·검증·인계·노하우 축적 방식이 일관되게 작동하도록 훈련 기준을 제공한다. [AI 사관학교 헌법](docs/AI_WORKING_STANDARD.md)이 최상위 공통 규격이며, 중앙 오더 접수는 일반 업무의 선행 조건이 아니다. 아래 오더 데스크 내용은 기존 중앙 오더 경로의 구현 상태다.
+
+모든 AI는 디자인·규격·개발·문서·데이터·운영을 시작하기 전에 AI Core에서 `목적 → 정본 → 적용 규격 → 재사용할 노하우 → 완료 검증`을 확인하고 대상 프로젝트로 간다. 이 과정은 접수 절차가 아니라 작업 품질을 맞추는 짧은 필수 사전점검이다.
+
+쌓여 있는 Markdown을 전부 매번 읽지 않는다. [AI 사관학교 실전 교범과 교과과정](docs/AI_ACADEMY_CURRICULUM.md)에서 업무별 최소 독서 경로를 고르고, 헌법·현행 표준·연구 후보·과거 evidence를 구분해 사용한다.
+
+이 PC의 필수 진입점인 Codex·Claude가 헌법과 교과과정에 연결됐는지는 `npm run academy:validate`로 확인한다. Gemini·Cursor 진입점은 선택 상태로만 보고하며 전체 판정을 막지 않는다. 이 검사는 규칙 파일 설치만 검증하고 로그인·한도 또는 실제 준수까지 PASS로 간주하지 않는다.
+
+기본 협업은 사용자 결정에 따라 `Codex + Claude Code`만 사용한다. Cursor와 Gemini는 설치 여부와 관계없이 자동 호출하지 않으며, 사용자가 해당 작업에서 직접 지정할 때만 사용한다.
+
+새 파일·모듈·문서·자동화를 만들기 전에는 `npm run reuse:check -- "<만들려는 것>" --root <대상 경로>`로 기존 capability와 실제 자산을 먼저 찾는다. 기존 후보를 재사용·확장하지 않는 이유가 없으면 신규 생성을 진행하지 않는다.
 
 ## 현재 작업: 공통 AI 오더 데스크
 
