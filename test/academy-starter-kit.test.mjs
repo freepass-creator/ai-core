@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { mkdtemp, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -8,6 +9,7 @@ import { installAcademyStarterKit } from '../src/academy/starter-kit.mjs';
 
 const receipt={status:'READY',observed_at:'2026-09-22T00:00:00Z',task:'기능 구현',track:'development',target:{repository:'o/r',revision:'a'.repeat(40)},precheck:{completion_verification:{test:'npm test'}}};
 const git=(root,...args)=>execFileSync('git',args,{cwd:root,encoding:'utf8'}).trim();
+const sha256=body=>createHash('sha256').update(body).digest('hex');
 
 test('starter kit carries pinned standards, verification and result template',async()=>{
   const root=await mkdtemp(join(tmpdir(),'academy-kit-'));
@@ -20,6 +22,7 @@ test('starter kit carries pinned standards, verification and result template',as
   assert.equal(JSON.parse(await readFile(join(root,'.ai-core','catalog','projects.json'),'utf8')).projects[0].project_id,'one');
   assert.equal(JSON.parse(await readFile(join(root,'.ai-core','CATALOG_INDEX.json'),'utf8')).items[0].core_revision,'b'.repeat(40));
   assert.match(await readFile(join(root,'.ai-core','START_HERE.md'),'utf8'),/session-bootstrap\.mjs/);
+  assert.match(await readFile(join(root,'.ai-core','START_HERE.md'),'utf8'),new RegExp(`AI Core revision: ${'b'.repeat(40)}`));
   const bootstrapRun=spawnSync(process.execPath,[join(root,'.ai-core','session-bootstrap.mjs')],{encoding:'utf8',env:{...process.env,PATH:join(root,'missing-bin')}});
   const bootstrap=JSON.parse(bootstrapRun.stdout);
   assert.equal(bootstrap.schema,'ai-core-session-bootstrap/v2');
@@ -42,7 +45,7 @@ test('starter kit never overwrites a conflicting local file',async()=>{
   await assert.rejects(()=>installAcademyStarterKit({output:out,receipt,coreRevision:'b'.repeat(40),readings:[{path:'docs/AI_WORKING_STANDARD.md',body:'one'}]}),/KIT_FILE_CONFLICT/);
 });
 
-test('starter kit bootstrap admits authorized refresh but holds authority drift and project revision mismatch',async()=>{
+test('starter kit bootstrap admits generated refresh but holds authority drift and project revision mismatch',async()=>{
   const root=await mkdtemp(join(tmpdir(),'academy-kit-git-'));
   git(root,'init','-q');
   git(root,'config','user.email','ai-core-test@example.invalid');
@@ -85,10 +88,10 @@ test('starter kit bootstrap admits authorized refresh but holds authority drift 
   const refreshRoot=await mkdtemp(join(tmpdir(),'academy-kit-refresh-'));
   const refreshOut=join(refreshRoot,'.ai-core');
   await installAcademyStarterKit({output:refreshOut,receipt:boundReceipt,coreRevision:'c'.repeat(40),readings:[{path:'docs/AI_WORKING_STANDARD.md',body:'one'}],operatingKnowledge:knowledge});
-  for(const name of ['kit.json','session-bootstrap.mjs','verify-kit.mjs']){
+  for(const name of ['kit.json','session-bootstrap.mjs','verify-kit.mjs','START_HERE.md']){
     await writeFile(join(out,name),await readFile(join(refreshOut,name),'utf8'));
   }
-  git(root,'add','.ai-core/kit.json','.ai-core/session-bootstrap.mjs','.ai-core/verify-kit.mjs');
+  git(root,'add','.ai-core/kit.json','.ai-core/session-bootstrap.mjs','.ai-core/verify-kit.mjs','.ai-core/START_HERE.md');
   git(root,'commit','-q','-m','refresh academy kit');
   const refreshed=git(root,'rev-parse','HEAD');
   const refreshedBootstrapRun=spawnSync(process.execPath,[bootstrapPath],{cwd:root,encoding:'utf8'});
@@ -148,6 +151,28 @@ test('starter kit bootstrap admits authorized refresh but holds authority drift 
   assert.equal(bootstrapMutation.project.kit_verification,null);
   assert.ok(bootstrapMutation.blockers.includes('STARTER_KIT_VERIFICATION_FAILED'));
   assert.equal(bootstrapMutation.blockers.includes('STARTER_KIT_REVISION_MISMATCH'),false);
+
+  git(root,'reset','--hard',refreshed);
+  const coordinatedBootstrapSource=await readFile(bootstrapPath,'utf8');
+  const coordinatedBootstrap=`${coordinatedBootstrapSource}// coordinated bootstrap + manifest mutation\n`;
+  await writeFile(bootstrapPath,coordinatedBootstrap);
+  const coordinatedManifest=JSON.parse(await readFile(manifestPath,'utf8'));
+  const bootstrapEntry=coordinatedManifest.files.find(file=>file.path==='session-bootstrap.mjs');
+  assert.ok(bootstrapEntry);
+  bootstrapEntry.sha256=sha256(coordinatedBootstrap);
+  await writeFile(manifestPath,`${JSON.stringify(coordinatedManifest,null,2)}\n`);
+  git(root,'add','.ai-core/session-bootstrap.mjs','.ai-core/kit.json');
+  git(root,'commit','-q','-m','coordinate bootstrap and manifest mutation');
+  const coordinatedMutationRun=spawnSync(process.execPath,[bootstrapPath],{cwd:root,encoding:'utf8'});
+  assert.equal(coordinatedMutationRun.status,2,coordinatedMutationRun.stderr||coordinatedMutationRun.stdout);
+  const coordinatedMutation=JSON.parse(coordinatedMutationRun.stdout);
+  assert.equal(coordinatedMutation.status,'HOLD');
+  assert.equal(coordinatedMutation.project.kit_authority.status,'MISMATCH');
+  assert.equal(coordinatedMutation.project.kit_authority.anchor_commit,refreshed);
+  assert.deepEqual(coordinatedMutation.project.kit_authority.changed,['kit.json','session-bootstrap.mjs']);
+  assert.equal(coordinatedMutation.project.kit_verification,null);
+  assert.ok(coordinatedMutation.blockers.includes('STARTER_KIT_VERIFICATION_FAILED'));
+  assert.equal(coordinatedMutation.blockers.includes('STARTER_KIT_REVISION_MISMATCH'),false);
 
   git(root,'reset','--hard',refreshed);
   await writeFile(join(root,'tracked.txt'),'v2\n');
