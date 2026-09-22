@@ -657,6 +657,9 @@
     "scripts/work-recent.mjs",
     "scripts/work-record.mjs",
     "scripts/work-reobserve.mjs",
+    "shared-services/fs/atomic-stream-write.mjs",
+    "shared-services/PROVENANCE.json",
+    "shared-services/README.md",
     "src/academy/start-gate.mjs",
     "src/academy/starter-kit.mjs",
     "src/collaboration/claude-usage-gate.mjs",
@@ -826,6 +829,7 @@
     "test/shared-extraction-candidate.test.mjs",
     "test/shared-extraction-pilots.test.mjs",
     "test/shared-orders.test.mjs",
+    "test/shared-services-atomic-stream-write.test.mjs",
     "test/ui-globalization.test.mjs",
     "test/ui-ux-conformance-receipt.test.mjs",
     "test/ui-ux-consumer-manifest.test.mjs",
@@ -965,6 +969,7 @@
     "2026-09-22 portal path independence: DevCenter portal typecheck and static packaging now consume hash-verified pinned catalog snapshots and staged logical manifests instead of a sibling ../../freepasserp4 checkout or a previous static build. CI installs portal dependencies and runs the portable gate. The generated functions inventory remains a documented build prerequisite. Claude read-only review was invoked once but produced no response within 60 seconds, so it is UNAVAILABLE rather than PASS. changed_files is exact verifier parity only.",
     "2026-09-22 AIOps pre-import classification: pinned freepass-creator/aiops@3d6ec8c... inventory into conservative preserve/exclude/HOLD/shared-review categories; no execution or source retirement authority. changed_files updated for verifier parity only.",
     "2026-09-23 DocsHub transition boundary: remote DocsHub was source-reviewed at 4059d827...; Document Hub binding and registry remain HOLD and converge on one transitional exact source, management-support/templates is the post-cutover template owner, and the unversioned local DocsHub inventory remains HOLD until fresh observation and sensitive/case-content exclusion. changed_files updated for verifier parity only.",
-    "2026-09-23 management-support intake gate: created scaffold-only headquarters target for reusable document templates and added a fail-closed pre-cutover test that keeps document routing on external DocsHub HOLD until provenance, parity, binding, routing and reference-only cutover conditions all pass. changed_files updated for verifier parity only."
+    "2026-09-23 management-support intake gate: created scaffold-only headquarters target for reusable document templates and added a fail-closed pre-cutover test that keeps document routing on external DocsHub HOLD until provenance, parity, binding, routing and reference-only cutover conditions all pass. changed_files updated for verifier parity only.",
+    "2026-09-23 first shared-service extraction: AIOps lib/atomic-stream-write.mjs imported as an exact-copy SHADOW under shared-services/fs with pinned source blob provenance and behavioral parity tests; AIOps remains runtime authority and no consumer cutover is authorized. changed_files updated for verifier parity only."
   ]
 }
