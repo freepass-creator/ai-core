@@ -58,10 +58,11 @@ export function registryRefresh(등록부, { observe = 원격보기, now = new D
   if (모름.length) return { 바뀜, 모름 };
 
   for (const { 프, rev } of 관측) {
+    const previousHead = 프.head_revision;
     프.head_revision = rev;
     for (const 원천 of 프.authoritative_sources ?? []) {
       const canonicalRefs = new Set([프.repository, `${프.repository}#${프.default_branch}`]);
-      if (원천.kind === 'GIT' && canonicalRefs.has(원천.ref)) {
+      if (원천.kind === 'GIT' && canonicalRefs.has(원천.ref) && 원천.revision === previousHead) {
         원천.revision = rev;
         원천.observed_at = 이제;
       }

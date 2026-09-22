@@ -63,7 +63,7 @@ test('④ 진짜 낡은 등록부 — 고치고, 원천까지 묶고, 검증기�
   for (const 프 of 등록부.projects) {
     assert.equal(프.head_revision, 새것);
     const canonicalRefs = new Set([프.repository, `${프.repository}#${프.default_branch}`]);
-    assert.ok(프.authoritative_sources.filter((s) => s.kind === 'GIT' && canonicalRefs.has(s.ref)).every((s) => s.revision === 새것 && s.observed_at === '2026-10-01T03:00:00Z'));
+    assert.ok(프.authoritative_sources.some((s) => s.kind === 'GIT' && canonicalRefs.has(s.ref) && s.revision === 새것 && s.observed_at === '2026-10-01T03:00:00Z'));
   }
   assert.equal(등록부.observed_at, '2026-10-01T03:00:00Z');
   assert.equal(validateProjectRegistry(등록부).status, 'VALID');
@@ -80,7 +80,8 @@ test('기본 갈래 갱신이 보존된 작업 갈래 provenance를 덮어쓰지
       project_id: 'sample', repository: 'owner/sample', default_branch: 'main', head_revision: oldMain,
       authoritative_sources: [
         { kind: 'GIT', ref: 'owner/sample#main', revision: oldMain, observed_at: '2026-09-17T00:00:00Z' },
-        { kind: 'GIT', ref: 'owner/sample#work/ui-baseline', revision: workRevision, observed_at: '2026-09-16T00:00:00Z' }
+        { kind: 'GIT', ref: 'owner/sample#work/ui-baseline', revision: workRevision, observed_at: '2026-09-16T00:00:00Z' },
+        { kind: 'GIT', ref: 'owner/sample', revision: workRevision, observed_at: '2026-09-15T00:00:00Z' }
       ]
     }]
   };
@@ -88,6 +89,8 @@ test('기본 갈래 갱신이 보존된 작업 갈래 provenance를 덮어쓰지
   assert.equal(등록부.projects[0].authoritative_sources[0].revision, newMain);
   assert.equal(등록부.projects[0].authoritative_sources[1].revision, workRevision);
   assert.equal(등록부.projects[0].authoritative_sources[1].observed_at, '2026-09-16T00:00:00Z');
+  assert.equal(등록부.projects[0].authoritative_sources[2].revision, workRevision);
+  assert.equal(등록부.projects[0].authoritative_sources[2].observed_at, '2026-09-15T00:00:00Z');
 });
 
 test('일부만 못 보면 canonical registry를 한 글자도 부분 갱신하지 않는다', async () => {
