@@ -61,6 +61,42 @@ test('generic core receipt does not require DevCenter or hub policy',()=>{
   assert.equal(validate(receipt),true,JSON.stringify(validate.errors));
 });
 
+test('generic core receipt fails closed before emitting schema-invalid public fields',()=>{
+  const base={
+    receiptId:'work_receipt_002',
+    operationId:'work_operation_002',
+    operationKind:'work.result.deliver',
+    actor:'aiops-worker',
+    executor:'receivables-status-v1',
+    correlationId:'req-002',
+    status:'HOLD',
+    reasonCode:'RESULT_NOT_READY',
+    inputPayload:{request_id:'req-002'},
+    outputPayload:{open_count:3},
+    sourceRevision:'2'.repeat(40),
+    startedAt:'2026-09-22T00:00:00.000Z',
+    endedAt:'2026-09-22T00:00:01.000Z',
+    environmentRevision:'2'.repeat(40)
+  };
+  const counterexamples=[
+    ['receiptId','r'.repeat(129)],
+    ['operationId','bad id'],
+    ['correlationId','bad id'],
+    ['operationKind','Work.Result'],
+    ['reasonCode','bad-code'],
+    ['sourceRevision','r'.repeat(257)],
+    ['startedAt','2026-02-31T00:00:00Z'],
+    ['endedAt','2026-09-22T25:00:00Z']
+  ];
+  for(const [field,value] of counterexamples){
+    assert.throws(
+      ()=>buildCoreReceipt({...base,[field]:value}),
+      (error)=>error?.code==='CORE_RECEIPT_FIELD_INVALID'&&error.message.includes(field),
+      field
+    );
+  }
+});
+
 test('hub finalizer emits deterministic core fields and preserves specialized payload',()=>{
   const input={subject:{revision:'1'.repeat(40)},checks:[{status:'HOLD',evidence:['evidence/check.json']}],result:{status:'HOLD'}};
   const receipt=finalizeCoreHubReceipt({kind:'data',prefix:'data',payload:input,legacyContract:'devcenter-data-receipt/v1',createdAt:'2026-09-22T00:00:00.000Z'});

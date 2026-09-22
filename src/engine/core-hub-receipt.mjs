@@ -19,6 +19,59 @@ function requireString(name,value){
   return value;
 }
 
+function invalidField(name,rule){
+  const error=new TypeError(`${name} must satisfy ${rule}`);
+  error.code='CORE_RECEIPT_FIELD_INVALID';
+  throw error;
+}
+
+const STABLE_ID_PATTERN=/^[A-Za-z0-9][A-Za-z0-9._:-]*$/;
+const OPERATION_KIND_PATTERN=/^[a-z][a-z0-9._-]*$/;
+const REASON_CODE_PATTERN=/^[A-Z][A-Z0-9_]*$/;
+const RFC3339_PATTERN=/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d+)?(Z|[+-]\d{2}:\d{2})$/;
+
+function requireStableId(name,value){
+  const text=requireString(name,value);
+  if(text.length>128||!STABLE_ID_PATTERN.test(text)) invalidField(name,'core stable_id');
+  return text;
+}
+
+function requireOperationKind(name,value){
+  const text=requireString(name,value);
+  if(!OPERATION_KIND_PATTERN.test(text)) invalidField(name,'core receipt operation_kind');
+  return text;
+}
+
+function requireReasonCode(name,value){
+  const text=requireString(name,value);
+  if(!REASON_CODE_PATTERN.test(text)) invalidField(name,'core receipt reason_code');
+  return text;
+}
+
+function requireRevision(name,value){
+  const text=requireString(name,value);
+  if(text.length>256) invalidField(name,'core revision');
+  return text;
+}
+
+function requireDateTime(name,value){
+  const text=requireString(name,value);
+  const match=RFC3339_PATTERN.exec(text);
+  if(!match) invalidField(name,'RFC 3339 date-time');
+  const [,year,month,day,hour,minute,second,zone]=match;
+  const y=Number(year),mo=Number(month),d=Number(day),h=Number(hour),mi=Number(minute),s=Number(second);
+  const calendar=new Date(Date.UTC(y,mo-1,d));
+  const validDate=calendar.getUTCFullYear()===y&&calendar.getUTCMonth()===mo-1&&calendar.getUTCDate()===d;
+  const validClock=h<=23&&mi<=59&&s<=59;
+  let validZone=true;
+  if(zone!=='Z'){
+    const [zoneHour,zoneMinute]=zone.slice(1).split(':').map(Number);
+    validZone=zoneHour<=23&&zoneMinute<=59;
+  }
+  if(!validDate||!validClock||!validZone) invalidField(name,'RFC 3339 date-time');
+  return text;
+}
+
 function normalizeRefs(refs){
   if(!Array.isArray(refs)){
     const error=new TypeError('receipt refs must be an array');
@@ -52,22 +105,22 @@ export function buildCoreReceipt({
   environmentRevision=sourceRevision,
   commandRef=null
 }){
-  requireString('receiptId',receiptId);
-  requireString('operationId',operationId);
-  requireString('operationKind',operationKind);
+  requireStableId('receiptId',receiptId);
+  requireStableId('operationId',operationId);
+  requireOperationKind('operationKind',operationKind);
   requireString('actor',actor);
   requireString('executor',executor);
-  requireString('correlationId',correlationId);
-  requireString('startedAt',startedAt);
-  requireString('endedAt',endedAt);
+  requireStableId('correlationId',correlationId);
+  requireDateTime('startedAt',startedAt);
+  requireDateTime('endedAt',endedAt);
   requireString('executorVersion',executorVersion);
   if(!CORE_TERMINAL_STATUS.has(status)){
     const error=new TypeError(`unsupported core receipt status: ${status}`);
     error.code='CORE_RECEIPT_STATUS_INVALID';
     throw error;
   }
-  if(reasonCode!==null) requireString('reasonCode',reasonCode);
-  if(sourceRevision!==null) requireString('sourceRevision',sourceRevision);
+  if(reasonCode!==null) requireReasonCode('reasonCode',reasonCode);
+  if(sourceRevision!==null) requireRevision('sourceRevision',sourceRevision);
   if(environmentRevision!==null) requireString('environmentRevision',environmentRevision);
   if(commandRef!==null) requireString('commandRef',commandRef);
 
