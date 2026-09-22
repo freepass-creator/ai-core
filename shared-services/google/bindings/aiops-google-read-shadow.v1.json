@@ -1,0 +1,29 @@
+{
+  "schema_version": "core-binding-profile/v1",
+  "profile_id": "aiops.google-read.shadow",
+  "project_id": "aiops",
+  "environment": "shadow-not-runtime",
+  "subject_revision": "3d6ec8c6a0e826ae0472e3fb3e8bbaa8399b68c9",
+  "engine_bindings": [],
+  "service_bindings": [
+    {
+      "service_id": "shared.google.read",
+      "service_version": "v1-shadow",
+      "ports": [
+        {
+          "port_id": "google.api.read",
+          "adapter_id": "shared.google.read-shadow"
+        }
+      ]
+    }
+  ],
+  "config_refs": [
+    "AIOPS:Google scopes remain source-owned",
+    "AIOPS:company Sheet/Drive IDs remain source-owned",
+    "AIOPS:lease/write policy remains source-owned"
+  ],
+  "secret_refs": [
+    "AIOPS:GOOGLE_APPLICATION_CREDENTIALS"
+  ],
+  "verification_state": "PARTIAL"
+}

@@ -658,7 +658,11 @@
     "scripts/work-record.mjs",
     "scripts/work-reobserve.mjs",
     "shared-services/fs/atomic-stream-write.mjs",
+    "shared-services/google/adapters/shared-google-read-shadow.v1.json",
     "shared-services/google/api-url-boundary.mjs",
+    "shared-services/google/bindings/aiops-google-read-shadow.v1.json",
+    "shared-services/google/ports/google-api-read.v1.json",
+    "shared-services/google/read-transport.mjs",
     "shared-services/google/README.md",
     "shared-services/PROVENANCE.json",
     "shared-services/README.md",
@@ -833,6 +837,7 @@
     "test/shared-orders.test.mjs",
     "test/shared-services-atomic-stream-write.test.mjs",
     "test/shared-services-google-boundary.test.mjs",
+    "test/shared-services-google-read-port.test.mjs",
     "test/ui-globalization.test.mjs",
     "test/ui-ux-conformance-receipt.test.mjs",
     "test/ui-ux-consumer-manifest.test.mjs",
@@ -974,6 +979,7 @@
     "2026-09-23 DocsHub transition boundary: remote DocsHub was source-reviewed at 4059d827...; Document Hub binding and registry remain HOLD and converge on one transitional exact source, management-support/templates is the post-cutover template owner, and the unversioned local DocsHub inventory remains HOLD until fresh observation and sensitive/case-content exclusion. changed_files updated for verifier parity only.",
     "2026-09-23 management-support intake gate: created scaffold-only headquarters target for reusable document templates and added a fail-closed pre-cutover test that keeps document routing on external DocsHub HOLD until provenance, parity, binding, routing and reference-only cutover conditions all pass. changed_files updated for verifier parity only.",
     "2026-09-23 first shared-service extraction: AIOps lib/atomic-stream-write.mjs imported as an exact-copy SHADOW under shared-services/fs with pinned source blob provenance and behavioral parity tests; AIOps remains runtime authority and no consumer cutover is authorized. changed_files updated for verifier parity only.",
-    "2026-09-23 Google shared-service boundary: extracted only AIOps goog.mjs#assertAllowedGoogleApiUrl as FUNCTION_SLICE_SHADOW with pinned source blob and fail-closed URL tests; token, credential, lease and company-resource authority remain in AIOps. changed_files updated for verifier parity only."
+    "2026-09-23 Google shared-service boundary: extracted only AIOps goog.mjs#assertAllowedGoogleApiUrl as FUNCTION_SLICE_SHADOW with pinned source blob and fail-closed URL tests; token, credential, lease and company-resource authority remain in AIOps. changed_files updated for verifier parity only.",
+    "2026-09-23 Google read port shadow: reused canonical core-port/core-adapter/core-binding-profile contracts to add google.api.read, a credential-neutral shared read adapter and PARTIAL AIOps shadow binding. Retry timing intentionally differs from source and no live provider/cutover claim is made. changed_files updated for verifier parity only."
   ]
 }
