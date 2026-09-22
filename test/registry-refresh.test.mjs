@@ -70,6 +70,44 @@ test('④ 진짜 낡은 등록부 — 고치고, 원천까지 묶고, 검증기�
   assert.equal(끝값(registryRefresh(등록부, { now: NOW, observe: () => 새것 })), 0, '고친 뒤 다시 보면 낡은 것 없음');
 });
 
+test('canonical head가 바뀌면 ACTIVE 실행 준비 상태를 검증 없이 유지하지 않는다', () => {
+  const oldMain = 'a'.repeat(40);
+  const newMain = 'b'.repeat(40);
+  const unchanged = 'c'.repeat(40);
+  const 등록부 = {
+    observed_at: '2026-09-17T00:00:00Z',
+    projects: [
+      {
+        project_id: 'moved-active', repository: 'owner/moved-active', default_branch: 'main', head_revision: oldMain,
+        execution_readiness_status: 'ACTIVE',
+        authoritative_sources: [{ kind: 'GIT', ref: 'owner/moved-active', revision: oldMain, observed_at: '2026-09-17T00:00:00Z' }]
+      },
+      {
+        project_id: 'same-active', repository: 'owner/same-active', default_branch: 'main', head_revision: unchanged,
+        execution_readiness_status: 'ACTIVE',
+        authoritative_sources: [{ kind: 'GIT', ref: 'owner/same-active', revision: unchanged, observed_at: '2026-09-17T00:00:00Z' }]
+      },
+      {
+        project_id: 'moved-hold', repository: 'owner/moved-hold', default_branch: 'main', head_revision: oldMain,
+        execution_readiness_status: 'HOLD',
+        authoritative_sources: [{ kind: 'GIT', ref: 'owner/moved-hold', revision: oldMain, observed_at: '2026-09-17T00:00:00Z' }]
+      }
+    ]
+  };
+  const 관측 = new Map([
+    ['owner/moved-active', newMain],
+    ['owner/same-active', unchanged],
+    ['owner/moved-hold', newMain]
+  ]);
+
+  registryRefresh(등록부, { now: NOW, observe: (repo) => 관측.get(repo) });
+
+  assert.equal(등록부.projects[0].head_revision, newMain);
+  assert.equal(등록부.projects[0].execution_readiness_status, 'HOLD', '새 source revision은 exact-revision 실행 검증 전까지 ACTIVE가 아니다');
+  assert.equal(등록부.projects[1].execution_readiness_status, 'ACTIVE', 'head가 그대로면 기존 readiness를 유지한다');
+  assert.equal(등록부.projects[2].execution_readiness_status, 'HOLD', '이미 HOLD인 프로젝트를 자동 승격하지 않는다');
+});
+
 test('기본 갈래 갱신이 보존된 작업 갈래 provenance를 덮어쓰지 않는다', () => {
   const oldMain = 'a'.repeat(40);
   const workRevision = 'b'.repeat(40);
