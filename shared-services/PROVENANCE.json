@@ -12,12 +12,23 @@
       "source_runtime_authority": "AIOPS",
       "ai_core_runtime_authority": false,
       "consumer_cutover_authorized": false
+    },
+    {
+      "source_path": "lib/goog.mjs",
+      "source_symbol": "assertAllowedGoogleApiUrl",
+      "source_blob_sha": "447deabfbfedf9e0eb26ab2dffbaed4f8ada0100",
+      "destination_path": "shared-services/google/api-url-boundary.mjs",
+      "disposition": "FUNCTION_SLICE_SHADOW",
+      "source_runtime_authority": "AIOPS",
+      "ai_core_runtime_authority": false,
+      "consumer_cutover_authorized": false
     }
   ],
   "invariants": [
     "Destination bytes must reproduce the recorded Git blob SHA.",
     "Behavior parity must pass before any consumer cutover.",
     "AIOps remains runtime authority until a separate revision-bound consumer migration is verified.",
-    "No company IDs, credentials, operational data, or AIOps domain policy may enter through this extraction."
+    "No company IDs, credentials, operational data, or AIOps domain policy may enter through this extraction.",
+    "FUNCTION_SLICE_SHADOW entries transfer only the named pure symbol; auth, config and write-policy authority remain at the source."
   ]
 }
