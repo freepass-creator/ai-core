@@ -75,22 +75,22 @@
     {
       "query": "과태료 처리해",
       "expected_work_type_id": "penalty-processing",
-      "expected_status": "RESOLVED"
+      "expected_status": "HOLD_PROJECT_HOLD"
     },
     {
       "query": "자금 현황 확인해",
       "expected_work_type_id": "cash-status",
-      "expected_status": "RESOLVED"
+      "expected_status": "HOLD_PROJECT_HOLD"
     },
     {
       "query": "미수 확인해",
       "expected_work_type_id": "receivables",
-      "expected_status": "RESOLVED"
+      "expected_status": "HOLD_PROJECT_HOLD"
     },
     {
       "query": "보험 업무 봐줘",
       "expected_work_type_id": "insurance-operations",
-      "expected_status": "HOLD_CAPABILITY_HOLD"
+      "expected_status": "HOLD_PROJECT_HOLD"
     },
     {
       "query": "운영 스케줄 작업 확인해",
