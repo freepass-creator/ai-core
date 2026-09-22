@@ -54,8 +54,25 @@ test('physical merge packet requires parity and rollback verification',()=>{
   })])).packets[0];
   assert.equal(packet.action_kind,'CROSS_REPO_WRITE');
   assert.equal(packet.rollback.required,true);
+  assert.ok(packet.verification.checks.includes('IMPORT_CONTENT_POLICY_CHECK'));
+  assert.ok(packet.verification.checks.includes('CANONICAL_AUTHORITY_COLLISION_CHECK'));
+  assert.ok(packet.verification.checks.includes('SOURCE_RUNTIME_DEPENDENCY_CHECK'));
   assert.ok(packet.verification.checks.includes('TARGET_PARITY_CHECK'));
   assert.ok(packet.verification.checks.includes('ROLLBACK_PATH_VERIFIED'));
+  assert.ok(packet.forbidden_actions.includes('COPY_SECRETS_OR_CREDENTIALS'));
+  assert.ok(packet.forbidden_actions.includes('COPY_OPERATIONAL_DATA_OR_LOGS'));
+  assert.ok(packet.forbidden_actions.includes('COPY_COMPETING_CANONICAL_AUTHORITY'));
+  assert.ok(packet.forbidden_actions.includes('COPY_DEPLOYMENT_BOUNDARY_CONFIG'));
+});
+
+test('shared extraction uses the same content and authority collision gates as physical merge',()=>{
+  const packet=compileIntegrationWorkPackets(plan([ready({
+    classification:'EXTRACT_SHARED',
+    planned_steps:['PIN_SOURCE_REVISION','PRESERVE_ORIGINAL','IDENTIFY_SHARED_CONTRACT','EXTRACT_WITH_VERSIONED_BOUNDARY'],
+  })])).packets[0];
+  assert.ok(packet.verification.checks.includes('IMPORT_CONTENT_POLICY_CHECK'));
+  assert.ok(packet.verification.checks.includes('CANONICAL_AUTHORITY_COLLISION_CHECK'));
+  assert.ok(packet.verification.checks.includes('SOURCE_RUNTIME_DEPENDENCY_CHECK'));
 });
 
 test('keep-separate packet forbids merging git history',()=>{
