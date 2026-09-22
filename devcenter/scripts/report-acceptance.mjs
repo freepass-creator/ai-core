@@ -1,6 +1,7 @@
 import fs from 'node:fs';import path from 'node:path';
 import {here,sha,sourceDigest,requirements,deepIds} from './acceptance-evidence.mjs';
-const baseline=JSON.parse(fs.readFileSync(path.join(here,'quality/acceptance-v1.json'),'utf8')),digest=sourceDigest();
+const manifestArg=process.argv.indexOf('--manifest'),manifestFile=manifestArg<0?undefined:process.argv[manifestArg+1];
+const baseline=JSON.parse(fs.readFileSync(path.join(here,'quality/acceptance-v1.json'),'utf8')),digest=sourceDigest(manifestFile);
 const appArg=process.argv.indexOf('--app'),appFile=appArg<0?path.join(here,'portal/static/app.js'):process.argv[appArg+1];
 const receipts={};for(const kind of ['machine','browser']){const file=path.join(here,`quality/acceptance-${kind}.json`);receipts[kind]=fs.existsSync(file)?JSON.parse(fs.readFileSync(file,'utf8')):null}
 if(baseline.areas.length!==5||new Set(baseline.areas.flatMap(a=>a.criteria.map(c=>c.id))).size!==50||deepIds.length!==10||deepIds.some(id=>!baseline.areas.some(a=>a.criteria.some(c=>c.id===id))))throw Error('Invalid frozen denominator or deep membership');

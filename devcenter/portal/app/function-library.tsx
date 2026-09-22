@@ -2,7 +2,7 @@
 import FormattingLab from './formatting-lab';
 import {useEffect,useMemo,useState} from 'react';
 import {Button,Input,NativeSelect} from './primitives';
-import {fileSizeText,kmValue} from '../../../freepasserp4/lib/format';
+import {fileSizeText,kmValue} from '@fp4/lib/format';
 import FunctionSearch from './function-search';
 import {reuseRecipe,reuseContract} from './reuse-model';
 type Module={id:string;path:string;sha256:string;category:string;language:string;functions:number;unindexedCallables:number;inspection:string;consumerPaths:string[];sameHashPaths:string[];unresolvedLocalImports:number;parseErrors:{line:number;code:string|number}[];isTest:boolean};

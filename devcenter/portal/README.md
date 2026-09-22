@@ -18,7 +18,7 @@
 
 ## 재생성
 
-`npm ci --ignore-scripts`, `npm run typecheck`, `npm run build`, `npm run dev` 순서. 재생성에는 형제 경로 `C:/dev/freepasserp4`의 원본 파일이 필요하다. `static` 출력만으로는 Python 등 일반 정적 서버에서 표시할 수 있다. 파일 더블클릭은 fetch 제한 때문에 지원하지 않는다.
+`npm ci --ignore-scripts`, `npm run typecheck`, `npm run build`, `npm run dev` 순서. 타입검사와 빌드는 해시가 고정된 `public/catalog/source-code.json`과 `styles.json`에서 임시 소스 트리를 복원하므로 형제 저장소 checkout이 필요하지 않다. 새 원본을 반영할 때는 해당 카탈로그를 원본 저장소의 exact revision에서 먼저 갱신·검토해야 한다. `static` 출력만으로는 Python 등 일반 정적 서버에서 표시할 수 있다. 파일 더블클릭은 fetch 제한 때문에 지원하지 않는다.
 
 전체 후보 재색인은 상위 저장소에서 `python scripts/scan-standards.py`로 수행한다. 이는 C:/dev의 허용 개발 문서·코드를 읽는다. 제외 범위는 스크립트와 브라우저에 명시했다. 외부·운영 원본은 수정하지 않는다.
 

@@ -1,1 +1,1 @@
-{"extends":"./tsconfig.json","compilerOptions":{"paths":{"@fp4/*":["../../freepasserp4/*"],"@/*":["../../freepasserp4/*"]}},"files":["app/button-gallery.tsx","app/specimen/page.tsx"]}
+{"extends":"./tsconfig.json","files":["app/button-gallery.tsx","app/specimen/page.tsx"]}
