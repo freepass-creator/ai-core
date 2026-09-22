@@ -41,7 +41,7 @@ test('starter kit never overwrites a conflicting local file',async()=>{
   await assert.rejects(()=>installAcademyStarterKit({output:out,receipt,coreRevision:'b'.repeat(40),readings:[{path:'docs/AI_WORKING_STANDARD.md',body:'one'}]}),/KIT_FILE_CONFLICT/);
 });
 
-test('starter kit verifier fails closed after the project HEAD moves past its pinned revision',async()=>{
+test('starter kit verifier accepts its committed kit but fails after project work moves past the pinned revision',async()=>{
   const root=await mkdtemp(join(tmpdir(),'academy-kit-git-'));
   git(root,'init','-q');
   git(root,'config','user.email','ai-core-test@example.invalid');
@@ -56,7 +56,16 @@ test('starter kit verifier fails closed after the project HEAD moves past its pi
   const verifier=join(out,'verify-kit.mjs');
   const current=spawnSync(process.execPath,[verifier],{cwd:root,encoding:'utf8'});
   assert.equal(current.status,0,current.stderr);
-  assert.deepEqual(JSON.parse(current.stdout).revision,{expected:pinned,actual:pinned,status:'MATCH'});
+  assert.deepEqual(JSON.parse(current.stdout).revision,{expected:pinned,actual:pinned,status:'MATCH',advanced_paths:[]});
+  git(root,'add','.ai-core');
+  git(root,'commit','-q','-m','install academy kit');
+  const installed=git(root,'rev-parse','HEAD');
+  const committedKit=spawnSync(process.execPath,[verifier],{cwd:root,encoding:'utf8'});
+  assert.equal(committedKit.status,0,committedKit.stderr);
+  const committedResult=JSON.parse(committedKit.stdout);
+  assert.equal(committedResult.revision.status,'KIT_ONLY_ADVANCE');
+  assert.equal(committedResult.revision.actual,installed);
+  assert.ok(committedResult.revision.advanced_paths.every(path=>path.startsWith('.ai-core/')));
   await writeFile(join(root,'tracked.txt'),'v2\n');
   git(root,'add','tracked.txt');
   git(root,'commit','-q','-m','advance');
@@ -65,5 +74,8 @@ test('starter kit verifier fails closed after the project HEAD moves past its pi
   assert.equal(stale.status,1);
   const result=JSON.parse(stale.stdout);
   assert.equal(result.status,'FAIL');
-  assert.deepEqual(result.revision,{expected:pinned,actual:advanced,status:'MISMATCH'});
+  assert.equal(result.revision.expected,pinned);
+  assert.equal(result.revision.actual,advanced);
+  assert.equal(result.revision.status,'MISMATCH');
+  assert.ok(result.revision.advanced_paths.includes('tracked.txt'));
 });
