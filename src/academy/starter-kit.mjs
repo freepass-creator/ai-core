@@ -38,6 +38,7 @@ import{readFile}from'node:fs/promises';
 import{dirname,resolve,join}from'node:path';
 import{fileURLToPath}from'node:url';
 const core=dirname(fileURLToPath(import.meta.url)),root=resolve(core,'..'),sync=process.argv.includes('--sync');
+const generatedAuthority={core_revision:${JSON.stringify(coreRevision)},target_revision:${JSON.stringify(receipt.target.revision)}};
 const run=(cmd,args=[])=>{const r=spawnSync(cmd,args,{cwd:root,encoding:'utf8',windowsHide:true,shell:false});return{ok:!r.error&&r.status===0,status:r.status,stdout:(r.stdout??'').trim(),error:r.error?.code??null}};
 const kit=JSON.parse(await readFile(join(core,'kit.json'),'utf8'));
 const knowledge=JSON.parse(await readFile(join(core,'OPERATING_KNOWLEDGE.json'),'utf8'));
@@ -66,10 +67,11 @@ const coreHead=ghAuth.ok?run('gh',['api','repos/'+coreRepo+'/commits/main','--jq
 const projectFreshness=remoteHead&&head.ok?(remoteHead===head.stdout?'CURRENT':'STALE_OR_DIVERGED'):'UNKNOWN';
 const coreFreshness=coreHead.ok?(coreHead.stdout===kit.core_revision?'CURRENT':'STALE'):'UNKNOWN';
 const authorityPaths=['.ai-core/kit.json','.ai-core/verify-kit.mjs'];
-const authorityLog=run('git',['log','--reverse','--diff-filter=A','--format=%H','--','.ai-core/kit.json']);
+const authorityLog=run('git',['log','-1','--format=%H','--','.ai-core/session-bootstrap.mjs']);
 const authorityAnchor=authorityLog.ok?authorityLog.stdout.split(/\\r?\\n/).find(Boolean)??null:null;
 const authorityChanged=[];
 if(authorityAnchor){for(const path of authorityPaths){const anchored=run('git',['rev-parse',authorityAnchor+':'+path]);const current=run('git',['hash-object',path]);if(!anchored.ok||!current.ok||anchored.stdout!==current.stdout)authorityChanged.push(path.replace('.ai-core/',''));}}
+if(kit.core_revision!==generatedAuthority.core_revision||kit.target?.revision!==generatedAuthority.target_revision){if(!authorityChanged.includes('kit.json'))authorityChanged.push('kit.json');}
 const authorityStatus=!authorityAnchor?'UNAVAILABLE':authorityChanged.length?'MISMATCH':'MATCH';
 const kitCheck=authorityStatus==='MATCH'?run(process.execPath,[join(core,'verify-kit.mjs')]):{ok:false,status:null,stdout:'',error:'STARTER_KIT_AUTHORITY_UNVERIFIED'};
 let kitVerification=null;
