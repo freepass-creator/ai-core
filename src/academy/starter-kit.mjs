@@ -30,9 +30,41 @@ export async function installAcademyStarterKit({ output, receipt, readings, core
     verification: receipt.precheck.completion_verification,
     reuse_policy: 'New assets require a recorded reuse decision before creation.',
   };
-  const start = `# AI 작업 시작 키트\n\n1. \`kit.json\`의 대상 repository와 baseline revision을 확인한다.\n2. \`standards/\`의 규격만 적용하고 대상 프로젝트 지침을 우선한다.\n3. 기존 자산을 먼저 찾고, 새 자산은 재사용 판정을 기록한다.\n4. \`node .ai-core/verify-kit.mjs\`로 키트 무결성을 확인한다.\n5. 완료 시 \`WORK_RESULT.md\`를 채운다.\n`;
+  const start = `# AI 작업 시작 키트\n\n1. \`kit.json\`의 대상 repository와 baseline revision을 확인한다.\n2. \`standards/\`의 규격만 적용하고 대상 프로젝트 지침을 우선한다.\n3. 기존 자산을 먼저 찾고, 새 자산은 재사용 판정을 기록한다.\n4. \`node .ai-core/verify-kit.mjs\`로 키트 무결성과 대상 revision 일치를 확인한다.\n5. 완료 시 \`WORK_RESULT.md\`를 채운다.\n`;
   const result = `# AI Work Result\n\n- 목적: ${receipt.task}\n- 대상 revision: ${receipt.target.revision}\n- 변경:\n- 검증:\n- 남음:\n- next_start_here:\n`;
-  const verifier = `import{createHash}from'node:crypto';import{readFile}from'node:fs/promises';import{dirname,join}from'node:path';import{fileURLToPath}from'node:url';const root=dirname(fileURLToPath(import.meta.url));const m=JSON.parse(await readFile(join(root,'kit.json'),'utf8'));const bad=[];for(const f of m.files){const b=await readFile(join(root,f.path),'utf8');if(createHash('sha256').update(b).digest('hex')!==f.sha256)bad.push(f.path)}console.log(JSON.stringify({schema:'ai-core-starter-kit-check/v1',status:bad.length?'FAIL':'PASS',core_revision:m.core_revision,changed:bad},null,2));if(bad.length)process.exitCode=1;\n`;
+  const verifier = `import { createHash } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
+import { readFile } from 'node:fs/promises';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const root = dirname(fileURLToPath(import.meta.url));
+const projectRoot = dirname(root);
+const m = JSON.parse(await readFile(join(root, 'kit.json'), 'utf8'));
+const bad = [];
+for (const f of m.files) {
+  const b = await readFile(join(root, f.path), 'utf8');
+  if (createHash('sha256').update(b).digest('hex') !== f.sha256) bad.push(f.path);
+}
+let actualRevision = null;
+let revisionStatus = 'UNAVAILABLE';
+try {
+  actualRevision = execFileSync('git', ['-C', projectRoot, 'rev-parse', 'HEAD'], {
+    encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'pipe'],
+  }).trim();
+  revisionStatus = m.target?.revision === actualRevision ? 'MATCH' : 'MISMATCH';
+} catch {}
+const failed = bad.length > 0 || revisionStatus !== 'MATCH';
+console.log(JSON.stringify({
+  schema: 'ai-core-starter-kit-check/v1',
+  status: failed ? 'FAIL' : 'PASS',
+  core_revision: m.core_revision,
+  changed: bad,
+  revision: { expected: m.target?.revision ?? null, actual: actualRevision, status: revisionStatus },
+}, null, 2));
+if (failed) process.exitCode = 1;
+`;
   await put(join(output, 'START_HERE.md'), start);
   await put(join(output, 'WORK_RESULT.md'), result);
   await put(join(output, 'verify-kit.mjs'), verifier);
