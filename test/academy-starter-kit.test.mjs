@@ -31,6 +31,7 @@ test('starter kit carries pinned standards, verification and result template',as
   assert.equal(bootstrap.status,'HOLD');
   assert.ok(bootstrap.blockers.includes('GIT_REMOTE_UNAVAILABLE'));
   assert.ok(bootstrap.blockers.includes('AI_CORE_REMOTE_HEAD_UNAVAILABLE'));
+  assert.ok(bootstrap.blockers.includes('STARTER_KIT_VERIFICATION_FAILED'));
   assert.match(await readFile(join(root,'.ai-core','START_HERE.md'),'utf8'),/--sync/);
 });
 
@@ -41,7 +42,7 @@ test('starter kit never overwrites a conflicting local file',async()=>{
   await assert.rejects(()=>installAcademyStarterKit({output:out,receipt,coreRevision:'b'.repeat(40),readings:[{path:'docs/AI_WORKING_STANDARD.md',body:'one'}]}),/KIT_FILE_CONFLICT/);
 });
 
-test('starter kit verifier accepts its committed kit but fails after project work moves past the pinned revision',async()=>{
+test('starter kit bootstrap trusts verifier PASS across kit-only advance and holds on project revision mismatch',async()=>{
   const root=await mkdtemp(join(tmpdir(),'academy-kit-git-'));
   git(root,'init','-q');
   git(root,'config','user.email','ai-core-test@example.invalid');
@@ -52,23 +53,33 @@ test('starter kit verifier accepts its committed kit but fails after project wor
   const pinned=git(root,'rev-parse','HEAD');
   const boundReceipt={...receipt,target:{...receipt.target,revision:pinned}};
   const out=join(root,'.ai-core');
-  await installAcademyStarterKit({output:out,receipt:boundReceipt,coreRevision:'b'.repeat(40),readings:[{path:'docs/AI_WORKING_STANDARD.md',body:'one'}]});
+  await installAcademyStarterKit({output:out,receipt:boundReceipt,coreRevision:'b'.repeat(40),readings:[{path:'docs/AI_WORKING_STANDARD.md',body:'one'}],operatingKnowledge:{schema_version:'1.0',confirmed_decisions:[],methods:[],platforms:[]}});
   const verifier=join(out,'verify-kit.mjs');
   const current=spawnSync(process.execPath,[verifier],{cwd:root,encoding:'utf8'});
   assert.equal(current.status,0,current.stderr);
   assert.deepEqual(JSON.parse(current.stdout).revision,{expected:pinned,actual:pinned,status:'MATCH',advanced_paths:[]});
+
   git(root,'add','.ai-core');
   git(root,'commit','-q','-m','install academy kit');
   const installed=git(root,'rev-parse','HEAD');
   const committedKit=spawnSync(process.execPath,[verifier],{cwd:root,encoding:'utf8'});
   assert.equal(committedKit.status,0,committedKit.stderr);
   const committedResult=JSON.parse(committedKit.stdout);
+  assert.equal(committedResult.status,'PASS');
   assert.equal(committedResult.revision.status,'KIT_ONLY_ADVANCE');
   assert.equal(committedResult.revision.actual,installed);
   assert.ok(committedResult.revision.advanced_paths.every(path=>path.startsWith('.ai-core/')));
+
+  const committedBootstrapRun=spawnSync(process.execPath,[join(out,'session-bootstrap.mjs')],{cwd:root,encoding:'utf8'});
+  const committedBootstrap=JSON.parse(committedBootstrapRun.stdout);
+  assert.equal(committedBootstrap.project.kit_verification.status,'PASS');
+  assert.equal(committedBootstrap.project.kit_verification.revision.status,'KIT_ONLY_ADVANCE');
+  assert.equal(committedBootstrap.blockers.includes('STARTER_KIT_REVISION_MISMATCH'),false);
+  assert.equal(committedBootstrap.blockers.includes('STARTER_KIT_VERIFICATION_FAILED'),false);
+
   await writeFile(join(root,'tracked.txt'),'v2\n');
   git(root,'add','tracked.txt');
-  git(root,'commit','-q','-m','advance');
+  git(root,'commit','-q','-m','advance project');
   const advanced=git(root,'rev-parse','HEAD');
   const stale=spawnSync(process.execPath,[verifier],{cwd:root,encoding:'utf8'});
   assert.equal(stale.status,1);
@@ -78,4 +89,14 @@ test('starter kit verifier accepts its committed kit but fails after project wor
   assert.equal(result.revision.actual,advanced);
   assert.equal(result.revision.status,'MISMATCH');
   assert.ok(result.revision.advanced_paths.includes('tracked.txt'));
+
+  const staleBootstrapRun=spawnSync(process.execPath,[join(out,'session-bootstrap.mjs')],{cwd:root,encoding:'utf8'});
+  assert.equal(staleBootstrapRun.status,2,staleBootstrapRun.stderr||staleBootstrapRun.stdout);
+  const staleBootstrap=JSON.parse(staleBootstrapRun.stdout);
+  assert.equal(staleBootstrap.status,'HOLD');
+  assert.equal(staleBootstrap.project.kit_verification.status,'FAIL');
+  assert.equal(staleBootstrap.project.kit_verification.revision.status,'MISMATCH');
+  assert.ok(staleBootstrap.blockers.includes('STARTER_KIT_REVISION_MISMATCH'));
+  assert.equal(staleBootstrap.blockers.includes('STARTER_KIT_VERIFICATION_FAILED'),false);
+  assert.match(staleBootstrap.next_action,/exact project revision/);
 });
