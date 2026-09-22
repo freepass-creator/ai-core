@@ -134,6 +134,22 @@ test('starter kit bootstrap admits authorized refresh but holds authority drift 
   assert.equal(manifestMutation.blockers.includes('STARTER_KIT_REVISION_MISMATCH'),false);
 
   git(root,'reset','--hard',refreshed);
+  const refreshedBootstrapSource=await readFile(bootstrapPath,'utf8');
+  await writeFile(bootstrapPath,`${refreshedBootstrapSource}// bootstrap-only authority mutation\n`);
+  git(root,'add','.ai-core/session-bootstrap.mjs');
+  git(root,'commit','-q','-m','mutate bootstrap only');
+  const bootstrapMutationRun=spawnSync(process.execPath,[bootstrapPath],{cwd:root,encoding:'utf8'});
+  assert.equal(bootstrapMutationRun.status,2,bootstrapMutationRun.stderr||bootstrapMutationRun.stdout);
+  const bootstrapMutation=JSON.parse(bootstrapMutationRun.stdout);
+  assert.equal(bootstrapMutation.status,'HOLD');
+  assert.equal(bootstrapMutation.project.kit_authority.status,'MISMATCH');
+  assert.equal(bootstrapMutation.project.kit_authority.anchor_commit,refreshed);
+  assert.deepEqual(bootstrapMutation.project.kit_authority.changed,['session-bootstrap.mjs']);
+  assert.equal(bootstrapMutation.project.kit_verification,null);
+  assert.ok(bootstrapMutation.blockers.includes('STARTER_KIT_VERIFICATION_FAILED'));
+  assert.equal(bootstrapMutation.blockers.includes('STARTER_KIT_REVISION_MISMATCH'),false);
+
+  git(root,'reset','--hard',refreshed);
   await writeFile(join(root,'tracked.txt'),'v2\n');
   git(root,'add','tracked.txt');
   git(root,'commit','-q','-m','advance project');
