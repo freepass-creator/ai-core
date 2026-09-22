@@ -152,7 +152,7 @@ export function compileSharedExtractionCandidate(input={}){
       revision:item.revision,
       source_ref:item.source_ref,
       source_blob_sha:item.source_blob_sha,
-      export_name:item.exportName,
+      export_name:item.export_name,
       semantic_contract_digest:digest(item.semantic_contract),
       behavior_digest:digest(item.behavior_cases),
       evidence_refs:item.evidence_refs,
