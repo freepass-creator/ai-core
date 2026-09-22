@@ -43,9 +43,17 @@ export function registryRefresh(등록부, { observe = 원격보기, now = new D
   const 이제 = now.toISOString().replace(/\.\d+Z$/, 'Z');
   const 바뀜 = [];
   const 모름 = [];
+  const 자기관리 = [];
   const 관측 = [];
   for (const 프 of 등록부.projects ?? []) {
     if (!프.repository || !프.default_branch) { 모름.push({ project_id: 프.project_id, reason: 'CANONICAL_REF_UNDECLARED' }); continue; }
+    /** ai-core 자기 자신은 이 파일을 커밋하는 순간 HEAD가 다시 바뀐다.
+     * committed registry 안에 자기 현재 SHA를 영구히 맞추려는 것은 불가능하므로
+     * 일반 remote-refresh 대상에서 제외한다. 자기 revision runtime binding은 별도 계약으로 다룬다. */
+    if (프.project_id === 'ai-core' && 프.repository === 'freepass-creator/ai-core') {
+      자기관리.push({ project_id: 프.project_id, reason: 'SELF_REVISION_CYCLE' });
+      continue;
+    }
     let rev = null;
     try { rev = observe(프.repository, 프.default_branch); } catch { rev = null; }
     if (typeof rev !== 'string' || !SHA.test(rev)) { 모름.push({ project_id: 프.project_id, reason: 'REMOTE_UNOBSERVED' }); continue; }
@@ -57,7 +65,7 @@ export function registryRefresh(등록부, { observe = 원격보기, now = new D
    * A는 새 head를 봤고 B는 못 본 상태에서 A만 갱신하면 source.observed_at이
    * top-level observed_at보다 새로워져 INVALID가 되거나, 한 파일 안에 서로 다른
    * 관측 시점이 섞인다. UNKNOWN 하나라도 있으면 입력 객체를 한 글자도 안 바꾼다. */
-  if (모름.length) return { 바뀜, 모름 };
+  if (모름.length) return { 바뀜, 모름, 자기관리 };
 
   for (const { 프, rev } of 관측) {
     const previousHead = 프.head_revision;
@@ -74,7 +82,7 @@ export function registryRefresh(등록부, { observe = 원격보기, now = new D
     }
   }
   등록부.observed_at = 이제;
-  return { 바뀜, 모름 };
+  return { 바뀜, 모름, 자기관리 };
 }
 
 /** UNKNOWN이 하나라도 있으면 stale보다 우선한다 — 관측 자체가 불완전한 상태다. */
@@ -89,6 +97,7 @@ async function main(인) {
   for (const b of 결과.바뀜) console.log(`${볼까만 ? '낡음' : '고침'} ${b.project_id}: ${String(b.from).slice(0, 8)} → ${b.to.slice(0, 8)}`);
   if (!결과.바뀜.length) console.log('낡은 것 없음');
   for (const m of 결과.모름) console.log(`★UNKNOWN ${m.project_id}: ${m.reason} — «그대로 뒀다»`);
+  for (const s of 결과.자기관리 ?? []) console.log(`★SELF ${s.project_id}: ${s.reason} — committed registry remote-refresh 제외`);
   if (!볼까만) {
     if (결과.모름.length) {
       console.log(`★안 적었다: UNKNOWN ${결과.모름.length}개 — canonical registry는 원래 bytes를 유지한다`);

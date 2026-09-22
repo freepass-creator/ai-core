@@ -23,11 +23,14 @@ test('① 로컬 체크아웃이 다른 갈래여도 «원격 기본 갈래» �
   const 부른것 = [];
   const { 모름 } = registryRefresh(등록부, { now: NOW, observe: (repo, branch) => { 부른것.push([repo, branch]); return 원격(repo.split('/')[1]); } });
   assert.deepEqual(모름, []);
-  assert.deepEqual(부른것, 등록부.projects.map((p) => [p.repository, p.default_branch]));
-  for (const 프 of 등록부.projects) {
+  const 외부 = 등록부.projects.filter((p) => p.project_id !== 'ai-core');
+  assert.deepEqual(부른것, 외부.map((p) => [p.repository, p.default_branch]));
+  for (const 프 of 외부) {
     assert.equal(프.head_revision, 원격(프.repository.split('/')[1]));
     assert.notEqual(프.head_revision, 로컬HEAD);
   }
+  const 자기 = 등록부.projects.find((p) => p.project_id === 'ai-core');
+  assert.notEqual(자기.head_revision, 원격('ai-core'), 'committed registry는 자기 자신 HEAD를 remote-refresh로 고정하지 않는다');
 });
 
 test('② 형제 폴더가 없어도(잘못된 경로) 원격에서 읽는다 — 폴더는 보지 않는다', async () => {
@@ -43,8 +46,9 @@ test('③ 원격을 못 보면 UNKNOWN — 성공으로 넘기지 않고 값도 
     const 등록부 = await 진짜등록부();
     const 전 = structuredClone(등록부);
     const 결과 = registryRefresh(등록부, { now: NOW, observe: 실패 });
-    assert.equal(결과.모름.length, 등록부.projects.length);
+    assert.equal(결과.모름.length, 등록부.projects.length - 1);
     assert.ok(결과.모름.every((m) => m.reason === 'REMOTE_UNOBSERVED'));
+    assert.deepEqual(결과.자기관리, [{ project_id: 'ai-core', reason: 'SELF_REVISION_CYCLE' }]);
     assert.deepEqual(등록부, 전, '못 본 것은 한 글자도 안 바뀐다 — observed_at 도');
     assert.equal(끝값(결과), 2, '--check 가 0 으로 끝나면 «못 봤다» 가 «새것이다» 로 둔갑한다');
   }
@@ -58,16 +62,19 @@ test('④ 진짜 낡은 등록부 — 고치고, 원천까지 묶고, 검증기�
   const 등록부 = await 진짜등록부();
   const 새것 = 'b'.repeat(40);
   const 결과 = registryRefresh(등록부, { now: NOW, observe: () => 새것 });
-  assert.equal(결과.바뀜.length, 등록부.projects.length);
+  const 자기전 = 등록부.projects.find((p) => p.project_id === 'ai-core').head_revision;
+  assert.equal(결과.바뀜.length, 등록부.projects.length - 1);
+  assert.deepEqual(결과.자기관리, [{ project_id: 'ai-core', reason: 'SELF_REVISION_CYCLE' }]);
   assert.equal(끝값(결과), 1);
-  for (const 프 of 등록부.projects) {
+  for (const 프 of 등록부.projects.filter((p) => p.project_id !== 'ai-core')) {
     assert.equal(프.head_revision, 새것);
     const canonicalRefs = new Set([프.repository, `${프.repository}#${프.default_branch}`]);
     assert.ok(프.authoritative_sources.some((s) => s.kind === 'GIT' && canonicalRefs.has(s.ref) && s.revision === 새것 && s.observed_at === '2026-10-01T03:00:00Z'));
   }
+  assert.equal(등록부.projects.find((p) => p.project_id === 'ai-core').head_revision, 자기전);
   assert.equal(등록부.observed_at, '2026-10-01T03:00:00Z');
   assert.equal(validateProjectRegistry(등록부).status, 'VALID');
-  assert.equal(끝값(registryRefresh(등록부, { now: NOW, observe: () => 새것 })), 0, '고친 뒤 다시 보면 낡은 것 없음');
+  assert.equal(끝값(registryRefresh(등록부, { now: NOW, observe: () => 새것 })), 0, '외부 프로젝트를 고친 뒤 다시 보면 낡은 것 없음');
 });
 
 test('canonical head가 바뀌면 ACTIVE 실행 준비 상태를 검증 없이 유지하지 않는다', () => {
