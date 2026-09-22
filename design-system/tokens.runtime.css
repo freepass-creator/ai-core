@@ -18,6 +18,8 @@
   --color-disabled-surface: #e4e7ec;
   --color-selected-surface: #e3ecfd;
   --color-scrim: rgba(16, 24, 40, 0.45);
+  --color-hover-layer: rgba(23, 32, 51, 0.08);
+  --color-pressed-layer: rgba(23, 32, 51, 0.12);
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;

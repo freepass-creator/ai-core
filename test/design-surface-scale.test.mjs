@@ -71,3 +71,22 @@ test('포커스 링은 한 가지 토큰만 쓴다 — 부품마다 제 색을 �
     assert.match(줄, /var\(--color-focus\)|Highlight/, `포커스 링이 정본 색을 안 쓴다: ${줄.trim().slice(0, 80)}`);
   }
 });
+
+test('★못 쓰는 상태를 «색 하나»로 말하지 않는다 — 상태 규칙은 신호를 둘 이상 바꾼다', () => {
+  /** ★2026-09-23 자기점검에서 잡혔다: 칩·구간선택의 disabled 가 글자색만 바꾸고 있었다.
+   *  선을 없앤 화면에서 색만 바꾸면 색각·저대비 환경에서 「못 쓰는 것」이 사라진다. */
+  const css = read('design-system/runtime-v2.css');
+  const 규칙 = css
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .split('}')
+    .map((덩어리) => ({ 선택자: (덩어리.split('{')[0] ?? '').trim(), 본문: 덩어리.split('{').slice(1).join('{') }))
+    /** `:not(:disabled)` 는 «못 쓰는 상태»가 아니라 그 반대다 — 판정 전에 떼어 낸다. */
+    .map((덩어리) => ({ ...덩어리, 판정: 덩어리.선택자.replaceAll(':not(:disabled)', '') }))
+    .filter(({ 판정, 본문 }) => /\.ui-/.test(판정) && /:disabled|aria-disabled="true"/.test(판정) && 본문.trim())
+    .filter(({ 선택자 }) => !/forced-colors/.test(선택자));
+  assert.ok(규칙.length >= 3, `disabled 규칙이 ${규칙.length} 개뿐이다`);
+  for (const { 선택자, 본문 } of 규칙) {
+    const 신호 = ['background', 'color:', 'opacity', 'font-weight', 'content'].filter((k) => 본문.includes(k));
+    assert.ok(신호.length >= 2, `${선택자.slice(0, 70)} — 신호가 ${신호.join(',') || '없음'} 뿐이다`);
+  }
+});

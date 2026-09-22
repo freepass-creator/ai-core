@@ -2,7 +2,7 @@
   "contract": "ai-core-design-hub-binding/v2",
   "ai_core": {
     "repository": "freepass-creator/ai-core",
-    "source_bundle_sha256": "f4fbf53b0888b918ef35328eb0e3e092e4115406904445ca615e194aaf06b0e9"
+    "source_bundle_sha256": "6c32450cb8ebb85cc29df962465fd9f24cadbd34b1dd709336b4da456c5ff2c3"
   },
   "digest_algorithm": "sha256:path-and-normalized-content-v1",
   "sources": {
@@ -20,9 +20,9 @@
     },
     "tokens": {
       "path": "design-system/tokens.json",
-      "sha256": "fa075fa78b0e4668d95621b3f6d060624e42e9a5645c162fa86d766d9531a42e",
+      "sha256": "b8c9292b6fc8b8db721812612f1ff76abb7a91dcca99b96e82da1b31ac3d7020",
       "contract": "ai-core-design-token-ssot/v1",
-      "version": "1.2.0"
+      "version": "1.3.0"
     },
     "components": {
       "path": "design-system/components.registry.json",
@@ -44,7 +44,7 @@
     },
     "runtime_css": {
       "path": "design-system/runtime-v2.css",
-      "sha256": "590d6232010fd6179d781571073942197283b4bfbb7cf5bf1e3b471e682b4cd0"
+      "sha256": "8c17c4bf7de6c88f409c4179bcf5b4c6666c51bd807f58ec5e4b7b473e3ea2bc"
     },
     "freepass_product_profile": {
       "path": "docs/FREEPASS_PRODUCT_UI_PROFILE.md",
@@ -62,9 +62,9 @@
     },
     "tokens_runtime": {
       "path": "design-system/tokens.runtime.css",
-      "sha256": "98c6fc5a10c4cca3c569058bc6be7e2b057ce45aaf1d613d0a8f9c9cfeabfab9",
+      "sha256": "782e868484d82b8f3fcf950c970384c62e1ed7fc28705192c291fe9f3d1fcaa0",
       "contract": "ai-core-design-token-projection/v1",
-      "version": "1.2.0"
+      "version": "1.3.0"
     }
   },
   "invariant": "AI Core root owns the values. Design Hub reads these current canonical files and fails when any normalized content digest drifts from this reviewed bundle."
