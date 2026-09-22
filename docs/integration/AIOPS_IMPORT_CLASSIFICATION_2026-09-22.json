@@ -138,6 +138,20 @@
       "evidence": [
         "Contains delegated account identity and a local credential fallback path.",
         "Depends on AIOps lease semantics."
+      ],
+      "partial_extractions": [
+        {
+          "source_symbol": "assertAllowedGoogleApiUrl",
+          "source_blob_sha": "447deabfbfedf9e0eb26ab2dffbaed4f8ada0100",
+          "destination_path": "shared-services/google/api-url-boundary.mjs",
+          "disposition": "FUNCTION_SLICE_SHADOW",
+          "consumer_cutover_authorized": false,
+          "remaining_blockers": [
+            "delegated account and credential loading remain AIOps-specific",
+            "write authorization depends on AIOps lease policy",
+            "token/runtime policy has not been extracted"
+          ]
+        }
       ]
     },
     {
