@@ -11,6 +11,8 @@
 //
 // ★세지 않는다 — 읽는다. git 이 말하는 것만 적고, 아무것도 지어내지 않는다.
 //   mission·벽·required_approvals 같은 «사람이 선언한 것» 은 손대지 않는다.
+//   단 canonical head 가 움직인 ACTIVE 프로젝트는 그 새 revision 의 실행 검증이 아직
+//   없으므로 HOLD 로 내린다. source freshness 는 execution readiness 증거가 아니다.
 //
 //   node scripts/registry-refresh.mjs            고치고 무엇이 바뀌었는지 찍는다
 //   node scripts/registry-refresh.mjs --check    안 고치고 본다
@@ -59,6 +61,9 @@ export function registryRefresh(등록부, { observe = 원격보기, now = new D
 
   for (const { 프, rev } of 관측) {
     const previousHead = 프.head_revision;
+    if (previousHead !== rev && 프.execution_readiness_status === 'ACTIVE') {
+      프.execution_readiness_status = 'HOLD';
+    }
     프.head_revision = rev;
     for (const 원천 of 프.authoritative_sources ?? []) {
       const canonicalRefs = new Set([프.repository, `${프.repository}#${프.default_branch}`]);
