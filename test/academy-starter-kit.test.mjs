@@ -31,6 +31,7 @@ test('starter kit carries pinned standards, verification and result template',as
   assert.equal(bootstrap.status,'HOLD');
   assert.ok(bootstrap.blockers.includes('GIT_REMOTE_UNAVAILABLE'));
   assert.ok(bootstrap.blockers.includes('AI_CORE_REMOTE_HEAD_UNAVAILABLE'));
+  assert.ok(bootstrap.blockers.includes('STARTER_KIT_VERIFICATION_FAILED'));
   assert.match(await readFile(join(root,'.ai-core','START_HERE.md'),'utf8'),/--sync/);
 });
 
@@ -41,7 +42,7 @@ test('starter kit never overwrites a conflicting local file',async()=>{
   await assert.rejects(()=>installAcademyStarterKit({output:out,receipt,coreRevision:'b'.repeat(40),readings:[{path:'docs/AI_WORKING_STANDARD.md',body:'one'}]}),/KIT_FILE_CONFLICT/);
 });
 
-test('starter kit verifier fails closed after the project HEAD moves past its pinned revision',async()=>{
+test('starter kit verifier and bootstrap fail closed after the project HEAD moves past its pinned revision',async()=>{
   const root=await mkdtemp(join(tmpdir(),'academy-kit-git-'));
   git(root,'init','-q');
   git(root,'config','user.email','ai-core-test@example.invalid');
@@ -52,7 +53,7 @@ test('starter kit verifier fails closed after the project HEAD moves past its pi
   const pinned=git(root,'rev-parse','HEAD');
   const boundReceipt={...receipt,target:{...receipt.target,revision:pinned}};
   const out=join(root,'.ai-core');
-  await installAcademyStarterKit({output:out,receipt:boundReceipt,coreRevision:'b'.repeat(40),readings:[{path:'docs/AI_WORKING_STANDARD.md',body:'one'}]});
+  await installAcademyStarterKit({output:out,receipt:boundReceipt,coreRevision:'b'.repeat(40),readings:[{path:'docs/AI_WORKING_STANDARD.md',body:'one'}],operatingKnowledge:{schema_version:'1.0',confirmed_decisions:[],methods:[],platforms:[]}});
   const verifier=join(out,'verify-kit.mjs');
   const current=spawnSync(process.execPath,[verifier],{cwd:root,encoding:'utf8'});
   assert.equal(current.status,0,current.stderr);
@@ -66,4 +67,12 @@ test('starter kit verifier fails closed after the project HEAD moves past its pi
   const result=JSON.parse(stale.stdout);
   assert.equal(result.status,'FAIL');
   assert.deepEqual(result.revision,{expected:pinned,actual:advanced,status:'MISMATCH'});
+
+  const bootstrapRun=spawnSync(process.execPath,[join(out,'session-bootstrap.mjs')],{cwd:root,encoding:'utf8'});
+  assert.equal(bootstrapRun.status,2,bootstrapRun.stderr||bootstrapRun.stdout);
+  const bootstrap=JSON.parse(bootstrapRun.stdout);
+  assert.equal(bootstrap.status,'HOLD');
+  assert.equal(bootstrap.project.kit_verification.revision.status,'MISMATCH');
+  assert.ok(bootstrap.blockers.includes('STARTER_KIT_REVISION_MISMATCH'));
+  assert.match(bootstrap.next_action,/exact project revision/);
 });
