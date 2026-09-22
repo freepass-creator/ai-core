@@ -14,7 +14,7 @@ test('MyData intake is registered but remains fail-closed until production bindi
   const route=routeWork('마이데이터 수집',{workMap,projectRegistry,capabilityRegistry});
   assert.equal(route.target_project_id,'freepass-sales');
   assert.equal(route.capability_id,'sales.mydata-intake');
-  assert.equal(route.target_revision,'e98e3e9854012b9043f7fbe7b4168ce772047e39');
+  assert.equal(route.target_revision,projectRegistry.projects.find(x=>x.project_id==='freepass-sales').head_revision);
   assert.equal(route.status,'HOLD_CAPABILITY_HOLD');
   const capability=capabilityRegistry.capabilities.find(x=>x.id==='sales.mydata-intake');
   assert.equal(capability.mode,'EXTERNAL_MUTATION');
