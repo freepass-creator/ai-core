@@ -33,6 +33,21 @@ test('legacy adapter result can shadow-project into canonical v1 without grantin
   assert.equal('authorization' in bridged,false);
 });
 
+test('bridge downgrades contradictory legacy success when blocking signals remain',()=>{
+  const bridged=bridgeLegacyAdapterResult({
+    legacy:{
+      status:'SUCCEEDED',
+      checks:[{name:'provider-shape',status:'FAIL',detail:'missing field'}]
+    },
+    adapterId:'legacy.project-adapter',adapterVersion:'0.9.0',providerId:'legacy-provider',
+    sourceRevision:'git:def',correlationId:'corr_legacy_003',retryable:false,
+    startedAt:'2026-09-19T13:00:00Z',endedAt:'2026-09-19T13:00:01Z'
+  });
+  assert.equal(validate(bridged),true);
+  assert.equal(bridged.status,'HOLD');
+  assert.equal(bridged.issues.some(x=>x.code==='LEGACY_CHECK_FAILED'),true);
+});
+
 test('bridge refuses to guess retryability',()=>{
   assert.throws(()=>bridgeLegacyAdapterResult({
     legacy:{status:'FAILED'},adapterId:'legacy.a',adapterVersion:'1',correlationId:'corr_legacy_002',
