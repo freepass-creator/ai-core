@@ -1,6 +1,6 @@
 {
   "schema_version": "1.1",
-  "observed_at": "2026-09-20T11:25:00Z",
+  "observed_at": "2026-09-22T00:25:36Z",
   "projects": [
     {
       "project_id": "ai-core",
@@ -344,6 +344,38 @@
         "MyData execution remains HOLD: no approved AI Core external-mutation adapter/receipt is bound and no real Gmail/Firestore/Contacts production run was performed by the replay.",
         "Recent GitHub Actions runs have an observed runner-entry failure mode with zero executed steps; current-main CI should be re-observed when runners execute.",
         "Historical secondary Sales checkout/branches still contain additional SMS/UI work that has not been fully re-observed against current main."
+      ]
+    },
+    {
+      "project_id": "freepass-data",
+      "name": "FreePass Data",
+      "organization": "SUBSIDIARY",
+      "repository_lifecycle_status": "ACTIVE",
+      "execution_readiness_status": "ACTIVE",
+      "mission": "Canonical FreePass data contracts, Firebase catalog governance, and deterministic consumer publication specifications.",
+      "repository": "freepass-creator/freepass-data",
+      "default_branch": "main",
+      "local_path": "C:\\dev\\freepass-data",
+      "head_revision": "677622c47377c9c0e22a98a8db031041becb8887",
+      "authoritative_sources": [
+        {
+          "kind": "GIT",
+          "ref": "freepass-creator/freepass-data",
+          "revision": "677622c47377c9c0e22a98a8db031041becb8887",
+          "observed_at": "2026-09-22T00:25:36Z"
+        }
+      ],
+      "commands": {
+        "install": "npm ci",
+        "test": "npm test",
+        "build": "npm run build"
+      },
+      "deploy_targets": [],
+      "required_approvals": [
+        "Production Firestore, Google Sheets, or consumer cutover requires the project-specific approval gate."
+      ],
+      "known_blockers": [
+        "Production catalog publication remains gated by source parity, immutable release validation, and consumer readback."
       ]
     },
     {
