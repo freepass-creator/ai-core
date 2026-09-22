@@ -1,23 +1,11 @@
 #!/usr/bin/env node
-import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {finalizeCoreHubReceipt} from '../../src/engine/core-hub-receipt.mjs';
 
 const HERE=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const STATUS_ORDER=['PASS','NOTICE','HOLD','FAIL'];
-
-function stable(value){
-  if(Array.isArray(value)) return value.map(stable);
-  if(value&&typeof value==='object'){
-    return Object.fromEntries(Object.keys(value).sort().map((key)=>[key,stable(value[key])]));
-  }
-  return value;
-}
-
-function digest(value){
-  return crypto.createHash('sha256').update(JSON.stringify(stable(value))).digest('hex');
-}
 
 export function deriveResult(checks=[]){
   const counts={PASS:0,NOTICE:0,HOLD:0,FAIL:0};
@@ -30,22 +18,23 @@ export function deriveResult(checks=[]){
 
 export function validateQualityReceipt(receipt,hubRegistry){
   const errors=[];
+  const body=receipt?.payload??receipt;
   const hubIds=new Set((hubRegistry?.hubs??[]).map((hub)=>hub.id));
 
-  if(receipt?.contract!=='devcenter-quality-receipt/v1') errors.push('QUALITY_RECEIPT_CONTRACT_INVALID');
+  if(receipt?.schema_version!=='core-receipt/v1'||receipt?.receipt_kind!=='hub.quality'||body?.legacy_contract!=='devcenter-quality-receipt/v1') errors.push('QUALITY_RECEIPT_CONTRACT_INVALID');
   if(!/^qr_[a-f0-9]{24}$/.test(receipt?.receipt_id??'')) errors.push('QUALITY_RECEIPT_ID_INVALID');
-  if(!/^[^/]+\/[^/]+$/.test(receipt?.subject?.repository??'')) errors.push('QUALITY_RECEIPT_REPOSITORY_INVALID');
-  if(!/^[a-f0-9]{40}$/.test(receipt?.subject?.revision??'')) errors.push('QUALITY_RECEIPT_REVISION_INVALID');
-  if(!hubIds.has(receipt?.hub?.primary)) errors.push('QUALITY_RECEIPT_PRIMARY_HUB_UNKNOWN');
-  if((receipt?.hub?.secondary??[]).some((id)=>!hubIds.has(id)||id===receipt?.hub?.primary)) errors.push('QUALITY_RECEIPT_SECONDARY_HUB_INVALID');
-  if(!Array.isArray(receipt?.scope?.claims)||!receipt.scope.claims.length) errors.push('QUALITY_RECEIPT_CLAIMS_REQUIRED');
-  if(!Array.isArray(receipt?.execution?.commands)||!receipt.execution.commands.length) errors.push('QUALITY_RECEIPT_COMMANDS_REQUIRED');
+  if(!/^[^/]+\/[^/]+$/.test(body?.subject?.repository??'')) errors.push('QUALITY_RECEIPT_REPOSITORY_INVALID');
+  if(!/^[a-f0-9]{40}$/.test(body?.subject?.revision??'')) errors.push('QUALITY_RECEIPT_REVISION_INVALID');
+  if(!hubIds.has(body?.hub?.primary)) errors.push('QUALITY_RECEIPT_PRIMARY_HUB_UNKNOWN');
+  if((body?.hub?.secondary??[]).some((id)=>!hubIds.has(id)||id===body?.hub?.primary)) errors.push('QUALITY_RECEIPT_SECONDARY_HUB_INVALID');
+  if(!Array.isArray(body?.scope?.claims)||!body.scope.claims.length) errors.push('QUALITY_RECEIPT_CLAIMS_REQUIRED');
+  if(!Array.isArray(body?.execution?.commands)||!body.execution.commands.length) errors.push('QUALITY_RECEIPT_COMMANDS_REQUIRED');
 
-  const started=Date.parse(receipt?.execution?.started_at??'');
-  const finished=Date.parse(receipt?.execution?.finished_at??'');
+  const started=Date.parse(body?.execution?.started_at??'');
+  const finished=Date.parse(body?.execution?.finished_at??'');
   if(!Number.isFinite(started)||!Number.isFinite(finished)||finished<started) errors.push('QUALITY_RECEIPT_EXECUTION_TIME_INVALID');
 
-  const checks=Array.isArray(receipt?.checks)?receipt.checks:[];
+  const checks=Array.isArray(body?.checks)?body.checks:[];
   if(!checks.length) errors.push('QUALITY_RECEIPT_CHECKS_REQUIRED');
   const ids=new Set();
   for(const check of checks){
@@ -61,31 +50,22 @@ export function validateQualityReceipt(receipt,hubRegistry){
   }
 
   const derived=deriveResult(checks);
-  if(receipt?.result?.status!==derived.status) errors.push('QUALITY_RECEIPT_RESULT_STATUS_MISMATCH');
+  if(body?.result?.status!==derived.status) errors.push('QUALITY_RECEIPT_RESULT_STATUS_MISMATCH');
   for(const status of STATUS_ORDER){
-    if(receipt?.result?.counts?.[status]!==derived.counts[status]) errors.push(`QUALITY_RECEIPT_RESULT_COUNT_MISMATCH:${status}`);
+    if(body?.result?.counts?.[status]!==derived.counts[status]) errors.push(`QUALITY_RECEIPT_RESULT_COUNT_MISMATCH:${status}`);
   }
 
-  const identity={
-    contract:receipt?.contract,
-    subject:receipt?.subject,
-    hub:receipt?.hub,
-    scope:receipt?.scope,
-    execution:receipt?.execution,
-    checks:receipt?.checks,
-    source_hashes:receipt?.source_hashes??{}
-  };
-  const expected=`qr_${digest(identity).slice(0,24)}`;
+  const payload={subject:body?.subject,hub:body?.hub,scope:body?.scope,execution:body?.execution,checks:body?.checks,source_hashes:body?.source_hashes??{},result:body?.result};
+  const expected=finalizeCoreHubReceipt({kind:'quality',prefix:'qr',payload,legacyContract:'devcenter-quality-receipt/v1',createdAt:receipt?.ended_at}).receipt_id;
   if(receipt?.receipt_id!==expected) errors.push('QUALITY_RECEIPT_ID_DIGEST_MISMATCH');
 
-  if(!Number.isFinite(Date.parse(receipt?.created_at??''))) errors.push('QUALITY_RECEIPT_CREATED_AT_INVALID');
+  if(!Number.isFinite(Date.parse(receipt?.ended_at??''))) errors.push('QUALITY_RECEIPT_CREATED_AT_INVALID');
   return errors;
 }
 
 export function finalizeQualityReceipt(draft,{hubRegistry,createdAt=new Date().toISOString()}={}){
   const result=deriveResult(draft.checks??[]);
-  const identity={
-    contract:'devcenter-quality-receipt/v1',
+  const payload={
     subject:draft.subject,
     hub:draft.hub,
     scope:draft.scope,
@@ -93,12 +73,8 @@ export function finalizeQualityReceipt(draft,{hubRegistry,createdAt=new Date().t
     checks:draft.checks,
     source_hashes:draft.source_hashes??{}
   };
-  const receipt={
-    ...identity,
-    receipt_id:`qr_${digest(identity).slice(0,24)}`,
-    result,
-    created_at:createdAt
-  };
+  payload.result=result;
+  const receipt=finalizeCoreHubReceipt({kind:'quality',prefix:'qr',payload,legacyContract:'devcenter-quality-receipt/v1',createdAt});
   const errors=validateQualityReceipt(receipt,hubRegistry);
   if(errors.length){
     const error=new Error('QUALITY_RECEIPT_INVALID');

@@ -78,3 +78,6 @@ node scripts/design-visual-qa.mjs validate-captures visual-plan.json capture-man
 - 실제 FreePass Admin/Sales/견적기 revision의 첫 Quality Receipt
 
 이 항목들이 실행 증거로 확보되기 전에는 Design Hub runtime/validation을 VERIFIED로 승격하지 않는다.
+## Canonical receipt
+
+Visual QA 결과는 `core-receipt/v1` 공통 봉투와 `hub.design-visual` payload를 사용한다. [CORE-HUB-RECEIPTS](../../docs/CORE_HUB_RECEIPTS.md)를 따른다.

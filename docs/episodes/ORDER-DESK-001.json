@@ -341,6 +341,7 @@
     "docs/CORE_CONTRACT_MIGRATION.md",
     "docs/CORE_CONTRACT_STANDARD.md",
     "docs/CORE_EXECUTION_IDENTITY.md",
+    "docs/CORE_HUB_RECEIPTS.md",
     "docs/DEVELOPMENT_CENTER_EXECUTION_HANDOFF.md",
     "docs/EMERGENCY_ACCEPTANCE_TESTS.md",
     "docs/EMERGENCY_RUNBOOK.md",
@@ -668,6 +669,7 @@
     "src/engine/capability-readiness.mjs",
     "src/engine/capability-registry.mjs",
     "src/engine/control-tower-authority.mjs",
+    "src/engine/core-hub-receipt.mjs",
     "src/engine/direction-registry.mjs",
     "src/engine/execution-receipt.mjs",
     "src/engine/github-project-inspector.mjs",
@@ -756,6 +758,7 @@
     "test/core-contract-cross-project-adoption.test.mjs",
     "test/core-contract-standard.test.mjs",
     "test/core-execution-identity.test.mjs",
+    "test/core-hub-receipt.test.mjs",
     "test/data-contract-standard.test.mjs",
     "test/derive-control-snapshot.test.mjs",
     "test/devcenter-physical-copy.test.mjs",
@@ -951,6 +954,7 @@
     "2026-09-22 shared FreePass Mobility business knowledge adds company role, revenue structure, authority boundaries and do-not-ask rules to the operating knowledge carried by portable kits; project runtimes and business data remain in their owning repositories.",
     "2026-09-22 DevCenter authority cutover: imported registries moved to root registry, project/capability/work-map ownership now points to the AI Core internal module, and Design Hub validates a current-root source-bundle digest. R1, R2, R4 and portal sibling-path independence remain HOLD. changed_files includes intentional deletions and is exact verifier parity only.",
     "2026-09-22 R4 routing unification: all eight Hub primary/secondary routes moved into registry/work-map.json#hub_routes, the duplicate routing JSON was removed, and the Hub runtime now consumes Work Map only. R1, R2 and portal path independence remain HOLD. changed_files includes intentional deletions and is exact verifier parity only.",
-    "2026-09-22 R1 rule-authority consolidation: active DevCenter entrypoints now delegate common rules, AI roles, UI values and start procedure to AI Core root canon. Unique design methods and historical evidence remain, explicitly non-authoritative or subordinate. R2 and portal path independence remain HOLD. changed_files is exact verifier parity only."
+    "2026-09-22 R1 rule-authority consolidation: active DevCenter entrypoints now delegate common rules, AI roles, UI values and start procedure to AI Core root canon. Unique design methods and historical evidence remain, explicitly non-authoritative or subordinate. R2 and portal path independence remain HOLD. changed_files is exact verifier parity only.",
+    "2026-09-22 R2 receipt unification: quality, design adoption, design visual, document, data and delivery generators now emit core-receipt/v1 once; specialized schemas constrain typed payloads and preserve legacy contract provenance. Portal path independence remains HOLD. changed_files is exact verifier parity only."
   ]
 }

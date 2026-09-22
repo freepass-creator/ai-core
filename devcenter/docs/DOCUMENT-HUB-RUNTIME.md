@@ -63,3 +63,6 @@ DocsHub가 template body와 renderer source를 소유한다. Document Hub는 pin
 ## 현재 consumer
 
 FreePass Admin 전자계약/약관은 `contract`, `terms` template 소비 후보로 등록했다. 실제 Admin renderer와 generated artifact receipt가 없으므로 MAPPED 수준이며 conformance 완료가 아니다.
+## Canonical receipt
+
+Document 결과는 `core-receipt/v1` 공통 봉투와 `hub.document` payload를 사용한다. [CORE-HUB-RECEIPTS](../../docs/CORE_HUB_RECEIPTS.md)를 따른다.

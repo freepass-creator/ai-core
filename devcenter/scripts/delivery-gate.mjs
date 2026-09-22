@@ -1,17 +1,8 @@
 #!/usr/bin/env node
-import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
-
-function stable(value){
-  if(Array.isArray(value)) return value.map(stable);
-  if(value&&typeof value==='object') return Object.fromEntries(Object.keys(value).sort().map((k)=>[k,stable(value[k])]));
-  return value;
-}
-function digest(value){
-  return crypto.createHash('sha256').update(JSON.stringify(stable(value))).digest('hex');
-}
+import {finalizeCoreHubReceipt} from '../../src/engine/core-hub-receipt.mjs';
 
 export function validateRelease(release){
   const errors=[];
@@ -81,8 +72,7 @@ export function finalizeDeliveryReceipt(draft,{createdAt=new Date().toISOString(
   if(draft?.target?.environment==='PRODUCTION'&&result.status==='PASS'&&draft?.deployment?.approval_ref){
     result.production_ready=true;
   }
-  const identity={
-    contract:'devcenter-delivery-receipt/v1',
+  const payload={
     subject:draft.subject,
     target:draft.target,
     quality_receipts:draft.quality_receipts,
@@ -92,11 +82,7 @@ export function finalizeDeliveryReceipt(draft,{createdAt=new Date().toISOString(
     rollback:draft.rollback,
     result
   };
-  return {
-    ...identity,
-    receipt_id:`dr_${digest(identity).slice(0,24)}`,
-    created_at:createdAt
-  };
+  return finalizeCoreHubReceipt({kind:'delivery',prefix:'dr',payload,legacyContract:'devcenter-delivery-receipt/v1',createdAt});
 }
 
 const isMain=process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url);

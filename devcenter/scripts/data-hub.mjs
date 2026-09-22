@@ -1,17 +1,10 @@
 #!/usr/bin/env node
-import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {finalizeCoreHubReceipt} from '../../src/engine/core-hub-receipt.mjs';
 
 const HERE=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
-
-function stable(value){
-  if(Array.isArray(value)) return value.map(stable);
-  if(value&&typeof value==='object') return Object.fromEntries(Object.keys(value).sort().map((k)=>[k,stable(value[k])]));
-  return value;
-}
-function digest(value){return crypto.createHash('sha256').update(JSON.stringify(stable(value))).digest('hex');}
 
 export function deriveDataResult(checks=[]){
   const counts={PASS:0,HOLD:0,FAIL:0};
@@ -29,14 +22,13 @@ export function finalizeDataReceipt(draft,{createdAt=new Date().toISOString()}={
     if((check.status==='HOLD'||check.status==='FAIL')&&(!check.remediation||!check.recheck)) throw new Error(`DATA_RECEIPT_BLOCKER_DETAIL_REQUIRED:${check?.id}`);
   }
   const result=deriveDataResult(draft.checks);
-  const identity={
-    contract:'devcenter-data-receipt/v1',
+  const payload={
     subject:draft.subject,
     scope:draft.scope,
     checks:draft.checks,
     result
   };
-  return {...identity,receipt_id:`data_${digest(identity).slice(0,24)}`,created_at:createdAt};
+  return finalizeCoreHubReceipt({kind:'data',prefix:'data',payload,legacyContract:'devcenter-data-receipt/v1',createdAt});
 }
 
 export function validatePatterns(registry){
