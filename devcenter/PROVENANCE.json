@@ -18675,7 +18675,7 @@
       "source_path": "docs/DOCUMENT-HUB-RUNTIME.md",
       "disposition": "ADAPTED_IN_PLACE",
       "destination": "devcenter/docs/DOCUMENT-HUB-RUNTIME.md",
-      "reason": "unify hub receipt output on the AI Core core-receipt/v1 envelope while preserving typed hub payload"
+      "reason": "replace stale permanent-external-source wording with exact transitional source and management-support cutover gate"
     },
     {
       "source_path": "portal/build-static.mjs",
@@ -18748,6 +18748,24 @@
       "disposition": "ADAPTED_IN_PLACE",
       "destination": "devcenter/scripts/verify-typecheck-gate.mjs",
       "reason": "remove the portal sibling-checkout dependency by using verified pinned catalog sources and staged logical manifest evidence"
+    },
+    {
+      "source_path": "hubs/document/README.md",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/hubs/document/README.md",
+      "reason": "clarify DocsHub transitional external authority, management-support target ownership, and no-dual-SSOT cutover boundary"
+    },
+    {
+      "source_path": "hubs/document/source-binding.json",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/hubs/document/source-binding.json",
+      "reason": "refresh the pinned DocsHub revision while preserving unchanged source blob SHAs and transitional authority"
+    },
+    {
+      "source_path": "test/document-hub.test.mjs",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/test/document-hub.test.mjs",
+      "reason": "add regression coverage that registry, source binding and import classification converge on one DocsHub transition authority"
     }
   ]
 }
