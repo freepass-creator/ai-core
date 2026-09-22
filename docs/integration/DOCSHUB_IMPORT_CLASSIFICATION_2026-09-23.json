@@ -1,0 +1,79 @@
+{
+  "schema_version": "ai-core-docshub-import-classification/v1",
+  "observed_at": "2026-09-22T15:50:00Z",
+  "source": {
+    "repository": "freepass-creator/docshub",
+    "revision": "4059d82779b7e1796afa2bbdf644e1d3bbdba3e7",
+    "tracked_files": 19
+  },
+  "authority": {
+    "current_state": "TRANSITIONAL_EXTERNAL_SOURCE",
+    "current_template_source": "freepass-creator/docshub@4059d82779b7e1796afa2bbdf644e1d3bbdba3e7",
+    "target_template_owner": "ai-core/management-support/templates",
+    "runtime_consumer": "ai-core/devcenter/document-hub",
+    "duplicate_ssot_forbidden": true,
+    "cutover_authorized": false
+  },
+  "remote_inventory": {
+    "excluded_ai_core_kit": {
+      "prefix": ".ai-core/",
+      "count": 14,
+      "disposition": "EXCLUDE_AUTHORITY_DUPLICATE"
+    },
+    "excluded_project_instruction": {
+      "paths": [
+        "AGENTS.md"
+      ],
+      "count": 1,
+      "disposition": "EXCLUDE_AUTHORITY_DUPLICATE"
+    },
+    "transitional_sources": [
+      {
+        "path": "README.md",
+        "blob_sha": "5e8831675a343fb8741cf3fdfa3a825b9fca0eaa"
+      },
+      {
+        "path": "app.js",
+        "blob_sha": "ffa8f13606c041a7ab8880da1039c95bd31607d2"
+      },
+      {
+        "path": "index.html",
+        "blob_sha": "cf595bd534b00143580dc3a211abeb60f9cfe81d"
+      },
+      {
+        "path": "styles.css",
+        "blob_sha": "eb615a7b1c92974a2a16f35787dd07b11a7a3f03"
+      }
+    ],
+    "accounted_files": 19
+  },
+  "local_unversioned_source": {
+    "status": "HOLD_UNOBSERVED",
+    "path_reported": "C:\\dev\\docshub",
+    "last_reported_inventory_source": "docs/integration/HQ_MERGE_CLASSIFICATION_2026-09-22.md",
+    "last_reported_file_count": 581,
+    "current_session_bytes_observed": false,
+    "import_authorized": false,
+    "policy": [
+      "Template/generator/catalog assets may be considered only after a fresh inventory and sensitive-content scan.",
+      "Company originals, personnel/privacy material, financial originals and legal/case materials must not enter AI Core Git.",
+      "Case material remains in the case-domain authority and is not a management-support template asset.",
+      "No cutover may occur until the imported template set has provenance and artifact-parity evidence."
+    ]
+  },
+  "cutover_requirements": [
+    "FRESH_LOCAL_INVENTORY_OBSERVED",
+    "SENSITIVE_AND_CASE_CONTENT_EXCLUDED",
+    "TARGET_PROVENANCE_WRITTEN",
+    "TEMPLATE_ARTIFACT_PARITY_VERIFIED",
+    "DOCUMENT_HUB_BINDING_MOVED_TO_INTERNAL_SOURCE",
+    "WORK_MAP_AND_CAPABILITY_AUTHORITY_UPDATED",
+    "OLD_DOCSHUB_SOURCE_MARKED_REFERENCE_ONLY"
+  ],
+  "invariants": [
+    "Before cutover, the four remote template source blobs are read from the exact external DocsHub revision.",
+    "After cutover, management-support/templates owns template bodies and DevCenter Document Hub only plans, validates and receipts their use.",
+    "External DocsHub and management-support/templates must never be writable template SSOTs at the same time.",
+    "The local unversioned DocsHub inventory is HOLD until freshly observed; planning counts are not execution evidence."
+  ]
+}

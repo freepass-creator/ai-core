@@ -1,7 +1,7 @@
 {
   "contract": "devcenter-document-source-binding/v1",
   "repository": "freepass-creator/docshub",
-  "revision": "fbb54727fb7ee497eede2f95563b633b6333c300",
+  "revision": "4059d82779b7e1796afa2bbdf644e1d3bbdba3e7",
   "sources": {
     "catalog": {
       "path": "app.js",
@@ -20,5 +20,5 @@
       "blob_sha": "5e8831675a343fb8741cf3fdfa3a825b9fca0eaa"
     }
   },
-  "invariant": "DocsHub remains the document template source. Development Center references the pinned revision and does not copy template bodies as a second SSOT."
+  "invariant": "TRANSITIONAL: DocsHub external source remains exact-revision template authority until management-support/templates cutover. DevCenter Document Hub consumes and verifies it; no second writable template SSOT is allowed."
 }
