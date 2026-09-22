@@ -23,6 +23,8 @@ AI Core는 실전 업무를 통해 여러 AI가 공통 규율과 검증된 노�
 
 Work performed in a chat must follow [Chat to GitHub handoff policy](docs/CHAT_GITHUB_HANDOFF_POLICY.md). The chat is a working surface, while the relevant project repository is the durable handoff record. Preserve only reviewed minimal context and evidence pointers; do not copy sensitive raw conversations into GitHub.
 
+새 세션은 GitHub 설치나 로그인을 추측하지 말고 먼저 [기존 도구 연결](memory/TOOL_CONNECTIONS.md)의 GitHub connection reuse를 적용한다. `gh` 인증, Git push 자격, Codex GitHub connector, 브라우저 로그인은 서로 별개이므로 이번 작업에 필요한 층을 실제로 확인한다. 기존 인증이 정상이라면 계정·토큰·로그인을 다시 묻지 않는다.
+
 ## 비상 진입점 — 해당 작업을 계속하기 전에
 
 데이터 훼손·배포/보안 사고·AI 동시 수정·정본 불명확이 의심되면 [비상매뉴얼](docs/EMERGENCY_RUNBOOK.md)을 먼저 읽는다. 해당 작업의 추가 쓰기는 보류하고, 정상 서비스와 다른 작업은 보존한다.
