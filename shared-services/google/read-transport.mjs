@@ -36,9 +36,9 @@ export function createGoogleReadTransport({
       ...opts,
       method,
       headers:{
-        Authorization:`Bearer ${accessToken}`,
+        ...(opts.headers||{}),
         'content-type':'application/json',
-        ...(opts.headers||{})
+        Authorization:`Bearer ${accessToken}`
       }
     });
 
