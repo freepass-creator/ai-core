@@ -128,3 +128,53 @@ test('★테두리 없는 컨트롤 — 상태를 테두리·그림자로 말하
   assert.ok(표시.trim().length > 0, '눌림 표시 문자가 없다');
   assert.doesNotMatch(표시, /[가-힣a-z]/i, `눌림 표시가 이름에 낱말을 덧붙인다: "${표시}" — 기호만 둔다`);
 });
+
+test('★테두리 정책 — 값 넣는 자리만 선을 갖는다 (interaction.contract#border_policy)', () => {
+  const rule = json('design-system/interaction.contract.json').rules.border_policy;
+  assert.ok(rule, 'border_policy 규칙이 없다');
+  assert.ok(json('contracts/ui-interaction-contract.schema.json').properties.rules.required.includes('border_policy'));
+  assert.ok(rule.invariants.some((i) => /focus-visible/.test(i)), '포커스 윤곽선 예외가 규칙에 있어야 한다');
+  assert.ok(rule.invariants.some((i) => /forced-colors/i.test(i)), '고대비 예외가 규칙에 있어야 한다');
+
+  /** 최종 cascade 는 components.css + runtime-v2.css 다. 정책은 뒤에 실리는 runtime-v2 가 못 박는다. */
+  const 선없음 = ['.ui-button', '.ui-icon-button', '.ui-link', '.ui-card', '.ui-panel', '.ui-alert', '.ui-dialog', '.ui-toast'];
+  const 지움 = css.match(/^[^{@]*\{\s*\n?\s*border:\s*0;?\s*\}/m) ? css : css;
+  for (const sel of 선없음) {
+    const 규칙 = 지움.split('\n').find((line) => line.startsWith(sel + ',') || line.includes(sel + ',') || line.startsWith(sel + ' ') || line.startsWith(sel + ' {'));
+    assert.ok(규칙, `${sel} 에 대한 정책 줄이 없다`);
+  }
+  assert.match(css, /\.ui-button[^{]*\{\s*$|\.ui-button[^}]*border:\s*0/m, '버튼의 테두리를 0 으로 못 박아야 한다');
+  const 정책블록 = css.slice(css.indexOf('★테두리 정책'), css.indexOf('선택·눌림 상태와 기본 골격'));
+  for (const sel of 선없음) assert.ok(정책블록.includes(sel), `${sel} 이 「테두리 없음」 목록에 없다`);
+  /** 값을 넣는 자리의 선은 지우지 않는다 — 그것 말고는 「여기에 쓴다」를 말할 수단이 없다. */
+  const 부품 = read('design-system/components.css');
+  const 덩어리 = (sel) => 부품
+    .split('}')
+    .filter((chunk) => new RegExp(`(^|,|\\s)\\${sel}([\\s,{])`).test((chunk.split('{')[0] ?? '') + '{'));
+  for (const sel of ['.ui-input', '.ui-select', '.ui-textarea']) {
+    assert.ok(!new RegExp(`\\${sel}[^}]*border:\\s*0`).test(정책블록), `${sel} 의 선을 지우면 안 된다`);
+    assert.ok(덩어리(sel).some((chunk) => /border:\s*1px/.test(chunk)), `${sel} 은 선을 가져야 한다 — 값을 넣는 자리다`);
+  }
+});
+
+test('★심플·미니멀 — 덜어내되 구분과 상태는 반드시 읽힌다 (interaction.contract#border_policy)', () => {
+  const rule = json('design-system/interaction.contract.json').rules.border_policy;
+  const 글 = rule.invariants.join(' ');
+  assert.match(글, /minimal/i, '「최소로 쓴다」가 규칙 본문에 있어야 한다');
+  assert.match(글, /distinguishab|readable|legible/i, '「그래도 구분된다」가 규칙 본문에 있어야 한다');
+  assert.ok(rule.verification.includes('minimal-but-distinguishable'), '구분 가능 검증 항목이 있어야 한다');
+
+  /** 덜어낸 자리는 반드시 «다른 신호»로 메운다 — 상태 선택자는 면/글자/표시 중 하나를 바꿔야 한다. */
+  const 상태블록 = css.slice(css.indexOf('선택·눌림 상태와 기본 골격'));
+  const 상태선택자 = 상태블록
+    .split('\n')
+    .filter((line) => /^\.ui-[^{]*(aria-pressed|aria-selected|:checked|disabled)[^{]*\{/.test(line));
+  assert.ok(상태선택자.length >= 4, `상태를 말하는 규칙이 ${상태선택자.length} 개뿐이다`);
+  for (const line of 상태선택자) {
+    assert.match(
+      line,
+      /background|color|font-weight|content|opacity/,
+      `선을 안 쓰는 대신 무엇으로 상태를 말하는지가 없다: ${line.slice(0, 60)}`
+    );
+  }
+});

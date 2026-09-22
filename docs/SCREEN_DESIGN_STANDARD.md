@@ -15,6 +15,29 @@ Official references:
 - https://www.w3.org/WAI/ARIA/apg/patterns/
 - https://developer.apple.com/design/human-interface-guidelines/buttons
 
+## Simple, minimal, still unambiguous (border policy)
+
+Concept, set by the owner on 2026-09-23: *simple and minimal — but the surfaces must still be distinguishable, the states must still show, and the functionality must stay complete. Not "line" or "no line", but how much can be taken away while the thing still works.*
+
+So the rule is a removal test, not a taste. Take the border, shadow, divider or box away, then check three things:
+
+1. **Is the surface still distinguishable?** (surface tint page ↔ surface, spacing, text hierarchy)
+2. **Is every state still readable?** (selected, pressed, disabled, invalid, busy — at least two of tint, weight, glyph or text; never colour alone)
+3. **Is the capability unchanged?** (same commands, same keyboard path)
+
+Keep the element only when one of those three fails. The table below is the result of that test, not a preference:
+
+| Surface | Line | Why |
+| --- | --- | --- |
+| text input, textarea, search, select/dropdown, combobox, date, file drop, data-grid cell rules | **keep** | nothing else says "a value goes here"; test (1) fails without it |
+| buttons, button-like links, chips, badges, toggles, segmented controls, tabs | none | tint + weight + glyph carry both identity and state |
+| cards, panels, toolbars, app bars, bottom action bars, dialogs, alerts | none | surface tint and spacing already separate them from the page |
+| table row rules, list separators | allowed | they help *read data* — never to express selection or disabled state |
+| keyboard `:focus-visible` outline | **mandatory** | not a border for this rule; never suppressed |
+| forced-colors / high contrast | system decides | the product does not suppress restored system borders |
+
+Machine form: `design-system/interaction.contract.json#rules.border_policy`; enforced in `design-system/runtime-v2.css` and checked by `test/ui-shell-samples.test.mjs`. `design-system/components.css` is pinned by the 2026-09-14 browser receipt and is overridden from runtime-v2, never edited.
+
 ## Tokens
 
 `design-system/tokens.css` is the shared visual contract. Components use tokens for color, spacing, radius, typography, focus and control height. Product pages may extend tokens but do not hard-code a second competing system.

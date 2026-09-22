@@ -42,7 +42,8 @@
         "status_feedback",
         "input_method",
         "portable_task_panel",
-        "selection_state"
+        "selection_state",
+        "border_policy"
       ],
       "properties": {
         "action_placement": {
@@ -85,6 +86,9 @@
           "$ref": "#/$defs/rule"
         },
         "selection_state": {
+          "$ref": "#/$defs/rule"
+        },
+        "border_policy": {
           "$ref": "#/$defs/rule"
         }
       }

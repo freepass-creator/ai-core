@@ -1,6 +1,6 @@
 {
   "contract": "ai-core-ui-interaction-contract/v1",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "feature_registry": "registry/ui-ux-features.json",
   "constitution": "docs/UI_UX_CONSTITUTION.md",
   "rules": {
@@ -318,6 +318,42 @@
         "single-choice-auto-advance",
         "stable-identity",
         "borderless-control-state"
+      ]
+    },
+    "border_policy": {
+      "feature_refs": [
+        "action.primary",
+        "action.secondary",
+        "action.icon",
+        "action.link",
+        "action.toggle",
+        "form.chip",
+        "navigation.segmented",
+        "navigation.tabs",
+        "data.select-card",
+        "form.text",
+        "form.select",
+        "form.search",
+        "form.textarea",
+        "feedback.alert",
+        "overlay.dialog"
+      ],
+      "invariants": [
+        "The product is simple and minimal: a screen carries the least chrome that still does the job. Before keeping a border, shadow, divider or box, remove it and check the surface is still distinguishable and its state still readable; keep it only when that check fails.",
+        "A line survives that check only where nothing else can say a value goes here: text input, textarea, search field, select/dropdown, combobox, date and file inputs, and data-grid cell rules.",
+        "Command and container surfaces carry no border and no shadow: buttons and button-like links, chips, badges, toggles, segmented controls, tabs, cards, panels, toolbars, app bars, bottom action bars, dialogs and alerts.",
+        "Minimal never means ambiguous. A borderless surface stays distinguishable through surface tint (page vs surface), spacing and text hierarchy, and every state (selected, pressed, disabled, invalid, busy) stays readable through at least two of tint, weight, glyph or text — never colour alone.",
+        "Removing chrome never removes capability: the same states, commands and keyboard paths remain available on the plainer surface.",
+        "A divider is allowed only where it helps read data (table row rules, list separators) and never to express selection, pressed or disabled state.",
+        "The keyboard focus-visible outline is mandatory everywhere and is not a border for the purpose of this rule.",
+        "Forced-colors and high-contrast modes may restore system borders; the product does not suppress them."
+      ],
+      "verification": [
+        "minimal-but-distinguishable",
+        "border-policy-input-only",
+        "borderless-control-state",
+        "state-not-colour-only",
+        "forced-colors"
       ]
     }
   }
