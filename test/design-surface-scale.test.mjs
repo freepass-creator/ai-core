@@ -1,0 +1,73 @@
+// 면(surface) 단계가 «숫자로» 유지되는지 지킨다.
+//
+// ★대표(2026-09-23): 「박스 선을 걷어낼 거면 그 페이지 면색이랑 박스 색이랑 구분을 줘야 될 것 같고 ...
+//   너무 짧은 휘발성으로 생각하지 말고 제대로 만들어야 된다」
+// 선을 없앤 화면에서 «박스를 박스로 알아보는 일»은 면 대비가 대신한다. 그래서 대비는 취향이 아니라 측정값이고,
+// 측정값은 여기서 다시 계산해 영수증과 맞춰 본다 — 토큰을 눈대중으로 고치면 이 검사가 먼저 빨개진다.
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
+import { 재다, 대비, 짝들, 토큰 } from '../scripts/measure-surface-contrast.mjs';
+
+const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
+const read = (p) => readFileSync(resolve(root, p), 'utf8');
+const json = (p) => JSON.parse(read(p));
+
+test('면 단계 토큰이 정본에 있다 — 바탕 / 면 / 우묵한 면 / 선택된 면 / 가림막', () => {
+  const t = 토큰();
+  for (const 이름 of ['color-bg', 'color-surface', 'color-surface-sunken', 'color-selected-surface', 'color-scrim']) {
+    assert.ok(t[이름], `${이름} 이 tokens.json 에 없다`);
+  }
+  /** 투영본(런타임 CSS)이 정본과 어긋나면 화면이 다른 값을 쓴다. */
+  const css = read('design-system/tokens.runtime.css');
+  for (const [k, v] of Object.entries(t)) assert.ok(css.includes(`--${k}: ${v};`), `투영 누락: --${k}`);
+});
+
+test('★면 대비가 바닥을 지킨다 — 17 짝 전부 다시 계산해서 확인한다', () => {
+  const { 결과, 미달 } = 재다();
+  assert.equal(미달.length, 0, `바닥 아래로 내려간 짝: ${미달.map((r) => `${r.id} ${r.ratio}<${r.min}`).join(', ')}`);
+  assert.ok(결과.length >= 17, `재는 짝이 ${결과.length} 개뿐이다`);
+
+  /** 영수증은 «잰 것»이어야 한다 — 지금 토큰으로 다시 계산한 값과 같아야 통과한다(묵은 영수증 금지). */
+  const 영수증 = json('docs/evidence/SURFACE-CONTRAST.json');
+  assert.equal(영수증.kind, 'MEASURED');
+  assert.equal(영수증.result, 'PASS');
+  const 지금 = new Map(결과.map((r) => [r.id, r.ratio]));
+  for (const 짝 of 영수증.pairs) {
+    assert.equal(짝.ratio, 지금.get(짝.id), `${짝.id}: 영수증 ${짝.ratio} ≠ 지금 ${지금.get(짝.id)} — 다시 재서 --write 해야 한다`);
+  }
+  assert.equal(영수증.pairs.length, 결과.length, '영수증이 재는 짝을 다 담지 않았다');
+});
+
+test('선을 걷어낸 자리를 «면»이 대신하고 있다 — 규칙이 새 토큰을 실제로 쓴다', () => {
+  const css = read('design-system/runtime-v2.css');
+  assert.match(css, /\.ui-chip \{[^}]*background: var\(--color-surface-sunken\)/, '칩 기본 면이 우묵한 면이어야 한다');
+  assert.match(css, /\.ui-chip\[aria-pressed="true"\][^{]*\{[^}]*var\(--color-selected-surface\)/, '선택된 칩이 선택 면을 써야 한다');
+  assert.match(css, /\.ui-select-card:has\(input:checked\) \{[^}]*var\(--color-selected-surface\)/, '선택된 카드가 선택 면을 써야 한다');
+  assert.match(css, /::backdrop[\s\S]{0,80}var\(--color-scrim\)/, '겹친 면은 가림막으로 갈라야 한다');
+  /** 선택을 «색만으로» 말하지 않는다 — 면 차이가 작은 짝이므로 굵기와 루시드 체크가 함께 바뀌어야 한다. */
+  const 선택칩 = css.match(/\.ui-chip\[aria-pressed="true"\], \.ui-chip\[aria-selected="true"\] \{[^}]*\}/)?.[0] ?? '';
+  assert.match(선택칩, /font-weight: 700/, '선택된 칩은 굵기도 바뀌어야 한다');
+  const 얇은짝 = 짝들.find((p) => p.id === 'selected_on_rest');
+  assert.ok(얇은짝.min < 1.12, '이 짝은 면만으로는 약하다는 전제가 규격에 남아 있어야 한다');
+  assert.match(얇은짝.why, /굵기|체크/, '약한 면 차이를 무엇이 받치는지 규격에 적혀 있어야 한다');
+});
+
+test('포커스 링은 어떤 면 위에서도 3:1 을 넘는다 (WCAG 1.4.11)', () => {
+  const t = 토큰();
+  for (const 면 of ['color-bg', 'color-surface', 'color-surface-sunken', 'color-selected-surface', 'color-disabled-surface', 'color-info-surface', 'color-error-surface']) {
+    const 값 = 대비(t['color-focus'], t[면]);
+    assert.ok(값 >= 3, `포커스 링이 ${면}(${t[면]}) 위에서 ${값} 이다 — 3:1 아래로 내려가면 안 된다`);
+  }
+});
+
+test('포커스 링은 한 가지 토큰만 쓴다 — 부품마다 제 색을 쓰면 잰 값이 거짓말이 된다', () => {
+  /** ★2026-09-23 실측에서 잡혔다: 전역 :focus-visible 은 --color-focus 인데 칩·구간선택·선택카드는
+   *  각자 --color-primary 로 그리고 있었다. 그러면 「포커스 링 대비 3:1」이라는 측정이 화면과 어긋난다. */
+  const css = read('design-system/runtime-v2.css') + read('design-system/tokens.runtime.css');
+  for (const 줄 of css.split('\n').filter((l) => /focus-visible/.test(l) && /outline:/.test(l))) {
+    assert.match(줄, /var\(--color-focus\)|Highlight/, `포커스 링이 정본 색을 안 쓴다: ${줄.trim().slice(0, 80)}`);
+  }
+});

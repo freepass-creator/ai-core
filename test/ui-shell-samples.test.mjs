@@ -112,7 +112,9 @@ test('골격은 값을 따로 정하지 않는다 — 샘플 안에 색·치수 
     assert.doesNotMatch(html, /<style[\s>]/, `${이름}: 샘플 안에서 스타일을 새로 정의하지 않는다`);
     assert.doesNotMatch(html, /style="/, `${이름}: 인라인 스타일 금지`);
     assert.doesNotMatch(html, /#[0-9a-fA-F]{6}\b/, `${이름}: 색 하드코딩 금지 — 토큰을 쓴다`);
-    assert.match(html, /design-system\/tokens\.css/, `${이름}: 토큰 정본을 읽어야 한다`);
+    /** ★tokens.css 가 아니라 tokens.runtime.css 다 — 전자는 2026-09-14 브라우저 영수증에 묶인 «그때의 사본»이고,
+     *  살아 있는 투영본은 tokens.runtime.css 다(면 단계·포커스 색이 여기 들어온다). */
+    assert.match(html, /design-system\/tokens\.runtime\.css/, `${이름}: 살아 있는 토큰 투영본을 읽어야 한다`);
     assert.match(html, /design-system\/components\.css/, `${이름}: 부품 정본을 읽어야 한다`);
     assert.match(html, /design-system\/runtime-v2\.css/, `${이름}: 골격·상태 스타일(runtime v2)을 읽어야 한다`);
   }

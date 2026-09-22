@@ -445,7 +445,7 @@
 .ui-card, .ui-panel, .ui-receipt, .ui-disclosure, .ui-dialog { background: var(--color-surface); }
 .ui-page, .ui-shell { background: var(--color-bg); }
 .ui-state { background: var(--color-disabled-surface); }
-.ui-tab[aria-selected="true"] { border: 0; background: var(--color-info-surface); color: var(--color-primary); font-weight: 700; }
+.ui-tab[aria-selected="true"] { border: 0; background: var(--color-selected-surface); color: var(--color-primary); font-weight: 700; }
 /* 값을 넣는 자리는 테두리를 유지한다(부품 정본 그대로) — 여기서 지우지 않는다. */
 
 /* ★아이콘 — 루시드 한 벌로 통일 (대표 2026-09-23 「아이콘이나 체크 이런 거는 루시드 아이콘으로 통일」)
@@ -480,35 +480,35 @@
  * ★components.css 는 2026-09-14 브라우저 검증 영수증이 지문으로 묶고 있어 건드리지 않는다.
  */
 .ui-chip-set { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; }
-.ui-chip { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 4px 12px; border: 0; border-radius: 999px; background: var(--color-disabled-surface); color: var(--color-text); font: inherit; cursor: pointer; }
-.ui-chip[aria-pressed="true"], .ui-chip[aria-selected="true"] { background: var(--color-info-surface); color: var(--color-primary); font-weight: 700; }
+.ui-chip { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 4px 12px; border: 0; border-radius: 999px; background: var(--color-surface-sunken); color: var(--color-text); font: inherit; cursor: pointer; }
+.ui-chip[aria-pressed="true"], .ui-chip[aria-selected="true"] { background: var(--color-selected-surface); color: var(--color-primary); font-weight: 700; }
 .ui-chip[aria-pressed="true"]::before, .ui-chip[aria-selected="true"]::before {
   content: ""; display: inline-block; inline-size: 1em; block-size: 1em; vertical-align: -0.125em;
   background-color: currentColor; -webkit-mask: var(--icon-check) center / contain no-repeat; mask: var(--icon-check) center / contain no-repeat;
 }
 .ui-chip:disabled, .ui-chip[aria-disabled="true"] { color: var(--color-muted); cursor: not-allowed; }
-.ui-chip:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.ui-chip:focus-visible { outline: var(--focus-ring-width) solid var(--color-focus); outline-offset: var(--focus-ring-offset); }
 .ui-chip-remove { display: inline-flex; min-width: 20px; min-height: 20px; align-items: center; justify-content: center; border: 0; border-radius: 999px; background: transparent; color: inherit; cursor: pointer; }
 
 /* 눌림 토글 — 면·굵기·루시드 체크로만 말한다. 이름은 그대로 둔다(글자를 덧붙이지 않는다). */
-.ui-button[aria-pressed="true"] { background: var(--color-info-surface); color: var(--color-primary); font-weight: 700; }
+.ui-button[aria-pressed="true"] { background: var(--color-selected-surface); color: var(--color-primary); font-weight: 700; }
 .ui-button[aria-pressed="true"]::before {
   content: ""; display: inline-block; inline-size: 1em; block-size: 1em; margin-inline-end: 6px; vertical-align: -0.125em;
   background-color: currentColor; -webkit-mask: var(--icon-check) center / contain no-repeat; mask: var(--icon-check) center / contain no-repeat;
 }
 
-.ui-segmented { display: inline-flex; gap: 2px; padding: 2px; border-radius: var(--radius-sm); background: var(--color-disabled-surface); }
+.ui-segmented { display: inline-flex; gap: 2px; padding: 2px; border-radius: var(--radius-sm); background: var(--color-surface-sunken); }
 .ui-segmented > label { position: relative; display: inline-flex; align-items: center; min-height: 32px; padding: 4px 12px; border-radius: calc(var(--radius-sm) - 2px); color: var(--color-muted); cursor: pointer; }
 .ui-segmented input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
 .ui-segmented > label:has(input:checked) { background: var(--color-surface); color: var(--color-primary); font-weight: 700; }
 .ui-segmented > label:has(input:disabled) { color: var(--color-muted); cursor: not-allowed; }
-.ui-segmented > label:has(input:focus-visible) { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.ui-segmented > label:has(input:focus-visible) { outline: var(--focus-ring-width) solid var(--color-focus); outline-offset: var(--focus-ring-offset); }
 
 /* 선택 카드 — 박스도 선 없이 간다(대표 2026-09-23). 바탕(--color-bg)과 면(--color-surface)의 대비·간격이 카드를 가른다. */
 .ui-select-card { display: grid; gap: var(--space-2); padding: var(--space-4); border: 0; border-radius: var(--radius-sm); background: var(--color-surface); cursor: pointer; }
-.ui-select-card:has(input:checked) { background: var(--color-info-surface); color: var(--color-primary); }
+.ui-select-card:has(input:checked) { background: var(--color-selected-surface); color: var(--color-primary); }
 .ui-select-card:has(input:checked) .ui-select-card-head { font-weight: 700; }
-.ui-select-card:has(input:focus-visible) { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.ui-select-card:has(input:focus-visible) { outline: var(--focus-ring-width) solid var(--color-focus); outline-offset: var(--focus-ring-offset); }
 .ui-select-card:has(input:disabled) { color: var(--color-muted); background: var(--color-disabled-surface); cursor: not-allowed; }
 .ui-select-card .ui-select-card-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
 
@@ -532,3 +532,12 @@
 .ui-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); padding: 8px 16px; background: var(--color-surface); }
 .ui-toolbar .ui-spacer { margin-inline-start: auto; }
 @media (max-width: 900px) { .ui-shell-panels, .ui-shell-panels[data-panels="3"] { grid-template-columns: 1fr; } }
+
+/* 겹친 면은 선이 아니라 «가림막»으로 가른다 — 대화상자·시트가 아래 면과 섞이지 않게(테두리를 쓰지 않는 대신). */
+.ui-dialog::backdrop,
+dialog::backdrop { background: var(--color-scrim); }
+.ui-bottom-sheet-backdrop,
+.ui-drawer-backdrop { position: fixed; inset: 0; z-index: 39; background: var(--color-scrim); }
+
+/* 표 머리는 우묵한 면으로 내려앉힌다 — 굵은 선 대신. 행 사이 «읽기 위한» 가는 선은 규칙이 허용한다. */
+.ui-table thead th { background: var(--color-surface-sunken); }

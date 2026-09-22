@@ -36,6 +36,27 @@ Keep the element only when one of those three fails. The table below is the resu
 | keyboard `:focus-visible` outline | **mandatory** | not a border for this rule; never suppressed |
 | forced-colors / high contrast | system decides | the product does not suppress restored system borders |
 
+## Surface scale — what replaces the line
+
+Removing borders moves the whole job of "this is a separate object" onto surface colour. So the surface steps are measured, not chosen by eye. `scripts/measure-surface-contrast.mjs` computes WCAG 2.2 contrast from `design-system/tokens.json`, writes `docs/evidence/SURFACE-CONTRAST.json`, and `test/design-surface-scale.test.mjs` recomputes it on every run — a token edited by eye turns the suite red.
+
+| Token | Value | Sits on | Used for |
+| --- | --- | --- | --- |
+| `--color-bg` | `#eaeef4` | — | the page canvas |
+| `--color-surface` | `#ffffff` | canvas, **1.16:1** | cards, panels, app bar, toolbars, dialogs |
+| `--color-surface-sunken` | `#dfe5ee` | surface, **1.27:1** | chip at rest, segmented track, table head, wells |
+| `--color-selected-surface` | `#e3ecfd` | surface, **1.19:1** | the selected chip, tab, card |
+| `--color-scrim` | `rgba(16,24,40,.45)` | — | dialogs and sheets separate from what is under them by a scrim, never a border |
+
+Floors the measurement enforces: a surface that must read as its own object ≥ **1.12:1** against the surface under it; text and muted text ≥ **4.5:1** on every surface; the focus ring and the primary action ≥ **3:1** on every surface (WCAG 1.4.11).
+
+Two consequences worth stating, because both were found by measuring rather than by looking:
+
+- Selected vs unselected is only **1.07:1** — deliberately quiet. That is why selection is never carried by tint alone: weight and the Lucide check change with it.
+- Deepening the canvas pushed the old focus colour `#dc6803` to **2.99:1**, under the 3:1 floor. The focus ring is now `#b54708`, which measures 4.66 on canvas, 5.43 on surface and 4.29 on the sunken step.
+
+`design-system/tokens.runtime.css` is the live projection of the token SSOT and is what screens load. `design-system/tokens.css` is the older projection frozen by the 2026-09-14 browser receipt (`docs/evidence/UI-PATTERNS-BROWSER.json`); it keeps the pre-scale values until that receipt is re-run.
+
 ## Icons — one set, Lucide
 
 Decided by the owner on 2026-09-23: every icon and every check mark comes from **Lucide**. No emoji, no icon font, no second set, no hand-drawn glyph.
