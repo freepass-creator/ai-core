@@ -35,6 +35,7 @@ function normalizeCases(values){
     const hasOutput=Object.prototype.hasOwnProperty.call(item,'output');
     const hasError=clean(item.error_code);
     need(hasOutput||hasError,'SHARED_BEHAVIOR_CASE_OUTCOME_REQUIRED');
+    need(!(hasOutput&&hasError),'SHARED_BEHAVIOR_CASE_OUTCOME_AMBIGUOUS');
     return {
       case_id:caseId,
       input:canonical(item.input),
@@ -151,7 +152,7 @@ export function compileSharedExtractionCandidate(input={}){
       revision:item.revision,
       source_ref:item.source_ref,
       source_blob_sha:item.source_blob_sha,
-      export_name:item.export_name,
+      export_name:item.exportName,
       semantic_contract_digest:digest(item.semantic_contract),
       behavior_digest:digest(item.behavior_cases),
       evidence_refs:item.evidence_refs,
