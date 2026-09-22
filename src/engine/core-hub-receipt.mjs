@@ -1,4 +1,4 @@
-import {buildCoreReceipt,coreReceiptChecksum} from './core-receipt.mjs';
+import {buildCoreReceipt,coreReceiptChecksum} from './execution-receipt.mjs';
 
 function collectEvidence(value,refs=[]){
   if(Array.isArray(value)){
