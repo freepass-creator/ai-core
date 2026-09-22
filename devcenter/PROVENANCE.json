@@ -18453,7 +18453,7 @@
       "source_path": "AGENTS.md",
       "disposition": "ADAPTED_IN_PLACE",
       "destination": "devcenter/AGENTS.md",
-      "reason": "consume AI Core root registry after physical merge"
+      "reason": "replace duplicated or superseded common rules with AI Core canonical pointers while preserving historical evidence"
     },
     {
       "source_path": "README.md",
@@ -18465,7 +18465,7 @@
       "source_path": "docs/CURRENT-STANDARDS.md",
       "disposition": "ADAPTED_IN_PLACE",
       "destination": "devcenter/docs/CURRENT-STANDARDS.md",
-      "reason": "consume AI Core root registry after physical merge"
+      "reason": "replace duplicated or superseded common rules with AI Core canonical pointers while preserving historical evidence"
     },
     {
       "source_path": "docs/STARTER-TEMPLATES.md",
@@ -18495,7 +18495,7 @@
       "source_path": "design/AI_DESIGNER_OPERATING_GUIDE.md",
       "disposition": "ADAPTED_IN_PLACE",
       "destination": "devcenter/design/AI_DESIGNER_OPERATING_GUIDE.md",
-      "reason": "consume root digest binding after physical merge"
+      "reason": "mark unique design method as subordinate to AI Core and product canon"
     },
     {
       "source_path": "docs/DESIGN-HUB-COMPILER.md",
@@ -18508,6 +18508,54 @@
       "disposition": "ADAPTED_IN_PLACE",
       "destination": "devcenter/docs/HUB-ROUTER-RUNTIME.md",
       "reason": "document root work-map as the only routing authority"
+    },
+    {
+      "source_path": "docs/BASELINE.md",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/docs/BASELINE.md",
+      "reason": "replace duplicated or superseded common rules with AI Core canonical pointers while preserving historical evidence"
+    },
+    {
+      "source_path": "docs/FOUR-AI-WORKFLOW.md",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/docs/FOUR-AI-WORKFLOW.md",
+      "reason": "replace duplicated or superseded common rules with AI Core canonical pointers while preserving historical evidence"
+    },
+    {
+      "source_path": "docs/SESSION-TOUR.md",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/docs/SESSION-TOUR.md",
+      "reason": "replace duplicated or superseded common rules with AI Core canonical pointers while preserving historical evidence"
+    },
+    {
+      "source_path": "docs/README.md",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/docs/README.md",
+      "reason": "replace duplicated or superseded common rules with AI Core canonical pointers while preserving historical evidence"
+    },
+    {
+      "source_path": "design/README.md",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/design/README.md",
+      "reason": "replace duplicated or superseded common rules with AI Core canonical pointers while preserving historical evidence"
+    },
+    {
+      "source_path": "standards/README.md",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/standards/README.md",
+      "reason": "replace duplicated or superseded common rules with AI Core canonical pointers while preserving historical evidence"
+    },
+    {
+      "source_path": "ssot/PART.md",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/ssot/PART.md",
+      "reason": "replace duplicated or superseded common rules with AI Core canonical pointers while preserving historical evidence"
+    },
+    {
+      "source_path": "design/AI_EDITORIAL_LAYOUT_COMPILER.md",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/design/AI_EDITORIAL_LAYOUT_COMPILER.md",
+      "reason": "mark unique layout knowhow as subordinate to AI Core and product canon"
     }
   ]
 }

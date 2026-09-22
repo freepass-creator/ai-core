@@ -76,3 +76,29 @@ test('DevCenter physical copy is complete, immutable and traceable', async () =>
     }
   }
 });
+
+test('active DevCenter entrypoints delegate common rules to AI Core canon', async () => {
+  const entrypoints = [
+    'AGENTS.md',
+    'docs/BASELINE.md',
+    'docs/CURRENT-STANDARDS.md',
+    'docs/FOUR-AI-WORKFLOW.md',
+    'docs/SESSION-TOUR.md',
+    'docs/README.md',
+    'design/README.md',
+    'standards/README.md',
+    'ssot/PART.md'
+  ];
+  for (const path of entrypoints) {
+    const text = await readFile(resolve(moduleRoot, path), 'utf8');
+    assert.doesNotMatch(text, /PM\s*=\s*Claude|네 AI 작업 분담|C:\\dev\\devcenter\\ssot/);
+    assert.match(text, /AI Core|ai-core|\.\.\//i);
+  }
+
+  const baseline = await readFile(resolve(moduleRoot, 'docs/BASELINE.md'), 'utf8');
+  assert.match(baseline, /AI_WORKING_STANDARD\.md/);
+  assert.match(baseline, /AI_ACADEMY_CURRICULUM\.md/);
+  const design = await readFile(resolve(moduleRoot, 'design/README.md'), 'utf8');
+  assert.match(design, /design-system\/tokens\.json/);
+  assert.match(design, /registry\/design-hub-binding\.json/);
+});

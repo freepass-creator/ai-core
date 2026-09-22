@@ -1,13 +1,19 @@
-# 개발센터 기본 규격과 리포트
+# DevCenter 문서 진입점
 
-- [다른 세션의 견학과 작업 준비](SESSION-TOUR.md)
+## 현재 실행 문서
 
-- [1차 범위](PHASE1-SCOPE.md)
-- [기본 규격 v0.1](BASELINE.md)
-- [현재 규격 취합](CURRENT-STANDARDS.md)
-- [출처와 버전](baseline-sources.json)
-- [문제·개선·통일 리포트](IMPROVEMENT-REPORT.md)
-- [네 AI 공동 작업 실행안](FOUR-AI-WORKFLOW.md)
-- [초기 GitHub 등록 범위](BOOTSTRAP.md)
+- [작업 시작 안내](SESSION-TOUR.md)
+- [Hub Architecture](HUB-ARCHITECTURE.md)
+- [Hub Router Runtime](HUB-ROUTER-RUNTIME.md)
+- [Hub Readiness](HUB-READINESS.md)
+- 각 Hub runtime 및 evidence 문서
 
-확인된 문제와 미검증 후보를 구분하며, 문서 등록은 기능 구현/전체 검수 완료를 뜻하지 않는다.
+## 호환·역사 문서
+
+- [기본선 호환 포인터](BASELINE.md)
+- [2026-09-09 원본 조사 기록](CURRENT-STANDARDS.md)
+- [과거 4-AI 작업안의 현재 정책 포인터](FOUR-AI-WORKFLOW.md)
+- [당시 출처와 버전](baseline-sources.json)
+- [당시 문제·개선 기록](IMPROVEMENT-REPORT.md)
+
+공통 규칙의 정본은 AI Core 루트 `docs/`, `design-system/`, `contracts/`, `registry/`다. DevCenter 문서 등록이나 과거 검토 상태는 기능 구현·현재 규격 승인·배포 완료를 뜻하지 않는다.
