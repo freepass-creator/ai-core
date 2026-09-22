@@ -28,10 +28,10 @@
     "FREEPASS": "docs/FREEPASS_PRODUCT_UI_PROFILE.md"
   },
   "execution": {
-    "design_hub_repository": "freepass-creator/devcenter",
-    "design_hub_entry": "hubs/design/README.md",
-    "design_hub_binding": "hubs/design/core-binding.json",
-    "quality_hub_entry": "hubs/quality/README.md"
+    "design_hub_repository": "freepass-creator/ai-core",
+    "design_hub_entry": "devcenter/hubs/design/README.md",
+    "design_hub_binding": "registry/design-hub-binding.json",
+    "quality_hub_entry": "devcenter/hubs/quality/README.md"
   },
   "mandatory_sequence": [
     "PIN_AI_CORE_REVISION",

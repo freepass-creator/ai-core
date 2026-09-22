@@ -18,7 +18,7 @@ export function combineChangedFiles(tracked = [], untracked = []) {
   return [...new Set([...tracked, ...untracked].filter(Boolean))];
 }
 
-export function validateMainState({ readme, current, researchIndex, selfEvolution, episode, fileExists, revisionExists, changedFiles }) {
+export function validateMainState({ readme, current, researchIndex, selfEvolution, episode, fileExists, revisionExists, changedFiles, deletedFiles = [] }) {
   const errors = [];
   const runtimeExists = fileExists('src/cli.mjs') || fileExists('src/core.mjs');
 
@@ -107,8 +107,9 @@ export function validateMainState({ readme, current, researchIndex, selfEvolutio
   if (episode.execution?.rework_loops !== episode.metrics?.rework_loop_count) {
     errors.push('execution and metric rework counts disagree');
   }
+  const deleted = new Set(deletedFiles);
   for (const path of episode.execution?.changed_files ?? []) {
-    if (!fileExists(path)) errors.push(`episode changed file is missing: ${path}`);
+    if (!fileExists(path) && !deleted.has(path)) errors.push(`episode changed file is missing: ${path}`);
   }
 
   return errors;
@@ -142,8 +143,12 @@ export async function verifyRepository(root) {
     : execFileSync('git', ['-c', 'core.quotepath=false', 'ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' })
       .trim().split(/\r?\n/).filter(Boolean);
   const changedFiles = combineChangedFiles(trackedFiles, untrackedFiles);
+  const deletedFiles = execFileSync(
+    'git', ['-c', 'core.quotepath=false', 'diff', '--name-only', '--diff-filter=D', `${episode.project.base_revision}...${diffTarget}`],
+    { cwd: root, encoding: 'utf8' }
+  ).trim().split(/\r?\n/).filter(Boolean);
   const errors = validateMainState({
-    readme, current, researchIndex, selfEvolution, episode, fileExists, revisionExists, changedFiles
+    readme, current, researchIndex, selfEvolution, episode, fileExists, revisionExists, changedFiles, deletedFiles
   });
   if (episode.execution?.observation_tip) {
     // A historical observation may stop following HEAD only when the next real
@@ -154,6 +159,7 @@ export async function verifyRepository(root) {
     if (active.base_revision !== episode.execution.observation_tip) errors.push('successor base must match historical observation tip');
     if (active.episode_id !== 'ORDER-DESK-001' || !active.requirements?.length) errors.push('successor episode identity or requirements missing');
     const changedSince = execFileSync('git', ['-c', 'core.quotepath=false', 'diff', '--name-only', active.base_revision], { cwd: root, encoding: 'utf8' }).trim().split(/\r?\n/).filter(Boolean);
+    const deletedSince = new Set(execFileSync('git', ['-c', 'core.quotepath=false', 'diff', '--name-only', '--diff-filter=D', active.base_revision], { cwd: root, encoding: 'utf8' }).trim().split(/\r?\n/).filter(Boolean));
     const newFiles = execFileSync('git', ['-c', 'core.quotepath=false', 'ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim().split(/\r?\n/).filter(Boolean);
     const actual = combineChangedFiles(changedSince, newFiles).sort();
     const recorded = [...(active.changed_files ?? [])].sort();
@@ -164,7 +170,9 @@ export async function verifyRepository(root) {
       const extra = recorded.filter(path => !actualSet.has(path));
       errors.push(`successor episode changed files do not match repository diff; missing=[${missing.join(',')}]; extra=[${extra.join(',')}]`);
     }
-    for (const path of active.changed_files ?? []) if (!fileExists(path)) errors.push(`successor changed file missing: ${path}`);
+    for (const path of active.changed_files ?? []) {
+      if (!fileExists(path) && !deletedSince.has(path)) errors.push(`successor changed file missing: ${path}`);
+    }
   }
   return errors;
 }

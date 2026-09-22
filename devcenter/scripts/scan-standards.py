@@ -8,7 +8,7 @@ ROOT=Path('C:/dev')
 HERE=Path(__file__).resolve().parents[1]
 OUT=HERE/'portal/public/catalog'
 OUT.mkdir(parents=True,exist_ok=True)
-REGISTERED={d['source']['locator'] for d in json.loads((HERE/'registry.json').read_text(encoding='utf-8-sig'))['datasets'] if d.get('source',{}).get('kind')=='markdown_doc'}
+REGISTERED={d['source']['locator'] for d in json.loads((HERE.parent/'registry/devcenter-datasets.json').read_text(encoding='utf-8-sig'))['datasets'] if d.get('source',{}).get('kind')=='markdown_doc'}
 SKIP={'.git','node_modules','.next','.vercel','.wrangler','.firebase','.venv','venv','dist','build','out','coverage','__pycache__','reviews','runs','sessions','logs','data','exports','uploads','downloads','generated','generated_images','고객','계약','사건','증거','첨부','private','secrets'}
 CODE={'.ts','.tsx','.js','.jsx','.mjs','.cjs','.mts','.cts','.py','.vue','.svelte','.css','.scss'}
 DOC={'.md','.mdc','.rst'}

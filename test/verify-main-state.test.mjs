@@ -113,3 +113,18 @@ test('open episode comparison includes new untracked files once', () => {
     ['README.md', 'docs/episode.json', 'docs/SELF_EVOLUTION.md']
   );
 });
+
+test('changed-file evidence accepts an intentional deletion reported by Git', () => {
+  const deleted = {
+    ...valid,
+    episode: {
+      ...valid.episode,
+      execution: { ...valid.episode.execution, changed_files: ['retired.json'] },
+      metrics: { ...valid.episode.metrics, files_touched_count: 1 }
+    },
+    changedFiles: ['retired.json'],
+    deletedFiles: ['retired.json'],
+    fileExists: path => path !== 'retired.json' && valid.fileExists(path)
+  };
+  assert.deepEqual(validateMainState(deleted), []);
+});

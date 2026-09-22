@@ -45,16 +45,16 @@ export function validateUiUxEntrypointSemantics(entry) {
   if (entry?.product_profiles?.FREEPASS !== 'docs/FREEPASS_PRODUCT_UI_PROFILE.md') {
     throw new Error('UIUX_ENTRY_FREEPASS_PROFILE_MISSING');
   }
-  if (entry?.execution?.design_hub_repository !== 'freepass-creator/devcenter') {
+  if (entry?.execution?.design_hub_repository !== 'freepass-creator/ai-core') {
     throw new Error('UIUX_ENTRY_DESIGN_HUB_REPOSITORY_INVALID');
   }
-  if (entry?.execution?.design_hub_entry !== 'hubs/design/README.md') {
+  if (entry?.execution?.design_hub_entry !== 'devcenter/hubs/design/README.md') {
     throw new Error('UIUX_ENTRY_DESIGN_HUB_ENTRY_INVALID');
   }
-  if (entry?.execution?.design_hub_binding !== 'hubs/design/core-binding.json') {
+  if (entry?.execution?.design_hub_binding !== 'registry/design-hub-binding.json') {
     throw new Error('UIUX_ENTRY_DESIGN_HUB_BINDING_INVALID');
   }
-  if (entry?.execution?.quality_hub_entry !== 'hubs/quality/README.md') {
+  if (entry?.execution?.quality_hub_entry !== 'devcenter/hubs/quality/README.md') {
     throw new Error('UIUX_ENTRY_QUALITY_HUB_ENTRY_INVALID');
   }
 

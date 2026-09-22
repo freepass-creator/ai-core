@@ -163,7 +163,7 @@ Design Hub 시작점:
 
 - repo: `freepass-creator/devcenter`
 - `hubs/design/README.md`
-- `hubs/design/core-binding.json`
+- `registry/design-hub-binding.json`
 - `docs/DESIGN-HUB-COMPILER.md`
 
 **Design Hub core-binding revision이 이번 작업에서 쓰려는 AI Core revision과 다르면 먼저 binding을 갱신/검증한다.**

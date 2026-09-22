@@ -85,7 +85,7 @@ Result / candidate feedback to AI Core
 
 Canonical project-entry preflight: `docs/UI_UX_START_HERE.md` and `registry/ui-ux-entrypoint.json`.
 
-A UI/UX request must resolve the intended AI Core exact revision, product profile, feature IDs and brand SSOT **before** Development Center Design Hub implementation starts. Design Hub's `hubs/design/core-binding.json` must match that intended AI Core revision; stale binding is HOLD, not a license to invent local styling.
+A UI/UX request must resolve the intended AI Core source bundle digest, product profile, feature IDs and brand SSOT **before** Development Center Design Hub implementation starts. Root `registry/design-hub-binding.json` must match the current canonical files; stale digest is HOLD, not a license to invent local styling.
 
 AI Core B remains the normative owner of UI/UX Constitution, feature IDs, common behavior, accessibility/internationalization requirements and canonical machine contracts.
 

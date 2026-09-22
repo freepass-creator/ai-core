@@ -71,7 +71,7 @@ export function reportReadiness(readiness,hubRegistry){
 export function loadReadiness(baseDir=HERE){
   return {
     readiness:JSON.parse(fs.readFileSync(path.join(baseDir,'hubs','readiness.json'),'utf8')),
-    hubRegistry:JSON.parse(fs.readFileSync(path.join(baseDir,'hubs','registry.json'),'utf8'))
+    hubRegistry:JSON.parse(fs.readFileSync(path.resolve(baseDir,'..','registry','hubs.json'),'utf8'))
   };
 }
 

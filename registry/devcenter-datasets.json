@@ -289,7 +289,7 @@
       "role": "authoritative",
       "source": {
         "kind": "json",
-        "locator": "devcenter/hubs/registry.json"
+        "locator": "registry/hubs.json"
       },
       "key": "section",
       "required": [],
@@ -401,7 +401,7 @@
       "role": "authoritative",
       "source": {
         "kind": "json",
-        "locator": "devcenter/hubs/routing-rules.json"
+        "locator": "registry/hub-routing-rules.json"
       },
       "key": "entry",
       "required": [],
@@ -527,7 +527,7 @@
       "role": "authoritative",
       "source": {
         "kind": "json",
-        "locator": "devcenter/hubs/design/core-binding.json"
+        "locator": "registry/design-hub-binding.json"
       },
       "key": "entry",
       "required": [],
