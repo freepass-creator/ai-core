@@ -29,7 +29,7 @@ const IMPORT_CONTENT_RULES=Object.freeze([
 ]);
 
 function normalizeImportPath(value){
-  return clean(value).replaceAll('\\\\','/').replace(/^\.\//,'').replace(/^\/+/,'');
+  return clean(value).replaceAll('\\','/').replace(/^\.\//,'').replace(/^\/+/,'');
 }
 
 export function assessIntegrationImportContent({paths}={}){
