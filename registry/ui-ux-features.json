@@ -359,7 +359,7 @@
       ],
       "rules": [
         "A toggle button exposes aria-pressed and keeps the same accessible name in both states — the label does not flip to the opposite action.",
-        "Pressed is distinguishable from disabled and from hover without colour alone.",
+        "State is carried by a subtle surface tint, text colour, weight and an indicator glyph — not by border or shadow, and never by colour alone (FreePass product profile 4: borderless controls; keyboard focus-visible outline is the exception and stays). The visible label does not gain or lose text when the state changes.",
         "Use a switch for settings that apply immediately; use a toggle button for a reversible command or view state."
       ],
       "verification": [
@@ -585,7 +585,7 @@
       ],
       "rules": [
         "When the whole card is the choice, the card carries one control (radio, checkbox or option semantics); nested interactive elements do not compete with it.",
-        "The card is reachable and operable by keyboard as a single control, and the selected state is exposed semantically (checked/aria-selected) — never by border colour or fill alone.",
+        "The card is reachable and operable by keyboard as a single control, and the selected state is exposed semantically (checked/aria-selected). State is carried by a subtle surface tint, text colour, weight and an indicator glyph — not by border or shadow, and never by colour alone (FreePass product profile 4: borderless controls; keyboard focus-visible outline is the exception and stays). The card’s own structural separator is outside this rule.",
         "A card that also carries its own actions declares which region selects and which region acts."
       ],
       "verification": [
@@ -924,7 +924,7 @@
         "focus-visible"
       ],
       "rules": [
-        "Selection is announced by state, not by colour alone — a chip exposes aria-pressed (toggle) or aria-selected (listbox option) and never relies on fill colour only.",
+        "State is carried by a subtle surface tint, text colour, weight and an indicator glyph — not by border or shadow, and never by colour alone (FreePass product profile 4: borderless controls; keyboard focus-visible outline is the exception and stays).",
         "A chip set declares single or multiple selection; multiple selection keeps each chip independently reachable and removable.",
         "A removable chip exposes a separate labelled remove control; removing never submits the surrounding form.",
         "Applied filters remain visible while results are shown, with an explicit way to clear all."
@@ -1949,7 +1949,7 @@
       ],
       "rules": [
         "A segmented control selects a value or view mode within one surface; it does not replace tabs that switch task content.",
-        "Exactly one segment is selected at any time and the selection is exposed semantically (radio group or tablist) — never by colour, weight or underline alone.",
+        "Exactly one segment is selected at any time and the selection is exposed semantically (radio group or tablist). State is carried by a subtle surface tint, text colour, weight and an indicator glyph — not by border or shadow, and never by colour alone (FreePass product profile 4: borderless controls; keyboard focus-visible outline is the exception and stays).",
         "Segment count stays small enough to render without scrolling at 360px; otherwise use a select."
       ],
       "verification": [

@@ -305,6 +305,7 @@
       ],
       "invariants": [
         "Selected, pressed and disabled are exposed through state semantics (aria-pressed, aria-selected, checked, disabled), never by colour or weight alone.",
+        "Buttons, button-like links, chips and badges do not use border or shadow as their state language; state is carried by surface tint, text colour, weight and an indicator glyph. Input borders and structural card separators are outside this rule, and the keyboard focus-visible outline is mandatory.",
         "A selectable control keeps one accessible name across states; the name does not flip to the opposite action when the state changes.",
         "Every selectable set declares single or multiple selection, and a required single choice starts from an explicit unselected state.",
         "Selection survives refresh and retry only when bound to a stable entity/work key; it is never silently reassigned.",
@@ -315,7 +316,8 @@
         "semantic-contract",
         "keyboard-or-equivalent",
         "single-choice-auto-advance",
-        "stable-identity"
+        "stable-identity",
+        "borderless-control-state"
       ]
     }
   }

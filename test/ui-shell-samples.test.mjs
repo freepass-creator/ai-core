@@ -104,3 +104,27 @@ test('골격은 값을 따로 정하지 않는다 — 샘플 안에 색·치수 
     assert.match(html, /design-system\/runtime-v2\.css/, `${이름}: 골격·상태 스타일(runtime v2)을 읽어야 한다`);
   }
 });
+
+test('★테두리 없는 컨트롤 — 상태를 테두리·그림자로 말하지 않는다 (FreePass 제품 프로필 4절)', () => {
+  /** 상태 선택자(선택됨·눌림)에서 border/box-shadow 를 «상태 언어» 로 쓰면 빨강.
+   *  focus-visible 윤곽선(outline)은 예외이고, 입력창·카드의 구조 테두리는 이 규칙 밖이다. */
+  const 상태규칙 = css
+    .split('\n')
+    .filter((line) => /\.ui-(chip|button|segmented|select-card)[^{]*(aria-pressed="true"|aria-selected="true"|input:checked)[^{]*\{/.test(line));
+  assert.ok(상태규칙.length >= 4, `상태 선택자를 찾지 못했다 (${상태규칙.length})`);
+  for (const line of 상태규칙) {
+    assert.doesNotMatch(line, /border(-[a-z]+)?\s*:/, `상태를 테두리로 말한다: ${line.trim().slice(0, 90)}`);
+    assert.doesNotMatch(line, /box-shadow\s*:/, `상태를 그림자로 말한다: ${line.trim().slice(0, 90)}`);
+    /** ::before/::after 는 «표시 문자» 줄이라 면·글자 요구에서 뺀다 — 그것도 색이 아닌 신호다. */
+    if (/::(before|after)/.test(line)) { assert.match(line, /content\s*:/, `표시 문자 줄이 비었다: ${line.trim().slice(0, 90)}`); continue; }
+    assert.match(line, /background\s*:|color\s*:|font-weight\s*:/, `상태를 면·글자로 말해야 한다: ${line.trim().slice(0, 90)}`);
+  }
+  /** 예외는 살아 있어야 한다 — 키보드 포커스 윤곽선. */
+  for (const sel of ['.ui-chip:focus-visible', '.ui-segmented > label:has(input:focus-visible)', '.ui-select-card:has(input:focus-visible)']) {
+    assert.ok(css.includes(sel), `${sel} 의 focus-visible 윤곽선이 없다`);
+  }
+  /** 눌린 버튼이 보이는 이름에 글자를 덧붙이지 않는다(접근 이름 유지). */
+  const 표시 = css.match(/\.ui-button\[aria-pressed="true"\]::before[^}]*content:\s*"([^"]*)"/)?.[1] ?? '';
+  assert.ok(표시.trim().length > 0, '눌림 표시 문자가 없다');
+  assert.doesNotMatch(표시, /[가-힣a-z]/i, `눌림 표시가 이름에 낱말을 덧붙인다: "${표시}" — 기호만 둔다`);
+});
