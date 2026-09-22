@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtemp, readFile, writeFile } from 'node:fs/promises';
+import { spawnSync } from 'node:child_process';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { installAcademyStarterKit } from '../src/academy/starter-kit.mjs';
@@ -17,6 +18,12 @@ test('starter kit carries pinned standards, verification and result template',as
   assert.equal(JSON.parse(await readFile(join(root,'.ai-core','OPERATING_KNOWLEDGE.json'),'utf8')).schema_version,'1.0');
   assert.equal(JSON.parse(await readFile(join(root,'.ai-core','catalog','projects.json'),'utf8')).projects[0].project_id,'one');
   assert.equal(JSON.parse(await readFile(join(root,'.ai-core','CATALOG_INDEX.json'),'utf8')).items[0].core_revision,'b'.repeat(40));
+  assert.match(await readFile(join(root,'.ai-core','START_HERE.md'),'utf8'),/session-bootstrap\.mjs/);
+  const bootstrapRun=spawnSync(process.execPath,[join(root,'.ai-core','session-bootstrap.mjs')],{encoding:'utf8'});
+  const bootstrap=JSON.parse(bootstrapRun.stdout);
+  assert.equal(bootstrap.schema,'ai-core-session-bootstrap/v1');
+  assert.equal(bootstrap.status,'HOLD');
+  assert.ok(bootstrap.blockers.includes('GIT_REMOTE_UNAVAILABLE'));
 });
 
 test('starter kit never overwrites a conflicting local file',async()=>{
