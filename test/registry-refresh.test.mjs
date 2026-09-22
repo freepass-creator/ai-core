@@ -12,7 +12,7 @@ import { validateProjectRegistry } from '../scripts/validate-project-registry.mj
 
 const 뿌리 = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const 진짜등록부 = async () => JSON.parse(await readFile(resolve(뿌리, 'registry/projects.json'), 'utf8'));
-const NOW = new Date('2026-09-18T03:00:00.000Z');
+const NOW = new Date('2026-10-01T03:00:00.000Z');
 const 원격 = (id) => id.charCodeAt(0).toString(16).padStart(2, '0').repeat(20);
 
 test('① 로컬 체크아웃이 다른 갈래여도 «원격 기본 갈래» 만 적는다', async () => {
@@ -62,11 +62,35 @@ test('④ 진짜 낡은 등록부 — 고치고, 원천까지 묶고, 검증기�
   assert.equal(끝값(결과), 1);
   for (const 프 of 등록부.projects) {
     assert.equal(프.head_revision, 새것);
-    assert.ok(프.authoritative_sources.filter((s) => s.kind === 'GIT').every((s) => s.revision === 새것 && s.observed_at === '2026-09-18T03:00:00Z'));
+    const canonicalRefs = new Set([프.repository, `${프.repository}#${프.default_branch}`]);
+    assert.ok(프.authoritative_sources.some((s) => s.kind === 'GIT' && canonicalRefs.has(s.ref) && s.revision === 새것 && s.observed_at === '2026-10-01T03:00:00Z'));
   }
-  assert.equal(등록부.observed_at, '2026-09-18T03:00:00Z');
+  assert.equal(등록부.observed_at, '2026-10-01T03:00:00Z');
   assert.equal(validateProjectRegistry(등록부).status, 'VALID');
   assert.equal(끝값(registryRefresh(등록부, { now: NOW, observe: () => 새것 })), 0, '고친 뒤 다시 보면 낡은 것 없음');
+});
+
+test('기본 갈래 갱신이 보존된 작업 갈래 provenance를 덮어쓰지 않는다', () => {
+  const oldMain = 'a'.repeat(40);
+  const workRevision = 'b'.repeat(40);
+  const newMain = 'c'.repeat(40);
+  const 등록부 = {
+    observed_at: '2026-09-17T00:00:00Z',
+    projects: [{
+      project_id: 'sample', repository: 'owner/sample', default_branch: 'main', head_revision: oldMain,
+      authoritative_sources: [
+        { kind: 'GIT', ref: 'owner/sample#main', revision: oldMain, observed_at: '2026-09-17T00:00:00Z' },
+        { kind: 'GIT', ref: 'owner/sample#work/ui-baseline', revision: workRevision, observed_at: '2026-09-16T00:00:00Z' },
+        { kind: 'GIT', ref: 'owner/sample', revision: workRevision, observed_at: '2026-09-15T00:00:00Z' }
+      ]
+    }]
+  };
+  registryRefresh(등록부, { now: NOW, observe: () => newMain });
+  assert.equal(등록부.projects[0].authoritative_sources[0].revision, newMain);
+  assert.equal(등록부.projects[0].authoritative_sources[1].revision, workRevision);
+  assert.equal(등록부.projects[0].authoritative_sources[1].observed_at, '2026-09-16T00:00:00Z');
+  assert.equal(등록부.projects[0].authoritative_sources[2].revision, workRevision);
+  assert.equal(등록부.projects[0].authoritative_sources[2].observed_at, '2026-09-15T00:00:00Z');
 });
 
 test('일부만 못 보면 canonical registry를 한 글자도 부분 갱신하지 않는다', async () => {

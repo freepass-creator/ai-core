@@ -1,8 +1,25 @@
 # Tool / Agent Connection Status
 
-Updated: 2026-09-13
+Updated: 2026-09-22
 
 This file records user-confirmed availability of development executors/tools. It is an operational hint, not independent proof that a tool executed successfully on a specific task/revision.
+
+## GitHub connection reuse
+
+- intended identity: `freepass-creator`
+- normal routes: existing shell `gh` authentication, the checkout's Git credential manager, and an installed Codex GitHub connector when available
+- separation rule: Codex connector access, `gh` CLI authentication, Git push credentials, and browser login are separate capabilities. Verify the layer required by the current action.
+- secret rule: tokens and credential values stay in the host's protected store. Never request them in chat or copy them into files, logs, commits, environment examples, or agent prompts.
+
+For every new session, reuse the existing host connection before attempting installation or login:
+
+1. Confirm `git` and `gh` are callable.
+2. Run `gh auth status` without exposing tokens, then `gh api user --jq .login`; the expected identity is `freepass-creator`.
+3. Resolve the repository from `git remote get-url origin` or `registry/projects.json`, then verify it with `gh repo view OWNER/REPO` and observe the remote branch with `git ls-remote`.
+4. If one layer fails, name that exact layer. Continue safe local or read-only work where possible. Do not interpret connector success as shell push access or public repository visibility as private repository access.
+5. Reauthentication is a last step only when the existing route is absent or expired and the required operation cannot use another installed route. Do not reinstall `gh`, create a new token, switch accounts, or repeat browser login automatically.
+
+Successful status checks establish current access only. Commit, push, PR, merge, CI, deployment, and remote-main readback remain separate evidence states.
 
 ## Gemini CLI
 

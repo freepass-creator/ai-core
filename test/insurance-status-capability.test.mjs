@@ -16,7 +16,7 @@ test('insurance status query routes to AIOps read-only evidence adapter',async()
   assert.equal(route.status,'RESOLVED');
   assert.equal(route.target_project_id,'aiops');
   assert.equal(route.capability_id,'operations.insurance-status');
-  assert.equal(route.target_revision,'03dd804962eb4e345b7a34b3e0e97e8bc6d5efe3');
+  assert.equal(route.target_revision,projectRegistry.projects.find(x=>x.project_id==='aiops').head_revision);
   const capability=capabilityRegistry.capabilities.find(x=>x.id==='operations.insurance-status');
   assert.equal(capability.status,'ACTIVE');
   assert.equal(capability.mode,'READ_ONLY');

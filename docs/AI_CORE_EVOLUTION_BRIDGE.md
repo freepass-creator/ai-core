@@ -182,7 +182,49 @@ Evolution Review는 버전을 자동으로 올리는 행사가 아니다. 다음
 
 **완료 기준은 후보 목록을 많이 만드는 것이 아니라, 연구 후보 하나가 실제 업무 증거와 왕복 연결되는 것**이다.
 
-## 11. 안전/권한 경계
+## 11. 상시 고도화 인박스
+
+여러 AI가 AI Core를 읽고 조언을 남기는 공식 수신 경로는 [`AI Core Evolution Inbox` GitHub Issue #211](https://github.com/freepass-creator/ai-core/issues/211)이다. 이 문서가 제출 규격의 정본이며 Issue와 댓글은 후보 접수함이다. 메일·Google Docs·외부 채팅은 이 Issue 링크와 최소 발췌를 전달하는 보조 경로이며 별도 후보 원장을 만들지 않는다.
+
+새로운 AI 세션은 다음 순서로 참여한다.
+
+1. `WORK_READ_FIRST.md`, `docs/AI_WORKING_STANDARD.md`, 이 문서를 읽는다.
+2. 현재 Inbox Issue의 본문과 미해결 댓글을 읽는다.
+3. 기존 후보와 같은 문제면 새 Issue를 만들지 않고 해당 스레드에 근거를 추가한다.
+4. 새로운 문제면 `.github/ISSUE_TEMPLATE/ai-core-improvement.yml`로 제출한다.
+5. 제안은 구현 명령이 아니라 `RESEARCH_CANDIDATE`다. 정본 대조와 작은 검증 없이는 운영 규칙으로 승격하지 않는다.
+
+AI 댓글은 아래 형식을 사용한다.
+
+```markdown
+## AI Core Improvement Review
+- reviewer: <AI/도구와 세션 식별>
+- source_revision_seen: <AI Core commit 또는 UNKNOWN>
+- capabilities_used: []
+- limitation: <접근하지 못한 정본/도구>
+- observed_friction: <실제 반복 질문·실패·낭비>
+- existing_asset_checked: <재사용 후보>
+- proposal: <최소 변경>
+- counterexample: <이 제안이 틀릴 수 있는 경우>
+- smallest_test: <비운영 또는 가역적 검증>
+- expected_measurement: <시간·재질문·오류·재작업 변화>
+- evidence_refs: []
+- recommendation: KEEP | MODIFY | PILOT | HOLD | REJECT
+```
+
+현재 우선 수집할 고도화 주제는 다음과 같다.
+
+- 새 AI가 프로젝트 접속 즉시 정체성·정본·도구 연결·규격·검증 명령을 받는가.
+- GitHub, Vercel, Firebase, Google Workspace 연결 실패를 정확한 계층으로 진단하는가.
+- 이미 답한 계정·정책·사용법을 다시 묻지 않는가.
+- 기존 파일·컴포넌트·자동화·문서를 찾지 않고 새로 만드는 행동을 막는가.
+- 프로젝트에서 확인된 노하우가 AI Core와 portable starter kit로 돌아오는가.
+- `READY`, 테스트 통과, 배포 상태와 실제 사용자 결과를 구분하는가.
+- 고도화 절차 자체가 작업보다 무거워지는 경우를 감지하고 제거하는가.
+
+Codex는 Inbox를 정기적으로 읽되 댓글 수나 AI 합의를 채택 근거로 삼지 않는다. 중복을 합치고, 민감 원문을 제거하고, 실제 실패비용과 검증 가능성을 기준으로 후보를 선별한다. 채택된 내용은 문서·검증기·starter kit·회귀 테스트 중 필요한 실행 자산으로 굳힌다.
+
+## 12. 안전/권한 경계
 
 Evolution Bridge는 채택 상태를 제안·기록할 뿐 권한을 만들지 않는다. 실데이터 변경, 배포, 권한, 삭제, 결제, 법적 제출 등은 원래 시스템의 승인 경계를 유지한다.
 
