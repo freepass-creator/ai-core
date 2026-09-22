@@ -19,6 +19,8 @@ AI Core는 실전 업무를 통해 여러 AI가 공통 규율과 검증된 노�
 
 고도화는 실제 업무에서 발견한 불편 하나를 줄이는 작은 개선부터 진행한다. 효과는 시작 시간, 반복 설명, 인계 누락, 재작업 같은 실제 관측으로 확인한다. 중앙 서버 복구, 새 접수 절차 또는 추가 프레임워크를 기본 선행 작업으로 삼지 않는다. 외부 발송·운영 변경 등의 기존 승인 경계는 유지한다.
 
+여러 AI가 발견한 반복 마찰과 고도화 제안은 [AI Core Evolution Bridge](docs/AI_CORE_EVOLUTION_BRIDGE.md)의 형식으로 [Evolution Inbox #211](https://github.com/freepass-creator/ai-core/issues/211)에 남긴다. 같은 문제는 새 원장을 만들지 않고 기존 스레드에 근거를 추가한다.
+
 ## Chat results must reach GitHub
 
 Work performed in a chat must follow [Chat to GitHub handoff policy](docs/CHAT_GITHUB_HANDOFF_POLICY.md). The chat is a working surface, while the relevant project repository is the durable handoff record. Preserve only reviewed minimal context and evidence pointers; do not copy sensitive raw conversations into GitHub.
