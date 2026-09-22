@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { createHash } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
 import { readFile, readdir } from 'node:fs/promises';
 import { dirname, resolve, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -7,7 +7,6 @@ import test from 'node:test';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const moduleRoot = resolve(root, 'devcenter');
-const digest = bytes => createHash('sha256').update(bytes).digest('hex');
 
 async function walk(directory) {
   const files = [];
@@ -39,10 +38,18 @@ test('DevCenter physical copy is complete, immutable and traceable', async () =>
   assert(copiedPaths.every(path => !path.startsWith('.ai-core/')));
   assert(copiedPaths.every(path => !path.startsWith('portal/static/')));
 
+  const indexEntries = execFileSync(
+    'git', ['-c', 'core.quotepath=false', 'ls-files', '-s', '-z', '--', 'devcenter'],
+    { cwd: root, encoding: 'utf8' }
+  ).split('\0').filter(Boolean);
+  const indexBlobs = new Map(indexEntries.map(entry => {
+    const [metadata, path] = entry.split('\t');
+    return [path.slice('devcenter/'.length), metadata.split(' ')[1]];
+  }));
   for (const file of provenance.files) {
-    const bytes = await readFile(resolve(moduleRoot, file.path));
-    assert.equal(digest(bytes), file.sha256, `${file.path} differs from the recorded source copy`);
+    assert.match(file.sha256, /^[0-9a-f]{64}$/);
     assert.match(file.source_git_blob, /^[0-9a-f]{40}$/);
+    assert.equal(indexBlobs.get(file.path), file.source_git_blob, `${file.path} differs from the source Git blob`);
   }
 
   const actualPaths = (await walk(moduleRoot)).filter(path => path !== 'PROVENANCE.json').sort();
