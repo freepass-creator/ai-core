@@ -1,0 +1,230 @@
+{
+  "capturedAt": "2026-09-09T10:38:13.296Z",
+  "catalogSha256": "ce6fa5c2f0cfc32f50f8de93a46080060f8618dc098fc188937fa4bdc72776cc",
+  "inputs": [
+    {
+      "path": "C:/dev/devcenter/design/patterns/RESPONSIVE-SHELL.md",
+      "sha256": "ee659ae55a9d9703063ee875b16ccbb40f55fcaf2751c6413e168a18530f6694"
+    },
+    {
+      "path": "C:/dev/devcenter/docs/BASELINE.md",
+      "sha256": "a57b6393f01014f24a07e3ef3cbfac9a619a67dbc398e3a7c59cc1ff0788e8fe"
+    },
+    {
+      "path": "C:/dev/devcenter/portal/app/academy.tsx",
+      "sha256": "38dd018c2455b716f34b4dea8c114ed504587f517832991dc4364841d3e5f32f"
+    },
+    {
+      "path": "C:/dev/devcenter/portal/app/acceptance.tsx",
+      "sha256": "ddcfcefa750486072e16cfbc36e5cf42366b4cbfeeb3b7dc47011df06e8151a7"
+    },
+    {
+      "path": "C:/dev/devcenter/portal/app/button-gallery.tsx",
+      "sha256": "fd77f3f5bdadc901ca519046cf58174593ebb05ef9f666d76387cd5f8bc546ab"
+    },
+    {
+      "path": "C:/dev/devcenter/portal/app/catalog-input.ts",
+      "sha256": "82cbd73144a1864cbaad6e54e956ee2066a5ed4127b2d4d1feeaf30634f13339"
+    },
+    {
+      "path": "C:/dev/devcenter/portal/app/center.tsx",
+      "sha256": "24a71406642f7b8ec0be96373b6e5e0c54955bad300d7ef4eb615bcb5daaed04"
+    },
+    {
+      "path": "C:/dev/devcenter/portal/app/design-tools-model.ts",
+      "sha256": "00049fddf352ea82b1c80eeaa548099a5323b8ad41e97c517675503e697ceb76"
+    },
+    {
+      "path": "C:/dev/devcenter/portal/app/design-tools.tsx",
+      "sha256": "6d25cd4fff1dd33410edb43ecfffd83dc95f0c7cc0f0375b17371a4fc219b290"
+    },
+    {
+      "path": "C:/dev/devcenter/portal/app/discovery-model.ts",
+      "sha256": "8e0063fc79b2848c6235cef71df2e9648efda6d73fd3810b4954148c85164973"
+    },
+    {
+      "path": "C:/dev/devcenter/portal/app/discovery.tsx",
+      "sha256": "6d3cb1996ab6548715e325fd05af5e9f1a155254c955263367b0356e4df7b1e8"
+    },
+    {
+      "path": "C:/dev/devcenter/portal/app/evidence.tsx",
+      "sha256": "d85f83fc04e805d126f4a9ed8bbc9a5be00f21d5bf786da3c68f911b5339dc63"
+    },
+    {
+      "path": "C:/dev/devcenter/portal/app/formatting-lab.tsx",
+      "sha256": "ddf7a7d0889c4006b95b7bba0df9750197bae7a2ccbd639758cbb0816021f9d9"
+    },
+    {
+      "path": "C:/dev/devcenter/portal/app/function-library.tsx",
+      "sha256": "c829479c5d8ae83292629411302c7688ac8f439c0795a773d1e159e19fe10157"
+    },
+    {
+      "path": "C:/dev/devcenter/portal/app/function-search.tsx",
+      "sha256": "6024f3cb319c379b7f2ceb6e7dc566a9899b235ee1164a18a61e683e4e06fb1c"
+    },
+    {
+      "path": "C:/dev/devcenter/portal/app/inspection.tsx",
+      "sha256": "a51fd3429b3f70fffbaa1ebc72a6d1359810b7a247e0f79d12be57170b1902f0"
+    },
+    {
+      "path": "C:/dev/devcenter/portal/app/layout.tsx",
+      "sha256": "a0215e80fd4d5ac4c38a49cbb5e0530dfb226a2d7975ee40c8b2fa9cae56d415"
+    },
+    {
+      "path": "C:/dev/devcenter/portal/app/learning-history.tsx",
+      "sha256": "c6aca1d763eb586683b52d82b81bbacb06646e3db0f5640248a568ef9c064233"
+    },
+    {
+      "path": "C:/dev/devcenter/portal/app/learning-model.ts",
+      "sha256": "324dc6f524f7dc5ca75d67c284477c15ab5df69601c176fca146017586356044"
+    },
+    {
+      "path": "C:/dev/devcenter/portal/app/page.tsx",
+      "sha256": "37e536f34b9a4c0f694825a775118a1efa377e8c32f6b5e7423154b8ef8544ad"
+    },
+    {
+      "path": "C:/dev/devcenter/portal/app/practice.tsx",
+      "sha256": "fac09936ef6bb07764e3c787940b0038cd0756790ca8ab056e2514a55d23707a"
+    },
+    {
+      "path": "C:/dev/devcenter/portal/app/primitives.tsx",
+      "sha256": "fd98b45b4fae5fa761b7070fffdedfd0e8afeddf90ba37ebc21816f4cc25ffff"
+    },
+    {
+      "path": "C:/dev/devcenter/portal/app/reuse-model.ts",
+      "sha256": "135d4f808a9b4dc6bbab89c70181b1325b870bf5daeeb010e236d9ba7f618cb2"
+    },
+    {
+      "path": "C:/dev/devcenter/portal/app/session-tour.tsx",
+      "sha256": "3ffe5ccc8b8de927f230f9123ba2bdd5486a4cc48c13cad2023ae61d656bc301"
+    },
+    {
+      "path": "C:/dev/devcenter/portal/app/specimen/page.tsx",
+      "sha256": "707dda2fd9097e4915d6a220868347c9fe7b6b1b6cbb01ac893b3747726320ae"
+    },
+    {
+      "path": "C:/dev/devcenter/portal/app/styles-library.tsx",
+      "sha256": "d4b87dc8bcb893fe2bc7319c83736ea9d9ce9a1f407ead4a8703d8c3a63b62e9"
+    },
+    {
+      "path": "C:/dev/devcenter/portal/app/toolbox.tsx",
+      "sha256": "a9dba079bb62b35214da1c7324fde663ed2a056e1b93841fcfe03304058892ce"
+    },
+    {
+      "path": "C:/dev/devcenter/portal/build-static.mjs",
+      "sha256": "520a2e4a8ce3f8b0dd29e0b1fa142b09afa76dadf085d3fee1b31f93206be485"
+    },
+    {
+      "path": "C:/dev/devcenter/portal/tsconfig.gallery.json",
+      "sha256": "93b741bbf37852ccca258bb626a9dc70ef6f0ed83e4bc4c0d4d48c8ba4b6376c"
+    },
+    {
+      "path": "C:/dev/devcenter/portal/tsconfig.json",
+      "sha256": "a68560bb7a301949f65388515843c1abffd172ac51e1fdb46e58a3ec9c38bc4f"
+    },
+    {
+      "path": "C:/dev/devcenter/scripts/card-audit.mjs",
+      "sha256": "dbd7a6882ee4c06f7c5cdee922daca262d3eb1c6bd033446a7deccf4d58061b3"
+    },
+    {
+      "path": "C:/dev/devcenter/scripts/collect-functions.mjs",
+      "sha256": "40351909dbdab67fb062e8de8f257ba13f5aeadd7b9c039984a21df60083d07e"
+    },
+    {
+      "path": "C:/dev/devcenter/scripts/function-python-index.py",
+      "sha256": "7a77933e9c31b6a86a93ccc14abc35726ec3a3b10d0e498571518cd8327378a0"
+    },
+    {
+      "path": "C:/dev/devcenter/scripts/typecheck-gate.mjs",
+      "sha256": "dcf955230c0ff80065b16b8b47804fd1074970042de266fd5ac1ad004324197f"
+    },
+    {
+      "path": "C:/dev/devcenter/scripts/verify-button-recipes.cjs",
+      "sha256": "e00a6cec09d34fec27f66f16ed77fe693aeba5f337c50db1e92cde005a771334"
+    },
+    {
+      "path": "C:/dev/devcenter/scripts/verify-function-collector.mjs",
+      "sha256": "f6f8f9f7014d36b2061c0aa4fd40bcee3b1798f8c7f30e3a453c964d1a9bb8e3"
+    },
+    {
+      "path": "C:/dev/devcenter/scripts/verify-function-examples.mjs",
+      "sha256": "2e9931cd46911f5f63e87ac30098d15e6e3d7c71bf832800031346ce4a1270fc"
+    },
+    {
+      "path": "C:/dev/devcenter/scripts/verify-typecheck-gate.mjs",
+      "sha256": "231b587c37e6d988987d48eeda7f398217d9281a5333c0550ce7f9054db5a56c"
+    },
+    {
+      "path": "C:/dev/devcenter/standards/cards.json",
+      "sha256": "ce6fa5c2f0cfc32f50f8de93a46080060f8618dc098fc188937fa4bdc72776cc"
+    },
+    {
+      "path": "C:/dev/freepasserp4/app/globals.css",
+      "sha256": "5baa37894c17640e24cc8ee1d97a5195415b0e6c881a6d03db67e7f7276b6c7c"
+    },
+    {
+      "path": "C:/dev/freepasserp4/components/ui/buttons.tsx",
+      "sha256": "c186ed2556dc09bd1352f68904bde04e41fec5b617c7546521b6212b8c51c241"
+    },
+    {
+      "path": "C:/dev/freepasserp4/components/ui/detail.tsx",
+      "sha256": "4da7d3bc44827d7d91a748934211a04db77452716586589b5c6c5cd7f69c3faa"
+    },
+    {
+      "path": "C:/dev/freepasserp4/components/ui/form-controls.tsx",
+      "sha256": "55664b150caaca0349b5330833661049222ea94735e9fb7c2f4d7e27c1260898"
+    },
+    {
+      "path": "C:/dev/freepasserp4/components/ui/table.tsx",
+      "sha256": "20879b62007e5d22bf86f8db55bd36eb94c9c2b0351083d1a234f85d670157eb"
+    },
+    {
+      "path": "C:/dev/freepasserp4/components/ui/tokens.ts",
+      "sha256": "14f174bf49ea500fab6d805d712926c062f9332c9be5551c55c37514c5727127"
+    },
+    {
+      "path": "C:/dev/freepasserp4/lib/format.ts",
+      "sha256": "01c53a801932331974e0b62d36c1587770225992d796c940e2e2bd6914d73b19"
+    },
+    {
+      "path": "C:/dev/freepasserp4/lib/haptics.ts",
+      "sha256": "9a7afbc53554ca9a5d32ea6ba38f84cc91225b1c1a94e6ccca97b68a89e9e8c5"
+    },
+    {
+      "path": "C:/dev/freepasserp4/lib/prefs.ts",
+      "sha256": "800889d9679bf8b266bb1a87a5e37e124e07b453cbcd8aade19bd2271cb43943"
+    },
+    {
+      "path": "C:/dev/freepasserp4/lib/use-mobile.ts",
+      "sha256": "5c2f28ea632a39ca9d062538f9d4038dfe1226bb834b8cb288477f5115ecad8e"
+    }
+  ],
+  "inputDigest": "d2504b507494be53462f72c18e9b29533b90995f4e86e9bd09a6476647d13b81",
+  "stable": true,
+  "suites": {
+    "button": {
+      "passed": true,
+      "exitCode": 0,
+      "summary": "PASS: 48 displayed button recipes type-check against original component props.",
+      "outputHash": "e7491416e37721f989904f8f0ce20d61f4c0cecc6c09550c758d14369881b1ca"
+    },
+    "examples": {
+      "passed": true,
+      "exitCode": 0,
+      "summary": "{\"result\":\"PASS\",\"cases\":11,\"path\":\"C:\\\\dev\\\\freepasserp4\\\\lib\\\\format.ts\",\"sha256\":\"01c53a801932331974e0b62d36c1587770225992d796c940e2e2bd6914d73b19\",\"scope\":\"selected examples only; no API or business mutation\"}",
+      "outputHash": "5acf8b968d3f2c8943b2e14529aa450ee9c1d9e1fceb1e4304adf64900883b03"
+    },
+    "gate": {
+      "passed": true,
+      "exitCode": 0,
+      "summary": "PASS: transpile baseline, semantic/syntax/cross-module rejection, valid acceptance, missing config rejection, real default configs, packager stops without staging or changing output. Fixture: C:\\Users\\admin\\AppData\\Local\\Temp\\devcenter-typecheck-6e7R0Q",
+      "outputHash": "3813475c43cb4d1634858ab51b627187f1748da370fca06bea6fdf97e7f1c550"
+    },
+    "collector": {
+      "passed": true,
+      "exitCode": 0,
+      "summary": "PASS: non-execution sentinel, Unicode Python, AST false positives, literal exclusion, import resolution/dedup, unresolved aliases, parse diagnostics, exact duplicates, unverified status. Fixture: C:\\Users\\admin\\AppData\\Local\\Temp\\devcenter-functions-vdxajt",
+      "outputHash": "97e0d3ef7d6dd1711cd5e0f9183bec2524c6fb5f7a77b555b29e64dd2335402f"
+    }
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "contract": "devcenter-data-consumers/v1",
+  "version": 1,
+  "consumers": [
+    {
+      "id": "freepass-admin",
+      "repository": "freepass-creator/freepass-admin",
+      "status": "MAPPED",
+      "relation": "CANONICAL_PRODUCT_CONSUMER",
+      "evidence": [
+        "freepass-data/README.md",
+        "freepass-admin/README.md"
+      ],
+      "blockers": [
+        "production persistence/auth binding not verified"
+      ]
+    },
+    {
+      "id": "freepass-sales",
+      "repository": "freepass-creator/freepass-sales",
+      "status": "LEGACY_DIRECT_BINDING",
+      "relation": "MIGRATION_REQUIRED",
+      "evidence": [
+        "freepass-data/README.md"
+      ],
+      "blockers": [
+        "currently uses welrixtable Firestore directly"
+      ]
+    },
+    {
+      "id": "freepasserp4",
+      "repository": "freepass-creator/freepasserp4",
+      "status": "LEGACY_REFERENCE",
+      "relation": "MIGRATION_REQUIRED",
+      "evidence": [
+        "freepass-data/README.md"
+      ],
+      "blockers": [
+        "legacy freepasserp3 Firebase boundary remains"
+      ]
+    },
+    {
+      "id": "freepass-estimate",
+      "repository": "freepass-creator/sonogong-estimator",
+      "status": "UPSTREAM_FUNCTIONAL_SSOT",
+      "relation": "UPSTREAM",
+      "evidence": [
+        "freepass-data/README.md"
+      ],
+      "blockers": [
+        "not a Data Hub canonical consumer"
+      ]
+    }
+  ]
+}

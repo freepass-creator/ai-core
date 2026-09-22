@@ -1,0 +1,13 @@
+import fs from 'node:fs';
+import crypto from 'node:crypto';
+import vm from 'node:vm';
+import ts from '../portal/node_modules/typescript/lib/typescript.js';
+if(!process.argv[2])throw Error('학습 결과 JSON 파일 경로가 필요합니다.');
+const catalog=JSON.parse(fs.readFileSync(new URL('../standards/cards.json',import.meta.url),'utf8'));
+const version=crypto.createHash('sha256').update(JSON.stringify(catalog.questions)).digest('hex');
+const submission=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));
+if(submission.questionVersion!==version)throw Error('문제 버전이 달라 재평가가 필요합니다.');
+const source=fs.readFileSync(new URL('../portal/app/learning-model.ts',import.meta.url),'utf8'),context={exports:{}};
+vm.runInNewContext(ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText,context,{timeout:1000});
+const result=context.exports.gradeQuestions(catalog.questions,submission.answers||{});
+console.log(JSON.stringify({questionVersion:version,...result,practiceReview:'pending'}));

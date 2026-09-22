@@ -1,0 +1,16 @@
+import fs from 'node:fs';import os from 'node:os';import path from 'node:path';import assert from 'node:assert/strict';
+import {collect,hash,publicNames,safePackage} from './collect-toolbox.mjs';
+const root=fs.mkdtempSync(path.join(os.tmpdir(),'toolbox-fixture-'));fs.mkdirSync(path.join(root,'app/components'),{recursive:true});
+const source="throw Error('MUST_NOT_RUN'); export const Button = memo(()=>null); export function useStateful(){}; export type Hidden = {}; export {Dialog} from './other'; const secret = 'NOT_PUBLISHED';";
+fs.writeFileSync(path.join(root,'app/components/ui.tsx'),source);fs.writeFileSync(path.join(root,'app/package.json'),JSON.stringify({dependencies:{react:'^19.0.0',remote:'https://user:SECRET@host/pkg'},scripts:{build:'SECRET COMMAND'}}));
+const input={capturedAt:'fixture',projects:[{name:'app',head:null,dirty:false}],modules:[{project:'app',path:'app/components/ui.tsx',sha256:hash(source)}]};const d=collect(input,root);
+assert.equal(d.coverage.current,1);assert.equal(d.assets.length,3);assert(d.assets.some(a=>a.name==='Button'));assert(d.assets.some(a=>a.name==='Dialog'&&a.kind==='reexport'));assert(d.assets.every(a=>a.runtimeVerified===false));assert(!JSON.stringify(d).includes('SECRET'));assert(!JSON.stringify(d).includes('NOT_PUBLISHED'));
+fs.appendFileSync(path.join(root,'app/components/ui.tsx'),' ');const changed=collect(input,root);assert.equal(changed.coverage.changed,1);assert.equal(changed.assets.length,0);
+assert.equal(publicNames('const x = "export function Fake(){}"','a.ts').names.length,0);assert.equal(safePackage({dependencies:{x:'file:./secret'}}).dependencies[0].version,'비공개·로컬·URL 지정');
+assert.equal(publicNames('export function Card(){return <div/>}','legacy.js').parseErrors,0);
+const traversal=collect({...input,projects:[{name:'..'},{name:root}]},root);assert.equal(traversal.coverage.outside,2);assert.equal(traversal.projects.length,0);assert(traversal.manifests.every(m=>!m.path.startsWith('..')));
+const outside=fs.mkdtempSync(path.join(os.tmpdir(),'toolbox-outside-'));fs.writeFileSync(path.join(outside,'ui.tsx'),'export const NeverRead = 1;');
+fs.symlinkSync(outside,path.join(root,'app','linked'),process.platform==='win32'?'junction':'dir');
+const linked=collect({...input,modules:[{project:'app',path:'app/linked/ui.tsx',sha256:hash('export const NeverRead = 1;')}]},root);
+assert.equal(linked.assets.length,0);assert.equal(linked.coverage.linked,1);assert(linked.issues.some(i=>i.reason==='linked_or_outside_canonical_root'));
+console.log('PASS: wrapper/reexports and JSX in JS; no sampled-code execution or literal/script/URL leakage; stale source, project traversal and directory junction excluded.');

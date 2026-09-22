@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://teamjpk.local/devcenter/contracts/delivery-receipt.schema.json",
+  "title": "Development Center Delivery Receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "receipt_id",
+    "subject",
+    "target",
+    "quality_receipts",
+    "build",
+    "deployment",
+    "smoke",
+    "rollback",
+    "result",
+    "created_at"
+  ],
+  "properties": {
+    "contract": {
+      "const": "devcenter-delivery-receipt/v1"
+    },
+    "receipt_id": {
+      "type": "string",
+      "pattern": "^dr_[a-f0-9]{24}$"
+    },
+    "subject": {
+      "type": "object"
+    },
+    "target": {
+      "type": "object"
+    },
+    "quality_receipts": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "build": {
+      "type": "object"
+    },
+    "deployment": {
+      "type": "object"
+    },
+    "smoke": {
+      "type": "object"
+    },
+    "rollback": {
+      "type": "object"
+    },
+    "result": {
+      "type": "object"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

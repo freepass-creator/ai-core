@@ -1,0 +1,260 @@
+{
+  "schemaVersion": 1,
+  "inspectedAt": "2026-09-09T12:24:55.5835874+09:00",
+  "reviewer": "Codex bounded source audit",
+  "status": "HOLD",
+  "coverage": "Three projects, selected atom-related normative documents and static code consumers. Not a full code census, production data audit, or four-AI approval.",
+  "distinction": {
+    "ui": "Reusable presentation component or screen definition; not evidence of business truth.",
+    "data": "Source-backed domain fact with identity, provenance, version and validation; UI renders it without inventing business truth."
+  },
+  "rules": [
+    {
+      "id": "ATOM-01",
+      "atomKind": "data",
+      "rule": "확정은 불변식 block 0건일 때만 가능",
+      "scope": "freepasserp4 차량 상품 원자",
+      "source": {
+        "path": "C:/dev/freepasserp4/docs/원자-엔진-불변식.md",
+        "line": 30,
+        "sha256": "8a61724bf42aaa5fab31345fd70d25a1950d2bfa9d18d4d043ecb7dbbfcb7716"
+      },
+      "consumption": {
+        "path": "C:/dev/freepasserp4/scripts/ingest-supplier-to-firestore.mts",
+        "line": 489,
+        "sha256": "f8625fbfba35dcdc84286ed3aa05b4a5a2af1596ef469133b6b122d3f9f69eb9",
+        "evidence": "원자화 경로에서 blocks.length === 0과 기존 confirmed를 함께 확인"
+      },
+      "status": "static-consumer-found",
+      "conflictOrLimit": "모든 쓰기 경로가 동일 게이트를 거치는지는 미검증"
+    },
+    {
+      "id": "ATOM-02",
+      "atomKind": "data",
+      "rule": "불변식 판정은 atomViolations 단일 함수 사용",
+      "scope": "freepasserp4 상품 수집·감사·건강표시",
+      "source": {
+        "path": "C:/dev/freepasserp4/docs/원자-엔진-불변식.md",
+        "line": 13,
+        "sha256": "8a61724bf42aaa5fab31345fd70d25a1950d2bfa9d18d4d043ecb7dbbfcb7716"
+      },
+      "consumption": {
+        "path": "C:/dev/freepasserp4/lib/domain/atom-health.ts",
+        "line": 51,
+        "sha256": "7624a70d46cad936ec7229466dadc9b30661186d5a368556489447659bcd05fb",
+        "evidence": "건강표시와 check-atom-invariants.mts:39, ingest:489가 같은 함수 소비"
+      },
+      "status": "static-consumer-found",
+      "conflictOrLimit": "코드 소비 증거는 실제 운영 데이터 통과 증거가 아님"
+    },
+    {
+      "id": "ATOM-03",
+      "atomKind": "data",
+      "rule": "근거 없는 마스터 값은 만들지 않고 검수대기로 남김",
+      "scope": "freepasserp4 차량 모델·트림",
+      "source": {
+        "path": "C:/dev/freepasserp4/docs/원자-엔진-불변식.md",
+        "line": 56,
+        "sha256": "8a61724bf42aaa5fab31345fd70d25a1950d2bfa9d18d4d043ecb7dbbfcb7716"
+      },
+      "consumption": {
+        "path": "C:/dev/freepasserp4/lib/domain/atom-invariants.ts",
+        "line": 83,
+        "sha256": "e67f1229f91b7ab51f27847b3ff4f940cf9b06ca0584c5b930177b0836aa0c9e",
+        "evidence": "마스터에 없는 세부모델은 IDENT block"
+      },
+      "status": "partial-consumer-found",
+      "conflictOrLimit": "빈값 자체는 IDENT에서 차단하지 않음; 필수값 검사는 별도 확인 필요"
+    },
+    {
+      "id": "ATOM-04",
+      "atomKind": "data",
+      "rule": "원자 조인의 공통 해석을 소비처가 재사용",
+      "scope": "freepasserp4 정책·회사·요금 조인",
+      "source": {
+        "path": "C:/dev/freepasserp4/lib/domain/atom-projection.ts",
+        "line": 4,
+        "sha256": "e4bc86ab63eb79de8db9a9fb5f1cf6d5176accb854d9cfc1fd47f6725782dcf9"
+      },
+      "consumption": {
+        "path": "C:/dev/freepasserp4/lib/domain/product-list-atom.ts",
+        "line": 103,
+        "sha256": "b888332a9c4e42593d4742994ca2b062bb53dd27a5d0e22996e428690cbf051a",
+        "evidence": "resolveAtom을 상품리스트와 spring/page.tsx:210가 소비"
+      },
+      "status": "static-consumer-found",
+      "conflictOrLimit": "모든 finder 및 발행 경로 일치까지 검증한 것은 아님"
+    },
+    {
+      "id": "ATOM-05",
+      "atomKind": "data",
+      "rule": "원자 치유 → 미러 → 발행 순서 유지",
+      "scope": "freepasserp4 hourly-sync",
+      "source": {
+        "path": "C:/dev/freepasserp4/docs/원자화-매뉴얼.md",
+        "line": 36,
+        "sha256": "99804b19fb7547a19e688683cc12df674fa66b730098fd75577c9992ddf3f18a"
+      },
+      "consumption": {
+        "path": "C:/dev/freepasserp4/scripts/hourly-sync.mts",
+        "line": 899,
+        "sha256": "f41a05d5c70bd72c8a0e4036dd1486f57fd71dbc40503e1ad809aacc6c999fba",
+        "evidence": "치유:899, 미러:934, 발행:975 순서 확인"
+      },
+      "status": "partial-consumer-found",
+      "conflictOrLimit": "901행은 치유 실패를 경고로 남겨 후속 실행 가능; 성공 게이트는 별도 검토 필요"
+    },
+    {
+      "id": "ATOM-06",
+      "atomKind": "data",
+      "rule": "발행 축소 보호 규칙의 문서·구현 불일치",
+      "scope": "freepasserp4 hourly-sync",
+      "source": {
+        "path": "C:/dev/freepasserp4/docs/원자화-매뉴얼.md",
+        "line": 37,
+        "sha256": "99804b19fb7547a19e688683cc12df674fa66b730098fd75577c9992ddf3f18a"
+      },
+      "consumption": {
+        "path": "C:/dev/freepasserp4/scripts/hourly-sync.mts",
+        "line": 660,
+        "sha256": "f41a05d5c70bd72c8a0e4036dd1486f57fd71dbc40503e1ad809aacc6c999fba",
+        "evidence": "매뉴얼은 force-shrink 필수, 코드 주석은 보호 해제로 인해 제거했다고 명시"
+      },
+      "status": "conflict",
+      "conflictOrLimit": "낡은 매뉴얼 명령을 센터 기본 실행법으로 승격하면 안 됨; 승인된 현재 기준 확인 필요"
+    },
+    {
+      "id": "ATOM-07",
+      "atomKind": "data",
+      "rule": "원천 검증과 귀속 확정은 별개, 보류사유 보존",
+      "scope": "aiops 원천 이벤트·귀속",
+      "source": {
+        "path": "C:/dev/aiops/docs/원자엔진-설계.md",
+        "line": 182,
+        "sha256": "d42400ba531cd90a9b46e866f4dc4e377d7448706c233c344965c1f1c9b01fdb"
+      },
+      "consumption": {
+        "path": "C:/dev/aiops/wonja/sangtae-jeonpa.mjs",
+        "line": 60,
+        "sha256": "deccacbbdd227b6d8bb66fd242a662c6df33996b5889c94c28869e7927dd3cea",
+        "evidence": "fact_event 원천 검증에서 holdReason 보존; 귀속 전파는 중단 주석:67"
+      },
+      "status": "partial-consumer-found",
+      "conflictOrLimit": "설계 문서의 과거 결함을 현재 미수정 결함으로 단정하면 안 됨; 저장 데이터 복구는 미검증"
+    },
+    {
+      "id": "ATOM-08",
+      "atomKind": "data",
+      "rule": "원천판을 확인하고 고정한 스냅샷으로 읽기",
+      "scope": "aiops 원자 읽기 엔진",
+      "source": {
+        "path": "C:/dev/aiops/docs/원자엔진-설계.md",
+        "line": 164,
+        "sha256": "d42400ba531cd90a9b46e866f4dc4e377d7448706c233c344965c1f1c9b01fdb"
+      },
+      "consumption": {
+        "path": "C:/dev/aiops/lib/wonja-mun.mjs",
+        "line": 85,
+        "sha256": "40cda3557da35165f2c4d65eff0d52c6cb7272b771cfe6b6ec7d6a4c471266ed",
+        "evidence": "캐시 hit는 원본표 대조 전에 반환; 112행 원본표 없는 색인 차단은 확인 안 됨"
+      },
+      "status": "conflict",
+      "conflictOrLimit": "정적 반례 후보; 실행 재현 없이 현재 운영 오답 발생으로 확정하지 않음"
+    },
+    {
+      "id": "ATOM-09",
+      "atomKind": "data",
+      "rule": "원천 증적 누락·버전 불일치는 PENDING/HOLD",
+      "scope": "aiops 계약 안전 원자 계획",
+      "source": {
+        "path": "C:/dev/aiops/lib/contract-safe-atom-plan.mjs",
+        "line": 99,
+        "sha256": "c6dc0d36a8ac567a5df252ea74473f66441e96b78f4aa7989fc28b51c9781ad6"
+      },
+      "consumption": {
+        "path": "C:/dev/aiops/lib/contract-safe-atom-plan.mjs",
+        "line": 226,
+        "sha256": "c6dc0d36a8ac567a5df252ea74473f66441e96b78f4aa7989fc28b51c9781ad6",
+        "evidence": "sourceStatus는 receipt 없으면 PENDING, revision 불일치면 HOLD; 후보상태에서 소비"
+      },
+      "status": "static-consumer-found",
+      "conflictOrLimit": "계획 로직이며 승인·실제 DB 반영 완료 아님"
+    },
+    {
+      "id": "ATOM-10",
+      "atomKind": "ui",
+      "rule": "무엇을 보여주는지와 테마를 분리",
+      "scope": "teamjpkwork ERP 화면 정의",
+      "source": {
+        "path": "C:/dev/teamjpkwork/lib/erp/화면들.ts",
+        "line": 7,
+        "sha256": "1f6f46094303c69b7db6853a4e438d75a4e389afb55de13e5ef7abf3474d4a1e"
+      },
+      "consumption": {
+        "path": "C:/dev/teamjpkwork/app/erp-classic/page.tsx",
+        "line": 37,
+        "sha256": "abe3c4b5f7270d8018c52124307c6bb70f5017c1bcf140eb91279b93a83c2ab6",
+        "evidence": "테마 페이지가 공통 lib/erp/화면들을 import"
+      },
+      "status": "static-consumer-found",
+      "conflictOrLimit": "넘김 문서:5의 app/erp-classic/화면들.ts 경로는 현재 없음; lib/erp로 이동"
+    },
+    {
+      "id": "ATOM-11",
+      "atomKind": "ui",
+      "rule": "원자 관리 목록의 불변값·상세 변동값 배치",
+      "scope": "teamjpkwork에서 freepass로 넘긴 샘 화면 규격",
+      "source": {
+        "path": "C:/dev/teamjpkwork/docs/프리패스-원자화면-규격-2026-09-05.md",
+        "line": 19,
+        "sha256": "1c0b8b95ca06254c23ad97775f25503ed36883b7c654d2535aeb5f96c6821300"
+      },
+      "consumption": {
+        "path": "C:/dev/freepasserp4/app/spring/page.tsx",
+        "line": 183,
+        "sha256": "45e9c5a874757980620a5552179b8e4eb2f99a8db2d349039b70ef39e61feba2",
+        "evidence": "현재 목록에 상태:183, 주행:184, 요금:185 표시"
+      },
+      "status": "conflict",
+      "conflictOrLimit": "넘김 규격과 현재 화면 차이. 이후 승인 변경인지 미확인, 일괄 위반 확정 금지"
+    },
+    {
+      "id": "ATOM-12",
+      "atomKind": "ui",
+      "rule": "없는 요금과 0을 구분해 표시",
+      "scope": "프리패스 원자 기간별 대여료 표",
+      "source": {
+        "path": "C:/dev/teamjpkwork/docs/프리패스-원자화면-규격-2026-09-05.md",
+        "line": 164,
+        "sha256": "1c0b8b95ca06254c23ad97775f25503ed36883b7c654d2535aeb5f96c6821300"
+      },
+      "consumption": {
+        "path": "C:/dev/freepasserp4/app/spring/page.tsx",
+        "line": 292,
+        "sha256": "45e9c5a874757980620a5552179b8e4eb2f99a8db2d349039b70ef39e61feba2",
+        "evidence": "v truthiness로 값 표시 또는 대시 처리"
+      },
+      "status": "conflict",
+      "conflictOrLimit": "실제 0도 대시가 됨; 0이 허용값인지 도메인 확인과 경계 테스트 필요"
+    },
+    {
+      "id": "ATOM-13",
+      "atomKind": "ui",
+      "rule": "공통 UI 부품은 토큰을 참조하며 재사용",
+      "scope": "freepasserp4 버튼 UI 원자",
+      "source": {
+        "path": "C:/dev/freepasserp4/components/ui/tokens.ts",
+        "line": 1,
+        "sha256": "14f174bf49ea500fab6d805d712926c062f9332c9be5551c55c37514c5727127"
+      },
+      "consumption": {
+        "path": "C:/dev/freepasserp4/components/ui/buttons.tsx",
+        "line": 6,
+        "sha256": "c186ed2556dc09bd1352f68904bde04e41fec5b617c7546521b6212b8c51c241",
+        "evidence": "Btn이 C, FW, R, ctrlFs, ctrlH, SH를 import"
+      },
+      "status": "static-consumer-found",
+      "conflictOrLimit": "이 UI 원자는 업무 사실 원자와 다른 개념; 디자인 수치를 전사 공통값으로 임의 승격 금지"
+    }
+  ]
+}

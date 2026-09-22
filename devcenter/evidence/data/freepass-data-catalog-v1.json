@@ -1,0 +1,87 @@
+{
+  "contract": "devcenter-data-receipt/v1",
+  "receipt_id": "data_8a286ccb17084f6c1ddfdec8",
+  "subject": {
+    "project_id": "freepass-data",
+    "repository": "freepass-creator/freepass-data",
+    "revision": "bd75b604fcd06358dedaa77edf62284cf0d17ae9"
+  },
+  "scope": {
+    "domain": "Catalog V1",
+    "claims": [
+      "code/contracts expose RAW to Canonical to Projection separation",
+      "authority/lineage/revision/audit/outbox/release evidence contracts exist"
+    ],
+    "exclusions": [
+      "production Firebase binding",
+      "IAM/auth enforcement",
+      "backup/restore operational verification",
+      "Sales/Application/Settlement migration"
+    ]
+  },
+  "checks": [
+    {
+      "id": "DATA.CONTRACT_BOUNDARY",
+      "status": "PASS",
+      "evidence": [
+        "freepass-data/README.md",
+        "freepass-data/docs/IMPLEMENTATION-STATUS.md"
+      ]
+    },
+    {
+      "id": "DATA.RAW_CANONICAL_PROJECTION",
+      "status": "PASS",
+      "evidence": [
+        "freepass-data/docs/IMPLEMENTATION-STATUS.md"
+      ]
+    },
+    {
+      "id": "DATA.AUTHORITY_LINEAGE",
+      "status": "PASS",
+      "evidence": [
+        "freepass-data/docs/IMPLEMENTATION-STATUS.md"
+      ]
+    },
+    {
+      "id": "DATA.REVISION_AUDIT_OUTBOX",
+      "status": "PASS",
+      "evidence": [
+        "freepass-data/docs/IMPLEMENTATION-STATUS.md"
+      ]
+    },
+    {
+      "id": "DATA.RELEASE_EVIDENCE",
+      "status": "PASS",
+      "evidence": [
+        "freepass-data/docs/IMPLEMENTATION-STATUS.md"
+      ]
+    },
+    {
+      "id": "DATA.PRODUCTION_BINDING",
+      "status": "HOLD",
+      "evidence": [
+        "freepass-data/docs/IMPLEMENTATION-STATUS.md"
+      ],
+      "remediation": "Verify server/service auth, IAM and target Firebase binding before production writer activation.",
+      "recheck": "Run production-binding verification on exact project revision."
+    },
+    {
+      "id": "DATA.BACKUP_RESTORE",
+      "status": "HOLD",
+      "evidence": [
+        "freepass-data/docs/IMPLEMENTATION-STATUS.md"
+      ],
+      "remediation": "Implement and rehearse backup/restore with revision-bound verification.",
+      "recheck": "Execute restore rehearsal and attach receipt."
+    }
+  ],
+  "result": {
+    "status": "HOLD",
+    "counts": {
+      "PASS": 5,
+      "HOLD": 2,
+      "FAIL": 0
+    }
+  },
+  "created_at": "2026-09-21T00:00:00.000Z"
+}

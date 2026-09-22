@@ -1,0 +1,25 @@
+{
+  "contract": "devcenter-data-recovery/v1",
+  "subject": {
+    "repository": "freepass-creator/freepass-data",
+    "revision": "bd75b604fcd06358dedaa77edf62284cf0d17ae9"
+  },
+  "state": "HOLD",
+  "required": [
+    "backup export procedure",
+    "restore procedure",
+    "restore verification against revision-bound sample",
+    "last-known-good release pointer",
+    "RPO/RTO decision",
+    "production IAM/auth verification"
+  ],
+  "available": [
+    "memory adapter for credential-free smoke",
+    "release manifests with canonical revision/input digests",
+    "append-only revision/audit/lineage history"
+  ],
+  "blockers": [
+    "backup/restore operational recovery verification remains open",
+    "production Firebase binding/IAM remains separate approval"
+  ]
+}

@@ -1,0 +1,151 @@
+{
+  "capturedAt": "2026-09-09T10:38:48.167Z",
+  "verifier": "Codex automated Playwright/Chromium",
+  "runner": "scripts/verify-browser.cjs",
+  "url": "http://127.0.0.1:4317/",
+  "sourceDigest": "cfde158af9800ae439342c6f81f05e2fbd0c157748925e0961598a93a05460cd",
+  "appSha256": "2f06997426c31de29969b71e1517eece6001556e73095462c8819c5a31a6c97e",
+  "stable": true,
+  "trace": {
+    "path": "reviews/expansion-browser-trace.zip",
+    "sha256": "656f8f017315ee094f2110af26170bc847b46d577c54907e53493f7b109eba58"
+  },
+  "checks": {
+    "L01": {
+      "status": "PASS",
+      "description": "Tour steps and other-session request clipboard verified"
+    },
+    "I01": {
+      "status": "PASS",
+      "description": "Catalog, CSS and function list opened through menu"
+    },
+    "I07": {
+      "status": "PASS",
+      "description": "Global kmValue search and project selection"
+    },
+    "R03": {
+      "status": "PASS",
+      "description": "Formatting group, declaration selection and original-reference clipboard"
+    },
+    "R01": {
+      "status": "PASS",
+      "description": "Input and return annotations visible"
+    },
+    "R02": {
+      "status": "PASS",
+      "description": "Module references explicitly distinguished from runtime evidence"
+    },
+    "R04": {
+      "status": "PASS",
+      "description": "8.3만km -> 83000, 1024 bytes -> 1KB from original functions"
+    },
+    "R05": {
+      "status": "PASS",
+      "description": "Complete recipe clipboard contains original import and numeric bytes conversion"
+    },
+    "R06": {
+      "status": "PASS",
+      "description": "Source, numeric-byte input, side effects and dependencies displayed"
+    },
+    "S03": {
+      "status": "PASS",
+      "description": "Separate card structure, source, tests, independent review and approval stages"
+    },
+    "L02": {
+      "status": "PASS",
+      "description": "Button card search and selection"
+    },
+    "L05": {
+      "status": "PASS",
+      "description": "Wrong answer leads back to SSOT card"
+    },
+    "L07": {
+      "status": "PASS",
+      "description": "Export contains question hash, answer and non-certification; actual clipboard parsed"
+    },
+    "L06": {
+      "status": "PASS",
+      "description": "Empty six-field plan rejected and filled plan stays review-pending"
+    },
+    "L08": {
+      "status": "PASS",
+      "description": "Draft cannot grant approval or source verification"
+    },
+    "S07": {
+      "status": "PASS",
+      "description": "Button card opens appropriate source specimen"
+    },
+    "D06": {
+      "status": "PASS",
+      "description": "Usage clipboard and source hash shown separately"
+    },
+    "S06": {
+      "status": "PASS",
+      "description": "Source conflict with unresolved expected behavior visible"
+    },
+    "D07": {
+      "status": "PASS",
+      "description": "No-result query and reset restore catalog rows"
+    },
+    "D01": {
+      "status": "PASS",
+      "description": "Menu switches academy, functions, CSS and laboratory"
+    },
+    "D02": {
+      "status": "PASS",
+      "description": "Button variant/size click and actual disabled property"
+    },
+    "D03": {
+      "status": "PASS",
+      "description": "Input/select/check updates combined output"
+    },
+    "D04": {
+      "status": "PASS",
+      "description": "Row callback and empty-table output"
+    },
+    "D05": {
+      "status": "PASS",
+      "description": "FormCard input and output"
+    },
+    "D08": {
+      "status": "PASS",
+      "description": "Real Chromium 1440px and 390px viewport, menu/body and document overflow checked"
+    },
+    "EXPANSION": {
+      "status": "PASS",
+      "description": "Toolbox filter/reset; contrast, rem, grid and formatting examples"
+    },
+    "L10": {
+      "status": "PASS",
+      "description": "Persistent sessions, practice failures, stale-version relearning, validated transfer, concurrent writes and corrupt-storage preservation"
+    },
+    "HISTORY_RECOVERY": {
+      "status": "PASS",
+      "description": "Malformed catalogs and wrong question hashes show retry instead of render crash; storage quota failure keeps original bytes"
+    },
+    "DISCOVERY": {
+      "status": "PASS",
+      "description": "Three live teaching models, six guides, source hash, clipboard, empty filter, retry and responsive view"
+    },
+    "SEARCH_RECOVERY": {
+      "status": "PASS",
+      "description": "Enter search, malformed index retry and obsolete responses after query edit"
+    },
+    "CATALOG_RECOVERY": {
+      "status": "PASS",
+      "description": "Catalog HTTP, JSON, cross-reference and bundled source-hash failures show one retry path without render crashes"
+    },
+    "INSPECTION": {
+      "status": "PASS",
+      "description": "Control room renders evidence, preserves HOLD, exports a bounded work order and reflows at 390px"
+    },
+    "INSPECTION_RECOVERY": {
+      "status": "PASS",
+      "description": "Malformed or contradictory inspection data is rejected and retry restores the control room"
+    },
+    "RUNTIME": {
+      "status": "PASS",
+      "description": "No uncaught errors during exercised flows"
+    }
+  }
+}

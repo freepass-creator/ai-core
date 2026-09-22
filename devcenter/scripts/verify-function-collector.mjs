@@ -1,0 +1,36 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import os from 'node:os';
+import assert from 'node:assert/strict';
+import {spawnSync} from 'node:child_process';
+import {fileURLToPath} from 'node:url';
+const here=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),root=fs.mkdtempSync(path.join(os.tmpdir(),'devcenter-functions-')),p=path.join(root,'sample');
+fs.mkdirSync(p);fs.mkdirSync(path.join(p,'node_modules'));
+const hidden=path.join(root,'.wt-visible');fs.mkdirSync(hidden);fs.mkdirSync(path.join(hidden,'.git'));fs.writeFileSync(path.join(hidden,'ui.ts'),'export function worktreeVisible() {}');
+fs.writeFileSync(path.join(p,'helper.ts'),'export function help(x: number): number { return x; }');
+fs.copyFileSync(path.join(p,'helper.ts'),path.join(p,'copy.ts'));
+fs.writeFileSync(path.join(p,'inert.ts'),"throw new Error('SOURCE_MUST_NOT_EXECUTE'); export function inertProbe() {};");
+fs.writeFileSync(path.join(p,'main.ts'),`import {help} from './helper.js'; import './helper'; import '@/unresolved';
+// function commentFake() {}
+const description = 'function stringFake() {}';
+export const work = async (x = 'DO_NOT_PUBLISH_LITERAL') => help(1);
+class Box { method(value: string): string { return value; } }
+`);
+fs.writeFileSync(path.join(p,'한글.py'),'def unicode_path(value: int = 2, *, optional=None):\n    return value\n');
+fs.writeFileSync(path.join(p,'broken.ts'),'export const broken = ;');
+fs.writeFileSync(path.join(p,'node_modules','ignored.ts'),'export function excluded() {}');
+fs.writeFileSync(path.join(p,'secret.ts'),'export function secretExcluded() {}');
+const output=path.join(root,'result.json'),r=spawnSync(process.execPath,[path.join(here,'scripts/collect-functions.mjs'),root,output],{encoding:'utf8',windowsHide:true});
+assert.equal(r.status,0,r.stderr);const text=fs.readFileSync(output,'utf8'),d=JSON.parse(text);
+assert(d.functions.some(f=>f.name==='unicode_path'));
+assert(d.functions.some(f=>f.name==='worktreeVisible'));
+assert(d.functions.some(f=>f.name==='inertProbe'));
+assert(!d.functions.some(f=>['commentFake','stringFake','excluded','secretExcluded'].includes(f.name)));
+assert(!text.includes('DO_NOT_PUBLISH_LITERAL'));
+assert.equal(d.modules.find(m=>m.path.endsWith('/helper.ts')).consumers.length,1);
+assert.equal(d.modules.find(m=>m.path.endsWith('/main.ts')).unresolvedLocalImports,1);
+assert.equal(d.coverage.parseErrorFiles,1);
+assert(d.duplicates.some(g=>g.moduleIds.length===2));
+assert(d.functions.find(f=>f.name==='work').parameters[0].optional);
+assert(d.functions.every(f=>f.runtimeVerified===false));
+console.log('PASS: non-execution sentinel, Unicode Python, AST false positives, literal exclusion, import resolution/dedup, unresolved aliases, parse diagnostics, exact duplicates, unverified status. Fixture: '+root);

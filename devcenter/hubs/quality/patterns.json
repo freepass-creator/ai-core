@@ -1,0 +1,45 @@
+{
+  "contract": "devcenter-quality-patterns/v1",
+  "version": 1,
+  "patterns": [
+    {
+      "id": "semantic-error-code-branching",
+      "status": "ADOPTED",
+      "source": {
+        "repository": "freepass-creator/freepass-admin",
+        "revision": "3f1812c6968f57494c1e8204e7a67d54e1c1f3ea"
+      },
+      "evidence": [
+        "devcenter/standards/backend/FREEPASS-ADMIN-PILOT.md",
+        "quality receipt qr_c38a088053e3d9c8ac3d56fa"
+      ],
+      "rule": "Tests and callers branch on stable semantic error codes, not mutable human error-message strings."
+    },
+    {
+      "id": "repository-write-boundary-invariants",
+      "status": "ADOPTED",
+      "source": {
+        "repository": "freepass-creator/freepass-admin",
+        "revision": "3f1812c6968f57494c1e8204e7a67d54e1c1f3ea"
+      },
+      "evidence": [
+        "devcenter/standards/backend/FREEPASS-ADMIN-PILOT.md",
+        "quality receipt qr_c38a088053e3d9c8ac3d56fa"
+      ],
+      "rule": "Immutable aggregate identity/snapshot and append-only audit invariants are enforced at the Repository write boundary."
+    },
+    {
+      "id": "scope-bound-pass",
+      "status": "ADOPTED",
+      "source": {
+        "repository": "freepass-creator/devcenter",
+        "revision": "3eab2df45c9c28a40223a4fc8e47ca8d566d6263"
+      },
+      "evidence": [
+        "devcenter/contracts/quality-receipt.schema.json",
+        "devcenter/docs/QUALITY-RECEIPT.md"
+      ],
+      "rule": "PASS applies only to the named claims, exact revision and attached evidence; it is not project-wide or production-ready certification."
+    }
+  ]
+}

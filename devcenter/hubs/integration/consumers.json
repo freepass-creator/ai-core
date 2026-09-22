@@ -1,0 +1,25 @@
+{
+  "contract": "devcenter-integration-consumers/v1",
+  "version": 1,
+  "consumers": [
+    {
+      "id": "freepass-data",
+      "repository": "freepass-creator/freepass-data",
+      "observed_revision": "bd75b604fcd06358dedaa77edf62284cf0d17ae9",
+      "connector_ids": [
+        "freepass-data.catalog-firestore",
+        "freepass-data.source-firestore"
+      ],
+      "status": "MAPPED",
+      "evidence": [
+        "freepass-data/docs/IMPLEMENTATION-STATUS.md",
+        "freepass-data/README.md"
+      ],
+      "blockers": [
+        "production Firebase binding/IAM is not verified",
+        "real writer cutover is not authorized/proven",
+        "backup/restore operational recovery verification remains open"
+      ]
+    }
+  ]
+}
