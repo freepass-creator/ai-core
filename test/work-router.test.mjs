@@ -1,12 +1,26 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import Ajv2020 from 'ajv/dist/2020.js';
+import addFormats from 'ajv-formats';
 import { routeWork, validateWorkMap } from '../src/routing/work-router.mjs';
 
 const workMap = JSON.parse(readFileSync(new URL('../registry/work-map.json', import.meta.url), 'utf8'));
+const workMapSchema = JSON.parse(readFileSync(new URL('../contracts/work-map.schema.json', import.meta.url), 'utf8'));
 const projectRegistry = JSON.parse(readFileSync(new URL('../registry/projects.json', import.meta.url), 'utf8'));
 const capabilityRegistry = JSON.parse(readFileSync(new URL('../registry/capabilities.json', import.meta.url), 'utf8'));
 const fixtures = JSON.parse(readFileSync(new URL('../registry/work-routing-fixtures.json', import.meta.url), 'utf8')).fixtures;
+
+const ajv = new Ajv2020({ allErrors: true, strict: false });
+addFormats(ajv);
+const validateWorkMapContract = ajv.compile(workMapSchema);
+
+test('shared work map contract keeps hub_routes project-scoped', () => {
+  const { hub_routes: _devCenterExtension, ...genericWorkMap } = workMap;
+
+  assert.equal(validateWorkMapContract(genericWorkMap), true, JSON.stringify(validateWorkMapContract.errors));
+  assert.equal(validateWorkMapContract(workMap), true, JSON.stringify(validateWorkMapContract.errors));
+});
 
 test('OPS-P0 work map is schema-valid and points only to registered projects', () => {
   assert.deepEqual(validateWorkMap(workMap, projectRegistry, capabilityRegistry), { status: 'VALID', errors: [] });

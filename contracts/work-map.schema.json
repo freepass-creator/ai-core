@@ -6,8 +6,7 @@
   "required": [
     "schema_version",
     "observed_at",
-    "work_types",
-    "hub_routes"
+    "work_types"
   ],
   "properties": {
     "schema_version": {
