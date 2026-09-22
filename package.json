@@ -8,7 +8,7 @@
     "orders:serve": "node src/orders/server.mjs",
     "test:orders": "node --test test/orders.test.mjs",
     "test": "node --test --test-concurrency=1 test/*.test.mjs && npm run test:devcenter",
-    "test:devcenter": "node --test devcenter/test/*.test.mjs",
+    "test:devcenter": "npm --prefix devcenter/portal ci --ignore-scripts && node devcenter/scripts/verify-typecheck-gate.mjs && node --test devcenter/test/*.test.mjs",
     "verify": "node scripts/verify-main-state.mjs",
     "form:validate": "node scripts/validate-development-form.mjs",
     "evolve:evaluate": "node scripts/evaluate-self-evolution.mjs",

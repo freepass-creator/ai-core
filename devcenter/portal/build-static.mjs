@@ -6,26 +6,30 @@ import crypto from 'node:crypto';
 import {spawnSync} from 'node:child_process';
 import ts from 'typescript';
 import {fileURLToPath} from 'node:url';
-import {typecheckGate} from '../scripts/typecheck-gate.mjs';
-const root=path.dirname(fileURLToPath(import.meta.url)), fp=path.resolve(root,'../../freepasserp4'),finalOut=path.join(root,'static');
+import {preparePortalSourceSnapshot,typecheckPortal} from '../scripts/typecheck-gate.mjs';
+const root=path.dirname(fileURLToPath(import.meta.url)),fp=preparePortalSourceSnapshot(root),finalOut=path.join(root,'static');
+const pinnedSources=JSON.parse(fs.readFileSync(path.join(root,'public/catalog/source-code.json'),'utf8'));
+process.on('exit',()=>fs.rmSync(fp,{recursive:true,force:true}));
 const names={buttons:'buttons.tsx',inputs:'form-controls.tsx',table:'table.tsx',box:'detail.tsx',tokens:'tokens.ts'};
 // Stop before creating or replacing output when type or syntax checks fail.
-typecheckGate(root);
+typecheckPortal(root,fp,false);
 const expectedSourceHashes=Object.fromEntries(Object.entries(names).map(([k,f])=>{const bytes=fs.readFileSync(path.join(fp,'components/ui',f));return [k,crypto.createHash('sha256').update(bytes).digest('hex')]}));
+const sourcePath=(logical)=>path.join(fp,logical.replace(/^freepasserp4\//,''));
 const prior=path.join(finalOut,'source-manifest.json');
 if(fs.existsSync(prior)&&!process.argv.includes('--refresh-sources')){
  for(const item of JSON.parse(fs.readFileSync(prior,'utf8')).sources){
-  if(!fs.existsSync(item.path)||crypto.createHash('sha256').update(fs.readFileSync(item.path)).digest('hex')!==item.sha256)throw Error('Source drift: '+item.path+'; re-inspect and use --refresh-sources only after review.');
+  const current=sourcePath(item.path);
+  if(!fs.existsSync(current)||crypto.createHash('sha256').update(fs.readFileSync(current)).digest('hex')!==item.sha256)throw Error('Source drift: '+item.path+'; re-inspect and use --refresh-sources only after review.');
  }
 }
 const discoveryModelPath=path.join(root,'app/discovery-model.ts'),discoverySource=fs.readFileSync(discoveryModelPath,'utf8'),discoverySha=crypto.createHash('sha256').update(discoverySource).digest('hex');
 const out=fs.mkdtempSync(path.join(root,'.static-build-'));
-const modules=[],ids=new Map(),manifest=[],sourceCache=new Map();
+const modules=[],ids=new Map(),manifest=[],manifestFiles=new Map(),sourceCache=new Map();
 const external={react:'react/cjs/react.production.js','react/jsx-runtime':'react/cjs/react-jsx-runtime.production.js','react-dom':'react-dom/cjs/react-dom.production.js','react-dom/client':'react-dom/cjs/react-dom-client.production.js',scheduler:'scheduler/cjs/scheduler.production.js','lucide-react':'lucide-react/dist/cjs/lucide-react.js'};
 function find(p){for(const x of [p,p+'.ts',p+'.tsx',p+'.js',path.join(p,'index.ts')])if(fs.existsSync(x)&&fs.statSync(x).isFile())return x;throw Error('Missing source: '+p)}
 function resolve(id,from){if(external[id])return find(path.join(root,'node_modules',external[id]));if(id.startsWith('@fp4/'))return find(path.join(fp,id.slice(5)));if(id.startsWith('@/'))return find(path.join(from.startsWith(fp)?fp:root,id.slice(2)));if(id.startsWith('.'))return find(path.resolve(path.dirname(from),id));throw Error('Unapproved dependency '+id+' in '+from)}
 function add(file){file=path.resolve(file);if(ids.has(file))return ids.get(file);const id=modules.length;ids.set(file,id);modules.push('');let src=file===discoveryModelPath?discoverySource:fs.readFileSync(file,'utf8');if(file===path.join(root,'app/discovery.tsx'))src=src.replace('__DEVCENTER_DISCOVERY_SOURCE_SHA__',discoverySha);if(file===path.join(root,'app/catalog-input.ts'))src=src.replace('__DEVCENTER_SOURCE_HASHES__',JSON.stringify(expectedSourceHashes).replaceAll('\\','\\\\').replaceAll("'","\\'"));
- if(file.startsWith(fp)){sourceCache.set(file,src);manifest.push({path:file.replaceAll('\\','/'),sha256:crypto.createHash('sha256').update(src).digest('hex')});}
+ if(file.startsWith(fp)){const logical='freepasserp4/'+path.relative(fp,file).replaceAll('\\','/');sourceCache.set(file,src);manifest.push({path:logical,sha256:crypto.createHash('sha256').update(src).digest('hex')});manifestFiles.set(logical,file);}
  if(/\.[tj]sx?$/.test(file)&&!file.includes('node_modules')){src=ts.transpileModule(src,{fileName:file,compilerOptions:{target:ts.ScriptTarget.ES2020,module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.ReactJSX,esModuleInterop:true}}).outputText;}
  src=src.replace(/require\(["']([^"']+)["']\)/g,(_,dep)=>dep.endsWith('.css')?'({})':`require(${add(resolve(dep,file))})`);
  modules[id]=`function(module,exports,require){\n${src}\n}`;return id;
@@ -39,7 +43,7 @@ const foundation=fs.readFileSync(path.join(root,'app/foundation.css'),'utf8');
 fs.writeFileSync(path.join(out,'center.css'),foundation+css);
 const sourceCss=fs.readFileSync(path.join(fp,'app/globals.css'),'utf8');fs.writeFileSync(path.join(out,'specimen.css'),sourceCss+'\n'+css.slice(css.indexOf('.spec-label'),css.indexOf('@media(max-width:1100px)'))+css.slice(css.indexOf('.button-workshop')));
 sourceCache.set(path.join(fp,'app/globals.css'),sourceCss);
-manifest.push({path:path.join(fp,'app/globals.css').replaceAll('\\','/'),sha256:crypto.createHash('sha256').update(sourceCss).digest('hex')});
+manifest.push({path:'freepasserp4/app/globals.css',sha256:crypto.createHash('sha256').update(sourceCss).digest('hex')});manifestFiles.set('freepasserp4/app/globals.css',path.join(fp,'app/globals.css'));
 fs.writeFileSync(path.join(out,'source-manifest.json'),JSON.stringify({kind:'derived_build_not_authority',sources:manifest},null,2));
 const html=(spec)=>`<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>개발센터 · 규격과 원자</title><link rel="icon" href="data:,"><link rel="stylesheet" href="/${spec?'specimen':'center'}.css"></head><body><div id="root"></div><script src="/app.js" defer></script></body></html>`;
 fs.writeFileSync(path.join(out,'index.html'),html(false));fs.mkdirSync(path.join(out,'specimen'),{recursive:true});fs.writeFileSync(path.join(out,'specimen/index.html'),html(true));
@@ -67,17 +71,19 @@ fs.writeFileSync(catalogFile,JSON.stringify(catalog));
 fs.writeFileSync(path.join(out,'THIRD-PARTY-LICENSES.txt'),['react','react-dom','scheduler','lucide-react'].map(pkg=>pkg+'\n'+fs.readFileSync(path.join(root,'node_modules',pkg,'LICENSE'),'utf8')).join('\n\n'));
 fs.copyFileSync(path.join(root,'../quality/COMPLETION.md'),path.join(out,'completion.md'));
 fs.writeFileSync(path.join(out,'catalog/discovery-source.json'),JSON.stringify({path:'devcenter/portal/app/discovery-model.ts',sha256:crypto.createHash('sha256').update(discoverySource).digest('hex'),source:discoverySource}));
-const cardResult=spawnSync(process.execPath,[path.join(root,'../scripts/card-audit.mjs'),'--report',path.join(out,'catalog/standard-cards.json')],{cwd:root,encoding:'utf8',windowsHide:true});
+const stagedManifest=path.join(out,'source-manifest.json');
+const cardResult=spawnSync(process.execPath,[path.join(root,'../scripts/card-audit.mjs'),'--manifest',stagedManifest,'--report',path.join(out,'catalog/standard-cards.json')],{cwd:root,encoding:'utf8',windowsHide:true});
 if(cardResult.status!==0)throw Error('Card audit failed: '+cardResult.stderr);
-const acceptanceResult=spawnSync(process.execPath,[path.join(root,'../scripts/report-acceptance.mjs'),'--app',path.join(out,'app.js'),'--output',path.join(out,'catalog/acceptance.json')],{cwd:root,encoding:'utf8',windowsHide:true});
+const acceptanceResult=spawnSync(process.execPath,[path.join(root,'../scripts/report-acceptance.mjs'),'--manifest',stagedManifest,'--app',path.join(out,'app.js'),'--output',path.join(out,'catalog/acceptance.json')],{cwd:root,encoding:'utf8',windowsHide:true});
 if(acceptanceResult.status!==0)throw Error('Acceptance report failed: '+acceptanceResult.stderr);
 const inspectionResult=spawnSync(process.execPath,[path.join(root,'../scripts/inspect-project.mjs'),'--target',path.join(root,'..'),'--acceptance',path.join(out,'catalog/acceptance.json'),'--output',path.join(out,'catalog/inspection.json')],{cwd:root,encoding:'utf8',windowsHide:true});
 if(inspectionResult.status===3||inspectionResult.error)throw Error('Inspection report failed: '+(inspectionResult.stderr||inspectionResult.error));
 fs.cpSync(path.join(root,'../capabilities/packages'),path.join(out,'packages'),{recursive:true});
 // Refresh displayed source from the exact inputs used for this build.
-const sources={};for(const [k,f]of Object.entries(names)){const p=path.join(fp,'components/ui',f),source=sourceCache.get(p);if(source===undefined)throw Error('Source was not compiled: '+p);sources[k]={path:p.replaceAll('\\','/'),source,sha256:crypto.createHash('sha256').update(source).digest('hex')}}
+const sources={};for(const [k,f]of Object.entries(names)){const p=path.join(fp,'components/ui',f),source=sourceCache.get(p);if(source===undefined)throw Error('Source was not compiled: '+p);sources[k]={path:`freepasserp4/components/ui/${f}`,source,sha256:crypto.createHash('sha256').update(source).digest('hex')}}
+sources.format=pinnedSources.format;
 fs.writeFileSync(path.join(out,'catalog/source-code.json'),JSON.stringify(sources));
-for(const item of manifest)if(crypto.createHash('sha256').update(fs.readFileSync(item.path)).digest('hex')!==item.sha256)throw Error('Source changed during build: '+item.path);
+for(const item of manifest)if(crypto.createHash('sha256').update(fs.readFileSync(manifestFiles.get(item.path))).digest('hex')!==item.sha256)throw Error('Source changed during build: '+item.path);
 for(const f of ['index.html','app.js','specimen/index.html','catalog/index.json','catalog/source-code.json','catalog/inspection.json','source-manifest.json'])if(!fs.statSync(path.join(out,f)).size)throw Error('Empty output: '+f);
 if(fs.readFileSync(discoveryModelPath,'utf8')!==discoverySource)throw Error('Discovery source changed during build');
 // Only complete, validated builds replace the served directory. Retain previous output for rollback.

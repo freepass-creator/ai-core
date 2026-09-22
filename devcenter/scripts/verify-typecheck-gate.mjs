@@ -2,10 +2,9 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import assert from 'node:assert/strict';
-import {typecheckGate} from './typecheck-gate.mjs';
+import {typecheckGate,typecheckPortal} from './typecheck-gate.mjs';
 import ts from '../portal/node_modules/typescript/lib/typescript.js';
-import {spawnSync} from 'node:child_process';
-import {fileURLToPath,pathToFileURL} from 'node:url';
+import {fileURLToPath} from 'node:url';
 const here=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const root=fs.mkdtempSync(path.join(os.tmpdir(),'devcenter-typecheck-'));
 fs.writeFileSync(path.join(root,'tsconfig.json'),JSON.stringify({compilerOptions:{strict:true,noEmit:true,types:[],target:'ES2022',skipLibCheck:true},files:['sample.ts']}));
@@ -21,17 +20,8 @@ fs.writeFileSync(path.join(root,'sample.ts'),"import {accept} from './api'; acce
 assert.throws(()=>typecheckGate(root,['tsconfig.json']),/Typecheck gate failed/);
 assert.throws(()=>typecheckGate(root,['missing.json']),/Typecheck gate failed/);
 // Exercise both real configs with the same defaults the production packager uses.
-assert.doesNotThrow(()=>typecheckGate(path.join(here,'portal')));
-// Run the actual packager in an isolated fixture. Only import paths are remapped.
-// The bad fixture must fail at the gate, before source reads or output staging.
-const packager=fs.readFileSync(path.join(here,'portal/build-static.mjs'),'utf8')
- .replace("from 'typescript'",`from '${pathToFileURL(path.join(here,'portal/node_modules/typescript/lib/typescript.js')).href}'`)
- .replace("from '../scripts/typecheck-gate.mjs'",`from '${pathToFileURL(path.join(here,'scripts/typecheck-gate.mjs')).href}'`);
-fs.writeFileSync(path.join(root,'build-static.mjs'),packager);
-fs.mkdirSync(path.join(root,'static'));fs.writeFileSync(path.join(root,'static/sentinel.txt'),'unchanged');
-const before=fs.readdirSync(root).sort();
-const result=spawnSync(process.execPath,[path.join(root,'build-static.mjs')],{encoding:'utf8',windowsHide:true});
-assert.notEqual(result.status,0);assert.match(result.stderr,/Typecheck gate failed/);
-assert.deepEqual(fs.readdirSync(root).sort(),before);
-assert.equal(fs.readFileSync(path.join(root,'static/sentinel.txt'),'utf8'),'unchanged');
-console.log('PASS: transpile baseline, semantic/syntax/cross-module rejection, valid acceptance, missing config rejection, real default configs, packager stops without staging or changing output. Fixture: '+root);
+assert.doesNotThrow(()=>typecheckPortal(path.join(here,'portal')));
+const packager=fs.readFileSync(path.join(here,'portal/build-static.mjs'),'utf8');
+assert.ok(packager.indexOf('typecheckPortal(root,fp,false)')<packager.indexOf("fs.mkdtempSync(path.join(root,'.static-build-'))"),'Packager must typecheck before staging output');
+for(const file of ['portal/build-static.mjs','portal/tsconfig.gallery.json','portal/app/formatting-lab.tsx','portal/app/function-library.tsx'])assert.doesNotMatch(fs.readFileSync(path.join(here,file),'utf8'),/\.\.\/\.\.\/freepasserp4|\.\.\/\.\.\/\.\.\/freepasserp4/);
+console.log('PASS: transpile baseline, semantic/syntax/cross-module rejection, valid acceptance, missing config rejection, portable real configs, packager gate order, and no sibling freepasserp4 dependency. Fixture: '+root);

@@ -18676,6 +18676,78 @@
       "disposition": "ADAPTED_IN_PLACE",
       "destination": "devcenter/docs/DOCUMENT-HUB-RUNTIME.md",
       "reason": "unify hub receipt output on the AI Core core-receipt/v1 envelope while preserving typed hub payload"
+    },
+    {
+      "source_path": "portal/build-static.mjs",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/portal/build-static.mjs",
+      "reason": "remove the portal sibling-checkout dependency by using verified pinned catalog sources and staged logical manifest evidence"
+    },
+    {
+      "source_path": "portal/package.json",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/portal/package.json",
+      "reason": "remove the portal sibling-checkout dependency by using verified pinned catalog sources and staged logical manifest evidence"
+    },
+    {
+      "source_path": "portal/tsconfig.gallery.json",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/portal/tsconfig.gallery.json",
+      "reason": "remove the portal sibling-checkout dependency by using verified pinned catalog sources and staged logical manifest evidence"
+    },
+    {
+      "source_path": "portal/README.md",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/portal/README.md",
+      "reason": "remove the portal sibling-checkout dependency by using verified pinned catalog sources and staged logical manifest evidence"
+    },
+    {
+      "source_path": "portal/app/formatting-lab.tsx",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/portal/app/formatting-lab.tsx",
+      "reason": "remove the portal sibling-checkout dependency by using verified pinned catalog sources and staged logical manifest evidence"
+    },
+    {
+      "source_path": "portal/app/function-library.tsx",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/portal/app/function-library.tsx",
+      "reason": "remove the portal sibling-checkout dependency by using verified pinned catalog sources and staged logical manifest evidence"
+    },
+    {
+      "source_path": "portal/public/catalog/source-code.json",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/portal/public/catalog/source-code.json",
+      "reason": "remove the portal sibling-checkout dependency by using verified pinned catalog sources and staged logical manifest evidence"
+    },
+    {
+      "source_path": "scripts/typecheck-gate.mjs",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/scripts/typecheck-gate.mjs",
+      "reason": "remove the portal sibling-checkout dependency by using verified pinned catalog sources and staged logical manifest evidence"
+    },
+    {
+      "source_path": "scripts/acceptance-evidence.mjs",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/scripts/acceptance-evidence.mjs",
+      "reason": "remove the portal sibling-checkout dependency by using verified pinned catalog sources and staged logical manifest evidence"
+    },
+    {
+      "source_path": "scripts/report-acceptance.mjs",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/scripts/report-acceptance.mjs",
+      "reason": "remove the portal sibling-checkout dependency by using verified pinned catalog sources and staged logical manifest evidence"
+    },
+    {
+      "source_path": "scripts/card-audit.mjs",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/scripts/card-audit.mjs",
+      "reason": "remove the portal sibling-checkout dependency by using verified pinned catalog sources and staged logical manifest evidence"
+    },
+    {
+      "source_path": "scripts/verify-typecheck-gate.mjs",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/scripts/verify-typecheck-gate.mjs",
+      "reason": "remove the portal sibling-checkout dependency by using verified pinned catalog sources and staged logical manifest evidence"
     }
   ]
 }
