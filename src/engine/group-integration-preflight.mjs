@@ -15,6 +15,41 @@ function operationKind(classification){
   return `group.integration.${String(classification??'').toLowerCase().replaceAll('_','-')}`;
 }
 
+const IMPORT_CONTENT_RULES=Object.freeze([
+  {code:'IMPORT_PATH_TRAVERSAL_FORBIDDEN',category:'CONTENT',test:path=>path.split('/').includes('..')},
+  {code:'IMPORT_SECRET_FILE_FORBIDDEN',category:'CONTENT',test:path=>/(^|\/)\.env(?:\.|$)/i.test(path)||/(^|\/)(?:credentials?|service[-_]?account|secrets?)(?:\/|\.|$)/i.test(path)},
+  {code:'IMPORT_OPERATIONAL_DATA_FORBIDDEN',category:'CONTENT',test:path=>/(^|\/)(?:outputs?|logs?|batches?|넣을것)(?:\/|$)/i.test(path)||/\.(?:pdf|docx?|xlsx?|csv|ndjson)$/i.test(path)},
+  {code:'IMPORT_CASE_MATERIAL_FORBIDDEN',category:'CONTENT',test:path=>/(^|\/)(?:사건|고소장)(?:\/|$)/u.test(path)},
+  {code:'IMPORT_GENERATED_ARTIFACT_FORBIDDEN',category:'CONTENT',test:path=>/(^|\/)(?:node_modules|dist|build|\.next)(?:\/|$)/i.test(path)||/^portal\/static(?:\/|$)/i.test(path)},
+  {code:'IMPORT_DEPLOY_BOUNDARY_FORBIDDEN',category:'CONTENT',test:path=>/^\.github\/workflows\//i.test(path)||/^(?:firebase|vercel)\.json$/i.test(path)},
+  {code:'IMPORT_AI_CORE_KIT_DUPLICATE',category:'AUTHORITY',test:path=>/(^|\/)\.ai-core(?:\/|$)/i.test(path)},
+  {code:'IMPORT_ROOT_INSTRUCTION_AUTHORITY_COLLISION',category:'AUTHORITY',test:path=>/^(?:AGENTS|CLAUDE|GEMINI|WORK_READ_FIRST)\.md$/i.test(path)},
+  {code:'IMPORT_REGISTRY_AUTHORITY_COLLISION',category:'AUTHORITY',test:path=>/^(?:registry\.json|hubs\/registry\.json|hubs\/routing-rules\.json|hubs\/design\/core-binding\.json)$/i.test(path)},
+  {code:'IMPORT_DESIGN_AUTHORITY_COLLISION',category:'AUTHORITY',test:path=>/^design-system\//i.test(path)},
+]);
+
+function normalizeImportPath(value){
+  return clean(value).replaceAll('\\','/').replace(/^\.\//,'').replace(/^\/+/,'');
+}
+
+export function assessIntegrationImportContent({paths}={}){
+  need(Array.isArray(paths),'INTEGRATION_IMPORT_PATHS_REQUIRED');
+  const normalized=[...new Set(paths.map(normalizeImportPath).filter(Boolean))].sort();
+  need(normalized.length>0,'INTEGRATION_IMPORT_PATHS_EMPTY');
+  const blockers=[];
+  for(const path of normalized){
+    for(const rule of IMPORT_CONTENT_RULES){
+      if(rule.test(path)) blockers.push({code:rule.code,category:rule.category,path});
+    }
+  }
+  return {
+    status:blockers.length?'HOLD':'PASS',
+    path_count:normalized.length,
+    inventory_digest:digest(normalized),
+    blockers,
+  };
+}
+
 export function sealIntegrationPreflight({packet,observation}={}){
   need(packet?.schema==='ai-core-integration-work-packet/v1','INTEGRATION_WORK_PACKET_REQUIRED');
   need(observation&&typeof observation==='object'&&!Array.isArray(observation),'INTEGRATION_PREFLIGHT_OBSERVATION_REQUIRED');
@@ -28,8 +63,20 @@ export function sealIntegrationPreflight({packet,observation}={}){
 
   const requiredChecks=[...(packet.revalidation?.required_checks??[])];
   const observedChecks=new Map((observation.checks??[]).map(item=>[item?.name,item?.status]));
+  let importAssessment=null;
+  if(requiredChecks.includes('IMPORT_CONTENT_POLICY_CHECK')||requiredChecks.includes('CANONICAL_AUTHORITY_COLLISION_CHECK')){
+    importAssessment=assessIntegrationImportContent({paths:observation.import_paths});
+    if(requiredChecks.includes('IMPORT_CONTENT_POLICY_CHECK')){
+      const blocked=importAssessment.blockers.find(item=>item.category==='CONTENT');
+      need(!blocked,`INTEGRATION_PREFLIGHT_IMPORT_CONTENT_${blocked?.code??'HOLD'}`);
+    }
+    if(requiredChecks.includes('CANONICAL_AUTHORITY_COLLISION_CHECK')){
+      const blocked=importAssessment.blockers.find(item=>item.category==='AUTHORITY');
+      need(!blocked,`INTEGRATION_PREFLIGHT_AUTHORITY_COLLISION_${blocked?.code??'HOLD'}`);
+    }
+  }
   for(const check of requiredChecks){
-    if(check==='SOURCE_REVISION_UNCHANGED'||check==='DIRTY_STATE_RECHECK'||check==='PLAN_ITEM_STILL_READY') continue;
+    if(['SOURCE_REVISION_UNCHANGED','DIRTY_STATE_RECHECK','PLAN_ITEM_STILL_READY','IMPORT_CONTENT_POLICY_CHECK','CANONICAL_AUTHORITY_COLLISION_CHECK'].includes(check)) continue;
     need(observedChecks.get(check)==='PASS',`INTEGRATION_PREFLIGHT_CHECK_REQUIRED_${check}`);
   }
 
@@ -43,6 +90,8 @@ export function sealIntegrationPreflight({packet,observation}={}){
     dirty_state:observation.dirty_state,
     observed_at:observation.observed_at,
     checks:[...(observation.checks??[])],
+    import_inventory_digest:importAssessment?.inventory_digest??null,
+    import_path_count:importAssessment?.path_count??null,
   };
 
   return {
@@ -54,6 +103,8 @@ export function sealIntegrationPreflight({packet,observation}={}){
     observed_at:observation.observed_at,
     seal_digest:digest(material),
     material_digest:digest(material),
+    import_inventory_digest:importAssessment?.inventory_digest??null,
+    import_path_count:importAssessment?.path_count??null,
     authority_required:true,
     execution_authorized:false,
     freshness_policy:'REOBSERVE_IMMEDIATELY_BEFORE_EXECUTION',

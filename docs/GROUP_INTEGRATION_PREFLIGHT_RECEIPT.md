@@ -26,6 +26,18 @@ Its policy is `REOBSERVE_IMMEDIATELY_BEFORE_EXECUTION`. The executor must observ
 
 The seal always returns `execution_authorized=false`.
 
+## Pre-import content gate
+
+For `MERGE_PHYSICAL` and `EXTRACT_SHARED`, the Work Packet now requires three additional checks before execution:
+
+- `IMPORT_CONTENT_POLICY_CHECK` — the preflight itself recalculates this from `observation.import_paths`; a caller-supplied PASS cannot override it.
+- `CANONICAL_AUTHORITY_COLLISION_CHECK` — the preflight itself rejects copied AI Core kits, competing root instructions, old hub registries/bindings, and copied design-system authority.
+- `SOURCE_RUNTIME_DEPENDENCY_CHECK` — the observer must prove that the candidate copy does not silently depend on the source checkout/runtime.
+
+The content policy fails closed on secret/credential paths, operational outputs/logs/batches, office/data files that belong outside Git, case materials, generated build artifacts, and deployment-boundary configuration. The accepted import path inventory is hashed into the preflight seal so later execution is bound to the reviewed candidate set.
+
+This is deliberately an **exclusion gate**, not a waiver mechanism. A blocked file must be excluded or transformed into the canonical AI Core authority before the packet can proceed.
+
 ## Receipt boundary
 
 `buildIntegrationExecutionReceipt()` reuses `core-receipt/v1`.
