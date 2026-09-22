@@ -1,6 +1,6 @@
 {
   "schema_version": "1.1",
-  "observed_at": "2026-09-22T00:44:26Z",
+  "observed_at": "2026-09-22T05:49:00Z",
   "projects": [
     {
       "project_id": "ai-core",
@@ -651,6 +651,51 @@
         "This repository is proposal-specific and must not override Mewcar business facts/decisions; use freepass-creator/mewcar as the business-content SSOT.",
         "Internal-review deliverables do not prove external approval or delivery."
       ]
+    },
+    {
+      "project_id": "kakao-ops",
+      "name": "Kakao Ops",
+      "organization": "SUBSIDIARY",
+      "mission": "Run the local KakaoTalk desktop automation and consume FreePass Data through a dedicated authenticated read contract without exposing Firestore credentials to the messaging PC.",
+      "repository": "freepass-creator/kakao-ops",
+      "default_branch": "master",
+      "work_branches": [
+        "codex/freepass-data-consumer-20260922"
+      ],
+      "local_path": "C:\\dev\\kakao-remote",
+      "head_revision": "2a5b38944234620a63e207dceb0dc4d508a49035",
+      "authoritative_sources": [
+        {
+          "kind": "GIT",
+          "ref": "freepass-creator/kakao-ops",
+          "revision": "2a5b38944234620a63e207dceb0dc4d508a49035",
+          "observed_at": "2026-09-22T05:45:00Z"
+        }
+      ],
+      "commands": {
+        "install": null,
+        "test": null,
+        "build": null
+      },
+      "deploy_targets": [
+        "Dedicated Windows KakaoTalk operator PC"
+      ],
+      "required_approvals": [
+        "external KakaoTalk message send",
+        "production consumer credential change"
+      ],
+      "known_blockers": [
+        "Dedicated kakao-ops consumer identity is not registered in FreePass Data yet.",
+        "FreePass Data has no non-empty ACTIVE erp-public release, so catalog answers must remain HOLD.",
+        "Repository has no committed deterministic test command yet."
+      ],
+      "repository_lifecycle_status": "ACTIVE",
+      "execution_readiness_status": "HOLD",
+      "commands_absent_reason": {
+        "install": "The current repository has no package manifest or canonical installation command.",
+        "test": "Deterministic consumer-adapter tests are the next integration change and are not merged yet.",
+        "build": "PowerShell and Node.js runtime scripts execute from source without a build artifact."
+      }
     }
   ]
 }
