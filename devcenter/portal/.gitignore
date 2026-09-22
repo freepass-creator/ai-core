@@ -1,0 +1,22 @@
+node_modules/
+.static-build-*/
+.dist-build-*/
+.dist-previous-*/
+.static-previous-*/
+dist/
+.git/
+.wrangler/
+.next/
+*.tsbuildinfo
+.env*
+# Unused scaffold files are not part of the static application.
+components/
+hooks/
+lib/
+vite.config.ts
+next-env.d.ts
+app/layout.tsx
+app/page.tsx
+components.json
+.oxlintrc.json
+.oxfmtrc.json

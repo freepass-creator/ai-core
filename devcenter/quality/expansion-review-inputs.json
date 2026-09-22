@@ -1,0 +1,18 @@
+[
+  {
+    "sha256": "d5f3baf7745a0b0e2975c7e9b29de3df7a6d1559568796ace4fc96d782fcb567",
+    "path": "scripts/collect-toolbox.mjs"
+  },
+  {
+    "sha256": "2148ca725d10a2e2e8422eb26bdaee792f2145b4173114e3fe8c5fa4158a22e4",
+    "path": "scripts/verify-toolbox.mjs"
+  },
+  {
+    "sha256": "00049fddf352ea82b1c80eeaa548099a5323b8ad41e97c517675503e697ceb76",
+    "path": "portal/app/design-tools-model.ts"
+  },
+  {
+    "sha256": "dba33559056079ff066100eac3a4c4fc56dd3a35ae9b99fdc64a55236c949b14",
+    "path": "portal/app/toolbox.tsx"
+  }
+]

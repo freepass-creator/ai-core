@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://teamjpk.local/devcenter/contracts/design-plan.schema.json",
+  "title": "Development Center Design Plan v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "target",
+    "surface",
+    "core_binding",
+    "features",
+    "composition",
+    "qa",
+    "result"
+  ],
+  "properties": {
+    "contract": {
+      "const": "devcenter-design-plan/v1"
+    },
+    "target": {
+      "type": "object"
+    },
+    "surface": {
+      "type": "object"
+    },
+    "core_binding": {
+      "type": "object"
+    },
+    "features": {
+      "type": "array"
+    },
+    "composition": {
+      "type": "array"
+    },
+    "qa": {
+      "type": "object"
+    },
+    "result": {
+      "type": "object"
+    }
+  }
+}

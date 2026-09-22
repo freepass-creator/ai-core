@@ -1,0 +1,224 @@
+{
+  "version": "0.1",
+  "captured_at": "2026-09-09T03:12:44.199481+00:00",
+  "type": "derived_source_snapshot_not_authority_registry",
+  "root": "C:/dev",
+  "sources": [
+    {
+      "id": "S01",
+      "path": "devcenter/AGENTS.md",
+      "scope": "센터 역할·검수",
+      "sha256": "2f1b8c6c309252dba9ee448303f8f62460c10ad7314d6812ecc4702c87494190",
+      "inspection": "본문",
+      "runtime_verified": false,
+      "review_status": "확인(inspection에 명시한 범위만)",
+      "unreviewed": "명시 범위 밖 원문·현재 전체 소비자·실행 동작"
+    },
+    {
+      "id": "S02",
+      "path": "devcenter/ssot/PART.md",
+      "scope": "SSOT 조직·참조",
+      "sha256": "3658963d2a87819cfd24c3a08bf01f2ddba76847632870c2a68e33954a8b4b81",
+      "inspection": "본문",
+      "runtime_verified": false,
+      "review_status": "확인(inspection에 명시한 범위만)",
+      "unreviewed": "명시 범위 밖 원문·현재 전체 소비자·실행 동작"
+    },
+    {
+      "id": "S03",
+      "path": "devcenter/ssot/AGENTS.md",
+      "scope": "SSOT 검수",
+      "sha256": "7c04720615553c0fabc6b17e9a083dc25b9572ccae8f38f0cb4d9812feb61698",
+      "inspection": "본문",
+      "runtime_verified": false,
+      "review_status": "확인(inspection에 명시한 범위만)",
+      "unreviewed": "명시 범위 밖 원문·현재 전체 소비자·실행 동작"
+    },
+    {
+      "id": "S04",
+      "path": "devcenter/registry.json",
+      "scope": "개발 규격 참조",
+      "sha256": "367aa3484eff59ec63831bdc54c029ddd8962a073dd71cf8cfc3e88929b5acf6",
+      "inspection": "등록 항목",
+      "runtime_verified": false,
+      "review_status": "확인(inspection에 명시한 범위만)",
+      "unreviewed": "명시 범위 밖 원문·현재 전체 소비자·실행 동작"
+    },
+    {
+      "id": "S05",
+      "path": "aiops/docs/저장소지도.md",
+      "scope": "현역·보관·업무 정본",
+      "sha256": "42318468ca05d20b2fa7b53209fc6f65a23ba71e0cb62028c81338048e91adcc",
+      "inspection": "관련 절",
+      "runtime_verified": false,
+      "review_status": "확인(inspection에 명시한 범위만)",
+      "unreviewed": "명시 범위 밖 원문·현재 전체 소비자·실행 동작"
+    },
+    {
+      "id": "S06",
+      "path": "freepasserp4/CLAUDE.md",
+      "scope": "fp4 작업·디자인·기능 기준",
+      "sha256": "9ce2975346b30e261ec8a00519f829ef9b3f14ef7a034abcd8d26436758c21f5",
+      "inspection": "배포/절대원칙/컨트롤/원자 사전 발췌",
+      "runtime_verified": false,
+      "review_status": "확인(inspection에 명시한 범위만)",
+      "unreviewed": "명시 범위 밖 원문·현재 전체 소비자·실행 동작"
+    },
+    {
+      "id": "S07",
+      "path": "freepasserp4/DESIGN.md",
+      "scope": "fp4 디자인",
+      "sha256": "53738eb706d7e4a44c5944efe5174e3d39a089d33eaa9903a49c84b8432adf30",
+      "inspection": "0~2절 및 목차",
+      "runtime_verified": false,
+      "review_status": "확인(inspection에 명시한 범위만)",
+      "unreviewed": "명시 범위 밖 원문·현재 전체 소비자·실행 동작"
+    },
+    {
+      "id": "S08",
+      "path": "freepasserp4/.cursorrules",
+      "scope": "fp4 도구별 규칙",
+      "sha256": "877ecdc7ac8b7980b3692000999a698927f3526baba9a06ed96f93c630be45bd",
+      "inspection": "선두 규칙",
+      "runtime_verified": false,
+      "review_status": "확인(inspection에 명시한 범위만)",
+      "unreviewed": "명시 범위 밖 원문·현재 전체 소비자·실행 동작"
+    },
+    {
+      "id": "S09",
+      "path": "freepasserp4/AGENTS.md",
+      "scope": "fp4 작업·검수",
+      "sha256": "11b8c0dcacdd1f2bec1ddd551d52422331fb345b41c308efcf663fdd37a9d6f3",
+      "inspection": "역할/불변 규칙 발췌",
+      "runtime_verified": false,
+      "review_status": "확인(inspection에 명시한 범위만)",
+      "unreviewed": "명시 범위 밖 원문·현재 전체 소비자·실행 동작"
+    },
+    {
+      "id": "S10",
+      "path": "freepasserp4/docs/AI_COLLABORATION.md",
+      "scope": "fp4 협업",
+      "sha256": "965cf3356bf6e7cfbb3d7235efc7fd76bae70faa75eaac601bf5a6028308a895",
+      "inspection": "선두 역할 발췌",
+      "runtime_verified": false,
+      "review_status": "확인(inspection에 명시한 범위만)",
+      "unreviewed": "명시 범위 밖 원문·현재 전체 소비자·실행 동작"
+    },
+    {
+      "id": "S11",
+      "path": "freepasserp4/components/ui/tokens.ts",
+      "scope": "fp4 UI 치수·색",
+      "sha256": "14f174bf49ea500fab6d805d712926c062f9332c9be5551c55c37514c5727127",
+      "inspection": "토큰/CTRL/헬퍼 선언",
+      "runtime_verified": false,
+      "review_status": "확인(inspection에 명시한 범위만)",
+      "unreviewed": "명시 범위 밖 원문·현재 전체 소비자·실행 동작"
+    },
+    {
+      "id": "S12",
+      "path": "freepasserp4/components/ui/index.tsx",
+      "scope": "fp4 UI 진입점",
+      "sha256": "018685a15c6d641b6b0683442a28985fa4f81167efeb951e2f946dd25ead6b81",
+      "inspection": "export 목록",
+      "runtime_verified": false,
+      "review_status": "확인(inspection에 명시한 범위만)",
+      "unreviewed": "명시 범위 밖 원문·현재 전체 소비자·실행 동작"
+    },
+    {
+      "id": "S13",
+      "path": "freepasserp4/components/ui/buttons.tsx",
+      "scope": "fp4 버튼",
+      "sha256": "c186ed2556dc09bd1352f68904bde04e41fec5b617c7546521b6212b8c51c241",
+      "inspection": "공개 export/시그니처",
+      "runtime_verified": false,
+      "review_status": "확인(inspection에 명시한 범위만)",
+      "unreviewed": "명시 범위 밖 원문·현재 전체 소비자·실행 동작"
+    },
+    {
+      "id": "S14",
+      "path": "freepasserp4/components/ui/form-controls.tsx",
+      "scope": "fp4 입력·선택",
+      "sha256": "55664b150caaca0349b5330833661049222ea94735e9fb7c2f4d7e27c1260898",
+      "inspection": "공개 export/시그니처",
+      "runtime_verified": false,
+      "review_status": "확인(inspection에 명시한 범위만)",
+      "unreviewed": "명시 범위 밖 원문·현재 전체 소비자·실행 동작"
+    },
+    {
+      "id": "S15",
+      "path": "freepasserp4/components/ui/table.tsx",
+      "scope": "fp4 표",
+      "sha256": "20879b62007e5d22bf86f8db55bd36eb94c9c2b0351083d1a234f85d670157eb",
+      "inspection": "공개 export/시그니처",
+      "runtime_verified": false,
+      "review_status": "확인(inspection에 명시한 범위만)",
+      "unreviewed": "명시 범위 밖 원문·현재 전체 소비자·실행 동작"
+    },
+    {
+      "id": "S16",
+      "path": "freepasserp4/components/ui/detail.tsx",
+      "scope": "fp4 박스·폼",
+      "sha256": "4da7d3bc44827d7d91a748934211a04db77452716586589b5c6c5cd7f69c3faa",
+      "inspection": "공개 export/시그니처",
+      "runtime_verified": false,
+      "review_status": "확인(inspection에 명시한 범위만)",
+      "unreviewed": "명시 범위 밖 원문·현재 전체 소비자·실행 동작"
+    },
+    {
+      "id": "S17",
+      "path": "freepasserp4/components/ui/overlays.tsx",
+      "scope": "fp4 모달·드로어",
+      "sha256": "45faefe689badeec1d9bf774411fa5e134cc2f1ce6c4795b3009909881b0661f",
+      "inspection": "공개 export",
+      "runtime_verified": false,
+      "review_status": "확인(inspection에 명시한 범위만)",
+      "unreviewed": "명시 범위 밖 원문·현재 전체 소비자·실행 동작"
+    },
+    {
+      "id": "S18",
+      "path": "teamjpkwork/docs/erp-design/README.md",
+      "scope": "워크 ERP 디자인 귀속",
+      "sha256": "bb4d40a133f1e2224343ee68dfa4d431b7517afe3b8ffe5deece899ac9b1b365",
+      "inspection": "본문",
+      "runtime_verified": false,
+      "review_status": "확인(inspection에 명시한 범위만)",
+      "unreviewed": "명시 범위 밖 원문·현재 전체 소비자·실행 동작"
+    },
+    {
+      "id": "S19",
+      "path": "teamjpkwork/docs/erp-design/SPEC-UI.md",
+      "scope": "워크 ERP 디자인",
+      "sha256": "333a1da6cf39fa60e16bd567d784179ad5f6a822f9d1ef39388e3e724ffe5cb6",
+      "inspection": "1~5절 발췌",
+      "runtime_verified": false,
+      "review_status": "확인(inspection에 명시한 범위만)",
+      "unreviewed": "명시 범위 밖 원문·현재 전체 소비자·실행 동작"
+    },
+    {
+      "id": "S20",
+      "path": "aiops/asset-engine/README.md",
+      "scope": "기능 엔진 후보",
+      "sha256": "52ce07a96d9b73ffc84b38973117d09eff8eb2b03421dad7bbeb5cacaac96417",
+      "inspection": "선두 기능/미연결 설명",
+      "runtime_verified": false,
+      "review_status": "확인(inspection에 명시한 범위만)",
+      "unreviewed": "명시 범위 밖 원문·현재 전체 소비자·실행 동작"
+    },
+    {
+      "id": "S21",
+      "path": "webtoon-studio/AGENTS.md",
+      "scope": "분야별 예외",
+      "sha256": "c1bb209978cbbd6fcf58f2e459157e342401375b6fad167637fac03d4dcaab94",
+      "inspection": "선두 저장/전달/구조 지침",
+      "runtime_verified": false,
+      "review_status": "확인(inspection에 명시한 범위만)",
+      "unreviewed": "명시 범위 밖 원문·현재 전체 소비자·실행 동작"
+    }
+  ],
+  "limits": [
+    "선택된 현재 규격의 발췌·선언 확인",
+    "원문 전체 복제 없음",
+    "타 프로젝트 규격 변경 없음",
+    "원격·실행·전원검수 완료 아님"
+  ]
+}

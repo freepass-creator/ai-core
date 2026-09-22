@@ -1,0 +1,1153 @@
+{
+  "version": 1,
+  "datasets": [
+    {
+      "id": "erp4-spec",
+      "scope": "dev.spec.erp4",
+      "project": "freepasserp4",
+      "owner": "dev",
+      "role": "authoritative",
+      "source": {
+        "kind": "markdown_doc",
+        "locator": "freepasserp4/CLAUDE.md"
+      },
+      "key": "section",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "design-token",
+      "scope": "dev.design.token",
+      "project": "freepasserp4",
+      "owner": "dev",
+      "role": "authoritative",
+      "source": {
+        "kind": "typescript_module",
+        "locator": "freepasserp4/components/ui/tokens.ts"
+      },
+      "key": "token",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "design-atom",
+      "scope": "dev.design.atom",
+      "project": "freepasserp4",
+      "owner": "dev",
+      "role": "authoritative",
+      "source": {
+        "kind": "source_directory",
+        "locator": "freepasserp4/components/ui"
+      },
+      "key": "atom",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "design-atom-product-card",
+      "scope": "dev.design.atom.product_card",
+      "project": "freepasserp4",
+      "owner": "dev",
+      "role": "authoritative",
+      "source": {
+        "kind": "typescript_module",
+        "locator": "freepasserp4/components/product-card-atoms.tsx"
+      },
+      "key": "atom",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "doc-form",
+      "scope": "dev.doc.form",
+      "project": "docshub",
+      "owner": "docs",
+      "role": "authoritative",
+      "source": {
+        "kind": "source_directory",
+        "locator": "docshub/양식"
+      },
+      "key": "form",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "cursor-rules",
+      "scope": "dev.tool.cursor_rules",
+      "project": "freepasserp4",
+      "owner": "dev",
+      "role": "authoritative",
+      "source": {
+        "kind": "plain_text",
+        "locator": "freepasserp4/.cursorrules"
+      },
+      "key": "rule",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "ai-pipeline",
+      "scope": "dev.ai.pipeline",
+      "project": "freepasserp4",
+      "owner": "dev",
+      "role": "authoritative",
+      "source": {
+        "kind": "markdown_doc",
+        "locator": "freepasserp4/docs/AI_COLLABORATION.md"
+      },
+      "key": "stage",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "ai-role-split-erp4",
+      "scope": "dev.ai.role.split",
+      "project": "freepasserp4",
+      "owner": "dev",
+      "role": "authoritative",
+      "source": {
+        "kind": "markdown_doc",
+        "locator": "freepasserp4/AGENTS.md"
+      },
+      "key": "role",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "ai-role-split-ssot",
+      "scope": "dev.ai.role.split.ssot_review",
+      "project": "ssot-hub",
+      "owner": "dev",
+      "role": "candidate",
+      "source": {
+        "kind": "markdown_doc",
+        "locator": "devcenter/ssot/AGENTS.md"
+      },
+      "key": "role",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "org-part-ssot",
+      "scope": "dev.org.part.ssot",
+      "project": "devcenter",
+      "owner": "Codex",
+      "role": "authoritative",
+      "source": {
+        "kind": "markdown_doc",
+        "locator": "devcenter/ssot/PART.md"
+      },
+      "key": "clause",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "org-center",
+      "scope": "dev.org.center",
+      "project": "devcenter",
+      "owner": "Claude Code",
+      "role": "authoritative",
+      "source": {
+        "kind": "markdown_doc",
+        "locator": "devcenter/AGENTS.md"
+      },
+      "key": "clause",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "center-map",
+      "scope": "dev.map.entry",
+      "project": "devcenter",
+      "owner": "Claude Code",
+      "role": "authoritative",
+      "source": {
+        "kind": "markdown_doc",
+        "locator": "devcenter/어디를보나.md"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "repo-lifecycle",
+      "scope": "dev.repo.lifecycle",
+      "project": "aiops",
+      "owner": "dev",
+      "role": "authoritative",
+      "source": {
+        "kind": "markdown_doc",
+        "locator": "aiops/docs/저장소지도.md"
+      },
+      "key": "repo",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "devcenter-responsive-shell",
+      "scope": "dev.design.pattern.devcenter_responsive_shell",
+      "project": "devcenter",
+      "owner": "dev",
+      "role": "authoritative",
+      "source": {
+        "kind": "markdown_doc",
+        "locator": "devcenter/design/patterns/RESPONSIVE-SHELL.md"
+      },
+      "key": "section",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "devcenter-style-library",
+      "scope": "dev.design.library.devcenter",
+      "project": "devcenter",
+      "owner": "dev",
+      "role": "authoritative",
+      "source": {
+        "kind": "markdown_doc",
+        "locator": "devcenter/design/components/CATALOG.md"
+      },
+      "key": "section",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "work-erp-design-token",
+      "scope": "dev.design.token.work_erp",
+      "project": "teamjpkwork",
+      "owner": "dev",
+      "role": "candidate",
+      "source": {
+        "kind": "typescript_module",
+        "locator": "teamjpkwork/lib/erp/화면규격.ts"
+      },
+      "key": "token",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "estimate-price-basis",
+      "scope": "dev.spec.estimate.price_basis",
+      "project": "freepasserp4",
+      "owner": "dev",
+      "role": "authoritative",
+      "source": {
+        "kind": "markdown_doc",
+        "locator": "devcenter/ssot/FREEPASS-QUOTE-BASIS.md"
+      },
+      "key": "section",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "newcar-feed",
+      "scope": "dev.spec.newcar.feed",
+      "project": "freepasserp4",
+      "owner": "dev",
+      "role": "authoritative",
+      "source": {
+        "kind": "markdown_doc",
+        "locator": "freepasserp4/docs/신차마스터-피드.md"
+      },
+      "key": "section",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "freepass-admin-backend-boundary-candidate",
+      "scope": "dev.backend.boundary.freepass_admin_candidate",
+      "project": "freepass-admin",
+      "owner": "dev",
+      "role": "candidate",
+      "source": {
+        "kind": "markdown_doc",
+        "locator": "freepass-admin/contracts/BACKEND-BOUNDARIES.md"
+      },
+      "key": "section",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "hub-architecture",
+      "scope": "dev.org.hubs",
+      "project": "devcenter",
+      "owner": "devcenter",
+      "role": "authoritative",
+      "source": {
+        "kind": "markdown_doc",
+        "locator": "devcenter/docs/HUB-ARCHITECTURE.md"
+      },
+      "key": "section",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "hub-registry",
+      "scope": "dev.org.hubs.registry",
+      "project": "devcenter",
+      "owner": "devcenter",
+      "role": "authoritative",
+      "source": {
+        "kind": "json",
+        "locator": "devcenter/hubs/registry.json"
+      },
+      "key": "section",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "hub-design",
+      "scope": "dev.hub.design",
+      "project": "devcenter",
+      "owner": "devcenter",
+      "role": "authoritative",
+      "source": {
+        "kind": "markdown_doc",
+        "locator": "devcenter/hubs/design/README.md"
+      },
+      "key": "section",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "hub-data",
+      "scope": "dev.hub.data",
+      "project": "devcenter",
+      "owner": "devcenter",
+      "role": "authoritative",
+      "source": {
+        "kind": "markdown_doc",
+        "locator": "devcenter/hubs/data/README.md"
+      },
+      "key": "section",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "hub-document",
+      "scope": "dev.hub.document",
+      "project": "devcenter",
+      "owner": "devcenter",
+      "role": "authoritative",
+      "source": {
+        "kind": "markdown_doc",
+        "locator": "devcenter/hubs/document/README.md"
+      },
+      "key": "section",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "hub-engineering",
+      "scope": "dev.hub.engineering",
+      "project": "devcenter",
+      "owner": "devcenter",
+      "role": "authoritative",
+      "source": {
+        "kind": "markdown_doc",
+        "locator": "devcenter/hubs/engineering/README.md"
+      },
+      "key": "section",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "hub-integration",
+      "scope": "dev.hub.integration",
+      "project": "devcenter",
+      "owner": "devcenter",
+      "role": "authoritative",
+      "source": {
+        "kind": "markdown_doc",
+        "locator": "devcenter/hubs/integration/README.md"
+      },
+      "key": "section",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "hub-quality",
+      "scope": "dev.hub.quality",
+      "project": "devcenter",
+      "owner": "devcenter",
+      "role": "authoritative",
+      "source": {
+        "kind": "markdown_doc",
+        "locator": "devcenter/hubs/quality/README.md"
+      },
+      "key": "section",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "hub-delivery",
+      "scope": "dev.hub.delivery",
+      "project": "devcenter",
+      "owner": "devcenter",
+      "role": "authoritative",
+      "source": {
+        "kind": "markdown_doc",
+        "locator": "devcenter/hubs/delivery/README.md"
+      },
+      "key": "section",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "hub-routing-rules",
+      "scope": "dev.org.hubs.routing",
+      "project": "devcenter",
+      "owner": "devcenter",
+      "role": "authoritative",
+      "source": {
+        "kind": "json",
+        "locator": "devcenter/hubs/routing-rules.json"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "hub-router-runtime",
+      "scope": "dev.org.hubs.router",
+      "project": "devcenter",
+      "owner": "devcenter",
+      "role": "authoritative",
+      "source": {
+        "kind": "javascript_module",
+        "locator": "devcenter/scripts/hub-router.mjs"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "hub-router-validation",
+      "scope": "dev.org.hubs.validation",
+      "project": "devcenter",
+      "owner": "devcenter",
+      "role": "authoritative",
+      "source": {
+        "kind": "javascript_module",
+        "locator": "devcenter/scripts/validate-hubs.mjs"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "hub-readiness",
+      "scope": "dev.org.hubs.readiness",
+      "project": "devcenter",
+      "owner": "devcenter",
+      "role": "authoritative",
+      "source": {
+        "kind": "json",
+        "locator": "devcenter/hubs/readiness.json"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "hub-readiness-runtime",
+      "scope": "dev.org.hubs.readiness.runtime",
+      "project": "devcenter",
+      "owner": "devcenter",
+      "role": "authoritative",
+      "source": {
+        "kind": "javascript_module",
+        "locator": "devcenter/scripts/hub-readiness.mjs"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "hub-readiness-baseline",
+      "scope": "dev.org.hubs.readiness.baseline",
+      "project": "devcenter",
+      "owner": "devcenter",
+      "role": "authoritative",
+      "source": {
+        "kind": "markdown_doc",
+        "locator": "devcenter/docs/HUB-READINESS-BASELINE-2026-09-21.md"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "quality-receipt-contract",
+      "scope": "dev.hub.quality.receipt.contract",
+      "project": "devcenter",
+      "owner": "quality-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "json_schema",
+        "locator": "devcenter/contracts/quality-receipt.schema.json"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "quality-receipt-runtime",
+      "scope": "dev.hub.quality.receipt.runtime",
+      "project": "devcenter",
+      "owner": "quality-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "javascript_module",
+        "locator": "devcenter/scripts/quality-receipt.mjs"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "quality-receipt-guide",
+      "scope": "dev.hub.quality.receipt.guide",
+      "project": "devcenter",
+      "owner": "quality-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "markdown_doc",
+        "locator": "devcenter/docs/QUALITY-RECEIPT.md"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "design-core-binding",
+      "scope": "dev.hub.design.core_binding",
+      "project": "devcenter",
+      "owner": "design-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "json",
+        "locator": "devcenter/hubs/design/core-binding.json"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "design-job-contract",
+      "scope": "dev.hub.design.job.contract",
+      "project": "devcenter",
+      "owner": "design-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "json_schema",
+        "locator": "devcenter/contracts/design-job.schema.json"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "design-plan-contract",
+      "scope": "dev.hub.design.plan.contract",
+      "project": "devcenter",
+      "owner": "design-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "json_schema",
+        "locator": "devcenter/contracts/design-plan.schema.json"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "design-compiler-runtime",
+      "scope": "dev.hub.design.compiler.runtime",
+      "project": "devcenter",
+      "owner": "design-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "javascript_module",
+        "locator": "devcenter/scripts/design-compiler.mjs"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "design-lock-contract",
+      "scope": "dev.hub.design.lock.contract",
+      "project": "devcenter",
+      "owner": "design-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "json_schema",
+        "locator": "devcenter/contracts/design-lock.schema.json"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "design-lock-runtime",
+      "scope": "dev.hub.design.lock.runtime",
+      "project": "devcenter",
+      "owner": "design-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "javascript_module",
+        "locator": "devcenter/scripts/design-lock.mjs"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "design-visual-job-contract",
+      "scope": "dev.hub.design.visual.job.contract",
+      "project": "devcenter",
+      "owner": "design-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "json_schema",
+        "locator": "devcenter/contracts/design-visual-job.schema.json"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "design-visual-plan-contract",
+      "scope": "dev.hub.design.visual.plan.contract",
+      "project": "devcenter",
+      "owner": "design-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "json_schema",
+        "locator": "devcenter/contracts/design-visual-plan.schema.json"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "browser-capture-manifest-contract",
+      "scope": "dev.hub.design.visual.capture.contract",
+      "project": "devcenter",
+      "owner": "design-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "json_schema",
+        "locator": "devcenter/contracts/browser-capture-manifest.schema.json"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "design-visual-receipt-contract",
+      "scope": "dev.hub.design.visual.receipt.contract",
+      "project": "devcenter",
+      "owner": "design-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "json_schema",
+        "locator": "devcenter/contracts/design-visual-receipt.schema.json"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "design-visual-qa-runtime",
+      "scope": "dev.hub.design.visual.runtime",
+      "project": "devcenter",
+      "owner": "design-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "javascript_module",
+        "locator": "devcenter/scripts/design-visual-qa.mjs"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "browser-capture-runtime",
+      "scope": "dev.hub.design.browser_capture.runtime",
+      "project": "devcenter",
+      "owner": "design-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "javascript_module",
+        "locator": "devcenter/scripts/browser-capture.mjs"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "delivery-release-contract",
+      "scope": "dev.hub.delivery.release.contract",
+      "project": "devcenter",
+      "owner": "delivery-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "json_schema",
+        "locator": "devcenter/contracts/delivery-release.schema.json"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "delivery-receipt-contract",
+      "scope": "dev.hub.delivery.receipt.contract",
+      "project": "devcenter",
+      "owner": "delivery-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "json_schema",
+        "locator": "devcenter/contracts/delivery-receipt.schema.json"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "delivery-gate-runtime",
+      "scope": "dev.hub.delivery.gate.runtime",
+      "project": "devcenter",
+      "owner": "delivery-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "javascript_module",
+        "locator": "devcenter/scripts/delivery-gate.mjs"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "delivery-consumers",
+      "scope": "dev.hub.delivery.consumers",
+      "project": "devcenter",
+      "owner": "delivery-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "json",
+        "locator": "devcenter/hubs/delivery/consumers.json"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "delivery-runtime-guide",
+      "scope": "dev.hub.delivery.guide",
+      "project": "devcenter",
+      "owner": "delivery-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "markdown_doc",
+        "locator": "devcenter/docs/DELIVERY-HUB-RUNTIME.md"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "document-source-binding",
+      "scope": "dev.hub.document.source_binding",
+      "project": "devcenter",
+      "owner": "document-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "json",
+        "locator": "devcenter/hubs/document/source-binding.json"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "document-job-contract",
+      "scope": "dev.hub.document.job.contract",
+      "project": "devcenter",
+      "owner": "document-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "json_schema",
+        "locator": "devcenter/contracts/document-job.schema.json"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "document-receipt-contract",
+      "scope": "dev.hub.document.receipt.contract",
+      "project": "devcenter",
+      "owner": "document-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "json_schema",
+        "locator": "devcenter/contracts/document-receipt.schema.json"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "document-lock-contract",
+      "scope": "dev.hub.document.lock.contract",
+      "project": "devcenter",
+      "owner": "document-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "json_schema",
+        "locator": "devcenter/contracts/document-lock.schema.json"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "document-runtime",
+      "scope": "dev.hub.document.runtime",
+      "project": "devcenter",
+      "owner": "document-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "javascript_module",
+        "locator": "devcenter/scripts/document-hub.mjs"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "document-consumers",
+      "scope": "dev.hub.document.consumers",
+      "project": "devcenter",
+      "owner": "document-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "json",
+        "locator": "devcenter/hubs/document/consumers.json"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "engineering-asset-contract",
+      "scope": "dev.hub.engineering.asset.contract",
+      "project": "devcenter",
+      "owner": "engineering-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "json_schema",
+        "locator": "devcenter/contracts/engineering-asset.schema.json"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "engineering-assets",
+      "scope": "dev.hub.engineering.assets",
+      "project": "devcenter",
+      "owner": "engineering-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "json",
+        "locator": "devcenter/hubs/engineering/assets.json"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "engineering-consumers",
+      "scope": "dev.hub.engineering.consumers",
+      "project": "devcenter",
+      "owner": "engineering-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "json",
+        "locator": "devcenter/hubs/engineering/consumers.json"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "engineering-runtime",
+      "scope": "dev.hub.engineering.runtime",
+      "project": "devcenter",
+      "owner": "engineering-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "javascript_module",
+        "locator": "devcenter/scripts/engineering-hub.mjs"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "integration-connector-contract",
+      "scope": "dev.hub.integration.connector.contract",
+      "project": "devcenter",
+      "owner": "integration-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "json_schema",
+        "locator": "devcenter/contracts/integration-connector.schema.json"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "integration-connectors",
+      "scope": "dev.hub.integration.connectors",
+      "project": "devcenter",
+      "owner": "integration-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "json",
+        "locator": "devcenter/hubs/integration/connectors.json"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "integration-consumers",
+      "scope": "dev.hub.integration.consumers",
+      "project": "devcenter",
+      "owner": "integration-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "json",
+        "locator": "devcenter/hubs/integration/consumers.json"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "integration-runtime",
+      "scope": "dev.hub.integration.runtime",
+      "project": "devcenter",
+      "owner": "integration-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "javascript_module",
+        "locator": "devcenter/scripts/integration-hub.mjs"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "data-receipt-contract",
+      "scope": "dev.hub.data.receipt.contract",
+      "project": "devcenter",
+      "owner": "data-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "json_schema",
+        "locator": "devcenter/contracts/data-receipt.schema.json"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "data-patterns",
+      "scope": "dev.hub.data.patterns",
+      "project": "devcenter",
+      "owner": "data-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "json",
+        "locator": "devcenter/hubs/data/patterns.json"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "data-consumers",
+      "scope": "dev.hub.data.consumers",
+      "project": "devcenter",
+      "owner": "data-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "json",
+        "locator": "devcenter/hubs/data/consumers.json"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "data-recovery",
+      "scope": "dev.hub.data.recovery",
+      "project": "devcenter",
+      "owner": "data-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "json",
+        "locator": "devcenter/hubs/data/recovery.json"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "data-runtime",
+      "scope": "dev.hub.data.runtime",
+      "project": "devcenter",
+      "owner": "data-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "javascript_module",
+        "locator": "devcenter/scripts/data-hub.mjs"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "data-freepass-receipt",
+      "scope": "dev.hub.data.evidence.freepass_catalog_v1",
+      "project": "devcenter",
+      "owner": "data-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "json",
+        "locator": "devcenter/evidence/data/freepass-data-catalog-v1.json"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "quality-admin-backend-receipt",
+      "scope": "dev.hub.quality.evidence.admin_backend",
+      "project": "devcenter",
+      "owner": "quality-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "json",
+        "locator": "devcenter/evidence/quality/freepass-admin-backend-baseline.json"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "quality-patterns",
+      "scope": "dev.hub.quality.patterns",
+      "project": "devcenter",
+      "owner": "quality-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "json",
+        "locator": "devcenter/hubs/quality/patterns.json"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "quality-consumers",
+      "scope": "dev.hub.quality.consumers",
+      "project": "devcenter",
+      "owner": "quality-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "json",
+        "locator": "devcenter/hubs/quality/consumers.json"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "quality-retention",
+      "scope": "dev.hub.quality.retention",
+      "project": "devcenter",
+      "owner": "quality-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "json",
+        "locator": "devcenter/hubs/quality/retention.json"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "design-adoption-receipt-contract",
+      "scope": "dev.hub.design.adoption.contract",
+      "project": "devcenter",
+      "owner": "design-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "json_schema",
+        "locator": "devcenter/contracts/design-adoption-receipt.schema.json"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "design-admin-source-receipt",
+      "scope": "dev.hub.design.evidence.admin_shell",
+      "project": "devcenter",
+      "owner": "design-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "json",
+        "locator": "devcenter/evidence/design/freepass-admin-approved-shell.json"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "design-feedback",
+      "scope": "dev.hub.design.feedback",
+      "project": "devcenter",
+      "owner": "design-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "json",
+        "locator": "devcenter/hubs/design/feedback.json"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    },
+    {
+      "id": "design-feedback-runtime",
+      "scope": "dev.hub.design.feedback.runtime",
+      "project": "devcenter",
+      "owner": "design-hub",
+      "role": "authoritative",
+      "source": {
+        "kind": "javascript_module",
+        "locator": "devcenter/scripts/design-feedback.mjs"
+      },
+      "key": "entry",
+      "required": [],
+      "allow_empty": false
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "contract": "devcenter-design-feedback/v1",
+  "version": 1,
+  "entries": [
+    {
+      "id": "approved-visual-authority-hash",
+      "decision": "ADOPT",
+      "source": {
+        "repository": "freepass-creator/freepass-admin",
+        "revision": "92e2838b6da2df5f0b8733db494e879bd25d2e74"
+      },
+      "evidence": [
+        "design adoption receipt",
+        "freepass-admin/docs/WORK-INBOX.md#13"
+      ],
+      "rule": "Before broad implementation, pin the approved representative visual artifact and approval evidence so later work cannot silently replace the design authority."
+    },
+    {
+      "id": "mobile-multipanel-view-transition",
+      "decision": "ADOPT",
+      "source": {
+        "repository": "freepass-creator/freepass-admin",
+        "revision": "92e2838b6da2df5f0b8733db494e879bd25d2e74"
+      },
+      "evidence": [
+        "design adoption receipt",
+        "freepass-admin/src/app/page.tsx",
+        "freepass-admin/src/app/globals.css"
+      ],
+      "rule": "A multi-panel desktop task surface must not default to a long stacked mobile page when the mobile task is sequential; use explicit view/navigation transitions while preserving task order."
+    },
+    {
+      "id": "whole-tuple-option-selection",
+      "decision": "ADOPT",
+      "source": {
+        "repository": "freepass-creator/freepass-admin",
+        "revision": "92e2838b6da2df5f0b8733db494e879bd25d2e74"
+      },
+      "evidence": [
+        "design adoption receipt",
+        "freepass-admin/src/app/page.tsx"
+      ],
+      "rule": "When one business option is a semantic tuple, present/select the tuple as one whole interactive row rather than independent cells that can imply invalid combinations."
+    },
+    {
+      "id": "admin-remove-quick-filter-row",
+      "decision": "HOLD_LOCAL",
+      "source": {
+        "repository": "freepass-creator/freepass-admin",
+        "revision": "92e2838b6da2df5f0b8733db494e879bd25d2e74"
+      },
+      "evidence": [
+        "freepass-admin/docs/WORK-INBOX.md#13-2"
+      ],
+      "rule": "Admin-specific search behavior remains a product-local profile decision and is not promoted as a universal Design Hub rule."
+    }
+  ]
+}

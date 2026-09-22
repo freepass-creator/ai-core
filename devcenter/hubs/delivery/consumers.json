@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "contract": "devcenter-delivery-consumers/v1",
+  "consumers": [
+    {
+      "id": "freepass-admin",
+      "repository": "freepass-creator/freepass-admin",
+      "observed_revision": "02deb4df0fcb123a478519e3cbb408cd5e2ad7c6",
+      "status": "HOLD",
+      "release_authority": "docs/RELEASE.md",
+      "environments": [
+        "PREVIEW",
+        "PRODUCTION"
+      ],
+      "evidence": [
+        "freepass-admin/docs/RELEASE.md",
+        "freepass-admin@02deb4df0fcb123a478519e3cbb408cd5e2ad7c6",
+        "GitHub Actions run 35544722842: runner_id=0 and zero executed steps",
+        "Vercel connected team project count=0 at 2026-09-21 observation"
+      ],
+      "blockers": [
+        "exact-head build/test evidence is not available for the latest mapped Admin revision",
+        "no connected preview deployment target is currently discoverable",
+        "production persistence/auth/runtime smoke are not verified"
+      ]
+    }
+  ]
+}

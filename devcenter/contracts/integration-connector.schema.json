@@ -1,0 +1,235 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://teamjpk.local/devcenter/contracts/integration-connector.schema.json",
+  "title": "Development Center Integration Connector Registry v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "version",
+    "connectors"
+  ],
+  "properties": {
+    "contract": {
+      "const": "devcenter-integration-connectors/v1"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "connectors": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "provider",
+          "protocol",
+          "status",
+          "source",
+          "direction",
+          "execution",
+          "auth",
+          "health",
+          "recovery",
+          "verification"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:[-.][a-z0-9]+)*$"
+          },
+          "provider": {
+            "type": "string",
+            "minLength": 1
+          },
+          "protocol": {
+            "enum": [
+              "HTTP",
+              "SDK",
+              "DATABASE",
+              "WEBHOOK",
+              "FILE",
+              "QUEUE"
+            ]
+          },
+          "status": {
+            "enum": [
+              "CANDIDATE",
+              "ACTIVE",
+              "DEGRADED",
+              "DEPRECATED",
+              "RETIRED"
+            ]
+          },
+          "source": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "repository",
+              "revision",
+              "path",
+              "blob_sha"
+            ],
+            "properties": {
+              "repository": {
+                "type": "string",
+                "pattern": "^[^/]+/[^/]+$"
+              },
+              "revision": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{40}$"
+              },
+              "path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "blob_sha": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{40}$"
+              }
+            }
+          },
+          "direction": {
+            "enum": [
+              "INBOUND",
+              "OUTBOUND",
+              "BIDIRECTIONAL"
+            ]
+          },
+          "execution": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "timeout_ms",
+              "retry",
+              "idempotency"
+            ],
+            "properties": {
+              "timeout_ms": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 300000
+              },
+              "retry": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "max_attempts",
+                  "backoff"
+                ],
+                "properties": {
+                  "max_attempts": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 20
+                  },
+                  "backoff": {
+                    "enum": [
+                      "NONE",
+                      "FIXED",
+                      "EXPONENTIAL"
+                    ]
+                  }
+                }
+              },
+              "idempotency": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "required",
+                  "key_ref"
+                ],
+                "properties": {
+                  "required": {
+                    "type": "boolean"
+                  },
+                  "key_ref": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "auth": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "mode",
+              "secret_location"
+            ],
+            "properties": {
+              "mode": {
+                "type": "string",
+                "minLength": 1
+              },
+              "secret_location": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "health": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "probe",
+              "success_receipt"
+            ],
+            "properties": {
+              "probe": {
+                "type": "string",
+                "minLength": 1
+              },
+              "success_receipt": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "recovery": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "failure_mode",
+              "fallback",
+              "disable_path"
+            ],
+            "properties": {
+              "failure_mode": {
+                "enum": [
+                  "FAIL_CLOSED",
+                  "DEGRADE_READ_ONLY",
+                  "QUEUE_FOR_RETRY"
+                ]
+              },
+              "fallback": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "disable_path": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "verification": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "contract": "devcenter-quality-consumers/v1",
+  "version": 1,
+  "consumers": [
+    {
+      "id": "freepass-admin-backend-baseline",
+      "repository": "freepass-creator/freepass-admin",
+      "receipt_revision": "3f1812c6968f57494c1e8204e7a67d54e1c1f3ea",
+      "latest_observed_revision": "02deb4df0fcb123a478519e3cbb408cd5e2ad7c6",
+      "receipt_ref": "evidence/quality/freepass-admin-backend-baseline.json",
+      "status": "RECEIPTED_HOLD",
+      "verified_claims": [
+        "install",
+        "typecheck",
+        "test",
+        "build"
+      ],
+      "open_claims": [
+        "production-persistence",
+        "auth-permission",
+        "runtime-smoke",
+        "deployment"
+      ]
+    }
+  ]
+}

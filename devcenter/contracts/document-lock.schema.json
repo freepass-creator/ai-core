@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://teamjpk.local/devcenter/contracts/document-lock.schema.json",
+  "title": "Development Center Document Lock v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "lock_id",
+    "template_id",
+    "docshub_revision",
+    "approval",
+    "artifact_ref",
+    "created_at"
+  ],
+  "properties": {
+    "contract": {
+      "const": "devcenter-document-lock/v1"
+    },
+    "lock_id": {
+      "type": "string",
+      "pattern": "^dlock_[a-f0-9]{24}$"
+    },
+    "template_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "docshub_revision": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{40}$"
+    },
+    "approval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "approved_by",
+        "evidence_ref"
+      ],
+      "properties": {
+        "status": {
+          "const": "APPROVED"
+        },
+        "approved_by": {
+          "enum": [
+            "USER",
+            "AUTHORIZED_REVIEWER"
+          ]
+        },
+        "evidence_ref": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "artifact_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "previous_lock_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

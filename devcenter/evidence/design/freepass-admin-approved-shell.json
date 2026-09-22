@@ -1,0 +1,100 @@
+{
+  "contract": "devcenter-design-adoption-receipt/v1",
+  "subject": {
+    "project_id": "freepass-admin",
+    "repository": "freepass-creator/freepass-admin",
+    "revision": "92e2838b6da2df5f0b8733db494e879bd25d2e74",
+    "surface_id": "admin-product-application"
+  },
+  "authority": {
+    "path": "docs/ui/mockups/admin-product-to-application.html",
+    "sha256": "6d2c26dc171d0c519d8ba5d8f9d7ab4be29cfeb371f6c8e639606863b62cef7d",
+    "approval_status": "USER_APPROVED",
+    "evidence_ref": "freepass-admin/docs/WORK-INBOX.md#13"
+  },
+  "ai_core": {
+    "repository": "freepass-creator/ai-core",
+    "revision": "76b4c05f0b99a80033aa9d65030ac97df0f649e9",
+    "feature_registry_version": "1.3.0"
+  },
+  "design_hub_revision": "2d23a6b0dd57474fe9799d1253eefb6b78bad923",
+  "checks": [
+    {
+      "id": "DESIGN.QUICK_FILTER_REMOVED",
+      "status": "PASS",
+      "evidence": [
+        "freepass-admin/src/app/page.tsx@92e2838b6da2df5f0b8733db494e879bd25d2e74"
+      ]
+    },
+    {
+      "id": "DESIGN.BUSINESS_RAIL",
+      "status": "PASS",
+      "evidence": [
+        "freepass-admin/src/app/page.tsx@92e2838b6da2df5f0b8733db494e879bd25d2e74",
+        "freepass-admin/src/app/globals.css@92e2838b6da2df5f0b8733db494e879bd25d2e74"
+      ]
+    },
+    {
+      "id": "DESIGN.FLOATING_PANELS",
+      "status": "PASS",
+      "evidence": [
+        "freepass-admin/src/app/globals.css@92e2838b6da2df5f0b8733db494e879bd25d2e74"
+      ]
+    },
+    {
+      "id": "DESIGN.WHOLE_OFFER_ROWS",
+      "status": "PASS",
+      "evidence": [
+        "freepass-admin/src/app/page.tsx@92e2838b6da2df5f0b8733db494e879bd25d2e74"
+      ]
+    },
+    {
+      "id": "DESIGN.MOBILE_VIEW_NAV",
+      "status": "PASS",
+      "evidence": [
+        "freepass-admin/src/app/page.tsx@92e2838b6da2df5f0b8733db494e879bd25d2e74",
+        "freepass-admin/src/app/globals.css@92e2838b6da2df5f0b8733db494e879bd25d2e74"
+      ]
+    },
+    {
+      "id": "DESIGN.BOTTOM_ACTION_BOUNDARY",
+      "status": "PASS",
+      "evidence": [
+        "freepass-admin/src/app/page.tsx@92e2838b6da2df5f0b8733db494e879bd25d2e74"
+      ]
+    },
+    {
+      "id": "DESIGN.BROWSER_VISUAL_QA",
+      "status": "HOLD",
+      "evidence": [
+        "devcenter/docs/DESIGN-VISUAL-QA.md"
+      ],
+      "remediation": "Run browser capture and visual review on the exact UI revision.",
+      "recheck": "Produce Design Visual Receipt for required viewports."
+    },
+    {
+      "id": "DESIGN.GLOBALIZATION_INTERACTION",
+      "status": "HOLD",
+      "evidence": [
+        "ai-core/docs/UI_UX_CONSTITUTION.md"
+      ],
+      "remediation": "Verify locale/input/focus/zoom/reflow matrix in controlled browser.",
+      "recheck": "Attach conformance receipt to the mapped consumer revision."
+    }
+  ],
+  "result": {
+    "status": "HOLD",
+    "counts": {
+      "PASS": 6,
+      "HOLD": 2,
+      "FAIL": 0
+    }
+  },
+  "source_blobs": {
+    "src/app/page.tsx": "d0624d0eed2205ed92c17c9b3278262bfe72a2be",
+    "src/app/globals.css": "ff7313bc416e573c4a30a5d0def5dd1eef06bc01",
+    "src/ui-shell.test.ts": "afcc8f84e100609809ee8946c9c4082f08cfe89f",
+    "docs/ui/mockups/admin-product-to-application.html": "e0f185b1ab0025520287e03f7eeb3bc391157b78"
+  },
+  "receipt_id": "dar_26c229e7df61392225ec771f"
+}

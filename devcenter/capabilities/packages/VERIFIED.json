@@ -1,0 +1,16 @@
+{
+  "kind": "derived_local_package_not_authority",
+  "source": "C:/dev/freepasserp4/lib/format.ts",
+  "sha256": "01c53a801932331974e0b62d36c1587770225992d796c940e2e2bd6914d73b19",
+  "exports": [
+    "kmValue",
+    "fileSizeText"
+  ],
+  "scope": "독립 JS/TS 소비 예제 검증. 기존 운영 프로젝트의 통합 검증 또는 공개 배포가 아님",
+  "capturedAt": "2026-09-09T10:38:15.725Z",
+  "consumers": [
+    "fresh-javascript",
+    "fresh-typescript"
+  ],
+  "packageSha256": "e1d8bdf1683ed48eeee3928fbee807bbf96c3150d9c2c7ecde071159a72808a8"
+}
