@@ -5,7 +5,7 @@ import path from 'node:path';
 import Ajv2020 from 'ajv/dist/2020.js';
 import addFormats from 'ajv-formats';
 import {fileURLToPath} from 'node:url';
-import {buildCoreReceipt} from '../src/engine/core-receipt.mjs';
+import {buildCoreReceipt} from '../src/engine/execution-receipt.mjs';
 import {finalizeCoreHubReceipt} from '../src/engine/core-hub-receipt.mjs';
 
 const ROOT=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
