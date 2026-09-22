@@ -1,6 +1,6 @@
 {
   "contract": "ai-core-ui-interaction-contract/v1",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "feature_registry": "registry/ui-ux-features.json",
   "constitution": "docs/UI_UX_CONSTITUTION.md",
   "rules": {
@@ -290,6 +290,32 @@
         "bulk-command-binding",
         "shortcut-command-binding",
         "utility-toolbar-command-binding"
+      ]
+    },
+    "selection_state": {
+      "feature_refs": [
+        "form.chip",
+        "action.toggle",
+        "navigation.segmented",
+        "data.select-card",
+        "navigation.tabs",
+        "form.radio",
+        "form.checkbox",
+        "form.switch"
+      ],
+      "invariants": [
+        "Selected, pressed and disabled are exposed through state semantics (aria-pressed, aria-selected, checked, disabled), never by colour or weight alone.",
+        "A selectable control keeps one accessible name across states; the name does not flip to the opposite action when the state changes.",
+        "Every selectable set declares single or multiple selection, and a required single choice starts from an explicit unselected state.",
+        "Selection survives refresh and retry only when bound to a stable entity/work key; it is never silently reassigned.",
+        "Focus-visible styling exists for every selectable control and is not removed when a selected style is applied."
+      ],
+      "verification": [
+        "state-not-colour-only",
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "single-choice-auto-advance",
+        "stable-identity"
       ]
     }
   }
