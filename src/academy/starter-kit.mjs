@@ -66,9 +66,10 @@ const coreRepo='freepass-creator/ai-core';
 const coreHead=ghAuth.ok?run('gh',['api','repos/'+coreRepo+'/commits/main','--jq','.sha']):{ok:false,error:'GH_AUTH_UNAVAILABLE'};
 const projectFreshness=remoteHead&&head.ok?(remoteHead===head.stdout?'CURRENT':'STALE_OR_DIVERGED'):'UNKNOWN';
 const coreFreshness=coreHead.ok?(coreHead.stdout===kit.core_revision?'CURRENT':'STALE'):'UNKNOWN';
-const authorityPaths=['.ai-core/kit.json','.ai-core/verify-kit.mjs'];
-const authorityLog=run('git',['log','-1','--format=%H','--','.ai-core/session-bootstrap.mjs']);
-const authorityAnchor=authorityLog.ok?authorityLog.stdout.split(/\\r?\\n/).find(Boolean)??null:null;
+const authorityPaths=['.ai-core/kit.json','.ai-core/session-bootstrap.mjs','.ai-core/verify-kit.mjs'];
+const authorityHistory=run('git',['log','--format=%H','--','.ai-core/session-bootstrap.mjs']);
+let authorityAnchor=null;
+if(authorityHistory.ok){for(const candidate of authorityHistory.stdout.split(/\\r?\\n/).filter(Boolean)){const changed=run('git',['diff-tree','--no-commit-id','--name-only','-r',candidate]);if(!changed.ok)continue;const paths=changed.stdout.split(/\\r?\\n/).filter(Boolean);if(paths.includes('.ai-core/session-bootstrap.mjs')&&paths.includes('.ai-core/kit.json')){authorityAnchor=candidate;break;}}}
 const authorityChanged=[];
 if(authorityAnchor){for(const path of authorityPaths){const anchored=run('git',['rev-parse',authorityAnchor+':'+path]);const current=run('git',['hash-object',path]);if(!anchored.ok||!current.ok||anchored.stdout!==current.stdout)authorityChanged.push(path.replace('.ai-core/',''));}}
 if(kit.core_revision!==generatedAuthority.core_revision||kit.target?.revision!==generatedAuthority.target_revision){if(!authorityChanged.includes('kit.json'))authorityChanged.push('kit.json');}
