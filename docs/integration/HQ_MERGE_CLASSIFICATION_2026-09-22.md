@@ -1,9 +1,64 @@
-# 본사를 ai-core 하나로 — 합병 분류안 (2026-09-22)
+# 본사를 ai-core 하나로 — 합치는 설계 (2026-09-22)
 
-- 상태: `PROPOSAL v0.4` — 대상 셋(개발센터·aiops·문서허브)의 내용을 11가지 구분으로 가름. 이전: `v0.3` — 대표 지적으로 기준을 그룹 운영 모델의 본사/자회사 큰 틀로 바꿈. 이전: `v0.2` — Claude 초안(C-0005) → Codex 검토 **MODIFY**(X-0002) → 반영. 대표 확정 전에는 아무것도 옮기지 않는다.
+- 상태: `PROPOSAL v0.5` — 합치는 설계(모양·겹침 규칙 7개·증명) 추가. 이전: `v0.4` — 대상 셋(개발센터·aiops·문서허브)의 내용을 11가지 구분으로 가름. 이전: `v0.3` — 대표 지적으로 기준을 그룹 운영 모델의 본사/자회사 큰 틀로 바꿈. 이전: `v0.2` — Claude 초안(C-0005) → Codex 검토 **MODIFY**(X-0002) → 반영. 대표 확정 전에는 아무것도 옮기지 않는다.
 - 따르는 계획: [통합 실행 지침](../AI_CORE_INTEGRATION_EXECUTION_DIRECTIVE.md) 2절(분류 5종)·3절(물리 통합 원칙)·5절 STEP 0/4.
   기존 분류 [저장소 생애 감사 2026-09-20](../REPOSITORY_LIFECYCLE_AUDIT_2026-09-20.md) 은 생애(ACTIVE/RETIRE)만 정했고 합병 분류는 비어 있다.
 - 대표(2026-09-22): 「결국 하나로 합쳐야 한다니까」 · 「디자인부터 aiops」 · 「개발센터 문서허브 다 하나로 합쳐야돼」 · 「work컨트롤 등등 다 합쳐야돼」 · 「그냥 다 갖고와서 ai코어 비대하게 늘리고」 · 본체 = **ai-core** · 「우리 이거 통합하는계획있는데 그거대로 해야지 혼자 결정할건 아니고」
+
+## ★합치는 설계 — 무엇을 어디로, 겹치면 어떻게
+
+대표(2026-09-22): 「야 내용이 전혀 없어?? 어떻게 합칠지??」
+
+설계도는 새로 만들지 않는다 — 개발센터 [Hub Architecture v1](https://github.com/freepass-creator/devcenter/blob/main/docs/HUB-ARCHITECTURE.md)(2026-09-21 **사용자 확정**)이 이미 정했다:
+**AI Core = 헌법·공통 계약·불변 규칙**, **개발센터 = 그 규칙을 실행하는 조직(관제층 + 허브 7개)**. 그 문서 5절은 「물리 이동은 별도 migration 작업이다」라고 적어 두었다 — **이번 일이 그 migration 이다.**
+
+### 1. ai-core 안의 모양
+
+```text
+ai-core/
+├─ (루트 — 그대로)  헌법 · 공통 계약 · 불변 규칙
+│   docs/AI_WORKING_STANDARD.md · contracts/ · design-system/ · registry/ · docs/UI_UX_CONSTITUTION.md …
+│
+├─ devcenter/                     개발센터 = 실행 조직 (Hub Architecture v1 그대로)
+│  ├─ control-plane/
+│  │  ├─ standards/    ← devcenter standards/ · docs/CURRENT-STANDARDS · DEV-STANDARD · BASELINE · BOOTSTRAP · STARTER-TEMPLATES
+│  │  ├─ operations/   ← devcenter operations/ (progress-handoff 기록 포함) · inspection/
+│  │  ├─ ssot/  engine/  runs/
+│  │  └─ (registry 는 루트 registry/ 로 합친다 — 규칙 R3)
+│  ├─ design-hub/      ← design/ · hubs/design · contracts/design-* · scripts/design-* · docs/DESIGN-* · portal 디자인 도구
+│  ├─ data-hub/        ← hubs/data · docs/DATA-HUB-EVIDENCE · contracts/data-receipt · evidence/data
+│  ├─ document-hub/    ← hubs/document · docs/DOCUMENT-HUB-RUNTIME · contracts/document-* · scripts/document-hub
+│  │                     + ★문서허브(docshub) 양식/ · data/(등록부·생성기) · 정적 앱   (Hub Architecture: docshub = Document Hub 정본)
+│  ├─ engineering-hub/ ← capabilities/shared · capabilities/packages · docs/ENGINEERING-HUB-RUNTIME
+│  ├─ integration-hub/ ← capabilities/integrations · docs/INTEGRATION-HUB-RUNTIME
+│  │                     + ★aiops 공통 연결(Google·Drive·Sheet·인증·Firebase adapter) · aiops docs/aiknowhow(메일·OCR·전사 노하우)
+│  ├─ quality-hub/     ← quality/conformance · quality/testing · docs/QUALITY-* · BROWSER-VERIFICATION · contracts/quality-receipt
+│  ├─ delivery-hub/    ← quality/release-recovery · docs/DELIVERY-HUB-RUNTIME · contracts/delivery-*
+│  └─ portal/          ← portal/app 소스 (portal/static 4,296 은 빌드로 다시 만든다)
+│
+└─ aiops/                         운영 본부 — 업무 도구·SOP·판단 규칙 (허브가 아니다: Hub Architecture 「제품 고유 비즈니스 로직은 각 프로젝트에 남긴다」)
+   ├─ docs/  ← aiops docs/ 294 md 전부 (sop · 제안 · 오더 · 지난것 · 미수로직 · 업무지도 …)
+   └─ (업무 도구 코드 — 대표 결정 4번: 가져오되 실행은 원본이 계속, 업무별로 전환)
+```
+
+### 2. 겹치면 이렇게 합친다 (규칙 7개)
+
+| # | 겹침 | 합치는 법 | 누가 |
+|---|---|---|---|
+| R1 | **규칙이 두 번 적힘** — devcenter `design/README`(토큰·버튼 상태 설명) · `CURRENT-STANDARDS` · `standards/` 가 ai-core `design-system/`·표준 문서와 같은 것을 말함 | 규칙은 **루트 한 벌**. devcenter 쪽에만 있는 내용은 루트 규칙 문서에 흡수하고, 그 자리는 링크 한 줄로 바꾼다. 서로 다르면(예: CURRENT-STANDARDS C02 — 컨트롤 폰트 13/12.5 ↔ 12.5/12) 루트 토큰에서 하나로 정하고 대표 확인 | Claude 대조안 → Codex 반영 |
+| R2 | **영수증 두 가족** — 허브별 receipt 5종(quality·design·document·data·delivery) ↔ ai-core `core-receipt`·`ui-ux-conformance-receipt`·`qa-result` | `core-receipt` 를 바탕으로, 허브 영수증은 그 **유형**으로 만든다 — 공통 칸(대상·revision·검증·증거)은 한 번, 허브별 칸만 따로 | Claude 설계 → Codex 구현 |
+| R3 | **등록부 두 벌** — devcenter `registry.json` · `hubs/registry.json` ↔ ai-core `registry/projects.json` · `capabilities` | 루트 `registry/` 로 합친다. 허브 7개는 `registry/hubs.json` 한 파일, 프로젝트는 `projects.json` 한 곳 | Codex |
+| R4 | **라우팅 두 곳** — Hub Router(Primary+Secondary Hub) ↔ ai-core work-map | work-map 하나. 허브 라우팅 규칙(Hub Architecture 6절 예시)은 work-map 의 대상 목록으로 들어간다 | Codex |
+| R5 | **고정 revision 묶음** — Design Hub `core-binding` 이 ai-core 옛 커밋(`ac8c502`)에 묶여 있음 | 같은 저장소라 revision 고정 대신 **design-system 원본 묶음의 digest** 를 검사(X-0002) — 옛 토큰을 쓰면 빨강 | Codex |
+| R6 | **시작 키트 사본** — devcenter·aiops·docshub 의 `.ai-core/` | 버린다(원본이 루트에 있다) | 복사 때 제외 |
+| R7 | **기록** — handoff · review · 제안 · 지난것 | 합치지 않는다 — **원래 경로 그대로** 해당 폴더에 둔다. md 하나도 빼지 않는다 | 복사 때 |
+
+### 3. 합친 뒤 «정본 하나» 를 무엇으로 증명하나
+
+- 루트 규칙 파일(토큰·상호작용 계약)의 값이 `devcenter/**` 어디에도 **다시 정의되지 않는다** — 검사기로 막는다(R1).
+- 모든 허브 영수증이 `core-receipt` 바탕 스키마를 통과한다(R2).
+- `registry/` 밖에 등록부 JSON 이 없다(R3).
+- Design Hub 가 옛 토큰 digest 로 돌면 빨강(R5) — Codex 반례를 그대로 시험으로.
 
 ## 왜 지금 (실측한 어긋남)
 
