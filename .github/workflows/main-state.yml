@@ -1,9 +1,40 @@
 name: Main State Consistency
 
+# Full repository validation is expensive and is intentionally reserved for
+# changes that can alter executable behavior, canonical registries/contracts,
+# machine-readable integration policy, or shared runtime authority.
+#
+# Markdown-only documentation/handoff edits do not start GitHub Actions.
+# A PR exact-head run is sufficient; the same full suite is not repeated on
+# push to main after a reviewed PR merge.
 on:
   pull_request:
-  push:
-    branches: [main]
+    paths:
+      - '.github/workflows/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'src/**'
+      - 'scripts/**'
+      - 'test/**'
+      - 'contracts/**'
+      - 'registry/**'
+      - 'design-system/**'
+      - 'devcenter/**'
+      - 'config/**'
+      - 'examples/**/*.json'
+      - 'docs/**/*.json'
+      - 'management-support/**/*.json'
+      - 'management-support/**/*.js'
+      - 'management-support/**/*.mjs'
+      - 'management-support/**/*.cjs'
+      - 'management-support/**/*.ts'
+      - 'management-support/**/*.tsx'
+      - 'management-support/**/*.py'
+  workflow_dispatch:
+
+concurrency:
+  group: main-state-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   verify:
