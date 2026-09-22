@@ -277,6 +277,7 @@ export function startServer({
             route,
             orderId:order.id,
             workId,
+            requestId:data.requestId,
             input:data.input ?? {},
             perform:true,
           });
