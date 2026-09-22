@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { combineChangedFiles, validateMainState, verifyRepository } from '../scripts/verify-main-state.mjs';
 
@@ -25,6 +26,11 @@ const valid = {
 
 test('current repository state is internally consistent', async () => {
   assert.deepEqual(await verifyRepository(fileURLToPath(new URL('..', import.meta.url))), []);
+});
+
+test('main-state CI watches the tested Claude entrypoint', async () => {
+  const workflow = await readFile(new URL('../.github/workflows/main-state.yml', import.meta.url), 'utf8');
+  assert.match(workflow, /^\s+- ['"]CLAUDE\.md['"]\s*$/m);
 });
 
 test('a frozen historical observation must reference an existing commit', () => {
