@@ -114,6 +114,42 @@
           "type": "string",
           "minLength": 1
         },
+        "system_aliases": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "access_entrypoint": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["repository_role", "clone_repository", "clone_command", "existing_checkout", "bootstrap_command", "data_runtime", "do_not_clone", "notes"],
+          "properties": {
+            "repository_role": { "type": "string", "minLength": 1 },
+            "clone_repository": { "type": "string", "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$" },
+            "clone_command": { "type": "string", "minLength": 1 },
+            "existing_checkout": { "type": "string", "minLength": 1 },
+            "bootstrap_command": { "type": "string", "minLength": 1 },
+            "data_runtime": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["kind", "project_id", "repository"],
+              "properties": {
+                "kind": { "type": "string", "minLength": 1 },
+                "project_id": { "type": "string", "minLength": 1 },
+                "repository": { "const": false }
+              }
+            },
+            "do_not_clone": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": { "type": "string", "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$" }
+            },
+            "notes": {
+              "type": "array",
+              "items": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
         "repository": {
           "type": "string",
           "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"

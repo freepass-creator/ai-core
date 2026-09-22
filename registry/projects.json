@@ -421,7 +421,33 @@
         "Large historical worktree/branch accumulation remains a cleanup and salvage risk; do not infer all worktrees are obsolete without revision comparison.",
         "Main is not branch-protected in the latest observed GitHub project audit.",
         "QA/Governance SHADOW is on main and had successful dedicated + existing CI at its source revision, but production revision/runtime proof remains external."
-      ]
+      ],
+      "system_aliases": [
+        "ERP4",
+        "ERP5",
+        "FreePass ERP",
+        "freepasserp5"
+      ],
+      "access_entrypoint": {
+        "repository_role": "ERP5 application, workflow, and infrastructure code owner",
+        "clone_repository": "freepass-creator/freepasserp4",
+        "clone_command": "gh repo clone freepass-creator/freepasserp4 C:\\dev\\freepasserp4",
+        "existing_checkout": "C:\\dev\\freepasserp4",
+        "bootstrap_command": "node .ai-core/session-bootstrap.mjs",
+        "data_runtime": {
+          "kind": "Firebase Firestore",
+          "project_id": "freepasserp5",
+          "repository": false
+        },
+        "do_not_clone": [
+          "freepass-creator/jpkerp5"
+        ],
+        "notes": [
+          "ERP5 is the Firebase project and data runtime, not a GitHub repository name.",
+          "jpkerp5 is a RETIRE target and must not be used as the current ERP5 implementation.",
+          "Production data access requires the project existing authorized Firebase path; cloning source code does not grant database credentials."
+        ]
+      }
     },
     {
       "project_id": "sonogong-estimator",
