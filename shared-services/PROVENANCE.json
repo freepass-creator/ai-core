@@ -22,6 +22,22 @@
       "source_runtime_authority": "AIOPS",
       "ai_core_runtime_authority": false,
       "consumer_cutover_authorized": false
+    },
+    {
+      "source_path": "lib/goog.mjs",
+      "source_symbol": "makeCall(read-only semantics)",
+      "source_blob_sha": "447deabfbfedf9e0eb26ab2dffbaed4f8ada0100",
+      "destination_path": "shared-services/google/read-transport.mjs",
+      "destination_blob_sha": "f6dcf58b24a8f953f1af1671559e9bed76fbae25",
+      "disposition": "ADAPTED_SHADOW",
+      "source_runtime_authority": "AIOPS",
+      "ai_core_runtime_authority": false,
+      "consumer_cutover_authorized": false,
+      "semantic_differences": [
+        "AIOps source uses linear retry wait (20s + 15s per retry); shadow adapter uses fixed 20s retry because core-adapter/v1 currently expresses NONE/FIXED/EXPONENTIAL only.",
+        "Shadow adapter rejects non-read methods before provider fetch.",
+        "Shadow adapter prevents caller headers from overriding the supplied bearer token."
+      ]
     }
   ],
   "invariants": [
