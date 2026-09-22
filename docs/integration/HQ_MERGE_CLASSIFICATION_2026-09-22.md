@@ -1,6 +1,6 @@
-# 본사 저장소 합병 분류안 — STEP 0 (2026-09-22)
+# 본사를 ai-core 하나로 — 합병 분류안 (2026-09-22)
 
-- 상태: `PROPOSAL v0.2` — Claude 초안(C-0005) → Codex 검토 **MODIFY**(X-0002) → 반영. 대표 확정 전에는 아무것도 옮기지 않는다.
+- 상태: `PROPOSAL v0.3` — 대표 지적으로 기준을 그룹 운영 모델의 본사/자회사 큰 틀로 바꿈. 이전: `v0.2` — Claude 초안(C-0005) → Codex 검토 **MODIFY**(X-0002) → 반영. 대표 확정 전에는 아무것도 옮기지 않는다.
 - 따르는 계획: [통합 실행 지침](../AI_CORE_INTEGRATION_EXECUTION_DIRECTIVE.md) 2절(분류 5종)·3절(물리 통합 원칙)·5절 STEP 0/4.
   기존 분류 [저장소 생애 감사 2026-09-20](../REPOSITORY_LIFECYCLE_AUDIT_2026-09-20.md) 은 생애(ACTIVE/RETIRE)만 정했고 합병 분류는 비어 있다.
 - 대표(2026-09-22): 「결국 하나로 합쳐야 한다니까」 · 「디자인부터 aiops」 · 「개발센터 문서허브 다 하나로 합쳐야돼」 · 「work컨트롤 등등 다 합쳐야돼」 · 「그냥 다 갖고와서 ai코어 비대하게 늘리고」 · 본체 = **ai-core** · 「우리 이거 통합하는계획있는데 그거대로 해야지 혼자 결정할건 아니고」
@@ -25,7 +25,27 @@
 - ai-core 안에서 `freepass-creator/devcenter` 를 실제 대상으로 지목하는 파일(`git grep origin/main`): `registry/projects.json` · `registry/work-map.json` · `registry/ui-ux-entrypoint.json` · `examples/repository-lifecycle-2026-09-20.json` · `docs/inventory/C-DEV-2026-09-15.json` · `docs/research/a-session-*.v1.json` 4개.
 - ★로컬 `C:\dev\docshub` 는 **git 저장소가 아니다**(파일 581개, `.git` 없음). 실제 문서허브(`양식/` 생성기·`data/` 등록부·PDF 도구)는 **로컬에만** 있고 원격 `docshub` 저장소는 작은 정적 앱(`app.js`·`index.html`·`styles.css`)+키트뿐이다. 로컬 폴더에는 **소송 사건 서류**(`사건/`, `_레거시/고소장`)가 섞여 있다.
 
-## 분류안 (Codex X-0002 반영)
+## 큰 틀 — 그룹 운영 모델의 본사 / 자회사 (이것이 기준이다)
+
+대표(2026-09-22): 「아냐 그 분류말고 크게 나눠놓은거 있어」 → [그룹 운영 모델](../GROUP_OPERATING_MODEL.md) 2절 토폴로지·5절 본사 공통 조직·9절 적용 메모.
+통합 실행 지침의 5종 분류(MERGE_PHYSICAL 등)는 이 큰 틀 **안에서** 쓰는 세부 도구다 — 먼저 본사/자회사로 가른다.
+
+**본사 = ai-core 하나로 모은다(복사해서 가져온다).** 자회사는 모델대로 독립 저장소를 유지한다.
+
+| 모델의 자리 | 지금 있는 곳 | ai-core 안 자리 | 처리 |
+|---|---|---|---|
+| 본사 · AI Core | `ai-core` | (본체) | — |
+| 본사 · 기획실 | 따로 저장소 없음 | `planning-office/` (필요할 때) | 새로 만들지 않는다 — 생길 때 둔다 |
+| 본사 · **개발센터** | `devcenter` | `devcenter/` | **① 첫 번째** 복사 합병 (디자인부터) |
+| 본사 · **경영지원** (권한·문서·감사·인수인계) | `docshub` 의 공통 문서 규격·양식·등록부 (로컬 `C:\dev\docshub` 의 `양식/`·`data/`) | `management-support/docs/` | **②** 복사 합병 — ★사건 서류(`사건/`·`_레거시/고소장`)는 자회사 `casemap` 몫이라 빼고 옮기지 않는다 |
+| 본사 · **공통 서비스** (공통 연결·계약·검증) | `aiops` 의 범용 기능 — Google·Drive·Sheet·인증·작업대장 | `shared-services/` | **③** — 모델 9절 그대로. 계약·adapter 로 추출하고 aiops 기존 호출과 같은 결과인지 검증(X-0002) |
+| 운영 도메인 | `aiops` 의 과태료·자금·보험·미수 절차 · 예약작업 · 운영 자료 | (옮기지 않음) | 모델 9절 「업무 의미와 절차는 운영 도메인에 유지」 |
+| 자회사 · ERP · 영업 · 정산 · 홈페이지 · 사건 · 웹툰 | `freepasserp4` · `freepass-sales` · `fp-settlement` · `freepasshomepage` · `casemap-private` · `webtoon-studio` (+ `freepass-admin` · `freepass-data` · 견적기) | (옮기지 않음) | 독립 유지 — 배포·도메인·OIDC 가 저장소에 묶여 있다 |
+| 자회사 · work-control | 몸체 `teamjpkwork` · 옛 `workcontrol` 은 09-20 RETIRE(직원 관제 코드는 aiops 로 옮겨짐) | (옮기지 않음) | ★대표 확인 필요 — 「work컨트롤 등등 다 합쳐야돼」 는 모델의 자회사 자리와 다르다 |
+
+<details><summary>이전 세부 분류표(v0.2 — 큰 틀로 대체됨, 근거 보존)</summary>
+
+### 세부 분류 (Codex X-0002 반영)
 
 | 저장소 | 제안 | 까닭 | 반례 · 조건 |
 |---|---|---|---|
@@ -34,6 +54,9 @@
 | **workcontrol** | **RETIRE 유지** (합치지 않음) | 09-20 이미 RETIRE — 직원 관제 코드는 aiops·teamjpkwork 로 옮겨짐 | 옛 배포·도메인 확인 전 archive·삭제 금지(감사 58·82줄) |
 | **aiops** | **2단계** — ① `EXTRACT_SHARED` ② 조건 충족 뒤 물리 합병 | 경로·예약·운영 자료에 기대는 것이 많아 한 번에 옮기면 미수·과태료·지킴이 같은 운영이 멈춘다 | ① 은 `lib/*` 파일 이동이 **아니다**(X-0002): ai-core 가 **공통 계약·adapter 를 revision 에 묶어 제공**하고 aiops 가 운영 실행을 소유한다. aiops 기존 호출자와 **같은 결과**를 내는지 검증한다. Codex 가 이미 이 방향(starter kit · request identity · 보험·재무 read adapter · 보안 승인 경계)으로 고쳐 왔다 |
 | teamjpkwork · freepass-admin · freepass-sales · freepasserp4 · freepass-data · 견적기 · 홈페이지 | **KEEP_SEPARATE** (이번 범위 밖) | 각자 배포·도메인·Firebase·OIDC 가 저장소 이름에 묶여 있다(예: fp4 `erp5-ssot-refresh.yml` OIDC provider `freepasserp4`). 지침 3절 | 본사 통합과 Git 합병을 구분한다 — 합치려면 배포 전환 계획이 따로 필요 |
+
+
+</details>
 
 aiops ② 물리 합병의 조건(전부 충족 시):
 - 이력 전체의 개인정보·계좌 자료 검사 통과(없으면 이력 없이 현재 트리만)
@@ -49,7 +72,9 @@ aiops ② 물리 합병의 조건(전부 충족 시):
 1. **원형 보존** — 원 저장소·로컬 폴더는 **건드리지 않는다.** 문제가 생기면 원본으로 바로 돌아간다.
 2. **복사** — 원 저장소 기본 갈래의 **한 커밋**을 골라, 추적된 파일(`git archive <sha>`)만 `ai-core/<이름>/` 에 복사한다.
    - **이력은 들이지 않는다** — 과거에 커밋됐던 개인정보·계좌 자료(aiops 원자 이력 등)가 따라오지 않는다. 이력은 원 저장소에 그대로 있다.
-   - 미추적·무시 파일(`.env`·`node_modules`·`.local`·빌드 산출물)은 복사하지 않는다.
+   - ★**md 등 문서는 하나도 빼지 않는다.** 대표(2026-09-22): 「md랑 이런거 다 남겨야혀」 — 문서·기록·인수인계·감사 파일을 전부 가져오고, 원본에도 그대로 남긴다.
+   - 빼는 것은 셋뿐이다: 열쇠(`.env` 등) · 다시 만들 수 있는 것(`node_modules`·`.local`·빌드 산출물) · 자회사 몫 사건 서류(원래 자리에 그대로 둔다 — 지우지 않는다).
+   - 복사 뒤 PROVENANCE 의 파일 목록과 원본 목록을 대조해 **빠진 md 가 0** 인지 확인한다.
    - 복사 전에 열쇠·개인정보 검사를 돌린다.
 3. **출처 기록** — `ai-core/<이름>/PROVENANCE.json` 에 원 저장소 · 커밋 SHA · 복사 시각 · 제외 규칙 · 파일 수·해시 목록을 남긴다. 「어디서 언제 가져왔나」에 늘 답이 있다.
 4. **검증** — 원 저장소의 검사를 새 위치에서 그대로 돌려 같은 결과. ai-core 루트 검사는 그대로 초록.
@@ -68,9 +93,9 @@ aiops ② 물리 합병의 조건(전부 충족 시):
 
 ## 순서와 나눔
 
-① **devcenter**(디자인부터) — 복사 실험·참조 전환·기능 대조: **Claude** / 검사기·CI·binding: **Codex** / 병합: **Codex**
-② **docshub** — 대표가 범위(양식·data 만, 사건 서류 제외) 확정 뒤
-③ **aiops ①** 계약·adapter 추출 — Codex 가 하던 방향 그대로, Claude 는 반례 검토
-④ **aiops ②** — 조건 충족 뒤
+① **개발센터** → `devcenter/` — 복사 실험·참조 전환·기능 대조: **Claude** / 검사기·CI·binding: **Codex** / 병합: **Codex**
+② **경영지원** ← docshub 공통 문서(양식·data, 사건 서류 제외) → `management-support/docs/`
+③ **공통 서비스** ← aiops 범용 기능 → `shared-services/` — 계약·adapter 추출은 Codex 가 하던 방향 그대로, Claude 는 반례 검토
+운영 도메인(aiops 업무 절차)과 자회사는 옮기지 않는다.
 
 한 번에 하나. 각 단계는 초안 PR 로 잡는다(책상 규칙 4절).
