@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { sealIntegrationPreflight, buildIntegrationExecutionReceipt } from '../src/engine/group-integration-preflight.mjs';
+import { assessIntegrationImportContent, sealIntegrationPreflight, buildIntegrationExecutionReceipt } from '../src/engine/group-integration-preflight.mjs';
 
 const packet=(overrides={})=>({
   schema:'ai-core-integration-work-packet/v1',
@@ -57,6 +57,56 @@ const execution=(overrides={})=>({
   environment_revision:'env-1',
   command_ref:'packet-step-set/v1',
   ...overrides,
+});
+
+test('physical import content policy rejects operational, secret, generated, case and deployment material',()=>{
+  const result=assessIntegrationImportContent({paths:[
+    'docs/README.md',
+    '.env.production',
+    'outputs/run.json',
+    '사건/고소장.pdf',
+    'portal/static/app.js',
+    '.github/workflows/deploy.yml',
+  ]});
+  assert.equal(result.status,'HOLD');
+  const codes=new Set(result.blockers.map(item=>item.code));
+  assert.ok(codes.has('IMPORT_SECRET_FILE_FORBIDDEN'));
+  assert.ok(codes.has('IMPORT_OPERATIONAL_DATA_FORBIDDEN'));
+  assert.ok(codes.has('IMPORT_CASE_MATERIAL_FORBIDDEN'));
+  assert.ok(codes.has('IMPORT_GENERATED_ARTIFACT_FORBIDDEN'));
+  assert.ok(codes.has('IMPORT_DEPLOY_BOUNDARY_FORBIDDEN'));
+});
+
+test('physical import content policy rejects competing AI Core authority copies',()=>{
+  const result=assessIntegrationImportContent({paths:[
+    '.ai-core/WORK_READ_FIRST.md',
+    'AGENTS.md',
+    'hubs/registry.json',
+    'design-system/tokens.json',
+  ]});
+  assert.equal(result.status,'HOLD');
+  assert.ok(result.blockers.every(item=>item.category==='AUTHORITY'));
+});
+
+test('physical import preflight computes and binds a safe inventory instead of trusting a claimed PASS',()=>{
+  const p=packet({
+    classification:'MERGE_PHYSICAL',
+    revalidation:{immediately_before_execution:true,required_checks:[
+      'SOURCE_REVISION_UNCHANGED','DIRTY_STATE_RECHECK','PLAN_ITEM_STILL_READY',
+      'IMPORT_CONTENT_POLICY_CHECK','CANONICAL_AUTHORITY_COLLISION_CHECK','SOURCE_RUNTIME_DEPENDENCY_CHECK'
+    ]},
+  });
+  const sealed=sealIntegrationPreflight({packet:p,observation:observation({
+    import_paths:['docs/sop/README.md','lib/google-drive-adapter.mjs'],
+    checks:[{name:'SOURCE_RUNTIME_DEPENDENCY_CHECK',status:'PASS'}],
+  })});
+  assert.equal(sealed.import_path_count,2);
+  assert.match(sealed.import_inventory_digest,/^sha256:[0-9a-f]{64}$/);
+
+  assert.throws(()=>sealIntegrationPreflight({packet:p,observation:observation({
+    import_paths:['docs/sop/README.md','.env'],
+    checks:[{name:'SOURCE_RUNTIME_DEPENDENCY_CHECK',status:'PASS'},{name:'IMPORT_CONTENT_POLICY_CHECK',status:'PASS'}],
+  })}),/IMPORT_CONTENT_IMPORT_SECRET_FILE_FORBIDDEN/);
 });
 
 test('preflight seals exact revision and clean state without granting authority',()=>{
