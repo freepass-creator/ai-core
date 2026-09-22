@@ -548,6 +548,8 @@
     "examples/ui-ux-consumer.manifest.json",
     "examples/work-ledger.jsonl",
     "GEMINI.md",
+    "management-support/README.md",
+    "management-support/templates/README.md",
     "memory/CURRENT.md",
     "memory/EMAIL_INDEX.json",
     "memory/LINEAGE.md",
@@ -785,6 +787,7 @@
     "test/landed-observer.test.mjs",
     "test/legacy-adapter-bridge.test.mjs",
     "test/mail-connection-status.test.mjs",
+    "test/management-support-transition.test.mjs",
     "test/normalize-order-intent.test.mjs",
     "test/operating-engine.test.mjs",
     "test/ops-watch.test.mjs",
@@ -961,6 +964,7 @@
     "2026-09-22 R2 receipt unification: quality, design adoption, design visual, document, data and delivery generators now emit core-receipt/v1 once; specialized schemas constrain typed payloads and preserve legacy contract provenance. Portal path independence remains HOLD. changed_files is exact verifier parity only.",
     "2026-09-22 portal path independence: DevCenter portal typecheck and static packaging now consume hash-verified pinned catalog snapshots and staged logical manifests instead of a sibling ../../freepasserp4 checkout or a previous static build. CI installs portal dependencies and runs the portable gate. The generated functions inventory remains a documented build prerequisite. Claude read-only review was invoked once but produced no response within 60 seconds, so it is UNAVAILABLE rather than PASS. changed_files is exact verifier parity only.",
     "2026-09-22 AIOps pre-import classification: pinned freepass-creator/aiops@3d6ec8c... inventory into conservative preserve/exclude/HOLD/shared-review categories; no execution or source retirement authority. changed_files updated for verifier parity only.",
-    "2026-09-23 DocsHub transition boundary: remote DocsHub was source-reviewed at 4059d827...; Document Hub binding and registry remain HOLD and converge on one transitional exact source, management-support/templates is the post-cutover template owner, and the unversioned local DocsHub inventory remains HOLD until fresh observation and sensitive/case-content exclusion. changed_files updated for verifier parity only."
+    "2026-09-23 DocsHub transition boundary: remote DocsHub was source-reviewed at 4059d827...; Document Hub binding and registry remain HOLD and converge on one transitional exact source, management-support/templates is the post-cutover template owner, and the unversioned local DocsHub inventory remains HOLD until fresh observation and sensitive/case-content exclusion. changed_files updated for verifier parity only.",
+    "2026-09-23 management-support intake gate: created scaffold-only headquarters target for reusable document templates and added a fail-closed pre-cutover test that keeps document routing on external DocsHub HOLD until provenance, parity, binding, routing and reference-only cutover conditions all pass. changed_files updated for verifier parity only."
   ]
 }
