@@ -194,6 +194,25 @@
       "execution_authorized": false,
       "evidence": [
         "Generic table helpers are coupled to goog.mjs authentication and AIOps write-gate behavior."
+      ],
+      "partial_extractions": [
+        {
+          "source_symbols": [
+            "colL",
+            "num",
+            "serial2date",
+            "date2serial"
+          ],
+          "source_blob_sha": "32940fd3edc5d0ec718410472a41476a921d55ff",
+          "destination_path": "shared-services/google/sheets-utils.mjs",
+          "disposition": "FUNCTION_SLICE_SHADOW",
+          "consumer_cutover_authorized": false,
+          "remaining_blockers": [
+            "sheet() remains coupled to AIOps token/makeCall runtime",
+            "write methods remain coupled to AIOps lease/write authorization",
+            "backup behavior includes local filesystem policy"
+          ]
+        }
       ]
     },
     {

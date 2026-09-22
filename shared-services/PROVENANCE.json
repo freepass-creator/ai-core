@@ -38,6 +38,22 @@
         "Shadow adapter rejects non-read methods before provider fetch.",
         "Shadow adapter prevents caller headers from overriding the supplied bearer token."
       ]
+    },
+    {
+      "source_path": "lib/sheet.mjs",
+      "source_symbols": [
+        "colL",
+        "num",
+        "serial2date",
+        "date2serial"
+      ],
+      "source_blob_sha": "32940fd3edc5d0ec718410472a41476a921d55ff",
+      "destination_path": "shared-services/google/sheets-utils.mjs",
+      "destination_blob_sha": "35387fe9c28bbc57da3a6ee681a8c89b00e1f44c",
+      "disposition": "FUNCTION_SLICE_SHADOW",
+      "source_runtime_authority": "AIOPS",
+      "ai_core_runtime_authority": false,
+      "consumer_cutover_authorized": false
     }
   ],
   "invariants": [
