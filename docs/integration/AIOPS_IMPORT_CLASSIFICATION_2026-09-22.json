@@ -197,5 +197,12 @@
     "REFACTOR_REQUIRED and KEEP_DOMAIN_CONFIG are HOLD for physical import.",
     "EXTRACT_SHARED_CANDIDATE is a review candidate only and does not authorize execution.",
     "Any source revision change requires re-observation and a new classification snapshot."
-  ]
+  ],
+  "summary": {
+    "explicit_prefix_classified_files": 1198,
+    "exact_authority_exclusions": 3,
+    "shared_library_review_files": 9,
+    "default_hold_remaining_files": 197,
+    "accounted_files": 1407
+  }
 }
