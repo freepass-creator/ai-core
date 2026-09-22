@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "updated_at": "2026-09-22T10:10:00+09:00",
+  "updated_at": "2026-09-22T17:20:00+09:00",
   "rules": {
     "use_confirmed_decisions_without_reasking": true,
     "ask_only_when_required_value_is_missing_or_changed": true,
@@ -103,6 +103,34 @@
       ],
       "ask_only_if_missing": ["exact recipient", "send intent versus draft/review intent", "final content or attachment choice when multiple materially different candidates remain"],
       "walls": ["No send authorization is inferred from tool availability, a draft, a prior different bundle, or a successful connection check."]
+    },
+    {
+      "id": "business.freepass-mobility",
+      "triggers": ["프리패스모빌리티", "프리패스 회사", "공급사 수익", "영업자 수익", "수수료 구조", "프리패스 마진"],
+      "canonical_refs": ["docs/business/FREEPASS_MOBILITY_BUSINESS_KNOWLEDGE.md", "registry/projects.json"],
+      "procedure": [
+        "Explain FreePass Mobility as a mobility distribution and brokerage operator connecting suppliers, sales channels and customers across product guidance, intake, contract, delivery confirmation and settlement.",
+        "For product, price and policy use the current FreePass Data ACTIVE Release; for inventory, allocation and delivery exceptions obtain the latest supplier confirmation.",
+        "For a specific contract, commission, collection or payout use only the authorized Admin-owned settlement record and an exact case identifier.",
+        "Keep confirmed margin separate from actual collection and payout cash flow, and keep customer deposit, monthly rent and return settlement outside FreePass commission income unless the contract proves otherwise.",
+        "If the source, identity, authority or amount is missing or conflicting, answer only with the confirmed general structure and leave the specific item HOLD."
+      ],
+      "do_not_ask": [
+        "What FreePass Mobility generally does when the shared business knowledge already answers it.",
+        "Whether customer deposits or monthly rent should be treated as FreePass margin: they remain a separate financial flow without explicit contract evidence.",
+        "Whether an unknown commission rate or payout date may be estimated: it may not.",
+        "Whether a supplier private commission or another sales channel payout may be disclosed without role-specific authority: it may not."
+      ],
+      "ask_only_if_missing": [
+        "exact vehicle, application or contract identifier for a case-specific status",
+        "authorized settlement source and viewer role for a case-specific commission or payout",
+        "supplier confirmation when current inventory, allocation, delivery timing or an exception is not established by the current source"
+      ],
+      "walls": [
+        "Do not create a second settlement ledger or recalculate authoritative settlement outside the Admin domain.",
+        "Do not expose customer data, contract originals, accounts, supplier cost or private commission across roles.",
+        "Do not turn a historical case, KakaoTalk message or stale catalog snapshot into a general policy."
+      ]
     }
   ]
 }
