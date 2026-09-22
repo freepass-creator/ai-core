@@ -1,6 +1,6 @@
 {
   "schema_version": "1.1",
-  "observed_at": "2026-09-22T05:49:00Z",
+  "observed_at": "2026-09-22T15:50:00Z",
   "projects": [
     {
       "project_id": "ai-core",
@@ -108,17 +108,17 @@
       "organization": "HEADQUARTERS",
       "repository_lifecycle_status": "ACTIVE",
       "execution_readiness_status": "HOLD",
-      "mission": "Repository discovered and indexed by AI Core; mission and operating boundaries require source review before activation.",
+      "mission": "Transitional headquarters document-template source pending migration into AI Core management-support; template bodies remain external until a verified cutover while DevCenter Document Hub owns planning, validation and receipts.",
       "repository": "freepass-creator/docshub",
       "default_branch": "main",
       "local_path": null,
-      "head_revision": "335de48b2e13acad8a552e900c6e521e3b00bd83",
+      "head_revision": "4059d82779b7e1796afa2bbdf644e1d3bbdba3e7",
       "authoritative_sources": [
         {
           "kind": "GIT",
           "ref": "freepass-creator/docshub",
-          "revision": "335de48b2e13acad8a552e900c6e521e3b00bd83",
-          "observed_at": "2026-09-22T00:44:26Z"
+          "revision": "4059d82779b7e1796afa2bbdf644e1d3bbdba3e7",
+          "observed_at": "2026-09-22T15:50:00Z"
         }
       ],
       "commands": {
@@ -129,7 +129,9 @@
       "deploy_targets": [],
       "required_approvals": [],
       "known_blockers": [
-        "Discovered in the connected GitHub installation but not yet source-reviewed into an AI Core Project Capsule; execution remains HOLD until commands, SSOT and deployment boundaries are verified."
+        "Remote DocsHub has been source-reviewed at 4059d82779b7e1796afa2bbdf644e1d3bbdba3e7; its four template source blobs are unchanged from the prior Document Hub binding.",
+        "The larger local C:\\dev\\docshub inventory is not a Git repository and has not been freshly observed in this session; physical import remains HOLD.",
+        "Management-support template ownership and DevCenter Document Hub runtime ownership must cut over atomically so external DocsHub and AI Core never become competing writable template SSOTs."
       ]
     },
     {
