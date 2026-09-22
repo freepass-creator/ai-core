@@ -1,8 +1,10 @@
 # DevCenter AI Editorial Layout Compiler
 
-상태: Design Hub 구현 참고 SSOT
-대상: Claude, GPT, Codex, Gemini 및 기타 AI 작업자
+상태: Design Hub 문서 레이아웃 제작 방법론 — AI Core와 브랜드 정본에 종속
+대상: 문서 제작 작업자와 AI
 연계 문서: `design/AI_DESIGNER_OPERATING_GUIDE.md`
+
+이 문서의 페이지 계산 예시는 문서 제작 방법이며 공통 UI 토큰이나 제품 브랜드 값을 대체하지 않는다.
 
 > **목표**
 > AI에게 단순히 “디자인해”라고 지시하는 방식이 아니라, `콘텐츠 설계 → 레이아웃 계산 → HTML/CSS/SVG 렌더링 → 시각 검수 → 자동 수정` 과정을 통해 사람이 만든 것처럼 비율과 정보밀도가 안정적인 업무문서를 생산하는 구조를 만든다.

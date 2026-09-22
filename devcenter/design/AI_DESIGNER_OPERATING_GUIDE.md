@@ -1,8 +1,10 @@
 # DevCenter AI Designer 운영 기준
 
-상태: Design Hub 공통 SSOT
-대상: GPT, Claude, Codex, Gemini 및 기타 AI 작업자
-목적: 특정 브랜드 전용이 아닌 모든 문서·화면·시각자료 디자인 작업의 공통 판단 기준 정의
+상태: Design Hub 제작 방법론 — AI Core UI/UX 정본에 종속
+대상: 디자인 작업자와 AI
+목적: 문서·화면·시각자료의 콘텐츠 설계와 제작 순서 안내. 공통 토큰·컴포넌트·브랜드 값을 정의하지 않음
+
+현재 규격 진입점은 `../../docs/UI_UX_START_HERE.md`, 값의 정본은 `../../design-system/`과 제품별 브랜드 원본이다.
 
 > **핵심 원칙**
 > Design Hub의 중심은 이미지 생성이 아니라 **디자인 판단**임.
@@ -528,4 +530,4 @@ AI가 먼저:
 
 `내용 이해 → 정보구조 설계 → 브랜드 적용 → 대표 시안 승인 → Design Lock → 전체 제작 → 검수` 순서로 운영함.
 
-GPT·Claude·Codex·Gemini 등 어떤 AI가 작업하더라도 본 문서를 공통 SSOT로 읽고 동일한 품질기준으로 작업함.
+어떤 작업자나 AI가 사용하더라도 이 방법론은 AI Core UI/UX 정본과 대상 제품의 현재 브랜드 원본에 종속됨.
