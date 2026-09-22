@@ -172,7 +172,6 @@
     "devcenter/hubs/delivery/README.md",
     "devcenter/hubs/delivery/consumers.json",
     "devcenter/hubs/design/README.md",
-    "devcenter/hubs/design/core-binding.json",
     "devcenter/hubs/design/feedback.json",
     "devcenter/hubs/document/README.md",
     "devcenter/hubs/document/consumers.json",
@@ -188,8 +187,6 @@
     "devcenter/hubs/quality/patterns.json",
     "devcenter/hubs/quality/retention.json",
     "devcenter/hubs/readiness.json",
-    "devcenter/hubs/registry.json",
-    "devcenter/hubs/routing-rules.json",
     "devcenter/operations/README.md",
     "devcenter/operations/inspection/FIRST-PATROL.md",
     "devcenter/operations/inspection/POLICY.md",
@@ -259,7 +256,6 @@
     "devcenter/quality/history-review-inputs.json",
     "devcenter/quality/release-recovery/.gitkeep",
     "devcenter/quality/testing/.gitkeep",
-    "devcenter/registry.json",
     "devcenter/runs/README.md",
     "devcenter/scripts/acceptance-evidence.mjs",
     "devcenter/scripts/assess-learning.mjs",
@@ -565,8 +561,12 @@
     "registry/core-contracts.json",
     "registry/core-error-codes.json",
     "registry/core-event-types.json",
+    "registry/design-hub-binding.json",
+    "registry/devcenter-datasets.json",
     "registry/directions.json",
     "registry/governance-profiles.candidate.json",
+    "registry/hub-routing-rules.json",
+    "registry/hubs.json",
     "registry/operating-knowledge.json",
     "registry/operations.json",
     "registry/phase1-closeout.json",
@@ -949,6 +949,7 @@
     "2026-09-22 operating knowledge registry adds reusable methods and explicit do-not-ask boundaries to portable kits; changed_files remains verifier parity only.",
     "2026-09-22 full operating knowledge catalog adds GitHub, Vercel, Firebase, Google Workspace, Windows, and user work style to every portable academy kit; changed_files remains verifier parity only.",
     "2026-09-22 starter kits now carry exact project, capability and work-map catalogs with Core revision and hashes; changed_files remains verifier parity only.",
-    "2026-09-22 shared FreePass Mobility business knowledge adds company role, revenue structure, authority boundaries and do-not-ask rules to the operating knowledge carried by portable kits; project runtimes and business data remain in their owning repositories."
+    "2026-09-22 shared FreePass Mobility business knowledge adds company role, revenue structure, authority boundaries and do-not-ask rules to the operating knowledge carried by portable kits; project runtimes and business data remain in their owning repositories.",
+    "2026-09-22 DevCenter authority cutover: imported registries moved to root registry, project/capability/work-map ownership now points to the AI Core internal module, and Design Hub validates a current-root source-bundle digest. R1, R2, R4 and portal sibling-path independence remain HOLD. changed_files includes intentional deletions and is exact verifier parity only."
   ]
 }

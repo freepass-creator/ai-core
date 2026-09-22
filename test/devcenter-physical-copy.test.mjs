@@ -37,21 +37,42 @@ test('DevCenter physical copy is complete, immutable and traceable', async () =>
   assert.equal(copiedPaths.filter(path => path.toLowerCase().endsWith('.md')).length, 70);
   assert(copiedPaths.every(path => !path.startsWith('.ai-core/')));
   assert(copiedPaths.every(path => !path.startsWith('portal/static/')));
+  const transformations = new Map((provenance.transformations ?? []).map(item => [item.source_path, item]));
+  assert.equal(transformations.size, provenance.transformations.length, 'transformed source paths must be unique');
 
   const indexEntries = execFileSync(
-    'git', ['-c', 'core.quotepath=false', 'ls-files', '-s', '-z', '--', 'devcenter'],
+    'git', ['-c', 'core.quotepath=false', 'ls-files', '-s', '-z', '--', 'devcenter', 'registry'],
     { cwd: root, encoding: 'utf8' }
   ).split('\0').filter(Boolean);
-  const indexBlobs = new Map(indexEntries.map(entry => {
+  const allIndexBlobs = new Map(indexEntries.map(entry => {
     const [metadata, path] = entry.split('\t');
-    return [path.slice('devcenter/'.length), metadata.split(' ')[1]];
+    return [path, metadata.split(' ')[1]];
   }));
+  const indexBlobs = new Map([...allIndexBlobs]
+    .filter(([path]) => path.startsWith('devcenter/'))
+    .map(([path, blob]) => [path.slice('devcenter/'.length), blob]));
   for (const file of provenance.files) {
     assert.match(file.sha256, /^[0-9a-f]{64}$/);
     assert.match(file.source_git_blob, /^[0-9a-f]{40}$/);
-    assert.equal(indexBlobs.get(file.path), file.source_git_blob, `${file.path} differs from the source Git blob`);
+    if (!transformations.has(file.path)) {
+      assert.equal(indexBlobs.get(file.path), file.source_git_blob, `${file.path} differs from the source Git blob`);
+    }
   }
 
   const actualPaths = (await walk(moduleRoot)).filter(path => path !== 'PROVENANCE.json').sort();
-  assert.deepEqual(actualPaths, [...copiedPaths].sort(), 'unrecorded or missing DevCenter files detected');
+  const movedPaths = new Set([...transformations.values()]
+    .filter(item => item.disposition.includes('MOVED'))
+    .map(item => item.source_path));
+  assert.deepEqual(actualPaths, copiedPaths.filter(path => !movedPaths.has(path)).sort(), 'unrecorded or missing DevCenter files detected');
+
+  for (const item of transformations.values()) {
+    assert.match(item.reason, /\S/);
+    const destination = item.destination.replaceAll('\\', '/');
+    assert.doesNotThrow(() => execFileSync(
+      'git', ['ls-files', '--error-unmatch', destination], { cwd: root, stdio: 'ignore' }
+    ), `transformation destination is not tracked: ${destination}`);
+    if (item.disposition === 'MOVED_UNCHANGED') {
+      assert.equal(allIndexBlobs.get(destination), provenance.files.find(file => file.path === item.source_path).source_git_blob);
+    }
+  }
 });

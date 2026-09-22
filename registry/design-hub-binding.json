@@ -1,0 +1,59 @@
+{
+  "contract": "ai-core-design-hub-binding/v2",
+  "ai_core": {
+    "repository": "freepass-creator/ai-core",
+    "source_bundle_sha256": "f478bd990a33c77b284cd04acd1d64b640b1c9cb14c3f3ab64fb1feee759b586"
+  },
+  "digest_algorithm": "sha256:path-and-normalized-content-v1",
+  "sources": {
+    "entrypoint": {
+      "path": "registry/ui-ux-entrypoint.json",
+      "sha256": "ac7d7e5e5780b93b17c9842d663d4ecfd3c695229ddbf7dadd6fe53f3b94e4d6",
+      "contract": "ai-core-ui-ux-entrypoint/v1",
+      "version": "1.0.0"
+    },
+    "feature_registry": {
+      "path": "registry/ui-ux-features.json",
+      "sha256": "aa98499a233c831819aa49e2d86421ae5c87522f3297d76ce5e95e205b66fd4e",
+      "contract": "ai-core-ui-ux-feature-registry/v1",
+      "version": "1.5.0"
+    },
+    "tokens": {
+      "path": "design-system/tokens.json",
+      "sha256": "dc9f5310539b4df58284b05ddca8c0a44bac9b585f005620c791902c8ba79297",
+      "contract": "ai-core-design-token-ssot/v1",
+      "version": "1.1.0"
+    },
+    "components": {
+      "path": "design-system/components.registry.json",
+      "sha256": "97802c724f0c17d3452d8ebccf11191e77a3ed2d0edd3d1091211853a51f1e96",
+      "contract": "ai-core-ui-component-registry/v1",
+      "version": "1.0.0"
+    },
+    "patterns": {
+      "path": "design-system/patterns.registry.json",
+      "sha256": "28be4ac9341f8958e789cd42f74ad98cc9fa6efa317aa09467d2857e2bee4d62",
+      "contract": "ai-core-ui-pattern-registry/v1",
+      "version": "1.2.0"
+    },
+    "interaction_contract": {
+      "path": "design-system/interaction.contract.json",
+      "sha256": "79086b3cc7fa10130e827ba354ef6af7da9c2efc034f3c5e84bf41093d4d4b37",
+      "contract": "ai-core-ui-interaction-contract/v1",
+      "version": "1.3.1"
+    },
+    "runtime_css": {
+      "path": "design-system/runtime-v2.css",
+      "sha256": "d84681d3ef9408e8f8503b03a1670112db28887abdab7000b5f1ad485c0be2bb"
+    },
+    "freepass_product_profile": {
+      "path": "docs/FREEPASS_PRODUCT_UI_PROFILE.md",
+      "sha256": "527f75d0fd7d999db5ffeb9c79f484187bf6072f0ba6cfa735fa8edf0cf40ee2"
+    },
+    "start_here": {
+      "path": "docs/UI_UX_START_HERE.md",
+      "sha256": "a146d00c1e13162dad8df0689fecfd2cc3bb25af4e11a8ebae87a50ee231056c"
+    }
+  },
+  "invariant": "AI Core root owns the values. Design Hub reads these current canonical files and fails when any normalized content digest drifts from this reviewed bundle."
+}

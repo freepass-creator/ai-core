@@ -19,12 +19,12 @@
     {
       "query": "공통 디자인 시스템 고도화해",
       "expected_work_type_id": "shared-design-system",
-      "expected_status": "HOLD_PROJECT_HOLD"
+      "expected_status": "HOLD_CAPABILITY_HOLD"
     },
     {
       "query": "개발센터 규격 점검해",
       "expected_work_type_id": "development-standard",
-      "expected_status": "HOLD_PROJECT_HOLD"
+      "expected_status": "HOLD_CAPABILITY_HOLD"
     },
     {
       "query": "보고서 만들어",

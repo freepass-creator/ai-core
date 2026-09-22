@@ -20,7 +20,7 @@
 
 ## 7 Hub 라우팅
 
-Development Center의 공식 전문 실행 영역은 Design / Data / Document / Engineering / Integration / Quality / Delivery **7개 Hub**다. 조직 정본은 `docs/HUB-ARCHITECTURE.md`, machine registry는 `hubs/registry.json`을 따른다.
+Development Center의 공식 전문 실행 영역은 Design / Data / Document / Engineering / Integration / Quality / Delivery **7개 Hub**다. 조직 정본은 `docs/HUB-ARCHITECTURE.md`, machine registry는 AI Core 루트 `registry/hubs.json`을 따른다.
 
 모든 개발 요청은 작업 시작 시:
 1. Primary Hub 1개를 지정한다.

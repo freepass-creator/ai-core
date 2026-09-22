@@ -4,7 +4,7 @@
 
 “디자인 통일”을 추상 지시로 끝내지 않고, **AI Core UI/UX revision에 고정된 실행 가능한 Design Plan**으로 바꾼다.
 
-Design Hub는 AI Core의 token/component/pattern 값을 복제하지 않는다. `hubs/design/core-binding.json`이 AI Core revision과 source blob을 고정하고, compiler가 로컬 AI Core 저장소에서 **그 revision의 파일을 직접 읽는다**.
+Design Hub는 AI Core의 token/component/pattern 값을 복제하지 않는다. 루트 `registry/design-hub-binding.json`이 canonical source bundle digest를 고정하고, compiler가 같은 AI Core 저장소의 **현재 정본 파일을 직접 읽어 digest를 대조한다**.
 
 ## 실행 전 preflight
 
@@ -43,7 +43,7 @@ Quality Receipt
 
 ## 정본
 
-- AI Core binding: `hubs/design/core-binding.json`
+- AI Core binding: `registry/design-hub-binding.json`
 - Job contract: `contracts/design-job.schema.json`
 - Plan contract: `contracts/design-plan.schema.json`
 - Compiler: `scripts/design-compiler.mjs`

@@ -1,6 +1,6 @@
 # 현재 규격 취합 — 적용 범위와 원본
 
-2026-09-09 선택 원문 발췌/선언 기준. [source snapshot](baseline-sources.json)은 출처/버전 기록이며 [기존 등록부](../registry.json)의 권위 판정을 대체하지 않는다. 모든 파일 내용·소비자·동작을 전수검증한 목록이 아니다.
+2026-09-09 선택 원문 발췌/선언 기준. [source snapshot](baseline-sources.json)은 출처/버전 기록이며 [통합 등록부](../../registry/devcenter-datasets.json)의 권위 판정을 대체하지 않는다. 모든 파일 내용·소비자·동작을 전수검증한 목록이 아니다.
 
 ## 규격 묶음
 

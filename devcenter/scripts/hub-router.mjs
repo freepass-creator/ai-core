@@ -97,8 +97,9 @@ export function routeHubRequest(input, { registry, routingRules } = {}) {
 }
 
 export function loadHubRouting(baseDir = HERE) {
-  const registry = JSON.parse(fs.readFileSync(path.join(baseDir,'hubs','registry.json'),'utf8'));
-  const routingRules = JSON.parse(fs.readFileSync(path.join(baseDir,'hubs','routing-rules.json'),'utf8'));
+  const rootRegistry = path.resolve(baseDir, '..', 'registry');
+  const registry = JSON.parse(fs.readFileSync(path.join(rootRegistry,'hubs.json'),'utf8'));
+  const routingRules = JSON.parse(fs.readFileSync(path.join(rootRegistry,'hub-routing-rules.json'),'utf8'));
   return { registry, routingRules };
 }
 

@@ -18,7 +18,7 @@ Development Center는 AI Core의 개발 실행 조직이다. AI Core가 회사 �
 
 `operations / standards / registry / ssot / inspection / engine / runs`는 제8의 Hub가 아니라 모든 Hub를 관장하는 **Control Plane**이다.
 
-조직·라우팅 정본은 [Development Center Hub Architecture](docs/HUB-ARCHITECTURE.md), machine-readable 등록부는 [hubs/registry.json](hubs/registry.json), 실제 요청의 첫 진입점은 [어디를보나.md](어디를보나.md)를 본다. 실행 라우팅은 [Hub Router Runtime](docs/HUB-ROUTER-RUNTIME.md)과 `node scripts/hub-router.mjs "<요청>"`을 사용한다.
+조직·라우팅 정본은 [Development Center Hub Architecture](docs/HUB-ARCHITECTURE.md), machine-readable 등록부는 AI Core 루트 [registry/hubs.json](../registry/hubs.json), 실제 요청의 첫 진입점은 [어디를보나.md](어디를보나.md)를 본다. 실행 라우팅은 [Hub Router Runtime](docs/HUB-ROUTER-RUNTIME.md)과 `node scripts/hub-router.mjs "<요청>"`을 사용한다.
 
 ## 기존 경로와 Hub 매핑
 
@@ -31,7 +31,7 @@ Development Center는 AI Core의 개발 실행 조직이다. AI Core가 회사 �
 - `quality/release-recovery` → **Delivery Hub** 과도기 backing path
 - `freepass-creator/docshub` → **Document Hub** authoritative source
 - AI Core Core/Data Contract + `freepass-creator/freepass-data` → **Data Hub** 기준 + 대표 구현
-- [operations](operations/README.md), [standards](standards/README.md), [engine](engine/README.md), `registry.json`, `ssot/`, `runs/` → **Control Plane**
+- [operations](operations/README.md), [standards](standards/README.md), [engine](engine/README.md), `../registry/devcenter-datasets.json`, `ssot/`, `runs/` → **Control Plane**
 
 ## Hub Readiness
 
@@ -55,7 +55,7 @@ Readiness는 제품 품질 점수가 아니다. Hub가 공통 실행 계층으�
 
 ## 기존 자산 사용
 
-루트 `registry.json`은 기존 개발 규격과 Hub 조직 포인터를 가리킨다. 원본 저장소/경로/버전을 확인하고 사용한다. 현역·보관 판정 원본은 로컬 `C:/dev/aiops/docs/저장소지도.md`다. 여기서 임의 승격하지 않는다.
+AI Core 루트 `registry/devcenter-datasets.json`은 기존 개발 규격과 Hub 조직 포인터를 가리킨다. 원본 저장소/경로/버전을 확인하고 사용한다. 여기서 임의 승격하지 않는다.
 
 로컬에서는 이 저장소를 다른 프로젝트와 같은 부모 디렉터리에 둔 후 다음 명령으로 경로를 확인한다.
 

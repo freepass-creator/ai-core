@@ -27,7 +27,7 @@ AI Core는 공통 UI/UX 헌법과 Contract를 소유한다. Design Hub는 이를
 
 프로젝트 UI/UX 작업은 바로 시안을 만들지 않는다.
 
-1. `hubs/design/core-binding.json`의 AI Core exact revision 확인
+1. AI Core 루트 `registry/design-hub-binding.json`의 canonical source bundle digest 확인
 2. 해당 revision의 `docs/UI_UX_START_HERE.md` 확인
 3. `registry/ui-ux-entrypoint.json`의 read order와 fail-closed rules 확인
 4. 대상 화면 feature ID 확정
@@ -43,7 +43,7 @@ binding이 작업자가 의도한 AI Core revision과 다르면 **HOLD**한다.
 
 Design Hub는 AI Core UI/UX 값을 복제하지 않고 pinned binding으로 읽는다.
 
-- AI Core binding: `core-binding.json`
+- AI Core binding: `../../../registry/design-hub-binding.json`
 - Design Job: `../../contracts/design-job.schema.json`
 - Design Plan: `../../contracts/design-plan.schema.json`
 - Compiler: `../../scripts/design-compiler.mjs`

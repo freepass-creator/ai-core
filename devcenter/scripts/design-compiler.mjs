@@ -1,37 +1,35 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
-import {spawnSync} from 'node:child_process';
+import crypto from 'node:crypto';
 import {fileURLToPath} from 'node:url';
 
 const HERE=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 
 function readJson(file){ return JSON.parse(fs.readFileSync(file,'utf8')); }
 
-function gitShow(repoPath,revision,filePath){
-  const result=spawnSync('git',['show',`${revision}:${filePath}`],{cwd:repoPath,encoding:'utf8',windowsHide:true});
-  if(result.status!==0) throw new Error(`DESIGN_CORE_SOURCE_UNAVAILABLE:${filePath}:${(result.stderr||'').trim()}`);
-  return result.stdout;
-}
-
-function gitBlob(repoPath,revision,filePath){
-  const result=spawnSync('git',['rev-parse',`${revision}:${filePath}`],{cwd:repoPath,encoding:'utf8',windowsHide:true});
-  if(result.status!==0) throw new Error(`DESIGN_CORE_BLOB_UNAVAILABLE:${filePath}`);
-  return (result.stdout||'').trim();
-}
+const sha256=value=>crypto.createHash('sha256').update(value).digest('hex');
 
 export function loadCoreBundle({binding,aiCorePath}){
   if(!aiCorePath) throw new Error('DESIGN_AI_CORE_PATH_REQUIRED');
-  const revision=binding.ai_core.revision;
   const sources=binding.sources;
+  const sourceText=key=>{
+    const source=sources[key],file=path.resolve(aiCorePath,source.path);
+    if(!fs.existsSync(file)) throw new Error(`DESIGN_CORE_SOURCE_UNAVAILABLE:${source.path}`);
+    const text=fs.readFileSync(file,'utf8');
+    if(sha256(text.replaceAll('\r\n','\n'))!==source.sha256) throw new Error(`DESIGN_CORE_DIGEST_MISMATCH:${key}`);
+    return text;
+  };
+  const bundlePayload=Object.keys(sources).sort().map(key=>`${sources[key].path}:${sources[key].sha256}`).join('\n');
+  if(sha256(bundlePayload)!==binding.ai_core.source_bundle_sha256) throw new Error('DESIGN_CORE_BUNDLE_DIGEST_MISMATCH');
   const bundle={
-    entrypoint:JSON.parse(gitShow(aiCorePath,revision,sources.entrypoint.path)),
-    featureRegistry:JSON.parse(gitShow(aiCorePath,revision,sources.feature_registry.path)),
-    tokens:JSON.parse(gitShow(aiCorePath,revision,sources.tokens.path)),
-    components:JSON.parse(gitShow(aiCorePath,revision,sources.components.path)),
-    patterns:JSON.parse(gitShow(aiCorePath,revision,sources.patterns.path)),
-    freepassProductProfile:gitShow(aiCorePath,revision,sources.freepass_product_profile.path),
-    startHere:gitShow(aiCorePath,revision,sources.start_here.path)
+    entrypoint:JSON.parse(sourceText('entrypoint')),
+    featureRegistry:JSON.parse(sourceText('feature_registry')),
+    tokens:JSON.parse(sourceText('tokens')),
+    components:JSON.parse(sourceText('components')),
+    patterns:JSON.parse(sourceText('patterns')),
+    freepassProductProfile:sourceText('freepass_product_profile'),
+    startHere:sourceText('start_here')
   };
 
   const checks=[
@@ -45,17 +43,9 @@ export function loadCoreBundle({binding,aiCorePath}){
     const source=sources[key];
     if(value.contract!==source.contract) throw new Error(`DESIGN_CORE_CONTRACT_MISMATCH:${key}`);
     if(value.version!==source.version) throw new Error(`DESIGN_CORE_VERSION_MISMATCH:${key}`);
-    const blob=gitBlob(aiCorePath,revision,source.path);
-    if(blob!==source.blob_sha) throw new Error(`DESIGN_CORE_BLOB_MISMATCH:${key}`);
   }
-  const runtimeBlob=gitBlob(aiCorePath,revision,sources.runtime_css.path);
-  if(runtimeBlob!==sources.runtime_css.blob_sha) throw new Error('DESIGN_CORE_BLOB_MISMATCH:runtime_css');
-
-  for(const key of ['freepass_product_profile','start_here']){
-    const source=sources[key];
-    const blob=gitBlob(aiCorePath,revision,source.path);
-    if(blob!==source.blob_sha) throw new Error(`DESIGN_CORE_BLOB_MISMATCH:${key}`);
-  }
+  sourceText('runtime_css');
+  sourceText('interaction_contract');
 
   if(bundle.entrypoint.status!=='CANONICAL_ENTRYPOINT') {
     throw new Error('DESIGN_CORE_ENTRYPOINT_NOT_CANONICAL');
@@ -149,7 +139,7 @@ export function compileDesignJob(job,{binding,coreBundle}){
     approved_design_refs:job.approved_design_refs??[],
     core_binding:{
       repository:binding.ai_core.repository,
-      revision:binding.ai_core.revision,
+      source_bundle_sha256:binding.ai_core.source_bundle_sha256,
       feature_registry_version:binding.sources.feature_registry.version,
       token_version:binding.sources.tokens.version,
       component_registry_version:binding.sources.components.version,
@@ -183,7 +173,7 @@ export function makeQualityDraft(plan,{startedAt,finishedAt}){
     scope:{
       claims:[
         `Design plan compiled for surface ${plan.surface.id}`,
-        `AI Core UI/UX binding pinned to ${plan.core_binding.revision}`
+        `AI Core UI/UX binding pinned to ${plan.core_binding.source_bundle_sha256}`
       ],
       exclusions:[
         'Browser screenshot/visual regression is not proven by compilation alone',
@@ -229,7 +219,7 @@ export function makeQualityDraft(plan,{startedAt,finishedAt}){
 }
 
 export function loadBinding(baseDir=HERE){
-  return readJson(path.join(baseDir,'hubs','design','core-binding.json'));
+  return readJson(path.resolve(baseDir,'..','registry','design-hub-binding.json'));
 }
 
 const isMain=process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url);
@@ -239,7 +229,7 @@ if(isMain){
     if(command!=='compile'||!input) throw new Error('usage: design-compiler.mjs compile <job.json> [design-plan.json]');
     const job=readJson(path.resolve(input));
     const binding=loadBinding();
-    const aiCorePath=process.env.AI_CORE_PATH||path.resolve(HERE,'..','ai-core');
+    const aiCorePath=process.env.AI_CORE_PATH||path.resolve(HERE,'..');
     const coreBundle=loadCoreBundle({binding,aiCorePath});
     const plan=compileDesignJob(job,{binding,coreBundle});
     const json=JSON.stringify(plan,null,2)+'\n';

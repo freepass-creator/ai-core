@@ -18399,5 +18399,109 @@
       "sha256": "d463cadcae8dae3822242d116d96a471c8dd6e4a19ef9d147c5603d74dae98b5",
       "source_git_blob": "3b4dc45c4755bd8383bcb80ff0652801f3ba7060"
     }
+  ],
+  "transformations": [
+    {
+      "source_path": "registry.json",
+      "disposition": "ADAPTED_AND_MOVED",
+      "destination": "registry/devcenter-datasets.json",
+      "reason": "single root registry; internal hub pointers updated"
+    },
+    {
+      "source_path": "hubs/registry.json",
+      "disposition": "MOVED_UNCHANGED",
+      "destination": "registry/hubs.json",
+      "reason": "single root registry"
+    },
+    {
+      "source_path": "hubs/routing-rules.json",
+      "disposition": "MOVED_UNCHANGED",
+      "destination": "registry/hub-routing-rules.json",
+      "reason": "single root work-routing authority"
+    },
+    {
+      "source_path": "scripts/hub-router.mjs",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/scripts/hub-router.mjs",
+      "reason": "consume AI Core root registry after physical merge"
+    },
+    {
+      "source_path": "scripts/hub-readiness.mjs",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/scripts/hub-readiness.mjs",
+      "reason": "consume AI Core root registry after physical merge"
+    },
+    {
+      "source_path": "scripts/quality-receipt.mjs",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/scripts/quality-receipt.mjs",
+      "reason": "consume AI Core root registry after physical merge"
+    },
+    {
+      "source_path": "scripts/scan-standards.py",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/scripts/scan-standards.py",
+      "reason": "consume AI Core root registry after physical merge"
+    },
+    {
+      "source_path": "틀.mjs",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/틀.mjs",
+      "reason": "consume AI Core root registry after physical merge"
+    },
+    {
+      "source_path": "AGENTS.md",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/AGENTS.md",
+      "reason": "consume AI Core root registry after physical merge"
+    },
+    {
+      "source_path": "README.md",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/README.md",
+      "reason": "consume AI Core root registry after physical merge"
+    },
+    {
+      "source_path": "docs/CURRENT-STANDARDS.md",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/docs/CURRENT-STANDARDS.md",
+      "reason": "consume AI Core root registry after physical merge"
+    },
+    {
+      "source_path": "docs/STARTER-TEMPLATES.md",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/docs/STARTER-TEMPLATES.md",
+      "reason": "consume AI Core root registry after physical merge"
+    },
+    {
+      "source_path": "hubs/design/core-binding.json",
+      "disposition": "ADAPTED_AND_MOVED",
+      "destination": "registry/design-hub-binding.json",
+      "reason": "replace stale repository revision binding with canonical source bundle digest"
+    },
+    {
+      "source_path": "scripts/design-compiler.mjs",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/scripts/design-compiler.mjs",
+      "reason": "consume root digest binding after physical merge"
+    },
+    {
+      "source_path": "hubs/design/README.md",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/hubs/design/README.md",
+      "reason": "consume root digest binding after physical merge"
+    },
+    {
+      "source_path": "design/AI_DESIGNER_OPERATING_GUIDE.md",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/design/AI_DESIGNER_OPERATING_GUIDE.md",
+      "reason": "consume root digest binding after physical merge"
+    },
+    {
+      "source_path": "docs/DESIGN-HUB-COMPILER.md",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/docs/DESIGN-HUB-COMPILER.md",
+      "reason": "consume root digest binding after physical merge"
+    }
   ]
 }

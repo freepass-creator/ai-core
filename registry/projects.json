@@ -103,37 +103,6 @@
       ]
     },
     {
-      "project_id": "devcenter",
-      "name": "DevCenter",
-      "organization": "HEADQUARTERS",
-      "repository_lifecycle_status": "ACTIVE",
-      "execution_readiness_status": "HOLD",
-      "mission": "Development-standards registry and read-only project inspector for the group; own README states semantic cross-checking and auto-fixers are not yet implemented.",
-      "repository": "freepass-creator/devcenter",
-      "default_branch": "main",
-      "local_path": "C:\\dev\\devcenter",
-      "head_revision": "b0f8fc07547096e333dc6df2ea9036690c5cd830",
-      "authoritative_sources": [
-        {
-          "kind": "GIT",
-          "ref": "freepass-creator/devcenter",
-          "revision": "b0f8fc07547096e333dc6df2ea9036690c5cd830",
-          "observed_at": "2026-09-22T00:44:26Z"
-        }
-      ],
-      "commands": {
-        "install": null,
-        "test": null,
-        "build": null
-      },
-      "deploy_targets": [],
-      "required_approvals": [],
-      "known_blockers": [
-        "no package.json at repo root; no unified install/test/build entrypoint, scripts run individually (e.g. scripts/inspect-project.mjs)",
-        "100 dirty files as of 2026-09-15/16, not inspected this session"
-      ]
-    },
-    {
       "project_id": "docshub",
       "name": "DocsHub",
       "organization": "HEADQUARTERS",

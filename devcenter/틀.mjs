@@ -10,7 +10,7 @@ import { fileURLToPath } from "node:url";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const DEV = resolve(HERE, "..");            // C:\dev
-const registry = JSON.parse(readFileSync(join(HERE, "registry.json"), "utf8"));
+const registry = JSON.parse(readFileSync(join(HERE, "..", "registry", "devcenter-datasets.json"), "utf8"));
 const query = process.argv.slice(2).join(" ").trim().toLowerCase();
 
 const ROLE = {
@@ -31,7 +31,7 @@ const matched = registry.datasets.filter(hit);
 if (!matched.length) {
   console.log(`\n「${query}」에 걸리는 등록 규격이 없다.`);
   console.log("등록되지 않았다는 뜻이지, 규격이 없다는 뜻이 아니다.");
-  console.log("찾아서 쓴 뒤에는 registry.json 에 등록해라 — 안 그러면 다음 세션이 또 찾는다.\n");
+  console.log("찾아서 쓴 뒤에는 ../registry/devcenter-datasets.json 에 등록해라 — 안 그러면 다음 세션이 또 찾는다.\n");
   process.exit(2);
 }
 
@@ -44,7 +44,7 @@ for (const d of matched) {
   console.log(`■ ${d.scope}`);
   console.log(`   ${ROLE[d.role] ?? d.role} · ${d.project} · 책임 ${d.owner}`);
   console.log(`   ${abs}${kind}`);
-  if (!there) console.log(`   ★없다 — 규격이 옮겨졌거나 지워졌다. registry.json 을 고쳐라`);
+  if (!there) console.log(`   ★없다 — 규격이 옮겨졌거나 지워졌다. ../registry/devcenter-datasets.json 을 고쳐라`);
   console.log("");
 }
 
@@ -89,7 +89,7 @@ if (undecided.length) {
   console.log("");
 }
 console.log("겹치는 규격이 있는지 검사:");
-console.log("   python C:\\dev\\devcenter\\ssot\\ssot_audit.py C:\\dev\\devcenter\\registry.json");
+console.log("   python devcenter\\ssot\\ssot_audit.py registry\\devcenter-datasets.json");
 console.log("");
 
 process.exit(missing.length ? 1 : 0);

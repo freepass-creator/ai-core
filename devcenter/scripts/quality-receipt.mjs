@@ -109,7 +109,7 @@ export function finalizeQualityReceipt(draft,{hubRegistry,createdAt=new Date().t
 }
 
 export function loadHubRegistry(baseDir=HERE){
-  return JSON.parse(fs.readFileSync(path.join(baseDir,'hubs','registry.json'),'utf8'));
+  return JSON.parse(fs.readFileSync(path.resolve(baseDir,'..','registry','hubs.json'),'utf8'));
 }
 
 const isMain=process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url);
