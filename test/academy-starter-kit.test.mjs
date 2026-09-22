@@ -42,7 +42,7 @@ test('starter kit never overwrites a conflicting local file',async()=>{
   await assert.rejects(()=>installAcademyStarterKit({output:out,receipt,coreRevision:'b'.repeat(40),readings:[{path:'docs/AI_WORKING_STANDARD.md',body:'one'}]}),/KIT_FILE_CONFLICT/);
 });
 
-test('starter kit bootstrap trusts verifier PASS across kit-only advance and holds on project revision mismatch',async()=>{
+test('starter kit bootstrap admits authorized refresh but holds authority drift and project revision mismatch',async()=>{
   const root=await mkdtemp(join(tmpdir(),'academy-kit-git-'));
   git(root,'init','-q');
   git(root,'config','user.email','ai-core-test@example.invalid');
@@ -53,7 +53,8 @@ test('starter kit bootstrap trusts verifier PASS across kit-only advance and hol
   const pinned=git(root,'rev-parse','HEAD');
   const boundReceipt={...receipt,target:{...receipt.target,revision:pinned}};
   const out=join(root,'.ai-core');
-  await installAcademyStarterKit({output:out,receipt:boundReceipt,coreRevision:'b'.repeat(40),readings:[{path:'docs/AI_WORKING_STANDARD.md',body:'one'}],operatingKnowledge:{schema_version:'1.0',confirmed_decisions:[],methods:[],platforms:[]}});
+  const knowledge={schema_version:'1.0',confirmed_decisions:[],methods:[],platforms:[]};
+  await installAcademyStarterKit({output:out,receipt:boundReceipt,coreRevision:'b'.repeat(40),readings:[{path:'docs/AI_WORKING_STANDARD.md',body:'one'}],operatingKnowledge:knowledge});
   const verifier=join(out,'verify-kit.mjs');
   const current=spawnSync(process.execPath,[verifier],{cwd:root,encoding:'utf8'});
   assert.equal(current.status,0,current.stderr);
@@ -81,24 +82,44 @@ test('starter kit bootstrap trusts verifier PASS across kit-only advance and hol
   assert.equal(committedBootstrap.blockers.includes('STARTER_KIT_REVISION_MISMATCH'),false);
   assert.equal(committedBootstrap.blockers.includes('STARTER_KIT_VERIFICATION_FAILED'),false);
 
-  const installedVerifier=await readFile(verifier,'utf8');
-  await writeFile(verifier,`${installedVerifier}// authority mutation\n`);
+  const refreshRoot=await mkdtemp(join(tmpdir(),'academy-kit-refresh-'));
+  const refreshOut=join(refreshRoot,'.ai-core');
+  await installAcademyStarterKit({output:refreshOut,receipt:boundReceipt,coreRevision:'c'.repeat(40),readings:[{path:'docs/AI_WORKING_STANDARD.md',body:'one'}],operatingKnowledge:knowledge});
+  for(const name of ['kit.json','session-bootstrap.mjs','verify-kit.mjs']){
+    await writeFile(join(out,name),await readFile(join(refreshOut,name),'utf8'));
+  }
+  git(root,'add','.ai-core/kit.json','.ai-core/session-bootstrap.mjs','.ai-core/verify-kit.mjs');
+  git(root,'commit','-q','-m','refresh academy kit');
+  const refreshed=git(root,'rev-parse','HEAD');
+  const refreshedBootstrapRun=spawnSync(process.execPath,[bootstrapPath],{cwd:root,encoding:'utf8'});
+  const refreshedBootstrap=JSON.parse(refreshedBootstrapRun.stdout);
+  assert.equal(refreshedBootstrap.project.kit_authority.status,'MATCH');
+  assert.equal(refreshedBootstrap.project.kit_authority.anchor_commit,refreshed);
+  assert.deepEqual(refreshedBootstrap.project.kit_authority.changed,[]);
+  assert.equal(refreshedBootstrap.project.kit_verification.status,'PASS');
+  assert.equal(refreshedBootstrap.project.kit_verification.core_revision,'c'.repeat(40));
+  assert.equal(refreshedBootstrap.project.kit_verification.revision.status,'KIT_ONLY_ADVANCE');
+  assert.equal(refreshedBootstrap.blockers.includes('STARTER_KIT_REVISION_MISMATCH'),false);
+  assert.equal(refreshedBootstrap.blockers.includes('STARTER_KIT_VERIFICATION_FAILED'),false);
+
+  const refreshedVerifier=await readFile(verifier,'utf8');
+  await writeFile(verifier,`${refreshedVerifier}// authority mutation\n`);
   git(root,'add','.ai-core/verify-kit.mjs');
   git(root,'commit','-q','-m','mutate kit verifier');
   const verifierMutationRun=spawnSync(process.execPath,[bootstrapPath],{cwd:root,encoding:'utf8'});
   const verifierMutation=JSON.parse(verifierMutationRun.stdout);
   assert.equal(verifierMutation.status,'HOLD');
   assert.equal(verifierMutation.project.kit_authority.status,'MISMATCH');
-  assert.equal(verifierMutation.project.kit_authority.anchor_commit,installed);
+  assert.equal(verifierMutation.project.kit_authority.anchor_commit,refreshed);
   assert.deepEqual(verifierMutation.project.kit_authority.changed,['verify-kit.mjs']);
   assert.equal(verifierMutation.project.kit_verification,null);
   assert.ok(verifierMutation.blockers.includes('STARTER_KIT_VERIFICATION_FAILED'));
   assert.equal(verifierMutation.blockers.includes('STARTER_KIT_REVISION_MISMATCH'),false);
 
-  git(root,'reset','--hard',installed);
+  git(root,'reset','--hard',refreshed);
   const manifestPath=join(out,'kit.json');
   const mutatedManifest=JSON.parse(await readFile(manifestPath,'utf8'));
-  mutatedManifest.reuse_policy='mutated after install';
+  mutatedManifest.reuse_policy='mutated after refresh';
   await writeFile(manifestPath,`${JSON.stringify(mutatedManifest,null,2)}\n`);
   git(root,'add','.ai-core/kit.json');
   git(root,'commit','-q','-m','mutate kit manifest');
@@ -106,13 +127,13 @@ test('starter kit bootstrap trusts verifier PASS across kit-only advance and hol
   const manifestMutation=JSON.parse(manifestMutationRun.stdout);
   assert.equal(manifestMutation.status,'HOLD');
   assert.equal(manifestMutation.project.kit_authority.status,'MISMATCH');
-  assert.equal(manifestMutation.project.kit_authority.anchor_commit,installed);
+  assert.equal(manifestMutation.project.kit_authority.anchor_commit,refreshed);
   assert.deepEqual(manifestMutation.project.kit_authority.changed,['kit.json']);
   assert.equal(manifestMutation.project.kit_verification,null);
   assert.ok(manifestMutation.blockers.includes('STARTER_KIT_VERIFICATION_FAILED'));
   assert.equal(manifestMutation.blockers.includes('STARTER_KIT_REVISION_MISMATCH'),false);
 
-  git(root,'reset','--hard',installed);
+  git(root,'reset','--hard',refreshed);
   await writeFile(join(root,'tracked.txt'),'v2\n');
   git(root,'add','tracked.txt');
   git(root,'commit','-q','-m','advance project');
@@ -131,6 +152,7 @@ test('starter kit bootstrap trusts verifier PASS across kit-only advance and hol
   const staleBootstrap=JSON.parse(staleBootstrapRun.stdout);
   assert.equal(staleBootstrap.status,'HOLD');
   assert.equal(staleBootstrap.project.kit_authority.status,'MATCH');
+  assert.equal(staleBootstrap.project.kit_authority.anchor_commit,refreshed);
   assert.equal(staleBootstrap.project.kit_verification.status,'FAIL');
   assert.equal(staleBootstrap.project.kit_verification.revision.status,'MISMATCH');
   assert.ok(staleBootstrap.blockers.includes('STARTER_KIT_REVISION_MISMATCH'));
