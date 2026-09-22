@@ -1,0 +1,16 @@
+{
+  "schema_version": "core-port-contract/v1",
+  "port_id": "google.api.read",
+  "port_version": "v1",
+  "semantics": "Read-only Google Sheets v4 and Drive v3 transport using a caller-supplied bearer token. Token acquisition, credentials, company resource IDs, write authorization and business policy are outside this port.",
+  "direction": "READ",
+  "input_schema": null,
+  "output_schema": null,
+  "side_effects": false,
+  "idempotency": "NOT_APPLICABLE",
+  "error_codes": [
+    "GOOGLE_API_URL_NOT_ALLOWED",
+    "GOOGLE_READ_METHOD_REQUIRED",
+    "GOOGLE_API_HTTP_ERROR"
+  ]
+}
