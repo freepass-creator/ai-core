@@ -59,10 +59,10 @@ test('HOLD projects and capabilities never become executable routes', () => {
   assert.equal(capHold.status, 'HOLD_CAPABILITY_HOLD');
   assert.equal(capHold.capability_id, 'erp.product');
 
-  const aiopsHold = routeWork('과태료 처리해', { workMap, projectRegistry, capabilityRegistry });
-  assert.equal(aiopsHold.status, 'HOLD_PROJECT_HOLD');
-  assert.equal(aiopsHold.capability_id, 'operations.penalty.prepare');
-  assert.ok(/^[0-9a-f]{40}$/.test(aiopsHold.target_revision));
+  const active = routeWork('과태료 처리해', { workMap, projectRegistry, capabilityRegistry });
+  assert.equal(active.status, 'RESOLVED');
+  assert.equal(active.capability_id, 'operations.penalty.prepare');
+  assert.ok(/^[0-9a-f]{40}$/.test(active.target_revision));
 });
 
 
@@ -86,7 +86,7 @@ test('repository lifecycle and execution readiness stay separate in routing', ()
   const welrix = registry.projects.find((item) => item.project_id === 'welrixtable');
   if (welrix) {
     assert.equal(welrix.repository_lifecycle_status, 'REFERENCE');
-    assert.equal(welrix.execution_readiness_status, 'ACTIVE');
+    assert.equal(welrix.execution_readiness_status, 'HOLD');
   }
 
   const docshub = registry.projects.find((item) => item.project_id === 'docshub');
