@@ -59,10 +59,10 @@ test('HOLD projects and capabilities never become executable routes', () => {
   assert.equal(capHold.status, 'HOLD_CAPABILITY_HOLD');
   assert.equal(capHold.capability_id, 'erp.product');
 
-  const active = routeWork('과태료 처리해', { workMap, projectRegistry, capabilityRegistry });
-  assert.equal(active.status, 'RESOLVED');
-  assert.equal(active.capability_id, 'operations.penalty.prepare');
-  assert.ok(/^[0-9a-f]{40}$/.test(active.target_revision));
+  const aiopsHold = routeWork('과태료 처리해', { workMap, projectRegistry, capabilityRegistry });
+  assert.equal(aiopsHold.status, 'HOLD_PROJECT_HOLD');
+  assert.equal(aiopsHold.capability_id, 'operations.penalty.prepare');
+  assert.ok(/^[0-9a-f]{40}$/.test(aiopsHold.target_revision));
 });
 
 
