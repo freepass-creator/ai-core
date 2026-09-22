@@ -15,8 +15,7 @@ export function createGoogleReadTransport({
   fetchImpl=globalThis.fetch,
   sleep=defaultSleep,
   maxRetries=6,
-  baseWaitMs=20_000,
-  stepWaitMs=15_000
+  retryWaitMs=20_000
 }={}){
   if(typeof accessToken!=='string'||!accessToken.trim()) fail('GOOGLE_ACCESS_TOKEN_REQUIRED','Google bearer token is required');
   if(typeof fetchImpl!=='function') fail('GOOGLE_FETCH_REQUIRED','fetch implementation is required');
@@ -48,8 +47,7 @@ export function createGoogleReadTransport({
     try{body=JSON.parse(text);}catch{body=text;}
 
     if(RETRYABLE_STATUS.has(response.status)&&tries<maxRetries){
-      const wait=baseWaitMs+tries*stepWaitMs;
-      await sleep(wait);
+      await sleep(retryWaitMs);
       return call(parsed.href,opts,tries+1);
     }
     if(!response.ok){
