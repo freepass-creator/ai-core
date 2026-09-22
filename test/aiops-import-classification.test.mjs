@@ -66,13 +66,19 @@ test('domain-heavy AIOps code stays HOLD instead of being bulk-imported',()=>{
   }
 });
 
-test('shared-library review allows only atomic stream writer as a candidate and authorizes nothing',()=>{
+test('shared-library review has one extracted atomic writer shadow and authorizes no consumer cutover',()=>{
   const reviewed=manifest.shared_library_review;
   assert.equal(new Set(reviewed.map(item=>item.path)).size,reviewed.length);
   assert.ok(reviewed.every(item=>item.execution_authorized===false));
 
   const candidates=reviewed.filter(item=>item.disposition==='EXTRACT_SHARED_CANDIDATE');
-  assert.deepEqual(candidates.map(item=>item.path),['lib/atomic-stream-write.mjs']);
+  assert.deepEqual(candidates,[]);
+  const extracted=reviewed.filter(item=>item.disposition==='EXTRACTED_SHARED_SHADOW');
+  assert.deepEqual(extracted.map(item=>item.path),['lib/atomic-stream-write.mjs']);
+  assert.equal(extracted[0].destination_candidate,'shared-services/fs/atomic-stream-write.mjs');
+  assert.equal(extracted[0].execution_authorized,false);
+  assert.equal(extracted[0].extraction.consumer_cutover_authorized,false);
+  assert.equal(extracted[0].extraction.source_blob_sha,'4e4da3becc6d3d3eebbc8108708c0d5e5dc4197d');
   assert.equal(assessIntegrationImportContent({paths:['lib/atomic-stream-write.mjs']}).status,'PASS');
 
   const byPath=new Map(reviewed.map(item=>[item.path,item]));

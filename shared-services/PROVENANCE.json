@@ -1,0 +1,23 @@
+{
+  "schema_version": "ai-core-shared-service-provenance/v1",
+  "observed_at": "2026-09-22T17:18:00Z",
+  "source_repository": "freepass-creator/aiops",
+  "source_revision": "3d6ec8c6a0e826ae0472e3fb3e8bbaa8399b68c9",
+  "entries": [
+    {
+      "source_path": "lib/atomic-stream-write.mjs",
+      "source_blob_sha": "4e4da3becc6d3d3eebbc8108708c0d5e5dc4197d",
+      "destination_path": "shared-services/fs/atomic-stream-write.mjs",
+      "disposition": "EXACT_COPY_SHADOW",
+      "source_runtime_authority": "AIOPS",
+      "ai_core_runtime_authority": false,
+      "consumer_cutover_authorized": false
+    }
+  ],
+  "invariants": [
+    "Destination bytes must reproduce the recorded Git blob SHA.",
+    "Behavior parity must pass before any consumer cutover.",
+    "AIOps remains runtime authority until a separate revision-bound consumer migration is verified.",
+    "No company IDs, credentials, operational data, or AIOps domain policy may enter through this extraction."
+  ]
+}
