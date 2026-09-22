@@ -43,7 +43,8 @@
         "input_method",
         "portable_task_panel",
         "selection_state",
-        "border_policy"
+        "border_policy",
+        "icon_policy"
       ],
       "properties": {
         "action_placement": {
@@ -89,6 +90,9 @@
           "$ref": "#/$defs/rule"
         },
         "border_policy": {
+          "$ref": "#/$defs/rule"
+        },
+        "icon_policy": {
           "$ref": "#/$defs/rule"
         }
       }

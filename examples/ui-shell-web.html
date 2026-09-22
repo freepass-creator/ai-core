@@ -21,7 +21,9 @@
 
   <!-- 데스크톱 유틸리티 도구줄: 검색·거르기·보기·새로고침. 여기서 새 업무 흐름을 만들지 않는다. -->
   <div class="ui-toolbar" role="toolbar" aria-label="목록 도구">
-    <label class="ui-field" for="q"><span class="ui-hint">검색</span>
+    <!-- 아이콘은 루시드 한 벌만 쓴다 — 기하 정본은 design-system/icons.lucide.json -->
+    <label class="ui-field" for="q"><span class="ui-hint">
+      <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>검색</span>
       <input class="ui-input" id="q" type="search" placeholder="차번·고객·계약번호"></label>
 
     <div class="ui-chip-set" role="group" aria-label="상태로 거르기 (여러 개)">
@@ -37,7 +39,8 @@
 
     <span class="ui-spacer"></span>
     <button type="button" class="ui-button secondary" aria-pressed="false">내 담당만 보기</button>
-    <button type="button" class="ui-button secondary">새로고침</button>
+    <button type="button" class="ui-button secondary">
+      <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg>새로고침</button>
   </div>
 
   <div class="ui-shell-panels" data-panels="3">

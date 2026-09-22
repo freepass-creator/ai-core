@@ -91,6 +91,7 @@
     "contracts/workflow-recovery-policy.schema.json",
     "contracts/workflow.schema.json",
     "design-system/components.registry.json",
+    "design-system/icons.lucide.json",
     "design-system/interaction.contract.json",
     "design-system/patterns.registry.json",
     "design-system/runtime-v2.css",

@@ -101,17 +101,19 @@
   gap: var(--space-1);
   padding-block: 2px;
   padding-inline: 8px;
-  border: 1px solid var(--color-border);
+  border: 0;
   border-radius: 999px;
+  background: var(--color-disabled-surface);
   font-size: var(--font-size-sm);
   line-height: 1.25;
 }
 
+/* 뱃지도 박스다 — 선 대신 면과 글자색·굵기로 말한다. 글자가 이미 상태 이름을 들고 있다(색 하나로 말하지 않는다). */
 .ui-source[data-state="stale"],
-.ui-badge[data-tone="warning"] { border-color: var(--color-warning); }
+.ui-badge[data-tone="warning"] { color: var(--color-warning); font-weight: 700; }
 
 .ui-source[data-state="conflict"],
-.ui-badge[data-tone="error"] { border-color: var(--color-danger); }
+.ui-badge[data-tone="error"] { background: var(--color-error-surface); color: var(--color-danger); font-weight: 700; }
 
 .ui-skeleton {
   min-block-size: var(--control-height);
@@ -396,7 +398,7 @@
 .ui-document-preview {
   max-inline-size: 100%;
   overflow: auto;
-  border: 1px solid var(--color-border);
+  border: 0;
   border-radius: var(--radius-md);
   background: var(--color-surface);
 }
@@ -446,6 +448,31 @@
 .ui-tab[aria-selected="true"] { border: 0; background: var(--color-info-surface); color: var(--color-primary); font-weight: 700; }
 /* 값을 넣는 자리는 테두리를 유지한다(부품 정본 그대로) — 여기서 지우지 않는다. */
 
+/* ★아이콘 — 루시드 한 벌로 통일 (대표 2026-09-23 「아이콘이나 체크 이런 거는 루시드 아이콘으로 통일」)
+ *   정본 기하: design-system/icons.lucide.json — 여기 적힌 svg_body 와 아래 마스크가 «같아야» 한다(검사가 잡는다).
+ *   마크업에서는 <svg class="ui-icon"> 로 그대로 박고, CSS 가 만드는 표시(선택·눌림)는 --icon-* 마스크를 쓴다.
+ *   이모지·아이콘 폰트·제각각 글리프는 쓰지 않는다. 크기는 글자 크기를 따라간다(1em).
+ */
+:root {
+  --icon-check: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
+}
+.ui-icon { inline-size: 1em; block-size: 1em; flex: none; }
+.ui-button .ui-icon, .ui-chip .ui-icon { margin-inline-end: 6px; }
+.ui-icon-button .ui-icon { inline-size: 1.25em; block-size: 1.25em; margin: 0; }
+
+/* CSS 가 만드는 표시도 같은 루시드 기하를 쓴다 — 글자가 아니라 마스크다(번역·폰트에 흔들리지 않는다). */
+.ui-mark-check::before {
+  content: "";
+  display: inline-block;
+  inline-size: 1em;
+  block-size: 1em;
+  margin-inline-end: 6px;
+  vertical-align: -0.125em;
+  background-color: currentColor;
+  -webkit-mask: var(--icon-check) center / contain no-repeat;
+  mask: var(--icon-check) center / contain no-repeat;
+}
+
 /* 선택·눌림 상태와 기본 골격(모바일·웹) — 정본: registry/ui-ux-features.json · interaction.contract.json
  * ★테두리 없는 컨트롤(FREEPASS_PRODUCT_UI_PROFILE.md 4절 · A_SESSION_REPO_AUDIT 1.1):
  *   버튼·칩·뱃지는 테두리·그림자를 «상태 언어» 로 쓰지 않는다. 상태는 옅은 면 + 글자색 + 굵기 + 표시 문자로 말한다.
@@ -455,14 +482,20 @@
 .ui-chip-set { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; }
 .ui-chip { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 4px 12px; border: 0; border-radius: 999px; background: var(--color-disabled-surface); color: var(--color-text); font: inherit; cursor: pointer; }
 .ui-chip[aria-pressed="true"], .ui-chip[aria-selected="true"] { background: var(--color-info-surface); color: var(--color-primary); font-weight: 700; }
-.ui-chip[aria-pressed="true"]::before, .ui-chip[aria-selected="true"]::before { content: "✓"; }
+.ui-chip[aria-pressed="true"]::before, .ui-chip[aria-selected="true"]::before {
+  content: ""; display: inline-block; inline-size: 1em; block-size: 1em; vertical-align: -0.125em;
+  background-color: currentColor; -webkit-mask: var(--icon-check) center / contain no-repeat; mask: var(--icon-check) center / contain no-repeat;
+}
 .ui-chip:disabled, .ui-chip[aria-disabled="true"] { color: var(--color-muted); cursor: not-allowed; }
 .ui-chip:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
 .ui-chip-remove { display: inline-flex; min-width: 20px; min-height: 20px; align-items: center; justify-content: center; border: 0; border-radius: 999px; background: transparent; color: inherit; cursor: pointer; }
 
-/* 눌림 토글 — 면과 굵기와 표시 문자로만 말한다. 이름은 그대로 둔다(글자를 덧붙이지 않는다). */
+/* 눌림 토글 — 면·굵기·루시드 체크로만 말한다. 이름은 그대로 둔다(글자를 덧붙이지 않는다). */
 .ui-button[aria-pressed="true"] { background: var(--color-info-surface); color: var(--color-primary); font-weight: 700; }
-.ui-button[aria-pressed="true"]::before { content: "✓ "; }
+.ui-button[aria-pressed="true"]::before {
+  content: ""; display: inline-block; inline-size: 1em; block-size: 1em; margin-inline-end: 6px; vertical-align: -0.125em;
+  background-color: currentColor; -webkit-mask: var(--icon-check) center / contain no-repeat; mask: var(--icon-check) center / contain no-repeat;
+}
 
 .ui-segmented { display: inline-flex; gap: 2px; padding: 2px; border-radius: var(--radius-sm); background: var(--color-disabled-surface); }
 .ui-segmented > label { position: relative; display: inline-flex; align-items: center; min-height: 32px; padding: 4px 12px; border-radius: calc(var(--radius-sm) - 2px); color: var(--color-muted); cursor: pointer; }
@@ -471,8 +504,8 @@
 .ui-segmented > label:has(input:disabled) { color: var(--color-muted); cursor: not-allowed; }
 .ui-segmented > label:has(input:focus-visible) { outline: 2px solid var(--color-primary); outline-offset: 2px; }
 
-/* 선택 카드 — 카드의 구분선은 «구조» 라 남기고, 선택은 면과 글자 위계로 말한다(테두리를 굵히지 않는다). */
-.ui-select-card { display: grid; gap: var(--space-2); padding: var(--space-4); border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: var(--color-surface); cursor: pointer; }
+/* 선택 카드 — 박스도 선 없이 간다(대표 2026-09-23). 바탕(--color-bg)과 면(--color-surface)의 대비·간격이 카드를 가른다. */
+.ui-select-card { display: grid; gap: var(--space-2); padding: var(--space-4); border: 0; border-radius: var(--radius-sm); background: var(--color-surface); cursor: pointer; }
 .ui-select-card:has(input:checked) { background: var(--color-info-surface); color: var(--color-primary); }
 .ui-select-card:has(input:checked) .ui-select-card-head { font-weight: 700; }
 .ui-select-card:has(input:focus-visible) { outline: 2px solid var(--color-primary); outline-offset: 2px; }

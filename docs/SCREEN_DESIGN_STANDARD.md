@@ -30,13 +30,25 @@ Keep the element only when one of those three fails. The table below is the resu
 | Surface | Line | Why |
 | --- | --- | --- |
 | text input, textarea, search, select/dropdown, combobox, date, file drop, data-grid cell rules | **keep** | nothing else says "a value goes here"; test (1) fails without it |
-| buttons, button-like links, chips, badges, toggles, segmented controls, tabs | none | tint + weight + glyph carry both identity and state |
-| cards, panels, toolbars, app bars, bottom action bars, dialogs, alerts | none | surface tint and spacing already separate them from the page |
+| buttons, button-like links, chips, badges, toggles, segmented controls, tabs | none | tint + weight + icon carry both identity and state |
+| cards, select cards, previews, panels, toolbars, app bars, bottom action bars, dialogs, alerts | none | a box is still a box without a line: surface tint and spacing separate it from the page |
 | table row rules, list separators | allowed | they help *read data* — never to express selection or disabled state |
 | keyboard `:focus-visible` outline | **mandatory** | not a border for this rule; never suppressed |
 | forced-colors / high contrast | system decides | the product does not suppress restored system borders |
 
-Machine form: `design-system/interaction.contract.json#rules.border_policy`; enforced in `design-system/runtime-v2.css` and checked by `test/ui-shell-samples.test.mjs`. `design-system/components.css` is pinned by the 2026-09-14 browser receipt and is overridden from runtime-v2, never edited.
+## Icons — one set, Lucide
+
+Decided by the owner on 2026-09-23: every icon and every check mark comes from **Lucide**. No emoji, no icon font, no second set, no hand-drawn glyph.
+
+- The canonical geometry is recorded in `design-system/icons.lucide.json` (ISC licence; the attribution travels with any redistribution). Adding an icon means recording it there first.
+- Markup inlines the recorded `svg_body` on `<svg class="ui-icon" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">`.
+- Marks that CSS generates — the selected chip, the pressed toggle — use the matching `--icon-*` mask in `runtime-v2.css` with `background-color: currentColor`, so the mark is the same drawing, not a text character that shifts with font or locale.
+- An icon is 1em and takes its colour from `currentColor`: it follows tint and state instead of carrying its own palette.
+- A decorative icon is `aria-hidden` and never the only carrier of meaning; an icon-only control has its own accessible name.
+
+`test/ui-shell-samples.test.mjs` fails when a sample's SVG body drifts from the record, when a generated mark stops using the Lucide mask, or when a stray glyph appears.
+
+Machine form: `design-system/interaction.contract.json#rules.border_policy` and `#rules.icon_policy`; enforced in `design-system/runtime-v2.css` and checked by `test/ui-shell-samples.test.mjs`. `design-system/components.css` is pinned by the 2026-09-14 browser receipt and is overridden from runtime-v2, never edited.
 
 ## Tokens
 
