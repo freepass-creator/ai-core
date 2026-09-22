@@ -151,6 +151,23 @@
             "write authorization depends on AIOps lease policy",
             "token/runtime policy has not been extracted"
           ]
+        },
+        {
+          "source_symbol": "makeCall(read-only semantics)",
+          "source_blob_sha": "447deabfbfedf9e0eb26ab2dffbaed4f8ada0100",
+          "destination_path": "shared-services/google/read-transport.mjs",
+          "disposition": "ADAPTED_SHADOW",
+          "port_contract": "shared-services/google/ports/google-api-read.v1.json",
+          "adapter_contract": "shared-services/google/adapters/shared-google-read-shadow.v1.json",
+          "binding_profile": "shared-services/google/bindings/aiops-google-read-shadow.v1.json",
+          "consumer_cutover_authorized": false,
+          "parity_status": "PARTIAL",
+          "remaining_blockers": [
+            "token acquisition and delegated identity remain AIOps-specific",
+            "write authorization remains coupled to AIOps lease policy",
+            "retry timing differs from AIOps source and is intentionally not claimed as exact parity",
+            "no live Google provider verification has been performed for the shared shadow adapter"
+          ]
         }
       ]
     },
