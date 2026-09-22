@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import Ajv2020 from 'ajv/dist/2020.js';
 import addFormats from 'ajv-formats';
 import { readFile } from 'node:fs/promises';
+import { resolveBinding } from '../src/contracts/engine-adapter-contract.mjs';
 
 const registry=JSON.parse(await readFile(new URL('../registry/core-contracts.json',import.meta.url),'utf8'));
 const schemas=await Promise.all(registry.contracts.map(async contract=>JSON.parse(await readFile(new URL('../'+contract.path,import.meta.url),'utf8'))));
@@ -216,4 +217,30 @@ test('mixed repository port and service-only binding profile are valid',()=>{
     }],
     config_refs:[],secret_refs:[],verification_state:'PARTIAL'
   }),true);
+});
+
+test('binding fails closed when an adapter id is ambiguous',()=>{
+  const engine={
+    schema_version:'core-engine-contract/v1',engine_id:'quote.core',version:'1.0.0',
+    source:{locator:'src/quote.mjs',revision:'git:engine'},
+    invariants:['binding identity is deterministic'],verification_profile:['contract'],
+    effect_model:'PORT_MEDIATED',required_ports:[{port_id:'vehicle.read',port_version:'v1'}]
+  };
+  const adapter={
+    schema_version:'core-adapter-contract/v1',adapter_id:'adapter.vehicle.read',adapter_version:'1.0.0',
+    port_id:'vehicle.read',source:{locator:'src/read-a.mjs',revision:'git:a'},
+    compatibility:{port_versions:['v1'],engine_versions:['1.0.0']},
+    mapping:[{canonical_field:'vehicle.id',provider_field:'id',transformation:'identity',unit_conversion:null}],
+    side_effects:false,idempotency:'NOT_APPLICABLE',timeout_ms:1000,
+    auth_boundary:'none',data_classification:['INTERNAL'],
+    failure_mapping:[{provider_code:'not_found',core_code:'NOT_FOUND'}],health_check:'fixture'
+  };
+  const duplicate={...structuredClone(adapter),adapter_version:'2.0.0',source:{locator:'src/read-b.mjs',revision:'git:b'}};
+  const profile={subject_revision:'git:project',engine_bindings:[{
+    engine_id:'quote.core',engine_version:'1.0.0',ports:[{port_id:'vehicle.read',adapter_id:'adapter.vehicle.read'}]
+  }]};
+  const result=resolveBinding({engine,adapters:[adapter,duplicate],profile});
+  assert.equal(result.status,'HOLD');
+  assert.deepEqual(result.selected_adapters,[]);
+  assert.ok(result.errors.includes('ADAPTER_DUPLICATE_ID:adapter.vehicle.read'));
 });
