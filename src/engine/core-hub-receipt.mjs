@@ -1,14 +1,4 @@
-import crypto from 'node:crypto';
-
-function stable(value){
-  if(Array.isArray(value)) return value.map(stable);
-  if(value&&typeof value==='object') return Object.fromEntries(Object.keys(value).sort().map((key)=>[key,stable(value[key])]));
-  return value;
-}
-
-function checksum(value){
-  return `sha256:${crypto.createHash('sha256').update(JSON.stringify(stable(value))).digest('hex')}`;
-}
+import {buildCoreReceipt,coreReceiptChecksum} from './core-receipt.mjs';
 
 function collectEvidence(value,refs=[]){
   if(Array.isArray(value)){
@@ -46,30 +36,28 @@ export function finalizeCoreHubReceipt({
 }){
   const receiptKind=`hub.${kind}`;
   const identity={receipt_kind:receiptKind,legacy_contract:legacyContract,payload};
-  const receiptId=`${prefix}_${checksum(identity).slice(7,31)}`;
+  const receiptId=`${prefix}_${coreReceiptChecksum(identity).slice(7,31)}`;
   const status=STATUS[legacyStatus]??'HOLD';
-  return {
-    schema_version:'core-receipt/v1',
-    receipt_id:receiptId,
-    operation_id:receiptId,
-    operation_kind:`hub.${kind}.verify`,
+  const coreReceipt=buildCoreReceipt({
+    receiptId,
+    operationKind:`hub.${kind}.verify`,
     actor:'devcenter',
     executor,
-    correlation_id:receiptId,
     status,
-    reason_code:status==='SUCCEEDED'?null:`HUB_${kind.toUpperCase().replaceAll('-','_')}_${status}`,
-    input:{digest:checksum({...payload,result:undefined}),refs:inputRefs},
-    output:{digest:checksum(payload),refs:outputRefs},
-    source_revision:subject?.revision??null,
-    started_at:startedAt,
-    ended_at:endedAt,
-    evidence_refs:collectEvidence(payload),
-    reproducibility:{
-      deterministic:true,
-      executor_version:'1',
-      environment_revision:subject?.revision??null,
-      command_ref:`devcenter/scripts/${SCRIPT[kind]??kind}.mjs`
-    },
+    reasonCode:status==='SUCCEEDED'?null:`HUB_${kind.toUpperCase().replaceAll('-','_')}_${status}`,
+    inputPayload:{...payload,result:undefined},
+    outputPayload:payload,
+    inputRefs,
+    outputRefs,
+    sourceRevision:subject?.revision??null,
+    startedAt,
+    endedAt,
+    evidenceRefs:collectEvidence(payload),
+    environmentRevision:subject?.revision??null,
+    commandRef:`devcenter/scripts/${SCRIPT[kind]??kind}.mjs`
+  });
+  return {
+    ...coreReceipt,
     receipt_kind:receiptKind,
     payload:{legacy_contract:legacyContract,...payload}
   };
