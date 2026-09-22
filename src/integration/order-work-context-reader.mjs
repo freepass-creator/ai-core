@@ -12,6 +12,8 @@
 // There is no parameter to hold one, and unexpected keys are refused, so this
 // module is structurally incapable of writing anywhere.
 
+import { isDeepStrictEqual } from 'node:util';
+
 const copy = (value) => structuredClone(value);
 const need = (condition, code) => { if (!condition) throw new Error(code); };
 
@@ -21,6 +23,7 @@ const ACCEPTED = ['store', 'registry', 'snapshot', 'mappings', 'readLedgerText']
 // callers pin a snapshot once and others recompute it per read. Either way the
 // value is produced by the caller; this module never derives canonical content.
 const resolve = (source) => (typeof source === 'function' ? source() : source);
+const capture = (source) => copy(resolve(source));
 
 /**
  * createOrderWorkContextReader({ store, registry, snapshot, mappings, readLedgerText })
@@ -46,24 +49,34 @@ export function createOrderWorkContextReader(dependencies) {
   return async function readContext(orderId) {
     // Read atomicity, storage- and policy-agnostic. Extracted from the pattern in
     // src/integration/order-intake-sandbox.mjs:30-39 (and mirrored in
-    // durable-order-work-sandbox.mjs:229-232): read the order, read the ledger,
-    // then re-read both. If either moved, the order and the ledger text would come
-    // from different moments and the projection would describe a state that never
-    // existed. Reject instead of returning a blended read.
+    // durable-order-work-sandbox.mjs:229-232): observe every canonical input on
+    // both sides of one read window. If any source moved, the projection could
+    // describe a state that never existed. Reject instead of returning a blended read.
     // Rejection code is the existing convention CANONICAL_READ_CHANGED, not a new name.
     const before = store.get(orderId);
+    const registryBefore = capture(registry);
+    const snapshotBefore = capture(snapshot);
+    const mappingsBefore = capture(mappings);
     const text = await readLedgerText();
-    const after = store.get(orderId);
+
     const textAgain = await readLedgerText();
+    const mappingsAfter = capture(mappings);
+    const snapshotAfter = capture(snapshot);
+    const registryAfter = capture(registry);
+    const after = store.get(orderId);
+
     need(before.version === after.version && before.revision === after.revision
-      && text === textAgain, 'CANONICAL_READ_CHANGED');
+      && text === textAgain
+      && isDeepStrictEqual(registryBefore, registryAfter)
+      && isDeepStrictEqual(snapshotBefore, snapshotAfter)
+      && isDeepStrictEqual(mappingsBefore, mappingsAfter), 'CANONICAL_READ_CHANGED');
 
     return {
       order: copy(after),
-      mappings: copy(resolve(mappings)),
-      registry: copy(resolve(registry)),
-      snapshot: copy(resolve(snapshot)),
-      ledgerText: text,
+      mappings: mappingsAfter,
+      registry: registryAfter,
+      snapshot: snapshotAfter,
+      ledgerText: textAgain,
       // Deliberately empty, and only safe because of what the read-only path is:
       // readWorkProjection / linkOrder never read these two fields; only the submit
       // path (prepareWorkCommand) does. A submitter must supply a real inventory
