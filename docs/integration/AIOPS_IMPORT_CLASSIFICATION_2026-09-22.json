@@ -115,13 +115,21 @@
   "shared_library_review": [
     {
       "path": "lib/atomic-stream-write.mjs",
-      "disposition": "EXTRACT_SHARED_CANDIDATE",
+      "disposition": "EXTRACTED_SHARED_SHADOW",
       "destination_candidate": "shared-services/fs/atomic-stream-write.mjs",
       "execution_authorized": false,
       "evidence": [
         "Observed file imports Node fs/path/crypto only.",
         "No AIOPS_* environment dependency, company Sheet/Drive ID, credential path or business-domain import was observed."
-      ]
+      ],
+      "extraction": {
+        "source_revision": "3d6ec8c6a0e826ae0472e3fb3e8bbaa8399b68c9",
+        "source_blob_sha": "4e4da3becc6d3d3eebbc8108708c0d5e5dc4197d",
+        "destination_path": "shared-services/fs/atomic-stream-write.mjs",
+        "provenance_path": "shared-services/PROVENANCE.json",
+        "parity_test": "test/shared-services-atomic-stream-write.test.mjs",
+        "consumer_cutover_authorized": false
+      }
     },
     {
       "path": "lib/goog.mjs",
