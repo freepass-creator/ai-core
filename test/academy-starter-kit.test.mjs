@@ -175,6 +175,31 @@ test('starter kit bootstrap admits generated refresh but holds authority drift a
   assert.equal(coordinatedMutation.blockers.includes('STARTER_KIT_REVISION_MISMATCH'),false);
 
   git(root,'reset','--hard',refreshed);
+  const sameGenerationBootstrapSource=await readFile(bootstrapPath,'utf8');
+  const sameGenerationBootstrap=`${sameGenerationBootstrapSource}// coordinated bootstrap + manifest + start mutation\n`;
+  await writeFile(bootstrapPath,sameGenerationBootstrap);
+  const sameGenerationManifest=JSON.parse(await readFile(manifestPath,'utf8'));
+  const sameGenerationBootstrapEntry=sameGenerationManifest.files.find(file=>file.path==='session-bootstrap.mjs');
+  assert.ok(sameGenerationBootstrapEntry);
+  sameGenerationBootstrapEntry.sha256=sha256(sameGenerationBootstrap);
+  await writeFile(manifestPath,`${JSON.stringify(sameGenerationManifest,null,2)}\n`);
+  const startPath=join(out,'START_HERE.md');
+  const refreshedStart=await readFile(startPath,'utf8');
+  await writeFile(startPath,`${refreshedStart}\n<!-- coordinated same-generation marker mutation -->\n`);
+  git(root,'add','.ai-core/session-bootstrap.mjs','.ai-core/kit.json','.ai-core/START_HERE.md');
+  git(root,'commit','-q','-m','coordinate all mutable generation markers');
+  const sameGenerationMutationRun=spawnSync(process.execPath,[bootstrapPath],{cwd:root,encoding:'utf8'});
+  assert.equal(sameGenerationMutationRun.status,2,sameGenerationMutationRun.stderr||sameGenerationMutationRun.stdout);
+  const sameGenerationMutation=JSON.parse(sameGenerationMutationRun.stdout);
+  assert.equal(sameGenerationMutation.status,'HOLD');
+  assert.equal(sameGenerationMutation.project.kit_authority.status,'MISMATCH');
+  assert.equal(sameGenerationMutation.project.kit_authority.anchor_commit,refreshed);
+  assert.deepEqual(sameGenerationMutation.project.kit_authority.changed,['kit.json','session-bootstrap.mjs','START_HERE.md']);
+  assert.equal(sameGenerationMutation.project.kit_verification,null);
+  assert.ok(sameGenerationMutation.blockers.includes('STARTER_KIT_VERIFICATION_FAILED'));
+  assert.equal(sameGenerationMutation.blockers.includes('STARTER_KIT_REVISION_MISMATCH'),false);
+
+  git(root,'reset','--hard',refreshed);
   await writeFile(join(root,'tracked.txt'),'v2\n');
   git(root,'add','tracked.txt');
   git(root,'commit','-q','-m','advance project');
