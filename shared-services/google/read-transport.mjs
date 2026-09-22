@@ -2,6 +2,7 @@ import { assertAllowedGoogleApiUrl } from './api-url-boundary.mjs';
 
 const READ_METHODS=new Set(['GET','HEAD','OPTIONS']);
 const RETRYABLE_STATUS=new Set([429,500,503]);
+const MAX_RETRIES=6;
 const defaultSleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 
 function fail(code,message){
@@ -14,12 +15,15 @@ export function createGoogleReadTransport({
   accessToken,
   fetchImpl=globalThis.fetch,
   sleep=defaultSleep,
-  maxRetries=6,
+  maxRetries=MAX_RETRIES,
   retryWaitMs=20_000
 }={}){
   if(typeof accessToken!=='string'||!accessToken.trim()) fail('GOOGLE_ACCESS_TOKEN_REQUIRED','Google bearer token is required');
   if(typeof fetchImpl!=='function') fail('GOOGLE_FETCH_REQUIRED','fetch implementation is required');
   if(typeof sleep!=='function') fail('GOOGLE_SLEEP_REQUIRED','sleep implementation is required');
+  if(!Number.isInteger(maxRetries)||maxRetries<0||maxRetries>MAX_RETRIES){
+    fail('GOOGLE_READ_RETRY_BUDGET_INVALID',`maxRetries must be an integer between 0 and ${MAX_RETRIES}`);
+  }
 
   async function call(url,opts={},tries=0){
     let parsed;
