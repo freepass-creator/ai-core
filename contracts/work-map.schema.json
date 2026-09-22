@@ -6,7 +6,8 @@
   "required": [
     "schema_version",
     "observed_at",
-    "work_types"
+    "work_types",
+    "hub_routes"
   ],
   "properties": {
     "schema_version": {
@@ -15,6 +16,45 @@
     "observed_at": {
       "type": "string",
       "format": "date-time"
+    },
+    "hub_routes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version", "no_match", "tie", "rules"],
+      "properties": {
+        "version": { "const": 1 },
+        "no_match": { "const": "HOLD" },
+        "tie": { "const": "HOLD" },
+        "rules": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "priority", "primary", "secondary", "match_any"],
+            "properties": {
+              "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,62}$" },
+              "priority": { "type": "integer", "minimum": 0 },
+              "primary": {
+                "enum": ["design", "data", "document", "engineering", "integration", "quality", "delivery", "control-plane"]
+              },
+              "secondary": {
+                "type": "array",
+                "uniqueItems": true,
+                "items": {
+                  "enum": ["design", "data", "document", "engineering", "integration", "quality", "delivery"]
+                }
+              },
+              "match_any": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": { "type": "string", "minLength": 1 }
+              }
+            }
+          }
+        }
+      }
     },
     "work_types": {
       "type": "array",

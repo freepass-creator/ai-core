@@ -27,7 +27,8 @@ export function validateRoutingRules(rules, registry) {
   const ids = new Set((registry?.hubs ?? []).map((hub) => hub.id));
   ids.add('control-plane');
 
-  if (rules?.contract !== 'devcenter-hub-routing-rules/v1') errors.push('HUB_ROUTING_CONTRACT_INVALID');
+  if (rules?.version !== 1) errors.push('HUB_ROUTING_VERSION_INVALID');
+  if (rules?.no_match !== 'HOLD' || rules?.tie !== 'HOLD') errors.push('HUB_ROUTING_FAIL_CLOSED_POLICY_INVALID');
   if (!Array.isArray(rules?.rules) || !rules.rules.length) errors.push('HUB_ROUTING_RULES_EMPTY');
 
   const ruleIds = new Set();
@@ -99,7 +100,8 @@ export function routeHubRequest(input, { registry, routingRules } = {}) {
 export function loadHubRouting(baseDir = HERE) {
   const rootRegistry = path.resolve(baseDir, '..', 'registry');
   const registry = JSON.parse(fs.readFileSync(path.join(rootRegistry,'hubs.json'),'utf8'));
-  const routingRules = JSON.parse(fs.readFileSync(path.join(rootRegistry,'hub-routing-rules.json'),'utf8'));
+  const workMap = JSON.parse(fs.readFileSync(path.join(rootRegistry,'work-map.json'),'utf8'));
+  const routingRules = workMap.hub_routes;
   return { registry, routingRules };
 }
 

@@ -394,16 +394,16 @@
       "allow_empty": false
     },
     {
-      "id": "hub-routing-rules",
+      "id": "hub-work-map-routing",
       "scope": "dev.org.hubs.routing",
-      "project": "devcenter",
-      "owner": "devcenter",
+      "project": "ai-core",
+      "owner": "ai-core",
       "role": "authoritative",
       "source": {
         "kind": "json",
-        "locator": "registry/hub-routing-rules.json"
+        "locator": "registry/work-map.json"
       },
-      "key": "entry",
+      "key": "hub_routes",
       "required": [],
       "allow_empty": false
     },
