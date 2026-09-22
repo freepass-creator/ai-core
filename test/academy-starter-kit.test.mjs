@@ -19,11 +19,18 @@ test('starter kit carries pinned standards, verification and result template',as
   assert.equal(JSON.parse(await readFile(join(root,'.ai-core','catalog','projects.json'),'utf8')).projects[0].project_id,'one');
   assert.equal(JSON.parse(await readFile(join(root,'.ai-core','CATALOG_INDEX.json'),'utf8')).items[0].core_revision,'b'.repeat(40));
   assert.match(await readFile(join(root,'.ai-core','START_HERE.md'),'utf8'),/session-bootstrap\.mjs/);
-  const bootstrapRun=spawnSync(process.execPath,[join(root,'.ai-core','session-bootstrap.mjs')],{encoding:'utf8'});
+  const bootstrapRun=spawnSync(process.execPath,[join(root,'.ai-core','session-bootstrap.mjs')],{encoding:'utf8',env:{...process.env,PATH:join(root,'missing-bin')}});
   const bootstrap=JSON.parse(bootstrapRun.stdout);
-  assert.equal(bootstrap.schema,'ai-core-session-bootstrap/v1');
+  assert.equal(bootstrap.schema,'ai-core-session-bootstrap/v2');
+  assert.equal(bootstrap.mode,'OBSERVE');
+  assert.equal(bootstrap.rules.github_latest_required,true);
+  assert.equal(bootstrap.rules.fast_forward_only,true);
+  assert.equal(bootstrap.project.remote_freshness,'UNKNOWN');
+  assert.equal(bootstrap.civilization.remote_freshness,'UNKNOWN');
   assert.equal(bootstrap.status,'HOLD');
   assert.ok(bootstrap.blockers.includes('GIT_REMOTE_UNAVAILABLE'));
+  assert.ok(bootstrap.blockers.includes('AI_CORE_REMOTE_HEAD_UNAVAILABLE'));
+  assert.match(await readFile(join(root,'.ai-core','START_HERE.md'),'utf8'),/--sync/);
 });
 
 test('starter kit never overwrites a conflicting local file',async()=>{
