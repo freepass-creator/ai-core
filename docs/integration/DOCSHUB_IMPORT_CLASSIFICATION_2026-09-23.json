@@ -74,6 +74,29 @@
     "Before cutover, the four remote template source blobs are read from the exact external DocsHub revision.",
     "After cutover, management-support/templates owns template bodies and DevCenter Document Hub only plans, validates and receipts their use.",
     "External DocsHub and management-support/templates must never be writable template SSOTs at the same time.",
-    "The local unversioned DocsHub inventory is HOLD until freshly observed; planning counts are not execution evidence."
-  ]
+    "The local unversioned DocsHub inventory is HOLD until freshly observed; planning counts are not execution evidence.",
+    "While cutover_authorized=false, management-support/templates contains scaffold documentation only and document-production routing continues to target the external DocsHub project in HOLD."
+  ],
+  "target_layout": {
+    "root": "management-support/",
+    "template_root": "management-support/templates/",
+    "scaffold_only": true,
+    "allowed_scaffold_files": [
+      "management-support/README.md",
+      "management-support/templates/README.md"
+    ]
+  },
+  "routing_gate": {
+    "transition_state": "PRE_CUTOVER",
+    "expected_work_map_target_project_id": "docshub",
+    "expected_capability_project_ids": [
+      "docshub"
+    ],
+    "expected_capability_status": "HOLD",
+    "post_cutover_target_project_id": "ai-core",
+    "post_cutover_capability_project_ids": [
+      "ai-core"
+    ],
+    "rule": "Routing authority changes only in the same cutover unit that moves template source binding and marks the old DocsHub source reference-only."
+  }
 }
