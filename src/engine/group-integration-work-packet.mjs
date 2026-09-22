@@ -21,9 +21,9 @@ function requiredVerification(item){
     'DIRTY_STATE_RECHECK',
     'PLAN_ITEM_STILL_READY',
   ];
-  if(item.classification==='MERGE_PHYSICAL') return [...base,'TARGET_PARITY_CHECK','ROLLBACK_PATH_VERIFIED'];
+  if(item.classification==='MERGE_PHYSICAL') return [...base,'IMPORT_CONTENT_POLICY_CHECK','CANONICAL_AUTHORITY_COLLISION_CHECK','SOURCE_RUNTIME_DEPENDENCY_CHECK','TARGET_PARITY_CHECK','ROLLBACK_PATH_VERIFIED'];
   if(item.classification==='COLOCATE_ONLY') return [...base,'PATH_DEPENDENCY_CHECK'];
-  if(item.classification==='EXTRACT_SHARED') return [...base,'SOURCE_PROJECT_PARITY_CHECK','CONSUMER_COMPATIBILITY_CHECK','ROLLBACK_PATH_VERIFIED'];
+  if(item.classification==='EXTRACT_SHARED') return [...base,'IMPORT_CONTENT_POLICY_CHECK','CANONICAL_AUTHORITY_COLLISION_CHECK','SOURCE_RUNTIME_DEPENDENCY_CHECK','SOURCE_PROJECT_PARITY_CHECK','CONSUMER_COMPATIBILITY_CHECK','ROLLBACK_PATH_VERIFIED'];
   if(item.classification==='RETIRE') return [...base,'NON_USE_OR_REPLACEMENT_VERIFIED','RECOVERY_PATH_VERIFIED'];
   return [...base,'PROJECT_AUTHORITY_UNCHANGED'];
 }
@@ -38,6 +38,14 @@ function forbiddenActions(item){
   ];
   if(item.classification!=='RETIRE') common.push('DELETE_OR_RETIRE_SOURCE');
   if(item.classification==='KEEP_SEPARATE') common.push('MERGE_GIT_HISTORY');
+  if(['MERGE_PHYSICAL','EXTRACT_SHARED'].includes(item.classification)){
+    common.push(
+      'COPY_SECRETS_OR_CREDENTIALS',
+      'COPY_OPERATIONAL_DATA_OR_LOGS',
+      'COPY_COMPETING_CANONICAL_AUTHORITY',
+      'COPY_DEPLOYMENT_BOUNDARY_CONFIG'
+    );
+  }
   return common;
 }
 
