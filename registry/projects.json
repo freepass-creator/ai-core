@@ -41,7 +41,7 @@
       "name": "AIOps",
       "organization": "SUBSIDIARY",
       "repository_lifecycle_status": "ACTIVE",
-      "execution_readiness_status": "HOLD",
+      "execution_readiness_status": "ACTIVE",
       "mission": "Operational control plane for Freepass contracts, receivables, penalties, insurance and cash reconciliation; also hosts generic Google/Drive/Sheets connectors pending shared-service extraction.",
       "repository": "freepass-creator/aiops",
       "default_branch": "main",
@@ -68,10 +68,10 @@
         "lib/seungin.mjs 행위등급 (local/drive-add/protected)"
       ],
       "known_blockers": [
-        "Canonical main advanced to 3d6ec8c6... but no exact-head GitHub Actions run was observed; execution readiness is HOLD pending revision-bound verification.",
         "Actual Windows Task Scheduler Enabled/LastRun/LastTaskResult remains operationally unverified from GitHub.",
         "Security exact-subject SHADOW is on main, but recent GitHub Actions jobs have an observed runner-entry failure mode with zero executed steps; code-level CI enforcement must be re-observed when runners execute.",
-        "Historical local checkout/history-surgery state has not been re-observed after current main advanced; do not reuse the old local-ahead count as current fact."
+        "Historical local checkout/history-surgery state has not been re-observed after current main advanced; do not reuse the old local-ahead count as current fact.",
+        "Runtime parity verified: f2243643...→3d6ec8c6 changes only .ai-core starter-kit files; no AIOps operational/runtime source file changed, so prior execution readiness is preserved."
       ]
     },
     {
@@ -521,7 +521,7 @@
       "name": "Mewcar Automobile Subscription",
       "organization": "SUBSIDIARY",
       "repository_lifecycle_status": "ACTIVE",
-      "execution_readiness_status": "HOLD",
+      "execution_readiness_status": "ACTIVE",
       "mission": "Business-content and decision SSOT for the Mewcar automobile-subscription launch: planning, preparation, operating manuals, decisions and evidence pointers. Final formatted documents remain a DocsHub responsibility.",
       "repository": "freepass-creator/mewcar",
       "default_branch": "main",
@@ -552,9 +552,9 @@
         "legal-or-corporate-action"
       ],
       "known_blockers": [
-        "Canonical main advanced to dbe96a42... with no exact-head CI evidence observed. Business-source freshness does not itself prove execution readiness, so HOLD is required.",
         "Git intentionally excludes private call recordings/transcripts and personal-detail material; Git source review cannot prove those local-only sources.",
-        "Business decisions and implementation completion must remain distinct: planning/manual presence is not evidence of legal setup, launch, contract approval or external execution."
+        "Business decisions and implementation completion must remain distinct: planning/manual presence is not evidence of legal setup, launch, contract approval or external execution.",
+        "Runtime/content parity verified: a0a42cad...→dbe96a42 changes only .ai-core starter-kit files; Mewcar business-content source did not change, so prior readiness is preserved."
       ]
     },
     {
