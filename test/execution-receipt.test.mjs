@@ -76,3 +76,49 @@ test('다른 schema나 비종료 상태를 성공으로 읽지 않는다', async
   out=await f.reader.reconcile('/project',config,before2);
   assert.equal(out.reason,'EXECUTION_RECEIPT_NON_TERMINAL');
 });
+
+test('execution identity가 bind되지 않은 receipt는 복구 성공으로 올리지 않는다', async () => {
+  const f=fake();
+  const before=await f.reader.snapshot('/project',config);
+  f.files.set('실행기록-b.json',{mtimeMs:999,value:{schema:'gwataeryo-run-manifest/v1',state:'COMPLETED',request_id:'exec-b'}});
+  const out=await f.reader.reconcile('/project',config,before,{expectedIdentity:'exec-a'});
+  assert.equal(out.status,'HOLD');
+  assert.equal(out.reason,'EXECUTION_RECEIPT_IDENTITY_UNBOUND');
+  assert.equal(out.identity_verified,false);
+});
+
+test('다른 execution identity의 terminal receipt는 복구하지 않는다', async () => {
+  const f=fake();
+  const bound={...config,identity_field:'request_id'};
+  const before=await f.reader.snapshot('/project',bound);
+  f.files.set('실행기록-b.json',{mtimeMs:999,value:{schema:'gwataeryo-run-manifest/v1',state:'COMPLETED',request_id:'exec-b'}});
+  const out=await f.reader.reconcile('/project',bound,before,{expectedIdentity:'exec-a'});
+  assert.equal(out.status,'HOLD');
+  assert.equal(out.reason,'EXECUTION_RECEIPT_IDENTITY_MISMATCH');
+  assert.equal(out.identity,'exec-b');
+  assert.equal(out.identity_verified,false);
+});
+
+test('같은 execution identity의 terminal receipt만 복구한다', async () => {
+  const f=fake();
+  const bound={...config,identity_field:'request_id'};
+  const before=await f.reader.snapshot('/project',bound);
+  f.files.set('실행기록-a.json',{mtimeMs:999,value:{schema:'gwataeryo-run-manifest/v1',state:'COMPLETED',request_id:'exec-a'}});
+  const out=await f.reader.reconcile('/project',bound,before,{expectedIdentity:'exec-a'});
+  assert.equal(out.status,'SUCCEEDED');
+  assert.equal(out.state,'COMPLETED');
+  assert.equal(out.identity_verified,true);
+});
+
+test('동시 변경 receipt 중 더 최신인 다른 identity가 있어도 exact identity를 복구한다', async () => {
+  const f=fake();
+  const bound={...config,identity_field:'request_id'};
+  const before=await f.reader.snapshot('/project',bound);
+  f.files.set('실행기록-a.json',{mtimeMs:998,value:{schema:'gwataeryo-run-manifest/v1',state:'COMPLETED',request_id:'exec-a'}});
+  f.files.set('실행기록-b.json',{mtimeMs:999,value:{schema:'gwataeryo-run-manifest/v1',state:'COMPLETED',request_id:'exec-b'}});
+  const out=await f.reader.reconcile('/project',bound,before,{expectedIdentity:'exec-a'});
+  assert.equal(out.status,'SUCCEEDED');
+  assert.equal(out.receipt.request_id,'exec-a');
+  assert.ok(out.path.endsWith('실행기록-a.json'));
+  assert.equal(out.identity_verified,true);
+});
