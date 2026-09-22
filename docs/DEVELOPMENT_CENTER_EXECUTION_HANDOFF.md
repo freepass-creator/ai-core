@@ -109,9 +109,9 @@ AI Core C remains the normative owner of generic Core/Data contracts. Developmen
 If Development Center cannot resolve a development request to its registered Hub structure, it must HOLD rather than invent a new Hub or silently redirect responsibility.
 
 Current executable router baseline:
-- `freepass-creator/devcenter/hubs/registry.json`
-- `freepass-creator/devcenter/hubs/routing-rules.json`
-- `freepass-creator/devcenter/scripts/hub-router.mjs`
+- `registry/hubs.json`
+- `registry/work-map.json#hub_routes`
+- `devcenter/scripts/hub-router.mjs`
 
 ## Revision rule
 

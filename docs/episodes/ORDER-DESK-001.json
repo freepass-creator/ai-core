@@ -565,7 +565,6 @@
     "registry/devcenter-datasets.json",
     "registry/directions.json",
     "registry/governance-profiles.candidate.json",
-    "registry/hub-routing-rules.json",
     "registry/hubs.json",
     "registry/operating-knowledge.json",
     "registry/operations.json",
@@ -950,6 +949,7 @@
     "2026-09-22 full operating knowledge catalog adds GitHub, Vercel, Firebase, Google Workspace, Windows, and user work style to every portable academy kit; changed_files remains verifier parity only.",
     "2026-09-22 starter kits now carry exact project, capability and work-map catalogs with Core revision and hashes; changed_files remains verifier parity only.",
     "2026-09-22 shared FreePass Mobility business knowledge adds company role, revenue structure, authority boundaries and do-not-ask rules to the operating knowledge carried by portable kits; project runtimes and business data remain in their owning repositories.",
-    "2026-09-22 DevCenter authority cutover: imported registries moved to root registry, project/capability/work-map ownership now points to the AI Core internal module, and Design Hub validates a current-root source-bundle digest. R1, R2, R4 and portal sibling-path independence remain HOLD. changed_files includes intentional deletions and is exact verifier parity only."
+    "2026-09-22 DevCenter authority cutover: imported registries moved to root registry, project/capability/work-map ownership now points to the AI Core internal module, and Design Hub validates a current-root source-bundle digest. R1, R2, R4 and portal sibling-path independence remain HOLD. changed_files includes intentional deletions and is exact verifier parity only.",
+    "2026-09-22 R4 routing unification: all eight Hub primary/secondary routes moved into registry/work-map.json#hub_routes, the duplicate routing JSON was removed, and the Hub runtime now consumes Work Map only. R1, R2 and portal path independence remain HOLD. changed_files includes intentional deletions and is exact verifier parity only."
   ]
 }

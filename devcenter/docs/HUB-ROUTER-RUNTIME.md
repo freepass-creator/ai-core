@@ -6,8 +6,8 @@
 
 ## 정본
 
-- Hub 조직: `hubs/registry.json`
-- 라우팅 규칙: `hubs/routing-rules.json`
+- Hub 조직: AI Core 루트 `registry/hubs.json`
+- 라우팅 규칙: AI Core 루트 `registry/work-map.json`의 `hub_routes`
 - 실행기: `scripts/hub-router.mjs`
 - 설정 검증: `scripts/validate-hubs.mjs`
 - 회귀 테스트: `test/hub-router.test.mjs`
@@ -34,6 +34,6 @@ node scripts/hub-router.mjs "Firebase 연동 구조 정리"
 
 ## 현재 한계
 
-v1은 deterministic keyword routing이다. 자연어 의미 전체를 이해하는 분류기가 아니다.
+v1은 deterministic keyword routing이다. 자연어 의미 전체를 이해하는 분류기가 아니다. 별도 Hub 라우팅 JSON은 두지 않으며 프로젝트 업무와 Hub 책임 라우팅은 같은 Work Map에서 관리한다.
 
 중요한 점은 AI가 자유롭게 Hub를 발명하거나 책임 경계를 바꾸지 못하게 하는 **최소 기계 Gate**를 갖는 것이다. 향후 AI semantic classifier를 붙이더라도 최종 출력은 이 Registry의 7 Hub와 Control Plane 범위를 벗어나면 안 된다.

@@ -1,6 +1,6 @@
 # 본사를 ai-core 하나로 — 합치는 설계 (2026-09-22)
 
-- 상태: `EXECUTING v0.6` — DevCenter 물리 복사와 중앙 등록부·Design Hub binding 전환을 실행했다. R1·R2·R4와 포털 독립화는 계속 `HOLD`다. 이전: `v0.5` — 합치는 설계(모양·겹침 규칙 7개·증명) 추가.
+- 상태: `EXECUTING v0.7` — DevCenter 물리 복사, 중앙 등록부·Design Hub binding 전환, 라우팅 단일화를 실행했다. R1·R2와 포털 독립화는 계속 `HOLD`다.
 - 따르는 계획: [통합 실행 지침](../AI_CORE_INTEGRATION_EXECUTION_DIRECTIVE.md) 2절(분류 5종)·3절(물리 통합 원칙)·5절 STEP 0/4.
   기존 분류 [저장소 생애 감사 2026-09-20](../REPOSITORY_LIFECYCLE_AUDIT_2026-09-20.md) 은 생애(ACTIVE/RETIRE)만 정했고 합병 분류는 비어 있다.
 - 대표(2026-09-22): 「결국 하나로 합쳐야 한다니까」 · 「디자인부터 aiops」 · 「개발센터 문서허브 다 하나로 합쳐야돼」 · 「work컨트롤 등등 다 합쳐야돼」 · 「그냥 다 갖고와서 ai코어 비대하게 늘리고」 · 본체 = **ai-core** · 「우리 이거 통합하는계획있는데 그거대로 해야지 혼자 결정할건 아니고」
@@ -11,7 +11,8 @@
 - 계획대로 `.ai-core/**` 14개와 재생성 가능한 `portal/static/**` 4,296개를 제외하고 225개를 `devcenter/`에 복사했다. 원본 Markdown 79개 중 키트에 든 9개만 제외되어 70개가 들어왔고, 누락 여부는 `devcenter/PROVENANCE.json`과 자동 검사로 확인한다.
 - 원 저장소와 로컬 `C:\dev\devcenter`는 수정하지 않았다. 루트 테스트에 DevCenter 69개 테스트와 provenance 검사를 연결했다.
 - `2026-09-22` 2단계 전환: DevCenter의 프로젝트·데이터셋·허브 등록부를 루트 `registry/`로 옮기고, `projects.json`·`capabilities.json`·`work-map.json`의 권한을 AI Core 내부 `devcenter/` 모듈로 전환했다(R3 완료). Design Hub는 오래된 AI Core 커밋 대신 현재 루트 원본 9개의 정규화 SHA-256 묶음을 검증한다(R5 완료).
-- **계속 HOLD:** Hub Router의 Primary/Secondary 규칙을 `work-map` 의미 체계로 완전히 흡수하는 R4, 중복 규칙·영수증을 정리하는 R1/R2, 원 저장소 read-only 표식, 포털의 `../../freepasserp4` 형제 경로 의존 제거. `registry/hub-routing-rules.json`은 R4 완료 전까지 보존한 이행 입력이며 두 번째 정본으로 승격하지 않는다.
+- `2026-09-22` 3단계 전환: Hub Router의 Primary/Secondary 규칙 8개를 `registry/work-map.json#hub_routes`에 흡수하고 별도 `hub-routing-rules.json`을 제거했다(R4 완료). Hub 실행기는 이제 Work Map만 읽고 미등록·무매칭·동점 충돌을 계속 HOLD한다.
+- **계속 HOLD:** 중복 규칙·영수증을 정리하는 R1/R2, 원 저장소 read-only 표식, 포털의 `../../freepasserp4` 형제 경로 의존 제거.
 - Claude 독립 검토는 호출됐으나 비대화형 응답이 없어 중단했다. 이를 PASS로 세지 않으며, 이번 단계는 파일 해시·문서 수·69개 원본 테스트·AI Core 전체 테스트의 결정론적 증거로만 판정한다.
 
 ## ★합치는 설계 — 무엇을 어디로, 겹치면 어떻게

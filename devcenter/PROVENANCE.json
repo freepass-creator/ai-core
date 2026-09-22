@@ -18415,15 +18415,15 @@
     },
     {
       "source_path": "hubs/routing-rules.json",
-      "disposition": "MOVED_UNCHANGED",
-      "destination": "registry/hub-routing-rules.json",
-      "reason": "single root work-routing authority"
+      "disposition": "ADAPTED_AND_MOVED_MERGED",
+      "destination": "registry/work-map.json",
+      "reason": "single root work-map authority; hub routes embedded under hub_routes"
     },
     {
       "source_path": "scripts/hub-router.mjs",
       "disposition": "ADAPTED_IN_PLACE",
       "destination": "devcenter/scripts/hub-router.mjs",
-      "reason": "consume AI Core root registry after physical merge"
+      "reason": "consume hubs and hub_routes from the AI Core root registries after authority unification"
     },
     {
       "source_path": "scripts/hub-readiness.mjs",
@@ -18502,6 +18502,12 @@
       "disposition": "ADAPTED_IN_PLACE",
       "destination": "devcenter/docs/DESIGN-HUB-COMPILER.md",
       "reason": "consume root digest binding after physical merge"
+    },
+    {
+      "source_path": "docs/HUB-ROUTER-RUNTIME.md",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/docs/HUB-ROUTER-RUNTIME.md",
+      "reason": "document root work-map as the only routing authority"
     }
   ]
 }
