@@ -95,6 +95,20 @@ test('Google read transport uses bounded fixed retries only for observed transie
   assert.deepEqual(waits,[20000,20000]);
 });
 
+test('Google read transport rejects retry budgets that can exceed the adapter max-attempt contract',()=>{
+  const common={
+    accessToken:'token',
+    fetchImpl:async()=>response(200,{}),
+    sleep:async()=>{}
+  };
+  for(const maxRetries of [7,Infinity,-1,1.5,Number.NaN,'6']){
+    assert.throws(
+      ()=>createGoogleReadTransport({...common,maxRetries}),
+      error=>error?.code==='GOOGLE_READ_RETRY_BUDGET_INVALID'
+    );
+  }
+});
+
 test('Google read transport does not retry non-transient failures',async()=>{
   let calls=0;
   const transport=createGoogleReadTransport({
