@@ -9,13 +9,18 @@ const TRACK_DOCS = {
 };
 
 const hash = value => createHash('sha256').update(value).digest('hex');
+const isPinnedRevision = value => typeof value === 'string' && /^[0-9a-f]{40}$/.test(value);
 
 export function buildAcademyStartReceipt({ task, track, project, repository, branch, revision, dirty, instructions, readings, reuse = null, observedAt }) {
   const blockers = [];
   if (!task?.trim()) blockers.push('TASK_REQUIRED');
   if (!TRACK_DOCS[track]) blockers.push('TRACK_UNSUPPORTED');
   if (!project) blockers.push('PROJECT_NOT_REGISTERED');
-  if (!revision || !/^[0-9a-f]{40}$/.test(revision)) blockers.push('REVISION_NOT_PINNED');
+  if (!isPinnedRevision(revision)) blockers.push('REVISION_NOT_PINNED');
+  if (project && branch === project.default_branch) {
+    if (!isPinnedRevision(project.head_revision)) blockers.push('REGISTRY_REVISION_NOT_PINNED');
+    else if (isPinnedRevision(revision) && revision !== project.head_revision) blockers.push('DEFAULT_BRANCH_REVISION_MISMATCH');
+  }
   if (dirty) blockers.push('DIRTY_WORKTREE_REVIEW_REQUIRED');
   if (!instructions.length) blockers.push('PROJECT_INSTRUCTIONS_MISSING');
   if (reuse && reuse.verdict?.status !== 'PASS') blockers.push('REUSE_DECISION_REQUIRED');

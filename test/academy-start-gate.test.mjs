@@ -4,7 +4,7 @@ import { buildAcademyStartReceipt } from '../src/academy/start-gate.mjs';
 
 const base = {
   task: '고객 조회 화면을 개선한다', track: 'development',
-  project: { project_id: 'sales', head_revision: 'b'.repeat(40), commands: { test: 'npm test', build: 'npm run build' } },
+  project: { project_id: 'sales', default_branch: 'main', head_revision: 'a'.repeat(40), commands: { test: 'npm test', build: 'npm run build' } },
   repository: 'org/sales', branch: 'main', revision: 'a'.repeat(40), dirty: false,
   instructions: [{ path: 'AGENTS.md', body: 'rules' }],
   readings: [{ path: 'docs/AI_WORKING_STANDARD.md', body: 'constitution', purpose: 'constitution' }],
@@ -17,6 +17,28 @@ test('academy start seals a revision-bound learning receipt before work', () => 
   assert.equal(result.target.revision, 'a'.repeat(40));
   assert.equal(result.learned[0].sha256.length, 64);
   assert.equal(result.start_contract.create_only_after_reuse_decision, true);
+});
+
+test('academy start fails closed when default-branch checkout and registry revision disagree', () => {
+  const result = buildAcademyStartReceipt({
+    ...base,
+    project: { ...base.project, head_revision: 'b'.repeat(40) },
+  });
+  assert.equal(result.status, 'HOLD');
+  assert.deepEqual(result.blockers, ['DEFAULT_BRANCH_REVISION_MISMATCH']);
+  assert.equal(result.target.revision, 'a'.repeat(40));
+  assert.equal(result.target.registry_revision, 'b'.repeat(40));
+  assert.equal(result.start_contract, null);
+});
+
+test('academy start keeps feature-branch work usable while preserving the registry revision', () => {
+  const result = buildAcademyStartReceipt({
+    ...base,
+    branch: 'feature/customer-search',
+    project: { ...base.project, head_revision: 'b'.repeat(40) },
+  });
+  assert.equal(result.status, 'READY');
+  assert.equal(result.target.registry_revision, 'b'.repeat(40));
 });
 
 test('academy start holds dirty, unknown, or unjustified creation work', () => {
