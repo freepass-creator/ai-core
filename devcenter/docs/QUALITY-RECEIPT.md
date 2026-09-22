@@ -52,3 +52,6 @@ node scripts/quality-receipt.mjs validate receipt.json
 Quality Receipt가 PASS라고 해서 제품 전체 무결점이나 production 안전을 인증하는 것은 아니다. `scope.claims`에 적힌 범위만 증명하고 `scope.exclusions`는 명시적으로 남긴다.
 
 Delivery Hub는 배포/릴리스 완료를 주장할 때 필요한 Quality Receipt를 입력 증거로 사용해야 한다.
+## Canonical envelope
+
+생성 결과는 루트 `contracts/core-receipt.schema.json`의 `core-receipt/v1`이다. Quality 고유 구조는 `payload`에 있으며 전체 규칙은 [CORE-HUB-RECEIPTS](../../docs/CORE_HUB_RECEIPTS.md)를 따른다.

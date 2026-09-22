@@ -79,7 +79,7 @@ test('reviewed cases derive PASS visual receipt',()=>{
     }))
   };
   const receipt=finalizeVisualReceipt(draft,{visualPlan:plan,captureManifest:manifest,createdAt:'2026-09-21T00:01:00.000Z'});
-  assert.equal(receipt.result.status,'PASS');
+  assert.equal(receipt.payload.result.status,'PASS');
   assert.match(receipt.receipt_id,/^dvr_[a-f0-9]{24}$/);
   const quality=makeVisualQualityDraft(receipt,{startedAt:'2026-09-21T00:00:00.000Z',finishedAt:'2026-09-21T00:01:00.000Z'});
   assert.equal(quality.checks[0].status,'PASS');
@@ -102,5 +102,5 @@ test('one FAIL review makes the visual receipt FAIL',()=>{
     case_results:plan.captures.map((c,i)=>({case_id:c.case_id,status:i===0?'FAIL':'PASS',checks:[{id:'layout-integrity',status:i===0?'FAIL':'PASS'}]}))
   };
   const receipt=finalizeVisualReceipt(draft,{visualPlan:plan,captureManifest:manifest});
-  assert.equal(receipt.result.status,'FAIL');
+  assert.equal(receipt.payload.result.status,'FAIL');
 });

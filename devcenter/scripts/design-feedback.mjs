@@ -1,15 +1,8 @@
 #!/usr/bin/env node
-import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
-
-function stable(value){
-  if(Array.isArray(value)) return value.map(stable);
-  if(value&&typeof value==='object') return Object.fromEntries(Object.keys(value).sort().map((k)=>[k,stable(value[k])]));
-  return value;
-}
-function digest(value){return crypto.createHash('sha256').update(JSON.stringify(stable(value))).digest('hex');}
+import {finalizeCoreHubReceipt} from '../../src/engine/core-hub-receipt.mjs';
 
 export function deriveDesignResult(checks=[]){
   const counts={PASS:0,HOLD:0,FAIL:0};
@@ -27,8 +20,7 @@ export function finalizeDesignAdoptionReceipt(draft,{createdAt=new Date().toISOS
     if((c.status==='HOLD'||c.status==='FAIL')&&(!c.remediation||!c.recheck)) throw new Error(`DESIGN_ADOPTION_BLOCKER_DETAIL_REQUIRED:${c?.id}`);
   }
   const result=deriveDesignResult(draft.checks);
-  const identity={
-    contract:'devcenter-design-adoption-receipt/v1',
+  const payload={
     subject:draft.subject,
     authority:draft.authority,
     ai_core:draft.ai_core,
@@ -37,7 +29,7 @@ export function finalizeDesignAdoptionReceipt(draft,{createdAt=new Date().toISOS
     result,
     source_blobs:draft.source_blobs
   };
-  return {...identity,receipt_id:`dar_${digest(identity).slice(0,24)}`,created_at:createdAt};
+  return finalizeCoreHubReceipt({kind:'design-adoption',prefix:'dar',payload,legacyContract:'devcenter-design-adoption-receipt/v1',createdAt});
 }
 
 export function validateFeedback(registry){

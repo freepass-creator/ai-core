@@ -14,7 +14,7 @@ test('design source receipt can be HOLD while source-level checks pass',()=>{
     ],
     source_blobs:{'a':'4'.repeat(40)}
   },{createdAt:'2026-09-21T00:00:00.000Z'});
-  assert.equal(receipt.result.status,'HOLD');
+  assert.equal(receipt.payload.result.status,'HOLD');
   assert.match(receipt.receipt_id,/^dar_[a-f0-9]{24}$/);
 });
 

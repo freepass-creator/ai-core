@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
+import {finalizeCoreHubReceipt} from '../../src/engine/core-hub-receipt.mjs';
 
 const HERE=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 
@@ -110,8 +111,7 @@ export function finalizeDocumentReceipt(draft,{createdAt=new Date().toISOString(
     if(check.status==='PASS'&&(!Array.isArray(check.evidence)||!check.evidence.length)) throw new Error('DOCUMENT_RECEIPT_PASS_EVIDENCE_REQUIRED');
   }
   const result={status:deriveStatus(draft.checks)};
-  const identity={
-    contract:'devcenter-document-receipt/v1',
+  const payload={
     subject:draft.subject,
     template:draft.template,
     source:draft.source,
@@ -119,7 +119,7 @@ export function finalizeDocumentReceipt(draft,{createdAt=new Date().toISOString(
     checks:draft.checks,
     result
   };
-  return {...identity,receipt_id:`doc_${digest(identity).slice(0,24)}`,created_at:createdAt};
+  return finalizeCoreHubReceipt({kind:'document',prefix:'doc',payload,legacyContract:'devcenter-document-receipt/v1',createdAt});
 }
 
 export function finalizeDocumentLock(draft,{createdAt=new Date().toISOString()}={}){

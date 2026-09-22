@@ -1,240 +1,250 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://teamjpk.local/devcenter/contracts/quality-receipt.schema.json",
-  "title": "Development Center Quality Receipt v1",
-  "type": "object",
-  "additionalProperties": false,
-  "required": [
-    "contract",
-    "receipt_id",
-    "subject",
-    "hub",
-    "scope",
-    "execution",
-    "checks",
-    "result",
-    "created_at"
-  ],
-  "properties": {
-    "contract": {
-      "const": "devcenter-quality-receipt/v1"
+  "title": "Development Center Quality Receipt Core Extension v1",
+  "description": "Specialized payload for core-receipt/v1. Common receipt fields are defined only by the AI Core receipt schema.",
+  "allOf": [
+    {
+      "$ref": "https://schemas.freepass.ai/core/receipt/v1"
     },
-    "receipt_id": {
-      "type": "string",
-      "pattern": "^qr_[a-f0-9]{24}$"
-    },
-    "subject": {
+    {
       "type": "object",
-      "additionalProperties": false,
       "required": [
-        "project_id",
-        "repository",
-        "revision"
+        "receipt_kind",
+        "payload"
       ],
       "properties": {
-        "project_id": {
-          "type": "string",
-          "minLength": 1
+        "receipt_kind": {
+          "const": "hub.quality"
         },
-        "repository": {
-          "type": "string",
-          "pattern": "^[^/]+/[^/]+$"
-        },
-        "revision": {
-          "type": "string",
-          "pattern": "^[a-f0-9]{40}$"
-        }
-      }
-    },
-    "hub": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "primary",
-        "secondary"
-      ],
-      "properties": {
-        "primary": {
-          "type": "string",
-          "minLength": 1
-        },
-        "secondary": {
-          "type": "array",
-          "uniqueItems": true,
-          "items": {
-            "type": "string",
-            "minLength": 1
-          }
-        }
-      }
-    },
-    "scope": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "claims",
-        "exclusions"
-      ],
-      "properties": {
-        "claims": {
-          "type": "array",
-          "minItems": 1,
-          "uniqueItems": true,
-          "items": {
-            "type": "string",
-            "minLength": 1
-          }
-        },
-        "exclusions": {
-          "type": "array",
-          "uniqueItems": true,
-          "items": {
-            "type": "string",
-            "minLength": 1
-          }
-        }
-      }
-    },
-    "execution": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "runner",
-        "commands",
-        "started_at",
-        "finished_at"
-      ],
-      "properties": {
-        "runner": {
-          "type": "string",
-          "minLength": 1
-        },
-        "commands": {
-          "type": "array",
-          "minItems": 1,
-          "items": {
-            "type": "string",
-            "minLength": 1
-          }
-        },
-        "started_at": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "finished_at": {
-          "type": "string",
-          "format": "date-time"
-        }
-      }
-    },
-    "checks": {
-      "type": "array",
-      "minItems": 1,
-      "items": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "id",
-          "title",
-          "status",
-          "evidence"
-        ],
-        "properties": {
-          "id": {
-            "type": "string",
-            "pattern": "^[A-Z0-9][A-Z0-9._-]+$"
-          },
-          "title": {
-            "type": "string",
-            "minLength": 1
-          },
-          "status": {
-            "enum": [
-              "PASS",
-              "NOTICE",
-              "HOLD",
-              "FAIL"
-            ]
-          },
-          "evidence": {
-            "type": "array",
-            "items": {
-              "$ref": "#/$defs/evidence"
-            }
-          },
-          "remediation": {
-            "type": "string"
-          },
-          "recheck": {
-            "type": "string"
-          },
-          "notes": {
-            "type": "string"
-          }
-        }
-      }
-    },
-    "result": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "status",
-        "counts"
-      ],
-      "properties": {
-        "status": {
-          "enum": [
-            "PASS",
-            "NOTICE",
-            "HOLD",
-            "FAIL"
-          ]
-        },
-        "counts": {
+        "payload": {
           "type": "object",
           "additionalProperties": false,
           "required": [
-            "PASS",
-            "NOTICE",
-            "HOLD",
-            "FAIL"
+            "legacy_contract",
+            "subject",
+            "hub",
+            "scope",
+            "execution",
+            "checks",
+            "result"
           ],
           "properties": {
-            "PASS": {
-              "type": "integer",
-              "minimum": 0
+            "legacy_contract": {
+              "const": "devcenter-quality-receipt/v1"
             },
-            "NOTICE": {
-              "type": "integer",
-              "minimum": 0
+            "subject": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "project_id",
+                "repository",
+                "revision"
+              ],
+              "properties": {
+                "project_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "repository": {
+                  "type": "string",
+                  "pattern": "^[^/]+/[^/]+$"
+                },
+                "revision": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{40}$"
+                }
+              }
             },
-            "HOLD": {
-              "type": "integer",
-              "minimum": 0
+            "hub": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "primary",
+                "secondary"
+              ],
+              "properties": {
+                "primary": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "secondary": {
+                  "type": "array",
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
             },
-            "FAIL": {
-              "type": "integer",
-              "minimum": 0
+            "scope": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "claims",
+                "exclusions"
+              ],
+              "properties": {
+                "claims": {
+                  "type": "array",
+                  "minItems": 1,
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "exclusions": {
+                  "type": "array",
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            },
+            "execution": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "runner",
+                "commands",
+                "started_at",
+                "finished_at"
+              ],
+              "properties": {
+                "runner": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "commands": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "started_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "finished_at": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "checks": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "id",
+                  "title",
+                  "status",
+                  "evidence"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[A-Z0-9][A-Z0-9._-]+$"
+                  },
+                  "title": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "status": {
+                    "enum": [
+                      "PASS",
+                      "NOTICE",
+                      "HOLD",
+                      "FAIL"
+                    ]
+                  },
+                  "evidence": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/evidence"
+                    }
+                  },
+                  "remediation": {
+                    "type": "string"
+                  },
+                  "recheck": {
+                    "type": "string"
+                  },
+                  "notes": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "result": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "status",
+                "counts"
+              ],
+              "properties": {
+                "status": {
+                  "enum": [
+                    "PASS",
+                    "NOTICE",
+                    "HOLD",
+                    "FAIL"
+                  ]
+                },
+                "counts": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "PASS",
+                    "NOTICE",
+                    "HOLD",
+                    "FAIL"
+                  ],
+                  "properties": {
+                    "PASS": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "NOTICE": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "HOLD": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "FAIL": {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  }
+                }
+              }
+            },
+            "source_hashes": {
+              "type": "object",
+              "propertyNames": {
+                "minLength": 1
+              },
+              "additionalProperties": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
             }
           }
         }
       }
-    },
-    "source_hashes": {
-      "type": "object",
-      "propertyNames": {
-        "minLength": 1
-      },
-      "additionalProperties": {
-        "type": "string",
-        "pattern": "^[a-f0-9]{64}$"
-      }
-    },
-    "created_at": {
-      "type": "string",
-      "format": "date-time"
     }
-  },
+  ],
   "$defs": {
     "evidence": {
       "type": "object",

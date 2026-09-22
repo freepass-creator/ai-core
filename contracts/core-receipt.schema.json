@@ -207,6 +207,15 @@
     },
     "execution": {
       "$ref": "https://schemas.freepass.ai/core/execution-identity/v1#/$defs/binding"
+    },
+    "receipt_kind": {
+      "type": "string",
+      "pattern": "^hub\\.[a-z][a-z0-9._-]*$",
+      "description": "Optional specialized receipt type. Hub receipts use this discriminator while retaining the core envelope."
+    },
+    "payload": {
+      "type": "object",
+      "description": "Typed extension payload. Its specialized schema may add required fields without redefining the core receipt envelope."
     }
   }
 }

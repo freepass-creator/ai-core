@@ -49,3 +49,6 @@ FreePass Admin은 등록돼 있지만 HOLD다.
 - production persistence/auth/runtime smoke 미검증
 
 따라서 배포를 시도하지 않고 HOLD를 유지한다.
+## Canonical receipt
+
+Delivery 결과는 `core-receipt/v1` 공통 봉투와 `hub.delivery` payload를 사용한다. [CORE-HUB-RECEIPTS](../../docs/CORE_HUB_RECEIPTS.md)를 따른다.

@@ -1,15 +1,9 @@
 #!/usr/bin/env node
-import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {finalizeCoreHubReceipt} from '../../src/engine/core-hub-receipt.mjs';
 
-function stable(value){
-  if(Array.isArray(value)) return value.map(stable);
-  if(value&&typeof value==='object') return Object.fromEntries(Object.keys(value).sort().map((k)=>[k,stable(value[k])]));
-  return value;
-}
-function digest(value){ return crypto.createHash('sha256').update(JSON.stringify(stable(value))).digest('hex'); }
 function readJson(file){ return JSON.parse(fs.readFileSync(file,'utf8')); }
 
 export function validateVisualJob(job){
@@ -148,8 +142,7 @@ export function finalizeVisualReceipt(draft,{visualPlan,captureManifest,createdA
   for(const caseId of expected.keys()) if(!seen.has(caseId)) throw new Error(`VISUAL_REVIEW_CASE_MISSING:${caseId}`);
 
   const result=deriveReviewResult(normalized);
-  const identity={
-    contract:'devcenter-design-visual-receipt/v1',
+  const payload={
     subject:visualPlan.subject,
     visual_plan_ref:draft.visual_plan_ref,
     capture_manifest_ref:draft.capture_manifest_ref,
@@ -157,34 +150,31 @@ export function finalizeVisualReceipt(draft,{visualPlan,captureManifest,createdA
     case_results:normalized,
     result
   };
-  return {
-    ...identity,
-    receipt_id:`dvr_${digest(identity).slice(0,24)}`,
-    created_at:createdAt
-  };
+  return finalizeCoreHubReceipt({kind:'design-visual',prefix:'dvr',payload,legacyContract:'devcenter-design-visual-receipt/v1',createdAt});
 }
 
 export function makeVisualQualityDraft(receipt,{startedAt,finishedAt}){
-  const evidence=[{kind:'REPORT',ref:receipt.capture_manifest_ref},{kind:'REPORT',ref:receipt.visual_plan_ref}];
+  const visual=receipt.payload;
+  const evidence=[{kind:'REPORT',ref:visual.capture_manifest_ref},{kind:'REPORT',ref:visual.visual_plan_ref}];
   const check={
     id:'DESIGN.VISUAL_QA',
     title:'Browser visual review for all planned cases',
-    status:receipt.result.status,
+    status:visual.result.status,
     evidence,
-    ...(receipt.result.status==='PASS'?{}:{
+    ...(visual.result.status==='PASS'?{}:{
       remediation:'Resolve every HOLD/FAIL visual review case and recapture the exact project revision.',
       recheck:'Re-run capture and visual review against the same design plan or issue a new plan when inputs change.'
     })
   };
   return {
     subject:{
-      project_id:receipt.subject.project_id,
-      repository:receipt.subject.repository,
-      revision:receipt.subject.revision
+      project_id:visual.subject.project_id,
+      repository:visual.subject.repository,
+      revision:visual.subject.revision
     },
     hub:{primary:'design',secondary:['quality']},
     scope:{
-      claims:[`Visual QA reviewed all planned captures for ${receipt.subject.surface_id}`],
+      claims:[`Visual QA reviewed all planned captures for ${visual.subject.surface_id}`],
       exclusions:['Production deployment remains outside this receipt']
     },
     execution:{

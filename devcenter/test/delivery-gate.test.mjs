@@ -47,7 +47,7 @@ test('delivery receipt cannot claim production readiness without prod approval',
     smoke:{status:'PASS',evidence:['smoke/demo.json']},
     rollback:{status:'READY',last_known_good_ref:'deployment/previous',procedure_ref:'rollback/demo.md'}
   },{createdAt:'2026-09-21T00:00:00.000Z'});
-  assert.equal(receipt.result.status,'PASS');
-  assert.equal(receipt.result.production_ready,false);
+  assert.equal(receipt.payload.result.status,'PASS');
+  assert.equal(receipt.payload.result.production_ready,false);
   assert.match(receipt.receipt_id,/^dr_[a-f0-9]{24}$/);
 });

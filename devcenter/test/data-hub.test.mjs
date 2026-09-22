@@ -11,7 +11,7 @@ test('data receipt derives HOLD from unresolved production/recovery checks',()=>
       {id:'B',status:'HOLD',evidence:['e/2'],remediation:'fix',recheck:'rerun'}
     ]
   },{createdAt:'2026-09-21T00:00:00.000Z'});
-  assert.equal(receipt.result.status,'HOLD');
+  assert.equal(receipt.payload.result.status,'HOLD');
   assert.match(receipt.receipt_id,/^data_[a-f0-9]{24}$/);
 });
 

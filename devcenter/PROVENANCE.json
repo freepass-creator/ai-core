@@ -18435,7 +18435,7 @@
       "source_path": "scripts/quality-receipt.mjs",
       "disposition": "ADAPTED_IN_PLACE",
       "destination": "devcenter/scripts/quality-receipt.mjs",
-      "reason": "consume AI Core root registry after physical merge"
+      "reason": "consume AI Core root registry and unify output on the core-receipt/v1 envelope"
     },
     {
       "source_path": "scripts/scan-standards.py",
@@ -18556,6 +18556,126 @@
       "disposition": "ADAPTED_IN_PLACE",
       "destination": "devcenter/design/AI_EDITORIAL_LAYOUT_COMPILER.md",
       "reason": "mark unique layout knowhow as subordinate to AI Core and product canon"
+    },
+    {
+      "source_path": "contracts/data-receipt.schema.json",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/contracts/data-receipt.schema.json",
+      "reason": "unify hub receipt output on the AI Core core-receipt/v1 envelope while preserving typed hub payload"
+    },
+    {
+      "source_path": "contracts/delivery-receipt.schema.json",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/contracts/delivery-receipt.schema.json",
+      "reason": "unify hub receipt output on the AI Core core-receipt/v1 envelope while preserving typed hub payload"
+    },
+    {
+      "source_path": "contracts/design-adoption-receipt.schema.json",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/contracts/design-adoption-receipt.schema.json",
+      "reason": "unify hub receipt output on the AI Core core-receipt/v1 envelope while preserving typed hub payload"
+    },
+    {
+      "source_path": "contracts/design-visual-receipt.schema.json",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/contracts/design-visual-receipt.schema.json",
+      "reason": "unify hub receipt output on the AI Core core-receipt/v1 envelope while preserving typed hub payload"
+    },
+    {
+      "source_path": "contracts/document-receipt.schema.json",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/contracts/document-receipt.schema.json",
+      "reason": "unify hub receipt output on the AI Core core-receipt/v1 envelope while preserving typed hub payload"
+    },
+    {
+      "source_path": "contracts/quality-receipt.schema.json",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/contracts/quality-receipt.schema.json",
+      "reason": "unify hub receipt output on the AI Core core-receipt/v1 envelope while preserving typed hub payload"
+    },
+    {
+      "source_path": "scripts/data-hub.mjs",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/scripts/data-hub.mjs",
+      "reason": "unify hub receipt output on the AI Core core-receipt/v1 envelope while preserving typed hub payload"
+    },
+    {
+      "source_path": "scripts/delivery-gate.mjs",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/scripts/delivery-gate.mjs",
+      "reason": "unify hub receipt output on the AI Core core-receipt/v1 envelope while preserving typed hub payload"
+    },
+    {
+      "source_path": "scripts/design-feedback.mjs",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/scripts/design-feedback.mjs",
+      "reason": "unify hub receipt output on the AI Core core-receipt/v1 envelope while preserving typed hub payload"
+    },
+    {
+      "source_path": "scripts/design-visual-qa.mjs",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/scripts/design-visual-qa.mjs",
+      "reason": "unify hub receipt output on the AI Core core-receipt/v1 envelope while preserving typed hub payload"
+    },
+    {
+      "source_path": "scripts/document-hub.mjs",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/scripts/document-hub.mjs",
+      "reason": "unify hub receipt output on the AI Core core-receipt/v1 envelope while preserving typed hub payload"
+    },
+    {
+      "source_path": "test/data-hub.test.mjs",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/test/data-hub.test.mjs",
+      "reason": "unify hub receipt output on the AI Core core-receipt/v1 envelope while preserving typed hub payload"
+    },
+    {
+      "source_path": "test/delivery-gate.test.mjs",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/test/delivery-gate.test.mjs",
+      "reason": "unify hub receipt output on the AI Core core-receipt/v1 envelope while preserving typed hub payload"
+    },
+    {
+      "source_path": "test/design-feedback.test.mjs",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/test/design-feedback.test.mjs",
+      "reason": "unify hub receipt output on the AI Core core-receipt/v1 envelope while preserving typed hub payload"
+    },
+    {
+      "source_path": "test/design-visual-qa.test.mjs",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/test/design-visual-qa.test.mjs",
+      "reason": "unify hub receipt output on the AI Core core-receipt/v1 envelope while preserving typed hub payload"
+    },
+    {
+      "source_path": "test/quality-receipt.test.mjs",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/test/quality-receipt.test.mjs",
+      "reason": "unify hub receipt output on the AI Core core-receipt/v1 envelope while preserving typed hub payload"
+    },
+    {
+      "source_path": "docs/QUALITY-RECEIPT.md",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/docs/QUALITY-RECEIPT.md",
+      "reason": "unify hub receipt output on the AI Core core-receipt/v1 envelope while preserving typed hub payload"
+    },
+    {
+      "source_path": "docs/DELIVERY-HUB-RUNTIME.md",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/docs/DELIVERY-HUB-RUNTIME.md",
+      "reason": "unify hub receipt output on the AI Core core-receipt/v1 envelope while preserving typed hub payload"
+    },
+    {
+      "source_path": "docs/DESIGN-VISUAL-QA.md",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/docs/DESIGN-VISUAL-QA.md",
+      "reason": "unify hub receipt output on the AI Core core-receipt/v1 envelope while preserving typed hub payload"
+    },
+    {
+      "source_path": "docs/DOCUMENT-HUB-RUNTIME.md",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/docs/DOCUMENT-HUB-RUNTIME.md",
+      "reason": "unify hub receipt output on the AI Core core-receipt/v1 envelope while preserving typed hub payload"
     }
   ]
 }

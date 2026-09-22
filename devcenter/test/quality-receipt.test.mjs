@@ -31,7 +31,7 @@ const draft={
 test('finalizer creates deterministic receipt id and derived PASS result',()=>{
   const receipt=finalizeQualityReceipt(draft,{hubRegistry,createdAt:'2026-09-21T00:02:00.000Z'});
   assert.match(receipt.receipt_id,/^qr_[a-f0-9]{24}$/);
-  assert.equal(receipt.result.status,'PASS');
+  assert.equal(receipt.payload.result.status,'PASS');
   assert.deepEqual(validateQualityReceipt(receipt,hubRegistry),[]);
   const again=finalizeQualityReceipt(draft,{hubRegistry,createdAt:'2026-09-21T00:03:00.000Z'});
   assert.equal(receipt.receipt_id,again.receipt_id);
@@ -45,7 +45,7 @@ test('FAIL dominates HOLD NOTICE and PASS',()=>{
 
 test('PASS without evidence is rejected',()=>{
   const receipt=finalizeQualityReceipt(draft,{hubRegistry,createdAt:'2026-09-21T00:02:00.000Z'});
-  receipt.checks[0].evidence=[];
+  receipt.payload.checks[0].evidence=[];
   assert.ok(validateQualityReceipt(receipt,hubRegistry).some((x)=>x.includes('PASS_EVIDENCE_REQUIRED')));
 });
 
