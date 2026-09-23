@@ -95,6 +95,11 @@ test('generic core receipt fails closed before emitting schema-invalid public fi
       field
     );
   }
+  assert.throws(
+    ()=>buildCoreReceipt({...base,startedAt:'2026-09-22T00:00:02.000Z'}),
+    (error)=>error?.code==='CORE_RECEIPT_FIELD_INVALID'&&error.message.includes('endedAt'),
+    'endedAt before startedAt'
+  );
 });
 
 test('hub finalizer emits deterministic core fields and preserves specialized payload',()=>{
