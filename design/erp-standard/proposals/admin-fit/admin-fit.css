@@ -1,0 +1,68 @@
+/* 시안 C — FreePass Admin 맞춤형 (대표 2026-09-23 「프리패스 어드민 UI UX 에 맞는 시안 … 아예 맞춤형으로」)
+ * 규격(erp.css · 토큰)을 그대로 쓰고, 이 제품에만 필요한 틀 세 가지만 더한다:
+ *   1. 흐름 메뉴(fpa-flow) — 상품찾기 → 계약접수 → 실적 → 정산관리 를 «순서 있는 길» 로. 전자계약은 오른쪽에 따로.
+ *   2. 할 일 묶음(fpa-queue) — 목록을 날짜가 아니라 «다음에 할 일» 로 묶고, 카드마다 그 일을 바로 하는 단추.
+ *   3. 처리 서랍(fpa-drawer) — 고른 건을 목록 옆에서 바로 처리한다(상세로 갔다 오지 않는다).
+ * 값은 var(--erp-*) 토큰만 쓴다. 채택되면 erp.css 추가 부품으로 옮긴다. */
+.fpa-app { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: var(--erp-topbar-h) auto minmax(0, 1fr) var(--erp-statusbar-h); grid-template-areas: "topbar" "flow" "main" "statusbar"; height: 100vh; margin: 0; background: var(--erp-color-bg); color: var(--erp-color-text); font-family: var(--erp-font-family); font-size: var(--erp-fs-body); }
+.fpa-app a { color: inherit; text-decoration: none; }
+.fpa-app .erp-topbar { grid-area: topbar; grid-column: 1; }
+.fpa-app .erp-gsearch { flex: 0 1 520px; }
+.fpa-app .erp-statusbar { grid-area: statusbar; }
+
+/* 1. 흐름 메뉴 */
+.fpa-flow { grid-area: flow; display: flex; align-items: stretch; gap: var(--erp-sp-2); padding: 10px var(--erp-sp-6); border-bottom: 1px solid var(--erp-color-line); background: var(--erp-color-surface); }
+.fpa-flow ol { display: flex; flex: 1; align-items: center; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.fpa-flow li { display: flex; align-items: center; gap: 6px; }
+.fpa-flow li + li::before { content: ""; width: 18px; height: 2px; background: var(--erp-color-line-strong); }
+.fpa-flow-step { display: flex; align-items: center; gap: 10px; padding: 7px 14px 7px 8px; border: 1px solid transparent; border-radius: var(--erp-r-lg); }
+.fpa-flow-step:hover { background: var(--erp-color-sunken); }
+.fpa-flow-no { display: grid; place-items: center; width: 26px; height: 26px; border-radius: var(--erp-r-pill); background: var(--erp-color-neutral-bg); color: var(--erp-color-text-2); font-size: var(--erp-fs-label); font-weight: var(--erp-fw-bold); }
+.fpa-flow-step b { display: block; font-size: var(--erp-fs-body); font-weight: var(--erp-fw-bold); }
+.fpa-flow-step small { display: block; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
+.fpa-flow-step[aria-current="page"] { border-color: var(--erp-color-primary); background: var(--erp-color-primary-weak); }
+.fpa-flow-step[aria-current="page"] .fpa-flow-no { background: var(--erp-color-primary); color: var(--erp-color-on-primary); }
+.fpa-flow-step[aria-current="page"] b { color: var(--erp-color-primary); }
+.fpa-flow-aside { display: flex; align-items: center; gap: 10px; padding: 7px 14px; border-left: 1px dashed var(--erp-color-line-strong); color: var(--erp-color-text-2); }
+.fpa-flow-aside svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; }
+.fpa-flow-aside small { display: block; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
+.fpa-flow-aside b { font-weight: var(--erp-fw-semibold); }
+
+/* 본문 = 목록 + 처리 서랍 */
+.fpa-main { grid-area: main; display: grid; grid-template-columns: minmax(0, 1fr) 390px; min-height: 0; }
+.fpa-list { display: flex; flex-direction: column; min-height: 0; padding: var(--erp-sp-4) var(--erp-sp-6) 0; overflow: auto; }
+.fpa-head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--erp-sp-4); margin-bottom: var(--erp-sp-3); }
+.fpa-head h1 { margin: 0; font-size: var(--erp-fs-title); font-weight: var(--erp-fw-bold); }
+.fpa-head p { margin: 4px 0 0; color: var(--erp-color-text-2); }
+.fpa-list .erp-searchbar { margin-bottom: var(--erp-sp-4); padding: 0; border: 0; }
+
+/* 2. 할 일 묶음 */
+.fpa-queue { margin-bottom: 18px; }
+.fpa-queue-head { display: flex; align-items: baseline; gap: 10px; margin: 0 0 var(--erp-sp-2); }
+.fpa-queue-head h2 { margin: 0; font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); }
+.fpa-queue-head span { color: var(--erp-color-text-3); font-size: var(--erp-fs-label); }
+.fpa-queue-head em { margin-left: auto; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); font-style: normal; }
+.fpa-queue .erp-rowcards { padding: 0; overflow: visible; background: transparent; }
+.fpa-queue .erp-rowcard { grid-template-columns: minmax(190px, 1.15fr) minmax(220px, 1.1fr) minmax(0, 1.5fr) 118px 112px; gap: 18px; padding: 14px var(--erp-sp-4) 14px var(--erp-sp-5); }
+.fpa-queue .erp-rowcard-facts { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--erp-sp-3); }
+.fpa-queue .erp-rowcard-amount strong { font-size: var(--erp-fs-section); }
+.fpa-act { grid-area: go; justify-self: end; }
+.fpa-late { color: var(--erp-color-err); font-weight: var(--erp-fw-semibold); }
+.fpa-done { display: flex; align-items: center; gap: var(--erp-sp-3); margin: 0 0 var(--erp-sp-4); padding: 12px var(--erp-sp-4); border: 1px dashed var(--erp-color-line-strong); border-radius: var(--erp-r-lg); color: var(--erp-color-text-2); }
+.fpa-done b { color: var(--erp-color-text); font-weight: var(--erp-fw-semibold); }
+.fpa-done a { margin-left: auto; color: var(--erp-color-primary); font-weight: var(--erp-fw-semibold); }
+
+/* 3. 처리 서랍 */
+.fpa-drawer { display: flex; flex-direction: column; min-height: 0; border-left: 1px solid var(--erp-color-line); background: var(--erp-color-surface); }
+.fpa-drawer-head { padding: var(--erp-sp-4) var(--erp-sp-5) 14px; border-bottom: 1px solid var(--erp-color-line); }
+.fpa-drawer-top { display: flex; align-items: center; gap: var(--erp-sp-2); }
+.fpa-drawer-top h2 { margin: 0; font-size: var(--erp-fs-title); font-weight: var(--erp-fw-bold); }
+.fpa-drawer-top button { margin-left: auto; border: 0; background: none; color: var(--erp-color-text-3); font-size: var(--erp-fs-section); cursor: pointer; }
+.fpa-drawer-car { margin-top: 6px; color: var(--erp-color-text-2); }
+.fpa-drawer-car b { margin-right: 6px; padding: 0 6px; border-radius: var(--erp-r-sm); background: var(--erp-color-neutral-bg); color: var(--erp-color-text); font-weight: var(--erp-fw-semibold); }
+.fpa-drawer-body { flex: 1; min-height: 0; overflow: auto; padding: var(--erp-sp-4) var(--erp-sp-5); }
+.fpa-drawer-body section + section { margin-top: 18px; padding-top: var(--erp-sp-4); border-top: 1px solid var(--erp-color-line-row); }
+.fpa-drawer-body h3 { margin: 0 0 10px; color: var(--erp-color-text-2); font-size: var(--erp-fs-label); font-weight: var(--erp-fw-semibold); }
+.fpa-drawer-body .erp-steps { margin-bottom: var(--erp-sp-1); }
+.fpa-drawer-foot { display: flex; gap: var(--erp-sp-2); padding: var(--erp-sp-3) var(--erp-sp-5); border-top: 1px solid var(--erp-color-line); background: var(--erp-color-sunken); }
+.fpa-drawer-foot .erp-btn--primary { flex: 1; justify-content: center; }
