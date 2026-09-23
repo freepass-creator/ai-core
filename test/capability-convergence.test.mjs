@@ -5,6 +5,7 @@ import { resolve } from 'node:path';
 import { validateCapabilityRegistryReferences } from '../src/engine/capability-registry.mjs';
 import { createCapabilityEngine } from '../src/engine/capability-engine.mjs';
 import { createProjectRuntime } from '../src/engine/project-runtime.mjs';
+import { createDefaultBuiltins } from '../src/engine/builtins.mjs';
 import { routeWork } from '../src/routing/work-router.mjs';
 
 const capabilities=JSON.parse(readFileSync(new URL('../registry/capabilities.json',import.meta.url),'utf8'));
@@ -43,6 +44,16 @@ test('penalty work resolves to the existing AIOps executor capability',async()=>
   const blocked=await engine.run({route,perform:true});
   assert.equal(blocked.status,'HOLD');
   assert.ok(blocked.blockers.includes('EXECUTION_CONTEXT_REQUIRED'));
+});
+
+test('work projection builtin does not promote provider failure to success',async()=>{
+  const builtins=createDefaultBuiltins({
+    readWorkProjection:async()=>({status:'FAILED',reason:'PROJECTION_READ_FAILED'}),
+  });
+  const result=await builtins.get('work.projection').invoke({input:{order_id:'ORD-1'}});
+  assert.equal(result.status,'FAILED');
+  assert.equal(result.checks[0].status,'FAIL');
+  assert.deepEqual(result.blockers,['PROJECTION_READ_FAILED']);
 });
 
 test('dirty tracked worktree blocks project execution before command/module invocation',async()=>{
