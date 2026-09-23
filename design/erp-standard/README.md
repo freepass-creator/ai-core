@@ -120,6 +120,12 @@
 - 제품은 사용자가 고른 테마를 사람별로 기억한다(예: 쿠키 `fpa-theme`). 서버가 첫 화면부터 `<html data-theme>` 를 찍어 깜빡임이 없게 한다.
 - 새 테마는 `themes/<id>.json`(기본 토큰 덮어쓰기 + `<id>-*` 추가 변수) · `themes/<id>.css` 를 만들고 `themes/index.json` 에 등록해야 검사를 통과한다.
 
-## 10. 다른 규격과의 관계
+## 10. 적용 현황
+
+| 제품 | 저장소 · 브랜치 | 범위 | 상태 |
+|---|---|---|---|
+| **FreePass Admin** | `freepass-creator/freepass-admin` · `claude/erp-platform-ui-ux-hvfyfa` | PC 골격(상단 정보줄 · 왼쪽 메뉴 · 상태줄) + 테마 2종(쿠키 `fpa-theme`). 메뉴 차례 상품 · 접수 · 실적 · 정산, 전자계약은 따로(대표 2026-09-23). 폰 · 크기 기준 · 판 셋 그대로 | CODED · TESTED — 결정 기록 `docs/DECISIONS.md` DEC-2026-09-23-01, 캡처 `docs/ui/erp-standard/` |
+
+## 11. 다른 규격과의 관계
 
 `design/claude-v1` 은 «버튼과 박스에 라인이 없다» 컨셉의 규격이고, 이 규격은 업계 통상 **테두리형** ERP 규격이다. 두 규격은 파일·토큰 이름(`--c-*` / `--erp-*`)이 겹치지 않아 함께 존재할 수 있다. `examples/claude/erp.html` 을 이 규격으로 옮길지는 다음 작업에서 결정한다.
