@@ -35,7 +35,7 @@ function installCommand(manager,paths){
   return null;
 }
 function classify(paths,packageJson){
-  if(packageJson) return 'NODE_APP';
+  if(packageJson||has(paths,'package.json')) return 'NODE_APP';
   if(has(paths,'index.html')) return 'STATIC_WEB';
   if(any(paths,p=>/^(docs|문서|사건|양식)\//.test(p))||has(paths,'README.md')) return 'DOCUMENT_REPO';
   if(any(paths,p=>/^(scripts|tools|engine|lib)\//.test(p))) return 'TOOLKIT';
