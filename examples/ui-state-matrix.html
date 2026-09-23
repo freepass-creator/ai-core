@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
+  <title>AI Core 상태 검수판 — 일반 · 호버 · 선택 · 선택+호버 · 비활성</title>
+  <link rel="stylesheet" href="../design-system/tokens.runtime.css">
+  <link rel="stylesheet" href="../design-system/components.css">
+  <link rel="stylesheet" href="../design-system/runtime-v2.css">
+  <style>
+    /* ★이 파일은 «검수판»이다 — 만드는 사람(AI)이 눈으로 확인하려고 모든 상태를 한 화면에 세워 둔다.
+       대표 2026-09-23: 「니가 이런 걸 규격화 해줘야지 나한테 의존하면 어떠냐, 눈으로 보면서」
+       호버는 마우스가 없으면 안 보이므로 여기서만 «같은 토큰 층»을 그대로 덧칠해 재현한다.
+       새 색을 만들지 않는다 — 정본 토큰만 쓴다. 값의 정본은 design-system/ 이다. */
+    [data-demo="hover"] { background-image: linear-gradient(var(--color-hover-layer), var(--color-hover-layer)); }
+    [data-demo="pressed"] { background-image: linear-gradient(var(--color-pressed-layer), var(--color-pressed-layer)); }
+    [data-demo="focus"] { outline: var(--focus-ring-width) solid var(--color-focus); outline-offset: var(--focus-ring-offset); }
+    .matrix { display: grid; gap: var(--space-4); padding: var(--space-4); }
+    .matrix h2 { margin: 0; font-size: var(--font-size-title); }
+    .matrix .row { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--space-3); align-items: start; }
+    .matrix .cell { display: grid; gap: var(--space-2); }
+    .matrix .cap { color: var(--color-muted); font-size: var(--font-size-sm); }
+  </style>
+</head>
+<body>
+<div class="ui-shell">
+  <div class="matrix">
+
+    <h2>① 흰 패널 «안»의 선택 카드 — 실제 업무 화면의 목록</h2>
+    <section class="ui-panel">
+      <div class="row">
+        <div class="cell"><span class="cap">일반</span>
+          <label class="ui-select-card"><span class="ui-select-card-head">12가 3456<input type="radio" name="a"></span><span class="ui-meta">홍길동 · 36개월</span></label></div>
+        <div class="cell"><span class="cap">호버</span>
+          <label class="ui-select-card" data-demo="hover"><span class="ui-select-card-head">12가 3456<input type="radio" name="b"></span><span class="ui-meta">홍길동 · 36개월</span></label></div>
+        <div class="cell"><span class="cap">선택</span>
+          <label class="ui-select-card"><span class="ui-select-card-head">12가 3456<input type="radio" name="c" checked></span><span class="ui-meta">홍길동 · 36개월</span></label></div>
+        <div class="cell"><span class="cap">선택 + 호버</span>
+          <label class="ui-select-card" data-demo="hover"><span class="ui-select-card-head">12가 3456<input type="radio" name="d" checked></span><span class="ui-meta">홍길동 · 36개월</span></label></div>
+        <div class="cell"><span class="cap">비활성</span>
+          <label class="ui-select-card"><span class="ui-select-card-head">12가 3456<input type="radio" name="e" disabled></span><span class="ui-meta">해지 처리 중</span></label></div>
+      </div>
+    </section>
+
+    <h2>② 바탕 «위»의 선택 카드 — 모바일 목록(패널 없음)</h2>
+    <div class="row">
+      <div class="cell"><span class="cap">일반</span>
+        <label class="ui-select-card"><span class="ui-select-card-head">34나 7890<input type="radio" name="f"></span><span class="ui-meta">김영희 · 48개월</span></label></div>
+      <div class="cell"><span class="cap">호버</span>
+        <label class="ui-select-card" data-demo="hover"><span class="ui-select-card-head">34나 7890<input type="radio" name="g"></span><span class="ui-meta">김영희 · 48개월</span></label></div>
+      <div class="cell"><span class="cap">선택</span>
+        <label class="ui-select-card"><span class="ui-select-card-head">34나 7890<input type="radio" name="h" checked></span><span class="ui-meta">김영희 · 48개월</span></label></div>
+      <div class="cell"><span class="cap">선택 + 호버</span>
+        <label class="ui-select-card" data-demo="hover"><span class="ui-select-card-head">34나 7890<input type="radio" name="i" checked></span><span class="ui-meta">김영희 · 48개월</span></label></div>
+      <div class="cell"><span class="cap">포커스</span>
+        <label class="ui-select-card" data-demo="focus"><span class="ui-select-card-head">34나 7890<input type="radio" name="j"></span><span class="ui-meta">김영희 · 48개월</span></label></div>
+    </div>
+
+    <h2>③ 칩 · 구간 선택 · 버튼</h2>
+    <section class="ui-panel">
+      <div class="row">
+        <div class="cell"><span class="cap">칩 일반 / 호버 / 누름</span>
+          <div class="ui-chip-set">
+            <button type="button" class="ui-chip" aria-pressed="false">검토 대기</button>
+            <button type="button" class="ui-chip" aria-pressed="false" data-demo="hover">검토 대기</button>
+            <button type="button" class="ui-chip" aria-pressed="false" data-demo="pressed">검토 대기</button>
+          </div></div>
+        <div class="cell"><span class="cap">칩 선택 / 선택+호버 / 비활성</span>
+          <div class="ui-chip-set">
+            <button type="button" class="ui-chip" aria-pressed="true">검토 대기</button>
+            <button type="button" class="ui-chip" aria-pressed="true" data-demo="hover">검토 대기</button>
+            <button type="button" class="ui-chip" aria-pressed="false" disabled>보관</button>
+          </div></div>
+        <div class="cell"><span class="cap">구간 선택</span>
+          <div class="ui-segmented" role="group" aria-label="정렬">
+            <label><input type="radio" name="s" checked><span>최근</span></label>
+            <label><input type="radio" name="s"><span>기한</span></label>
+            <label><input type="radio" name="s" disabled><span>금액</span></label>
+          </div></div>
+        <div class="cell"><span class="cap">기본 / 보조 버튼</span>
+          <div class="ui-chip-set">
+            <button type="button" class="ui-button">검토 완료</button>
+            <button type="button" class="ui-button secondary">임시 저장</button>
+          </div></div>
+        <div class="cell"><span class="cap">보조 호버 / 누름 / 비활성</span>
+          <div class="ui-chip-set">
+            <button type="button" class="ui-button secondary" data-demo="hover">임시 저장</button>
+            <button type="button" class="ui-button secondary" data-demo="pressed">임시 저장</button>
+            <button type="button" class="ui-button secondary" disabled>임시 저장</button>
+          </div></div>
+      </div>
+    </section>
+
+
+    <h2>④ 선이 남는 자리 vs 사라진 자리 — 전수 확인용</h2>
+    <section class="ui-panel">
+      <div class="row">
+        <div class="cell"><span class="cap">입력 (선 남김)</span><label class="ui-field" for="m1">계약자<input class="ui-input" id="m1" value="홍길동"></label></div>
+        <div class="cell"><span class="cap">오류 입력 (선 남김)</span><label class="ui-field" for="m2">이메일<input class="ui-input" id="m2" aria-invalid="true" value="틀린값"></label></div>
+        <div class="cell"><span class="cap">파일 놓는 자리 (점선 남김)</span><div class="ui-file-upload"><span class="ui-hint">여기에 끌어다 놓기</span></div></div>
+        <div class="cell"><span class="cap">알림 (선 없음 · 면으로)</span><div class="ui-alert">저장했습니다.</div><div class="ui-alert error">저장하지 못했습니다.</div></div>
+        <div class="cell"><span class="cap">빈 상태 · 영수증 (선 없음)</span><div class="ui-state">아직 없습니다</div><dl class="ui-receipt"><div><dt>번호</dt><dd>C-1201</dd></div></dl></div>
+      </div>
+      <table class="ui-table"><caption class="cap">표 — 읽기 위한 가로줄만 남긴다</caption>
+        <thead><tr><th>차번</th><th>계약자</th><th class="ui-table-number">월</th></tr></thead>
+        <tbody><tr><td>12가 3456</td><td>홍길동</td><td class="ui-table-number">620,000</td></tr>
+        <tr><td>34나 7890</td><td>김영희</td><td class="ui-table-number">550,000</td></tr></tbody></table>
+      <ul class="ui-list"><li><span>접수</span><span class="ui-meta">09-20</span></li><li><span>보완</span><span class="ui-meta">09-21</span></li></ul>
+    </section>
+  </div>
+</div>
+</body>
+</html>

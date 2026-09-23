@@ -1,6 +1,6 @@
 {
   "contract": "ai-core-ui-ux-feature-registry/v1",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "normative_source": "docs/SCREEN_DESIGN_STANDARD.md",
   "global_rules": {
     "invariants": [
@@ -183,61 +183,6 @@
   },
   "features": [
     {
-      "id": "action.primary",
-      "family": "action",
-      "title": "Primary action",
-      "kind": "component",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "CONTROL",
-        "PAGE_ACTION",
-        "RESPONSIVE"
-      ],
-      "required_states": [
-        "default",
-        "focus-visible",
-        "active",
-        "disabled",
-        "busy"
-      ],
-      "rules": [
-        "Use for the single highest-priority immediate action in its boundary.",
-        "Label begins with the action verb and names the immediate outcome."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ]
-    },
-    {
-      "id": "action.secondary",
-      "family": "action",
-      "title": "Secondary action",
-      "kind": "component",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "CONTROL",
-        "PAGE_ACTION"
-      ],
-      "required_states": [
-        "default",
-        "focus-visible",
-        "active",
-        "disabled"
-      ],
-      "rules": [
-        "Visually quieter than primary but equally reachable by keyboard and touch."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ]
-    },
-    {
       "id": "action.destructive",
       "family": "action",
       "title": "Destructive action",
@@ -343,26 +288,26 @@
       ]
     },
     {
-      "id": "form.text",
-      "family": "form",
-      "title": "Text input",
+      "id": "action.primary",
+      "family": "action",
+      "title": "Primary action",
       "kind": "component",
       "adoption": "REQUIRED",
       "profiles": [
         "CONTROL",
-        "FORM",
-        "I18N"
+        "PAGE_ACTION",
+        "RESPONSIVE"
       ],
       "required_states": [
-        "empty",
-        "focused",
-        "filled",
-        "invalid",
+        "default",
+        "focus-visible",
+        "active",
         "disabled",
-        "read-only"
+        "busy"
       ],
       "rules": [
-        "Use purpose-appropriate autocomplete and inputmode where applicable."
+        "Use for the single highest-priority immediate action in its boundary.",
+        "Label begins with the action verb and names the immediate outcome."
       ],
       "verification": [
         "semantic-contract",
@@ -372,85 +317,23 @@
       ]
     },
     {
-      "id": "form.number",
-      "family": "form",
-      "title": "Number input",
+      "id": "action.secondary",
+      "family": "action",
+      "title": "Secondary action",
       "kind": "component",
       "adoption": "REQUIRED",
       "profiles": [
         "CONTROL",
-        "FORM",
-        "I18N"
+        "PAGE_ACTION"
       ],
       "required_states": [
-        "empty",
-        "focused",
-        "filled",
-        "invalid",
-        "disabled",
-        "read-only"
-      ],
-      "rules": [
-        "Separate canonical numeric value from localized display formatting.",
-        "Do not silently round or clamp without exposing the rule."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ]
-    },
-    {
-      "id": "form.money",
-      "family": "form",
-      "title": "Money input",
-      "kind": "component",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "CONTROL",
-        "FORM",
-        "I18N"
-      ],
-      "required_states": [
-        "empty",
-        "focused",
-        "filled",
-        "invalid",
-        "disabled",
-        "read-only"
-      ],
-      "rules": [
-        "Currency code or unit is explicit and not inferred from symbol alone.",
-        "Store numeric amount and currency separately."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ]
-    },
-    {
-      "id": "form.phone-email",
-      "family": "form",
-      "title": "Phone or email input",
-      "kind": "component",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "CONTROL",
-        "FORM",
-        "I18N"
-      ],
-      "required_states": [
-        "empty",
-        "focused",
-        "filled",
-        "invalid",
+        "default",
+        "focus-visible",
+        "active",
         "disabled"
       ],
       "rules": [
-        "Allow international formats and preserve country information during normalization."
+        "Visually quieter than primary but equally reachable by keyboard and touch."
       ],
       "verification": [
         "semantic-contract",
@@ -460,28 +343,79 @@
       ]
     },
     {
-      "id": "form.textarea",
-      "family": "form",
-      "title": "Textarea or memo",
+      "id": "action.toggle",
+      "family": "action",
+      "title": "Toggle button (pressed)",
+      "kind": "component",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "CONTROL"
+      ],
+      "required_states": [
+        "unpressed",
+        "pressed",
+        "disabled",
+        "focus-visible"
+      ],
+      "rules": [
+        "A toggle button exposes aria-pressed and keeps the same accessible name in both states — the label does not flip to the opposite action.",
+        "State is carried by a subtle surface tint, text colour, weight and an indicator glyph — not by border or shadow, and never by colour alone (FreePass product profile 4: borderless controls; keyboard focus-visible outline is the exception and stays). The visible label does not gain or lose text when the state changes.",
+        "Use a switch for settings that apply immediately; use a toggle button for a reversible command or view state."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "state-not-colour-only",
+        "failure-path"
+      ]
+    },
+    {
+      "id": "data.audit",
+      "family": "data",
+      "title": "Audit trail",
+      "kind": "surface",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "DATA_SURFACE",
+        "I18N"
+      ],
+      "required_states": [
+        "loading",
+        "empty",
+        "populated",
+        "error"
+      ],
+      "rules": [
+        "Events are append-oriented, timestamped and actor or source attributable.",
+        "Human-readable summaries do not replace immutable event identifiers."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ]
+    },
+    {
+      "id": "data.badge",
+      "family": "data",
+      "title": "Status badge",
       "kind": "component",
       "adoption": "REQUIRED",
       "profiles": [
         "CONTROL",
-        "FORM",
-        "ASYNC_WRITE"
+        "I18N"
       ],
       "required_states": [
-        "empty",
-        "focused",
-        "dirty",
-        "saving",
-        "saved",
+        "neutral",
+        "info",
+        "success",
+        "warning",
         "error",
         "disabled"
       ],
       "rules": [
-        "Multiline content preserves line breaks and draft state.",
-        "Autosave exposes saving, saved and error without stealing focus."
+        "Status text accompanies color and vocabulary comes from the domain state machine."
       ],
       "verification": [
         "semantic-contract",
@@ -491,29 +425,102 @@
       ]
     },
     {
-      "id": "form.search",
-      "family": "form",
-      "title": "Search field",
-      "kind": "component",
+      "id": "data.card",
+      "family": "data",
+      "title": "Card",
+      "kind": "surface",
       "adoption": "REQUIRED",
       "profiles": [
-        "CONTROL",
-        "FORM",
+        "DATA_SURFACE",
         "RESPONSIVE"
       ],
       "required_states": [
-        "idle",
-        "focused",
-        "typing",
         "loading",
-        "results",
-        "empty",
+        "populated",
+        "selected",
+        "disabled"
+      ],
+      "rules": [
+        "Make the whole card interactive only when the entire card has one clear destination or action."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ]
+    },
+    {
+      "id": "data.definition",
+      "family": "data",
+      "title": "Definition or key-value list",
+      "kind": "surface",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "I18N"
+      ],
+      "required_states": [
+        "default",
+        "empty"
+      ],
+      "rules": [
+        "Use semantic name/value grouping and allow long localized labels to wrap."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ]
+    },
+    {
+      "id": "data.detail",
+      "family": "data",
+      "title": "Detail sections",
+      "kind": "surface",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "RESPONSIVE",
+        "I18N"
+      ],
+      "required_states": [
+        "loading",
+        "error",
+        "read-only",
+        "editable"
+      ],
+      "rules": [
+        "Section title hierarchy remains consistent between list and detail families.",
+        "Read-only and editable are explicit states."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ]
+    },
+    {
+      "id": "data.filter",
+      "family": "data",
+      "title": "Filter",
+      "kind": "pattern",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "CONTROL",
+        "DATA_SURFACE",
+        "OVERLAY"
+      ],
+      "required_states": [
+        "closed",
+        "editing",
+        "applied",
+        "clearing",
         "error"
       ],
       "rules": [
-        "Opening search must not destroy current work state.",
-        "Closing search restores prior list or screen context where practical.",
-        "Search, filters, result count and rendered results use one query revision; UI must not present mixed snapshots as one result state."
+        "Applied filters are visible and removable; reset differs from closing without applying.",
+        "Filter, facet and result list read the same query snapshot."
       ],
       "verification": [
         "semantic-contract",
@@ -526,33 +533,32 @@
           "level": "CROSS_PROJECT_VERIFIED",
           "refs": [
             "docs/research/GLOBAL_PRODUCT_STANDARD_EVIDENCE_2026-09-19.md#12-search-filter",
-            "docs/coordination/FREEPASS_SALES_RUNTIME_LEARNING.md",
             "docs/coordination/ERP4_STABILITY_QUERY_LEARNING.md"
           ]
         }
       ]
     },
     {
-      "id": "form.select",
-      "family": "form",
-      "title": "Select",
-      "kind": "component",
+      "id": "data.list",
+      "family": "data",
+      "title": "List",
+      "kind": "surface",
       "adoption": "REQUIRED",
       "profiles": [
-        "CONTROL",
-        "FORM",
+        "DATA_SURFACE",
+        "RESPONSIVE",
         "I18N"
       ],
       "required_states": [
-        "unselected",
-        "focused",
-        "selected",
-        "invalid",
-        "disabled"
+        "loading",
+        "empty",
+        "error",
+        "populated",
+        "refreshing"
       ],
       "rules": [
-        "Prefer native select for short single-choice lists.",
-        "Required selection starts with an explicit unselected state."
+        "Interactive row hit areas can exceed visual density.",
+        "Selection survives refresh when the entity still exists."
       ],
       "verification": [
         "semantic-contract",
@@ -562,28 +568,310 @@
       ]
     },
     {
-      "id": "form.combobox",
-      "family": "form",
-      "title": "Combobox or autocomplete",
-      "kind": "component",
+      "id": "data.select-card",
+      "family": "data",
+      "title": "Selectable card",
+      "kind": "pattern",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "DATA_SURFACE",
+        "CONTROL"
+      ],
+      "required_states": [
+        "unselected",
+        "selected",
+        "disabled",
+        "focus-visible"
+      ],
+      "rules": [
+        "When the whole card is the choice, the card carries one control (radio, checkbox or option semantics); nested interactive elements do not compete with it.",
+        "The card is reachable and operable by keyboard as a single control, and the selected state is exposed semantically (checked/aria-selected). State is carried by a subtle surface tint, text colour, weight and an indicator glyph — not by border or shadow, and never by colour alone (FreePass product profile 4: borderless controls; keyboard focus-visible outline is the exception and stays). The card’s own structural separator is outside this rule.",
+        "A card that also carries its own actions declares which region selects and which region acts."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "state-not-colour-only",
+        "mobile-desktop",
+        "failure-path"
+      ]
+    },
+    {
+      "id": "data.sort",
+      "family": "data",
+      "title": "Sort",
+      "kind": "pattern",
       "adoption": "REQUIRED",
       "profiles": [
         "CONTROL",
-        "FORM",
+        "DATA_SURFACE"
+      ],
+      "required_states": [
+        "none",
+        "ascending",
+        "descending",
+        "loading"
+      ],
+      "rules": [
+        "Sort state is programmatically exposed and stable in the query contract.",
+        "Server or client sorting source is explicit."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ]
+    },
+    {
+      "id": "data.source",
+      "family": "data",
+      "title": "Source or SSOT provenance",
+      "kind": "component",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "I18N",
+        "ADAPTER"
+      ],
+      "required_states": [
+        "verified",
+        "stale",
+        "unknown",
+        "conflict"
+      ],
+      "rules": [
+        "Show source, revision or observed-at time when source identity affects trust.",
+        "Unknown source fails closed for state-changing decisions."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ]
+    },
+    {
+      "id": "data.table",
+      "family": "data",
+      "title": "Table",
+      "kind": "surface",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "DATA_SURFACE",
+        "RESPONSIVE",
         "I18N"
       ],
       "required_states": [
-        "closed",
-        "open",
         "loading",
-        "selected",
         "empty",
         "error",
-        "disabled"
+        "populated",
+        "sorting",
+        "selecting"
       ],
       "rules": [
-        "Implements APG combobox keyboard and focus semantics.",
-        "Editable, select-only or suggestion-only behavior is declared explicitly."
+        "Use semantic table markup for relational rows and columns.",
+        "Narrow screens preserve horizontal scroll or use a documented mobile transformation."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ]
+    },
+    {
+      "id": "data.virtual-list",
+      "family": "data",
+      "title": "Virtualized or infinite list",
+      "kind": "surface",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "DATA_SURFACE",
+        "RESPONSIVE"
+      ],
+      "required_states": [
+        "loading",
+        "populated",
+        "loading-more",
+        "end",
+        "error"
+      ],
+      "rules": [
+        "Stable item identity and accessible position/count survive mount and unmount.",
+        "Loading more never steals focus or unexpectedly resets scroll."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ]
+    },
+    {
+      "id": "feedback.alert",
+      "family": "feedback",
+      "title": "Alert or banner",
+      "kind": "component",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "CONTROL"
+      ],
+      "required_states": [
+        "info",
+        "success",
+        "warning",
+        "error"
+      ],
+      "rules": [
+        "Urgent blocking errors use alert semantics; routine status uses polite announcement.",
+        "Critical information persists until resolved or intentionally dismissed."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ]
+    },
+    {
+      "id": "feedback.empty",
+      "family": "feedback",
+      "title": "Empty state",
+      "kind": "pattern",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "DATA_SURFACE"
+      ],
+      "required_states": [
+        "empty"
+      ],
+      "rules": [
+        "Explains why nothing is shown and offers the next valid action when one exists."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ]
+    },
+    {
+      "id": "feedback.inline-error",
+      "family": "feedback",
+      "title": "Inline validation error",
+      "kind": "component",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "FORM",
+        "CONTROL"
+      ],
+      "required_states": [
+        "hidden",
+        "visible"
+      ],
+      "rules": [
+        "Error is adjacent or programmatically associated and explains correction."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ]
+    },
+    {
+      "id": "feedback.progress",
+      "family": "feedback",
+      "title": "Progress indicator",
+      "kind": "component",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "ENGINE",
+        "CONTROL"
+      ],
+      "required_states": [
+        "indeterminate",
+        "determinate",
+        "paused",
+        "complete",
+        "error"
+      ],
+      "rules": [
+        "Progress represents real job state and respects reduced-motion preferences."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ]
+    },
+    {
+      "id": "feedback.retry",
+      "family": "feedback",
+      "title": "Retry pattern",
+      "kind": "workflow",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "ASYNC_WRITE",
+        "ENGINE"
+      ],
+      "required_states": [
+        "available",
+        "retrying",
+        "succeeded",
+        "failed"
+      ],
+      "rules": [
+        "Retry preserves recoverable input and follows idempotency and receipt rules."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ]
+    },
+    {
+      "id": "feedback.skeleton",
+      "family": "feedback",
+      "title": "Skeleton loading",
+      "kind": "component",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "DATA_SURFACE"
+      ],
+      "required_states": [
+        "loading"
+      ],
+      "rules": [
+        "Skeleton approximates layout without implying actual data values.",
+        "Screen-reader verbosity is controlled."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ]
+    },
+    {
+      "id": "feedback.toast",
+      "family": "feedback",
+      "title": "Toast",
+      "kind": "component",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "CONTROL"
+      ],
+      "required_states": [
+        "showing",
+        "dismissed"
+      ],
+      "rules": [
+        "Only confirms background-safe completed actions and never holds the sole copy of critical information.",
+        "Does not steal focus."
       ],
       "verification": [
         "semantic-contract",
@@ -620,9 +908,9 @@
       ]
     },
     {
-      "id": "form.radio",
+      "id": "form.chip",
       "family": "form",
-      "title": "Radio group",
+      "title": "Chip (filter/tag)",
       "kind": "component",
       "adoption": "REQUIRED",
       "profiles": [
@@ -632,37 +920,46 @@
       "required_states": [
         "unselected",
         "selected",
-        "disabled"
+        "disabled",
+        "focus-visible"
       ],
       "rules": [
-        "Use when exactly one option from a small visible set is required.",
-        "Group has a programmatic label."
+        "State is carried by a subtle surface tint, text colour, weight and an indicator glyph — not by border or shadow, and never by colour alone (FreePass product profile 4: borderless controls; keyboard focus-visible outline is the exception and stays).",
+        "A chip set declares single or multiple selection; multiple selection keeps each chip independently reachable and removable.",
+        "A removable chip exposes a separate labelled remove control; removing never submits the surrounding form.",
+        "Applied filters remain visible while results are shown, with an explicit way to clear all."
       ],
       "verification": [
         "semantic-contract",
         "keyboard-or-equivalent",
+        "state-not-colour-only",
         "mobile-desktop",
         "failure-path"
       ]
     },
     {
-      "id": "form.switch",
+      "id": "form.combobox",
       "family": "form",
-      "title": "Switch",
+      "title": "Combobox or autocomplete",
       "kind": "component",
       "adoption": "REQUIRED",
       "profiles": [
         "CONTROL",
-        "FORM"
+        "FORM",
+        "I18N"
       ],
       "required_states": [
-        "off",
-        "on",
+        "closed",
+        "open",
+        "loading",
+        "selected",
+        "empty",
+        "error",
         "disabled"
       ],
       "rules": [
-        "Reserved for settings that take effect immediately.",
-        "Do not use for deferred form submission choices."
+        "Implements APG combobox keyboard and focus semantics.",
+        "Editable, select-only or suggestion-only behavior is declared explicitly."
       ],
       "verification": [
         "semantic-contract",
@@ -692,35 +989,6 @@
       "rules": [
         "Stored date semantics are separate from localized display.",
         "Picker has a keyboard path and does not require dragging."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ]
-    },
-    {
-      "id": "form.time",
-      "family": "form",
-      "title": "Time input or picker",
-      "kind": "component",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "CONTROL",
-        "FORM",
-        "I18N"
-      ],
-      "required_states": [
-        "empty",
-        "focused",
-        "selected",
-        "invalid",
-        "disabled"
-      ],
-      "rules": [
-        "Time zone context is explicit when it affects meaning.",
-        "12 or 24 hour display does not alter stored semantics."
       ],
       "verification": [
         "semantic-contract",
@@ -859,6 +1127,120 @@
       ]
     },
     {
+      "id": "form.money",
+      "family": "form",
+      "title": "Money input",
+      "kind": "component",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "CONTROL",
+        "FORM",
+        "I18N"
+      ],
+      "required_states": [
+        "empty",
+        "focused",
+        "filled",
+        "invalid",
+        "disabled",
+        "read-only"
+      ],
+      "rules": [
+        "Currency code or unit is explicit and not inferred from symbol alone.",
+        "Store numeric amount and currency separately."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ]
+    },
+    {
+      "id": "form.number",
+      "family": "form",
+      "title": "Number input",
+      "kind": "component",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "CONTROL",
+        "FORM",
+        "I18N"
+      ],
+      "required_states": [
+        "empty",
+        "focused",
+        "filled",
+        "invalid",
+        "disabled",
+        "read-only"
+      ],
+      "rules": [
+        "Separate canonical numeric value from localized display formatting.",
+        "Do not silently round or clamp without exposing the rule."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ]
+    },
+    {
+      "id": "form.phone-email",
+      "family": "form",
+      "title": "Phone or email input",
+      "kind": "component",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "CONTROL",
+        "FORM",
+        "I18N"
+      ],
+      "required_states": [
+        "empty",
+        "focused",
+        "filled",
+        "invalid",
+        "disabled"
+      ],
+      "rules": [
+        "Allow international formats and preserve country information during normalization."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ]
+    },
+    {
+      "id": "form.radio",
+      "family": "form",
+      "title": "Radio group",
+      "kind": "component",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "CONTROL",
+        "FORM"
+      ],
+      "required_states": [
+        "unselected",
+        "selected",
+        "disabled"
+      ],
+      "rules": [
+        "Use when exactly one option from a small visible set is required.",
+        "Group has a programmatic label."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ]
+    },
+    {
       "id": "form.reorder",
       "family": "form",
       "title": "Reorder or drag",
@@ -900,398 +1282,29 @@
       ]
     },
     {
-      "id": "navigation.header",
-      "family": "navigation",
-      "title": "App or page header",
-      "kind": "surface",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "RESPONSIVE",
-        "I18N"
-      ],
-      "required_states": [
-        "default",
-        "scrolled"
-      ],
-      "rules": [
-        "On mobile, header is informational by default: brand, title, context, progress and passive status.",
-        "On mobile, workflow-changing task CTAs do not move into the header merely to save space.",
-        "On web, a utility/action toolbar may coexist with the header when it accelerates canonical commands without forking workflow semantics."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ]
-    },
-    {
-      "id": "navigation.breadcrumb",
-      "family": "navigation",
-      "title": "Breadcrumb",
+      "id": "form.search",
+      "family": "form",
+      "title": "Search field",
       "kind": "component",
       "adoption": "REQUIRED",
       "profiles": [
         "CONTROL",
-        "I18N"
-      ],
-      "required_states": [
-        "default",
-        "current"
-      ],
-      "rules": [
-        "Represents hierarchy, not history; current location is programmatically exposed."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ]
-    },
-    {
-      "id": "navigation.tabs",
-      "family": "navigation",
-      "title": "Tabs",
-      "kind": "component",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "CONTROL",
+        "FORM",
         "RESPONSIVE"
       ],
       "required_states": [
         "idle",
         "focused",
-        "selected",
-        "disabled"
-      ],
-      "rules": [
-        "Implements APG tab semantics including Arrow, Home and End keys.",
-        "Selected and focused are distinct states.",
-        "Automatic activation is allowed only when the panel is available without noticeable latency; latency or network-bound tabs use explicit Enter/Space activation.",
-        "Moving focus between tabs does not itself save data, launch an external action or trigger another business side effect."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ],
-      "evidence": [
-        {
-          "level": "PLATFORM_CONSENSUS",
-          "refs": [
-            "https://www.w3.org/WAI/ARIA/apg/patterns/tabs/",
-            "docs/research/GLOBAL_PRODUCT_STANDARD_EVIDENCE_2026-09-19.md#10-tabs"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "navigation.bottom-action",
-      "family": "navigation",
-      "title": "Bottom task action boundary",
-      "kind": "pattern",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "PAGE_ACTION",
-        "RESPONSIVE",
-        "CONTROL"
-      ],
-      "required_states": [
-        "default",
-        "busy",
-        "disabled"
-      ],
-      "rules": [
-        "On mobile, task-level workflow actions render in the bottom action boundary by default.",
-        "The mobile action boundary accounts for safe-area and virtual-keyboard occlusion and must not obscure focused controls or validation messages.",
-        "Web preserves the same command meaning and primary/secondary hierarchy, but may mirror commands through inline, shortcut, sticky or toolbar accelerators for productivity."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ],
-      "evidence": [
-        {
-          "level": "CROSS_PROJECT_VERIFIED",
-          "refs": [
-            "docs/research/GLOBAL_PRODUCT_STANDARD_EVIDENCE_2026-09-19.md#7-button-action-hierarchy",
-            "docs/FREEPASS_PRODUCT_UI_PROFILE.md"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "navigation.bottom-nav",
-      "family": "navigation",
-      "title": "Bottom navigation",
-      "kind": "component",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "CONTROL",
-        "RESPONSIVE"
-      ],
-      "required_states": [
-        "idle",
-        "current",
-        "disabled"
-      ],
-      "rules": [
-        "Used for top-level destinations, not per-page task CTAs.",
-        "Safe-area padding is mandatory on edge-to-edge mobile layouts."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ]
-    },
-    {
-      "id": "navigation.pagination",
-      "family": "navigation",
-      "title": "Pagination",
-      "kind": "component",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "CONTROL",
-        "DATA_SURFACE"
-      ],
-      "required_states": [
-        "first",
-        "middle",
-        "last",
-        "loading"
-      ],
-      "rules": [
-        "Current page is exposed and unavailable directions are disabled.",
-        "Changing page preserves relevant filters and query context."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ]
-    },
-    {
-      "id": "navigation.stepper",
-      "family": "navigation",
-      "title": "Stepper or wizard",
-      "kind": "workflow",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "CONTROL",
-        "PAGE_ACTION",
-        "RESPONSIVE"
-      ],
-      "required_states": [
-        "current",
-        "complete",
-        "error",
-        "disabled"
-      ],
-      "rules": [
-        "Back, Next and Complete belong to the bottom action area.",
-        "Single-choice auto-advance omits a redundant Next button."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ]
-    },
-    {
-      "id": "navigation.restore",
-      "family": "navigation",
-      "title": "Back and state restore",
-      "kind": "pattern",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "ASYNC_WRITE",
-        "RESPONSIVE"
-      ],
-      "required_states": [
-        "restoring",
-        "restored",
-        "fallback"
-      ],
-      "rules": [
-        "Back restores meaningful prior query, filter, scroll and draft state.",
-        "Fallback never silently discards unsaved work."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ]
-    },
-    {
-      "id": "data.list",
-      "family": "data",
-      "title": "List",
-      "kind": "surface",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "DATA_SURFACE",
-        "RESPONSIVE",
-        "I18N"
-      ],
-      "required_states": [
+        "typing",
         "loading",
+        "results",
         "empty",
-        "error",
-        "populated",
-        "refreshing"
-      ],
-      "rules": [
-        "Interactive row hit areas can exceed visual density.",
-        "Selection survives refresh when the entity still exists."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ]
-    },
-    {
-      "id": "data.card",
-      "family": "data",
-      "title": "Card",
-      "kind": "surface",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "DATA_SURFACE",
-        "RESPONSIVE"
-      ],
-      "required_states": [
-        "loading",
-        "populated",
-        "selected",
-        "disabled"
-      ],
-      "rules": [
-        "Make the whole card interactive only when the entire card has one clear destination or action."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ]
-    },
-    {
-      "id": "data.badge",
-      "family": "data",
-      "title": "Status badge",
-      "kind": "component",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "CONTROL",
-        "I18N"
-      ],
-      "required_states": [
-        "neutral",
-        "info",
-        "success",
-        "warning",
-        "error",
-        "disabled"
-      ],
-      "rules": [
-        "Status text accompanies color and vocabulary comes from the domain state machine."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ]
-    },
-    {
-      "id": "data.table",
-      "family": "data",
-      "title": "Table",
-      "kind": "surface",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "DATA_SURFACE",
-        "RESPONSIVE",
-        "I18N"
-      ],
-      "required_states": [
-        "loading",
-        "empty",
-        "error",
-        "populated",
-        "sorting",
-        "selecting"
-      ],
-      "rules": [
-        "Use semantic table markup for relational rows and columns.",
-        "Narrow screens preserve horizontal scroll or use a documented mobile transformation."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ]
-    },
-    {
-      "id": "data.sort",
-      "family": "data",
-      "title": "Sort",
-      "kind": "pattern",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "CONTROL",
-        "DATA_SURFACE"
-      ],
-      "required_states": [
-        "none",
-        "ascending",
-        "descending",
-        "loading"
-      ],
-      "rules": [
-        "Sort state is programmatically exposed and stable in the query contract.",
-        "Server or client sorting source is explicit."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ]
-    },
-    {
-      "id": "data.filter",
-      "family": "data",
-      "title": "Filter",
-      "kind": "pattern",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "CONTROL",
-        "DATA_SURFACE",
-        "OVERLAY"
-      ],
-      "required_states": [
-        "closed",
-        "editing",
-        "applied",
-        "clearing",
         "error"
       ],
       "rules": [
-        "Applied filters are visible and removable; reset differs from closing without applying.",
-        "Filter, facet and result list read the same query snapshot."
+        "Opening search must not destroy current work state.",
+        "Closing search restores prior list or screen context where practical.",
+        "Search, filters, result count and rendered results use one query revision; UI must not present mixed snapshots as one result state."
       ],
       "verification": [
         "semantic-contract",
@@ -1304,696 +1317,33 @@
           "level": "CROSS_PROJECT_VERIFIED",
           "refs": [
             "docs/research/GLOBAL_PRODUCT_STANDARD_EVIDENCE_2026-09-19.md#12-search-filter",
+            "docs/coordination/FREEPASS_SALES_RUNTIME_LEARNING.md",
             "docs/coordination/ERP4_STABILITY_QUERY_LEARNING.md"
           ]
         }
       ]
     },
     {
-      "id": "data.virtual-list",
-      "family": "data",
-      "title": "Virtualized or infinite list",
-      "kind": "surface",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "DATA_SURFACE",
-        "RESPONSIVE"
-      ],
-      "required_states": [
-        "loading",
-        "populated",
-        "loading-more",
-        "end",
-        "error"
-      ],
-      "rules": [
-        "Stable item identity and accessible position/count survive mount and unmount.",
-        "Loading more never steals focus or unexpectedly resets scroll."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ]
-    },
-    {
-      "id": "data.detail",
-      "family": "data",
-      "title": "Detail sections",
-      "kind": "surface",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "RESPONSIVE",
-        "I18N"
-      ],
-      "required_states": [
-        "loading",
-        "error",
-        "read-only",
-        "editable"
-      ],
-      "rules": [
-        "Section title hierarchy remains consistent between list and detail families.",
-        "Read-only and editable are explicit states."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ]
-    },
-    {
-      "id": "data.definition",
-      "family": "data",
-      "title": "Definition or key-value list",
-      "kind": "surface",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "I18N"
-      ],
-      "required_states": [
-        "default",
-        "empty"
-      ],
-      "rules": [
-        "Use semantic name/value grouping and allow long localized labels to wrap."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ]
-    },
-    {
-      "id": "data.source",
-      "family": "data",
-      "title": "Source or SSOT provenance",
+      "id": "form.select",
+      "family": "form",
+      "title": "Select",
       "kind": "component",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "I18N",
-        "ADAPTER"
-      ],
-      "required_states": [
-        "verified",
-        "stale",
-        "unknown",
-        "conflict"
-      ],
-      "rules": [
-        "Show source, revision or observed-at time when source identity affects trust.",
-        "Unknown source fails closed for state-changing decisions."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ]
-    },
-    {
-      "id": "data.audit",
-      "family": "data",
-      "title": "Audit trail",
-      "kind": "surface",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "DATA_SURFACE",
-        "I18N"
-      ],
-      "required_states": [
-        "loading",
-        "empty",
-        "populated",
-        "error"
-      ],
-      "rules": [
-        "Events are append-oriented, timestamped and actor or source attributable.",
-        "Human-readable summaries do not replace immutable event identifiers."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ]
-    },
-    {
-      "id": "feedback.inline-error",
-      "family": "feedback",
-      "title": "Inline validation error",
-      "kind": "component",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "FORM",
-        "CONTROL"
-      ],
-      "required_states": [
-        "hidden",
-        "visible"
-      ],
-      "rules": [
-        "Error is adjacent or programmatically associated and explains correction."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ]
-    },
-    {
-      "id": "feedback.alert",
-      "family": "feedback",
-      "title": "Alert or banner",
-      "kind": "component",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "CONTROL"
-      ],
-      "required_states": [
-        "info",
-        "success",
-        "warning",
-        "error"
-      ],
-      "rules": [
-        "Urgent blocking errors use alert semantics; routine status uses polite announcement.",
-        "Critical information persists until resolved or intentionally dismissed."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ]
-    },
-    {
-      "id": "feedback.toast",
-      "family": "feedback",
-      "title": "Toast",
-      "kind": "component",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "CONTROL"
-      ],
-      "required_states": [
-        "showing",
-        "dismissed"
-      ],
-      "rules": [
-        "Only confirms background-safe completed actions and never holds the sole copy of critical information.",
-        "Does not steal focus."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ]
-    },
-    {
-      "id": "feedback.progress",
-      "family": "feedback",
-      "title": "Progress indicator",
-      "kind": "component",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "ENGINE",
-        "CONTROL"
-      ],
-      "required_states": [
-        "indeterminate",
-        "determinate",
-        "paused",
-        "complete",
-        "error"
-      ],
-      "rules": [
-        "Progress represents real job state and respects reduced-motion preferences."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ]
-    },
-    {
-      "id": "feedback.skeleton",
-      "family": "feedback",
-      "title": "Skeleton loading",
-      "kind": "component",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "DATA_SURFACE"
-      ],
-      "required_states": [
-        "loading"
-      ],
-      "rules": [
-        "Skeleton approximates layout without implying actual data values.",
-        "Screen-reader verbosity is controlled."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ]
-    },
-    {
-      "id": "feedback.empty",
-      "family": "feedback",
-      "title": "Empty state",
-      "kind": "pattern",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "DATA_SURFACE"
-      ],
-      "required_states": [
-        "empty"
-      ],
-      "rules": [
-        "Explains why nothing is shown and offers the next valid action when one exists."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ]
-    },
-    {
-      "id": "feedback.retry",
-      "family": "feedback",
-      "title": "Retry pattern",
-      "kind": "workflow",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "ASYNC_WRITE",
-        "ENGINE"
-      ],
-      "required_states": [
-        "available",
-        "retrying",
-        "succeeded",
-        "failed"
-      ],
-      "rules": [
-        "Retry preserves recoverable input and follows idempotency and receipt rules."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ]
-    },
-    {
-      "id": "overlay.dialog",
-      "family": "overlay",
-      "title": "Modal dialog",
-      "kind": "component",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "OVERLAY",
-        "RESPONSIVE"
-      ],
-      "required_states": [
-        "closed",
-        "open",
-        "busy",
-        "error"
-      ],
-      "rules": [
-        "Use only for a focused task that must be completed or dismissed before continuing."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ]
-    },
-    {
-      "id": "overlay.bottom-sheet",
-      "family": "overlay",
-      "title": "Bottom sheet",
-      "kind": "component",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "OVERLAY",
-        "RESPONSIVE"
-      ],
-      "required_states": [
-        "closed",
-        "open",
-        "expanded"
-      ],
-      "rules": [
-        "Preferred mobile secondary action or filter surface when it avoids top-header CTAs.",
-        "Gesture dismissal has a button and keyboard equivalent."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ]
-    },
-    {
-      "id": "overlay.drawer",
-      "family": "overlay",
-      "title": "Drawer",
-      "kind": "component",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "OVERLAY",
-        "RESPONSIVE"
-      ],
-      "required_states": [
-        "closed",
-        "open"
-      ],
-      "rules": [
-        "Use for supplementary navigation or context, not hidden mandatory form steps.",
-        "Focus and scroll locking match explicit modal or non-modal intent."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ]
-    },
-    {
-      "id": "overlay.tooltip",
-      "family": "overlay",
-      "title": "Tooltip",
-      "kind": "component",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "CONTROL"
-      ],
-      "required_states": [
-        "hidden",
-        "visible"
-      ],
-      "rules": [
-        "Supplementary only; essential instructions never exist only in a tooltip.",
-        "Available on keyboard focus as well as pointer hover."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ]
-    },
-    {
-      "id": "workflow.draft",
-      "family": "workflow",
-      "title": "Draft preservation",
-      "kind": "workflow",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "ASYNC_WRITE"
-      ],
-      "required_states": [
-        "clean",
-        "dirty",
-        "saving",
-        "saved",
-        "error"
-      ],
-      "rules": [
-        "Draft is bound to a stable work or entity key and is never confused with server completion."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ]
-    },
-    {
-      "id": "workflow.autosave",
-      "family": "workflow",
-      "title": "Autosave",
-      "kind": "workflow",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "ASYNC_WRITE"
-      ],
-      "required_states": [
-        "idle",
-        "dirty",
-        "saving",
-        "saved",
-        "error",
-        "conflict"
-      ],
-      "rules": [
-        "Debounced or background saves expose state and do not overwrite a newer revision silently."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ],
-      "evidence": [
-        {
-          "level": "CROSS_PROJECT_VERIFIED",
-          "refs": [
-            "docs/coordination/FREEPASS_SALES_RUNTIME_LEARNING.md#4-idempotent-save-semantics",
-            "docs/research/GLOBAL_PRODUCT_STANDARD_EVIDENCE_2026-09-19.md#17-async-save-idempotency"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "workflow.explicit-save",
-      "family": "workflow",
-      "title": "Explicit save",
-      "kind": "workflow",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "PAGE_ACTION",
-        "ASYNC_WRITE"
-      ],
-      "required_states": [
-        "idle",
-        "dirty",
-        "saving",
-        "saved",
-        "error",
-        "conflict"
-      ],
-      "rules": [
-        "Save is bottom-positioned and success appears only after authoritative persistence.",
-        "A disabled button is only interaction feedback; duplicate-write integrity is enforced outside the visual control."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ],
-      "evidence": [
-        {
-          "level": "CROSS_PROJECT_VERIFIED",
-          "refs": [
-            "docs/coordination/FREEPASS_SALES_RUNTIME_LEARNING.md#4-idempotent-save-semantics",
-            "docs/research/GLOBAL_PRODUCT_STANDARD_EVIDENCE_2026-09-19.md#17-async-save-idempotency"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "workflow.submit",
-      "family": "workflow",
-      "title": "Submit or complete",
-      "kind": "workflow",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "PAGE_ACTION",
-        "ASYNC_WRITE"
-      ],
-      "required_states": [
-        "ready",
-        "blocked",
-        "submitting",
-        "succeeded",
-        "failed"
-      ],
-      "rules": [
-        "Submission is a distinct boundary from draft save and names the externally visible effect."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ]
-    },
-    {
-      "id": "workflow.delete",
-      "family": "workflow",
-      "title": "Delete",
-      "kind": "workflow",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "PAGE_ACTION",
-        "ASYNC_WRITE",
-        "OVERLAY"
-      ],
-      "required_states": [
-        "idle",
-        "confirming",
-        "deleting",
-        "succeeded",
-        "failed"
-      ],
-      "rules": [
-        "Confirmation names object and consequence; restore semantics are explicit if supported."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ]
-    },
-    {
-      "id": "workflow.undo",
-      "family": "workflow",
-      "title": "Undo",
-      "kind": "workflow",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "ASYNC_WRITE"
-      ],
-      "required_states": [
-        "available",
-        "undoing",
-        "restored",
-        "expired",
-        "failed"
-      ],
-      "rules": [
-        "Undo window and scope are explicit and never imply reversibility beyond backend capability."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ]
-    },
-    {
-      "id": "workflow.optimistic",
-      "family": "workflow",
-      "title": "Optimistic update",
-      "kind": "workflow",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "ASYNC_WRITE"
-      ],
-      "required_states": [
-        "pending",
-        "confirmed",
-        "rolled-back",
-        "conflict"
-      ],
-      "rules": [
-        "Optimistic UI stays distinguishable until authoritative confirmation when failure matters.",
-        "Rollback restores prior known state without losing unrelated edits."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ]
-    },
-    {
-      "id": "workflow.conflict",
-      "family": "workflow",
-      "title": "Concurrent edit conflict",
-      "kind": "workflow",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "ASYNC_WRITE"
-      ],
-      "required_states": [
-        "detected",
-        "reviewing",
-        "resolved",
-        "cancelled"
-      ],
-      "rules": [
-        "Never silently last-write-wins where data loss is material.",
-        "Expose base and current revisions with a deterministic resolution path."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ]
-    },
-    {
-      "id": "workflow.offline",
-      "family": "workflow",
-      "title": "Offline or degraded network",
-      "kind": "workflow",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "ASYNC_WRITE",
-        "ADAPTER"
-      ],
-      "required_states": [
-        "online",
-        "offline",
-        "queued",
-        "reconnecting",
-        "conflict"
-      ],
-      "rules": [
-        "Queued writes are not displayed as completed.",
-        "Reconnect reconciles by stable IDs and revisions."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ]
-    },
-    {
-      "id": "workflow.permission",
-      "family": "workflow",
-      "title": "Permission and read-only",
-      "kind": "pattern",
       "adoption": "REQUIRED",
       "profiles": [
         "CONTROL",
-        "DATA_SURFACE"
+        "FORM",
+        "I18N"
       ],
       "required_states": [
-        "authorized",
-        "read-only",
-        "forbidden",
-        "unknown"
+        "unselected",
+        "focused",
+        "selected",
+        "invalid",
+        "disabled"
       ],
       "rules": [
-        "Hide or disable according to policy without exposing unavailable sensitive data.",
-        "Unknown permission fails closed for mutation."
+        "Prefer native select for short single-choice lists.",
+        "Required selection starts with an explicit unselected state."
       ],
       "verification": [
         "semantic-contract",
@@ -2003,25 +1353,83 @@
       ]
     },
     {
-      "id": "workflow.session",
-      "family": "workflow",
-      "title": "Session expiry and re-auth",
-      "kind": "workflow",
+      "id": "form.switch",
+      "family": "form",
+      "title": "Switch",
+      "kind": "component",
       "adoption": "REQUIRED",
       "profiles": [
-        "OVERLAY",
+        "CONTROL",
+        "FORM"
+      ],
+      "required_states": [
+        "off",
+        "on",
+        "disabled"
+      ],
+      "rules": [
+        "Reserved for settings that take effect immediately.",
+        "Do not use for deferred form submission choices."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ]
+    },
+    {
+      "id": "form.text",
+      "family": "form",
+      "title": "Text input",
+      "kind": "component",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "CONTROL",
+        "FORM",
+        "I18N"
+      ],
+      "required_states": [
+        "empty",
+        "focused",
+        "filled",
+        "invalid",
+        "disabled",
+        "read-only"
+      ],
+      "rules": [
+        "Use purpose-appropriate autocomplete and inputmode where applicable."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ]
+    },
+    {
+      "id": "form.textarea",
+      "family": "form",
+      "title": "Textarea or memo",
+      "kind": "component",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "CONTROL",
+        "FORM",
         "ASYNC_WRITE"
       ],
       "required_states": [
-        "active",
-        "expiring",
-        "expired",
-        "reauthenticating",
-        "restored"
+        "empty",
+        "focused",
+        "dirty",
+        "saving",
+        "saved",
+        "error",
+        "disabled"
       ],
       "rules": [
-        "Preserve recoverable draft state across re-authentication.",
-        "Protected mutations require renewed authority after expiry."
+        "Multiline content preserves line breaks and draft state.",
+        "Autosave exposes saving, saved and error without stealing focus."
       ],
       "verification": [
         "semantic-contract",
@@ -2031,27 +1439,27 @@
       ]
     },
     {
-      "id": "integration.engine-job",
-      "family": "integration",
-      "title": "Engine job status",
-      "kind": "engine",
+      "id": "form.time",
+      "family": "form",
+      "title": "Time input or picker",
+      "kind": "component",
       "adoption": "REQUIRED",
       "profiles": [
-        "ENGINE",
-        "DATA_SURFACE"
+        "CONTROL",
+        "FORM",
+        "I18N"
       ],
       "required_states": [
-        "queued",
-        "running",
-        "partial",
-        "succeeded",
-        "failed",
-        "cancelled"
+        "empty",
+        "focused",
+        "selected",
+        "invalid",
+        "disabled"
       ],
       "rules": [
-        "Every long-running engine task exposes stable job id, progress or result, retry eligibility and receipt."
+        "Time zone context is explicit when it affects meaning.",
+        "12 or 24 hour display does not alter stored semantics."
       ],
-      "engine_binding": "ai-core-job/v1",
       "verification": [
         "semantic-contract",
         "keyboard-or-equivalent",
@@ -2088,28 +1496,28 @@
       ]
     },
     {
-      "id": "integration.sync",
+      "id": "integration.ai-action",
       "family": "integration",
-      "title": "Sync",
-      "kind": "adapter",
+      "title": "AI-assisted action",
+      "kind": "workflow",
       "adoption": "REQUIRED",
       "profiles": [
-        "ADAPTER",
         "ENGINE",
         "ASYNC_WRITE"
       ],
       "required_states": [
         "idle",
-        "syncing",
-        "succeeded",
-        "partial",
-        "failed",
-        "conflict"
+        "generating",
+        "review-required",
+        "accepted",
+        "rejected",
+        "failed"
       ],
       "rules": [
-        "Sync shows source, target, observed revision or time and conflict policy."
+        "AI output remains draft or candidate until the product authority boundary accepts it.",
+        "Model execution and application commit are separate states."
       ],
-      "adapter_binding": "ai-core-sync/v1",
+      "engine_binding": "ai-assist/v1",
       "verification": [
         "semantic-contract",
         "keyboard-or-equivalent",
@@ -2118,30 +1526,54 @@
       ]
     },
     {
-      "id": "integration.import",
+      "id": "integration.document-preview",
       "family": "integration",
-      "title": "Import",
-      "kind": "workflow",
+      "title": "Document preview",
+      "kind": "surface",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "DATA_SURFACE",
+        "ADAPTER"
+      ],
+      "required_states": [
+        "loading",
+        "ready",
+        "unsupported",
+        "error"
+      ],
+      "rules": [
+        "Preview preserves file identity and version and exposes a safe fallback action.",
+        "Unsupported formats fail explicitly."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ]
+    },
+    {
+      "id": "integration.engine-job",
+      "family": "integration",
+      "title": "Engine job status",
+      "kind": "engine",
       "adoption": "REQUIRED",
       "profiles": [
         "ENGINE",
-        "ASYNC_WRITE",
-        "FORM"
+        "DATA_SURFACE"
       ],
       "required_states": [
-        "idle",
-        "validating",
-        "preview",
-        "importing",
+        "queued",
+        "running",
         "partial",
         "succeeded",
-        "failed"
+        "failed",
+        "cancelled"
       ],
       "rules": [
-        "Validate and preview before commit when mutation is material.",
-        "Per-record failures remain inspectable and re-runnable without duplicating successes."
+        "Every long-running engine task exposes stable job id, progress or result, retry eligibility and receipt."
       ],
-      "engine_binding": "ai-core-import/v1",
+      "engine_binding": "ai-core-job/v1",
       "verification": [
         "semantic-contract",
         "keyboard-or-equivalent",
@@ -2217,55 +1649,30 @@
       ]
     },
     {
-      "id": "integration.document-preview",
+      "id": "integration.import",
       "family": "integration",
-      "title": "Document preview",
-      "kind": "surface",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "DATA_SURFACE",
-        "ADAPTER"
-      ],
-      "required_states": [
-        "loading",
-        "ready",
-        "unsupported",
-        "error"
-      ],
-      "rules": [
-        "Preview preserves file identity and version and exposes a safe fallback action.",
-        "Unsupported formats fail explicitly."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ]
-    },
-    {
-      "id": "integration.ai-action",
-      "family": "integration",
-      "title": "AI-assisted action",
+      "title": "Import",
       "kind": "workflow",
       "adoption": "REQUIRED",
       "profiles": [
         "ENGINE",
-        "ASYNC_WRITE"
+        "ASYNC_WRITE",
+        "FORM"
       ],
       "required_states": [
         "idle",
-        "generating",
-        "review-required",
-        "accepted",
-        "rejected",
+        "validating",
+        "preview",
+        "importing",
+        "partial",
+        "succeeded",
         "failed"
       ],
       "rules": [
-        "AI output remains draft or candidate until the product authority boundary accepts it.",
-        "Model execution and application commit are separate states."
+        "Validate and preview before commit when mutation is material.",
+        "Per-record failures remain inspectable and re-runnable without duplicating successes."
       ],
-      "engine_binding": "ai-assist/v1",
+      "engine_binding": "ai-core-import/v1",
       "verification": [
         "semantic-contract",
         "keyboard-or-equivalent",
@@ -2301,6 +1708,36 @@
       ]
     },
     {
+      "id": "integration.sync",
+      "family": "integration",
+      "title": "Sync",
+      "kind": "adapter",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "ADAPTER",
+        "ENGINE",
+        "ASYNC_WRITE"
+      ],
+      "required_states": [
+        "idle",
+        "syncing",
+        "succeeded",
+        "partial",
+        "failed",
+        "conflict"
+      ],
+      "rules": [
+        "Sync shows source, target, observed revision or time and conflict policy."
+      ],
+      "adapter_binding": "ai-core-sync/v1",
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ]
+    },
+    {
       "id": "integration.webhook",
       "family": "integration",
       "title": "Webhook or event delivery",
@@ -2326,6 +1763,626 @@
         "keyboard-or-equivalent",
         "mobile-desktop",
         "failure-path"
+      ]
+    },
+    {
+      "id": "navigation.bottom-action",
+      "family": "navigation",
+      "title": "Bottom task action boundary",
+      "kind": "pattern",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "PAGE_ACTION",
+        "RESPONSIVE",
+        "CONTROL"
+      ],
+      "required_states": [
+        "default",
+        "busy",
+        "disabled"
+      ],
+      "rules": [
+        "On mobile, task-level workflow actions render in the bottom action boundary by default.",
+        "The mobile action boundary accounts for safe-area and virtual-keyboard occlusion and must not obscure focused controls or validation messages.",
+        "Web preserves the same command meaning and primary/secondary hierarchy, but may mirror commands through inline, shortcut, sticky or toolbar accelerators for productivity."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ],
+      "evidence": [
+        {
+          "level": "CROSS_PROJECT_VERIFIED",
+          "refs": [
+            "docs/research/GLOBAL_PRODUCT_STANDARD_EVIDENCE_2026-09-19.md#7-button-action-hierarchy",
+            "docs/FREEPASS_PRODUCT_UI_PROFILE.md"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "navigation.bottom-nav",
+      "family": "navigation",
+      "title": "Bottom navigation",
+      "kind": "component",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "CONTROL",
+        "RESPONSIVE"
+      ],
+      "required_states": [
+        "idle",
+        "current",
+        "disabled"
+      ],
+      "rules": [
+        "Used for top-level destinations, not per-page task CTAs.",
+        "Safe-area padding is mandatory on edge-to-edge mobile layouts."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ]
+    },
+    {
+      "id": "navigation.breadcrumb",
+      "family": "navigation",
+      "title": "Breadcrumb",
+      "kind": "component",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "CONTROL",
+        "I18N"
+      ],
+      "required_states": [
+        "default",
+        "current"
+      ],
+      "rules": [
+        "Represents hierarchy, not history; current location is programmatically exposed."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ]
+    },
+    {
+      "id": "navigation.header",
+      "family": "navigation",
+      "title": "App or page header",
+      "kind": "surface",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "RESPONSIVE",
+        "I18N"
+      ],
+      "required_states": [
+        "default",
+        "scrolled"
+      ],
+      "rules": [
+        "On mobile, header is informational by default: brand, title, context, progress and passive status.",
+        "On mobile, workflow-changing task CTAs do not move into the header merely to save space.",
+        "On web, a utility/action toolbar may coexist with the header when it accelerates canonical commands without forking workflow semantics."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ]
+    },
+    {
+      "id": "navigation.pagination",
+      "family": "navigation",
+      "title": "Pagination",
+      "kind": "component",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "CONTROL",
+        "DATA_SURFACE"
+      ],
+      "required_states": [
+        "first",
+        "middle",
+        "last",
+        "loading"
+      ],
+      "rules": [
+        "Current page is exposed and unavailable directions are disabled.",
+        "Changing page preserves relevant filters and query context."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ]
+    },
+    {
+      "id": "navigation.restore",
+      "family": "navigation",
+      "title": "Back and state restore",
+      "kind": "pattern",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "ASYNC_WRITE",
+        "RESPONSIVE"
+      ],
+      "required_states": [
+        "restoring",
+        "restored",
+        "fallback"
+      ],
+      "rules": [
+        "Back restores meaningful prior query, filter, scroll and draft state.",
+        "Fallback never silently discards unsaved work."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ]
+    },
+    {
+      "id": "navigation.segmented",
+      "family": "navigation",
+      "title": "Segmented control",
+      "kind": "component",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "CONTROL",
+        "DATA_SURFACE"
+      ],
+      "required_states": [
+        "unselected",
+        "selected",
+        "disabled",
+        "focus-visible"
+      ],
+      "rules": [
+        "A segmented control selects a value or view mode within one surface; it does not replace tabs that switch task content.",
+        "Exactly one segment is selected at any time and the selection is exposed semantically (radio group or tablist). State is carried by a subtle surface tint, text colour, weight and an indicator glyph — not by border or shadow, and never by colour alone (FreePass product profile 4: borderless controls; keyboard focus-visible outline is the exception and stays).",
+        "Segment count stays small enough to render without scrolling at 360px; otherwise use a select."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "state-not-colour-only",
+        "mobile-desktop"
+      ]
+    },
+    {
+      "id": "navigation.stepper",
+      "family": "navigation",
+      "title": "Stepper or wizard",
+      "kind": "workflow",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "CONTROL",
+        "PAGE_ACTION",
+        "RESPONSIVE"
+      ],
+      "required_states": [
+        "current",
+        "complete",
+        "error",
+        "disabled"
+      ],
+      "rules": [
+        "Back, Next and Complete belong to the bottom action area.",
+        "Single-choice auto-advance omits a redundant Next button."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ]
+    },
+    {
+      "id": "navigation.tabs",
+      "family": "navigation",
+      "title": "Tabs",
+      "kind": "component",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "CONTROL",
+        "RESPONSIVE"
+      ],
+      "required_states": [
+        "idle",
+        "focused",
+        "selected",
+        "disabled"
+      ],
+      "rules": [
+        "Implements APG tab semantics including Arrow, Home and End keys.",
+        "Selected and focused are distinct states.",
+        "Automatic activation is allowed only when the panel is available without noticeable latency; latency or network-bound tabs use explicit Enter/Space activation.",
+        "Moving focus between tabs does not itself save data, launch an external action or trigger another business side effect."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ],
+      "evidence": [
+        {
+          "level": "PLATFORM_CONSENSUS",
+          "refs": [
+            "https://www.w3.org/WAI/ARIA/apg/patterns/tabs/",
+            "docs/research/GLOBAL_PRODUCT_STANDARD_EVIDENCE_2026-09-19.md#10-tabs"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "overlay.bottom-sheet",
+      "family": "overlay",
+      "title": "Bottom sheet",
+      "kind": "component",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "OVERLAY",
+        "RESPONSIVE"
+      ],
+      "required_states": [
+        "closed",
+        "open",
+        "expanded"
+      ],
+      "rules": [
+        "Preferred mobile secondary action or filter surface when it avoids top-header CTAs.",
+        "Gesture dismissal has a button and keyboard equivalent."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ]
+    },
+    {
+      "id": "overlay.dialog",
+      "family": "overlay",
+      "title": "Modal dialog",
+      "kind": "component",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "OVERLAY",
+        "RESPONSIVE"
+      ],
+      "required_states": [
+        "closed",
+        "open",
+        "busy",
+        "error"
+      ],
+      "rules": [
+        "Use only for a focused task that must be completed or dismissed before continuing."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ]
+    },
+    {
+      "id": "overlay.drawer",
+      "family": "overlay",
+      "title": "Drawer",
+      "kind": "component",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "OVERLAY",
+        "RESPONSIVE"
+      ],
+      "required_states": [
+        "closed",
+        "open"
+      ],
+      "rules": [
+        "Use for supplementary navigation or context, not hidden mandatory form steps.",
+        "Focus and scroll locking match explicit modal or non-modal intent."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ]
+    },
+    {
+      "id": "overlay.tooltip",
+      "family": "overlay",
+      "title": "Tooltip",
+      "kind": "component",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "CONTROL"
+      ],
+      "required_states": [
+        "hidden",
+        "visible"
+      ],
+      "rules": [
+        "Supplementary only; essential instructions never exist only in a tooltip.",
+        "Available on keyboard focus as well as pointer hover."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ]
+    },
+    {
+      "id": "system.bidi",
+      "family": "system",
+      "title": "Bidirectional and mixed-direction text",
+      "kind": "pattern",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "I18N",
+        "RESPONSIVE"
+      ],
+      "required_states": [
+        "ltr",
+        "rtl",
+        "mixed-content"
+      ],
+      "rules": [
+        "Use logical start/end layout semantics so direction changes do not require a second component implementation.",
+        "Isolate user-entered, identifier, phone, email, URL and external-source values when their direction may differ from surrounding UI.",
+        "Mirroring is semantic rather than blanket visual reversal; brand marks, media controls and direction-invariant symbols are not mirrored automatically."
+      ],
+      "verification": [
+        "semantic-contract",
+        "rtl-layout",
+        "mixed-bidi",
+        "mobile-desktop"
+      ],
+      "evidence": [
+        {
+          "level": "NORMATIVE",
+          "refs": [
+            "https://www.w3.org/International/docs/bp-html-bidi/",
+            "https://www.w3.org/International/articles/lang-bidi-use-cases/"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "system.contrast-preference",
+      "family": "system",
+      "title": "Contrast and forced-color preference",
+      "kind": "pattern",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "CONTROL",
+        "RESPONSIVE"
+      ],
+      "required_states": [
+        "standard",
+        "high-contrast",
+        "forced-colors"
+      ],
+      "rules": [
+        "Controls, focus, selection, errors and status remain distinguishable in high-contrast or forced-color environments.",
+        "Do not rely on authored background images, subtle shadows or color alone for required boundaries or meaning.",
+        "System color substitution must not erase focus indicators or interactive affordances."
+      ],
+      "verification": [
+        "semantic-contract",
+        "high-contrast",
+        "forced-colors",
+        "focus-visible"
+      ],
+      "evidence": [
+        {
+          "level": "NORMATIVE",
+          "refs": [
+            "https://www.w3.org/TR/WCAG22/"
+          ]
+        },
+        {
+          "level": "PLATFORM_CONSENSUS",
+          "refs": [
+            "https://developer.apple.com/design/human-interface-guidelines/accessibility"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "system.focus",
+      "family": "system",
+      "title": "Focus management",
+      "kind": "pattern",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "CONTROL",
+        "OVERLAY",
+        "RESPONSIVE"
+      ],
+      "required_states": [
+        "visible",
+        "restored",
+        "blocked"
+      ],
+      "rules": [
+        "Focus is visible, logical and not obscured by sticky or fixed content."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ],
+      "evidence": [
+        {
+          "level": "NORMATIVE",
+          "refs": [
+            "https://www.w3.org/WAI/WCAG22/Understanding/focus-not-obscured-minimum",
+            "https://www.w3.org/WAI/ARIA/apg/"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "system.input-method",
+      "family": "system",
+      "title": "Input method independence",
+      "kind": "pattern",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "CONTROL",
+        "FORM",
+        "RESPONSIVE",
+        "I18N"
+      ],
+      "required_states": [
+        "touch",
+        "pointer",
+        "keyboard",
+        "assistive",
+        "ime-composition"
+      ],
+      "rules": [
+        "Touch, pointer, keyboard and assistive input can reach the same business outcome unless the task intrinsically requires a specific modality.",
+        "Text input preserves IME composition and does not submit, validate destructively or auto-advance on intermediate composition events.",
+        "Virtual keyboard, handwriting, dictation or voice input must not hide the focused field or bottom action boundary."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "ime-composition",
+        "virtual-keyboard"
+      ],
+      "evidence": [
+        {
+          "level": "NORMATIVE",
+          "refs": [
+            "https://www.w3.org/TR/WCAG22/"
+          ]
+        },
+        {
+          "level": "CROSS_PROJECT_VERIFIED",
+          "refs": [
+            "docs/coordination/FREEPASS_SALES_RUNTIME_LEARNING.md"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "system.locale-formatting",
+      "family": "system",
+      "title": "Locale-aware value formatting",
+      "kind": "pattern",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "I18N"
+      ],
+      "required_states": [
+        "default-locale",
+        "alternate-locale",
+        "custom-preference"
+      ],
+      "rules": [
+        "Canonical date, time, number, money, percentage and unit values remain locale-neutral; only presentation and parsing are localized.",
+        "Currency code, time zone, calendar, hour cycle and numbering system are explicit when ambiguity would change meaning.",
+        "Use platform internationalization APIs or CLDR-derived data instead of hand-coded separators, symbol placement, date order or unit strings."
+      ],
+      "verification": [
+        "semantic-contract",
+        "locale-matrix",
+        "round-trip-parsing",
+        "failure-path"
+      ],
+      "evidence": [
+        {
+          "level": "NORMATIVE",
+          "refs": [
+            "https://cldr.unicode.org/",
+            "https://www.unicode.org/reports/tr35/"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "system.localization",
+      "family": "system",
+      "title": "Localization and text direction",
+      "kind": "pattern",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "I18N",
+        "RESPONSIVE"
+      ],
+      "required_states": [
+        "ltr",
+        "rtl",
+        "localized"
+      ],
+      "rules": [
+        "Layout supports long translated copy, RTL direction and locale formatting without changing business behavior."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ],
+      "evidence": [
+        {
+          "level": "NORMATIVE",
+          "refs": [
+            "https://www.unicode.org/reports/tr35/",
+            "https://www.w3.org/International/"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "system.motion-preference",
+      "family": "system",
+      "title": "Motion preference",
+      "kind": "pattern",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "RESPONSIVE"
+      ],
+      "required_states": [
+        "full-motion",
+        "reduced-motion"
+      ],
+      "rules": [
+        "Honor the platform reduced-motion preference for non-essential animation and large motion effects.",
+        "State, progress, hierarchy and completion meaning remain understandable when motion is reduced or removed.",
+        "Animation is never the only channel for status or instruction."
+      ],
+      "verification": [
+        "semantic-contract",
+        "reduced-motion",
+        "failure-path",
+        "mobile-desktop"
+      ],
+      "evidence": [
+        {
+          "level": "PLATFORM_CONSENSUS",
+          "refs": [
+            "https://developer.apple.com/design/human-interface-guidelines/accessibility"
+          ]
+        }
       ]
     },
     {
@@ -2379,6 +2436,43 @@
           "level": "CROSS_PROJECT_VERIFIED",
           "refs": [
             "docs/ADAPTIVE_WEB_STANDARD_2026-09-21.md"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "system.reflow-orientation",
+      "family": "system",
+      "title": "Zoom, reflow and orientation",
+      "kind": "pattern",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "RESPONSIVE",
+        "I18N"
+      ],
+      "required_states": [
+        "portrait",
+        "landscape",
+        "zoomed",
+        "reflowed"
+      ],
+      "rules": [
+        "Reading order and task order remain stable when viewport orientation or layout width changes.",
+        "At high zoom or text scaling, ordinary one-dimensional content reflows instead of requiring both horizontal and vertical scrolling.",
+        "Sticky or fixed regions do not cover focused controls, validation messages or the primary action after reflow."
+      ],
+      "verification": [
+        "semantic-contract",
+        "200%-zoom",
+        "400%-reflow",
+        "portrait-landscape"
+      ],
+      "evidence": [
+        {
+          "level": "NORMATIVE",
+          "refs": [
+            "https://www.w3.org/WAI/WCAG22/Understanding/reflow.html",
+            "https://www.w3.org/WAI/WCAG22/Understanding/orientation.html"
           ]
         }
       ]
@@ -2444,75 +2538,6 @@
       ]
     },
     {
-      "id": "system.localization",
-      "family": "system",
-      "title": "Localization and text direction",
-      "kind": "pattern",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "I18N",
-        "RESPONSIVE"
-      ],
-      "required_states": [
-        "ltr",
-        "rtl",
-        "localized"
-      ],
-      "rules": [
-        "Layout supports long translated copy, RTL direction and locale formatting without changing business behavior."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ],
-      "evidence": [
-        {
-          "level": "NORMATIVE",
-          "refs": [
-            "https://www.unicode.org/reports/tr35/",
-            "https://www.w3.org/International/"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "system.focus",
-      "family": "system",
-      "title": "Focus management",
-      "kind": "pattern",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "CONTROL",
-        "OVERLAY",
-        "RESPONSIVE"
-      ],
-      "required_states": [
-        "visible",
-        "restored",
-        "blocked"
-      ],
-      "rules": [
-        "Focus is visible, logical and not obscured by sticky or fixed content."
-      ],
-      "verification": [
-        "semantic-contract",
-        "keyboard-or-equivalent",
-        "mobile-desktop",
-        "failure-path"
-      ],
-      "evidence": [
-        {
-          "level": "NORMATIVE",
-          "refs": [
-            "https://www.w3.org/WAI/WCAG22/Understanding/focus-not-obscured-minimum",
-            "https://www.w3.org/WAI/ARIA/apg/"
-          ]
-        }
-      ]
-    },
-    {
       "id": "system.safe-area-keyboard",
       "family": "system",
       "title": "Safe-area and virtual keyboard",
@@ -2540,77 +2565,6 @@
           "refs": [
             "https://developer.apple.com/design/human-interface-guidelines/",
             "docs/research/GLOBAL_PRODUCT_STANDARD_EVIDENCE_2026-09-19.md"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "system.locale-formatting",
-      "family": "system",
-      "title": "Locale-aware value formatting",
-      "kind": "pattern",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "I18N"
-      ],
-      "required_states": [
-        "default-locale",
-        "alternate-locale",
-        "custom-preference"
-      ],
-      "rules": [
-        "Canonical date, time, number, money, percentage and unit values remain locale-neutral; only presentation and parsing are localized.",
-        "Currency code, time zone, calendar, hour cycle and numbering system are explicit when ambiguity would change meaning.",
-        "Use platform internationalization APIs or CLDR-derived data instead of hand-coded separators, symbol placement, date order or unit strings."
-      ],
-      "verification": [
-        "semantic-contract",
-        "locale-matrix",
-        "round-trip-parsing",
-        "failure-path"
-      ],
-      "evidence": [
-        {
-          "level": "NORMATIVE",
-          "refs": [
-            "https://cldr.unicode.org/",
-            "https://www.unicode.org/reports/tr35/"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "system.bidi",
-      "family": "system",
-      "title": "Bidirectional and mixed-direction text",
-      "kind": "pattern",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "I18N",
-        "RESPONSIVE"
-      ],
-      "required_states": [
-        "ltr",
-        "rtl",
-        "mixed-content"
-      ],
-      "rules": [
-        "Use logical start/end layout semantics so direction changes do not require a second component implementation.",
-        "Isolate user-entered, identifier, phone, email, URL and external-source values when their direction may differ from surrounding UI.",
-        "Mirroring is semantic rather than blanket visual reversal; brand marks, media controls and direction-invariant symbols are not mirrored automatically."
-      ],
-      "verification": [
-        "semantic-contract",
-        "rtl-layout",
-        "mixed-bidi",
-        "mobile-desktop"
-      ],
-      "evidence": [
-        {
-          "level": "NORMATIVE",
-          "refs": [
-            "https://www.w3.org/International/docs/bp-html-bidi/",
-            "https://www.w3.org/International/articles/lang-bidi-use-cases/"
           ]
         }
       ]
@@ -2652,159 +2606,319 @@
       ]
     },
     {
-      "id": "system.motion-preference",
-      "family": "system",
-      "title": "Motion preference",
-      "kind": "pattern",
+      "id": "workflow.autosave",
+      "family": "workflow",
+      "title": "Autosave",
+      "kind": "workflow",
       "adoption": "REQUIRED",
       "profiles": [
-        "RESPONSIVE"
+        "ASYNC_WRITE"
       ],
       "required_states": [
-        "full-motion",
-        "reduced-motion"
+        "idle",
+        "dirty",
+        "saving",
+        "saved",
+        "error",
+        "conflict"
       ],
       "rules": [
-        "Honor the platform reduced-motion preference for non-essential animation and large motion effects.",
-        "State, progress, hierarchy and completion meaning remain understandable when motion is reduced or removed.",
-        "Animation is never the only channel for status or instruction."
-      ],
-      "verification": [
-        "semantic-contract",
-        "reduced-motion",
-        "failure-path",
-        "mobile-desktop"
-      ],
-      "evidence": [
-        {
-          "level": "PLATFORM_CONSENSUS",
-          "refs": [
-            "https://developer.apple.com/design/human-interface-guidelines/accessibility"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "system.contrast-preference",
-      "family": "system",
-      "title": "Contrast and forced-color preference",
-      "kind": "pattern",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "CONTROL",
-        "RESPONSIVE"
-      ],
-      "required_states": [
-        "standard",
-        "high-contrast",
-        "forced-colors"
-      ],
-      "rules": [
-        "Controls, focus, selection, errors and status remain distinguishable in high-contrast or forced-color environments.",
-        "Do not rely on authored background images, subtle shadows or color alone for required boundaries or meaning.",
-        "System color substitution must not erase focus indicators or interactive affordances."
-      ],
-      "verification": [
-        "semantic-contract",
-        "high-contrast",
-        "forced-colors",
-        "focus-visible"
-      ],
-      "evidence": [
-        {
-          "level": "NORMATIVE",
-          "refs": [
-            "https://www.w3.org/TR/WCAG22/"
-          ]
-        },
-        {
-          "level": "PLATFORM_CONSENSUS",
-          "refs": [
-            "https://developer.apple.com/design/human-interface-guidelines/accessibility"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "system.reflow-orientation",
-      "family": "system",
-      "title": "Zoom, reflow and orientation",
-      "kind": "pattern",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "RESPONSIVE",
-        "I18N"
-      ],
-      "required_states": [
-        "portrait",
-        "landscape",
-        "zoomed",
-        "reflowed"
-      ],
-      "rules": [
-        "Reading order and task order remain stable when viewport orientation or layout width changes.",
-        "At high zoom or text scaling, ordinary one-dimensional content reflows instead of requiring both horizontal and vertical scrolling.",
-        "Sticky or fixed regions do not cover focused controls, validation messages or the primary action after reflow."
-      ],
-      "verification": [
-        "semantic-contract",
-        "200%-zoom",
-        "400%-reflow",
-        "portrait-landscape"
-      ],
-      "evidence": [
-        {
-          "level": "NORMATIVE",
-          "refs": [
-            "https://www.w3.org/WAI/WCAG22/Understanding/reflow.html",
-            "https://www.w3.org/WAI/WCAG22/Understanding/orientation.html"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "system.input-method",
-      "family": "system",
-      "title": "Input method independence",
-      "kind": "pattern",
-      "adoption": "REQUIRED",
-      "profiles": [
-        "CONTROL",
-        "FORM",
-        "RESPONSIVE",
-        "I18N"
-      ],
-      "required_states": [
-        "touch",
-        "pointer",
-        "keyboard",
-        "assistive",
-        "ime-composition"
-      ],
-      "rules": [
-        "Touch, pointer, keyboard and assistive input can reach the same business outcome unless the task intrinsically requires a specific modality.",
-        "Text input preserves IME composition and does not submit, validate destructively or auto-advance on intermediate composition events.",
-        "Virtual keyboard, handwriting, dictation or voice input must not hide the focused field or bottom action boundary."
+        "Debounced or background saves expose state and do not overwrite a newer revision silently."
       ],
       "verification": [
         "semantic-contract",
         "keyboard-or-equivalent",
-        "ime-composition",
-        "virtual-keyboard"
+        "mobile-desktop",
+        "failure-path"
       ],
       "evidence": [
         {
-          "level": "NORMATIVE",
+          "level": "CROSS_PROJECT_VERIFIED",
           "refs": [
-            "https://www.w3.org/TR/WCAG22/"
+            "docs/coordination/FREEPASS_SALES_RUNTIME_LEARNING.md#4-idempotent-save-semantics",
+            "docs/research/GLOBAL_PRODUCT_STANDARD_EVIDENCE_2026-09-19.md#17-async-save-idempotency"
           ]
-        },
+        }
+      ]
+    },
+    {
+      "id": "workflow.conflict",
+      "family": "workflow",
+      "title": "Concurrent edit conflict",
+      "kind": "workflow",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "ASYNC_WRITE"
+      ],
+      "required_states": [
+        "detected",
+        "reviewing",
+        "resolved",
+        "cancelled"
+      ],
+      "rules": [
+        "Never silently last-write-wins where data loss is material.",
+        "Expose base and current revisions with a deterministic resolution path."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ]
+    },
+    {
+      "id": "workflow.delete",
+      "family": "workflow",
+      "title": "Delete",
+      "kind": "workflow",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "PAGE_ACTION",
+        "ASYNC_WRITE",
+        "OVERLAY"
+      ],
+      "required_states": [
+        "idle",
+        "confirming",
+        "deleting",
+        "succeeded",
+        "failed"
+      ],
+      "rules": [
+        "Confirmation names object and consequence; restore semantics are explicit if supported."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ]
+    },
+    {
+      "id": "workflow.draft",
+      "family": "workflow",
+      "title": "Draft preservation",
+      "kind": "workflow",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "ASYNC_WRITE"
+      ],
+      "required_states": [
+        "clean",
+        "dirty",
+        "saving",
+        "saved",
+        "error"
+      ],
+      "rules": [
+        "Draft is bound to a stable work or entity key and is never confused with server completion."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ]
+    },
+    {
+      "id": "workflow.explicit-save",
+      "family": "workflow",
+      "title": "Explicit save",
+      "kind": "workflow",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "PAGE_ACTION",
+        "ASYNC_WRITE"
+      ],
+      "required_states": [
+        "idle",
+        "dirty",
+        "saving",
+        "saved",
+        "error",
+        "conflict"
+      ],
+      "rules": [
+        "Save is bottom-positioned and success appears only after authoritative persistence.",
+        "A disabled button is only interaction feedback; duplicate-write integrity is enforced outside the visual control."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ],
+      "evidence": [
         {
           "level": "CROSS_PROJECT_VERIFIED",
           "refs": [
-            "docs/coordination/FREEPASS_SALES_RUNTIME_LEARNING.md"
+            "docs/coordination/FREEPASS_SALES_RUNTIME_LEARNING.md#4-idempotent-save-semantics",
+            "docs/research/GLOBAL_PRODUCT_STANDARD_EVIDENCE_2026-09-19.md#17-async-save-idempotency"
           ]
         }
+      ]
+    },
+    {
+      "id": "workflow.offline",
+      "family": "workflow",
+      "title": "Offline or degraded network",
+      "kind": "workflow",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "ASYNC_WRITE",
+        "ADAPTER"
+      ],
+      "required_states": [
+        "online",
+        "offline",
+        "queued",
+        "reconnecting",
+        "conflict"
+      ],
+      "rules": [
+        "Queued writes are not displayed as completed.",
+        "Reconnect reconciles by stable IDs and revisions."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ]
+    },
+    {
+      "id": "workflow.optimistic",
+      "family": "workflow",
+      "title": "Optimistic update",
+      "kind": "workflow",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "ASYNC_WRITE"
+      ],
+      "required_states": [
+        "pending",
+        "confirmed",
+        "rolled-back",
+        "conflict"
+      ],
+      "rules": [
+        "Optimistic UI stays distinguishable until authoritative confirmation when failure matters.",
+        "Rollback restores prior known state without losing unrelated edits."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ]
+    },
+    {
+      "id": "workflow.permission",
+      "family": "workflow",
+      "title": "Permission and read-only",
+      "kind": "pattern",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "CONTROL",
+        "DATA_SURFACE"
+      ],
+      "required_states": [
+        "authorized",
+        "read-only",
+        "forbidden",
+        "unknown"
+      ],
+      "rules": [
+        "Hide or disable according to policy without exposing unavailable sensitive data.",
+        "Unknown permission fails closed for mutation."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ]
+    },
+    {
+      "id": "workflow.session",
+      "family": "workflow",
+      "title": "Session expiry and re-auth",
+      "kind": "workflow",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "OVERLAY",
+        "ASYNC_WRITE"
+      ],
+      "required_states": [
+        "active",
+        "expiring",
+        "expired",
+        "reauthenticating",
+        "restored"
+      ],
+      "rules": [
+        "Preserve recoverable draft state across re-authentication.",
+        "Protected mutations require renewed authority after expiry."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ]
+    },
+    {
+      "id": "workflow.submit",
+      "family": "workflow",
+      "title": "Submit or complete",
+      "kind": "workflow",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "PAGE_ACTION",
+        "ASYNC_WRITE"
+      ],
+      "required_states": [
+        "ready",
+        "blocked",
+        "submitting",
+        "succeeded",
+        "failed"
+      ],
+      "rules": [
+        "Submission is a distinct boundary from draft save and names the externally visible effect."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
+      ]
+    },
+    {
+      "id": "workflow.undo",
+      "family": "workflow",
+      "title": "Undo",
+      "kind": "workflow",
+      "adoption": "REQUIRED",
+      "profiles": [
+        "ASYNC_WRITE"
+      ],
+      "required_states": [
+        "available",
+        "undoing",
+        "restored",
+        "expired",
+        "failed"
+      ],
+      "rules": [
+        "Undo window and scope are explicit and never imply reversibility beyond backend capability."
+      ],
+      "verification": [
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "mobile-desktop",
+        "failure-path"
       ]
     }
   ]

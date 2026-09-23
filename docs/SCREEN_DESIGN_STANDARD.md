@@ -15,6 +15,81 @@ Official references:
 - https://www.w3.org/WAI/ARIA/apg/patterns/
 - https://developer.apple.com/design/human-interface-guidelines/buttons
 
+## Simple, minimal, still unambiguous (border policy)
+
+Concept, set by the owner on 2026-09-23: *simple and minimal — but the surfaces must still be distinguishable, the states must still show, and the functionality must stay complete. Not "line" or "no line", but how much can be taken away while the thing still works.*
+
+So the rule is a removal test, not a taste. Take the border, shadow, divider or box away, then check three things:
+
+1. **Is the surface still distinguishable?** (surface tint page ↔ surface, spacing, text hierarchy)
+2. **Is every state still readable?** (selected, pressed, disabled, invalid, busy — at least two of tint, weight, glyph or text; never colour alone)
+3. **Is the capability unchanged?** (same commands, same keyboard path)
+
+Keep the element only when one of those three fails. The table below is the result of that test, not a preference:
+
+| Surface | Line | Why |
+| --- | --- | --- |
+| text input, textarea, search, select/dropdown, combobox, date, file drop, data-grid cell rules | **keep** | nothing else says "a value goes here"; test (1) fails without it |
+| buttons, button-like links, chips, badges, toggles, segmented controls, tabs | none | tint + weight + icon carry both identity and state |
+| cards, select cards, previews, panels, toolbars, app bars, bottom action bars, dialogs, alerts | none | a box is still a box without a line: surface tint and spacing separate it from the page |
+| table row rules, list separators | allowed | they help *read data* — never to express selection or disabled state |
+| keyboard `:focus-visible` outline | **mandatory** | not a border for this rule; never suppressed |
+| forced-colors / high contrast | system decides | the product does not suppress restored system borders |
+
+## Surface scale — what replaces the line
+
+Removing borders moves the whole job of "this is a separate object" onto surface colour. So the surface steps are measured, not chosen by eye. `scripts/measure-surface-contrast.mjs` computes WCAG 2.2 contrast from `design-system/tokens.json`, writes `docs/evidence/SURFACE-CONTRAST.json`, and `test/design-surface-scale.test.mjs` recomputes it on every run — a token edited by eye turns the suite red.
+
+| Token | Value | Sits on | Used for |
+| --- | --- | --- | --- |
+| `--color-bg` | `#eaeef4` | — | the page canvas |
+| `--color-surface` | `#ffffff` | canvas, **1.16:1** | cards, panels, app bar, toolbars, dialogs |
+| `--color-surface-sunken` | `#dfe5ee` | surface, **1.27:1** | chip at rest, segmented track, table head, wells |
+| `--color-selected-surface` | `#e3ecfd` | surface, **1.19:1** | the selected chip, tab, card |
+| `--color-scrim` | `rgba(16,24,40,.45)` | — | dialogs and sheets separate from what is under them by a scrim, never a border |
+
+### State ladder
+
+A borderless control still has to answer three questions at a glance: is this a box, is the pointer on it, is it chosen. Each rung is measured, and each is a different *axis* so hover and selection can never be confused — hover is a neutral layer, selection is a blue fill.
+
+| Rung | Fill | Against the rung below |
+| --- | --- | --- |
+| rest, on a white surface | `--color-surface-subtle` `#f2f6fb` | **1.09:1** on surface — just enough to say "a box" |
+| rest, on the canvas (mobile) | `--color-surface` `#ffffff` | 1.16:1 on canvas |
+| hover | rest + `--color-hover-layer` (8%, M3 parity) | **1.17:1** over rest |
+| selected | `--color-selected-surface` `#dbe9fd` + weight + Lucide check | **1.13:1** over rest |
+| selected + hover | selected + hover layer | **1.16:1** over selected |
+| disabled | `--color-disabled-surface` + muted text | 1.14:1 over rest, two signals |
+
+Selected text is `--color-primary-hover`, not `--color-primary`: on the deeper selected fill the lighter blue measures 4.40:1, under the 4.5 floor.
+
+Every rendered border in the system is swept in the browser and recorded in [BORDER-SWEEP.json](evidence/BORDER-SWEEP.json) — only inputs, the file drop zone, table rules and list separators draw a line; twenty other surfaces were cleared. [ui-state-matrix.html](../examples/ui-state-matrix.html) renders the whole ladder on one page so the ladder can be checked by eye without hunting through a product screen.
+
+Floors the measurement enforces: a surface that must read as its own object ≥ **1.12:1** against the surface under it; text and muted text ≥ **4.5:1** on every surface; the focus ring and the primary action ≥ **3:1** on every surface (WCAG 1.4.11).
+
+Two consequences worth stating, because both were found by measuring rather than by looking:
+
+- Selected vs unselected is only **1.07:1** — deliberately quiet. That is why selection is never carried by tint alone: weight and the Lucide check change with it.
+- Deepening the canvas pushed the old focus colour `#dc6803` to **2.99:1**, under the 3:1 floor. The focus ring is now `#b54708`, which measures 4.66 on canvas, 5.43 on surface and 4.29 on the sunken step.
+
+`design-system/tokens.runtime.css` is the live projection of the token SSOT and is what screens load. `design-system/tokens.css` is the older projection frozen by the 2026-09-14 browser receipt (`docs/evidence/UI-PATTERNS-BROWSER.json`); it keeps the pre-scale values until that receipt is re-run.
+
+## Icons — one set, Lucide
+
+Decided by the owner on 2026-09-23: every icon and every check mark comes from **Lucide**. No emoji, no icon font, no second set, no hand-drawn glyph.
+
+- The canonical geometry is recorded in `design-system/icons.lucide.json` (ISC licence; the attribution travels with any redistribution). Adding an icon means recording it there first.
+- Markup inlines the recorded `svg_body` on `<svg class="ui-icon" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">`.
+- Marks that CSS generates — the selected chip, the pressed toggle — use the matching `--icon-*` mask in `runtime-v2.css` with `background-color: currentColor`, so the mark is the same drawing, not a text character that shifts with font or locale.
+- An icon is 1em and takes its colour from `currentColor`: it follows tint and state instead of carrying its own palette.
+- A decorative icon is `aria-hidden` and never the only carrier of meaning; an icon-only control has its own accessible name.
+
+`test/ui-shell-samples.test.mjs` fails when a sample's SVG body drifts from the record, when a generated mark stops using the Lucide mask, or when a stray glyph appears.
+
+Why this is allowed at all: WCAG 2.2 SC 1.4.11 requires 3:1 only for what is *needed to identify* a control, and its Understanding text states that a control carrying visible text or a sufficiently contrasting icon does not need a boundary. Where each of these decisions stands against Material 3, Apple HIG, Fluent 2, Primer, Carbon and shadcn — including the two places we deliberately deviate and the one place this review made us change the design — is recorded in [TREND_AND_CONCEPT_REVIEW_2026-09-23.md](design/TREND_AND_CONCEPT_REVIEW_2026-09-23.md).
+
+Machine form: `design-system/interaction.contract.json#rules.border_policy` and `#rules.icon_policy`; enforced in `design-system/runtime-v2.css` and checked by `test/ui-shell-samples.test.mjs`. `design-system/components.css` is pinned by the 2026-09-14 browser receipt and is overridden from runtime-v2, never edited.
+
 ## Tokens
 
 `design-system/tokens.css` is the shared visual contract. Components use tokens for color, spacing, radius, typography, focus and control height. Product pages may extend tokens but do not hard-code a second competing system.

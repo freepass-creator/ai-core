@@ -41,7 +41,10 @@
         "file_image_ui",
         "status_feedback",
         "input_method",
-        "portable_task_panel"
+        "portable_task_panel",
+        "selection_state",
+        "border_policy",
+        "icon_policy"
       ],
       "properties": {
         "action_placement": {
@@ -81,6 +84,15 @@
           "$ref": "#/$defs/rule"
         },
         "portable_task_panel": {
+          "$ref": "#/$defs/rule"
+        },
+        "selection_state": {
+          "$ref": "#/$defs/rule"
+        },
+        "border_policy": {
+          "$ref": "#/$defs/rule"
+        },
+        "icon_policy": {
           "$ref": "#/$defs/rule"
         }
       }

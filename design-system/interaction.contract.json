@@ -1,6 +1,6 @@
 {
   "contract": "ai-core-ui-interaction-contract/v1",
-  "version": "1.3.1",
+  "version": "1.6.0",
   "feature_registry": "registry/ui-ux-features.json",
   "constitution": "docs/UI_UX_CONSTITUTION.md",
   "rules": {
@@ -290,6 +290,98 @@
         "bulk-command-binding",
         "shortcut-command-binding",
         "utility-toolbar-command-binding"
+      ]
+    },
+    "selection_state": {
+      "feature_refs": [
+        "form.chip",
+        "action.toggle",
+        "navigation.segmented",
+        "data.select-card",
+        "navigation.tabs",
+        "form.radio",
+        "form.checkbox",
+        "form.switch"
+      ],
+      "invariants": [
+        "Selected, pressed and disabled are exposed through state semantics (aria-pressed, aria-selected, checked, disabled), never by colour or weight alone.",
+        "Buttons, button-like links, chips and badges do not use border or shadow as their state language; state is carried by surface tint, text colour, weight and an indicator glyph. Input borders and structural card separators are outside this rule, and the keyboard focus-visible outline is mandatory.",
+        "A selectable control keeps one accessible name across states; the name does not flip to the opposite action when the state changes.",
+        "Every selectable set declares single or multiple selection, and a required single choice starts from an explicit unselected state.",
+        "Selection survives refresh and retry only when bound to a stable entity/work key; it is never silently reassigned.",
+        "Focus-visible styling exists for every selectable control and is not removed when a selected style is applied."
+      ],
+      "verification": [
+        "state-not-colour-only",
+        "semantic-contract",
+        "keyboard-or-equivalent",
+        "single-choice-auto-advance",
+        "stable-identity",
+        "borderless-control-state"
+      ]
+    },
+    "border_policy": {
+      "feature_refs": [
+        "action.primary",
+        "action.secondary",
+        "action.icon",
+        "action.link",
+        "action.toggle",
+        "form.chip",
+        "navigation.segmented",
+        "navigation.tabs",
+        "data.select-card",
+        "form.text",
+        "form.select",
+        "form.search",
+        "form.textarea",
+        "feedback.alert",
+        "overlay.dialog"
+      ],
+      "invariants": [
+        "The product is simple and minimal: a screen carries the least chrome that still does the job. Before keeping a border, shadow, divider or box, remove it and check the surface is still distinguishable and its state still readable; keep it only when that check fails.",
+        "A line survives that check only where nothing else can say a value goes here: text input, textarea, search field, select/dropdown, combobox, date and file inputs, and data-grid cell rules.",
+        "Command and container surfaces carry no border and no shadow: buttons and button-like links, chips, badges, toggles, segmented controls, tabs, cards, panels, toolbars, app bars, bottom action bars, dialogs and alerts.",
+        "Containers are boxes and boxes do not need a line either: cards, select cards, badges, previews and panels are separated by surface tint and spacing. A file drop zone keeps its dashed line because it is a place a value is dropped.",
+        "Minimal never means ambiguous. A borderless surface stays distinguishable through surface tint (page vs surface), spacing and text hierarchy, and every state (selected, pressed, disabled, invalid, busy) stays readable through at least two of tint, weight, glyph or text — never colour alone.",
+        "Removing chrome never removes capability: the same states, commands and keyboard paths remain available on the plainer surface.",
+        "A divider is allowed only where it helps read data (table row rules, list separators) and never to express selection, pressed or disabled state.",
+        "The keyboard focus-visible outline is mandatory everywhere and is not a border for the purpose of this rule.",
+        "Forced-colors and high-contrast modes may restore system borders; the product does not suppress them."
+      ],
+      "verification": [
+        "minimal-but-distinguishable",
+        "border-policy-input-only",
+        "borderless-control-state",
+        "state-not-colour-only",
+        "forced-colors"
+      ]
+    },
+    "icon_policy": {
+      "feature_refs": [
+        "action.icon",
+        "action.primary",
+        "action.secondary",
+        "form.chip",
+        "action.toggle",
+        "navigation.segmented",
+        "navigation.tabs",
+        "data.select-card",
+        "feedback.alert"
+      ],
+      "invariants": [
+        "Every icon in the product comes from one set: Lucide. No emoji, no icon font, no second set, no hand-drawn glyph.",
+        "The canonical geometry lives in design-system/icons.lucide.json. Markup inlines the recorded svg_body; CSS-generated marks use the matching --icon-<name> mask in design-system/runtime-v2.css. Both must carry the same recorded geometry.",
+        "Adding an icon means recording it in design-system/icons.lucide.json first; a screen may not introduce an unrecorded glyph.",
+        "An icon inherits the text size (1em box, stroke-width 2 on a 24 viewBox) and takes its colour from currentColor, so it follows tint and state instead of carrying its own palette.",
+        "A decorative icon is aria-hidden and never the only carrier of meaning; an icon-only control has its own accessible name and the state stays readable without the icon.",
+        "Lucide is ISC licensed; the attribution recorded in design-system/icons.lucide.json travels with any redistribution."
+      ],
+      "verification": [
+        "icon-set-single-source",
+        "icon-geometry-matches-record",
+        "no-emoji-glyph",
+        "icon-accessible-name"
       ]
     }
   }

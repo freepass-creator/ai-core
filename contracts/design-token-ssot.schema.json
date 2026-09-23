@@ -321,6 +321,27 @@
           }
         }
       }
+    },
+    "modes": {
+      "type": "object",
+      "description": "모드별 토큰 투영(현재: dark). 밝은 값을 뒤집는 게 아니라 다시 짠 값이며, 대비는 scripts/measure-surface-contrast.mjs 가 잰다.",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "css_variables"
+        ],
+        "properties": {
+          "note": {
+            "type": "string"
+          },
+          "css_variables": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      }
     }
   }
 }
