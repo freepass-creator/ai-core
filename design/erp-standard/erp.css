@@ -333,3 +333,8 @@
 .erp-searchbar .erp-chip { text-decoration: none; }
 /* 분류 드롭다운 — 계약 · 정산 · 실적 조회에서만, 검색창 앞에 1~2개 */
 .erp-dd { flex: none; width: auto; min-width: 120px; height: var(--erp-btn-h); }
+/* 한 줄 처리 폼 — 상세의 «처리» 카드: 값 한 칸 + 그 값을 바꾸는 단추(차량번호 저장 · 인도 완료 · 취소 …) */
+.erp-inline-form { display: flex; align-items: flex-end; gap: var(--erp-sp-2); padding: var(--erp-sp-3) 0; border-bottom: 1px solid var(--erp-color-line-row); }
+.erp-inline-form:first-child { padding-top: 0; }
+.erp-inline-form:last-child { border-bottom: 0; padding-bottom: 0; }
+.erp-inline-form .erp-field { flex: 1; }

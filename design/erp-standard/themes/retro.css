@@ -150,3 +150,4 @@
 [data-theme="retro"] .erp-facet-opt { border: 1.5px solid var(--erp-color-line-strong); }
 [data-theme="retro"] .erp-facet-opt[aria-pressed="true"] { background: var(--erp-color-nav-active); color: var(--erp-color-text); border-color: var(--erp-color-line-strong); }
 [data-theme="retro"] .erp-facet-title { font-family: var(--retro-font-display); }
+[data-theme="retro"] .erp-inline-form { border-bottom: 1px dashed var(--erp-color-line); }
