@@ -1,6 +1,7 @@
 :root {
   --color-bg: #eaeef4;
   --color-surface: #ffffff;
+  --color-surface-subtle: #f2f6fb;
   --color-surface-sunken: #dfe5ee;
   --color-text: #172033;
   --color-muted: #5b6475;
@@ -16,7 +17,7 @@
   --color-info-surface: #eef3fb;
   --color-error-surface: #fff1f0;
   --color-disabled-surface: #e4e7ec;
-  --color-selected-surface: #e3ecfd;
+  --color-selected-surface: #dbe9fd;
   --color-scrim: rgba(16, 24, 40, 0.45);
   --color-hover-layer: rgba(23, 32, 51, 0.08);
   --color-pressed-layer: rgba(23, 32, 51, 0.10);

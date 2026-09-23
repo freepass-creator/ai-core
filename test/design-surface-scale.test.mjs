@@ -43,7 +43,7 @@ test('★면 대비가 바닥을 지킨다 — 17 짝 전부 다시 계산해서
 
 test('선을 걷어낸 자리를 «면»이 대신하고 있다 — 규칙이 새 토큰을 실제로 쓴다', () => {
   const css = read('design-system/runtime-v2.css');
-  assert.match(css, /\.ui-chip \{[^}]*background: var\(--color-surface-sunken\)/, '칩 기본 면이 우묵한 면이어야 한다');
+  assert.match(css, /\.ui-chip \{[^}]*background: var\(--color-surface-subtle\)/, '칩 기본 면은 «옅은 면» 이다 — 회색으로 내리지 않는다');
   assert.match(css, /\.ui-chip\[aria-pressed="true"\][^{]*\{[^}]*var\(--color-selected-surface\)/, '선택된 칩이 선택 면을 써야 한다');
   assert.match(css, /\.ui-select-card:has\(input:checked\) \{[^}]*var\(--color-selected-surface\)/, '선택된 카드가 선택 면을 써야 한다');
   assert.match(css, /::backdrop[\s\S]{0,80}var\(--color-scrim\)/, '겹친 면은 가림막으로 갈라야 한다');
@@ -107,7 +107,7 @@ test('밖의 기준과 대조한 기록이 정본 옆에 남아 있다 — 「�
   /** 보조 버튼은 흰 면 위의 흰 버튼이 아니다 — 우묵한 면(tonal)으로 읽힌다. */
   assert.match(
     read('design-system/runtime-v2.css'),
-    /\.ui-button\.secondary \{[^}]*background: var\(--color-surface-sunken\)/,
+    /\.ui-button\.secondary \{[^}]*background: var\(--color-surface-subtle\)/,
     '보조 버튼이 제 면을 가져야 한다'
   );
 });
@@ -118,7 +118,7 @@ test('★같은 면 위에 같은 면을 올리지 않는다 — 패널 «안»�
   const css = read('design-system/runtime-v2.css');
   assert.match(
     css,
-    /:where\(\.ui-panel, \.ui-card\) \.ui-select-card \{[^}]*var\(--color-surface-sunken\)/,
+    /:where\(\.ui-panel, \.ui-card\) \.ui-select-card \{[^}]*var\(--color-surface-subtle\)/,
     '패널 안의 카드는 면을 한 단 내려야 한다'
   );
   for (const 안쪽 of ['input:checked', 'input:disabled']) {
@@ -129,6 +129,42 @@ test('★같은 면 위에 같은 면을 올리지 않는다 — 패널 «안»�
   }
   /** 한 단 내린 면이 실제로 바닥선을 넘는지 — 숫자로 확인한다. */
   const t = 토큰();
-  assert.ok(대비(t['color-surface-sunken'], t['color-surface']) >= 1.12, '패널 안 카드가 패널과 안 갈라진다');
+  assert.ok(대비(t['color-surface-subtle'], t['color-surface']) >= 1.06, '패널 안 카드가 패널과 안 갈라진다');
   assert.ok(대비(t['color-selected-surface'], t['color-surface']) >= 1.12, '선택된 카드가 패널과 안 갈라진다');
+});
+
+test('★상태 사다리가 한 칸씩 올라간다 — 일반 < 호버 < 선택 < 선택+호버', () => {
+  const { 결과 } = 재다();
+  const 값 = (id) => 결과.find((r) => r.id === id);
+  for (const id of ['rest_hint_on_surface', 'hover_over_rest', 'selected_over_rest', 'selected_hover_over_selected', 'disabled_over_rest']) {
+    const 칸 = 값(id);
+    assert.ok(칸, `사다리 칸이 없다: ${id}`);
+    assert.ok(칸.pass, `${id} 가 바닥(${칸.min}) 아래다: ${칸.ratio}`);
+  }
+  /** 호버와 선택은 «다른 축»이어야 한다 — 하나는 중립 층, 하나는 파란 면. 같은 축이면 둘을 구별할 수 없다. */
+  const t = 토큰();
+  assert.match(t['color-hover-layer'], /^rgba\(23, 32, 51/, '호버는 중립(글자색) 층이어야 한다');
+  assert.match(t['color-selected-surface'], /^#d|^#e/, '선택은 파란 면이어야 한다');
+  assert.notEqual(t['color-selected-surface'], t['color-surface-subtle']);
+});
+
+test('★선은 꼭 있어야 하는 자리에만 남았다 — 브라우저 전수 훑기 영수증', () => {
+  /** ★대표 2026-09-23: 「꼭 있어야 하는 곳 빼고는 구현되게 만들어줘야지」
+   *  규칙을 적는 것으로 끝내면 부품 정본에 남은 선이 그대로 그려진다. 렌더 결과를 세어서 남긴다. */
+  const 영수증 = json('docs/evidence/BORDER-SWEEP.json');
+  assert.equal(영수증.kind, 'MEASURED');
+  assert.equal(영수증.result, 'PASS');
+  assert.deepEqual(영수증.unexpected, [], '허용 목록 밖의 선이 그려지고 있다');
+  assert.ok(영수증.observed.every((o) => o.allowed), '허용되지 않은 선이 관측됐다');
+  for (const 남길것 of ['.ui-input', '.ui-file-upload', '.ui-table', '.ui-list']) {
+    assert.ok(영수증.allowed.some((a) => a.selector.includes(남길것)), `${남길것} 은 선을 남기는 자리다`);
+  }
+  for (const 걷은것 of ['.ui-card', '.ui-select-card', '.ui-button', '.ui-chip', '.ui-tabs', '.ui-bottom-nav(윗선)']) {
+    assert.ok(영수증.swept_away.includes(걷은것), `${걷은것} 이 전수 훑기 목록에 없다`);
+  }
+  /** 검수판이 있어야 이 훑기를 «다시» 할 수 있다. */
+  const 검수판 = read('examples/ui-state-matrix.html');
+  for (const 상태 of ['data-demo="hover"', 'data-demo="pressed"', 'data-demo="focus"', 'disabled', 'checked']) {
+    assert.ok(검수판.includes(상태), `검수판에 ${상태} 칸이 없다`);
+  }
 });

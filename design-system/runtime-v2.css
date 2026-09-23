@@ -445,7 +445,7 @@
 .ui-card, .ui-panel, .ui-receipt, .ui-disclosure, .ui-dialog { background: var(--color-surface); }
 .ui-page, .ui-shell { background: var(--color-bg); }
 .ui-state { background: var(--color-disabled-surface); }
-.ui-tab[aria-selected="true"] { border: 0; background: var(--color-selected-surface); color: var(--color-primary); font-weight: 700; }
+.ui-tab[aria-selected="true"] { border: 0; background: var(--color-selected-surface); color: var(--color-primary-hover); font-weight: 700; }
 /* 값을 넣는 자리는 테두리를 유지한다(부품 정본 그대로) — 여기서 지우지 않는다. */
 
 /* ★아이콘 — 루시드 한 벌로 통일 (대표 2026-09-23 「아이콘이나 체크 이런 거는 루시드 아이콘으로 통일」)
@@ -480,34 +480,34 @@
  * ★components.css 는 2026-09-14 브라우저 검증 영수증이 지문으로 묶고 있어 건드리지 않는다.
  */
 .ui-chip-set { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; }
-.ui-chip { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 4px 12px; border: 0; border-radius: 999px; background: var(--color-surface-sunken); color: var(--color-text); font: inherit; cursor: pointer; }
-.ui-chip[aria-pressed="true"], .ui-chip[aria-selected="true"] { background: var(--color-selected-surface); color: var(--color-primary); font-weight: 700; }
+.ui-chip { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 4px 12px; border: 0; border-radius: 999px; background: var(--color-surface-subtle); color: var(--color-text); font: inherit; cursor: pointer; }
+.ui-chip[aria-pressed="true"], .ui-chip[aria-selected="true"] { background: var(--color-selected-surface); color: var(--color-primary-hover); font-weight: 700; }
 .ui-chip[aria-pressed="true"]::before, .ui-chip[aria-selected="true"]::before {
   content: ""; display: inline-block; inline-size: 1em; block-size: 1em; vertical-align: -0.125em;
   background-color: currentColor; -webkit-mask: var(--icon-check) center / contain no-repeat; mask: var(--icon-check) center / contain no-repeat;
 }
 /* 못 쓰는 상태를 «글자색만»으로 말하지 않는다 — 면도 함께 내려놓는다(우묵한 면 → 바탕과 같은 투명). */
-.ui-chip:disabled, .ui-chip[aria-disabled="true"] { background: transparent; color: var(--color-muted); cursor: not-allowed; }
+.ui-chip:disabled, .ui-chip[aria-disabled="true"] { background: var(--color-disabled-surface); color: var(--color-muted); cursor: not-allowed; }
 .ui-chip:focus-visible { outline: var(--focus-ring-width) solid var(--color-focus); outline-offset: var(--focus-ring-offset); }
 .ui-chip-remove { display: inline-flex; min-width: 20px; min-height: 20px; align-items: center; justify-content: center; border: 0; border-radius: 999px; background: transparent; color: inherit; cursor: pointer; }
 
 /* 눌림 토글 — 면·굵기·루시드 체크로만 말한다. 이름은 그대로 둔다(글자를 덧붙이지 않는다). */
-.ui-button[aria-pressed="true"] { background: var(--color-selected-surface); color: var(--color-primary); font-weight: 700; }
+.ui-button[aria-pressed="true"] { background: var(--color-selected-surface); color: var(--color-primary-hover); font-weight: 700; }
 .ui-button[aria-pressed="true"]::before {
   content: ""; display: inline-block; inline-size: 1em; block-size: 1em; margin-inline-end: 6px; vertical-align: -0.125em;
   background-color: currentColor; -webkit-mask: var(--icon-check) center / contain no-repeat; mask: var(--icon-check) center / contain no-repeat;
 }
 
-.ui-segmented { display: inline-flex; gap: 2px; padding: 2px; border-radius: var(--radius-sm); background: var(--color-surface-sunken); }
+.ui-segmented { display: inline-flex; gap: 2px; padding: 2px; border-radius: var(--radius-sm); background: var(--color-surface-subtle); }
 .ui-segmented > label { position: relative; display: inline-flex; align-items: center; min-height: 32px; padding: 4px 12px; border-radius: calc(var(--radius-sm) - 2px); color: var(--color-muted); cursor: pointer; }
 .ui-segmented input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
-.ui-segmented > label:has(input:checked) { background: var(--color-surface); color: var(--color-primary); font-weight: 700; }
+.ui-segmented > label:has(input:checked) { background: var(--color-surface); color: var(--color-primary-hover); font-weight: 700; }
 .ui-segmented > label:has(input:disabled) { background: transparent; color: var(--color-muted); cursor: not-allowed; }
 .ui-segmented > label:has(input:focus-visible) { outline: var(--focus-ring-width) solid var(--color-focus); outline-offset: var(--focus-ring-offset); }
 
 /* 선택 카드 — 박스도 선 없이 간다(대표 2026-09-23). 바탕(--color-bg)과 면(--color-surface)의 대비·간격이 카드를 가른다. */
 .ui-select-card { display: grid; gap: var(--space-2); padding: var(--space-4); border: 0; border-radius: var(--radius-sm); background: var(--color-surface); cursor: pointer; }
-.ui-select-card:has(input:checked) { background: var(--color-selected-surface); color: var(--color-primary); }
+.ui-select-card:has(input:checked) { background: var(--color-selected-surface); color: var(--color-primary-hover); }
 .ui-select-card:has(input:checked) .ui-select-card-head { font-weight: 700; }
 .ui-select-card:has(input:focus-visible) { outline: var(--focus-ring-width) solid var(--color-focus); outline-offset: var(--focus-ring-offset); }
 .ui-select-card:has(input:disabled) { color: var(--color-muted); background: var(--color-disabled-surface); cursor: not-allowed; }
@@ -563,7 +563,7 @@ dialog::backdrop { background: var(--color-scrim); }
 /* 보조 동작은 «면을 가진» 버튼이다 — 흰 면 위의 흰 버튼은 글자 말고 아무것도 없다.
  *   Material 3 의 「filled tonal」 자리(중간 강조)이고, 우리 면 단계로는 우묵한 면(측정 1.27:1)이다.
  *   테두리를 되살리지 않고도 «누를 수 있는 것»으로 읽힌다. 근거: docs/design/TREND_AND_CONCEPT_REVIEW_2026-09-23.md 2절 */
-.ui-button.secondary { border: 0; background: var(--color-surface-sunken); color: var(--color-text); }
+.ui-button.secondary { border: 0; background: var(--color-surface-subtle); color: var(--color-text); }
 .ui-button.secondary:hover { background: var(--color-surface-sunken); background-image: linear-gradient(var(--color-hover-layer), var(--color-hover-layer)); }
 .ui-button.secondary:active { background-image: linear-gradient(var(--color-pressed-layer), var(--color-pressed-layer)); }
 
@@ -571,6 +571,20 @@ dialog::backdrop { background: var(--color-scrim); }
  *   흰 패널 «안»의 카드가 흰색이면 대비가 1.00 이다 — 바탕 위에서는 1.16 으로 읽히던 카드가 패널 안에서 사라진다.
  *   그래서 면을 한 단 내린다: 패널·카드 안에 들어간 선택 카드는 우묵한 면(측정 1.27:1)을 쓴다.
  *   선을 되살리는 대신 «단»을 쓰는 것이고, 값은 docs/evidence/SURFACE-CONTRAST.json 이 보증한다. */
-:where(.ui-panel, .ui-card) .ui-select-card { background: var(--color-surface-sunken); }
+/* ★상태 사다리 — 일반은 «살짝», 호버는 그보다 또렷, 선택은 은은하되 확실, 선택+호버는 선택보다 한 단 더.
+ *   (대표 2026-09-23 「살짝만 이게 박스구나 할 정도 · 선택되면 확실하게 더 은은하게 · 호버와 선택은 달라야」)
+ *   흰 면 위에서는 카드가 «옅은 면»(--color-surface-subtle, 1.09:1)으로 박스임을 알린다 — 회색으로 내리지 않는다.
+ *   바탕 위(모바일)에서는 흰 면 그대로가 카드다(1.16:1). 호버는 중립 층, 선택은 파란 면이라 서로 «다른 축»으로 말한다.
+ *   값과 각 단의 대비는 docs/evidence/SURFACE-CONTRAST.json 이 보증한다. */
+:where(.ui-panel, .ui-card) .ui-select-card { background: var(--color-surface-subtle); }
 :where(.ui-panel, .ui-card) .ui-select-card:has(input:checked) { background: var(--color-selected-surface); }
 :where(.ui-panel, .ui-card) .ui-select-card:has(input:disabled) { background: var(--color-disabled-surface); color: var(--color-muted); }
+
+
+/* ★전수 훑기 (대표 2026-09-23 「라인이 없었으면 좋겠다고 했으면, 꼭 있어야 하는 곳 빼고는 다 그렇게 구현해 줘야지」)
+ *   부품 정본에 남아 있던 «선»들을 여기서 마저 걷는다. 남기는 것은 값을 넣는 자리와 데이터를 읽는 줄뿐이다.
+ *   - 하단 내비/동작 막대의 윗선 → 면(--color-surface)이 바탕과 1.16:1 로 갈라 주므로 선이 필요 없다
+ *   - 아이콘 버튼의 투명 1px → 크기가 고정이라 선 없이도 배치가 흔들리지 않는다
+ *   렌더된 결과는 docs/evidence/BORDER-SWEEP.json 이 브라우저 실측으로 확인한다. */
+.ui-bottom-nav, .ui-bottom-action { border-block-start: 0; }
+.ui-icon-button { border: 0; }

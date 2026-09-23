@@ -48,6 +48,23 @@ Removing borders moves the whole job of "this is a separate object" onto surface
 | `--color-selected-surface` | `#e3ecfd` | surface, **1.19:1** | the selected chip, tab, card |
 | `--color-scrim` | `rgba(16,24,40,.45)` | — | dialogs and sheets separate from what is under them by a scrim, never a border |
 
+### State ladder
+
+A borderless control still has to answer three questions at a glance: is this a box, is the pointer on it, is it chosen. Each rung is measured, and each is a different *axis* so hover and selection can never be confused — hover is a neutral layer, selection is a blue fill.
+
+| Rung | Fill | Against the rung below |
+| --- | --- | --- |
+| rest, on a white surface | `--color-surface-subtle` `#f2f6fb` | **1.09:1** on surface — just enough to say "a box" |
+| rest, on the canvas (mobile) | `--color-surface` `#ffffff` | 1.16:1 on canvas |
+| hover | rest + `--color-hover-layer` (8%, M3 parity) | **1.17:1** over rest |
+| selected | `--color-selected-surface` `#dbe9fd` + weight + Lucide check | **1.13:1** over rest |
+| selected + hover | selected + hover layer | **1.16:1** over selected |
+| disabled | `--color-disabled-surface` + muted text | 1.14:1 over rest, two signals |
+
+Selected text is `--color-primary-hover`, not `--color-primary`: on the deeper selected fill the lighter blue measures 4.40:1, under the 4.5 floor.
+
+Every rendered border in the system is swept in the browser and recorded in [BORDER-SWEEP.json](evidence/BORDER-SWEEP.json) — only inputs, the file drop zone, table rules and list separators draw a line; twenty other surfaces were cleared. [ui-state-matrix.html](../examples/ui-state-matrix.html) renders the whole ladder on one page so the ladder can be checked by eye without hunting through a product screen.
+
 Floors the measurement enforces: a surface that must read as its own object ≥ **1.12:1** against the surface under it; text and muted text ≥ **4.5:1** on every surface; the focus ring and the primary action ≥ **3:1** on every surface (WCAG 1.4.11).
 
 Two consequences worth stating, because both were found by measuring rather than by looking:

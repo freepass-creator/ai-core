@@ -26,6 +26,35 @@ export const 대비 = (a, b) => {
   return Number(((밝음 + 0.05) / (어둠 + 0.05)).toFixed(3));
 };
 
+/** 반투명 층(호버·누름)을 아래 면에 얹었을 때 «실제로 보이는» 색. 상태 사다리는 이 색으로 재야 한다. */
+export const 겹침 = (아래, 층) => {
+  const [r, g, b, a] = 층.replace(/rgba?\(|\)/g, '').split(',').map((v) => Number(v.trim()));
+  const 밑 = 아래.replace('#', '').match(/../g).map((h) => parseInt(h, 16));
+  return '#' + [r, g, b].map((v, i) => Math.round(밑[i] * (1 - a) + v * a).toString(16).padStart(2, '0')).join('');
+};
+
+/** 상태 사다리 — 일반 → 호버 → 선택 → 선택+호버. 각 칸이 «앞 칸과 다르게» 보여야 한다.
+ *  대표 2026-09-23: 「살짝만 이게 박스구나 할 정도, 선택되면 확실하게 더 은은하게,
+ *  호버로 선택됐을 때와 커서 갔다 됐을 때랑 좀 달라야 한다」 */
+export const 사다리 = (변수 = 토큰()) => {
+  const 일반 = 변수['color-surface-subtle'];
+  const 선택 = 변수['color-selected-surface'];
+  return [
+    { id: 'rest_hint_on_surface', a: 일반, b: 변수['color-surface'], min: 1.06,
+      why: '흰 면 위에서 「아, 박스구나」 정도만 — 회색으로 내리지 않는다' },
+    { id: 'hover_over_rest', a: 겹침(일반, 변수['color-hover-layer']), b: 일반, min: 1.1,
+      why: '커서를 올리면 일반보다 또렷해진다' },
+    { id: 'selected_over_rest', a: 선택, b: 일반, min: 1.1,
+      why: '선택은 확실하되 은은하게 — 그리고 호버와 «다른 축»(중립 층 vs 파란 면)이다' },
+    { id: 'selected_hover_over_selected', a: 겹침(선택, 변수['color-hover-layer']), b: 선택, min: 1.1,
+      why: '이미 선택된 것에 커서를 올린 것과 그냥 선택된 것이 달라야 한다' },
+    { id: 'selected_text', a: 변수['color-primary-hover'], b: 선택, min: 4.5,
+      why: '선택된 카드의 글자 (WCAG 1.4.3)' },
+    { id: 'disabled_over_rest', a: 변수['color-disabled-surface'], b: 일반, min: 1.04,
+      why: '못 쓰는 것은 면과 글자 둘 다로 말한다(면 차이만으로는 약하다)' }
+  ];
+};
+
 /** 재는 짝. min 은 «무엇 때문에» 필요한지까지 적는다 — 숫자만 있으면 다음 사람이 못 고친다. */
 export const 짝들 = [
   { id: 'surface_on_canvas', a: 'color-surface', b: 'color-bg', min: 1.12,
@@ -42,8 +71,8 @@ export const 짝들 = [
   { id: 'muted_on_canvas', a: 'color-muted', b: 'color-bg', min: 4.5, why: '보조 글자도 본문 기준을 지킨다' },
   { id: 'muted_on_surface', a: 'color-muted', b: 'color-surface', min: 4.5, why: '보조 글자도 본문 기준을 지킨다' },
   { id: 'muted_on_sunken', a: 'color-muted', b: 'color-surface-sunken', min: 4.5, why: '보조 글자도 본문 기준을 지킨다' },
-  { id: 'primary_text_on_selected', a: 'color-primary', b: 'color-selected-surface', min: 4.5,
-    why: '선택된 칩·카드의 글자' },
+  { id: 'primary_text_on_selected', a: 'color-primary-hover', b: 'color-selected-surface', min: 4.5,
+    why: '선택된 칩·카드의 글자 — 선택 면이 깊어지면 기본 파랑(4.40)으로는 모자라 한 단 진한 파랑을 쓴다' },
   { id: 'focus_on_canvas', a: 'color-focus', b: 'color-bg', min: 3, why: 'WCAG 1.4.11 — 포커스 링은 어디에 놓여도 보여야 한다' },
   { id: 'focus_on_surface', a: 'color-focus', b: 'color-surface', min: 3, why: 'WCAG 1.4.11' },
   { id: 'focus_on_sunken', a: 'color-focus', b: 'color-surface-sunken', min: 3, why: 'WCAG 1.4.11' },
@@ -54,8 +83,10 @@ export const 짝들 = [
 ];
 
 export function 재다(변수 = 토큰()) {
-  const 결과 = 짝들.map((짝) => {
-    const [앞, 뒤] = [변수[짝.a], 변수[짝.b]];
+  /** 토큰 이름으로 적힌 짝과, 이미 «색»으로 계산된 사다리 칸을 한 표에서 잰다. */
+  const 전부 = [...짝들, ...사다리(변수).map((칸) => ({ ...칸, 색직접: true }))];
+  const 결과 = 전부.map((짝) => {
+    const [앞, 뒤] = 짝.색직접 ? [짝.a, 짝.b] : [변수[짝.a], 변수[짝.b]];
     if (!앞 || !뒤) return { ...짝, ratio: null, pass: false, note: 'TOKEN_MISSING' };
     const ratio = 대비(앞, 뒤);
     return { ...짝, colors: [앞, 뒤], ratio, pass: ratio >= 짝.min };

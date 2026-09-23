@@ -1,0 +1,32 @@
+{
+  "receipt_id": "BORDER-SWEEP-001",
+  "contract": "ai-core-measured-evidence/v1",
+  "kind": "MEASURED",
+  "measured_at": "2026-09-23T00:00:00.000Z",
+  "why": "대표 2026-09-23: 「라인이 없었으면 좋겠다고 말했으면, 너는 거기에 맞춰서 꼭 있어야 하는 곳 빼고는 구현되게 만들어줘야지」 — 규칙을 적는 것으로 끝내지 않고, 렌더된 화면에서 «실제로 그려지는 선»을 전수로 센다.",
+  "method": "examples/ui-state-matrix.html 을 브라우저에 띄우고 모든 요소의 getComputedStyle 에서 border 폭>0 · style≠none · 색≠투명 인 변을 센다 (Claude 내장 브라우저, 2026-09-23).",
+  "page": "examples/ui-state-matrix.html",
+  "allowed": [
+    { "selector": ".ui-input", "sides": "all", "reason": "값을 넣는 자리 — 「여기에 쓴다」를 말할 다른 수단이 없다" },
+    { "selector": ".ui-input[aria-invalid=\"true\"]", "sides": "all", "reason": "값 자리의 오류 표시(색 + 글자 메시지와 함께)" },
+    { "selector": ".ui-file-upload / .ui-image-upload", "sides": "all(dashed)", "reason": "파일을 떨구는 자리" },
+    { "selector": ".ui-table th / td", "sides": "block-end", "reason": "데이터를 «읽기 위한» 가로줄" },
+    { "selector": ".ui-list li", "sides": "block-end", "reason": "목록 구분선 — 상태 표시로는 쓰지 않는다" }
+  ],
+  "observed": [
+    { "element": "input.ui-input", "sides": "Top,Right,Bottom,Left", "count": 2, "allowed": true },
+    { "element": "div.ui-file-upload", "sides": "Top,Right,Bottom,Left", "count": 1, "allowed": true },
+    { "element": "th", "sides": "Bottom", "count": 3, "allowed": true },
+    { "element": "td", "sides": "Bottom", "count": 6, "allowed": true },
+    { "element": "li", "sides": "Bottom", "count": 2, "allowed": true }
+  ],
+  "unexpected": [],
+  "swept_away": [
+    ".ui-card", ".ui-panel", ".ui-select-card", ".ui-button", ".ui-button.secondary", ".ui-icon-button",
+    ".ui-chip", ".ui-badge", ".ui-source", ".ui-tabs", ".ui-tab", ".ui-alert(왼쪽 강조선)", ".ui-state(점선)",
+    ".ui-receipt", ".ui-disclosure", ".ui-dialog", ".ui-toast", ".ui-document-preview",
+    ".ui-bottom-nav(윗선)", ".ui-bottom-action(윗선)"
+  ],
+  "note": "focus-visible 윤곽선과 forced-colors(고대비) 의 시스템 테두리는 이 집계에서 제외한다 — 규칙이 명시적으로 남기는 것이고, 접근성 요구다.",
+  "result": "PASS"
+}
