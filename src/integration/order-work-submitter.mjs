@@ -175,7 +175,7 @@ export async function openOrderWorkSubmitter({ root = null, readContext, verifyL
     try {
       let record = row(commandId);
       const text = await ledgerText();
-      const verified = verifyLedgerText(text);
+      const verified = await verifyLedgerText(text);
       need(verified.status === 'VALID', 'LEDGER_INVALID');
       const found = text.trim() ? text.trim().split(/\r?\n/).filter(Boolean).map(line => JSON.parse(line)).find(value => value.event_id === record.event_id) : null;
       if (found) {
@@ -255,7 +255,7 @@ export async function openOrderWorkSubmitter({ root = null, readContext, verifyL
     try {
       const observed = await reconcile(commandId); if (observed.status === 'LEDGER_APPENDED') return observed;
       const record = row(commandId);
-      const text = await ledgerText(); const verified = verifyLedgerText(text);
+      const text = await ledgerText(); const verified = await verifyLedgerText(text);
       need(verified.status === 'VALID', 'LEDGER_INVALID');
       const events = text.trim() ? text.trim().split(/\r?\n/).filter(Boolean).map(line => JSON.parse(line)) : [];
       need(!events.some(value => value.event_id === record.event_id), 'EVENT_PAYLOAD_CONFLICT');
