@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>freepass erp — 계약 접수</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<link rel="stylesheet" href="../../../design-system/tokens.runtime.css">
+<link rel="stylesheet" href="../claude-v1.css">
+<link rel="stylesheet" href="../startup-erp/erp-templates.css">
+</head>
+<body>
+<!--
+  T6 작성형 — 재고에서 고른 차로 조건 · 고객 · 서류를 채워 공급사 확인을 요청한다.
+  접수하는 순간 재고 1대를 24시간 가예약한다. 최종 조건과 재고는 공급사 확인 후 확정된다.
+  흐름: 접수 → 공급사 확인 → 계약 → 출고 → 실적 확정 → 정산
+  예시 수치 · 고객 · 공급사명은 설명용 샘플이다. 부품은 claude-v1.css, 배치는 erp-templates.css 만 쓴다.
+-->
+<div class="c-shell">
+
+  <aside class="c-side">
+    <div class="c-brand">freepass <span>erp</span></div>
+    <nav class="c-menu">
+      <span class="c-menu-label">판매</span>
+      <a href="products.html">상품몰</a>
+      <a href="inventory.html">재고</a>
+      <span class="c-menu-label">영업</span>
+      <a href="intake.html" aria-current="page">계약 접수</a>
+      <a href="#">접수 현황</a>
+      <span class="c-menu-label">성과</span>
+      <a href="performance.html">실적</a>
+      <span class="c-menu-label">정산</span>
+      <a href="settlement.html">정산</a>
+      <span class="c-menu-label">기준 정보</span>
+      <a href="#">공급사</a>
+      <a href="#">영업채널</a>
+      <a href="#">설정 · 권한</a>
+    </nav>
+    <div class="c-who">
+      <span class="c-avatar" aria-hidden="true">박</span>
+      <span><span class="n">박운영</span><br><span class="r">운영팀 · 관리자</span></span>
+    </div>
+  </aside>
+
+  <div>
+    <header class="c-head">
+      <div>
+        <div class="c-where">영업 · 계약 접수</div>
+        <h1>새 접수</h1>
+      </div>
+      <div class="c-actions c-spacer">
+        <span class="c-note">자동 저장 14:36</span>
+        <a class="c-btn" href="#">접수 현황</a>
+      </div>
+    </header>
+
+    <main class="c-body">
+      <div class="c-steps" aria-label="이 건의 흐름">
+        <span class="c-step" data-state="now">접수</span><span class="c-step">공급사 확인</span><span class="c-step">계약</span><span class="c-step">출고</span><span class="c-step">실적 확정</span><span class="c-step">정산</span>
+      </div>
+      <div class="e-compose">
+        <div class="e-compose-main">
+
+          <section class="e-panel" aria-labelledby="s1">
+            <div class="e-panel-head"><span class="e-no" data-state="done">1</span><h2 id="s1">차량</h2><span class="meta">재고에서 고른 차</span></div>
+            <div class="e-pickcar">
+              <div class="e-shot"><svg class="e-car" viewBox="0 0 240 112" style="--paint:#eceef1" role="img" aria-label="쏘렌토 HEV"><ellipse class="ground" cx="120" cy="104" rx="102" ry="5"/><path class="body" d="M16 82 C16 66 22 58 36 56 L58 52 L76 30 C80 25 86 22 94 22 L172 22 C182 22 188 26 192 32 L206 54 L214 56 C222 58 226 66 226 78 L226 86 C226 90 223 92 219 92 L22 92 C18 92 16 90 16 86 Z"/><path class="glass" d="M70 52 L86 31 C88 28 91 27 95 27 L168 27 C174 27 178 29 181 33 L194 52 Z"/><rect class="pillar" x="130" y="26" width="5" height="27"/><circle class="tire" cx="62" cy="92" r="19"/><circle class="rim" cx="62" cy="92" r="9"/><circle class="tire" cx="184" cy="92" r="19"/><circle class="rim" cx="184" cy="92" r="9"/></svg></div>
+              <div class="e-two"><span class="nm">기아 쏘렌토 HEV</span><span class="sub">시그니처 · 스노우 화이트 펄</span><span class="sub">모아캐피탈 · P-1034 · 가용 1대</span></div>
+              <a class="c-btn" href="products.html">바꾸기</a>
+            </div>
+            <div class="c-note-box" data-tone="ok"><svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>재고 1대를 가예약했습니다 — 09-24 14:32까지 다른 접수에 배정되지 않습니다.</span></div>
+          </section>
+
+          <section class="e-panel" aria-labelledby="s2">
+            <div class="e-panel-head"><span class="e-no" data-state="done">2</span><h2 id="s2">조건</h2><span class="meta">가격은 조건에 따라 바로 다시 계산됩니다</span></div>
+            <div class="e-form">
+              <div class="c-field"><span>계약 기간</span><div class="c-chips"><button class="c-chip" aria-pressed="false" type="button">36개월</button><button class="c-chip" aria-pressed="false" type="button">48개월</button><button class="c-chip" aria-pressed="true" type="button"><svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>60개월</button></div></div>
+              <div class="c-field"><span>보증금</span><div class="c-chips"><button class="c-chip" aria-pressed="true" type="button"><svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>0%</button><button class="c-chip" aria-pressed="false" type="button">10%</button><button class="c-chip" aria-pressed="false" type="button">20%</button><button class="c-chip" aria-pressed="false" type="button">30%</button></div></div>
+              <div class="c-field"><span>약정 주행거리</span><div class="c-chips"><button class="c-chip" aria-pressed="false" type="button">연 1만km</button><button class="c-chip" aria-pressed="true" type="button"><svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>연 2만km</button><button class="c-chip" aria-pressed="false" type="button">연 3만km</button></div></div>
+              <div class="e-form-2">
+                <label class="c-field"><span>만기 처리</span><select class="c-select"><option>만기 시 선택 (반납 · 인수)</option><option>반납</option><option>인수</option></select></label>
+                <label class="c-field"><span>출고 희망일</span><input class="c-input" type="date" value="2026-10-06"></label>
+              </div>
+            </div>
+          </section>
+
+          <section class="e-panel" aria-labelledby="s3">
+            <div class="e-panel-head"><span class="e-no" data-state="done">3</span><h2 id="s3">고객</h2><span class="meta">심사에 필요한 만큼만 받습니다</span></div>
+            <div class="e-form">
+              <div class="c-field"><span>고객 구분</span><div class="c-chips"><button class="c-chip" aria-pressed="false" type="button">개인</button><button class="c-chip" aria-pressed="true" type="button"><svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>개인사업자</button><button class="c-chip" aria-pressed="false" type="button">법인</button></div></div>
+              <div class="e-form-2">
+                <label class="c-field"><span>고객명</span><input class="c-input" type="text" value="김도윤 (예시)"></label>
+                <label class="c-field"><span>연락처</span><input class="c-input" type="tel" value="010-0000-5521"></label>
+                <label class="c-field"><span>사업자번호</span><input class="c-input" type="text" value="000-00-00000"></label>
+                <label class="c-field"><span>출고 지역</span><select class="c-select"><option>서울 강남구</option><option>경기 성남시</option></select></label>
+              </div>
+            </div>
+          </section>
+
+          <section class="e-panel" aria-labelledby="s4">
+            <div class="e-panel-head"><span class="e-no">4</span><h2 id="s4">서류</h2><span class="meta">3 / 4 완료</span></div>
+            <div class="e-tags"><span class="c-badge" data-tone="ok">사업자등록증</span><span class="c-badge" data-tone="ok">신분증</span><span class="c-badge" data-tone="ok">운전면허 진위</span><span class="c-badge" data-tone="warn">소득 증빙 필요</span></div>
+            <div class="c-drop"><b>소득 증빙을 여기에 놓기</b>부가세 과세표준증명 또는 소득금액증명 · PDF · 이미지</div>
+          </section>
+        </div>
+
+        <aside class="e-summary" aria-label="접수 요약">
+          <div class="e-shot"><span class="c-badge" data-tone="warn">가예약 23:56 남음</span><svg class="e-car" viewBox="0 0 240 112" style="--paint:#eceef1" role="img" aria-label="쏘렌토 HEV"><ellipse class="ground" cx="120" cy="104" rx="102" ry="5"/><path class="body" d="M16 82 C16 66 22 58 36 56 L58 52 L76 30 C80 25 86 22 94 22 L172 22 C182 22 188 26 192 32 L206 54 L214 56 C222 58 226 66 226 78 L226 86 C226 90 223 92 219 92 L22 92 C18 92 16 90 16 86 Z"/><path class="glass" d="M70 52 L86 31 C88 28 91 27 95 27 L168 27 C174 27 178 29 181 33 L194 52 Z"/><rect class="pillar" x="130" y="26" width="5" height="27"/><circle class="tire" cx="62" cy="92" r="19"/><circle class="rim" cx="62" cy="92" r="9"/><circle class="tire" cx="184" cy="92" r="19"/><circle class="rim" cx="184" cy="92" r="9"/></svg></div>
+          <div class="e-detail-head"><span class="id">RCP-0923-014 · 작성 중</span><span class="nm">쏘렌토 HEV</span><span class="sub">시그니처 · 스노우 화이트 펄</span></div>
+          <dl class="e-lines">
+            <div><dt>상품</dt><dd>신차 장기렌트 60개월</dd></div>
+            <div><dt>보증금</dt><dd>0원</dd></div>
+            <div><dt>주행거리</dt><dd>연 2만km</dd></div>
+            <div><dt>공급사</dt><dd>모아캐피탈</dd></div>
+            <div><dt>영업</dt><dd>박영업 · 스마트카</dd></div>
+            <div data-total><dt>월 대여료</dt><dd>790,000원</dd></div>
+          </dl>
+          <div class="c-note-box" data-tone="warn"><svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg><span>소득 증빙이 없으면 공급사 확인을 요청할 수 없습니다.</span></div>
+          <p class="c-note">금액과 재고는 공급사 확인 후 확정됩니다. 확인 전에는 고객에게 확정처럼 안내하지 않습니다.</p>
+          <div class="e-actbar"><button class="c-btn" type="button">임시 저장</button><button class="c-btn" data-kind="primary" type="button" disabled>공급사 확인 요청</button></div>
+        </aside>
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>

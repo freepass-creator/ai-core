@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>freepass erp — 재고</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<link rel="stylesheet" href="../../../design-system/tokens.runtime.css">
+<link rel="stylesheet" href="../claude-v1.css">
+<link rel="stylesheet" href="../startup-erp/erp-templates.css">
+</head>
+<body>
+<!--
+  T2 목록-상세형 — 공급사별 재고를 한 표로 보고, 한 차종을 골라 색상별 재고 · 가예약 · 입고 예정을 확인한다.
+  가용 = 공급사 확인 재고 − 가예약 − 출고 대기. «?» 는 확인 시각이 24시간을 넘은 값이다.
+  예시 수치 · 고객 · 공급사명은 설명용 샘플이다. 부품은 claude-v1.css, 배치는 erp-templates.css 만 쓴다.
+-->
+<div class="c-shell">
+
+  <aside class="c-side">
+    <div class="c-brand">freepass <span>erp</span></div>
+    <nav class="c-menu">
+      <span class="c-menu-label">판매</span>
+      <a href="products.html">상품몰</a>
+      <a href="inventory.html" aria-current="page">재고</a>
+      <span class="c-menu-label">영업</span>
+      <a href="intake.html">계약 접수</a>
+      <a href="#">접수 현황</a>
+      <span class="c-menu-label">성과</span>
+      <a href="performance.html">실적</a>
+      <span class="c-menu-label">정산</span>
+      <a href="settlement.html">정산</a>
+      <span class="c-menu-label">기준 정보</span>
+      <a href="#">공급사</a>
+      <a href="#">영업채널</a>
+      <a href="#">설정 · 권한</a>
+    </nav>
+    <div class="c-who">
+      <span class="c-avatar" aria-hidden="true">박</span>
+      <span><span class="n">박운영</span><br><span class="r">운영팀 · 관리자</span></span>
+    </div>
+  </aside>
+
+  <div>
+    <header class="c-head">
+      <div>
+        <div class="c-where">판매 · 재고</div>
+        <h1>재고</h1>
+      </div>
+      <div class="c-actions c-spacer">
+        <button class="c-btn" data-kind="quiet" type="button"><svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg>공급사 재고 일괄 확인</button>
+        <button class="c-btn" data-kind="primary" type="button"><svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>재고 등록</button>
+      </div>
+    </header>
+
+    <main class="c-body">
+      <div class="e-kpis">
+        <div class="c-metric"><span class="k">가용 재고</span><span class="v">128<small>대 · 41차종</small></span></div>
+        <div class="c-metric"><span class="k">가예약 (접수 대기)</span><span class="v">11<small>대 · 24시간 보류</small></span></div>
+        <div class="c-metric"><span class="k">출고 대기</span><span class="v">9<small>대</small></span></div>
+        <div class="c-metric" data-tone="risk"><span class="k">확인 24시간 초과</span><span class="v">12<small>차종</small></span></div>
+      </div>
+
+      <div class="e-split">
+        <div class="e-split-main">
+          <div class="e-toolbar">
+            <div class="c-search"><svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input type="search" placeholder="차명 · 트림 · 공급사" aria-label="재고 검색"></div>
+            <label class="c-field"><span>공급사</span><select class="c-select"><option>전체 3곳</option><option>한결렌터카</option><option>모아캐피탈</option><option>도담렌트</option></select></label>
+            <label class="c-field"><span>상품 유형</span><select class="c-select"><option>전체</option><option>신차 장기렌트</option><option>중고 렌트</option><option>구독</option></select></label>
+          </div>
+          <div class="c-chips" role="group" aria-label="재고 상태로 거르기">
+            <button class="c-chip" aria-pressed="true" type="button"><svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>전체 41</button><button class="c-chip" aria-pressed="false" type="button">가용 있음 29</button><button class="c-chip" aria-pressed="false" type="button">가예약 있음 7</button><button class="c-chip" aria-pressed="false" type="button">확인 필요 12</button><button class="c-chip" aria-pressed="false" type="button">품절 · 대기 9</button>
+          </div>
+          <div class="e-scroll">
+            <table class="c-table">
+              <thead><tr><th>차량</th><th>공급사</th><th>상태</th><th class="num">가용</th><th class="num">가예약</th><th class="num">출고 대기</th><th>공급사 확인</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><div class="e-cell"><span class="e-thumb"><svg class="e-car" viewBox="0 0 240 112" style="--paint:#1f2329" role="img" aria-label="디 올 뉴 그랜저 HEV"><ellipse class="ground" cx="120" cy="104" rx="102" ry="5"/><path class="body" d="M18 80 C18 68 26 62 40 60 L72 55 C84 42 100 34 122 34 L150 34 C168 34 182 42 196 56 L214 60 C223 62 226 70 226 80 L226 86 C226 90 223 92 219 92 L25 92 C21 92 18 90 18 86 Z"/><path class="glass" d="M80 56 C90 45 102 40 120 40 L148 40 C161 40 172 46 183 56 Z"/><rect class="pillar" x="128" y="39" width="5" height="18"/><circle class="tire" cx="64" cy="92" r="17"/><circle class="rim" cx="64" cy="92" r="8"/><circle class="tire" cx="182" cy="92" r="17"/><circle class="rim" cx="182" cy="92" r="8"/></svg></span><span class="e-two"><span>디 올 뉴 그랜저 HEV</span><span class="s">캘리그래피 · 어비스 블랙 펄</span></span></div></td>
+                  <td>한결렌터카</td>
+                  <td><span class="c-state" data-tone="ok">즉시 출고</span></td>
+                  <td class="num"><b>3</b></td><td class="num">0</td><td class="num">1</td>
+                  <td><span class="c-state" data-tone="ok">2시간 전</span></td>
+                </tr>
+                <tr aria-selected="true">
+                  <td><div class="e-cell"><span class="e-thumb"><svg class="e-car" viewBox="0 0 240 112" style="--paint:#eceef1" role="img" aria-label="쏘렌토 HEV"><ellipse class="ground" cx="120" cy="104" rx="102" ry="5"/><path class="body" d="M16 82 C16 66 22 58 36 56 L58 52 L76 30 C80 25 86 22 94 22 L172 22 C182 22 188 26 192 32 L206 54 L214 56 C222 58 226 66 226 78 L226 86 C226 90 223 92 219 92 L22 92 C18 92 16 90 16 86 Z"/><path class="glass" d="M70 52 L86 31 C88 28 91 27 95 27 L168 27 C174 27 178 29 181 33 L194 52 Z"/><rect class="pillar" x="130" y="26" width="5" height="27"/><circle class="tire" cx="62" cy="92" r="19"/><circle class="rim" cx="62" cy="92" r="9"/><circle class="tire" cx="184" cy="92" r="19"/><circle class="rim" cx="184" cy="92" r="9"/></svg></span><span class="e-two"><span>쏘렌토 HEV</span><span class="s">시그니처 · 스노우 화이트 펄</span></span></div></td>
+                  <td>모아캐피탈</td>
+                  <td><span class="c-state" data-tone="warn">마지막 1대</span></td>
+                  <td class="num"><b>1</b></td><td class="num">1</td><td class="num">0</td>
+                  <td><span class="c-state" data-tone="ok">3시간 전</span></td>
+                </tr>
+                <tr>
+                  <td><div class="e-cell"><span class="e-thumb"><svg class="e-car" viewBox="0 0 240 112" style="--paint:#3a6db3" role="img" aria-label="EV3"><ellipse class="ground" cx="120" cy="104" rx="102" ry="5"/><path class="body" d="M16 82 C16 66 22 58 36 56 L58 52 L76 30 C80 25 86 22 94 22 L172 22 C182 22 188 26 192 32 L206 54 L214 56 C222 58 226 66 226 78 L226 86 C226 90 223 92 219 92 L22 92 C18 92 16 90 16 86 Z"/><path class="glass" d="M70 52 L86 31 C88 28 91 27 95 27 L168 27 C174 27 178 29 181 33 L194 52 Z"/><rect class="pillar" x="130" y="26" width="5" height="27"/><circle class="tire" cx="62" cy="92" r="19"/><circle class="rim" cx="62" cy="92" r="9"/><circle class="tire" cx="184" cy="92" r="19"/><circle class="rim" cx="184" cy="92" r="9"/></svg></span><span class="e-two"><span>EV3</span><span class="s">에어 롱레인지 · 아이보리 실버</span></span></div></td>
+                  <td>도담렌트</td>
+                  <td><span class="c-state" data-tone="warn">확인 필요</span></td>
+                  <td class="num"><span class="c-state" data-tone="warn">확인 필요</span></td><td class="num">0</td><td class="num">0</td>
+                  <td><span class="c-state" data-tone="risk">3일 전</span></td>
+                </tr>
+                <tr>
+                  <td><div class="e-cell"><span class="e-thumb"><svg class="e-car" viewBox="0 0 240 112" style="--paint:#8b9199" role="img" aria-label="아반떼 (2024)"><ellipse class="ground" cx="120" cy="104" rx="102" ry="5"/><path class="body" d="M18 80 C18 68 26 62 40 60 L72 55 C84 42 100 34 122 34 L150 34 C168 34 182 42 196 56 L214 60 C223 62 226 70 226 80 L226 86 C226 90 223 92 219 92 L25 92 C21 92 18 90 18 86 Z"/><path class="glass" d="M80 56 C90 45 102 40 120 40 L148 40 C161 40 172 46 183 56 Z"/><rect class="pillar" x="128" y="39" width="5" height="18"/><circle class="tire" cx="64" cy="92" r="17"/><circle class="rim" cx="64" cy="92" r="8"/><circle class="tire" cx="182" cy="92" r="17"/><circle class="rim" cx="182" cy="92" r="8"/></svg></span><span class="e-two"><span>아반떼 (2024)</span><span class="s">1.6 인스퍼레이션 · 사이버 그레이</span></span></div></td>
+                  <td>한결렌터카</td>
+                  <td><span class="c-state" data-tone="ok">즉시 출고</span></td>
+                  <td class="num"><b>5</b></td><td class="num">1</td><td class="num">2</td>
+                  <td><span class="c-state" data-tone="ok">2시간 전</span></td>
+                </tr>
+                <tr>
+                  <td><div class="e-cell"><span class="e-thumb"><svg class="e-car" viewBox="0 0 240 112" style="--paint:#2e3b35" role="img" aria-label="GV80"><ellipse class="ground" cx="120" cy="104" rx="102" ry="5"/><path class="body" d="M16 82 C16 66 22 58 36 56 L58 52 L76 30 C80 25 86 22 94 22 L172 22 C182 22 188 26 192 32 L206 54 L214 56 C222 58 226 66 226 78 L226 86 C226 90 223 92 219 92 L22 92 C18 92 16 90 16 86 Z"/><path class="glass" d="M70 52 L86 31 C88 28 91 27 95 27 L168 27 C174 27 178 29 181 33 L194 52 Z"/><rect class="pillar" x="130" y="26" width="5" height="27"/><circle class="tire" cx="62" cy="92" r="19"/><circle class="rim" cx="62" cy="92" r="9"/><circle class="tire" cx="184" cy="92" r="19"/><circle class="rim" cx="184" cy="92" r="9"/></svg></span><span class="e-two"><span>GV80</span><span class="s">2.5T AWD · 마티라 그린</span></span></div></td>
+                  <td>모아캐피탈</td>
+                  <td><span class="c-state" data-tone="idle">생산 대기</span></td>
+                  <td class="num">0</td><td class="num">0</td><td class="num">0</td>
+                  <td><span class="c-state" data-tone="idle">어제</span></td>
+                </tr>
+                <tr>
+                  <td><div class="e-cell"><span class="e-thumb"><svg class="e-car" viewBox="0 0 240 112" style="--paint:#c7b25a" role="img" aria-label="캐스퍼 일렉트릭"><ellipse class="ground" cx="120" cy="104" rx="102" ry="5"/><path class="body" d="M16 82 C16 66 22 58 36 56 L58 52 L76 30 C80 25 86 22 94 22 L172 22 C182 22 188 26 192 32 L206 54 L214 56 C222 58 226 66 226 78 L226 86 C226 90 223 92 219 92 L22 92 C18 92 16 90 16 86 Z"/><path class="glass" d="M70 52 L86 31 C88 28 91 27 95 27 L168 27 C174 27 178 29 181 33 L194 52 Z"/><rect class="pillar" x="130" y="26" width="5" height="27"/><circle class="tire" cx="62" cy="92" r="19"/><circle class="rim" cx="62" cy="92" r="9"/><circle class="tire" cx="184" cy="92" r="19"/><circle class="rim" cx="184" cy="92" r="9"/></svg></span><span class="e-two"><span>캐스퍼 일렉트릭</span><span class="s">인스퍼레이션 · 버터크림 옐로우</span></span></div></td>
+                  <td>도담렌트</td>
+                  <td><span class="c-state" data-tone="risk">품절</span></td>
+                  <td class="num">0</td><td class="num">0</td><td class="num">0</td>
+                  <td><span class="c-state" data-tone="ok">4시간 전</span></td>
+                </tr>
+                <tr>
+                  <td><div class="e-cell"><span class="e-thumb"><svg class="e-car" viewBox="0 0 240 112" style="--paint:#b8bdc5" role="img" aria-label="카니발 하이리무진"><ellipse class="ground" cx="120" cy="104" rx="102" ry="5"/><path class="body" d="M16 82 C16 66 22 58 36 56 L58 52 L76 30 C80 25 86 22 94 22 L172 22 C182 22 188 26 192 32 L206 54 L214 56 C222 58 226 66 226 78 L226 86 C226 90 223 92 219 92 L22 92 C18 92 16 90 16 86 Z"/><path class="glass" d="M70 52 L86 31 C88 28 91 27 95 27 L168 27 C174 27 178 29 181 33 L194 52 Z"/><rect class="pillar" x="130" y="26" width="5" height="27"/><circle class="tire" cx="62" cy="92" r="19"/><circle class="rim" cx="62" cy="92" r="9"/><circle class="tire" cx="184" cy="92" r="19"/><circle class="rim" cx="184" cy="92" r="9"/></svg></span><span class="e-two"><span>카니발 하이리무진</span><span class="s">9인승 시그니처 · 판테라 메탈</span></span></div></td>
+                  <td>한결렌터카</td>
+                  <td><span class="c-state" data-tone="ok">즉시 출고</span></td>
+                  <td class="num"><b>2</b></td><td class="num">0</td><td class="num">1</td>
+                  <td><span class="c-state" data-tone="ok">2시간 전</span></td>
+                </tr>
+                <tr>
+                  <td><div class="e-cell"><span class="e-thumb"><svg class="e-car" viewBox="0 0 240 112" style="--paint:#a3262a" role="img" aria-label="모델 Y (2023)"><ellipse class="ground" cx="120" cy="104" rx="102" ry="5"/><path class="body" d="M16 82 C16 66 22 58 36 56 L58 52 L76 30 C80 25 86 22 94 22 L172 22 C182 22 188 26 192 32 L206 54 L214 56 C222 58 226 66 226 78 L226 86 C226 90 223 92 219 92 L22 92 C18 92 16 90 16 86 Z"/><path class="glass" d="M70 52 L86 31 C88 28 91 27 95 27 L168 27 C174 27 178 29 181 33 L194 52 Z"/><rect class="pillar" x="130" y="26" width="5" height="27"/><circle class="tire" cx="62" cy="92" r="19"/><circle class="rim" cx="62" cy="92" r="9"/><circle class="tire" cx="184" cy="92" r="19"/><circle class="rim" cx="184" cy="92" r="9"/></svg></span><span class="e-two"><span>모델 Y (2023)</span><span class="s">롱레인지 · 울트라 레드</span></span></div></td>
+                  <td>도담렌트</td>
+                  <td><span class="c-state" data-tone="warn">확인 필요</span></td>
+                  <td class="num"><span class="c-state" data-tone="warn">확인 필요</span></td><td class="num">0</td><td class="num">0</td>
+                  <td><span class="c-state" data-tone="risk">2일 전</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="e-foot">
+            <div class="c-pager"><span class="p">41차종 중 1–8</span>
+              <button type="button" aria-current="page">1</button><button type="button">2</button><button type="button">3</button></div>
+            <span class="c-spacer"></span><span class="c-note">가용 = 확인 재고 − 가예약 − 출고 대기</span>
+          </div>
+        </div>
+
+        <aside class="e-detail" aria-label="선택한 차종 재고">
+          <div class="e-shot" style="border-radius:var(--c-r-md)"><span class="c-badge" data-tone="warn">마지막 1대</span><svg class="e-car" viewBox="0 0 240 112" style="--paint:#eceef1" role="img" aria-label="쏘렌토 HEV"><ellipse class="ground" cx="120" cy="104" rx="102" ry="5"/><path class="body" d="M16 82 C16 66 22 58 36 56 L58 52 L76 30 C80 25 86 22 94 22 L172 22 C182 22 188 26 192 32 L206 54 L214 56 C222 58 226 66 226 78 L226 86 C226 90 223 92 219 92 L22 92 C18 92 16 90 16 86 Z"/><path class="glass" d="M70 52 L86 31 C88 28 91 27 95 27 L168 27 C174 27 178 29 181 33 L194 52 Z"/><rect class="pillar" x="130" y="26" width="5" height="27"/><circle class="tire" cx="62" cy="92" r="19"/><circle class="rim" cx="62" cy="92" r="9"/><circle class="tire" cx="184" cy="92" r="19"/><circle class="rim" cx="184" cy="92" r="9"/></svg></div>
+          <div class="e-detail-head">
+            <span class="id">P-1034 · 모아캐피탈</span>
+            <span class="nm">기아 쏘렌토 HEV</span>
+            <span class="sub">시그니처 · 스노우 화이트 펄 · 신차 장기렌트 60개월 · 월 79만</span>
+          </div>
+          <div class="e-tags"><span class="c-state" data-tone="ok">공급사 확인 09-23 09:05</span><span class="c-badge">확인자 모아캐피탈 이대리</span></div>
+          <table class="c-table">
+            <thead><tr><th>색상</th><th class="num">가용</th><th class="num">가예약</th><th>입고 예정</th></tr></thead>
+            <tbody>
+              <tr><td><span class="e-cell"><span class="e-paint" style="--paint:#eceef1"></span>스노우 화이트 펄</span></td><td class="num"><b>1</b></td><td class="num">1</td><td>—</td></tr>
+              <tr><td><span class="e-cell"><span class="e-paint" style="--paint:#1f2329"></span>오로라 블랙 펄</span></td><td class="num">0</td><td class="num">0</td><td>10-08 · 3대</td></tr>
+              <tr><td><span class="e-cell"><span class="e-paint" style="--paint:#6b7079"></span>그래비티 그레이</span></td><td class="num">0</td><td class="num">0</td><td>11월</td></tr>
+            </tbody>
+          </table>
+          <div class="c-note-box" data-tone="warn"><svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg><span>가예약 1대 — 박영업(스마트카) 접수 RCP-0923-014. 09-24 14:32에 풀립니다.</span></div>
+          <section class="c-sec"><h2>재고 이력</h2>
+            <div class="c-timeline">
+              <div class="c-tl" data-tone="warn"><span class="dot"></span><span><span class="when">09-23 14:32 · 자동</span><span class="what">가예약 1대 (24시간)</span><span class="said">RCP-0923-014 접수</span></span></div>
+              <div class="c-tl" data-tone="ok"><span class="dot"></span><span><span class="when">09-23 09:05 · 모아캐피탈</span><span class="what">재고 확인 2대</span></span></div>
+              <div class="c-tl"><span class="dot"></span><span><span class="when">09-22 16:10 · 자동</span><span class="what">출고 1대 → 계약 CT-0922-031</span></span></div>
+            </div></section>
+          <div class="c-actions"><button class="c-btn" data-kind="quiet" type="button"><svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg>재확인 요청</button><span class="c-spacer"></span><a class="c-btn" data-kind="primary" href="intake.html">이 차로 접수</a></div>
+        </aside>
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>

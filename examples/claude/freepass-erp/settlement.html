@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>freepass erp — 정산</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<link rel="stylesheet" href="../../../design-system/tokens.runtime.css">
+<link rel="stylesheet" href="../claude-v1.css">
+<link rel="stylesheet" href="../startup-erp/erp-templates.css">
+</head>
+<body>
+<!--
+  T4 검토 큐형 — 출고된 건을 단계별로 흘려보낸다: 공급사 대사 → 관리자 확정 → 공급사 청구 → 수금 → 영업채널 지급.
+  확정 마진(받을 − 줄)과 현금 마진(수금 − 지급)을 따로 본다. 모르는 금액은 0 이 아니라 «미확정».
+  고객 보증금 · 월 대여료는 이 화면의 수익에 합산하지 않는다.
+  예시 수치 · 고객 · 공급사명은 설명용 샘플이다. 부품은 claude-v1.css, 배치는 erp-templates.css 만 쓴다.
+-->
+<div class="c-shell">
+
+  <aside class="c-side">
+    <div class="c-brand">freepass <span>erp</span></div>
+    <nav class="c-menu">
+      <span class="c-menu-label">판매</span>
+      <a href="products.html">상품몰</a>
+      <a href="inventory.html">재고</a>
+      <span class="c-menu-label">영업</span>
+      <a href="intake.html">계약 접수</a>
+      <a href="#">접수 현황</a>
+      <span class="c-menu-label">성과</span>
+      <a href="performance.html">실적</a>
+      <span class="c-menu-label">정산</span>
+      <a href="settlement.html" aria-current="page">정산</a>
+      <span class="c-menu-label">기준 정보</span>
+      <a href="#">공급사</a>
+      <a href="#">영업채널</a>
+      <a href="#">설정 · 권한</a>
+    </nav>
+    <div class="c-who">
+      <span class="c-avatar" aria-hidden="true">박</span>
+      <span><span class="n">박운영</span><br><span class="r">운영팀 · 관리자</span></span>
+    </div>
+  </aside>
+
+  <div>
+    <header class="c-head">
+      <div>
+        <div class="c-where">정산 · 2026년 9월 출고분</div>
+        <h1>정산</h1>
+      </div>
+      <div class="c-actions c-spacer">
+        <button class="c-btn" data-kind="quiet" type="button"><svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>공급사 청구서 만들기</button>
+        <button class="c-btn" type="button"><svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>지급 명세 내보내기</button>
+      </div>
+    </header>
+
+    <main class="c-body">
+      <div class="e-kpis">
+        <div class="c-metric"><span class="k">받을 수수료 (확정)</span><span class="v">4,860<small>만</small></span><span class="d">수금 3,120만 · 64%</span></div>
+        <div class="c-metric"><span class="k">줄 수수료 (확정)</span><span class="v">2,950<small>만</small></span><span class="d">지급 2,210만 · 75%</span></div>
+        <div class="c-metric"><span class="k">확정 마진</span><span class="v">1,910<small>만</small></span><span class="d">받을 − 줄</span></div>
+        <div class="c-metric"><span class="k">현금 마진</span><span class="v">910<small>만</small></span><span class="d" data-tone="risk">수금 − 지급 · 미수 1,740만</span></div>
+      </div>
+
+      <nav class="e-pipeline" aria-label="정산 단계">
+        <a href="#"><span class="s">1 공급사 대사</span><span class="c">12</span><span class="a">회신 대기 5</span></a>
+        <a href="#" aria-current="true"><span class="s">2 관리자 확정</span><span class="c">5</span><span class="a">금액 차이 1</span></a>
+        <a href="#"><span class="s">3 공급사 청구</span><span class="c">15</span><span class="a">1,960만</span></a>
+        <a href="#"><span class="s">4 수금 대기</span><span class="c">9</span><span class="a">1,740만</span></a>
+        <a href="#"><span class="s">5 영업채널 지급</span><span class="c">6</span><span class="a">740만</span></a>
+        <a href="#"><span class="s">완료</span><span class="c">71</span><span class="a">이번 달</span></a>
+      </nav>
+
+      <div class="e-queue">
+        <div class="e-queue-main">
+          <div class="e-toolbar">
+            <div class="c-search"><svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input type="search" placeholder="정산번호 · 차명 · 영업채널" aria-label="정산 검색"></div>
+            <label class="c-field"><span>공급사</span><select class="c-select"><option>전체</option><option>한결렌터카</option><option>모아캐피탈</option><option>도담렌트</option></select></label>
+          </div>
+          <div class="c-chips" role="group" aria-label="대사 결과로 거르기"><button class="c-chip" aria-pressed="true" type="button"><svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>확정할 것 5</button><button class="c-chip" aria-pressed="false" type="button">금액 차이 1</button><button class="c-chip" aria-pressed="false" type="button">공급사 미회신 1</button></div>
+          <div class="e-bulk" role="status"><svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>일치 3건 선택 가능<span class="c-spacer"></span><button class="c-btn" data-kind="quiet" type="button">일치 건 한 번에 확정</button></div>
+          <div class="e-scroll">
+            <table class="c-table">
+              <thead><tr><th class="e-pick"><label class="c-pick" data-shape="many" aria-label="전체 선택"><input type="checkbox"><span class="mark"></span></label></th>
+                <th>차량 · 고객 · 정산번호</th><th>대사</th><th class="num">받을</th><th class="num">줄</th><th class="num">마진</th><th>영업채널</th></tr></thead>
+              <tbody>
+                <tr aria-selected="true">
+                  <td><label class="c-pick" data-shape="many" aria-label="선택"><input type="checkbox" checked><span class="mark"></span></label></td>
+                  <td><div class="e-cell"><span class="e-thumb"><svg class="e-car" viewBox="0 0 240 112" style="--paint:#eceef1" role="img" aria-label="쏘렌토 HEV"><ellipse class="ground" cx="120" cy="104" rx="102" ry="5"/><path class="body" d="M16 82 C16 66 22 58 36 56 L58 52 L76 30 C80 25 86 22 94 22 L172 22 C182 22 188 26 192 32 L206 54 L214 56 C222 58 226 66 226 78 L226 86 C226 90 223 92 219 92 L22 92 C18 92 16 90 16 86 Z"/><path class="glass" d="M70 52 L86 31 C88 28 91 27 95 27 L168 27 C174 27 178 29 181 33 L194 52 Z"/><rect class="pillar" x="130" y="26" width="5" height="27"/><circle class="tire" cx="62" cy="92" r="19"/><circle class="rim" cx="62" cy="92" r="9"/><circle class="tire" cx="184" cy="92" r="19"/><circle class="rim" cx="184" cy="92" r="9"/></svg></span><span class="e-two"><span>쏘렌토 HEV · 김*윤</span><span class="s">ST-0923-07 · 출고 09-18</span></span></div></td>
+                  <td><span class="c-state" data-tone="risk">금액 차이</span></td>
+                  <td class="num">1,580,000</td><td class="num">950,000</td><td class="num"><b>확정 전</b></td>
+                  <td>스마트카</td>
+                </tr>
+                <tr>
+                  <td><label class="c-pick" data-shape="many" aria-label="선택"><input type="checkbox"><span class="mark"></span></label></td>
+                  <td><div class="e-cell"><span class="e-thumb"><svg class="e-car" viewBox="0 0 240 112" style="--paint:#1f2329" role="img" aria-label="디 올 뉴 그랜저 HEV"><ellipse class="ground" cx="120" cy="104" rx="102" ry="5"/><path class="body" d="M18 80 C18 68 26 62 40 60 L72 55 C84 42 100 34 122 34 L150 34 C168 34 182 42 196 56 L214 60 C223 62 226 70 226 80 L226 86 C226 90 223 92 219 92 L25 92 C21 92 18 90 18 86 Z"/><path class="glass" d="M80 56 C90 45 102 40 120 40 L148 40 C161 40 172 46 183 56 Z"/><rect class="pillar" x="128" y="39" width="5" height="18"/><circle class="tire" cx="64" cy="92" r="17"/><circle class="rim" cx="64" cy="92" r="8"/><circle class="tire" cx="182" cy="92" r="17"/><circle class="rim" cx="182" cy="92" r="8"/></svg></span><span class="e-two"><span>디 올 뉴 그랜저 HEV · 이*민</span><span class="s">ST-0923-05 · 출고 09-17</span></span></div></td>
+                  <td><span class="c-state" data-tone="ok">일치</span></td>
+                  <td class="num">2,140,000</td><td class="num">1,280,000</td><td class="num"><b>860,000</b></td>
+                  <td>드라이브온</td>
+                </tr>
+                <tr>
+                  <td><label class="c-pick" data-shape="many" aria-label="선택"><input type="checkbox"><span class="mark"></span></label></td>
+                  <td><div class="e-cell"><span class="e-thumb"><svg class="e-car" viewBox="0 0 240 112" style="--paint:#8b9199" role="img" aria-label="아반떼 (2024)"><ellipse class="ground" cx="120" cy="104" rx="102" ry="5"/><path class="body" d="M18 80 C18 68 26 62 40 60 L72 55 C84 42 100 34 122 34 L150 34 C168 34 182 42 196 56 L214 60 C223 62 226 70 226 80 L226 86 C226 90 223 92 219 92 L25 92 C21 92 18 90 18 86 Z"/><path class="glass" d="M80 56 C90 45 102 40 120 40 L148 40 C161 40 172 46 183 56 Z"/><rect class="pillar" x="128" y="39" width="5" height="18"/><circle class="tire" cx="64" cy="92" r="17"/><circle class="rim" cx="64" cy="92" r="8"/><circle class="tire" cx="182" cy="92" r="17"/><circle class="rim" cx="182" cy="92" r="8"/></svg></span><span class="e-two"><span>아반떼 (2024) · (주)가*물류</span><span class="s">ST-0923-04 · 출고 09-16</span></span></div></td>
+                  <td><span class="c-state" data-tone="ok">일치</span></td>
+                  <td class="num">720,000</td><td class="num">430,000</td><td class="num"><b>290,000</b></td>
+                  <td>스마트카</td>
+                </tr>
+                <tr>
+                  <td><label class="c-pick" data-shape="many" aria-label="선택"><input type="checkbox"><span class="mark"></span></label></td>
+                  <td><div class="e-cell"><span class="e-thumb"><svg class="e-car" viewBox="0 0 240 112" style="--paint:#b8bdc5" role="img" aria-label="카니발 하이리무진"><ellipse class="ground" cx="120" cy="104" rx="102" ry="5"/><path class="body" d="M16 82 C16 66 22 58 36 56 L58 52 L76 30 C80 25 86 22 94 22 L172 22 C182 22 188 26 192 32 L206 54 L214 56 C222 58 226 66 226 78 L226 86 C226 90 223 92 219 92 L22 92 C18 92 16 90 16 86 Z"/><path class="glass" d="M70 52 L86 31 C88 28 91 27 95 27 L168 27 C174 27 178 29 181 33 L194 52 Z"/><rect class="pillar" x="130" y="26" width="5" height="27"/><circle class="tire" cx="62" cy="92" r="19"/><circle class="rim" cx="62" cy="92" r="9"/><circle class="tire" cx="184" cy="92" r="19"/><circle class="rim" cx="184" cy="92" r="9"/></svg></span><span class="e-two"><span>카니발 하이리무진 · 박*현</span><span class="s">ST-0923-03 · 출고 09-15</span></span></div></td>
+                  <td><span class="c-state" data-tone="ok">일치 · 직접</span></td>
+                  <td class="num">2,380,000</td><td class="num">—</td><td class="num"><b>2,380,000</b></td>
+                  <td>카톡 상담</td>
+                </tr>
+                <tr>
+                  <td><label class="c-pick" data-shape="many" aria-label="선택"><input type="checkbox"><span class="mark"></span></label></td>
+                  <td><div class="e-cell"><span class="e-thumb"><svg class="e-car" viewBox="0 0 240 112" style="--paint:#3a6db3" role="img" aria-label="EV3"><ellipse class="ground" cx="120" cy="104" rx="102" ry="5"/><path class="body" d="M16 82 C16 66 22 58 36 56 L58 52 L76 30 C80 25 86 22 94 22 L172 22 C182 22 188 26 192 32 L206 54 L214 56 C222 58 226 66 226 78 L226 86 C226 90 223 92 219 92 L22 92 C18 92 16 90 16 86 Z"/><path class="glass" d="M70 52 L86 31 C88 28 91 27 95 27 L168 27 C174 27 178 29 181 33 L194 52 Z"/><rect class="pillar" x="130" y="26" width="5" height="27"/><circle class="tire" cx="62" cy="92" r="19"/><circle class="rim" cx="62" cy="92" r="9"/><circle class="tire" cx="184" cy="92" r="19"/><circle class="rim" cx="184" cy="92" r="9"/></svg></span><span class="e-two"><span>EV3 · 최*아</span><span class="s">ST-0923-02 · 출고 09-14</span></span></div></td>
+                  <td><span class="c-state" data-tone="warn">공급사 미회신</span></td>
+                  <td class="num">미확정</td><td class="num">350,000</td><td class="num"><b>확정 전</b></td>
+                  <td>오토링크</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="c-note">고객명은 가립니다. 수수료 금액은 정산 권한자에게만 보입니다.</p>
+        </div>
+
+        <aside class="e-detail" aria-label="선택한 정산 건">
+          <div class="e-detail-head">
+            <span class="id">ST-0923-07 · 계약 CT-0918-022</span>
+            <span class="nm">쏘렌토 HEV · 김*윤</span>
+            <span class="sub">모아캐피탈 · 스마트카(박영업) · 출고 09-18</span>
+          </div>
+          <div class="c-steps" aria-label="이 건의 정산 단계">
+            <span class="c-step" data-state="done">대사</span><span class="c-step" data-state="now">확정</span><span class="c-step">청구</span><span class="c-step">수금</span><span class="c-step">지급</span>
+          </div>
+          <dl class="e-lines">
+            <div><dt>받을 수수료 · 우리 계산</dt><dd>1,580,000</dd></div>
+            <div><dt>받을 수수료 · 공급사 회신</dt><dd>1,420,000</dd></div>
+            <div><dt>차이</dt><dd>−160,000</dd></div>
+            <div><dt>줄 수수료 · 스마트카</dt><dd>950,000</dd></div>
+            <div data-total><dt>확정 마진</dt><dd>확정 전</dd></div>
+          </dl>
+          <div class="c-note-box" data-tone="risk"><svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg><span>공급사 회신이 16만원 적습니다. 9월 프로모션 차감(10월 이월) 때문인지 확인하세요.</span></div>
+          <section class="c-sec"><h2>근거</h2>
+            <div class="e-files"><span class="c-tag"><svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>모아캐피탈 9월 대사표.xlsx</span><span class="c-tag"><svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>프로모션 공지 09-01</span></div></section>
+          <label class="c-field"><span>확정 메모 (차이 반영 시 필수)</span><textarea class="c-area" rows="2" placeholder="예: 프로모션 차감 16만 10월 이월 반영"></textarea></label>
+          <div class="e-actbar"><button class="c-btn" type="button">재대사</button><button class="c-btn" data-kind="primary" type="button">회신 금액으로 확정</button></div>
+        </aside>
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>

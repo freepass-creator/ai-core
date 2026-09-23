@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>freepass erp — 화면 지도</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<link rel="stylesheet" href="../../../design-system/tokens.runtime.css">
+<link rel="stylesheet" href="../claude-v1.css">
+<link rel="stylesheet" href="../startup-erp/erp-templates.css">
+<style>
+  /* 이 목차 화면에만 쓰는 배치. 값은 토큰만. */
+  .ix { display: grid; gap: 28px; max-inline-size: 1240px; margin-inline: auto; padding: 36px 28px 80px; }
+  .ix-head { display: grid; gap: 8px; }
+  .ix-head .kind { color: var(--c-accent-strong); font-size: var(--t-micro); font-weight: var(--t-w-bold); letter-spacing: var(--t-track-label); }
+  .ix-head h1 { margin: 0; font-size: var(--t-num); font-weight: var(--t-w-bold); line-height: var(--t-lh-tight); letter-spacing: var(--t-track-title); }
+  .ix-head p { margin: 0; color: var(--c-muted); font-size: var(--t-body); line-height: var(--t-lh-body); max-inline-size: 72ch; }
+  .ix-flow { display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+  .ix-flow a, .ix-flow div { display: grid; gap: 6px; align-content: start; padding: 16px; border-radius: var(--c-r-md); background: var(--c-surface); color: var(--c-text); text-decoration: none; }
+  .ix-flow div { background: var(--c-row); }
+  @media (hover: hover) { .ix-flow a:hover { background-image: linear-gradient(var(--c-hover), var(--c-hover)); } }
+  .ix-flow .s { color: var(--c-accent-strong); font-size: var(--t-micro); font-weight: var(--t-w-bold); letter-spacing: var(--t-track-label); }
+  .ix-flow div .s { color: var(--c-muted); }
+  .ix-flow b { font-size: var(--t-lead); font-weight: var(--t-w-bold); }
+  .ix-flow span:last-child { color: var(--c-muted); font-size: var(--t-meta); line-height: var(--t-lh-body); }
+  .ix-scroll { overflow-x: auto; border-radius: var(--c-r-md); background: var(--c-surface); padding: 4px 16px; }
+  .ix-scroll .c-table th { position: static; }
+  .ix-scroll .c-table td:first-child { font-weight: var(--t-w-medium); }
+</style>
+</head>
+<body>
+<div class="ix">
+
+  <header class="ix-head">
+    <span class="kind">FREEPASS ERP · 화면 지도 v0.1 · claude-v1 테마</span>
+    <h1>상품을 보고, 재고를 잡고, 접수해서, 실적과 정산까지</h1>
+    <p>공급사 상품을 사진으로 고르고(상품몰), 공급사가 확인한 재고를 보고(재고), 그 재고를 24시간 가예약하며 접수한다(계약 접수). 출고되어 대사가 끝난 건이 실적이 되고, 실적 건은 공급사 청구 · 수금 · 영업채널 지급 순서로 정산된다. 화면은 모두 같은 부품(claude-v1)과 같은 화면 틀(T1–T6)로 만든다.</p>
+  </header>
+
+  <section class="c-sec">
+    <h2>업무 흐름 — 누르면 해당 화면</h2>
+    <div class="ix-flow">
+      <a href="products.html"><span class="s">1 · T5 카탈로그형</span><b>상품몰</b><span>사진 · 월 납입 · 조건 · 재고 상태를 카드 한 장에</span></a>
+      <a href="inventory.html"><span class="s">2 · T2 목록-상세형</span><b>재고</b><span>공급사별 가용 · 가예약 · 출고 대기, 색상별 재고, 확인 시각</span></a>
+      <a href="intake.html"><span class="s">3 · T6 작성형</span><b>계약 접수</b><span>차량 → 조건 → 고객 → 서류. 접수 순간 재고 1대 가예약</span></a>
+      <div><span class="s">4 · 공급사 · 계약 · 출고</span><b>진행</b><span>공급사 확인 → 계약 → 출고. 이번 범위에서는 화면 없음</span></div>
+      <a href="performance.html"><span class="s">5 · T1 개요형</span><b>실적</b><span>문의 → 접수 → 계약 → 출고 → 확정 깔때기, 채널별 · 차량별</span></a>
+      <a href="settlement.html"><span class="s">6 · T4 검토 큐형</span><b>정산</b><span>대사 → 확정 → 청구 → 수금 → 지급, 확정 마진과 현금 마진 분리</span></a>
+    </div>
+  </section>
+
+  <section class="c-sec">
+    <h2>보이는 것을 먼저 정한 규칙</h2>
+    <div class="ix-scroll">
+      <table class="c-table">
+        <thead><tr><th>규칙</th><th>화면에서</th><th>이유</th></tr></thead>
+        <tbody>
+          <tr><td>차는 사진으로 찾는다</td><td>상품 카드 16:10 사진, 표에는 64px 썸네일</td><td>차명 글자보다 모양 · 색이 먼저 읽힌다</td></tr>
+          <tr><td>재고 상태는 사진 위 뱃지 + 카드 아래 글자</td><td>즉시 출고 · 마지막 1대 · 확인 필요 · 생산 대기 · 품절</td><td>두 신호 원칙. 색만으로 말하지 않는다</td></tr>
+          <tr><td>재고에는 늘 «누가 · 언제 확인했나»</td><td>공급사명 + 확인 시각, 24시간 넘으면 «확인 필요»</td><td>재고는 공급사 최종 확인이 정본이다</td></tr>
+          <tr><td>접수는 재고를 잡는다</td><td>24시간 가예약, 남은 시간을 요약 사진 위에 표시</td><td>같은 차를 두 영업자가 동시에 파는 일을 막는다</td></tr>
+          <tr><td>모르는 금액은 0이 아니다</td><td>정산에서 «미확정» · «확정 전»으로 표시</td><td>공급사 청구액을 모르면 마진도 모른다</td></tr>
+          <tr><td>수수료는 권한자만</td><td>실적은 건수로, 금액은 정산 화면에서만 · 고객명 가림</td><td>채널 간 · 고객 대상 비공개 원칙</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>
