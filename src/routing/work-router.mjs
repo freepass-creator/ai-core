@@ -1,7 +1,7 @@
 import Ajv2020 from 'ajv/dist/2020.js';
 import addFormats from 'ajv-formats';
 import { readFileSync } from 'node:fs';
-import { capabilityIndex, capabilitySupportsProject } from '../engine/capability-registry.mjs';
+import { capabilityIndex, capabilitySupportsProject, projectIndex } from '../engine/capability-registry.mjs';
 
 const schema = JSON.parse(readFileSync(new URL('../../contracts/work-map.schema.json', import.meta.url), 'utf8'));
 const ajv = new Ajv2020({ allErrors: true, strict: false });
@@ -37,7 +37,9 @@ export function validateWorkMap(workMap, projectRegistry, capabilityRegistry) {
     return { status: 'INVALID', errors };
   }
 
-  const projects = new Map((projectRegistry?.projects ?? []).map((project) => [project.project_id, project]));
+  let projects;
+  try { projects = projectIndex(projectRegistry); }
+  catch { return { status:'INVALID', errors:[{code:'PROJECT_REGISTRY_INVALID',path:'$'}] }; }
   let capabilities;
   try { capabilities = capabilityIndex(capabilityRegistry); }
   catch { return { status:'INVALID', errors:[{code:'CAPABILITY_REGISTRY_INVALID',path:'$'}] }; }
@@ -87,7 +89,13 @@ export function routeWork(queryValue, { workMap, projectRegistry, capabilityRegi
   }
 
   const { work, matched_alias } = scored[0];
-  const project = (projectRegistry.projects ?? []).find((item) => item.project_id === work.target_project_id);
+  let projects;
+  try { projects = projectIndex(projectRegistry); }
+  catch (error) {
+    return { status:'HOLD_REGISTRY_INVALID', reason:error.message, query,
+      work_type_id:work.work_type_id, target_project_id:work.target_project_id, capability_id:work.capability_id };
+  }
+  const project = projects.get(work.target_project_id);
   const capability = (capabilityRegistry.capabilities ?? []).find((item) => item.id === work.capability_id);
 
   if (!project) {
