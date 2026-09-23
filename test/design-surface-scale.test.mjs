@@ -90,3 +90,45 @@ test('★못 쓰는 상태를 «색 하나»로 말하지 않는다 — 상태 �
     assert.ok(신호.length >= 2, `${선택자.slice(0, 70)} — 신호가 ${신호.join(',') || '없음'} 뿐이다`);
   }
 });
+
+test('밖의 기준과 대조한 기록이 정본 옆에 남아 있다 — 「우리가 그렇게 정했다」는 근거가 아니다', () => {
+  const 문서 = read('docs/design/TREND_AND_CONCEPT_REVIEW_2026-09-23.md');
+  for (const 근거 of ['m3.material.io', 'developer.apple.com', 'fluentui', 'primer.style', 'w3.org/WAI/WCAG22', 'lucide.dev']) {
+    assert.ok(문서.includes(근거), `대조 근거가 빠졌다: ${근거}`);
+  }
+  assert.match(문서, /UNVERIFIED/, '확인 못 한 것을 「없다」로 적지 않았는지');
+  assert.match(read('docs/SCREEN_DESIGN_STANDARD.md'), /TREND_AND_CONCEPT_REVIEW/, '정본 문서가 대조 기록을 가리켜야 한다');
+
+  /** 상태 층 불투명도는 M3 수치(hover .08 / pressed .10)에 맞춰 두었다 — 눈대중으로 되돌아가지 않게 고정한다. */
+  const t = 토큰();
+  assert.equal(t['color-hover-layer'], 'rgba(23, 32, 51, 0.08)');
+  assert.equal(t['color-pressed-layer'], 'rgba(23, 32, 51, 0.10)');
+
+  /** 보조 버튼은 흰 면 위의 흰 버튼이 아니다 — 우묵한 면(tonal)으로 읽힌다. */
+  assert.match(
+    read('design-system/runtime-v2.css'),
+    /\.ui-button\.secondary \{[^}]*background: var\(--color-surface-sunken\)/,
+    '보조 버튼이 제 면을 가져야 한다'
+  );
+});
+
+test('★같은 면 위에 같은 면을 올리지 않는다 — 패널 «안»의 카드가 사라지면 안 된다', () => {
+  /** ★2026-09-23 대표 실사용 지적: 「가운데 박스는 이렇게 있을 때는 저게 박스인지 뭔지 전혀 모르는데?」
+   *  흰 패널 안의 흰 카드는 대비 1.00 이다. 바탕 위(1.16)에서만 읽히던 규칙이 패널 안에서 무너졌다. */
+  const css = read('design-system/runtime-v2.css');
+  assert.match(
+    css,
+    /:where\(\.ui-panel, \.ui-card\) \.ui-select-card \{[^}]*var\(--color-surface-sunken\)/,
+    '패널 안의 카드는 면을 한 단 내려야 한다'
+  );
+  for (const 안쪽 of ['input:checked', 'input:disabled']) {
+    assert.ok(
+      css.includes(`:where(.ui-panel, .ui-card) .ui-select-card:has(${안쪽})`),
+      `패널 안에서도 ${안쪽} 상태가 제 면을 가져야 한다`
+    );
+  }
+  /** 한 단 내린 면이 실제로 바닥선을 넘는지 — 숫자로 확인한다. */
+  const t = 토큰();
+  assert.ok(대비(t['color-surface-sunken'], t['color-surface']) >= 1.12, '패널 안 카드가 패널과 안 갈라진다');
+  assert.ok(대비(t['color-selected-surface'], t['color-surface']) >= 1.12, '선택된 카드가 패널과 안 갈라진다');
+});

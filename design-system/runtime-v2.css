@@ -559,3 +559,18 @@ dialog::backdrop { background: var(--color-scrim); }
 .ui-segmented > label:active:has(input:not(:disabled)) {
   background-image: linear-gradient(var(--color-pressed-layer), var(--color-pressed-layer));
 }
+
+/* 보조 동작은 «면을 가진» 버튼이다 — 흰 면 위의 흰 버튼은 글자 말고 아무것도 없다.
+ *   Material 3 의 「filled tonal」 자리(중간 강조)이고, 우리 면 단계로는 우묵한 면(측정 1.27:1)이다.
+ *   테두리를 되살리지 않고도 «누를 수 있는 것»으로 읽힌다. 근거: docs/design/TREND_AND_CONCEPT_REVIEW_2026-09-23.md 2절 */
+.ui-button.secondary { border: 0; background: var(--color-surface-sunken); color: var(--color-text); }
+.ui-button.secondary:hover { background: var(--color-surface-sunken); background-image: linear-gradient(var(--color-hover-layer), var(--color-hover-layer)); }
+.ui-button.secondary:active { background-image: linear-gradient(var(--color-pressed-layer), var(--color-pressed-layer)); }
+
+/* ★같은 면 위에 같은 면을 올리지 않는다 (대표 2026-09-23 「가운데 박스는 저게 박스인지 뭔지 전혀 모르는데?」)
+ *   흰 패널 «안»의 카드가 흰색이면 대비가 1.00 이다 — 바탕 위에서는 1.16 으로 읽히던 카드가 패널 안에서 사라진다.
+ *   그래서 면을 한 단 내린다: 패널·카드 안에 들어간 선택 카드는 우묵한 면(측정 1.27:1)을 쓴다.
+ *   선을 되살리는 대신 «단»을 쓰는 것이고, 값은 docs/evidence/SURFACE-CONTRAST.json 이 보증한다. */
+:where(.ui-panel, .ui-card) .ui-select-card { background: var(--color-surface-sunken); }
+:where(.ui-panel, .ui-card) .ui-select-card:has(input:checked) { background: var(--color-selected-surface); }
+:where(.ui-panel, .ui-card) .ui-select-card:has(input:disabled) { background: var(--color-disabled-surface); color: var(--color-muted); }

@@ -69,6 +69,8 @@ Decided by the owner on 2026-09-23: every icon and every check mark comes from *
 
 `test/ui-shell-samples.test.mjs` fails when a sample's SVG body drifts from the record, when a generated mark stops using the Lucide mask, or when a stray glyph appears.
 
+Why this is allowed at all: WCAG 2.2 SC 1.4.11 requires 3:1 only for what is *needed to identify* a control, and its Understanding text states that a control carrying visible text or a sufficiently contrasting icon does not need a boundary. Where each of these decisions stands against Material 3, Apple HIG, Fluent 2, Primer, Carbon and shadcn — including the two places we deliberately deviate and the one place this review made us change the design — is recorded in [TREND_AND_CONCEPT_REVIEW_2026-09-23.md](design/TREND_AND_CONCEPT_REVIEW_2026-09-23.md).
+
 Machine form: `design-system/interaction.contract.json#rules.border_policy` and `#rules.icon_policy`; enforced in `design-system/runtime-v2.css` and checked by `test/ui-shell-samples.test.mjs`. `design-system/components.css` is pinned by the 2026-09-14 browser receipt and is overridden from runtime-v2, never edited.
 
 ## Tokens

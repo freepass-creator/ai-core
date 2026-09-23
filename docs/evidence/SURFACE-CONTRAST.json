@@ -2,7 +2,7 @@
   "receipt_id": "SURFACE-CONTRAST-001",
   "contract": "ai-core-measured-evidence/v1",
   "kind": "MEASURED",
-  "measured_at": "2026-09-22T23:50:30.067Z",
+  "measured_at": "2026-09-23T00:03:22.644Z",
   "method": "WCAG 2.2 relative luminance contrast computed from design-system/tokens.json by scripts/measure-surface-contrast.mjs",
   "source": "design-system/tokens.json",
   "pairs": [
