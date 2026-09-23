@@ -338,3 +338,25 @@
 .erp-inline-form:first-child { padding-top: 0; }
 .erp-inline-form:last-child { border-bottom: 0; padding-bottom: 0; }
 .erp-inline-form .erp-field { flex: 1; }
+
+/* ── 목록 카드 — 표 대신 카드로 늘어놓는 목록 (대표 2026-09-23 「목록을 카드 타입으로 … 모바일로 넘어가기 쉽게」) ──
+ *   한 건 = 카드 한 장: 머리(이름 + 보조 줄 · 상태 뱃지) → 값 묶음(.erp-props) → 바닥(태그 · 금액).
+ *   카드는 넓이에 맞춰 칸 수가 저절로 줄어든다 — PC 여러 칸, 좁은 창 · 폰은 한 칸. 같은 마크업이 폰까지 간다.
+ *   카드 전체를 누르면 열린다: 이름 링크(.erp-listcard-link)가 카드를 덮고, 카드 안의 다른 링크는 그 위에 뜬다.
+ *   고른 카드는 aria-current="true". 합계는 카드 목록 아래 .erp-grid-foot 에 둔다. */
+.erp-cardlist { flex: 1; min-height: 0; overflow: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); align-content: start; gap: var(--erp-sp-3); padding: var(--erp-sp-4); background: var(--erp-color-sunken); }
+.erp-listcard { position: relative; display: flex; flex-direction: column; gap: 10px; min-width: 0; padding: 14px var(--erp-sp-4); border: 1px solid var(--erp-color-line); border-radius: var(--erp-r-lg); background: var(--erp-color-surface); }
+.erp-listcard:hover { border-color: var(--erp-color-line-strong); }
+.erp-listcard[aria-current="true"] { border-color: var(--erp-color-primary); background: var(--erp-color-row-selected); box-shadow: 0 0 0 3px var(--erp-color-focus-ring); }
+.erp-listcard-head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--erp-sp-2); }
+.erp-listcard-title { min-width: 0; margin: 0; font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); }
+.erp-listcard-link { color: var(--erp-color-text); text-decoration: none; }
+.erp-listcard-link::after { content: ""; position: absolute; inset: 0; border-radius: var(--erp-r-lg); }
+.erp-listcard-link:focus-visible { outline: 0; }
+.erp-listcard-link:focus-visible::after { box-shadow: 0 0 0 3px var(--erp-color-focus-ring); }
+.erp-listcard a:not(.erp-listcard-link) { position: relative; z-index: 1; }
+.erp-listcard-sub { display: block; margin-top: 2px; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-regular); }
+.erp-listcard .erp-props { gap: var(--erp-sp-2) var(--erp-sp-3); }
+.erp-listcard-foot { display: flex; align-items: center; justify-content: space-between; gap: var(--erp-sp-2); margin-top: auto; padding-top: 10px; border-top: 1px solid var(--erp-color-line-row); }
+.erp-listcard-amount { margin-left: auto; font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); white-space: nowrap; }
+.erp-listcard-amount small { margin-left: 2px; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-regular); }
