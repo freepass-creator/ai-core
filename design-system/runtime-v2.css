@@ -588,3 +588,120 @@ dialog::backdrop { background: var(--color-scrim); }
  *   렌더된 결과는 docs/evidence/BORDER-SWEEP.json 이 브라우저 실측으로 확인한다. */
 .ui-bottom-nav, .ui-bottom-action { border-block-start: 0; }
 .ui-icon-button { border: 0; }
+
+/* ═══ Claude v1 병합 — 2026-09-23 ═══════════════════════════════════════════
+   대표: 「병합해주고 디자인 시안 보여주고」
+
+   별도 시스템(examples/claude/claude-v1.css)으로 두지 않는다. 정본 토큰 이름(--color-* · --radius-* ·
+   --font-size-*)으로 바꿔 끼워 이 층에 올린다. 값의 정본은 design-system/tokens.json 이다.
+   대조 기록: design/claude-v1/RECONCILE.md
+
+   ★이미 있던 규칙을 다시 만든 것도 여기서 정리한다 — FREEPASS_PRODUCT_UI_PROFILE 4절이
+     「버튼은 border 줄이고 · 입력창/검색/데이터 박스는 border 허용 · selected 는 옅은 면 + 굵기」를
+     이미 적어 두었다. 아래는 그 규칙의 «구현»이지 새 규칙이 아니다. */
+
+/* ── 모서리 규칙: 네 값 ─────────────────────────────────────────────────
+   알약 = 버튼·뱃지·태그·아바타·스위치·라디오 / 8 = 칩·목록 줄 / 12 = 담는 것 / 4 = 체크박스 */
+.ui-button, .ui-badge, .ui-source, .ui-tag, .ui-avatar { border-radius: var(--radius-pill); }
+.ui-chip, .ui-row, .ui-select-card { border-radius: var(--radius-sm); }
+.ui-card, .ui-panel, .ui-alert, .ui-dialog, .ui-receipt, .ui-state, .ui-note-box { border-radius: var(--radius-md); }
+
+/* ── 목록의 «한 건»은 박스다 ─────────────────────────────────────────────
+   선택이 박스를 만들지 않는다. 이미 있던 박스를 바꾼다. */
+.ui-rows { display: grid; gap: 4px; }
+.ui-row {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px;
+  min-block-size: 44px; padding: 12px 14px; border: 0;
+  background: var(--color-row); cursor: pointer;
+}
+.ui-row .t { font-weight: 600; }
+.ui-row .n { color: var(--color-muted); font-size: var(--font-size-meta); font-variant-numeric: tabular-nums; }
+.ui-row .m { grid-column: 1 / -1; color: var(--color-muted); font-size: var(--font-size-meta); }
+.ui-row input { position: absolute; opacity: 0; pointer-events: none; }
+@media (hover: hover) { .ui-row:hover { background-image: linear-gradient(var(--color-hover-layer), var(--color-hover-layer)); } }
+.ui-row:active { background-image: linear-gradient(var(--color-pressed-layer), var(--color-pressed-layer)); }
+.ui-row:has(input:checked) { background: var(--color-row-selected); }
+.ui-row:has(input:checked) .t { color: var(--color-primary-hover); font-weight: 700; }
+.ui-row:has(input:disabled) { opacity: 0.55; color: var(--color-muted); cursor: not-allowed; }
+.ui-row:has(input:focus-visible) { outline: var(--focus-ring-width) solid var(--color-focus); outline-offset: 1px; }
+
+/* ── 고르기 표식 — 네이티브는 브라우저가 1px 테두리를 그린다. 직접 그린다.
+   모양으로 구별한다: 네모(4px)=여러 개 · 동그라미=하나. 색으로 구별하지 않는다. */
+.ui-pick { display: inline-flex; align-items: center; gap: 8px; min-block-size: 40px; cursor: pointer; }
+.ui-pick input { position: absolute; opacity: 0; pointer-events: none; }
+.ui-pick .mark {
+  display: inline-grid; place-items: center; flex: none;
+  inline-size: 20px; block-size: 20px; border: 0;
+  border-radius: var(--radius-xs); background: var(--color-mark);
+}
+.ui-pick[data-shape="one"] .mark { border-radius: var(--radius-pill); }
+.ui-pick .mark::after {
+  content: ""; inline-size: 12px; block-size: 12px; opacity: 0; background: var(--color-surface);
+  -webkit-mask: var(--icon-check) center / contain no-repeat;
+  mask: var(--icon-check) center / contain no-repeat;
+}
+.ui-pick[data-shape="one"] .mark::after { inline-size: 8px; block-size: 8px; border-radius: var(--radius-pill); mask: none; -webkit-mask: none; }
+.ui-pick input:checked + .mark { background: var(--color-primary); }
+.ui-pick input:checked + .mark::after { opacity: 1; }
+.ui-pick input:focus-visible + .mark { outline: var(--focus-ring-width) solid var(--color-focus); outline-offset: 2px; }
+.ui-pick:has(input:disabled) { color: var(--color-muted); cursor: not-allowed; opacity: 0.55; }
+
+/* ── 뱃지·태그 — 선도 그림자도 없다. 높이 20 · 글자 12/700 · 알약 ───────── */
+.ui-tag {
+  display: inline-flex; align-items: center; justify-content: center; gap: 4px;
+  min-block-size: 20px; padding-inline: 8px; border: 0; border-radius: var(--radius-pill);
+  background: var(--color-disabled-surface); color: var(--color-muted);
+  font-size: var(--font-size-xs); font-weight: 700; line-height: 1; white-space: nowrap;
+}
+.ui-tag[data-tone="accent"] { background: var(--color-selected-surface); color: var(--color-primary-hover); }
+.ui-tag[data-tone="ok"] { background: var(--color-ok-surface); color: var(--color-success); }
+.ui-tag[data-tone="warn"] { background: var(--color-warn-surface); color: var(--color-warning); }
+.ui-tag[data-tone="risk"] { background: var(--color-error-surface); color: var(--color-danger); }
+
+/* ── 상태 점 — 점 + 글자. 면을 칠하지 않는다. ───────────────────────────── */
+.ui-dot { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; font-size: var(--font-size-meta); font-weight: 600; }
+.ui-dot::before { content: ""; inline-size: 7px; block-size: 7px; border-radius: var(--radius-pill); background: currentColor; }
+.ui-dot[data-tone="ok"] { color: var(--color-success); }
+.ui-dot[data-tone="warn"] { color: var(--color-warning); }
+.ui-dot[data-tone="risk"] { color: var(--color-danger); }
+.ui-dot[data-tone="idle"] { color: var(--color-muted); }
+
+/* ── 진행 단계 · 이력 — 목록의 한 건이므로 박스다 ───────────────────────── */
+.ui-steps { display: flex; flex-wrap: wrap; gap: 6px 18px; }
+.ui-step { display: inline-flex; align-items: center; gap: 7px; font-size: var(--font-size-meta); color: var(--color-muted); }
+.ui-step::before { content: ""; inline-size: 18px; block-size: 18px; border-radius: var(--radius-pill); background: var(--color-disabled-surface); }
+.ui-step[data-state="done"]::before { background: var(--color-selected-surface); }
+.ui-step[data-state="now"] { color: var(--color-primary-hover); font-weight: 700; }
+.ui-step[data-state="now"]::before { background: var(--color-primary); }
+
+.ui-timeline { display: grid; gap: 4px; }
+.ui-tl { display: grid; grid-template-columns: 16px minmax(0, 1fr); gap: 10px; padding: 10px 12px; border-radius: var(--radius-sm); background: var(--color-row); }
+.ui-tl .dot { inline-size: 8px; block-size: 8px; margin-block-start: 6px; margin-inline-start: 4px; border-radius: var(--radius-pill); background: var(--color-disabled-surface); }
+.ui-tl[data-tone="ok"] .dot { background: var(--color-success); }
+.ui-tl[data-tone="warn"] .dot { background: var(--color-warning); }
+.ui-tl[data-tone="risk"] .dot { background: var(--color-danger); }
+.ui-tl[data-tone="accent"] .dot { background: var(--color-primary); }
+.ui-tl .when { display: block; color: var(--color-muted); font-size: var(--font-size-xs); font-variant-numeric: tabular-nums; }
+.ui-tl .what { display: block; font-size: var(--font-size-sm); font-weight: 600; }
+.ui-tl .said { display: block; color: var(--color-muted); font-size: var(--font-size-meta); }
+
+/* ── 지표 — 라벨 작게 위, 값 크게 아래 ──────────────────────────────────── */
+.ui-metrics { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 28px; }
+.ui-metric { display: grid; gap: 2px; }
+.ui-metric .k { color: var(--color-muted); font-size: var(--font-size-xs); }
+.ui-metric .v { font-size: var(--font-size-metric); font-weight: 700; line-height: 1.3; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+.ui-metric .v small { margin-inline-start: 4px; color: var(--color-muted); font-size: var(--font-size-meta); font-weight: 600; }
+.ui-metric[data-tone="risk"] .v { color: var(--color-danger); }
+
+/* ── 값 묶음 (읽기만 하는 값들) ─────────────────────────────────────────── */
+.ui-facts { display: grid; gap: 10px 20px; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); margin: 0; }
+.ui-facts > div { display: grid; gap: 2px; }
+.ui-facts dt { color: var(--color-muted); font-size: var(--font-size-xs); }
+.ui-facts dd { margin: 0; font-size: var(--font-size-sm); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* ── 글자 사다리를 실제로 쓴다 ──────────────────────────────────────────── */
+.ui-screen-title { margin: 0; font-size: var(--font-size-screen-title); font-weight: 700; line-height: 1.3; letter-spacing: -0.01em; }
+.ui-box-title { margin: 0; font-size: var(--font-size-lead); font-weight: 700; line-height: 1.3; }
+.ui-meta { color: var(--color-muted); font-size: var(--font-size-meta); }
+.ui-label { color: var(--color-muted); font-size: var(--font-size-xs); }
+.ui-input, .ui-select, .ui-textarea, .ui-search { font-size: var(--font-size-input); }

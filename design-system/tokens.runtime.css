@@ -28,8 +28,8 @@
   --space-6: 24px;
   --space-8: 32px;
   --space-12: 48px;
-  --radius-sm: 6px;
-  --radius-md: 10px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
   --shadow-sm: 0 1px 2px rgb(16 24 40 / 8%);
   --font-sans: Inter, Pretendard, "Noto Sans KR", system-ui, sans-serif;
   --font-size-xs: 12px;
@@ -53,6 +53,18 @@
   --page-gutter-desktop: 16px;
   --card-padding-mobile: 16px;
   --card-padding-desktop: 24px;
+  --font-size-meta: 13px;
+  --font-size-input: 15px;
+  --font-size-lead: 17px;
+  --font-size-screen-title: 22px;
+  --font-size-metric: 28px;
+  --radius-xs: 4px;
+  --radius-pill: 999px;
+  --color-row: #f2f6fb;
+  --color-row-selected: #dbe9fd;
+  --color-mark: #e1e7ef;
+  --color-ok-surface: #e7f4ec;
+  --color-warn-surface: #fcf1e2;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -62,3 +74,38 @@ button, select, input, textarea { font: inherit; }
 :focus-visible { outline: var(--focus-ring-width) solid var(--color-focus); outline-offset: var(--focus-ring-offset); }
 .ui-tabular { font-variant-numeric: tabular-nums; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; } }
+
+/* ★어두운 화면 — 정본 토큰의 다크 투영(2026-09-23 병합). 면은 올라올수록 «밝아진다».
+   밝은 값을 뒤집는 게 아니라 다시 짠 값이다. 대비는 scripts 로 잰다. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #0e1218;
+    --color-surface: #171d26;
+    --color-surface-subtle: #1b222d;
+    --color-surface-sunken: #212936;
+    --color-row: #1b222d;
+    --color-row-selected: #2d3f63;
+    --color-mark: #2a3340;
+    --color-text: #e8edf5;
+    --color-muted: #a3aebe;
+    --color-border: #2a3342;
+    --color-control-border: #6b7688;
+    --color-primary: #7aa2ff;
+    --color-primary-hover: #9cb8ff;
+    --color-danger: #fb7185;
+    --color-danger-hover: #fda4af;
+    --color-focus: #fbbf24;
+    --color-success: #4ade80;
+    --color-warning: #fbbf24;
+    --color-info-surface: #1b2740;
+    --color-error-surface: #2e161d;
+    --color-ok-surface: #16281d;
+    --color-warn-surface: #2b2113;
+    --color-disabled-surface: #212936;
+    --color-selected-surface: #2d3f63;
+    --color-hover-layer: rgba(232, 237, 245, 0.08);
+    --color-pressed-layer: rgba(232, 237, 245, 0.10);
+    --color-scrim: rgba(3, 6, 10, 0.6);
+  }
+  html { color-scheme: dark; }
+}
