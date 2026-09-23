@@ -187,3 +187,26 @@ test('post-execution verification failure preserves performed effect state',asyn
   assert.equal(result.external_effect,true);
   assert.equal(result.outcome_known,true);
 });
+
+test('adapter evidence refs must be canonical nonempty strings',async()=>{
+  const e=executor({
+    adapters:new Map([['KEEP_SEPARATE',{execute:async()=>({
+      status:'SUCCEEDED',
+      performed:true,
+      output_refs:['artifact:result'],
+      output_digest:'sha256:'+'b'.repeat(64),
+      evidence_refs:[{ref:'commit:result'}],
+      deterministic:true,
+      executor_version:'integration-adapter/v1',
+      environment_revision:'env-1',
+      command_ref:'metadata-update/v1',
+    })}]]),
+  });
+  const result=await e.run({
+    packet:packet(),authority:{},perform:true,attempt_id:'attempt-1',actor:'worker',correlation_id:'corr-1',
+  });
+  assert.equal(result.status,'HOLD');
+  assert.equal(result.reason,'INTEGRATION_EXECUTION_OUTCOME_UNKNOWN');
+  assert.equal(result.detail,'INTEGRATION_ADAPTER_EVIDENCE_REFS_INVALID');
+  assert.equal(result.outcome_known,false);
+});
