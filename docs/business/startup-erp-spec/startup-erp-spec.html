@@ -1,0 +1,312 @@
+<title>Runway ERP 규격</title>
+<style>
+:root{
+  --bg:#f6f8fb;--surface:#fff;--text:#172033;--muted:#5b6475;--line:#dde3ec;--line-strong:#c8cfda;
+  --primary:#155eef;--primary-soft:#eaf1ff;--ok:#067647;--ok-soft:#e7f6ee;--warn:#b54708;--warn-soft:#fff4e5;
+  --danger:#b42318;--danger-soft:#fff1f0;--ink:#0f1a2e;
+  --font:"Pretendard","Noto Sans CJK KR","Noto Sans KR",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;line-height:1.5}
+.page{width:1600px;padding:40px 44px 44px}
+header{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;padding-bottom:22px;border-bottom:2px solid var(--ink);margin-bottom:24px}
+.eyebrow{font-size:12px;letter-spacing:.12em;color:var(--primary);font-weight:700;text-transform:uppercase}
+h1{margin:4px 0 6px;font-size:34px;letter-spacing:-.02em;line-height:1.2}
+h1 small{font-size:18px;color:var(--muted);font-weight:500;margin-left:8px}
+.lede{margin:0;color:var(--muted);font-size:15px}
+.principles{display:flex;gap:10px}
+.pr{background:var(--ink);color:#fff;border-radius:10px;padding:10px 14px;min-width:150px}
+.pr b{display:block;font-size:20px;letter-spacing:-.01em}
+.pr span{font-size:12px;color:#b8c3d6}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 20px}
+.c4{grid-column:span 4}.c5{grid-column:span 5}.c6{grid-column:span 6}.c7{grid-column:span 7}.c8{grid-column:span 8}.c3{grid-column:span 3}
+h2{margin:0 0 12px;font-size:16px;display:flex;align-items:center;gap:8px}
+h2 .n{font-size:11px;color:var(--primary);background:var(--primary-soft);border-radius:4px;padding:2px 6px;font-weight:700}
+h2 .sub{margin-left:auto;font-size:12px;color:var(--muted);font-weight:500}
+.mods{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.mod{border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.mod .t{display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:14px}
+.mod ul{margin:6px 0 0;padding:0;list-style:none;color:var(--muted);font-size:12.5px}
+.mod li::before{content:"· "}
+.tag{font-size:10.5px;font-weight:700;border-radius:4px;padding:1px 6px}
+.p1{background:var(--primary);color:#fff}.p2{background:var(--primary-soft);color:var(--primary)}.p3{background:#eef0f4;color:var(--muted)}
+/* dashboard */
+.dash{border:1px solid var(--line-strong);border-radius:10px;overflow:hidden;display:grid;grid-template-columns:118px 1fr}
+.side{background:var(--ink);color:#c9d3e3;padding:12px 10px;font-size:12.5px}
+.side .logo{color:#fff;font-weight:800;margin-bottom:10px}
+.side div{padding:5px 8px;border-radius:6px}
+.side .on{background:#1f3a6e;color:#fff}
+.main{padding:12px 12px;background:#fafbfd}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+.kpi .l{font-size:11px;color:var(--muted)}
+.kpi .v{white-space:nowrap;font-size:17px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.kpi .d{font-size:11px;white-space:nowrap}
+.up{color:var(--ok)}.dn{color:var(--danger)}
+.dash-row{display:grid;grid-template-columns:1.35fr 1fr;gap:8px}
+.box{background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:12px}
+.box .bt{font-weight:700;margin-bottom:6px;display:flex;justify-content:space-between}
+.box .bt span{color:var(--muted);font-weight:500}
+.todo{display:flex;gap:6px;justify-content:space-between;align-items:center;padding:4px 0;border-top:1px solid var(--line)}
+.pill{white-space:nowrap;flex:none;font-size:10.5px;border-radius:999px;padding:1px 8px;font-weight:700}
+.pw{background:var(--warn-soft);color:var(--warn)}.pd{background:var(--danger-soft);color:var(--danger)}.po{background:var(--ok-soft);color:var(--ok)}.pb{background:var(--primary-soft);color:var(--primary)}
+/* entities */
+.ents{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.ent{border:1px solid var(--line-strong);border-radius:8px;overflow:hidden;font-size:12px}
+.ent .h{background:var(--ink);color:#fff;padding:5px 9px;font-weight:700;display:flex;justify-content:space-between}
+.ent .h span{color:#9fb0cc;font-weight:500;font-size:11px}
+.ent .f{padding:6px 9px;color:var(--muted);font-family:ui-monospace,Menlo,monospace;font-size:11px;line-height:1.55}
+.ent .f b{color:var(--text)}
+.rel{margin-top:10px;font-size:12px;color:var(--muted);background:var(--bg);border-radius:8px;padding:8px 12px;font-family:ui-monospace,Menlo,monospace}
+/* flows */
+.flow{margin-bottom:12px}
+.flow .ft{font-weight:700;font-size:13px;margin-bottom:6px}
+.flow .ft span{font-weight:500;color:var(--muted);font-size:12px;margin-left:6px}
+.steps{display:flex;align-items:center;flex-wrap:wrap;gap:6px}
+.st{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;font-weight:700;border-radius:6px;padding:4px 8px;background:var(--primary-soft);color:var(--primary)}
+.st.end{background:var(--ok-soft);color:var(--ok)}
+.st.bad{background:var(--danger-soft);color:var(--danger)}
+.ar{color:var(--line-strong);font-weight:700}
+.rule{font-size:12px;color:var(--muted);margin-top:4px}
+/* table */
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th,td{padding:6px 6px;border-bottom:1px solid var(--line);text-align:center}
+th{font-size:11.5px;color:var(--muted);font-weight:600}
+td:first-child,th:first-child{text-align:left;font-weight:700}
+.y{color:var(--ok);font-weight:800}.a{color:var(--warn);font-weight:800}.r{color:var(--primary);font-weight:800}.x{color:#b9c1ce}
+.legend{font-size:11px;color:var(--muted);margin-top:8px}
+.list{margin:0;padding:0;list-style:none}
+.list li{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--line);font-size:12.5px}
+.list li:last-child{border-bottom:0}
+.list .k{flex:0 0 92px;font-weight:700}
+.list .v{color:var(--muted)}
+/* screens */
+.screens{display:grid;grid-template-columns:1fr 220px;gap:16px;align-items:start}
+.web{border:1px solid var(--line-strong);border-radius:10px;overflow:hidden}
+.web .bar{background:var(--ink);color:#fff;font-size:12px;padding:6px 10px;display:flex;justify-content:space-between}
+.web .panes{display:grid;grid-template-columns:1.25fr 1.45fr .8fr;min-height:210px}
+.pane{padding:10px;border-right:1px solid var(--line);font-size:11.5px}
+.pane:last-child{border-right:0;background:#fafbfd}
+.pane .pt{font-weight:700;color:var(--muted);font-size:11px;letter-spacing:.06em;margin-bottom:6px}
+.row{display:flex;gap:6px;white-space:nowrap;justify-content:space-between;padding:5px 6px;border-radius:5px}
+.row.sel{background:var(--primary-soft)}
+.fld{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px dashed var(--line)}
+.fld span{color:var(--muted)}
+.btns{display:flex;gap:6px;margin-top:10px}
+.b{flex:1;text-align:center;border-radius:6px;padding:6px 0;font-weight:700;font-size:11.5px}
+.b2{border:1px solid var(--line-strong)}.b1{background:var(--primary);color:#fff}
+.phone{border:6px solid var(--ink);border-radius:22px;overflow:hidden;background:#fafbfd;font-size:11px}
+.phone .top{padding:8px 10px;background:#fff;border-bottom:1px solid var(--line);font-weight:700}
+.phone .cards{padding:8px;display:grid;gap:6px}
+.mc{background:#fff;border:1px solid var(--line);border-radius:8px;padding:7px 8px}
+.mc b{display:block;font-size:12px}
+.mc span{color:var(--muted)}
+.phone .act{display:grid;grid-template-columns:3fr 7fr;gap:6px;padding:8px;background:#fff;border-top:1px solid var(--line)}
+.cap{font-size:11.5px;color:var(--muted);margin-top:8px}
+/* roadmap */
+.road{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.ph{border-radius:8px;padding:10px 12px;border:1px solid var(--line)}
+.ph.now{border-color:var(--primary);background:var(--primary-soft)}
+.ph .pt{display:flex;justify-content:space-between;font-weight:800;font-size:13.5px}
+.ph .pt span{font-weight:600;font-size:11.5px;color:var(--muted)}
+.ph ul{margin:6px 0 0;padding-left:16px;font-size:12px;color:var(--text)}
+.ph .gate{margin-top:6px;font-size:11.5px;color:var(--ok);font-weight:700}
+footer{margin-top:20px;display:flex;justify-content:space-between;font-size:12px;color:var(--muted);border-top:1px solid var(--line-strong);padding-top:12px}
+</style>
+
+<div class="page">
+<header>
+  <div>
+    <div class="eyebrow">Startup Management ERP · Spec v0.1</div>
+    <h1>Runway ERP 표준 규격<small>10–80인 스타트업용 경영관리 ERP</small></h1>
+    <p class="lede">대표 + 경영지원 1–2명이 영업·재무·인사·결재를 한 화면에서 굴리는 것을 목표로 한 실제 적용 규격. 한국 세무·노무 실무(전자세금계산서, 4대보험, 원천세) 기준.</p>
+  </div>
+  <div class="principles">
+    <div class="pr"><b>입력 1회</b><span>견적→계약→청구 자동 승계</span></div>
+    <div class="pr"><b>결재 3클릭</b><span>모바일에서 승인 완결</span></div>
+    <div class="pr"><b>월마감 D+3</b><span>매월 3영업일 내 결산</span></div>
+  </div>
+</header>
+
+<div class="grid">
+  <!-- modules -->
+  <section class="card c7">
+    <h2><span class="n">A</span>모듈 구성 <span class="sub">P1 = MVP 6주 · P2 = +6주 · P3 = 확장</span></h2>
+    <div class="mods">
+      <div class="mod"><div class="t">경영 대시보드<span class="tag p1">P1</span></div><ul><li>현금·번레이트·런웨이</li><li>MRR/매출, 미수금 에이징</li><li>내 할 일(결재·마감)</li></ul></div>
+      <div class="mod"><div class="t">영업 · CRM<span class="tag p1">P1</span></div><ul><li>거래처·담당자·딜 파이프라인</li><li>견적서 → 계약 전환</li><li>구독/정기청구 스케줄</li></ul></div>
+      <div class="mod"><div class="t">매출 · 청구<span class="tag p1">P1</span></div><ul><li>청구서, 전자세금계산서 발행</li><li>입금 자동매칭(계좌 연동)</li><li>미수 독촉 알림톡</li></ul></div>
+      <div class="mod"><div class="t">비용 · 매입<span class="tag p1">P1</span></div><ul><li>법인카드 자동수집 + 영수증</li><li>경비정산, 매입 세금계산서</li><li>SaaS 구독·고정비 관리</li></ul></div>
+      <div class="mod"><div class="t">전자결재<span class="tag p1">P1</span></div><ul><li>품의·지출결의·휴가 양식</li><li>금액별 결재선 자동 지정</li><li>전결 규정 · 대결</li></ul></div>
+      <div class="mod"><div class="t">회계 · 결산<span class="tag p2">P2</span></div><ul><li>거래 → 자동분개(계정 규칙)</li><li>부가세·원천세 신고 자료</li><li>세무사 export(더존 호환)</li></ul></div>
+      <div class="mod"><div class="t">인사 · 근태<span class="tag p2">P2</span></div><ul><li>입·퇴사, 근로계약, 조직도</li><li>출퇴근·휴가·연차 자동계산</li><li>스톡옵션 부여 대장</li></ul></div>
+      <div class="mod"><div class="t">급여<span class="tag p2">P2</span></div><ul><li>급여 계산, 4대보험·소득세</li><li>명세서 발송, 이체 파일</li><li>퇴직금 추계</li></ul></div>
+      <div class="mod"><div class="t">프로젝트 · 자산<span class="tag p3">P3</span></div><ul><li>프로젝트별 공수·원가·손익</li><li>비품·장비 대장, 감가상각</li><li>투자·IR 지표 리포트</li></ul></div>
+    </div>
+  </section>
+
+  <!-- dashboard -->
+  <section class="card c5">
+    <h2><span class="n">B</span>홈 대시보드 규격 <span class="sub">대표 · 경영지원 기본 화면</span></h2>
+    <div class="dash">
+      <div class="side">
+        <div class="logo">Runway</div>
+        <div class="on">대시보드</div><div>영업·CRM</div><div>매출·청구</div><div>비용·매입</div><div>전자결재 <b style="color:#fff">3</b></div><div>회계·결산</div><div>인사·급여</div><div>설정·권한</div>
+      </div>
+      <div class="main">
+        <div class="kpis">
+          <div class="kpi"><div class="l">현금 잔고</div><div class="v">₩8.42억</div><div class="d dn">▼ 1,860만</div></div>
+          <div class="kpi"><div class="l">월 번레이트</div><div class="v">₩6,120만</div><div class="d dn">▲ 4.1%</div></div>
+          <div class="kpi"><div class="l">런웨이</div><div class="v">13.7개월</div><div class="d" style="color:var(--muted)">목표 ≥ 12</div></div>
+          <div class="kpi"><div class="l">이번 달 매출</div><div class="v">₩3,480만</div><div class="d up">▲ 12.6%</div></div>
+        </div>
+        <div class="dash-row">
+          <div class="box">
+            <div class="bt">현금 흐름 (6개월)<span>입금 / 출금</span></div>
+            <svg viewBox="0 0 260 92" width="100%" height="92" role="img" aria-label="6개월 현금흐름">
+              <g stroke="#e5e9f0"><line x1="0" y1="20" x2="260" y2="20"/><line x1="0" y1="50" x2="260" y2="50"/><line x1="0" y1="80" x2="260" y2="80"/></g>
+              <g fill="#155eef"><rect x="10" y="52" width="14" height="28"/><rect x="52" y="48" width="14" height="32"/><rect x="94" y="44" width="14" height="36"/><rect x="136" y="46" width="14" height="34"/><rect x="178" y="38" width="14" height="42"/><rect x="220" y="34" width="14" height="46"/></g>
+              <g fill="#c8cfda"><rect x="25" y="26" width="14" height="54"/><rect x="67" y="24" width="14" height="56"/><rect x="109" y="25" width="14" height="55"/><rect x="151" y="22" width="14" height="58"/><rect x="193" y="21" width="14" height="59"/><rect x="235" y="19" width="14" height="61"/></g>
+              <g fill="#5b6475" font-size="9"><text x="14" y="91">4월</text><text x="56" y="91">5월</text><text x="98" y="91">6월</text><text x="140" y="91">7월</text><text x="182" y="91">8월</text><text x="224" y="91">9월</text></g>
+            </svg>
+          </div>
+          <div class="box">
+            <div class="bt">내 할 일<span>5건</span></div>
+            <div class="todo">지출결의 · 서버비 AWS<span class="pill pw">결재 대기</span></div>
+            <div class="todo">(주)한빛 청구 42일 경과<span class="pill pd">연체</span></div>
+            <div class="todo">9월 부가세 자료 확정<span class="pill pb">D-18</span></div>
+            <div class="todo">신규 입사 2명 계약서<span class="pill po">서명 완료</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="cap">런웨이 = 현금 잔고 ÷ 최근 3개월 평균 순유출. 12개월 미만이면 경고, 6개월 미만이면 위험 표시.</div>
+  </section>
+
+  <!-- data model -->
+  <section class="card c7">
+    <h2><span class="n">C</span>핵심 데이터 모델 <span class="sub">모든 레코드: company_id · created_by · updated_at · version</span></h2>
+    <div class="ents">
+      <div class="ent"><div class="h">Company<span>테넌트</span></div><div class="f"><b>id</b>, biz_reg_no<br>fiscal_start, currency<br>approval_policy</div></div>
+      <div class="ent"><div class="h">Member<span>구성원</span></div><div class="f"><b>id</b>, role, dept_id<br>hire_date, salary_ref<br>status: ACTIVE|LEFT</div></div>
+      <div class="ent"><div class="h">Partner<span>거래처</span></div><div class="f"><b>id</b>, type: 고객|공급사<br>biz_reg_no, tax_email<br>payment_terms</div></div>
+      <div class="ent"><div class="h">Deal<span>영업 기회</span></div><div class="f"><b>id</b>, partner_id, stage<br>amount, prob, owner_id<br>expected_close</div></div>
+      <div class="ent"><div class="h">Quote / Contract<span>견적·계약</span></div><div class="f"><b>id</b>, deal_id, lines[]<br>billing: 일시|월정기<br>start, end, esign_ref</div></div>
+      <div class="ent"><div class="h">Invoice<span>청구·세금계산서</span></div><div class="f"><b>id</b>, contract_id<br>supply, vat, due_date<br>nts_issue_no</div></div>
+      <div class="ent"><div class="h">Transaction<span>계좌·카드 거래</span></div><div class="f"><b>id</b>, source: 계좌|카드<br>amount, counterparty<br>matched_ref, account_code</div></div>
+      <div class="ent"><div class="h">Approval<span>결재 문서</span></div><div class="f"><b>id</b>, form, target_ref<br>line[]: step, approver<br>state, decided_at</div></div>
+    </div>
+    <div class="rel">Partner 1─N Deal 1─N Quote → Contract 1─N Invoice N─M Transaction(입금 매칭) · Expense/Invoice/Leave ─ Approval(target_ref) · Transaction → JournalEntry(자동분개)</div>
+  </section>
+
+  <!-- workflows -->
+  <section class="card c5">
+    <h2><span class="n">D</span>상태 워크플로 <span class="sub">웹·모바일 동일 상태·명령</span></h2>
+    <div class="flow"><div class="ft">견적 → 계약<span>승계 시 품목·금액 재입력 없음</span></div>
+      <div class="steps"><span class="st">DRAFT</span><span class="ar">→</span><span class="st">SENT</span><span class="ar">→</span><span class="st">ACCEPTED</span><span class="ar">→</span><span class="st end">CONTRACTED</span><span class="ar">/</span><span class="st bad">LOST</span></div></div>
+    <div class="flow"><div class="ft">청구 · 수금<span>입금 매칭으로 자동 전환</span></div>
+      <div class="steps"><span class="st">SCHEDULED</span><span class="ar">→</span><span class="st">ISSUED</span><span class="ar">→</span><span class="st">PARTIAL</span><span class="ar">→</span><span class="st end">PAID</span><span class="ar">/</span><span class="st bad">OVERDUE</span></div>
+      <div class="rule">OVERDUE: due_date + 7일 → 알림톡 1차, +21일 → 담당자·대표 보고</div></div>
+    <div class="flow"><div class="ft">지출 · 경비<span>금액별 결재선</span></div>
+      <div class="steps"><span class="st">DRAFT</span><span class="ar">→</span><span class="st">SUBMITTED</span><span class="ar">→</span><span class="st">APPROVED</span><span class="ar">→</span><span class="st end">PAID</span><span class="ar">/</span><span class="st bad">REJECTED</span></div>
+      <div class="rule">≤ 50만 팀장 전결 · ≤ 500만 +재무 · 초과 +대표</div></div>
+    <div class="flow" style="margin-bottom:0"><div class="ft">월 마감<span>마감 후 수정은 역분개만 허용</span></div>
+      <div class="steps"><span class="st">OPEN</span><span class="ar">→</span><span class="st">RECONCILING</span><span class="ar">→</span><span class="st">REVIEW</span><span class="ar">→</span><span class="st end">CLOSED</span></div></div>
+  </section>
+
+  <!-- permissions -->
+  <section class="card c5">
+    <h2><span class="n">E</span>권한 매트릭스 (RBAC)</h2>
+    <table>
+      <thead><tr><th>역할</th><th>영업</th><th>매출·청구</th><th>비용</th><th>회계</th><th>인사·급여</th><th>설정</th></tr></thead>
+      <tbody>
+        <tr><td>대표 (Owner)</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="y">●</td></tr>
+        <tr><td>경영지원 · 재무</td><td class="r">◐</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="a">◑</td><td class="r">◐</td></tr>
+        <tr><td>인사 담당</td><td class="x">—</td><td class="x">—</td><td class="r">◐</td><td class="x">—</td><td class="y">●</td><td class="x">—</td></tr>
+        <tr><td>팀장</td><td class="y">●</td><td class="r">◐</td><td class="a">◑</td><td class="x">—</td><td class="r">◐</td><td class="x">—</td></tr>
+        <tr><td>멤버</td><td class="a">◑</td><td class="x">—</td><td class="a">◑</td><td class="x">—</td><td class="a">◑</td><td class="x">—</td></tr>
+        <tr><td>외부 세무사</td><td class="x">—</td><td class="r">◐</td><td class="r">◐</td><td class="r">◐</td><td class="r">◐</td><td class="x">—</td></tr>
+      </tbody>
+    </table>
+    <div class="legend">● 전체 편집 · ◑ 본인·소속 팀 범위만 · ◐ 조회 전용 · — 접근 불가 &nbsp;|&nbsp; 급여·주민번호는 필드 단위 마스킹</div>
+  </section>
+
+  <!-- integrations -->
+  <section class="card c4">
+    <h2><span class="n">F</span>외부 연동 (국내 실무)</h2>
+    <ul class="list">
+      <li><span class="k">세금계산서</span><span class="v">국세청 홈택스 전자세금계산서 발행·매입 수집 (ASP/API)</span></li>
+      <li><span class="k">계좌 · 카드</span><span class="v">오픈뱅킹/스크래핑으로 거래내역 일 4회 동기화</span></li>
+      <li><span class="k">전자서명</span><span class="v">계약서·근로계약 전자서명, 서명본 PDF 보관</span></li>
+      <li><span class="k">알림</span><span class="v">카카오 알림톡(외부), Slack·이메일(내부)</span></li>
+      <li><span class="k">계정 · SSO</span><span class="v">Google Workspace / Microsoft 365 로그인</span></li>
+      <li><span class="k">회계 export</span><span class="v">더존·세무사 양식 엑셀, 분개장 CSV</span></li>
+    </ul>
+  </section>
+
+  <!-- NFR -->
+  <section class="card c3">
+    <h2><span class="n">G</span>비기능 요건</h2>
+    <ul class="list">
+      <li><span class="k" style="flex-basis:64px">보안</span><span class="v">주민번호·계좌 AES-256 암호화, 2FA 필수</span></li>
+      <li><span class="k" style="flex-basis:64px">감사</span><span class="v">모든 변경 이력(누가·언제·전후값) 5년 보관</span></li>
+      <li><span class="k" style="flex-basis:64px">테넌트</span><span class="v">company_id 행 단위 격리</span></li>
+      <li><span class="k" style="flex-basis:64px">가용성</span><span class="v">99.5%, 일 백업 · RPO 24h</span></li>
+      <li><span class="k" style="flex-basis:64px">성능</span><span class="v">목록 p95 &lt; 800ms</span></li>
+    </ul>
+  </section>
+
+  <!-- screens -->
+  <section class="card c7">
+    <h2><span class="n">H</span>화면 규격 <span class="sub">웹 = 목록·상세·보조 3패널 · 모바일 = 카드 목록 + 하단 액션</span></h2>
+    <div class="screens">
+      <div>
+        <div class="web">
+          <div class="bar"><span>매출·청구 › 청구서</span><span>⌘K 검색 · 일괄 발행</span></div>
+          <div class="panes">
+            <div class="pane"><div class="pt">목록 · 필터: 미수</div>
+              <div class="row sel"><span>018 (주)한빛</span><b>₩1,320만</b></div>
+              <div class="row"><span>021 로켓랩</span><b>₩440만</b></div>
+              <div class="row"><span>022 오름컴퍼니</span><b>₩275만</b></div>
+              <div class="row"><span>015 누리소프트</span><b>₩880만</b></div>
+            </div>
+            <div class="pane"><div class="pt">상세 · INV-2409-018</div>
+              <div class="fld"><span>상태</span><b><span class="pill pd">OVERDUE</span></b></div>
+              <div class="fld"><span>공급가액 / 부가세</span><b>₩12,000,000 / ₩1,200,000</b></div>
+              <div class="fld"><span>세금계산서 승인번호</span><b>20240812-4100…</b></div>
+              <div class="fld"><span>계약</span><b>CT-2407-003 월정기</b></div>
+              <div class="btns"><div class="b b2">독촉 알림톡</div><div class="b b1">입금 수동 매칭</div></div>
+            </div>
+            <div class="pane"><div class="pt">이력 · 메모</div>
+              <div>08.12 발행 (김재무)</div><div>08.19 알림톡 1차</div><div>09.02 담당자 통화: 9/30 입금 약속</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="phone">
+        <div class="top">전자결재 · 대기 3</div>
+        <div class="cards">
+          <div class="mc"><b>지출결의 · AWS 9월</b><span>₩3,812,400 · 개발팀 이서준</span></div>
+          <div class="mc"><b>휴가 · 연차 2일</b><span>9/26–9/27 · 디자인팀</span></div>
+          <div class="mc"><b>품의 · 노트북 2대</b><span>₩4,200,000 · 신규 입사</span></div>
+        </div>
+        <div class="act"><div class="b b2">반려</div><div class="b b1">승인</div></div>
+      </div>
+    </div>
+    <div class="cap">액션 비율: 1개 = Primary 100% · 2개 = 3:7 · 3개 = 3:3:4 (AI Core UI/UX 방향 2026-09-21 준수). 웹과 모바일은 ID·상태·권한·검증 로직을 공유.</div>
+  </section>
+
+  <!-- roadmap -->
+  <section class="card c5">
+    <h2><span class="n">I</span>도입 로드맵</h2>
+    <div class="road">
+      <div class="ph now"><div class="pt">Phase 1<span>0–6주</span></div><ul><li>대시보드 · CRM</li><li>청구 + 세금계산서</li><li>카드·계좌 수집</li><li>전자결재</li></ul><div class="gate">완료 기준: 엑셀 없이 한 달 청구·지출 처리</div></div>
+      <div class="ph"><div class="pt">Phase 2<span>7–12주</span></div><ul><li>자동분개 · 월마감</li><li>인사 · 근태</li><li>급여 · 4대보험</li><li>세무사 export</li></ul><div class="gate">완료 기준: 월마감 D+3 달성</div></div>
+      <div class="ph"><div class="pt">Phase 3<span>13주~</span></div><ul><li>프로젝트 원가·손익</li><li>투자자 리포트</li><li>AI 계정 추천 · 이상지출 탐지</li></ul><div class="gate">완료 기준: IR 지표 원클릭</div></div>
+    </div>
+  </section>
+</div>
+
+<footer><span>Runway ERP Spec v0.1 · 2026-09-23 · 예시 수치는 설명용 샘플 데이터</span><span>ai-core / docs/business/startup-erp-spec</span></footer>
+</div>
