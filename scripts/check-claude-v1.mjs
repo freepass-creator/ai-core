@@ -14,7 +14,9 @@ import { fileURLToPath } from 'node:url';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (p) => readFileSync(resolve(root, p), 'utf8');
 const 토큰 = JSON.parse(read('design/claude-v1/tokens.json'));
-const css = read('examples/claude/claude-v1.css');
+// 정본 위에 얹는 화면 틀 CSS 도 같은 규격을 지켜야 한다 — 인자로 더 받는다.
+//   node scripts/check-claude-v1.mjs examples/claude/startup-erp/erp-templates.css
+const css = ['examples/claude/claude-v1.css', ...process.argv.slice(2)].map(read).join('\n');
 
 const 탈락 = [];
 const 통과 = [];

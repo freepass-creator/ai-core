@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Runway ERP — 카드 · 경비</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<link rel="stylesheet" href="../../../design-system/tokens.runtime.css">
+<link rel="stylesheet" href="../claude-v1.css">
+<link rel="stylesheet" href="erp-templates.css">
+</head>
+<body>
+<!--
+  T4 검토 큐형 — 자동 수집된 카드 거래를 «처리할 줄»로 세우고, 한 줄씩 증빙·계정을 채워 비운다.
+  줄 상태: 미분류 → 증빙 필요 → 확인 완료 (→ 결재가 필요한 금액이면 지출결의로 넘어간다)
+  예시 수치는 설명용 샘플이다.
+-->
+<div class="c-shell">
+
+  <aside class="c-side">
+    <div class="c-brand">runway <span>erp</span></div>
+    <nav class="c-menu">
+      <span class="c-menu-label">경영</span>
+      <a href="dashboard.html">대시보드</a>
+      <span class="c-menu-label">매출</span>
+      <a href="#">거래처 · 딜</a>
+      <a href="billing.html">청구서</a>
+      <a href="#">입금 매칭</a>
+      <span class="c-menu-label">비용</span>
+      <a href="expense.html" aria-current="page">카드 · 경비</a>
+      <a href="#">매입 세금계산서</a>
+      <span class="c-menu-label">결재</span>
+      <a href="approval.html">결재함</a>
+      <span class="c-menu-label">관리</span>
+      <a href="#">구성원</a>
+      <a href="#">설정 · 권한</a>
+    </nav>
+    <div class="c-who">
+      <span class="c-avatar" aria-hidden="true">김</span>
+      <span><span class="n">김재무</span><br><span class="r">경영지원 · 재무</span></span>
+    </div>
+  </aside>
+
+  <div>
+    <header class="c-head">
+      <div>
+        <div class="c-where">비용 · 카드 · 경비</div>
+        <h1>카드 · 경비</h1>
+      </div>
+      <div class="c-actions c-spacer">
+        <button class="c-btn" data-kind="quiet" type="button">
+          <svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg>카드사 동기화 · 14:00</button>
+        <button class="c-btn" type="button">분류 규칙</button>
+        <button class="c-btn" data-kind="primary" type="button">개인 경비 청구</button>
+      </div>
+    </header>
+
+    <main class="c-body">
+      <div class="e-queue">
+        <div class="e-queue-main">
+
+          <div class="e-panel">
+            <div class="e-progress">
+              <div class="row"><b>63 / 86</b>건 처리 · 9월 마감까지<span class="c-spacer"></span>남은 증빙 14건 · 미분류 9건</div>
+              <div class="e-stack" role="img" aria-label="확인 완료 63건, 증빙 필요 14건, 미분류 9건">
+                <i data-tone="ok" style="--v:63"></i><i data-tone="warn" style="--v:14"></i><i style="--v:9"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="e-toolbar">
+            <div class="c-search">
+              <svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <input type="search" placeholder="가맹점 · 사용자 · 금액" aria-label="거래 검색">
+            </div>
+            <label class="c-field"><span>카드</span>
+              <select class="c-select"><option>전체 6장</option><option>신한 ****-4402</option><option>현대 ****-1187</option></select></label>
+            <label class="c-field"><span>사용자</span>
+              <select class="c-select"><option>전체</option><option>이서준</option><option>한소라</option></select></label>
+          </div>
+
+          <div class="c-chips" role="group" aria-label="처리 상태로 거르기">
+            <button class="c-chip" aria-pressed="true" type="button"><svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>처리할 것 23</button>
+            <button class="c-chip" aria-pressed="false" type="button">확인 완료 63</button>
+            <button class="c-chip" aria-pressed="false" type="button">결재 필요 2</button>
+          </div>
+
+          <div class="e-bulk" role="status">
+            <svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+            3건 선택됨
+            <span class="c-spacer"></span>
+            <button class="c-btn" data-kind="quiet" type="button">계정 일괄 지정</button>
+            <button class="c-btn" data-kind="quiet" type="button">사용자에게 증빙 요청</button>
+          </div>
+
+          <div class="e-scroll">
+            <table class="c-table">
+              <thead>
+                <tr>
+                  <th class="e-pick"><label class="c-pick" data-shape="many" aria-label="전체 선택"><input type="checkbox"><span class="mark"></span></label></th>
+                  <th>승인일</th><th>가맹점</th><th>사용자</th><th class="num">금액</th><th>계정과목 (추천)</th><th>증빙</th><th>처리</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr aria-selected="true">
+                  <td><label class="c-pick" data-shape="many" aria-label="선택"><input type="checkbox" checked><span class="mark"></span></label></td>
+                  <td>09-22</td><td>한우명가 역삼점</td><td>박영업</td><td class="num">486,000</td>
+                  <td><span class="c-tag" data-tone="accent">접대비</span></td><td><span class="c-badge" data-tone="warn">참석자 없음</span></td>
+                  <td><span class="c-state" data-tone="warn">증빙 필요</span></td>
+                </tr>
+                <tr>
+                  <td><label class="c-pick" data-shape="many" aria-label="선택"><input type="checkbox" checked><span class="mark"></span></label></td>
+                  <td>09-22</td><td>쿠팡</td><td>한소라</td><td class="num">128,400</td>
+                  <td><span class="c-tag" data-tone="accent">소모품비</span></td><td><span class="c-badge" data-tone="ok">영수증</span></td>
+                  <td><span class="c-state" data-tone="idle">미분류</span></td>
+                </tr>
+                <tr>
+                  <td><label class="c-pick" data-shape="many" aria-label="선택"><input type="checkbox" checked><span class="mark"></span></label></td>
+                  <td>09-21</td><td>Figma</td><td>윤하늘</td><td class="num">93,720</td>
+                  <td><span class="c-tag" data-tone="accent">SaaS</span></td><td><span class="c-badge" data-tone="ok">인보이스</span></td>
+                  <td><span class="c-state" data-tone="idle">미분류</span></td>
+                </tr>
+                <tr>
+                  <td><label class="c-pick" data-shape="many" aria-label="선택"><input type="checkbox"><span class="mark"></span></label></td>
+                  <td>09-20</td><td>카카오T</td><td>이서준</td><td class="num">32,800</td>
+                  <td><span class="c-tag" data-tone="accent">여비교통비</span></td><td><span class="c-badge" data-tone="risk">없음</span></td>
+                  <td><span class="c-state" data-tone="warn">증빙 필요</span></td>
+                </tr>
+                <tr>
+                  <td><label class="c-pick" data-shape="many" aria-label="선택"><input type="checkbox"><span class="mark"></span></label></td>
+                  <td>09-20</td><td>AWS</td><td>이서준</td><td class="num">3,812,400</td>
+                  <td><span class="c-tag" data-tone="accent">클라우드</span></td><td><span class="c-badge" data-tone="ok">인보이스</span></td>
+                  <td><span class="c-state" data-tone="warn">결재 중</span></td>
+                </tr>
+                <tr>
+                  <td><label class="c-pick" data-shape="many" aria-label="선택"><input type="checkbox"><span class="mark"></span></label></td>
+                  <td>09-19</td><td>GS25 선릉점</td><td>윤하늘</td><td class="num">14,300</td>
+                  <td><span class="c-tag">추천 없음</span></td><td><span class="c-badge" data-tone="risk">없음</span></td>
+                  <td><span class="c-state" data-tone="idle">미분류</span></td>
+                </tr>
+                <tr>
+                  <td><label class="c-pick" data-shape="many" aria-label="선택"><input type="checkbox"><span class="mark"></span></label></td>
+                  <td>09-19</td><td>스타벅스 테헤란로</td><td>박영업</td><td class="num">27,000</td>
+                  <td><span class="c-tag" data-tone="accent">복리후생비</span></td><td><span class="c-badge" data-tone="ok">영수증</span></td>
+                  <td><span class="c-state" data-tone="ok">확인 완료</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="e-foot">
+            <span class="c-note">추천 계정은 가맹점 업종 · 과거 분류 · 분류 규칙으로 정합니다. 확정은 사람이 합니다.</span>
+            <span class="c-spacer"></span>
+            <span class="c-toast">
+              <svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>4건을 확인 완료로 옮겼습니다</span>
+          </div>
+        </div>
+
+        <!-- 검토판: 고른 한 줄을 채워 비운다 -->
+        <aside class="e-detail" aria-label="선택한 거래 검토">
+          <div class="e-detail-head">
+            <span class="id">신한 ****-4402 · 승인 30127745</span>
+            <span class="nm">한우명가 역삼점</span>
+            <span class="sub">09-22 19:48 · 박영업 · 일시불</span>
+          </div>
+          <div class="e-tags"><span class="c-state" data-tone="warn">증빙 필요</span><span class="c-badge">1 / 23</span></div>
+
+          <div class="e-receipt">
+            <span>카드 매출전표 · 자동 수집</span>
+            <span class="shop">한우명가 역삼점</span>
+            <span class="sum">486,000원</span>
+            <span>공급가 441,818 · 부가세 44,182</span>
+          </div>
+
+          <div class="e-form">
+            <div class="e-form-2">
+              <label class="c-field"><span>계정과목</span>
+                <select class="c-select"><option>접대비</option><option>복리후생비</option><option>회의비</option></select></label>
+              <label class="c-field"><span>비용 귀속</span>
+                <select class="c-select"><option>영업팀</option><option>전사 공통</option></select></label>
+            </div>
+            <label class="c-field" data-invalid="true"><span>참석자 · 목적 (접대비 필수)</span>
+              <input class="c-input" type="text" placeholder="예: (주)한빛 구매팀장 외 2명 · 연간 계약 협의">
+              <span class="c-err">접대비는 상대 거래처와 목적을 적어야 손금 처리됩니다.</span></label>
+            <div class="c-drop"><b>추가 증빙을 여기에 놓기</b>영수증 사진 · PDF · 10MB 이하</div>
+          </div>
+
+          <div class="e-actbar">
+            <button class="c-btn" type="button">건너뛰기</button>
+            <button class="c-btn" data-kind="primary" type="button">확인하고 다음 건</button>
+          </div>
+        </aside>
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>

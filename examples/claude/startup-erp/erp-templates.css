@@ -1,0 +1,167 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Runway ERP — 화면 틀(템플릿) 규격
+   ───────────────────────────────────────────────────────────────────────────
+   부품(버튼·표·칩·상태·지표·박스)은 claude-v1.css 에 있다. 이 파일은 «배치»만 정한다.
+   색·글자 크기·모서리는 claude-v1 토큰만 쓴다. 선·그림자는 쓰지 않는다.
+   검사: node scripts/check-claude-v1.mjs examples/claude/startup-erp/erp-templates.css
+
+   틀은 넷뿐이다. 새 업무 화면은 이 넷 중 하나를 고른다 — SPEC.md 참고.
+     T1 개요형      .e-overview   지표 → 판(패널) 격자          (대시보드)
+     T2 목록-상세형  .e-split      표 + 오른쪽 상세             (청구서 · 거래처 · 계약)
+     T3 문서함형    .e-inbox      문서함 · 문서 · 결재선 3칸     (전자결재 · 품의)
+     T4 검토 큐형   .e-queue      처리할 줄 표 + 오른쪽 검토판   (카드 경비 · 입금 매칭)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── 공통: 판(패널) — 담는 것은 12px 면, 테두리 없음 ────────────────────── */
+.e-panel { display: grid; gap: 14px; align-content: start; padding: 18px 20px; border-radius: var(--c-r-md); background: var(--c-surface); min-inline-size: 0; }
+.e-panel-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.e-panel-head h2 { margin: 0; font-size: var(--t-lead); font-weight: var(--t-w-bold); line-height: var(--t-lh-tight); letter-spacing: var(--t-track-title); }
+.e-panel-head .meta { color: var(--c-muted); font-size: var(--t-meta); }
+.e-panel-head .c-spacer { margin-inline-start: auto; }
+
+.e-toolbar { display: flex; flex-wrap: wrap; align-items: end; gap: 8px; }
+.e-toolbar .c-search { flex: 1 1 240px; }
+.e-toolbar .c-field { min-inline-size: 132px; }
+
+/* 고른 게 있을 때만 나타나는 일괄 작업줄 */
+.e-bulk { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 8px 14px; border-radius: var(--c-r-md); background: var(--c-accent-wash); color: var(--c-accent-strong); font-size: var(--t-meta); font-weight: var(--t-w-medium); }
+.e-bulk .c-spacer { margin-inline-start: auto; }
+
+/* 촘촘한 표는 접지 않고 가로로 스크롤한다 (결정 #15) */
+.e-scroll { overflow: auto; border-radius: var(--c-r-md); background: var(--c-surface); padding: 0 12px; }
+.e-scroll .c-table th, .e-scroll .c-table td { white-space: nowrap; }
+.e-scroll .c-table th { top: 0; background: var(--c-surface); }
+.e-pick { inline-size: 20px; }
+.e-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.e-foot .c-spacer { margin-inline-start: auto; }
+
+/* 오른쪽 상세 판 — 화면을 새로 열지 않고 고른 한 건을 연다 */
+.e-detail { display: grid; gap: 16px; align-content: start; padding: 18px 20px; border-radius: var(--c-r-md); background: var(--c-surface); position: sticky; top: 20px; min-inline-size: 0; }
+.e-detail-head { display: grid; gap: 4px; }
+.e-detail-head .id { color: var(--c-faint); font-size: var(--t-micro); font-weight: var(--t-w-bold); letter-spacing: var(--t-track-label); font-variant-numeric: tabular-nums; }
+.e-detail-head .nm { font-size: var(--t-title); font-weight: var(--t-w-bold); line-height: var(--t-lh-tight); letter-spacing: var(--t-track-title); }
+.e-detail-head .sub { color: var(--c-muted); font-size: var(--t-meta); }
+.e-tags { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.e-amount { display: grid; gap: 2px; }
+.e-amount .k { color: var(--c-muted); font-size: var(--t-micro); }
+.e-amount .v { font-size: var(--t-num); font-weight: var(--t-w-bold); line-height: var(--t-lh-tight); letter-spacing: var(--t-track-title); font-variant-numeric: tabular-nums; }
+.e-amount .v small { margin-inline-start: 4px; color: var(--c-muted); font-size: var(--t-meta); font-weight: var(--t-w-medium); letter-spacing: 0; }
+
+/* ── T1 개요형 ────────────────────────────────────────────────────────── */
+.e-overview { display: grid; gap: 20px; grid-template-columns: repeat(12, minmax(0, 1fr)); align-items: start; }
+.e-overview > .e-kpis { grid-column: 1 / -1; }
+.e-span-4 { grid-column: span 4; }
+.e-span-5 { grid-column: span 5; }
+.e-span-7 { grid-column: span 7; }
+.e-span-8 { grid-column: span 8; }
+.e-span-12 { grid-column: 1 / -1; }
+.e-kpis { display: grid; gap: 20px 28px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); padding: 18px 20px; border-radius: var(--c-r-md); background: var(--c-surface); }
+.e-kpis .c-metric .d { font-size: var(--t-meta); font-variant-numeric: tabular-nums; color: var(--c-muted); }
+.e-kpis .c-metric .d[data-tone="ok"] { color: var(--c-ok); }
+.e-kpis .c-metric .d[data-tone="risk"] { color: var(--c-risk); }
+
+/* 막대 차트 — 입금(강조) · 출금(옅은 면) 두 벌. 높이는 --v(0–100) 하나로 준다 */
+.e-bars { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 10px; align-items: end; block-size: 168px; padding-block-start: 8px; }
+.e-bars .grp { display: grid; grid-template-rows: 1fr auto; gap: 6px; block-size: 100%; }
+.e-bars .pair { display: flex; align-items: end; justify-content: center; gap: 4px; }
+.e-bars .in, .e-bars .out { inline-size: min(18px, 40%); block-size: calc(var(--v) * 1%); border-radius: var(--c-r-xs); }
+.e-bars .in { background: var(--c-accent); }
+.e-bars .out { background: var(--c-mark); }
+.e-bars .lab { text-align: center; color: var(--c-muted); font-size: var(--t-micro); font-variant-numeric: tabular-nums; }
+.e-bars .grp[aria-current="true"] .lab { color: var(--c-text); font-weight: var(--t-w-bold); }
+.e-legend { display: flex; flex-wrap: wrap; gap: 14px; color: var(--c-muted); font-size: var(--t-micro); }
+.e-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.e-legend span::before { content: ""; inline-size: 10px; block-size: 10px; border-radius: var(--c-r-xs); background: var(--c-accent); }
+.e-legend span + span::before { background: var(--c-mark); }
+
+/* 누적 비율 막대 — 미수 연령 · 예산 소진 */
+.e-stack { display: flex; gap: 3px; block-size: 12px; }
+.e-stack > i { flex: var(--v) 1 0; border-radius: var(--c-r-xs); background: var(--c-mark); }
+.e-stack > i[data-tone="ok"] { background: var(--c-ok); }
+.e-stack > i[data-tone="warn"] { background: var(--c-warn); }
+.e-stack > i[data-tone="risk"] { background: var(--c-risk); }
+
+/* 할 일 — 한 건 = 목록 박스(c-row 와 같은 면) */
+.e-todo { display: grid; gap: 4px; }
+.e-todo a { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; padding: 12px 14px; border-radius: var(--c-r-sm); background: var(--c-row); color: var(--c-text); text-decoration: none; }
+.e-todo a .t { font-weight: var(--t-w-medium); }
+.e-todo a .m { color: var(--c-muted); font-size: var(--t-meta); }
+.e-todo a .c-state, .e-todo a .c-badge { grid-row: 1 / span 2; grid-column: 2; align-self: center; }
+@media (hover: hover) { .e-todo a:hover { background-image: linear-gradient(var(--c-hover), var(--c-hover)); } }
+
+/* ── T2 목록-상세형 ───────────────────────────────────────────────────── */
+.e-split { display: grid; gap: 20px; grid-template-columns: minmax(0, 1fr) 400px; align-items: start; }
+.e-split-main { display: grid; gap: 14px; min-inline-size: 0; }
+
+/* ── T3 문서함형 ──────────────────────────────────────────────────────── */
+.e-inbox { display: grid; gap: 20px; grid-template-columns: 320px minmax(0, 1fr) 300px; align-items: start; }
+.e-inbox-list { display: grid; gap: 12px; align-content: start; }
+.e-inbox-list .c-lead .l1 .nm { font-size: var(--t-body); }
+.e-doc { display: grid; gap: 22px; align-content: start; padding: 28px 32px; border-radius: var(--c-r-md); background: var(--c-surface); min-inline-size: 0; }
+.e-doc-head { display: grid; gap: 6px; }
+.e-doc-head .kind { color: var(--c-accent-strong); font-size: var(--t-micro); font-weight: var(--t-w-bold); letter-spacing: var(--t-track-label); }
+.e-doc-head h2 { margin: 0; font-size: var(--t-title); font-weight: var(--t-w-bold); line-height: var(--t-lh-tight); letter-spacing: var(--t-track-title); }
+.e-doc-head .sub { color: var(--c-muted); font-size: var(--t-meta); }
+.e-doc p { margin: 0; font-size: var(--t-body); line-height: var(--t-lh-body); max-inline-size: 68ch; }
+.e-doc .c-table tfoot td { font-weight: var(--t-w-bold); }
+.e-files { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* 결재선 — 순서가 뜻을 갖는다(1→2→3). 사람 · 역할 · 판단 · 시각 */
+.e-approvers { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.e-approvers li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 2px 12px; padding: 12px 14px; border-radius: var(--c-r-sm); background: var(--c-row); }
+.e-approvers li[aria-current="step"] { background: var(--c-row-selected); }
+.e-approvers li[aria-current="step"] .nm { color: var(--c-accent-strong); font-weight: var(--t-w-bold); }
+.e-approvers .who { display: grid; gap: 0; min-inline-size: 0; }
+.e-approvers .nm { font-weight: var(--t-w-medium); }
+.e-approvers .role { color: var(--c-muted); font-size: var(--t-meta); }
+.e-approvers .at { grid-column: 2 / -1; color: var(--c-faint); font-size: var(--t-micro); font-variant-numeric: tabular-nums; }
+
+/* ── T4 검토 큐형 ─────────────────────────────────────────────────────── */
+.e-queue { display: grid; gap: 20px; grid-template-columns: minmax(0, 1fr) 380px; align-items: start; }
+.e-queue-main { display: grid; gap: 14px; min-inline-size: 0; }
+.e-progress { display: grid; gap: 8px; }
+.e-progress .row { display: flex; align-items: baseline; gap: 8px; font-size: var(--t-meta); color: var(--c-muted); }
+.e-progress .row b { color: var(--c-text); font-size: var(--t-lead); font-weight: var(--t-w-bold); font-variant-numeric: tabular-nums; }
+.e-progress .row .c-spacer { margin-inline-start: auto; }
+.e-receipt { display: grid; place-items: center; gap: 6px; aspect-ratio: 3 / 4; max-inline-size: 100%; max-block-size: 260px; border-radius: var(--c-r-md); background: var(--c-canvas); color: var(--c-muted); font-size: var(--t-meta); text-align: center; padding: 16px; }
+.e-receipt .shop { color: var(--c-text); font-size: var(--t-lead); font-weight: var(--t-w-bold); }
+.e-receipt .sum { color: var(--c-text); font-size: var(--t-num-sm); font-weight: var(--t-w-bold); font-variant-numeric: tabular-nums; }
+.e-form { display: grid; gap: 14px; }
+.e-form-2 { display: grid; gap: 14px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+/* ── 폭이 줄면 한 칸으로 (웹 1180 · 태블릿 900) ─────────────────────────── */
+@media (max-width: 1180px) {
+  .e-split, .e-queue { grid-template-columns: minmax(0, 1fr); }
+  .e-inbox { grid-template-columns: 280px minmax(0, 1fr); }
+  .e-inbox > .e-detail { grid-column: 1 / -1; }
+  .e-detail { position: static; }
+  .e-span-4, .e-span-5, .e-span-7, .e-span-8 { grid-column: 1 / -1; }
+}
+@media (max-width: 900px) {
+  .e-inbox { grid-template-columns: minmax(0, 1fr); }
+  .e-doc { padding: 20px; }
+  .e-form-2 { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ── 작은 도구 ────────────────────────────────────────────────────────── */
+.e-sr { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.e-link { color: var(--c-accent-strong); font-size: var(--t-meta); font-weight: var(--t-w-medium); text-underline-offset: 3px; }
+a.c-btn { text-decoration: none; }
+
+/* 하단 판단 줄 — 액션 비율 규격(UI/UX 방향 2026-09-21): 1개 100% · 2개 3:7 · 3개 3:3:4 */
+.e-actbar { display: grid; grid-template-columns: 3fr 7fr; gap: 8px; }
+.e-actbar:has(> :nth-child(3)) { grid-template-columns: 3fr 3fr 4fr; }
+.e-actbar:has(> :only-child) { grid-template-columns: 1fr; }
+.e-actbar .c-btn { inline-size: 100%; }
+.e-actbar[data-where="dock"] { padding: 10px 12px calc(10px + env(safe-area-inset-bottom)); background: var(--c-surface); }
+.e-phones { display: flex; flex-wrap: wrap; gap: 24px; }
+
+/* 표에서 고른 한 줄 — 오른쪽 상세/검토판이 열고 있는 줄. 면 + 굵기 두 신호 */
+.c-table tr[aria-selected="true"] td { background: var(--c-row-selected); font-weight: var(--t-w-medium); }
+
+/* 이력 한 건 — 시각 · 무엇 · 말 을 세 줄로 */
+.c-tl > span:last-child { display: grid; gap: 2px; min-inline-size: 0; }
+/* 폰 틀 안의 결재함 — 내용만큼 */
+.e-phones .c-phone { block-size: auto; }
+/* 영수증 미리보기 — 검토판 폭을 다 쓴다 */
+.e-detail .e-receipt { inline-size: 100%; aspect-ratio: auto; min-block-size: 200px; }

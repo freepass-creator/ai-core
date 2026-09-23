@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Runway ERP — 청구서</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<link rel="stylesheet" href="../../../design-system/tokens.runtime.css">
+<link rel="stylesheet" href="../claude-v1.css">
+<link rel="stylesheet" href="erp-templates.css">
+</head>
+<body>
+<!--
+  T2 목록-상세형 — 청구서를 훑고, 한 건을 골라 오른쪽에서 처리한다.
+  상태: SCHEDULED 예정 → ISSUED 발행 → PARTIAL 부분입금 → PAID 완납 / OVERDUE 연체
+  예시 수치는 설명용 샘플이다.
+-->
+<div class="c-shell">
+
+  <aside class="c-side">
+    <div class="c-brand">runway <span>erp</span></div>
+    <nav class="c-menu">
+      <span class="c-menu-label">경영</span>
+      <a href="dashboard.html">대시보드</a>
+      <span class="c-menu-label">매출</span>
+      <a href="#">거래처 · 딜</a>
+      <a href="billing.html" aria-current="page">청구서</a>
+      <a href="#">입금 매칭</a>
+      <span class="c-menu-label">비용</span>
+      <a href="expense.html">카드 · 경비</a>
+      <a href="#">매입 세금계산서</a>
+      <span class="c-menu-label">결재</span>
+      <a href="approval.html">결재함</a>
+      <span class="c-menu-label">관리</span>
+      <a href="#">구성원</a>
+      <a href="#">설정 · 권한</a>
+    </nav>
+    <div class="c-who">
+      <span class="c-avatar" aria-hidden="true">김</span>
+      <span><span class="n">김재무</span><br><span class="r">경영지원 · 재무</span></span>
+    </div>
+  </aside>
+
+  <div>
+    <header class="c-head">
+      <div>
+        <div class="c-where">매출 · 청구서</div>
+        <h1>청구서</h1>
+      </div>
+      <div class="c-actions c-spacer">
+        <button class="c-btn" data-kind="quiet" type="button">
+          <svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>엑셀</button>
+        <button class="c-btn" type="button">정기청구 일정</button>
+        <button class="c-btn" data-kind="primary" type="button">
+          <svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>새 청구서</button>
+      </div>
+    </header>
+
+    <main class="c-body">
+      <div class="e-kpis">
+        <div class="c-metric"><span class="k">이번 달 청구</span><span class="v">4,860<small>만 · 24건</small></span></div>
+        <div class="c-metric"><span class="k">입금 완료</span><span class="v">3,480<small>만 · 71.6%</small></span></div>
+        <div class="c-metric"><span class="k">발행 예정</span><span class="v">2<small>건 · 이번 주</small></span></div>
+        <div class="c-metric" data-tone="risk"><span class="k">연체</span><span class="v">1,952<small>만 · 3건</small></span></div>
+      </div>
+
+      <div class="e-split">
+        <div class="e-split-main">
+
+          <div class="e-toolbar">
+            <div class="c-search">
+              <svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <input type="search" placeholder="거래처 · 청구번호 · 담당자" aria-label="청구서 검색">
+            </div>
+            <label class="c-field"><span>발행월</span>
+              <select class="c-select"><option>2026-09</option><option>2026-08</option><option>올해</option></select></label>
+            <label class="c-field"><span>담당</span>
+              <select class="c-select"><option>전체</option><option>박영업</option><option>최세일즈</option></select></label>
+          </div>
+
+          <div class="c-chips" role="group" aria-label="상태로 거르기">
+            <button class="c-chip" aria-pressed="false" type="button">전체 24</button>
+            <button class="c-chip" aria-pressed="false" type="button">예정 2</button>
+            <button class="c-chip" aria-pressed="true" type="button"><svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>미수 9</button>
+            <button class="c-chip" aria-pressed="false" type="button">완납 13</button>
+          </div>
+
+          <div class="e-bulk" role="status">
+            <svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+            2건 선택됨 · 17,600,000
+            <span class="c-spacer"></span>
+            <button class="c-btn" data-kind="quiet" type="button">독촉 알림톡</button>
+            <button class="c-btn" data-kind="quiet" type="button">담당 변경</button>
+          </div>
+
+          <div class="e-scroll">
+            <table class="c-table">
+              <thead>
+                <tr>
+                  <th class="e-pick"><label class="c-pick" data-shape="many" aria-label="전체 선택"><input type="checkbox"><span class="mark"></span></label></th>
+                  <th>청구번호</th><th>거래처</th><th>구분</th><th>상태</th>
+                  <th class="num">합계(VAT)</th><th class="num">미수</th><th>만기</th><th>세금계산서</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr aria-selected="true">
+                  <td><label class="c-pick" data-shape="many" aria-label="선택"><input type="checkbox" checked><span class="mark"></span></label></td>
+                  <td>INV-2409-018</td><td>(주)한빛</td><td><span class="c-tag">월정기</span></td>
+                  <td><span class="c-state" data-tone="risk">연체 42일</span></td>
+                  <td class="num">13,200,000</td><td class="num">13,200,000</td><td>08-12</td><td><span class="c-badge" data-tone="ok">발행</span></td>
+                </tr>
+                <tr>
+                  <td><label class="c-pick" data-shape="many" aria-label="선택"><input type="checkbox" checked><span class="mark"></span></label></td>
+                  <td>INV-2409-021</td><td>로켓랩</td><td><span class="c-tag">일시</span></td>
+                  <td><span class="c-state" data-tone="warn">부분입금</span></td>
+                  <td class="num">4,400,000</td><td class="num">2,200,000</td><td>09-30</td><td><span class="c-badge" data-tone="ok">발행</span></td>
+                </tr>
+                <tr>
+                  <td><label class="c-pick" data-shape="many" aria-label="선택"><input type="checkbox"><span class="mark"></span></label></td>
+                  <td>INV-2409-022</td><td>오름컴퍼니</td><td><span class="c-tag">월정기</span></td>
+                  <td><span class="c-state" data-tone="idle">발행</span></td>
+                  <td class="num">2,750,000</td><td class="num">2,750,000</td><td>10-10</td><td><span class="c-badge" data-tone="ok">발행</span></td>
+                </tr>
+                <tr>
+                  <td><label class="c-pick" data-shape="many" aria-label="선택"><input type="checkbox"><span class="mark"></span></label></td>
+                  <td>INV-2408-015</td><td>누리소프트</td><td><span class="c-tag">일시</span></td>
+                  <td><span class="c-state" data-tone="risk">연체 64일</span></td>
+                  <td class="num">8,800,000</td><td class="num">4,400,000</td><td>07-21</td><td><span class="c-badge" data-tone="ok">발행</span></td>
+                </tr>
+                <tr>
+                  <td><label class="c-pick" data-shape="many" aria-label="선택"><input type="checkbox"><span class="mark"></span></label></td>
+                  <td>INV-2409-024</td><td>하늘물류</td><td><span class="c-tag">월정기</span></td>
+                  <td><span class="c-state" data-tone="idle">발행 예정</span></td>
+                  <td class="num">3,520,000</td><td class="num">—</td><td>10-25</td><td><span class="c-badge" data-tone="warn">미발행</span></td>
+                </tr>
+                <tr>
+                  <td><label class="c-pick" data-shape="many" aria-label="선택"><input type="checkbox"><span class="mark"></span></label></td>
+                  <td>INV-2409-019</td><td>그린랩스</td><td><span class="c-tag">월정기</span></td>
+                  <td><span class="c-state" data-tone="ok">완납</span></td>
+                  <td class="num">1,980,000</td><td class="num">—</td><td>09-15</td><td><span class="c-badge" data-tone="ok">발행</span></td>
+                </tr>
+                <tr>
+                  <td><label class="c-pick" data-shape="many" aria-label="선택"><input type="checkbox"><span class="mark"></span></label></td>
+                  <td>INV-2409-020</td><td>모아핀테크</td><td><span class="c-tag">일시</span></td>
+                  <td><span class="c-state" data-tone="ok">완납</span></td>
+                  <td class="num">7,150,000</td><td class="num">—</td><td>09-20</td><td><span class="c-badge" data-tone="ok">발행</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="e-foot">
+            <div class="c-pager">
+              <span class="p">9건 중 1–7</span>
+              <button type="button" disabled aria-label="이전"><svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg></button>
+              <button type="button" aria-current="page">1</button>
+              <button type="button">2</button>
+              <button type="button" aria-label="다음"><svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+            </div>
+            <span class="c-spacer"></span>
+            <span class="c-note">합계는 부가세 포함, 원 단위</span>
+          </div>
+        </div>
+
+        <!-- 오른쪽 상세 -->
+        <aside class="e-detail" aria-label="선택한 청구서">
+          <div class="e-detail-head">
+            <span class="id">INV-2409-018</span>
+            <span class="nm">(주)한빛</span>
+            <span class="sub">CT-2407-003 · 월정기 SaaS 이용료 8월분 · 담당 박영업</span>
+          </div>
+          <div class="e-tags">
+            <span class="c-state" data-tone="risk">연체 42일</span>
+            <span class="c-badge" data-tone="ok">세금계산서 발행</span>
+          </div>
+
+          <div class="c-steps" aria-label="청구 단계">
+            <span class="c-step" data-state="done">예정</span>
+            <span class="c-step" data-state="done">발행</span>
+            <span class="c-step" data-state="now">입금 대기</span>
+            <span class="c-step">완납</span>
+          </div>
+
+          <div class="e-amount"><span class="k">미수 금액</span><span class="v">13,200,000<small>원</small></span></div>
+
+          <dl class="c-facts">
+            <div><dt>공급가액</dt><dd>12,000,000</dd></div>
+            <div><dt>부가세</dt><dd>1,200,000</dd></div>
+            <div><dt>발행일</dt><dd>2026-08-12</dd></div>
+            <div><dt>만기</dt><dd>2026-08-12</dd></div>
+            <div><dt>승인번호</dt><dd>20260812-41000012</dd></div>
+            <div><dt>입금 계좌</dt><dd>기업 012-***-3391</dd></div>
+          </dl>
+
+          <div class="c-note-box" data-tone="risk">
+            <svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+            <span>21일을 넘겨 대표에게 보고됐습니다. 9월 30일 입금 약속이 있습니다.</span></div>
+
+          <section class="c-sec">
+            <h2>이력</h2>
+            <div class="c-timeline">
+              <div class="c-tl" data-tone="warn"><span class="dot"></span>
+                <span><span class="when">09-02 15:20 · 박영업</span><span class="what">통화 — 9/30 입금 약속</span><span class="said">재무 담당 교체로 지연</span></span></div>
+              <div class="c-tl" data-tone="risk"><span class="dot"></span>
+                <span><span class="when">09-02 09:00 · 자동</span><span class="what">연체 21일 · 대표 보고</span></span></div>
+              <div class="c-tl"><span class="dot"></span>
+                <span><span class="when">08-19 10:00 · 자동</span><span class="what">독촉 알림톡 1차 발송</span></span></div>
+              <div class="c-tl" data-tone="ok"><span class="dot"></span>
+                <span><span class="when">08-12 11:04 · 김재무</span><span class="what">청구서 · 세금계산서 발행</span></span></div>
+            </div>
+          </section>
+
+          <div class="c-actions">
+            <button class="c-btn" data-kind="quiet" type="button">알림톡</button>
+            <span class="c-spacer"></span>
+            <button class="c-btn" type="button">수정 발행</button>
+            <button class="c-btn" data-kind="primary" type="button">입금 매칭</button>
+          </div>
+        </aside>
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>

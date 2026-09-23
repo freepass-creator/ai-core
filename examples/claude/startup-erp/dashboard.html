@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Runway ERP — 경영 대시보드</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<link rel="stylesheet" href="../../../design-system/tokens.runtime.css">
+<link rel="stylesheet" href="../claude-v1.css">
+<link rel="stylesheet" href="erp-templates.css">
+</head>
+<body>
+<!--
+  T1 개요형 — «오늘 회사가 괜찮은가»를 먼저 답한다.
+  순서: 지표(현금·번레이트·런웨이·매출) → 돈의 흐름 → 내 할 일 → 미수 연령 → 이번 달 마감.
+  예시 수치는 설명용 샘플이다.
+-->
+<div class="c-shell">
+
+  <aside class="c-side">
+    <div class="c-brand">runway <span>erp</span></div>
+    <nav class="c-menu">
+      <span class="c-menu-label">경영</span>
+      <a href="dashboard.html" aria-current="page">대시보드</a>
+      <span class="c-menu-label">매출</span>
+      <a href="#">거래처 · 딜</a>
+      <a href="billing.html">청구서</a>
+      <a href="#">입금 매칭</a>
+      <span class="c-menu-label">비용</span>
+      <a href="expense.html">카드 · 경비</a>
+      <a href="#">매입 세금계산서</a>
+      <span class="c-menu-label">결재</span>
+      <a href="approval.html">결재함</a>
+      <span class="c-menu-label">관리</span>
+      <a href="#">구성원</a>
+      <a href="#">설정 · 권한</a>
+    </nav>
+    <div class="c-who">
+      <span class="c-avatar" aria-hidden="true">정</span>
+      <span><span class="n">정대표</span><br><span class="r">대표 · Owner</span></span>
+    </div>
+  </aside>
+
+  <div>
+    <header class="c-head">
+      <div>
+        <div class="c-where">경영 · 2026년 9월</div>
+        <h1>대시보드</h1>
+      </div>
+      <div class="c-actions c-spacer">
+        <label class="c-field" style="min-width:140px"><span class="e-sr">기간</span>
+          <select class="c-select" aria-label="기간"><option>이번 달</option><option>지난 달</option><option>최근 6개월</option></select></label>
+        <button class="c-btn" data-kind="quiet" type="button">
+          <svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>투자자 리포트</button>
+      </div>
+    </header>
+
+    <main class="c-body">
+      <div class="e-overview">
+
+        <!-- 지표: 한 화면에 넷까지 -->
+        <div class="e-kpis">
+          <div class="c-metric"><span class="k">현금 잔고</span><span class="v">8.42<small>억</small></span><span class="d" data-tone="risk">▼ 1,860만 · 전월 대비</span></div>
+          <div class="c-metric"><span class="k">월 번레이트 (3개월 평균)</span><span class="v">6,120<small>만</small></span><span class="d" data-tone="risk">▲ 4.1%</span></div>
+          <div class="c-metric"><span class="k">런웨이</span><span class="v">13.7<small>개월</small></span><span class="d">목표 12개월 이상</span></div>
+          <div class="c-metric"><span class="k">이번 달 매출</span><span class="v">3,480<small>만</small></span><span class="d" data-tone="ok">▲ 12.6% · MRR 2,950만</span></div>
+        </div>
+
+        <!-- 돈의 흐름 -->
+        <section class="e-panel e-span-8" aria-labelledby="flow-h">
+          <div class="e-panel-head">
+            <h2 id="flow-h">현금 흐름</h2><span class="meta">최근 6개월 · 단위 만원</span>
+            <span class="c-spacer"></span>
+            <div class="e-legend"><span>입금</span><span>출금</span></div>
+          </div>
+          <div class="e-bars" role="img" aria-label="4월 입금 2,610 출금 5,480 · 5월 2,880 / 5,720 · 6월 3,020 / 5,650 · 7월 2,940 / 5,930 · 8월 3,090 / 6,010 · 9월 3,480 / 6,420">
+            <div class="grp"><div class="pair"><i class="in" style="--v:40"></i><i class="out" style="--v:85"></i></div><span class="lab">4월</span></div>
+            <div class="grp"><div class="pair"><i class="in" style="--v:45"></i><i class="out" style="--v:89"></i></div><span class="lab">5월</span></div>
+            <div class="grp"><div class="pair"><i class="in" style="--v:47"></i><i class="out" style="--v:88"></i></div><span class="lab">6월</span></div>
+            <div class="grp"><div class="pair"><i class="in" style="--v:46"></i><i class="out" style="--v:92"></i></div><span class="lab">7월</span></div>
+            <div class="grp"><div class="pair"><i class="in" style="--v:48"></i><i class="out" style="--v:94"></i></div><span class="lab">8월</span></div>
+            <div class="grp" aria-current="true"><div class="pair"><i class="in" style="--v:54"></i><i class="out" style="--v:100"></i></div><span class="lab">9월</span></div>
+          </div>
+          <div class="c-note-box" data-tone="warn">
+            <svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+            <span>출금이 3개월 연속 늘었습니다. 인건비(+2명)와 AWS 비용이 주 원인입니다.</span></div>
+        </section>
+
+        <!-- 내 할 일 -->
+        <section class="e-panel e-span-4" aria-labelledby="todo-h">
+          <div class="e-panel-head"><h2 id="todo-h">내 할 일</h2><span class="meta">5건</span></div>
+          <div class="e-todo">
+            <a href="approval.html"><span class="t">지출결의 · AWS 9월</span><span class="m">3,812,400 · 개발팀 이서준</span><span class="c-state" data-tone="warn">결재 대기</span></a>
+            <a href="billing.html"><span class="t">(주)한빛 청구 42일 경과</span><span class="m">INV-2409-018 · 13,200,000</span><span class="c-state" data-tone="risk">연체</span></a>
+            <a href="expense.html"><span class="t">카드 거래 증빙 미첨부</span><span class="m">9월 · 14건 남음</span><span class="c-state" data-tone="warn">보완</span></a>
+            <a href="#"><span class="t">9월 부가세 자료 확정</span><span class="m">10-11까지 세무사 전달</span><span class="c-badge">D-18</span></a>
+            <a href="#"><span class="t">신규 입사 2명 근로계약</span><span class="m">전자서명 2/2</span><span class="c-state" data-tone="ok">완료</span></a>
+          </div>
+        </section>
+
+        <!-- 미수 연령 -->
+        <section class="e-panel e-span-7" aria-labelledby="ar-h">
+          <div class="e-panel-head"><h2 id="ar-h">미수금</h2><span class="meta">4,215만 · 11건</span><span class="c-spacer"></span><a class="e-link" href="billing.html">청구서 보기</a></div>
+          <div class="e-stack" role="img" aria-label="30일 이내 58%, 31~60일 27%, 61일 이상 15%">
+            <i data-tone="ok" style="--v:58"></i><i data-tone="warn" style="--v:27"></i><i data-tone="risk" style="--v:15"></i>
+          </div>
+          <table class="c-table">
+            <thead><tr><th>구간</th><th class="num">건수</th><th class="num">금액</th><th>대표 거래처</th></tr></thead>
+            <tbody>
+              <tr><td><span class="c-state" data-tone="ok">30일 이내</span></td><td class="num">6</td><td class="num">24,450,000</td><td>로켓랩, 오름컴퍼니</td></tr>
+              <tr><td><span class="c-state" data-tone="warn">31–60일</span></td><td class="num">3</td><td class="num">11,380,000</td><td>(주)한빛</td></tr>
+              <tr><td><span class="c-state" data-tone="risk">61일 이상</span></td><td class="num">2</td><td class="num">6,320,000</td><td>누리소프트</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- 이번 달 마감 -->
+        <section class="e-panel e-span-5" aria-labelledby="close-h">
+          <div class="e-panel-head"><h2 id="close-h">9월 마감</h2><span class="meta">목표: 10월 7일(D+3)</span></div>
+          <div class="c-steps" aria-label="마감 단계">
+            <span class="c-step" data-state="done">거래 수집</span>
+            <span class="c-step" data-state="now">대사 · 증빙</span>
+            <span class="c-step">검토</span>
+            <span class="c-step">마감</span>
+          </div>
+          <dl class="c-facts">
+            <div><dt>미분류 거래</dt><dd>23건</dd></div>
+            <div><dt>증빙 없는 카드</dt><dd>14건</dd></div>
+            <div><dt>미발행 청구</dt><dd>2건</dd></div>
+            <div><dt>급여 확정</dt><dd>완료</dd></div>
+          </dl>
+          <div class="c-actions"><span class="c-spacer"></span><a class="c-btn" href="expense.html">증빙 채우러 가기</a></div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Runway ERP — 화면 틀 규격</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<link rel="stylesheet" href="../../../design-system/tokens.runtime.css">
+<link rel="stylesheet" href="../claude-v1.css">
+<link rel="stylesheet" href="erp-templates.css">
+<style>
+  /* 이 목차 화면에만 쓰는 배치. 값은 토큰만. */
+  .ix { display: grid; gap: 28px; max-inline-size: 1240px; margin-inline: auto; padding: 36px 28px 80px; }
+  .ix-head { display: grid; gap: 8px; }
+  .ix-head .kind { color: var(--c-accent-strong); font-size: var(--t-micro); font-weight: var(--t-w-bold); letter-spacing: var(--t-track-label); }
+  .ix-head h1 { margin: 0; font-size: var(--t-num); font-weight: var(--t-w-bold); line-height: var(--t-lh-tight); letter-spacing: var(--t-track-title); }
+  .ix-head p { margin: 0; color: var(--c-muted); font-size: var(--t-body); line-height: var(--t-lh-body); max-inline-size: 72ch; }
+  .ix-cards { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); }
+  .ix-card { display: grid; gap: 14px; align-content: start; padding: 18px; border-radius: var(--c-r-md); background: var(--c-surface); color: var(--c-text); text-decoration: none; }
+  @media (hover: hover) { .ix-card:hover { background-image: linear-gradient(var(--c-hover), var(--c-hover)); } }
+  .ix-card .code { color: var(--c-accent-strong); font-size: var(--t-micro); font-weight: var(--t-w-bold); letter-spacing: var(--t-track-label); }
+  .ix-card h2 { margin: 0; font-size: var(--t-lead); font-weight: var(--t-w-bold); line-height: var(--t-lh-tight); }
+  .ix-card p { margin: 0; color: var(--c-muted); font-size: var(--t-meta); line-height: var(--t-lh-body); }
+  .ix-card .ex { font-size: var(--t-meta); font-weight: var(--t-w-medium); }
+  /* 영역 도식 — 화면을 실제 비율로 줄여 그린다 */
+  .map { display: grid; gap: 4px; block-size: 132px; padding: 6px; border-radius: var(--c-r-sm); background: var(--c-canvas); }
+  .map i { display: grid; place-items: center; border-radius: var(--c-r-xs); background: var(--c-row); color: var(--c-muted); font-size: var(--t-micro); font-style: normal; font-weight: var(--t-w-medium); }
+  .map i[data-k="main"] { background: var(--c-accent-wash); color: var(--c-accent-strong); }
+  .map-t1 { grid-template-columns: repeat(3, 1fr); grid-template-rows: 26px 1fr 1fr; }
+  .map-t1 i:first-child { grid-column: 1 / -1; }
+  .map-t1 i:nth-child(2) { grid-column: span 2; }
+  .map-t2 { grid-template-columns: 1.8fr 1fr; grid-template-rows: 26px 1fr; }
+  .map-t2 i:first-child { grid-column: 1 / -1; }
+  .map-t3 { grid-template-columns: 1fr 1.8fr 1fr; }
+  .map-t4 { grid-template-columns: 1.8fr 1fr; grid-template-rows: 20px 1fr; }
+  .map-t4 i:nth-child(2) { grid-row: 1 / -1; grid-column: 2; }
+  .map-t4 i:nth-child(1) { grid-column: 1; }
+  .map-t4 i:nth-child(3) { grid-column: 1; }
+  .ix-scroll { overflow-x: auto; border-radius: var(--c-r-md); background: var(--c-surface); padding: 4px 16px; }
+  .ix-scroll .c-table th { position: static; }
+  .ix-scroll .c-table td:first-child { font-weight: var(--t-w-medium); }
+  .ix-rules { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+  code { font-size: var(--t-meta); }
+</style>
+</head>
+<body>
+<div class="ix">
+
+  <header class="ix-head">
+    <span class="kind">RUNWAY ERP · 화면 틀 규격 v0.1 · claude-v1 테마</span>
+    <h1>업무 화면은 네 가지 틀 중 하나로 만든다</h1>
+    <p>스타트업 경영관리 ERP의 모든 업무 화면은 아래 넷 중 하나의 틀을 고르고, 부품은 <code>claude-v1.css</code>에 있는 것만 쓴다. 색·글자·모서리는 <code>design/claude-v1/tokens.json</code> 값뿐이고, 버튼·박스에는 선도 그림자도 없다. 새 화면은 «어떤 틀인가»부터 정하면 레이아웃 고민이 끝난다.</p>
+  </header>
+
+  <div class="ix-cards">
+    <a class="ix-card" href="dashboard.html">
+      <span class="code">T1 · 개요형 · .e-overview</span>
+      <div class="map map-t1" aria-hidden="true"><i>지표 4</i><i data-k="main">흐름 차트</i><i>할 일</i><i>미수</i><i>마감</i><i>…</i></div>
+      <h2>경영 대시보드</h2>
+      <p>«오늘 괜찮은가»에 답하는 화면. 지표 넷을 맨 위에, 그 아래 12칸 격자에 판을 놓는다.</p>
+      <span class="ex">예: 대시보드 · 월간 리포트 · 팀 현황 →</span>
+    </a>
+    <a class="ix-card" href="billing.html">
+      <span class="code">T2 · 목록-상세형 · .e-split</span>
+      <div class="map map-t2" aria-hidden="true"><i>지표 · 도구줄 · 칩</i><i data-k="main">촘촘한 표</i><i>상세 400px</i></div>
+      <h2>청구서</h2>
+      <p>많은 건을 훑고 한 건을 오른쪽에서 처리한다. 화면을 새로 열지 않는다.</p>
+      <span class="ex">예: 청구서 · 거래처 · 계약 · 구성원 →</span>
+    </a>
+    <a class="ix-card" href="approval.html">
+      <span class="code">T3 · 문서함형 · .e-inbox</span>
+      <div class="map map-t3" aria-hidden="true"><i>문서함</i><i data-k="main">문서</i><i>결재선 · 판단</i></div>
+      <h2>전자결재</h2>
+      <p>읽고 판단하는 화면. 문서가 가운데에서 가장 넓고, 판단 버튼은 오른쪽 끝에 3 : 7로 선다.</p>
+      <span class="ex">예: 결재함 · 품의 · 휴가 · 계약 검토 →</span>
+    </a>
+    <a class="ix-card" href="expense.html">
+      <span class="code">T4 · 검토 큐형 · .e-queue</span>
+      <div class="map map-t4" aria-hidden="true"><i>진행률</i><i>검토판 380px</i><i data-k="main">처리할 줄 표</i></div>
+      <h2>카드 · 경비</h2>
+      <p>쌓인 줄을 하나씩 채워 비우는 화면. 진행률이 맨 위, «확인하고 다음 건»이 주 명령이다.</p>
+      <span class="ex">예: 카드 경비 · 입금 매칭 · 증빙 수집 →</span>
+    </a>
+  </div>
+
+  <section class="c-sec">
+    <h2>틀별 영역 규격</h2>
+    <div class="ix-scroll">
+      <table class="c-table">
+        <thead><tr><th>틀</th><th>필수 영역 (위→아래 · 왼→오)</th><th>주 명령 자리</th><th>좁아지면 (1180 / 900px)</th></tr></thead>
+        <tbody>
+          <tr><td>T1 개요형</td><td>머리(기간 선택) → 지표 ≤ 4 → 판 격자(8+4 · 7+5 · 12)</td><td>없음 — 판 안의 링크로 해당 업무 화면에 보낸다</td><td>판이 모두 한 칸</td></tr>
+          <tr><td>T2 목록-상세형</td><td>머리 → 지표 → 도구줄 → 상태 칩 → (일괄 작업줄) → 표 → 쪽 넘김 │ 상세</td><td>머리 오른쪽 «새 ○○» · 상세 하단 오른쪽</td><td>상세가 표 아래로</td></tr>
+          <tr><td>T3 문서함형</td><td>문서함(탭 + 카드) │ 문서(제목 · 값 묶음 · 본문 · 표 · 첨부) │ 결재선 · 의견 · 판단</td><td>오른쪽 끝 판단 줄 3 : 7 (반려 · 승인)</td><td>결재선이 아래로 → 한 칸</td></tr>
+          <tr><td>T4 검토 큐형</td><td>진행률 → 도구줄 → 칩 → (일괄) → 표 │ 검토판(증빙 · 입력 · 다음)</td><td>검토판 하단 3 : 7 «확인하고 다음 건»</td><td>검토판이 표 아래로</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="c-sec">
+    <h2>화면 공통 규칙</h2>
+    <div class="ix-rules">
+      <div class="c-box"><h3>면을 가진 버튼은 한 화면 한 영역에 하나</h3><p>주 명령만 강조 면. 나머지는 기본·조용한 버튼. 되돌리기 어려운 일은 위험 글자색.</p></div>
+      <div class="c-box"><h3>상태는 글자 + 점(또는 면)</h3><p><code>c-state</code>·<code>c-badge</code>는 늘 글자를 함께 쓴다. 색 하나로 상태를 말하지 않는다.</p></div>
+      <div class="c-box"><h3>숫자는 등폭 · 오른쪽 맞춤</h3><p>표의 금액은 <code>.num</code>, 원 단위 · 쉼표. 지표는 만·억 단위에 단위 글자를 작게.</p></div>
+      <div class="c-box"><h3>고른 한 건 = 면이 바뀐다</h3><p>표 줄 <code>aria-selected</code>, 카드 <code>aria-current</code>. 오른쪽 판이 그 한 건을 연다.</p></div>
+      <div class="c-box"><h3>웹과 모바일은 같은 상태 · 같은 명령</h3><p>모바일은 카드 목록 + 하단 판단 줄(1 = 100% · 2 = 3:7 · 3 = 3:3:4). <a class="e-link" href="approval.html">결재함 예시</a></p></div>
+      <div class="c-box"><h3>기계가 검사한다</h3><p><code>node scripts/check-claude-v1.mjs examples/claude/startup-erp/erp-templates.css</code></p></div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>
