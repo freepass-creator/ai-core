@@ -10,7 +10,7 @@
 | [`main.html`](main.html) | **메인(목록) 화면 템플릿** — 새 목록 화면은 이 파일을 복사해 시작 |
 | [`form.html`](form.html) | **등록/수정 폼 템플릿** — 새 입력 화면은 이 파일을 복사해 시작 |
 | [`platform/`](platform) | **우리 플랫폼(FreePass ERP) 적용 시안** 5장 — 콕핏·계약진행·계약 상세·재고관리·정산확인 |
-| [`themes/`](themes) | 테마 — 기본 토큰을 덮어쓰는 값(`<name>.json`)과 투영·표현(`<name>.css`). 현재 `retro`(시안 B) |
+| [`themes/`](themes) | **공식 테마 2종** — 등록부 [`themes/index.json`](themes/index.json). 테마 1 `classic`(기본 = tokens.json + erp.css) · 테마 2 `retro`(`retro.json` + `retro.css`) |
 | [`images/`](images) | 규격서(`erp-spec.png`)·목록(`erp-main.png`)·폼(`erp-form.png`) 캡처 |
 | [`../../scripts/check-erp-standard.mjs`](../../scripts/check-erp-standard.mjs) | 규격 검사 — `npm run erp:check` (npm test 에도 포함) |
 
@@ -109,6 +109,17 @@
 - 테마(`themes/*.json` ↔ `themes/*.css`): 덮어쓰기는 기본 토큰 이름만, 추가 변수는 `<테마>-*` 만, 블록 밖은 토큰만
 - 템플릿(`main.html`·`form.html`·`platform/**/*.html`): 인라인 `style` · `<style>` 금지, erp.css 에 없는 `erp-*` 클래스 금지, 골격 영역 필수, 영역당 Primary ≤ 1
 
-## 9. 다른 규격과의 관계
+## 9. 테마 (공식 2종)
+
+| 테마 | 켜는 법 | 정본 | 성격 |
+|---|---|---|---|
+| **테마 1 · classic** (기본) | 속성 없음 또는 `data-theme="classic"` | `tokens.json` · `erp.css` | 테두리형 표준 ERP. 차분한 회청 바탕, 네이비 메뉴, 파란 Primary |
+| **테마 2 · retro** | `data-theme="retro"` + `themes/retro.css` | `themes/retro.json` · `themes/retro.css` | 90년대 사무용 단말기. 크림 모눈 바탕, 잉크 2px 테두리·하드 그림자, 픽셀 제목(Galmuri11), 고정폭 숫자(IBM Plex Mono), 도장 뱃지, F키 상태바 |
+
+- 두 테마는 **같은 HTML** 을 쓴다. 테마는 색·선·모서리·글꼴·그림자만 바꾸고 자리·차례·기능은 바꾸지 않는다.
+- 제품은 사용자가 고른 테마를 사람별로 기억한다(예: 쿠키 `fpa-theme`). 서버가 첫 화면부터 `<html data-theme>` 를 찍어 깜빡임이 없게 한다.
+- 새 테마는 `themes/<id>.json`(기본 토큰 덮어쓰기 + `<id>-*` 추가 변수) · `themes/<id>.css` 를 만들고 `themes/index.json` 에 등록해야 검사를 통과한다.
+
+## 10. 다른 규격과의 관계
 
 `design/claude-v1` 은 «버튼과 박스에 라인이 없다» 컨셉의 규격이고, 이 규격은 업계 통상 **테두리형** ERP 규격이다. 두 규격은 파일·토큰 이름(`--c-*` / `--erp-*`)이 겹치지 않아 함께 존재할 수 있다. `examples/claude/erp.html` 을 이 규격으로 옮길지는 다음 작업에서 결정한다.

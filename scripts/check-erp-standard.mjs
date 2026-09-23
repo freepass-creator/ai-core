@@ -28,7 +28,7 @@ if (existsSync(platformDir)) {
   }
 }
 const themesDir = resolve(dir, 'themes');
-const THEMES = existsSync(themesDir) ? readdirSync(themesDir).filter((n) => n.endsWith('.json')).map((n) => n.replace(/\.json$/, '')).sort() : [];
+const THEMES = existsSync(themesDir) ? readdirSync(themesDir).filter((n) => n.endsWith('.json') && n !== 'index.json').map((n) => n.replace(/\.json$/, '')).sort() : [];
 
 export function checkErpStandard() {
   const errors = [];
@@ -57,6 +57,20 @@ export function checkErpStandard() {
     if (!(m[1] in tokens)) errors.push(`erp.css: 정의되지 않은 토큰 참조 --erp-${m[1]}`);
   }
   const defined = new Set([...rules.matchAll(/\.(erp-[\w-]+)/g)].map((m) => m[1]));
+
+  // 테마 등록부 — 등록된 테마만 쓴다. 기본 테마는 tokens.json 자체, 나머지는 themes/<id>.json + .css
+  const registry = existsSync(resolve(themesDir, 'index.json')) ? JSON.parse(read('themes/index.json')) : null;
+  if (!registry) errors.push('themes/index.json: 테마 등록부가 없다');
+  else {
+    const ids = registry.themes.map((t) => t.id);
+    if (!ids.includes(registry.default)) errors.push(`themes/index.json: 기본 테마 ${registry.default} 가 목록에 없다`);
+    for (const t of registry.themes) {
+      if (!['ADOPTED', 'CANDIDATE', 'RETIRED'].includes(t.status)) errors.push(`themes/index.json: ${t.id} 상태값 ${t.status}`);
+      for (const f of [t.source, t.stylesheet, ...(t.preview ?? [])]) if (!existsSync(resolve(themesDir, f))) errors.push(`themes/index.json: ${t.id} 파일 없음 ${f}`);
+      if (t.id !== registry.default && !THEMES.includes(t.id)) errors.push(`themes/index.json: ${t.id} 의 정본 themes/${t.id}.json 이 없다`);
+    }
+    for (const name of THEMES) if (!ids.includes(name)) errors.push(`themes/${name}.json: 등록부(index.json)에 없는 테마`);
+  }
 
   // 테마 — themes/<name>.json(정본) ↔ themes/<name>.css [data-theme] 블록(투영).
   //   덮어쓰기는 기본 토큰에 있는 이름만, 추가 변수는 --<name>-* 만. 블록 밖은 기본 규칙과 같이 토큰만.
@@ -109,7 +123,7 @@ export function checkErpStandard() {
       if (n > 1) errors.push(`${file}: 영역 ${mk.name} 에 Primary 버튼 ${n}개 — 영역마다 최대 1개`);
     });
   }
-  return { ok: errors.length === 0, errors, tokenCount: Object.keys(tokens).length, themeCount: THEMES.length };
+  return { ok: errors.length === 0, errors, tokenCount: Object.keys(tokens).length, themeCount: THEMES.length + 1 };
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

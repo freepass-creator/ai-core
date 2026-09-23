@@ -4,8 +4,8 @@
 
 | 시안 | 위치 | 상태 |
 |---|---|---|
-| **A · 기본** (테두리형 표준) | `platform/*.html` · `images/platform-*.png` | **채택** — 대표 결정 2026-09-23 「첫 번째 시안으로 하고, 아주 잘 만들었어」 |
-| **B · 레트로** «90년대 사무용 단말기» | `platform/retro/*.html` · `images/platform-retro-*.png` · [`../themes/retro.css`](../themes/retro.css) | 탐색안 — 같은 HTML 구조에 테마만 교체 |
+| **A · 기본** (테두리형 표준) | `platform/*.html` · `images/platform-*.png` | **채택 (테마 1 · 기본)** — 대표 결정 2026-09-23 「첫 번째 시안으로 하고, 아주 잘 만들었어」 |
+| **B · 레트로** «90년대 사무용 단말기» | `platform/retro/*.html` · `images/platform-retro-*.png` · [`../themes/retro.css`](../themes/retro.css) | **채택 (테마 2)** — 대표 결정 2026-09-23 「이번 것도 느낌 좋았다. 1번 테마, 2번 테마 다 저장해서 제대로 규격화」. 같은 HTML 구조에 테마만 교체 |
 
 시안 B 는 규격이 **테마를 갈아 끼울 수 있다**는 것도 보여 준다. HTML 은 A 와 같고 `<body data-theme="retro">` 와 `themes/retro.css` 만 더했다. 테마 값의 정본은 [`../themes/retro.json`](../themes/retro.json)(기본 토큰 중 색·모서리 43개 덮어쓰기 + `retro-*` 추가 변수 6개)이며 `npm run erp:check` 가 정본↔투영 일치와 토큰 전용 규칙을 검사한다. 레트로 표현: 크림 종이 + 모눈 바탕, 잉크 2px 테두리와 딱 떨어지는 그림자, 제목·KPI 숫자에 픽셀 글꼴(Galmuri11, OFL), 코드·금액에 고정폭(IBM Plex Mono, OFL), 도장형 뱃지, 겨자색 반전 현재 메뉴, DOS 식 상태바와 F키 키캡.
 
