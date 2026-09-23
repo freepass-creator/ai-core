@@ -166,3 +166,25 @@ test('adapter rejects a preflight sealed for a different repository',async()=>{
     );
   });
 });
+
+test('verifier rejects an execution receipt from a different sealed packet',async()=>{
+  await withWorkspace(async root=>{
+    const adapter=createKeepSeparateMetadataAdapter({workspaceRoot:root});
+    const execution=await adapter.execute({packet:packet(),preflight:preflight(),attempt_id:'attempt-1'});
+
+    const verify=createKeepSeparateMetadataVerifier({
+      workspaceRoot:root,
+      observeRepository:async()=>({
+        repository:'freepass-creator/freepass-sales',
+        revision:'a'.repeat(40),
+        dirty_state:'CLEAN',
+      }),
+      verifyProjectAuthority:async()=>true,
+    });
+
+    const otherPacket=packet({packet_id:'INT-WP-002-sales',plan_id:'AI-CORE-MERGE-P1'});
+    const otherPreflight=preflight({packet_id:'INT-WP-002-sales',seal_digest:'sha256:'+'d'.repeat(64)});
+    const results=await verify({packet:otherPacket,preflight:otherPreflight,execution});
+    assert.equal(results.find(x=>x.name==='PLAN_ITEM_STILL_READY').status,'FAIL');
+  });
+});
