@@ -142,3 +142,11 @@
 [data-theme="retro"] .erp-statusbar { background: var(--erp-color-nav); color: var(--erp-color-nav-text); border-top: 0; font-family: var(--retro-font-mono); }
 [data-theme="retro"] .erp-statusbar-ok { color: var(--erp-color-nav-active); }
 [data-theme="retro"] .erp-statusbar kbd { padding: 0 5px; margin-right: 3px; border: 1px solid var(--erp-color-nav-text); border-radius: var(--erp-r-sm); background: var(--erp-color-nav-raised); color: var(--erp-color-nav-text-strong); font-family: var(--retro-font-mono); font-size: var(--erp-fs-caption); }
+
+/* 조회 — 검색창 · 상세 필터 */
+[data-theme="retro"] .erp-search { border: var(--retro-border) solid var(--erp-color-line-strong); box-shadow: inset 2px 2px 0 var(--erp-color-line); }
+[data-theme="retro"] .erp-searchbar { border-bottom: var(--retro-border) solid var(--erp-color-line-strong); }
+[data-theme="retro"] .erp-filter-panel { border: var(--retro-border) solid var(--erp-color-line-strong); box-shadow: var(--retro-shadow-lg) var(--erp-color-line-strong); }
+[data-theme="retro"] .erp-facet-opt { border: 1.5px solid var(--erp-color-line-strong); }
+[data-theme="retro"] .erp-facet-opt[aria-pressed="true"] { background: var(--erp-color-nav-active); color: var(--erp-color-text); border-color: var(--erp-color-line-strong); }
+[data-theme="retro"] .erp-facet-title { font-family: var(--retro-font-display); }

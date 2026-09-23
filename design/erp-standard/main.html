@@ -89,17 +89,19 @@
     </section>
 
     <section class="erp-card erp-card--fill">
-      <!-- ⑥ 조회조건 바 -->
-      <form class="erp-filter" data-region="filter" role="search">
-        <label class="erp-field"><span class="erp-label">수주일자 <em class="erp-req">*</em></span><span class="erp-input">2026-09-01 ~ 2026-09-23<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span></label>
-        <label class="erp-field"><span class="erp-label">거래처</span><input class="erp-input" placeholder="거래처명 / 코드"></label>
-        <label class="erp-field"><span class="erp-label">담당자</span><span class="erp-input">전체<svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></label>
-        <label class="erp-field"><span class="erp-label">진행상태</span><span class="erp-input">확정, 출하중 외 1<svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></label>
-        <label class="erp-field"><span class="erp-label">수주번호</span><input class="erp-input" placeholder="SO-"></label>
-        <div class="erp-filter-actions">
-          <button class="erp-btn erp-btn--ghost" type="reset">초기화</button>
-          <button class="erp-btn erp-btn--primary" type="submit"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>조회 (F3)</button>
-        </div>
+      <!-- ⑥ 조회 — 검색창 + 상세 필터 (드롭다운을 늘어놓지 않는다) -->
+      <form class="erp-searchbar" data-region="filter" role="search">
+        <label class="erp-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input name="q" placeholder="수주번호 · 거래처 · 품목 · 담당자"></label>
+        <details class="erp-filter-more">
+          <summary class="erp-btn">상세 필터 <b>2</b></summary>
+          <div class="erp-filter-panel">
+            <div class="erp-facet"><p class="erp-facet-title">수주일자</p><div class="erp-facet-opts"><a class="erp-facet-opt" href="#">오늘</a><a class="erp-facet-opt" href="#">이번 주</a><a class="erp-facet-opt" href="#" aria-pressed="true">이번 달 <small>128</small></a><a class="erp-facet-opt" href="#">지난 달</a></div></div>
+            <div class="erp-facet"><p class="erp-facet-title">담당자</p><div class="erp-facet-opts"><a class="erp-facet-opt" href="#">이영업 <small>41</small></a><a class="erp-facet-opt" href="#" aria-pressed="true">박과장 <small>37</small></a><a class="erp-facet-opt" href="#">최대리 <small>29</small></a><a class="erp-facet-opt" href="#">김사원 <small>21</small></a></div></div>
+            <div class="erp-facet"><p class="erp-facet-title">거래처</p><div class="erp-facet-opts"><a class="erp-facet-opt" href="#">(주)한빛정밀 <small>18</small></a><a class="erp-facet-opt" href="#">대성산업(주) <small>15</small></a><a class="erp-facet-opt" href="#">그린테크 <small>12</small></a></div></div>
+            <div class="erp-filter-panel-foot"><a class="erp-btn erp-btn--ghost" href="#">초기화</a><button class="erp-btn erp-btn--primary" type="submit">적용</button></div>
+          </div>
+        </details>
+        <span class="erp-chip">이번 달 ×</span><span class="erp-chip">담당: 박과장 ×</span>
       </form>
 
       <!-- ⑦ 데이터 그리드 -->
@@ -108,8 +110,7 @@
         <button class="erp-btn erp-btn--sm" type="button">확정</button>
         <button class="erp-btn erp-btn--sm" type="button">출하지시 생성</button>
         <button class="erp-btn erp-btn--sm erp-btn--danger-text" type="button">삭제</button>
-        <span class="erp-chip">상태: 확정, 출하중, 지연 ×</span>
-        <span class="erp-toolbar-spacer"></span>
+                <span class="erp-toolbar-spacer"></span>
         <div class="erp-seg" role="group" aria-label="상태 탭">
           <button type="button" aria-pressed="true">전체 128</button><button type="button" aria-pressed="false">작성중 9</button><button type="button" aria-pressed="false">확정 57</button><button type="button" aria-pressed="false">출하중 38</button><button type="button" aria-pressed="false">완료 24</button>
         </div>
