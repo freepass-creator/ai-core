@@ -9,6 +9,18 @@
 메뉴·대시보드·결재함·목록·상세·입력·상태 흐름·권한·계산·재고 반영이 전부 그 파일에서 나온다.
 모듈을 늘리려면 코드가 아니라 명세에 entity 를 더한다.
 
+## 화면 (실제 동작 캡처)
+
+| 시연 2 · 홈 | 시연 2 · 칸반 보드 |
+|---|---|
+| ![홈](screenshots/v2-01-home.png) | ![보드](screenshots/v2-02-board.png) |
+| **상세(밀려 나옴)** | **⌘K 명령창** |
+| ![상세](screenshots/v2-03-drawer.png) | ![명령창](screenshots/v2-05-palette.png) |
+| **다크 모드** | **발주 초안 제안** |
+| ![다크](screenshots/v2-01-home-dark.png) | ![제안](screenshots/v2-06-suggest.png) |
+
+모바일: ![모바일](screenshots/v2-07-mobile.png) · 시연 1: [대시보드](screenshots/v1-01-dashboard.png) · [수주](screenshots/v1-02-sales-order.png)
+
 ## 파일
 
 | 파일 | 역할 |
