@@ -26,6 +26,13 @@ test('Node 프로젝트를 revision-bound capsule로 만든다',()=>{
   assert.ok(c.evidence_refs.includes(`GIT:${base.repository}@${base.subject_revision}`));
 });
 
+test('package.json 경로가 있는데 본문을 읽지 못하면 Node 프로젝트를 문서 저장소로 낮추지 않는다',()=>{
+  const c=buildProjectCapsule({...base,package_json:null});
+  assert.equal(c.classification.kind,'NODE_APP');
+  assert.equal(c.readiness.status,'HOLD');
+  assert.ok(c.readiness.blockers.includes('PACKAGE_JSON_MISSING'));
+});
+
 test('정적 홈페이지는 별도 build가 없어도 이유를 남기고 review 후보가 된다',()=>{
   const c=buildProjectCapsule({
     ...base,project_id:'freepass-homepage',repository:'freepass-creator/freepasshomepage',
