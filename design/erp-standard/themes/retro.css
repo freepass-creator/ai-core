@@ -158,3 +158,14 @@
 [data-theme="retro"] .erp-listcard-title { font-family: var(--retro-font-display); }
 [data-theme="retro"] .erp-listcard-foot { border-top: 1px dashed var(--erp-color-line); }
 [data-theme="retro"] .erp-listcard-amount { font-family: var(--retro-font-mono); }
+
+/* 긴 카드 목록 — 굵은 테두리 + 찍힌 그림자, 상태 띠는 굵게, 금액은 고정폭 */
+[data-theme="retro"] .erp-rowcard { border: var(--retro-border) solid var(--erp-color-line-strong); box-shadow: var(--retro-shadow) var(--erp-color-line-strong); }
+[data-theme="retro"] .erp-rowcard::before { width: 6px; }
+[data-theme="retro"] .erp-rowcard[aria-current="true"] { border-color: var(--erp-color-primary); box-shadow: var(--retro-shadow) var(--erp-color-primary); }
+[data-theme="retro"] .erp-rowcard-title, [data-theme="retro"] .erp-rowcards-group { font-family: var(--retro-font-display); }
+[data-theme="retro"] .erp-rowcard-car b { border: 1.5px solid var(--erp-color-line-strong); background: var(--erp-color-surface); }
+[data-theme="retro"] .erp-rowcard-car b, [data-theme="retro"] .erp-rowcard-amount strong, [data-theme="retro"] .erp-rowcard-meta { font-family: var(--retro-font-mono); }
+[data-theme="retro"] .erp-rowcard-steps li i { border-radius: var(--erp-r-sm); }
+[data-theme="retro"] .erp-rowcard-steps li::before { height: 0; background: transparent; border-top: var(--retro-border) dashed var(--erp-color-line-strong); }
+[data-theme="retro"] .erp-rowcard-steps li[data-state="done"]::before, [data-theme="retro"] .erp-rowcard-steps li[aria-current="step"]::before { border-top-style: solid; border-top-color: var(--erp-color-primary); }

@@ -360,3 +360,58 @@
 .erp-listcard-foot { display: flex; align-items: center; justify-content: space-between; gap: var(--erp-sp-2); margin-top: auto; padding-top: 10px; border-top: 1px solid var(--erp-color-line-row); }
 .erp-listcard-amount { margin-left: auto; font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); white-space: nowrap; }
 .erp-listcard-amount small { margin-left: 2px; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-regular); }
+
+/* ── 긴 카드 목록 — 한 건 = 가로로 긴 카드 한 장 (대표 2026-09-23 「줄 타입은 촌스럽다 … 카드를 기다랗게 해서 거기 정보를 넣는 방식」) ──
+ *   카드 한 장을 네 칸으로 나눈다: 누구·무슨 차(id) · 어디까지 왔나(steps) · 조건(facts) · 돈(amount) + 열기(go).
+ *   왼쪽 띠 색 = 상태(data-tone). 좁은 창 · 폰에서는 칸이 위아래로 쌓인다 — 같은 마크업이 폰까지 간다.
+ *   카드 전체를 누르면 열린다(.erp-rowcard-link 가 카드를 덮는다). 고른 카드는 aria-current="true". */
+.erp-rowcards { flex: 1; min-height: 0; overflow: auto; display: flex; flex-direction: column; gap: 10px; padding: var(--erp-sp-4); background: var(--erp-color-sunken); }
+.erp-rowcards-group { margin: 6px 0 0; color: var(--erp-color-text-2); font-size: var(--erp-fs-label); font-weight: var(--erp-fw-semibold); }
+.erp-rowcards-group:first-child { margin-top: 0; }
+.erp-rowcards-group small { margin-left: 6px; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-regular); }
+.erp-rowcard { position: relative; flex: none; display: grid; grid-template-columns: minmax(200px, 1.2fr) minmax(250px, 1.3fr) minmax(0, 2fr) 170px 20px; grid-template-areas: "id steps facts amount go"; align-items: center; gap: var(--erp-sp-6); padding: 16px var(--erp-sp-5) 16px var(--erp-sp-6); border: 1px solid var(--erp-color-line); border-radius: var(--erp-r-lg); background: var(--erp-color-surface); overflow: hidden; }
+.erp-rowcard::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--erp-color-line-strong); }
+.erp-rowcard[data-tone="ok"]::before { background: var(--erp-color-ok); }
+.erp-rowcard[data-tone="info"]::before { background: var(--erp-color-info); }
+.erp-rowcard[data-tone="warn"]::before { background: var(--erp-color-warn); }
+.erp-rowcard[data-tone="err"]::before { background: var(--erp-color-err-solid); }
+.erp-rowcard:hover { border-color: var(--erp-color-line-strong); box-shadow: 0 6px 16px -12px var(--erp-color-text-3); }
+.erp-rowcard[aria-current="true"] { border-color: var(--erp-color-primary); box-shadow: 0 0 0 3px var(--erp-color-focus-ring); }
+.erp-rowcard .erp-rowcard-link { position: static; color: var(--erp-color-text); font-weight: var(--erp-fw-bold); text-decoration: none; }
+.erp-rowcard-link::after { content: ""; position: absolute; inset: 0; z-index: 0; }
+.erp-rowcard a:not(.erp-rowcard-link), .erp-rowcard button { position: relative; z-index: 1; }
+/* 칸 1 — 누구 · 무슨 차 */
+.erp-rowcard-id { grid-area: id; min-width: 0; }
+.erp-rowcard-title { display: flex; align-items: center; gap: var(--erp-sp-2); margin: 0; font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); }
+.erp-rowcard-car { margin-top: 4px; color: var(--erp-color-text); font-weight: var(--erp-fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.erp-rowcard-car b { display: inline-block; margin-right: 6px; padding: 0 6px; border-radius: var(--erp-r-sm); background: var(--erp-color-neutral-bg); color: var(--erp-color-text); font-weight: var(--erp-fw-semibold); }
+.erp-rowcard-meta { margin-top: 3px; overflow: hidden; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); text-overflow: ellipsis; white-space: nowrap; }
+/* 칸 2 — 어디까지 왔나 (작은 진행 단계) */
+.erp-rowcard-steps { grid-area: steps; display: flex; margin: 0; padding: 0; list-style: none; }
+.erp-rowcard-steps li { position: relative; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); white-space: nowrap; }
+.erp-rowcard-steps li::before { content: ""; position: absolute; top: 4px; right: 50%; width: 100%; height: 2px; background: var(--erp-color-line); }
+.erp-rowcard-steps li:first-child::before { display: none; }
+.erp-rowcard-steps li i { position: relative; z-index: 1; width: 10px; height: 10px; border: 2px solid var(--erp-color-line-strong); border-radius: var(--erp-r-pill); background: var(--erp-color-surface); }
+.erp-rowcard-steps li[data-state="done"] { color: var(--erp-color-text-2); }
+.erp-rowcard-steps li[data-state="done"]::before, .erp-rowcard-steps li[aria-current="step"]::before { background: var(--erp-color-primary); }
+.erp-rowcard-steps li[data-state="done"] i { border-color: var(--erp-color-primary); background: var(--erp-color-primary); }
+.erp-rowcard-steps li[aria-current="step"] { color: var(--erp-color-primary); font-weight: var(--erp-fw-semibold); }
+.erp-rowcard-steps li[aria-current="step"] i { border-color: var(--erp-color-primary); box-shadow: 0 0 0 3px var(--erp-color-primary-weak); }
+/* 칸 3 — 조건 */
+.erp-rowcard-facts { grid-area: facts; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--erp-sp-4); margin: 0; }
+.erp-rowcard-facts div { min-width: 0; }
+.erp-rowcard-facts dt { color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
+.erp-rowcard-facts dd { margin: 3px 0 0; overflow: hidden; font-weight: var(--erp-fw-medium); text-overflow: ellipsis; white-space: nowrap; }
+.erp-rowcard-facts dd small { display: block; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-regular); }
+/* 칸 4 — 돈 */
+.erp-rowcard-amount { grid-area: amount; text-align: right; }
+.erp-rowcard-amount strong { display: block; font-size: var(--erp-fs-title); font-weight: var(--erp-fw-bold); line-height: 1.1; }
+.erp-rowcard-amount strong small { margin-left: 2px; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-regular); }
+.erp-rowcard-amount span { display: block; margin-top: 4px; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
+.erp-rowcard-go { grid-area: go; width: 20px; height: 20px; fill: none; stroke: var(--erp-color-text-3); stroke-width: 2; }
+.erp-rowcard:hover .erp-rowcard-go { stroke: var(--erp-color-primary); }
+@media (max-width: 1100px) {
+  .erp-rowcard { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "id amount" "steps steps" "facts facts"; gap: 14px var(--erp-sp-4); }
+  .erp-rowcard-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px var(--erp-sp-4); }
+  .erp-rowcard-go { display: none; }
+}

@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FreePass Admin 시안 — 계약접수 · 긴 카드 목록</title>
+<!-- ERP 표준 UI 규격 v1 — 긴 카드 목록(§5-3) 시안. 대표 2026-09-23 「줄 타입은 촌스럽다 … 카드를 기다랗게 해서 거기 정보를 넣는 방식으로」. 이름 · 차량번호는 가상 예시다. -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<link rel="stylesheet" href="../erp.css">
+
+</head>
+<body class="erp-app" data-screen="intake-cards">
+
+<header class="erp-topbar" data-region="topbar">
+  <div class="erp-brand"><span class="erp-brand-mark">F</span>FreePass Admin</div>
+  <button class="erp-company" type="button" aria-label="워크스페이스"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 9h1M14 9h1M9 13h1M14 13h1M9 17h1M14 17h1"/></svg>프리패스 본사 · 조회 전용</button>
+  <button class="erp-gsearch" type="button" aria-label="통합 검색"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>차번 · 모델 · 공급사 · 고객 검색<kbd>Enter</kbd></button>
+  <div class="erp-topbar-right">
+    <div class="erp-user"><span class="erp-avatar">관</span><div>관리자<small>관리자 · 본사</small></div></div>
+  </div>
+</header>
+
+<nav class="erp-sidenav" data-region="sidenav" aria-label="주 메뉴">
+  <div class="erp-nav-group">업무</div>
+  <a class="erp-nav-item" href="#"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>상품찾기</a>
+  <a class="erp-nav-item" href="#" aria-current="page"><svg viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>계약접수<span class="erp-nav-count">9</span></a>
+  <a class="erp-nav-item" href="#"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg>실적</a>
+  <a class="erp-nav-item" href="#"><svg viewBox="0 0 24 24"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>정산관리</a>
+  <div class="erp-nav-group">계약서</div>
+  <a class="erp-nav-item" href="#"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M8 13h8M8 17h5"/></svg>전자계약</a>
+  <div class="erp-nav-group">시스템</div>
+  <a class="erp-nav-item" href="#"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 1 18 0M12 12l4-4"/></svg>데이터 상태</a>
+</nav>
+
+<main class="erp-main">
+  <div class="erp-tabs" role="tablist" data-region="tabs">
+    <div class="erp-tab" role="tab" aria-selected="false">상품찾기</div>
+    <div class="erp-tab" role="tab" aria-selected="true">계약접수</div>
+    <div class="erp-tab" role="tab" aria-selected="false">실적</div>
+    <div class="erp-tab" role="tab" aria-selected="false">정산관리</div>
+    <div class="erp-tab" role="tab" aria-selected="false">전자계약</div>
+  </div>
+  <div class="erp-content">
+    <section data-region="page-header">
+      <div class="erp-crumb">홈 › 업무 › <span aria-current="page">계약접수</span></div>
+      <div class="erp-page-header">
+        <div>
+          <h1 class="erp-page-title">계약접수</h1>
+          <p class="erp-page-desc">접수부터 계약서 · 인도 · 청구 · 수금까지, 한 건을 카드 한 장으로 봅니다.</p>
+        </div>
+        <div class="erp-actions">
+          <button class="erp-btn erp-btn--ghost" type="button">정산관리</button>
+          <button class="erp-btn erp-btn--primary" type="button"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>신규 접수</button>
+        </div>
+      </div>
+    </section>
+    <section class="erp-card erp-card--fill">
+      <form class="erp-searchbar" data-region="filter" role="search">
+        <label class="erp-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input placeholder="고객 · 차번 · 모델 · 공급사 · 담당" aria-label="검색"></label>
+        <details class="erp-filter-more"><summary class="erp-btn">상세 필터</summary></details>
+      </form>
+      <div class="erp-toolbar" data-region="grid-toolbar">
+        <span class="erp-toolbar-spacer"></span>
+        <div class="erp-seg" role="group" aria-label="접수 칸"><button type="button" aria-pressed="true">전체 8</button><button type="button" aria-pressed="false">당월접수 3</button><button type="button" aria-pressed="false">미완료 1</button><button type="button" aria-pressed="false">분납실적 0</button><button type="button" aria-pressed="false">완납실적 3</button><button type="button" aria-pressed="false">취소 1</button></div>
+      </div>
+      <div class="erp-rowcards" data-region="grid" role="list" aria-label="접수 목록">
+        <h2 class="erp-rowcards-group">이번 주<small>9월 21일 ~ 23일 · 3건</small></h2>
+        <article class="erp-rowcard" data-tone="info" aria-current="true">
+          <div class="erp-rowcard-id">
+            <h3 class="erp-rowcard-title"><a class="erp-rowcard-link" href="contract-detail.html">김*수</a><span class="erp-badge erp-badge--info">당월접수</span></h3>
+            <div class="erp-rowcard-car"><b>123하4567</b>쏘렌토 MQ4 PE</div>
+            <div class="erp-rowcard-meta">FP-2609-0142 · 접수 09-23 · 계약서 대기</div>
+          </div>
+          <ol class="erp-rowcard-steps" aria-label="진행"><li data-state="done"><i></i>접수</li><li aria-current="step"><i></i>계약서</li><li><i></i>인도</li><li><i></i>청구</li><li><i></i>수금·지급</li></ol>
+          <dl class="erp-rowcard-facts">
+            <div><dt>공급사</dt><dd>한빛렌터카</dd></div>
+            <div><dt>상품 · 기간</dt><dd>장기렌트<small>36개월</small></dd></div>
+            <div><dt>영업채널</dt><dd>프리패스 직영<small>담당 이영업</small></dd></div>
+            <div><dt>보증금</dt><dd>무보증<small>확인 전</small></dd></div>
+          </dl>
+          <div class="erp-rowcard-amount"><strong>760,000<small>원</small></strong><span>월 대여료</span></div>
+          <svg class="erp-rowcard-go" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+        </article>
+        <article class="erp-rowcard" data-tone="info">
+          <div class="erp-rowcard-id">
+            <h3 class="erp-rowcard-title"><a class="erp-rowcard-link" href="contract-detail.html">이*진</a><span class="erp-badge erp-badge--info">당월접수</span></h3>
+            <div class="erp-rowcard-car"><b>31하7702</b>더 뉴 아반떼 CN7</div>
+            <div class="erp-rowcard-meta">FP-2609-0141 · 접수 09-22 · 인도 대기</div>
+          </div>
+          <ol class="erp-rowcard-steps" aria-label="진행"><li data-state="done"><i></i>접수</li><li data-state="done"><i></i>계약서</li><li aria-current="step"><i></i>인도</li><li><i></i>청구</li><li><i></i>수금·지급</li></ol>
+          <dl class="erp-rowcard-facts">
+            <div><dt>공급사</dt><dd>그린카렌탈</dd></div>
+            <div><dt>상품 · 기간</dt><dd>장기렌트<small>24개월</small></dd></div>
+            <div><dt>영업채널</dt><dd>서울중앙지점<small>담당 박과장</small></dd></div>
+            <div><dt>보증금</dt><dd>무보증<small>일시납</small></dd></div>
+          </dl>
+          <div class="erp-rowcard-amount"><strong>520,000<small>원</small></strong><span>월 대여료</span></div>
+          <svg class="erp-rowcard-go" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+        </article>
+        <article class="erp-rowcard" data-tone="info">
+          <div class="erp-rowcard-id">
+            <h3 class="erp-rowcard-title"><a class="erp-rowcard-link" href="contract-detail.html">박*현</a><span class="erp-badge erp-badge--info">당월접수</span></h3>
+            <div class="erp-rowcard-car"><b>67하2045</b>더 뉴 레이</div>
+            <div class="erp-rowcard-meta">FP-2609-0140 · 접수 09-21 · 청구 대기</div>
+          </div>
+          <ol class="erp-rowcard-steps" aria-label="진행"><li data-state="done"><i></i>접수</li><li data-state="done"><i></i>계약서</li><li data-state="done"><i></i>인도</li><li aria-current="step"><i></i>청구</li><li><i></i>수금·지급</li></ol>
+          <dl class="erp-rowcard-facts">
+            <div><dt>공급사</dt><dd>그린카렌탈</dd></div>
+            <div><dt>상품 · 기간</dt><dd>장기렌트<small>12개월</small></dd></div>
+            <div><dt>영업채널</dt><dd>프리패스 직영<small>담당 최대리</small></dd></div>
+            <div><dt>보증금</dt><dd>무보증<small>일시납</small></dd></div>
+          </dl>
+          <div class="erp-rowcard-amount"><strong>420,000<small>원</small></strong><span>월 대여료</span></div>
+          <svg class="erp-rowcard-go" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+        </article>
+        <h2 class="erp-rowcards-group">지난 주<small>9월 14일 ~ 20일 · 5건</small></h2>
+        <article class="erp-rowcard" data-tone="warn">
+          <div class="erp-rowcard-id">
+            <h3 class="erp-rowcard-title"><a class="erp-rowcard-link" href="contract-detail.html">장*석</a><span class="erp-badge erp-badge--warn">미완료</span></h3>
+            <div class="erp-rowcard-car"><b>41허2286</b>디 올 뉴 싼타페 MX5</div>
+            <div class="erp-rowcard-meta">FP-2609-0139 · 접수 09-20 · 인도 예정 09-26</div>
+          </div>
+          <ol class="erp-rowcard-steps" aria-label="진행"><li data-state="done"><i></i>접수</li><li data-state="done"><i></i>계약서</li><li aria-current="step"><i></i>인도</li><li><i></i>청구</li><li><i></i>수금·지급</li></ol>
+          <dl class="erp-rowcard-facts">
+            <div><dt>공급사</dt><dd>대성모빌리티</dd></div>
+            <div><dt>상품 · 기간</dt><dd>장기렌트<small>36개월</small></dd></div>
+            <div><dt>영업채널</dt><dd>프리패스 직영<small>담당 이영업</small></dd></div>
+            <div><dt>보증금</dt><dd>2,000,000원<small>일시납</small></dd></div>
+          </dl>
+          <div class="erp-rowcard-amount"><strong>1,020,000<small>원</small></strong><span>월 대여료</span></div>
+          <svg class="erp-rowcard-go" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+        </article>
+        <article class="erp-rowcard" data-tone="ok">
+          <div class="erp-rowcard-id">
+            <h3 class="erp-rowcard-title"><a class="erp-rowcard-link" href="contract-detail.html">최*영</a><span class="erp-badge erp-badge--ok">완납실적</span></h3>
+            <div class="erp-rowcard-car"><b>72하1193</b>쏘렌토 MQ4 PE</div>
+            <div class="erp-rowcard-meta">FP-2609-0138 · 접수 09-19 · 수금 대기</div>
+          </div>
+          <ol class="erp-rowcard-steps" aria-label="진행"><li data-state="done"><i></i>접수</li><li data-state="done"><i></i>계약서</li><li data-state="done"><i></i>인도</li><li data-state="done"><i></i>청구</li><li aria-current="step"><i></i>수금·지급</li></ol>
+          <dl class="erp-rowcard-facts">
+            <div><dt>공급사</dt><dd>한빛렌터카</dd></div>
+            <div><dt>상품 · 기간</dt><dd>선출고<small>48개월</small></dd></div>
+            <div><dt>영업채널</dt><dd>부산제휴채널<small>담당 김팀장</small></dd></div>
+            <div><dt>보증금</dt><dd>무보증<small>일시납</small></dd></div>
+          </dl>
+          <div class="erp-rowcard-amount"><strong>780,000<small>원</small></strong><span>월 대여료</span></div>
+          <svg class="erp-rowcard-go" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+        </article>
+        <article class="erp-rowcard" data-tone="ok">
+          <div class="erp-rowcard-id">
+            <h3 class="erp-rowcard-title"><a class="erp-rowcard-link" href="contract-detail.html">정*호</a><span class="erp-badge erp-badge--ok">완납실적</span></h3>
+            <div class="erp-rowcard-car"><b>33호2217</b>더 뉴 투싼 NX4</div>
+            <div class="erp-rowcard-meta">FP-2609-0137 · 접수 09-17 · 정산 끝</div>
+          </div>
+          <ol class="erp-rowcard-steps" aria-label="진행"><li data-state="done"><i></i>접수</li><li data-state="done"><i></i>계약서</li><li data-state="done"><i></i>인도</li><li data-state="done"><i></i>청구</li><li data-state="done"><i></i>수금·지급</li></ol>
+          <dl class="erp-rowcard-facts">
+            <div><dt>공급사</dt><dd>그린카렌탈</dd></div>
+            <div><dt>상품 · 기간</dt><dd>구독<small>12개월</small></dd></div>
+            <div><dt>영업채널</dt><dd>프리패스 직영<small>담당 이영업</small></dd></div>
+            <div><dt>보증금</dt><dd>무보증<small>일시납</small></dd></div>
+          </dl>
+          <div class="erp-rowcard-amount"><strong>690,000<small>원</small></strong><span>월 대여료</span></div>
+          <svg class="erp-rowcard-go" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+        </article>
+        <article class="erp-rowcard" data-tone="err">
+          <div class="erp-rowcard-id">
+            <h3 class="erp-rowcard-title"><a class="erp-rowcard-link" href="contract-detail.html">한*별</a><span class="erp-badge erp-badge--err">취소</span></h3>
+            <div class="erp-rowcard-car"><b>19호4402</b>캐스퍼</div>
+            <div class="erp-rowcard-meta">FP-2609-0136 · 접수 09-16 · 고객 변심 취소</div>
+          </div>
+          <ol class="erp-rowcard-steps" aria-label="진행"><li><i></i>접수</li><li><i></i>계약서</li><li><i></i>인도</li><li><i></i>청구</li><li><i></i>수금·지급</li></ol>
+          <dl class="erp-rowcard-facts">
+            <div><dt>공급사</dt><dd>동해오토리스</dd></div>
+            <div><dt>상품 · 기간</dt><dd>장기렌트<small>36개월</small></dd></div>
+            <div><dt>영업채널</dt><dd>서울중앙지점<small>담당 박과장</small></dd></div>
+            <div><dt>보증금</dt><dd>1,000,000원<small>일시납</small></dd></div>
+          </dl>
+          <div class="erp-rowcard-amount"><strong>395,000<small>원</small></strong><span>월 대여료</span></div>
+          <svg class="erp-rowcard-go" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+        </article>
+        <article class="erp-rowcard" data-tone="ok">
+          <div class="erp-rowcard-id">
+            <h3 class="erp-rowcard-title"><a class="erp-rowcard-link" href="contract-detail.html">강*미</a><span class="erp-badge erp-badge--ok">완납실적</span></h3>
+            <div class="erp-rowcard-car"><b>24하6634</b>더 뉴 K5 DL3</div>
+            <div class="erp-rowcard-meta">FP-2609-0135 · 접수 09-15 · 지급 대기</div>
+          </div>
+          <ol class="erp-rowcard-steps" aria-label="진행"><li data-state="done"><i></i>접수</li><li data-state="done"><i></i>계약서</li><li data-state="done"><i></i>인도</li><li data-state="done"><i></i>청구</li><li aria-current="step"><i></i>수금·지급</li></ol>
+          <dl class="erp-rowcard-facts">
+            <div><dt>공급사</dt><dd>한빛렌터카</dd></div>
+            <div><dt>상품 · 기간</dt><dd>장기렌트<small>36개월</small></dd></div>
+            <div><dt>영업채널</dt><dd>서울중앙지점<small>담당 박과장</small></dd></div>
+            <div><dt>보증금</dt><dd>무보증<small>일시납</small></dd></div>
+          </dl>
+          <div class="erp-rowcard-amount"><strong>600,000<small>원</small></strong><span>월 대여료</span></div>
+          <svg class="erp-rowcard-go" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+        </article>
+      </div>
+      <div class="erp-grid-foot"><span>총 <b>8</b>건</span><span>·</span><span>월 대여료 합계 <b>5,185,000</b>원</span></div>
+    </section>
+  </div>
+
+  <footer class="erp-statusbar" data-region="statusbar">
+    <span class="erp-statusbar-ok">● ERP5 데이터 연결 정상</span><span>조회 전용</span><span>가상 데이터 · 화면 확인용</span>
+  </footer>
+</main>
+</body>
+</html>

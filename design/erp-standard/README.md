@@ -113,6 +113,22 @@
 
 합계 · 건수 · 페이지는 카드 목록 아래 `erp-grid-foot` 에 둔다. 상세 안의 작은 표(요금표 · 금액표)는 그리드 그대로다.
 
+## 5-3. 추가 부품 — 긴 카드 목록 (FreePass Admin, 대표 2026-09-23)
+
+「줄 타입은 촌스럽다 … 카드를 기다랗게 해서 거기 정보를 넣는 방식으로」 — 한 건 = 가로로 긴 카드 한 장. 시안: [platform/intake-cards.html](platform/intake-cards.html) · [레트로](platform/retro/intake-cards.html) · 그림 `images/platform-intake-cards.png` · `images/platform-retro-intake-cards.png`.
+
+| 칸 | 클래스 | 들어가는 것 |
+|---|---|---|
+| 목록 · 묶음 제목 | `erp-rowcards` · `erp-rowcards-group` | 그리드 자리. 날짜 묶음(이번 주 · 지난 주) |
+| 카드 | `erp-rowcard` (`data-tone` = 왼쪽 상태 띠 색, `aria-current="true"` = 고른 카드) | 한 건 |
+| ① 누구 · 무슨 차 | `erp-rowcard-id` · `erp-rowcard-title` · `erp-rowcard-link` · `erp-rowcard-car`(`<b>` 차량번호) · `erp-rowcard-meta` | 고객 + 상태 뱃지 / 차번 + 모델 / 코드 · 접수일 · 지금 할 일 |
+| ② 어디까지 왔나 | `erp-rowcard-steps` | 작은 진행 단계(접수 · 계약서 · 인도 · 청구 · 수금·지급) |
+| ③ 조건 | `erp-rowcard-facts` | 라벨:값 4칸(값 밑 보조 줄) |
+| ④ 돈 | `erp-rowcard-amount` | 대표 금액 크게 + 이름 |
+| 열기 | `erp-rowcard-go` | › |
+
+1100px 아래(좁은 창 · 폰)에서는 ①④ → ② → ③ 으로 위아래로 쌓인다.
+
 ## 6. ERP 공통 동작 규칙
 
 1. **조회 우선** — 화면 진입 시 기본 조건(이번 달·내 담당)으로 자동 조회. 조건은 사용자별 저장.
