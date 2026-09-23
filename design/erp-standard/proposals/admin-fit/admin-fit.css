@@ -66,3 +66,81 @@
 .fpa-drawer-body .erp-steps { margin-bottom: var(--erp-sp-1); }
 .fpa-drawer-foot { display: flex; gap: var(--erp-sp-2); padding: var(--erp-sp-3) var(--erp-sp-5); border-top: 1px solid var(--erp-color-line); background: var(--erp-color-sunken); }
 .fpa-drawer-foot .erp-btn--primary { flex: 1; justify-content: center; }
+
+/* ── 상품 · 접수 한 화면 (대표 2026-09-23 「상품을 찾아가지고 접수하고 이거를 한 면에서 … 그 동선을 잘 짜줘야지」) ──
+ *   왼쪽에서 오른쪽으로 한 길: ① 차 고르기(목록) → ② 요금 고르기(상세) → ③ 접수 넣기(양식). 화면을 옮기지 않는다.
+ *   칸 머리에 번호 · 지금 칸은 파랑, 끝난 칸은 ✓. 고른 차 · 요금은 오른쪽 양식에 저절로 들어간다. */
+.fpa-work { grid-area: main; display: grid; grid-template-columns: minmax(0, 1fr) 430px 410px; min-height: 0; }
+.fpa-col { position: relative; display: flex; flex-direction: column; min-height: 0; border-left: 1px solid var(--erp-color-line); background: var(--erp-color-surface); }
+.fpa-col:first-child { border-left: 0; background: var(--erp-color-bg); }
+.fpa-col-head { display: flex; align-items: center; gap: 10px; padding: 14px var(--erp-sp-5); border-bottom: 1px solid var(--erp-color-line); background: var(--erp-color-surface); }
+.fpa-col-no { display: grid; place-items: center; flex: none; width: 26px; height: 26px; border-radius: var(--erp-r-pill); background: var(--erp-color-primary); color: var(--erp-color-on-primary); font-size: var(--erp-fs-label); font-weight: var(--erp-fw-bold); }
+.fpa-col-head[data-state="done"] .fpa-col-no { background: var(--erp-color-ok); }
+.fpa-col-head b { display: block; font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); }
+.fpa-col-head small { display: block; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
+.fpa-col-head em { margin-left: auto; color: var(--erp-color-text-2); font-size: var(--erp-fs-label); font-style: normal; }
+/* 칸과 칸 사이 화살표 — 길이 이어진다 */
+.fpa-col + .fpa-col::before { content: "›"; position: absolute; z-index: 3; top: 16px; left: -12px; display: grid; place-items: center; width: 22px; height: 22px; border: 1px solid var(--erp-color-line-strong); border-radius: var(--erp-r-pill); background: var(--erp-color-surface); color: var(--erp-color-primary); font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); line-height: 1; }
+.fpa-col-body { flex: 1; min-height: 0; overflow: auto; padding: var(--erp-sp-4) var(--erp-sp-5); }
+.fpa-col:first-child .fpa-col-body { padding-top: var(--erp-sp-3); }
+.fpa-col .erp-searchbar { padding: 10px var(--erp-sp-5); background: var(--erp-color-surface); }
+.fpa-bar { display: flex; align-items: center; gap: var(--erp-sp-2); padding: 0 0 10px; }
+.fpa-bar span { color: var(--erp-color-text-2); font-size: var(--erp-fs-label); }
+
+/* ① 차 고르기 — 목록 카드(좁은 칸용 두 줄 긴 카드) */
+.fpa-pick { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px var(--erp-sp-4); margin-bottom: var(--erp-sp-2); padding: 12px var(--erp-sp-4) 12px var(--erp-sp-5); border: 1px solid var(--erp-color-line); border-radius: var(--erp-r-lg); background: var(--erp-color-surface); overflow: hidden; }
+.fpa-pick::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--erp-color-line-strong); }
+.fpa-pick[data-tone="ok"]::before { background: var(--erp-color-ok); }
+.fpa-pick[data-tone="info"]::before { background: var(--erp-color-info); }
+.fpa-pick[data-tone="warn"]::before { background: var(--erp-color-warn); }
+.fpa-pick:hover { border-color: var(--erp-color-line-strong); }
+.fpa-pick[aria-current="true"] { border-color: var(--erp-color-primary); background: var(--erp-color-row-selected); box-shadow: 0 0 0 3px var(--erp-color-focus-ring); }
+.fpa-pick-name { display: flex; align-items: center; gap: var(--erp-sp-2); font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); }
+.fpa-pick-car { margin-top: 3px; color: var(--erp-color-text-2); }
+.fpa-pick-car b { margin-right: 6px; padding: 0 6px; border-radius: var(--erp-r-sm); background: var(--erp-color-neutral-bg); color: var(--erp-color-text); font-weight: var(--erp-fw-semibold); }
+.fpa-pick-meta { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
+.fpa-pick-meta .erp-tags { margin-left: auto; }
+.fpa-pick-price { text-align: right; }
+.fpa-pick-price strong { display: block; font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); }
+.fpa-pick-price small { color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-regular); }
+.fpa-pick-price span { display: block; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
+
+/* ② 요금 고르기 — 상세 */
+.fpa-photo { display: grid; place-items: center; height: 150px; margin-bottom: 14px; border-radius: var(--erp-r-lg); background: var(--erp-color-sunken); color: var(--erp-color-line-strong); }
+.fpa-photo svg { width: 120px; height: 60px; fill: none; stroke: currentColor; stroke-width: 1.2; }
+.fpa-detail-name { display: flex; align-items: center; gap: var(--erp-sp-2); margin: 0; font-size: var(--erp-fs-title); font-weight: var(--erp-fw-bold); }
+.fpa-detail-sub { margin: 4px 0 14px; color: var(--erp-color-text-2); }
+.fpa-detail-sub b { margin-right: 6px; padding: 0 6px; border-radius: var(--erp-r-sm); background: var(--erp-color-neutral-bg); color: var(--erp-color-text); font-weight: var(--erp-fw-semibold); }
+.fpa-sec { margin-top: 18px; }
+.fpa-sec-title { margin: 0 0 var(--erp-sp-2); color: var(--erp-color-text-2); font-size: var(--erp-fs-label); font-weight: var(--erp-fw-semibold); }
+.fpa-offers { display: flex; flex-direction: column; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.fpa-offer { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; align-items: center; gap: var(--erp-sp-3); padding: 10px 14px; border: 1px solid var(--erp-color-line-strong); border-radius: var(--erp-r-md); background: var(--erp-color-surface); cursor: pointer; }
+.fpa-offer b { font-weight: var(--erp-fw-bold); }
+.fpa-offer strong { font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); text-align: right; }
+.fpa-offer span { color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
+.fpa-offer[aria-pressed="true"] { border-color: var(--erp-color-primary); background: var(--erp-color-primary-weak); box-shadow: 0 0 0 2px var(--erp-color-focus-ring); }
+.fpa-offer[aria-pressed="true"] b, .fpa-offer[aria-pressed="true"] strong { color: var(--erp-color-primary); }
+
+/* ③ 접수 넣기 — 양식 */
+.fpa-picked { padding: 12px 14px; border: 1px solid var(--erp-color-primary); border-radius: var(--erp-r-lg); background: var(--erp-color-primary-weak); }
+.fpa-picked-top { display: flex; align-items: baseline; justify-content: space-between; gap: var(--erp-sp-2); }
+.fpa-picked-top b { font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); }
+.fpa-picked-top span { color: var(--erp-color-primary); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-semibold); }
+.fpa-picked p { margin: 2px 0 10px; color: var(--erp-color-text-2); font-size: var(--erp-fs-label); }
+.fpa-picked dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--erp-sp-2) var(--erp-sp-3); margin: 0; }
+.fpa-picked dt { color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
+.fpa-picked dd { margin: 1px 0 0; font-weight: var(--erp-fw-semibold); }
+.fpa-picked small { display: block; margin-top: var(--erp-sp-2); color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
+.fpa-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--erp-sp-3); margin-top: var(--erp-sp-4); }
+.fpa-form .fpa-wide { grid-column: 1 / -1; }
+.fpa-form .erp-seg { width: 100%; }
+.fpa-form .erp-seg button { flex: 1; }
+.fpa-more { grid-column: 1 / -1; padding: 10px 0 0; border-top: 1px dashed var(--erp-color-line-strong); color: var(--erp-color-text-2); font-size: var(--erp-fs-label); }
+.fpa-more b { color: var(--erp-color-primary); font-weight: var(--erp-fw-semibold); }
+.fpa-save { display: flex; flex-direction: column; gap: var(--erp-sp-2); padding: var(--erp-sp-3) var(--erp-sp-5); border-top: 1px solid var(--erp-color-line); background: var(--erp-color-sunken); }
+.fpa-save div { display: flex; gap: var(--erp-sp-2); }
+.fpa-save .erp-btn--primary { flex: 1; justify-content: center; }
+.fpa-save p { margin: 0; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
+.fpa-save p b { color: var(--erp-color-text-2); font-weight: var(--erp-fw-semibold); }
+.fpa-col .erp-chip { flex: none; white-space: nowrap; }
+.fpa-col .erp-search { flex: 1 1 200px; }
