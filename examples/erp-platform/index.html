@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>범용 ERP 플랫폼</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="../../design-system/tokens.runtime.css">
+<link rel="stylesheet" href="../claude/claude-v1.css">
+<link rel="stylesheet" href="erp.css">
+</head>
+<body>
+<!--
+  범용 ERP 플랫폼 시안 — 명세 구동.
+  화면의 정본은 erp.spec.json 이다. 이 페이지는 빈 틀이고, erp-app.js 가 명세를 읽어 전부 그린다.
+  열기: 저장소 루트에서 `npm run erp:serve` 후 http://localhost:4178/examples/erp-platform/
+-->
+<div id="erp-root"></div>
+<script type="module">
+  import { boot } from './erp-app.js';
+  boot(document.getElementById('erp-root'));
+</script>
+</body>
+</html>

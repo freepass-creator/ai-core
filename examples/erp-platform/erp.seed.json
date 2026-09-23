@@ -1,0 +1,75 @@
+{
+  "note": "시안용 가상 데이터. 실제 회사·사람과 관계없다. 레코드 모양: id · status · 명세의 필드 · created_at/created_by/updated_at · history. 참조(ref)는 대상의 id 로 적는다.",
+  "today": "2026-09-23",
+  "records": {
+    "customer": [
+      { "id": "C-0001", "status": "active", "code": "C-0001", "name": "대한정밀(주)", "biz_no": "214-81-10234", "ceo": "정대한", "grade": "A", "credit_limit": 200000000, "phone": "02-555-0101", "owner": "김담당" },
+      { "id": "C-0002", "status": "active", "code": "C-0002", "name": "세움건설(주)", "biz_no": "120-86-44120", "ceo": "한세움", "grade": "A", "credit_limit": 350000000, "phone": "02-555-0202", "owner": "김담당" },
+      { "id": "C-0003", "status": "active", "code": "C-0003", "name": "누리테크", "biz_no": "305-12-77310", "ceo": "오누리", "grade": "B", "credit_limit": 80000000, "phone": "042-333-0303", "owner": "이팀장" },
+      { "id": "C-0004", "status": "active", "code": "C-0004", "name": "바른유통", "biz_no": "617-23-90011", "ceo": "송바른", "grade": "C", "credit_limit": 30000000, "phone": "051-777-0404", "owner": "김담당" },
+      { "id": "C-0005", "status": "inactive", "code": "C-0005", "name": "옛길상사", "biz_no": "101-02-55555", "ceo": "구옛길", "grade": "C", "credit_limit": 0, "phone": "02-000-0505", "owner": "이팀장" }
+    ],
+    "vendor": [
+      { "id": "V-0001", "status": "active", "code": "V-0001", "name": "동양철강", "biz_no": "312-81-22001", "category": "원자재", "pay_terms": "익월말", "phone": "031-400-1001" },
+      { "id": "V-0002", "status": "active", "code": "V-0002", "name": "한빛전자부품", "biz_no": "124-86-30112", "category": "부품", "pay_terms": "60일", "phone": "031-400-1002" },
+      { "id": "V-0003", "status": "active", "code": "V-0003", "name": "오피스플러스", "biz_no": "220-19-45003", "category": "소모품", "pay_terms": "당월말", "phone": "02-400-1003" },
+      { "id": "V-0004", "status": "active", "code": "V-0004", "name": "그린물류", "biz_no": "504-81-60004", "category": "용역", "pay_terms": "익월말", "phone": "053-400-1004" }
+    ],
+    "item": [
+      { "id": "I-0001", "status": "active", "code": "I-0001", "name": "산업용 컨트롤러 HC-200", "spec": "24V · DIN 레일", "category": "완제품", "unit": "EA", "price": 480000, "stock": 42, "safety_stock": 30 },
+      { "id": "I-0002", "status": "active", "code": "I-0002", "name": "센서 모듈 SM-10", "spec": "IP67", "category": "반제품", "unit": "EA", "price": 65000, "stock": 18, "safety_stock": 50 },
+      { "id": "I-0003", "status": "active", "code": "I-0003", "name": "알루미늄 프로파일", "spec": "40×40 · 6m", "category": "원자재", "unit": "M", "price": 12000, "stock": 1250, "safety_stock": 600 },
+      { "id": "I-0004", "status": "active", "code": "I-0004", "name": "제어 케이블", "spec": "4C · 0.75SQ", "category": "원자재", "unit": "M", "price": 1800, "stock": 320, "safety_stock": 500 },
+      { "id": "I-0005", "status": "active", "code": "I-0005", "name": "포장 박스 대형", "spec": "600×400×400", "category": "소모품", "unit": "BOX", "price": 2500, "stock": 900, "safety_stock": 300 },
+      { "id": "I-0006", "status": "active", "code": "I-0006", "name": "터치 패널 TP-7", "spec": "7인치 · 정전식", "category": "완제품", "unit": "EA", "price": 320000, "stock": 9, "safety_stock": 10 }
+    ],
+    "employee": [
+      { "id": "E-0001", "status": "active", "code": "E-0001", "name": "김담당", "dept": "영업팀", "position": "대리", "joined": "2021-03-02", "email": "kim@hangyeol.example", "leave_left": 11 },
+      { "id": "E-0002", "status": "active", "code": "E-0002", "name": "이팀장", "dept": "영업팀", "position": "차장", "joined": "2015-07-01", "email": "lee@hangyeol.example", "leave_left": 17 },
+      { "id": "E-0003", "status": "active", "code": "E-0003", "name": "박재무", "dept": "재무팀", "position": "과장", "joined": "2018-01-08", "email": "park@hangyeol.example", "leave_left": 9 },
+      { "id": "E-0004", "status": "active", "code": "E-0004", "name": "최관리", "dept": "경영지원", "position": "부장", "joined": "2012-04-16", "email": "choi@hangyeol.example", "leave_left": 20 },
+      { "id": "E-0005", "status": "active", "code": "E-0005", "name": "정구매", "dept": "구매팀", "position": "사원", "joined": "2024-01-02", "email": "jung@hangyeol.example", "leave_left": 14 },
+      { "id": "E-0006", "status": "active", "code": "E-0006", "name": "한생산", "dept": "생산팀", "position": "과장", "joined": "2017-09-11", "email": "han@hangyeol.example", "leave_left": 6 }
+    ],
+    "quote": [
+      { "id": "QT-202609-0001", "no": "QT-202609-0001", "status": "won", "customer": "C-0001", "date": "2026-09-02", "valid_until": "2026-09-30", "owner": "김담당", "lines": [{ "item": "I-0001", "qty": 20, "price": 470000 }] },
+      { "id": "QT-202609-0002", "no": "QT-202609-0002", "status": "sent", "customer": "C-0003", "date": "2026-09-15", "valid_until": "2026-10-15", "owner": "이팀장", "lines": [{ "item": "I-0006", "qty": 12, "price": 310000 }, { "item": "I-0002", "qty": 24, "price": 65000 }] },
+      { "id": "QT-202609-0003", "no": "QT-202609-0003", "status": "draft", "customer": "C-0004", "date": "2026-09-22", "valid_until": "2026-10-22", "owner": "김담당", "lines": [] }
+    ],
+    "sales_order": [
+      { "id": "SO-202608-0014", "no": "SO-202608-0014", "status": "closed", "customer": "C-0002", "date": "2026-08-20", "due": "2026-09-05", "owner": "이팀장", "lines": [{ "item": "I-0003", "qty": 600, "price": 12000 }] },
+      { "id": "SO-202609-0001", "no": "SO-202609-0001", "status": "shipped", "customer": "C-0001", "date": "2026-09-03", "due": "2026-09-17", "owner": "김담당", "lines": [{ "item": "I-0001", "qty": 20, "price": 470000 }] },
+      { "id": "SO-202609-0002", "no": "SO-202609-0002", "status": "approved", "customer": "C-0002", "date": "2026-09-10", "due": "2026-09-30", "owner": "이팀장", "lines": [{ "item": "I-0003", "qty": 400, "price": 12000 }, { "item": "I-0004", "qty": 200, "price": 1800 }] },
+      { "id": "SO-202609-0003", "no": "SO-202609-0003", "status": "submitted", "customer": "C-0003", "date": "2026-09-19", "due": "2026-10-10", "owner": "김담당", "memo": "견적 QT-202609-0002 기준, 납기 협의 완료", "lines": [{ "item": "I-0006", "qty": 12, "price": 310000 }] },
+      { "id": "SO-202609-0004", "no": "SO-202609-0004", "status": "submitted", "customer": "C-0004", "date": "2026-09-21", "due": "2026-10-05", "owner": "김담당", "lines": [{ "item": "I-0005", "qty": 150, "price": 2500 }, { "item": "I-0002", "qty": 10, "price": 68000 }] },
+      { "id": "SO-202609-0005", "no": "SO-202609-0005", "status": "draft", "customer": "C-0001", "date": "2026-09-23", "due": "2026-10-20", "owner": "김담당", "lines": [{ "item": "I-0001", "qty": 8, "price": 480000 }] }
+    ],
+    "purchase_order": [
+      { "id": "PO-202609-0001", "no": "PO-202609-0001", "status": "received", "vendor": "V-0001", "date": "2026-09-01", "due": "2026-09-08", "warehouse": "본사 창고", "owner": "정구매", "lines": [{ "item": "I-0003", "qty": 800, "price": 9800 }] },
+      { "id": "PO-202609-0002", "no": "PO-202609-0002", "status": "ordered", "vendor": "V-0002", "date": "2026-09-14", "due": "2026-09-28", "warehouse": "본사 창고", "owner": "정구매", "lines": [{ "item": "I-0002", "qty": 60, "price": 41000 }] },
+      { "id": "PO-202609-0003", "no": "PO-202609-0003", "status": "submitted", "vendor": "V-0001", "date": "2026-09-20", "due": "2026-10-02", "warehouse": "제2 물류센터", "owner": "정구매", "lines": [{ "item": "I-0004", "qty": 1000, "price": 1200 }] },
+      { "id": "PO-202609-0004", "no": "PO-202609-0004", "status": "draft", "vendor": "V-0003", "date": "2026-09-23", "due": "2026-09-30", "warehouse": "본사 창고", "owner": "정구매", "lines": [{ "item": "I-0005", "qty": 200, "price": 1900 }] }
+    ],
+    "stock_move": [
+      { "id": "SM-202609-0001", "no": "SM-202609-0001", "status": "posted", "direction": "입고", "item": "I-0003", "qty": 800, "warehouse": "본사 창고", "date": "2026-09-08", "reason": "PO-202609-0001 입고" },
+      { "id": "SM-202609-0002", "no": "SM-202609-0002", "status": "posted", "direction": "출고", "item": "I-0001", "qty": 20, "warehouse": "본사 창고", "date": "2026-09-16", "reason": "SO-202609-0001 출고" },
+      { "id": "SM-202609-0003", "no": "SM-202609-0003", "status": "draft", "direction": "조정", "item": "I-0005", "qty": -12, "warehouse": "제2 물류센터", "date": "2026-09-22", "reason": "실사 차이(파손)" }
+    ],
+    "journal": [
+      { "id": "JV-202609-0001", "no": "JV-202609-0001", "status": "posted", "date": "2026-09-17", "type": "매출", "summary": "대한정밀 컨트롤러 20대 매출", "lines": [{ "account": "외상매출금", "debit": 10340000, "credit": 0 }, { "account": "상품매출", "debit": 0, "credit": 9400000 }, { "account": "부가세예수금", "debit": 0, "credit": 940000 }] },
+      { "id": "JV-202609-0002", "no": "JV-202609-0002", "status": "submitted", "date": "2026-09-20", "type": "매입", "summary": "동양철강 알루미늄 프로파일 매입", "lines": [{ "account": "상품매입", "debit": 7840000, "credit": 0 }, { "account": "부가세대급금", "debit": 784000, "credit": 0 }, { "account": "외상매입금", "debit": 0, "credit": 8624000 }] },
+      { "id": "JV-202609-0003", "no": "JV-202609-0003", "status": "draft", "date": "2026-09-23", "type": "일반", "summary": "카드 수수료", "lines": [{ "account": "지급수수료", "debit": 45000, "credit": 0 }, { "account": "보통예금", "debit": 0, "credit": 40000 }] }
+    ],
+    "invoice": [
+      { "id": "TI-202608-0009", "no": "TI-202608-0009", "status": "paid", "customer": "C-0002", "order": "SO-202608-0014", "date": "2026-08-31", "due": "2026-09-30", "supply": 7200000 },
+      { "id": "TI-202609-0001", "no": "TI-202609-0001", "status": "issued", "customer": "C-0001", "order": "SO-202609-0001", "date": "2026-09-17", "due": "2026-10-31", "supply": 9400000 },
+      { "id": "TI-202607-0021", "no": "TI-202607-0021", "status": "overdue", "customer": "C-0004", "date": "2026-07-25", "due": "2026-08-31", "supply": 2350000 },
+      { "id": "TI-202608-0003", "no": "TI-202608-0003", "status": "overdue", "customer": "C-0003", "date": "2026-08-05", "due": "2026-09-05", "supply": 4100000 }
+    ],
+    "leave": [
+      { "id": "LV-202609-0001", "no": "LV-202609-0001", "status": "approved", "employee": "E-0006", "type": "연차", "start": "2026-09-07", "end": "2026-09-08", "days": 2, "reason": "가족 행사" },
+      { "id": "LV-202609-0002", "no": "LV-202609-0002", "status": "submitted", "employee": "E-0001", "type": "연차", "start": "2026-10-02", "end": "2026-10-02", "days": 1, "reason": "개인 사유" },
+      { "id": "LV-202609-0003", "no": "LV-202609-0003", "status": "submitted", "employee": "E-0005", "type": "반차", "start": "2026-09-25", "end": "2026-09-25", "days": 0.5, "reason": "병원 진료" }
+    ]
+  }
+}

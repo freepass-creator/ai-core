@@ -1,0 +1,402 @@
+{
+  "spec": "erp-platform",
+  "version": "1.0.0",
+  "title": "범용 ERP 플랫폼 — 명세 구동 시안",
+  "note": "이 파일이 화면의 정본이다. 메뉴·목록·상세·입력·상태·권한·결재·대시보드는 전부 여기서 나온다. 모듈을 늘리려면 코드가 아니라 이 파일에 entity 를 더한다. scripts/validate-erp-platform.mjs 가 규격을 검사한다.",
+  "locale": "ko-KR",
+  "currency": "KRW",
+  "company": { "name": "한결산업(주)", "fiscal_year_start": "01-01" },
+
+  "standard": {
+    "field_types": {
+      "text": "한 줄 글",
+      "longtext": "여러 줄 글",
+      "code": "기준정보 코드 — 대문자·숫자·하이픈, 고유",
+      "number": "수량 — 정수·소수, 단위는 unit 으로",
+      "money": "금액 — 원 단위 정수, 천 단위 구분",
+      "percent": "비율 — 0~100",
+      "date": "날짜 YYYY-MM-DD",
+      "enum": "정해진 값 중 하나 — options 필수",
+      "ref": "다른 entity 한 건 — ref 필수",
+      "user": "사용자 한 명",
+      "lines": "품목·계정 같은 반복 줄 — columns 필수",
+      "computed": "다른 값에서 계산 — compute 필수, 입력 불가"
+    },
+    "entity_kinds": {
+      "master": "기준정보. 사용/중지만 있고 결재가 없다. code 필드 필수",
+      "document": "업무 문서. 번호 자동 채번, 상태 흐름·결재가 있다",
+      "ledger": "원장. 확정(posted) 후에는 고칠 수 없고 반대 전표로만 바로잡는다"
+    },
+    "tones": ["idle", "accent", "ok", "warn", "risk"],
+    "tone_rule": "tone 은 화면의 상태색이다. 상태 글자와 함께만 쓴다(색 하나로 말하지 않는다 — claude-v1 규격).",
+    "action_kinds": ["primary", "quiet", "risk"],
+    "action_rule": "한 상태에서 primary 는 하나까지. 되돌리기 어려운 전이는 risk + confirm.",
+    "numbering": { "pattern": "{prefix}-{yyyy}{mm}-{seq4}", "rule": "document·ledger 는 prefix 필수, 달마다 1부터" },
+    "audit_fields": ["created_at", "created_by", "updated_at", "history"],
+    "compute_ops": {
+      "lines_sum": "줄마다 곱(of 의 필드들) 을 더한다",
+      "lines_col": "줄의 한 칸(of[0]) 을 더한다",
+      "rate": "of[0] × company tax rate",
+      "add": "of 의 필드를 더한다"
+    },
+    "guards": {
+      "has_lines": "줄이 한 줄 이상 있어야 한다",
+      "balanced": "차변 합계 = 대변 합계, 0 이 아니어야 한다"
+    },
+    "effect_ops": {
+      "adjust": "참조한 기준정보의 숫자 필드를 이 문서의 값만큼 더하고 뺀다",
+      "adjust_lines": "줄마다 참조한 기준정보의 숫자 필드를 더하고 뺀다"
+    },
+    "screen_patterns": {
+      "list": "도구줄(검색·상태 칩) + 표 + 쪽 넘김 + 일괄 작업줄",
+      "detail": "오른쪽 판: 머리 · 진행 단계 · 가능한 동작 · 값 묶음 · 줄 · 이력",
+      "form": "대화상자. 필수는 표시, 오류는 칸 아래 글로",
+      "approvals": "내 역할로 처리할 수 있는 approval 전이가 걸린 문서 모음"
+    },
+    "tax": { "vat_rate": 0.1 },
+    "master_workflow": {
+      "initial": "active",
+      "states": [
+        { "id": "active", "label": "사용", "tone": "ok" },
+        { "id": "inactive", "label": "중지", "tone": "idle" }
+      ],
+      "transitions": [
+        { "id": "deactivate", "label": "사용 중지", "from": ["active"], "to": "inactive", "roles": ["manager", "admin"], "kind": "quiet" },
+        { "id": "activate", "label": "다시 사용", "from": ["inactive"], "to": "active", "roles": ["manager", "admin"], "kind": "quiet" }
+      ]
+    }
+  },
+
+  "roles": [
+    { "id": "staff", "name": "담당자", "person": "김담당", "dept": "영업팀" },
+    { "id": "manager", "name": "팀장", "person": "이팀장", "dept": "영업팀" },
+    { "id": "finance", "name": "재무", "person": "박재무", "dept": "재무팀" },
+    { "id": "admin", "name": "관리자", "person": "최관리", "dept": "경영지원" }
+  ],
+
+  "modules": [
+    {
+      "id": "sales", "name": "영업", "icon": "handshake",
+      "entities": [
+        {
+          "id": "customer", "name": "거래처", "kind": "master",
+          "title_field": "name", "subtitle_fields": ["code", "grade"],
+          "fields": [
+            { "id": "code", "label": "거래처 코드", "type": "code", "required": true, "pattern": "^C-[0-9]{4}$", "help": "C-0000 형식" },
+            { "id": "name", "label": "상호", "type": "text", "required": true },
+            { "id": "biz_no", "label": "사업자번호", "type": "text", "required": true, "pattern": "^[0-9]{3}-[0-9]{2}-[0-9]{5}$", "help": "000-00-00000" },
+            { "id": "ceo", "label": "대표자", "type": "text" },
+            { "id": "grade", "label": "등급", "type": "enum", "options": ["A", "B", "C"], "required": true },
+            { "id": "credit_limit", "label": "여신 한도", "type": "money", "min": 0 },
+            { "id": "phone", "label": "연락처", "type": "text" },
+            { "id": "owner", "label": "담당", "type": "user" }
+          ],
+          "list": { "columns": ["code", "name", "biz_no", "grade", "credit_limit", "owner", "status"], "search": ["code", "name", "biz_no"], "sort": { "field": "code", "dir": "asc" } }
+        },
+        {
+          "id": "quote", "name": "견적", "kind": "document", "prefix": "QT",
+          "title_field": "no", "subtitle_fields": ["customer", "total"],
+          "fields": [
+            { "id": "customer", "label": "거래처", "type": "ref", "ref": "customer", "required": true },
+            { "id": "date", "label": "견적일", "type": "date", "required": true },
+            { "id": "valid_until", "label": "유효기간", "type": "date", "required": true },
+            { "id": "owner", "label": "담당", "type": "user" },
+            { "id": "lines", "label": "품목", "type": "lines", "columns": [
+              { "id": "item", "label": "품목", "type": "ref", "ref": "item", "required": true },
+              { "id": "qty", "label": "수량", "type": "number", "min": 1, "required": true },
+              { "id": "price", "label": "단가", "type": "money", "min": 0, "required": true }
+            ] },
+            { "id": "supply", "label": "공급가액", "type": "computed", "compute": { "op": "lines_sum", "lines": "lines", "of": ["qty", "price"] } },
+            { "id": "vat", "label": "부가세", "type": "computed", "compute": { "op": "rate", "of": ["supply"] } },
+            { "id": "total", "label": "합계", "type": "computed", "compute": { "op": "add", "of": ["supply", "vat"] } },
+            { "id": "memo", "label": "메모", "type": "longtext" }
+          ],
+          "list": { "columns": ["no", "customer", "date", "valid_until", "total", "owner", "status"], "search": ["no", "customer"], "sort": { "field": "date", "dir": "desc" } },
+          "workflow": {
+            "initial": "draft",
+            "states": [
+              { "id": "draft", "label": "작성 중", "tone": "idle" },
+              { "id": "sent", "label": "제출함", "tone": "accent" },
+              { "id": "won", "label": "수주 전환", "tone": "ok", "final": true },
+              { "id": "lost", "label": "실주", "tone": "risk", "final": true }
+            ],
+            "transitions": [
+              { "id": "send", "label": "거래처에 제출", "from": ["draft"], "to": "sent", "roles": ["staff", "manager"], "kind": "primary", "guard": "has_lines" },
+              { "id": "win", "label": "수주로 전환", "from": ["sent"], "to": "won", "roles": ["staff", "manager"], "kind": "primary" },
+              { "id": "lose", "label": "실주 처리", "from": ["sent"], "to": "lost", "roles": ["staff", "manager"], "kind": "risk", "confirm": "실주로 닫으면 다시 열 수 없습니다." },
+              { "id": "revise", "label": "고쳐 쓰기", "from": ["sent"], "to": "draft", "roles": ["staff", "manager"], "kind": "quiet" }
+            ]
+          }
+        },
+        {
+          "id": "sales_order", "name": "수주", "kind": "document", "prefix": "SO",
+          "title_field": "no", "subtitle_fields": ["customer", "total"],
+          "fields": [
+            { "id": "customer", "label": "거래처", "type": "ref", "ref": "customer", "required": true },
+            { "id": "date", "label": "수주일", "type": "date", "required": true },
+            { "id": "due", "label": "납기", "type": "date", "required": true },
+            { "id": "owner", "label": "담당", "type": "user" },
+            { "id": "lines", "label": "품목", "type": "lines", "columns": [
+              { "id": "item", "label": "품목", "type": "ref", "ref": "item", "required": true },
+              { "id": "qty", "label": "수량", "type": "number", "min": 1, "required": true },
+              { "id": "price", "label": "단가", "type": "money", "min": 0, "required": true }
+            ] },
+            { "id": "supply", "label": "공급가액", "type": "computed", "compute": { "op": "lines_sum", "lines": "lines", "of": ["qty", "price"] } },
+            { "id": "vat", "label": "부가세", "type": "computed", "compute": { "op": "rate", "of": ["supply"] } },
+            { "id": "total", "label": "합계", "type": "computed", "compute": { "op": "add", "of": ["supply", "vat"] } },
+            { "id": "memo", "label": "메모", "type": "longtext" }
+          ],
+          "list": { "columns": ["no", "customer", "date", "due", "total", "owner", "status"], "search": ["no", "customer"], "sort": { "field": "date", "dir": "desc" } },
+          "workflow": {
+            "initial": "draft",
+            "states": [
+              { "id": "draft", "label": "작성 중", "tone": "idle" },
+              { "id": "submitted", "label": "결재 대기", "tone": "warn" },
+              { "id": "approved", "label": "승인", "tone": "accent" },
+              { "id": "shipped", "label": "출고 완료", "tone": "ok" },
+              { "id": "closed", "label": "마감", "tone": "ok", "final": true },
+              { "id": "canceled", "label": "취소", "tone": "risk", "final": true }
+            ],
+            "transitions": [
+              { "id": "submit", "label": "결재 올리기", "from": ["draft"], "to": "submitted", "roles": ["staff", "manager"], "kind": "primary", "guard": "has_lines" },
+              { "id": "approve", "label": "승인", "from": ["submitted"], "to": "approved", "roles": ["manager", "admin"], "kind": "primary", "approval": true },
+              { "id": "reject", "label": "반려", "from": ["submitted"], "to": "draft", "roles": ["manager", "admin"], "kind": "quiet", "approval": true, "comment": true },
+              { "id": "ship", "label": "출고 처리", "from": ["approved"], "to": "shipped", "roles": ["staff", "manager"], "kind": "primary",
+                "effects": [{ "op": "adjust_lines", "lines": "lines", "ref_col": "item", "target": "item", "field": "stock", "by": "qty", "sign": -1 }] },
+              { "id": "close", "label": "마감", "from": ["shipped"], "to": "closed", "roles": ["finance", "admin"], "kind": "primary" },
+              { "id": "cancel", "label": "수주 취소", "from": ["draft", "submitted", "approved"], "to": "canceled", "roles": ["manager", "admin"], "kind": "risk", "confirm": "취소한 수주는 되살릴 수 없습니다. 거래처에 먼저 알렸는지 확인하세요." }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "purchase", "name": "구매", "icon": "shopping-cart",
+      "entities": [
+        {
+          "id": "vendor", "name": "공급사", "kind": "master",
+          "title_field": "name", "subtitle_fields": ["code", "category"],
+          "fields": [
+            { "id": "code", "label": "공급사 코드", "type": "code", "required": true, "pattern": "^V-[0-9]{4}$", "help": "V-0000 형식" },
+            { "id": "name", "label": "상호", "type": "text", "required": true },
+            { "id": "biz_no", "label": "사업자번호", "type": "text", "required": true, "pattern": "^[0-9]{3}-[0-9]{2}-[0-9]{5}$", "help": "000-00-00000" },
+            { "id": "category", "label": "공급 분류", "type": "enum", "options": ["원자재", "부품", "소모품", "용역"], "required": true },
+            { "id": "pay_terms", "label": "결제 조건", "type": "enum", "options": ["당월말", "익월말", "60일"], "required": true },
+            { "id": "phone", "label": "연락처", "type": "text" }
+          ],
+          "list": { "columns": ["code", "name", "biz_no", "category", "pay_terms", "status"], "search": ["code", "name"], "sort": { "field": "code", "dir": "asc" } }
+        },
+        {
+          "id": "purchase_order", "name": "발주", "kind": "document", "prefix": "PO",
+          "title_field": "no", "subtitle_fields": ["vendor", "total"],
+          "fields": [
+            { "id": "vendor", "label": "공급사", "type": "ref", "ref": "vendor", "required": true },
+            { "id": "date", "label": "발주일", "type": "date", "required": true },
+            { "id": "due", "label": "입고 예정", "type": "date", "required": true },
+            { "id": "warehouse", "label": "입고 창고", "type": "enum", "options": ["본사 창고", "제2 물류센터"], "required": true },
+            { "id": "owner", "label": "담당", "type": "user" },
+            { "id": "lines", "label": "품목", "type": "lines", "columns": [
+              { "id": "item", "label": "품목", "type": "ref", "ref": "item", "required": true },
+              { "id": "qty", "label": "수량", "type": "number", "min": 1, "required": true },
+              { "id": "price", "label": "단가", "type": "money", "min": 0, "required": true }
+            ] },
+            { "id": "supply", "label": "공급가액", "type": "computed", "compute": { "op": "lines_sum", "lines": "lines", "of": ["qty", "price"] } },
+            { "id": "vat", "label": "부가세", "type": "computed", "compute": { "op": "rate", "of": ["supply"] } },
+            { "id": "total", "label": "합계", "type": "computed", "compute": { "op": "add", "of": ["supply", "vat"] } }
+          ],
+          "list": { "columns": ["no", "vendor", "date", "due", "warehouse", "total", "status"], "search": ["no", "vendor"], "sort": { "field": "date", "dir": "desc" } },
+          "workflow": {
+            "initial": "draft",
+            "states": [
+              { "id": "draft", "label": "작성 중", "tone": "idle" },
+              { "id": "submitted", "label": "결재 대기", "tone": "warn" },
+              { "id": "approved", "label": "승인", "tone": "accent" },
+              { "id": "ordered", "label": "발주 송부", "tone": "accent" },
+              { "id": "received", "label": "입고 완료", "tone": "ok", "final": true },
+              { "id": "canceled", "label": "취소", "tone": "risk", "final": true }
+            ],
+            "transitions": [
+              { "id": "submit", "label": "결재 올리기", "from": ["draft"], "to": "submitted", "roles": ["staff", "manager"], "kind": "primary", "guard": "has_lines" },
+              { "id": "approve", "label": "승인", "from": ["submitted"], "to": "approved", "roles": ["manager", "admin"], "kind": "primary", "approval": true },
+              { "id": "reject", "label": "반려", "from": ["submitted"], "to": "draft", "roles": ["manager", "admin"], "kind": "quiet", "approval": true, "comment": true },
+              { "id": "send", "label": "공급사에 송부", "from": ["approved"], "to": "ordered", "roles": ["staff", "manager"], "kind": "primary" },
+              { "id": "receive", "label": "입고 처리", "from": ["ordered"], "to": "received", "roles": ["staff", "manager"], "kind": "primary",
+                "effects": [{ "op": "adjust_lines", "lines": "lines", "ref_col": "item", "target": "item", "field": "stock", "by": "qty", "sign": 1 }] },
+              { "id": "cancel", "label": "발주 취소", "from": ["draft", "submitted", "approved"], "to": "canceled", "roles": ["manager", "admin"], "kind": "risk", "confirm": "취소한 발주는 되살릴 수 없습니다." }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "inventory", "name": "재고", "icon": "package",
+      "entities": [
+        {
+          "id": "item", "name": "품목", "kind": "master",
+          "title_field": "name", "subtitle_fields": ["code", "category"],
+          "fields": [
+            { "id": "code", "label": "품목 코드", "type": "code", "required": true, "pattern": "^I-[0-9]{4}$", "help": "I-0000 형식" },
+            { "id": "name", "label": "품명", "type": "text", "required": true },
+            { "id": "spec", "label": "규격", "type": "text" },
+            { "id": "category", "label": "분류", "type": "enum", "options": ["완제품", "반제품", "원자재", "소모품"], "required": true },
+            { "id": "unit", "label": "단위", "type": "enum", "options": ["EA", "BOX", "KG", "M"], "required": true },
+            { "id": "price", "label": "표준 단가", "type": "money", "min": 0, "required": true },
+            { "id": "stock", "label": "현재고", "type": "number", "readonly": true, "unit_field": "unit" },
+            { "id": "safety_stock", "label": "안전재고", "type": "number", "min": 0, "unit_field": "unit" }
+          ],
+          "list": { "columns": ["code", "name", "spec", "category", "price", "stock", "safety_stock", "status"], "search": ["code", "name", "spec"], "sort": { "field": "code", "dir": "asc" } },
+          "flags": [{ "id": "below_safety", "label": "안전재고 미달", "tone": "warn", "when": [{ "field": "stock", "op": "lt_field", "value": "safety_stock" }] }]
+        },
+        {
+          "id": "stock_move", "name": "입출고", "kind": "ledger", "prefix": "SM",
+          "title_field": "no", "subtitle_fields": ["item", "qty"],
+          "fields": [
+            { "id": "direction", "label": "구분", "type": "enum", "options": ["입고", "출고", "조정"], "required": true },
+            { "id": "item", "label": "품목", "type": "ref", "ref": "item", "required": true },
+            { "id": "qty", "label": "수량", "type": "number", "required": true, "help": "조정은 음수 가능" },
+            { "id": "warehouse", "label": "창고", "type": "enum", "options": ["본사 창고", "제2 물류센터"], "required": true },
+            { "id": "date", "label": "일자", "type": "date", "required": true },
+            { "id": "reason", "label": "사유", "type": "text" }
+          ],
+          "list": { "columns": ["no", "date", "direction", "item", "qty", "warehouse", "status"], "search": ["no", "item", "reason"], "sort": { "field": "date", "dir": "desc" } },
+          "workflow": {
+            "initial": "draft",
+            "states": [
+              { "id": "draft", "label": "미확정", "tone": "idle" },
+              { "id": "posted", "label": "확정", "tone": "ok", "final": true }
+            ],
+            "transitions": [
+              { "id": "post", "label": "확정", "from": ["draft"], "to": "posted", "roles": ["staff", "manager", "admin"], "kind": "primary",
+                "confirm": "확정하면 재고에 바로 반영되고 고칠 수 없습니다.",
+                "effects": [{ "op": "adjust", "ref_field": "item", "target": "item", "field": "stock", "by": "qty", "sign": { "field": "direction", "map": { "입고": 1, "출고": -1, "조정": 1 } } }] }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "finance", "name": "재무·회계", "icon": "landmark",
+      "entities": [
+        {
+          "id": "journal", "name": "전표", "kind": "ledger", "prefix": "JV",
+          "title_field": "no", "subtitle_fields": ["summary", "debit_total"],
+          "fields": [
+            { "id": "date", "label": "전표일", "type": "date", "required": true },
+            { "id": "type", "label": "전표 구분", "type": "enum", "options": ["일반", "매출", "매입", "급여"], "required": true },
+            { "id": "summary", "label": "적요", "type": "text", "required": true },
+            { "id": "lines", "label": "분개", "type": "lines", "columns": [
+              { "id": "account", "label": "계정", "type": "enum", "options": ["현금", "보통예금", "외상매출금", "외상매입금", "상품매출", "상품매입", "부가세예수금", "부가세대급금", "급여", "지급수수료"], "required": true },
+              { "id": "debit", "label": "차변", "type": "money", "min": 0 },
+              { "id": "credit", "label": "대변", "type": "money", "min": 0 }
+            ] },
+            { "id": "debit_total", "label": "차변 합계", "type": "computed", "compute": { "op": "lines_col", "lines": "lines", "of": ["debit"] } },
+            { "id": "credit_total", "label": "대변 합계", "type": "computed", "compute": { "op": "lines_col", "lines": "lines", "of": ["credit"] } }
+          ],
+          "list": { "columns": ["no", "date", "type", "summary", "debit_total", "credit_total", "status"], "search": ["no", "summary"], "sort": { "field": "date", "dir": "desc" } },
+          "workflow": {
+            "initial": "draft",
+            "states": [
+              { "id": "draft", "label": "작성 중", "tone": "idle" },
+              { "id": "submitted", "label": "승인 대기", "tone": "warn" },
+              { "id": "posted", "label": "전기 완료", "tone": "ok", "final": true }
+            ],
+            "transitions": [
+              { "id": "submit", "label": "승인 요청", "from": ["draft"], "to": "submitted", "roles": ["staff", "finance"], "kind": "primary", "guard": "balanced" },
+              { "id": "post", "label": "승인·전기", "from": ["submitted"], "to": "posted", "roles": ["finance", "admin"], "kind": "primary", "approval": true, "guard": "balanced", "confirm": "전기한 전표는 고칠 수 없습니다. 바로잡을 때는 반대 전표를 씁니다." },
+              { "id": "reject", "label": "반려", "from": ["submitted"], "to": "draft", "roles": ["finance", "admin"], "kind": "quiet", "approval": true, "comment": true }
+            ]
+          }
+        },
+        {
+          "id": "invoice", "name": "세금계산서", "kind": "document", "prefix": "TI",
+          "title_field": "no", "subtitle_fields": ["customer", "total"],
+          "fields": [
+            { "id": "customer", "label": "거래처", "type": "ref", "ref": "customer", "required": true },
+            { "id": "order", "label": "근거 수주", "type": "ref", "ref": "sales_order" },
+            { "id": "date", "label": "발행일", "type": "date", "required": true },
+            { "id": "due", "label": "입금 기한", "type": "date", "required": true },
+            { "id": "supply", "label": "공급가액", "type": "money", "min": 0, "required": true },
+            { "id": "vat", "label": "부가세", "type": "computed", "compute": { "op": "rate", "of": ["supply"] } },
+            { "id": "total", "label": "합계", "type": "computed", "compute": { "op": "add", "of": ["supply", "vat"] } }
+          ],
+          "list": { "columns": ["no", "customer", "date", "due", "total", "status"], "search": ["no", "customer"], "sort": { "field": "date", "dir": "desc" } },
+          "workflow": {
+            "initial": "issued",
+            "states": [
+              { "id": "issued", "label": "발행", "tone": "accent" },
+              { "id": "overdue", "label": "연체", "tone": "risk" },
+              { "id": "paid", "label": "입금 완료", "tone": "ok", "final": true },
+              { "id": "void", "label": "발행 취소", "tone": "idle", "final": true }
+            ],
+            "transitions": [
+              { "id": "pay", "label": "입금 확인", "from": ["issued", "overdue"], "to": "paid", "roles": ["finance", "admin"], "kind": "primary" },
+              { "id": "mark_overdue", "label": "연체로 표시", "from": ["issued"], "to": "overdue", "roles": ["finance", "admin"], "kind": "quiet" },
+              { "id": "void", "label": "발행 취소", "from": ["issued"], "to": "void", "roles": ["finance", "admin"], "kind": "risk", "confirm": "수정세금계산서 발행이 필요할 수 있습니다. 취소할까요?" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "hr", "name": "인사", "icon": "users",
+      "entities": [
+        {
+          "id": "employee", "name": "사원", "kind": "master",
+          "title_field": "name", "subtitle_fields": ["dept", "position"],
+          "fields": [
+            { "id": "code", "label": "사번", "type": "code", "required": true, "pattern": "^E-[0-9]{4}$", "help": "E-0000 형식" },
+            { "id": "name", "label": "이름", "type": "text", "required": true },
+            { "id": "dept", "label": "부서", "type": "enum", "options": ["영업팀", "구매팀", "생산팀", "재무팀", "경영지원"], "required": true },
+            { "id": "position", "label": "직급", "type": "enum", "options": ["사원", "대리", "과장", "차장", "부장"], "required": true },
+            { "id": "joined", "label": "입사일", "type": "date", "required": true },
+            { "id": "email", "label": "메일", "type": "text", "pattern": "^[^@\\s]+@[^@\\s]+$", "help": "name@company.kr" },
+            { "id": "leave_left", "label": "남은 연차", "type": "number", "min": 0, "unit": "일" }
+          ],
+          "list": { "columns": ["code", "name", "dept", "position", "joined", "leave_left", "status"], "search": ["code", "name", "dept"], "sort": { "field": "code", "dir": "asc" } }
+        },
+        {
+          "id": "leave", "name": "휴가 신청", "kind": "document", "prefix": "LV",
+          "title_field": "no", "subtitle_fields": ["employee", "days"],
+          "fields": [
+            { "id": "employee", "label": "신청자", "type": "ref", "ref": "employee", "required": true },
+            { "id": "type", "label": "구분", "type": "enum", "options": ["연차", "반차", "병가", "경조"], "required": true },
+            { "id": "start", "label": "시작일", "type": "date", "required": true },
+            { "id": "end", "label": "종료일", "type": "date", "required": true },
+            { "id": "days", "label": "일수", "type": "number", "min": 0.5, "required": true, "unit": "일" },
+            { "id": "reason", "label": "사유", "type": "longtext" }
+          ],
+          "list": { "columns": ["no", "employee", "type", "start", "end", "days", "status"], "search": ["no", "employee"], "sort": { "field": "start", "dir": "desc" } },
+          "workflow": {
+            "initial": "draft",
+            "states": [
+              { "id": "draft", "label": "작성 중", "tone": "idle" },
+              { "id": "submitted", "label": "결재 대기", "tone": "warn" },
+              { "id": "approved", "label": "승인", "tone": "ok", "final": true },
+              { "id": "rejected", "label": "반려", "tone": "risk", "final": true }
+            ],
+            "transitions": [
+              { "id": "submit", "label": "결재 올리기", "from": ["draft"], "to": "submitted", "roles": ["staff", "manager", "finance", "admin"], "kind": "primary" },
+              { "id": "approve", "label": "승인", "from": ["submitted"], "to": "approved", "roles": ["manager", "admin"], "kind": "primary", "approval": true,
+                "effects": [{ "op": "adjust", "ref_field": "employee", "target": "employee", "field": "leave_left", "by": "days", "sign": -1 }] },
+              { "id": "reject", "label": "반려", "from": ["submitted"], "to": "rejected", "roles": ["manager", "admin"], "kind": "risk", "approval": true, "comment": true }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+
+  "dashboard": {
+    "metrics": [
+      { "id": "so_month", "label": "이번 달 수주", "entity": "sales_order", "agg": "sum", "field": "total", "unit": "원", "where": [{ "field": "status", "op": "in", "value": ["approved", "shipped", "closed"] }, { "field": "date", "op": "month", "value": "current" }] },
+      { "id": "approvals", "label": "내 결재 대기", "agg": "approvals", "unit": "건", "tone": "warn" },
+      { "id": "receivable", "label": "미수금", "entity": "invoice", "agg": "sum", "field": "total", "unit": "원", "tone": "risk", "where": [{ "field": "status", "op": "in", "value": ["issued", "overdue"] }] },
+      { "id": "low_stock", "label": "안전재고 미달", "entity": "item", "agg": "count", "unit": "품목", "tone": "warn", "where": [{ "field": "stock", "op": "lt_field", "value": "safety_stock" }] }
+    ],
+    "panels": [
+      { "id": "my_approvals", "title": "내 결재함", "source": "approvals", "limit": 5 },
+      { "id": "overdue", "title": "연체 세금계산서", "entity": "invoice", "where": [{ "field": "status", "op": "in", "value": ["overdue"] }], "limit": 5 },
+      { "id": "low", "title": "발주가 필요한 품목", "entity": "item", "where": [{ "field": "stock", "op": "lt_field", "value": "safety_stock" }], "limit": 5 }
+    ]
+  }
+}

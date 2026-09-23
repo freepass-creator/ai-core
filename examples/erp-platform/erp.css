@@ -1,0 +1,59 @@
+/* ERP 화면에만 쓰는 «배치»다. 색·글자 크기·모서리는 정본(claude-v1.css) 토큰만 쓴다.
+   선·그림자를 새로 만들지 않는다 — scripts/validate-erp-platform.mjs 가 검사한다. */
+.erp-page { min-inline-size: 0; }
+.erp-mnav { display: none; gap: 8px; padding: 12px 16px 0; }
+.erp-who { display: grid; gap: 12px; }
+.erp-body { padding-block-start: 0; }
+.erp { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; align-items: start; }
+.erp.has-side { grid-template-columns: minmax(0, 1fr) 400px; }
+.erp-main { display: grid; gap: 14px; min-inline-size: 0; }
+.erp-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.erp-bar .c-search { flex: 1 1 260px; }
+.erp-count { color: var(--c-faint); font-variant-numeric: tabular-nums; }
+.erp-bulk { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 8px 14px; border-radius: var(--c-r-md); background: var(--c-accent-wash); color: var(--c-accent-strong); font-size: var(--t-meta); font-weight: var(--t-w-medium); }
+.erp-hint { color: var(--c-muted); font-weight: var(--t-w-regular); }
+.erp-scroll { overflow: auto; border-radius: var(--c-r-md); background: var(--c-surface); padding: 0 12px; }
+.erp-scroll .c-table { min-inline-size: 760px; }
+.erp-scroll .c-table th, .erp-scroll .c-table td { white-space: nowrap; }
+.erp-scroll tr[data-row] { cursor: pointer; }
+.erp-scroll tr[aria-selected="true"] td { background: var(--c-accent-wash); }
+.erp-scroll tr[aria-selected="true"] .erp-key { font-weight: var(--t-w-bold); }
+@media (hover: hover) { .erp-scroll tr[data-row]:hover td { background-image: linear-gradient(var(--c-hover), var(--c-hover)); } }
+.erp-sort { all: unset; cursor: pointer; }
+.erp-sort:focus-visible { outline: 2px solid var(--c-focus); outline-offset: 2px; }
+.erp-key { color: var(--c-accent-strong); font-weight: var(--t-w-medium); text-decoration: none; font-variant-numeric: tabular-nums; }
+.erp-warn { color: var(--c-warn); }
+.erp-pick { inline-size: 20px; }
+.erp-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.erp-inline { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.erp-side { display: grid; gap: 16px; padding: 18px; border-radius: var(--c-r-md); background: var(--c-surface); position: sticky; top: 20px; max-block-size: calc(100dvh - 40px); overflow: auto; }
+.erp-side-head { display: grid; gap: 4px; }
+.erp-side-top { display: flex; align-items: center; justify-content: space-between; }
+.erp-side-top .c-where { color: var(--c-faint); font-size: var(--t-micro); }
+.erp-side-head .nm { font-size: var(--t-title); font-weight: var(--t-w-bold); line-height: var(--t-lh-tight); letter-spacing: var(--t-track-title); font-variant-numeric: tabular-nums; }
+.erp-side-head .sub { color: var(--c-muted); font-size: var(--t-meta); }
+.erp-acts { display: flex; flex-wrap: wrap; gap: 8px; }
+.erp-sub { color: var(--c-muted); font-size: var(--t-micro); font-weight: var(--t-w-bold); letter-spacing: var(--t-track-label); }
+.erp-lines { display: grid; gap: 6px; }
+.erp-lines .c-table { font-size: var(--t-meta); }
+.erp-panels { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+.erp-mods { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+.erp-links { display: grid; gap: 4px; }
+.erp-link { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; padding: 10px 12px; border-radius: var(--c-r-sm); background: var(--c-row); color: var(--c-text); text-decoration: none; }
+.erp-link .t { font-weight: var(--t-w-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.erp-link .n { color: var(--c-muted); font-size: var(--t-meta); font-variant-numeric: tabular-nums; }
+.erp-link .m { grid-column: 1 / -1; color: var(--c-muted); font-size: var(--t-meta); }
+@media (hover: hover) { .erp-link:hover { background-image: linear-gradient(var(--c-hover), var(--c-hover)); } }
+.erp-dialog { max-inline-size: min(720px, 94vw); inline-size: 100%; }
+.erp-form { max-block-size: 86dvh; overflow: auto; }
+.erp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px 16px; }
+.erp-wide { grid-column: 1 / -1; }
+.erp-lineset { display: grid; gap: 8px; margin: 0; padding: 0; border: 0; }
+.erp-line { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr) auto; gap: 8px; align-items: end; }
+.erp-req { color: var(--c-risk); }
+.erp-mono { font-variant-numeric: tabular-nums; color: var(--c-muted); }
+.erp-toast-dock { position: fixed; inset-inline: 0; inset-block-end: 20px; display: flex; justify-content: center; pointer-events: none; }
+@media (max-width: 1180px) { .erp.has-side { grid-template-columns: minmax(0, 1fr); } .erp-side { position: static; max-block-size: none; } }
+@media (max-width: 900px) { .erp-mnav { display: flex; } .erp-mnav .c-select { flex: 1; } .erp-line { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+.erp-scroll .c-table th { top: 0; background: var(--c-surface); }
+.c-box { align-content: start; }
