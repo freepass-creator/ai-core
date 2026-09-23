@@ -10,6 +10,7 @@
 | [`main.html`](main.html) | **메인(목록) 화면 템플릿** — 새 목록 화면은 이 파일을 복사해 시작 |
 | [`form.html`](form.html) | **등록/수정 폼 템플릿** — 새 입력 화면은 이 파일을 복사해 시작 |
 | [`platform/`](platform) | **우리 플랫폼(FreePass ERP) 적용 시안** 5장 — 콕핏·계약진행·계약 상세·재고관리·정산확인 |
+| [`themes/`](themes) | 테마 — 기본 토큰을 덮어쓰는 값(`<name>.json`)과 투영·표현(`<name>.css`). 현재 `retro`(시안 B) |
 | [`images/`](images) | 규격서(`erp-spec.png`)·목록(`erp-main.png`)·폼(`erp-form.png`) 캡처 |
 | [`../../scripts/check-erp-standard.mjs`](../../scripts/check-erp-standard.mjs) | 규격 검사 — `npm run erp:check` (npm test 에도 포함) |
 
@@ -105,7 +106,8 @@
 
 - tokens.json ↔ erp.css `:root` 값 일치, 정본에 없는 토큰 금지
 - erp.css `:root` 밖에서 날것 색(`#hex`·`rgb()`) 금지, 글자 크기·굵기·모서리는 토큰만
-- 템플릿(`main.html`·`form.html`·`platform/*.html`): 인라인 `style` · `<style>` 금지, erp.css 에 없는 `erp-*` 클래스 금지, 골격 영역 필수, 영역당 Primary ≤ 1
+- 테마(`themes/*.json` ↔ `themes/*.css`): 덮어쓰기는 기본 토큰 이름만, 추가 변수는 `<테마>-*` 만, 블록 밖은 토큰만
+- 템플릿(`main.html`·`form.html`·`platform/**/*.html`): 인라인 `style` · `<style>` 금지, erp.css 에 없는 `erp-*` 클래스 금지, 골격 영역 필수, 영역당 Primary ≤ 1
 
 ## 9. 다른 규격과의 관계
 

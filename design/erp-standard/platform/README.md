@@ -1,6 +1,15 @@
 # FreePass ERP 적용 시안 — ERP 표준 UI 규격 v1
 
-[ERP 표준 UI 규격 v1](../README.md)을 우리 플랫폼 **프리패스 ERP(저신용·무심사 렌터카 중개)** 에 입힌 시안 5장이다.
+[ERP 표준 UI 규격 v1](../README.md)을 우리 플랫폼 **프리패스 ERP(저신용·무심사 렌터카 중개)** 에 입힌 시안이다.
+
+| 시안 | 위치 | 상태 |
+|---|---|---|
+| **A · 기본** (테두리형 표준) | `platform/*.html` · `images/platform-*.png` | **채택** — 대표 결정 2026-09-23 「첫 번째 시안으로 하고, 아주 잘 만들었어」 |
+| **B · 레트로** «90년대 사무용 단말기» | `platform/retro/*.html` · `images/platform-retro-*.png` · [`../themes/retro.css`](../themes/retro.css) | 탐색안 — 같은 HTML 구조에 테마만 교체 |
+
+시안 B 는 규격이 **테마를 갈아 끼울 수 있다**는 것도 보여 준다. HTML 은 A 와 같고 `<body data-theme="retro">` 와 `themes/retro.css` 만 더했다. 테마 값의 정본은 [`../themes/retro.json`](../themes/retro.json)(기본 토큰 중 색·모서리 43개 덮어쓰기 + `retro-*` 추가 변수 6개)이며 `npm run erp:check` 가 정본↔투영 일치와 토큰 전용 규칙을 검사한다. 레트로 표현: 크림 종이 + 모눈 바탕, 잉크 2px 테두리와 딱 떨어지는 그림자, 제목·KPI 숫자에 픽셀 글꼴(Galmuri11, OFL), 코드·금액에 고정폭(IBM Plex Mono, OFL), 도장형 뱃지, 겨자색 반전 현재 메뉴, DOS 식 상태바와 F키 키캡.
+
+아래 설명은 두 시안에 공통이다.
 
 - 도메인 정본: `freepass-creator/freepasserp4` @ `d8d3057` (2026-09-23 관측) — 메뉴·상태값·정산 구조를 그대로 가져왔다.
 - 사람·회사 이름, 금액은 **가상 예시**다. 고객명·연락처는 마스킹 형식(`김*수`, `010-****-5678`)으로만 쓴다.
@@ -73,4 +82,4 @@ freepasserp4 는 React(Next.js) + `components/ui` 원자 체계를 쓴다. 이 �
 
 1. freepasserp4 의 v4 철칙 1번은 «새 목록/상세는 `ObjCard`+`Sec` 카드로만»이다. 이 규격의 데스크톱 목록은 **표(그리드)** 가 기본이다. 웹은 표, 모바일은 카드(현재 `DataTable` 의 모바일=카드 동작)로 나누면 두 규칙이 함께 선다.
 2. [FreePass 제품 UI 프로필](../../../docs/FREEPASS_PRODUCT_UI_PROFILE.md)은 모바일 «상단은 정보, 하단은 실행»을 잠가 두었다. 이 시안은 **웹(1280px 이상)** 전용이며 모바일 규격을 바꾸지 않는다.
-3. 이 규격은 테두리형이다. `design/claude-v1`(무테두리) 과 어느 쪽을 FreePass 웹 정본으로 할지는 사용자 결정이다.
+3. 시안 A(테두리형) 채택으로 FreePass 웹 화면은 이 규격을 따른다. `design/claude-v1`(무테두리) 규격을 보관할지 정리할지는 남은 결정이다.

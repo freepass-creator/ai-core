@@ -23,7 +23,12 @@ export const TEMPLATES = {
 const platformDir = resolve(dir, 'platform');
 if (existsSync(platformDir)) {
   for (const f of readdirSync(platformDir).filter((n) => n.endsWith('.html')).sort()) TEMPLATES[`platform/${f}`] = SHELL_REGIONS;
+  for (const sub of readdirSync(platformDir, { withFileTypes: true }).filter((d) => d.isDirectory())) {
+    for (const f of readdirSync(resolve(platformDir, sub.name)).filter((n) => n.endsWith('.html')).sort()) TEMPLATES[`platform/${sub.name}/${f}`] = SHELL_REGIONS;
+  }
 }
+const themesDir = resolve(dir, 'themes');
+const THEMES = existsSync(themesDir) ? readdirSync(themesDir).filter((n) => n.endsWith('.json')).map((n) => n.replace(/\.json$/, '')).sort() : [];
 
 export function checkErpStandard() {
   const errors = [];
@@ -53,10 +58,43 @@ export function checkErpStandard() {
   }
   const defined = new Set([...rules.matchAll(/\.(erp-[\w-]+)/g)].map((m) => m[1]));
 
+  // 테마 — themes/<name>.json(정본) ↔ themes/<name>.css [data-theme] 블록(투영).
+  //   덮어쓰기는 기본 토큰에 있는 이름만, 추가 변수는 --<name>-* 만. 블록 밖은 기본 규칙과 같이 토큰만.
+  for (const name of THEMES) {
+    const theme = JSON.parse(read(`themes/${name}.json`));
+    const tcss = read(`themes/${name}.css`);
+    const block = tcss.match(new RegExp(`\\[data-theme="${name}"\\]\\s*\\{([\\s\\S]*?)\\}`))?.[1];
+    if (block === undefined) { errors.push(`themes/${name}.css: [data-theme="${name}"] 블록이 없다`); continue; }
+    const extra = theme.extra ?? {};
+    for (const [k, v] of Object.entries(theme.overrides ?? {})) {
+      if (!(k in tokens)) errors.push(`themes/${name}.json: 기본 토큰에 없는 덮어쓰기 ${k}`);
+      if (!block.includes(`--erp-${k}: ${v};`)) errors.push(`themes/${name}.css 투영 누락/불일치: --erp-${k}: ${v};`);
+    }
+    for (const [k, v] of Object.entries(extra)) {
+      if (!k.startsWith(`${name}-`)) errors.push(`themes/${name}.json: 추가 변수는 ${name}- 로 시작해야 한다 — ${k}`);
+      if (!block.includes(`--${k}: ${v};`)) errors.push(`themes/${name}.css 투영 누락/불일치: --${k}: ${v};`);
+    }
+    for (const [, n] of block.matchAll(/--([\w-]+)\s*:/g)) {
+      const known = n.startsWith('erp-') ? (n.slice(4) in (theme.overrides ?? {})) : (n in extra);
+      if (!known) errors.push(`themes/${name}.css: 정본에 없는 변수 --${n}`);
+    }
+    const trules = tcss.replace(/\/\*[\s\S]*?\*\//g, '').replace(block, '');
+    for (const m of trules.matchAll(/#[0-9a-fA-F]{3,8}\b|\b(?:rgba?|hsla?)\(/g)) errors.push(`themes/${name}.css: 토큰 밖 날것 색 «${m[0]}»`);
+    for (const m of trules.matchAll(/(font-size|font-weight|border-radius)\s*:\s*([^;}]+)/g)) {
+      const parts = m[2].trim().split(/\s+(?![^(]*\))/);
+      if (parts.some((p) => !p.startsWith('var(--erp-') && p !== '0')) errors.push(`themes/${name}.css: ${m[1]} 는 토큰만 — «${m[0].trim()}»`);
+    }
+    for (const m of trules.matchAll(/var\(--([\w-]+)\)/g)) {
+      const n = m[1];
+      if (n.startsWith('erp-') ? !(n.slice(4) in tokens) : !(n in extra)) errors.push(`themes/${name}.css: 정의되지 않은 변수 참조 --${n}`);
+    }
+    for (const m of trules.matchAll(/\.(erp-[\w-]+)/g)) if (!defined.has(m[1])) errors.push(`themes/${name}.css: erp.css 에 없는 클래스 .${m[1]}`);
+  }
+
   // 3·4. 템플릿
   for (const [file, regions] of Object.entries(TEMPLATES)) {
     const html = read(file);
-    if (!/<link[^>]+href="(?:\.\.\/)?erp\.css"/.test(html)) errors.push(`${file}: erp.css 를 불러오지 않는다`);
+    if (!/<link[^>]+href="(?:\.\.\/)*erp\.css"/.test(html)) errors.push(`${file}: erp.css 를 불러오지 않는다`);
     if (/\sstyle\s*=/.test(html)) errors.push(`${file}: 인라인 style 금지 — erp.css 클래스를 쓴다`);
     if (/<style[\s>]/.test(html)) errors.push(`${file}: <style> 블록 금지 — 공통 규칙은 erp.css 에 둔다`);
     for (const m of html.matchAll(/class="([^"]+)"/g)) {
@@ -71,11 +109,11 @@ export function checkErpStandard() {
       if (n > 1) errors.push(`${file}: 영역 ${mk.name} 에 Primary 버튼 ${n}개 — 영역마다 최대 1개`);
     });
   }
-  return { ok: errors.length === 0, errors, tokenCount: Object.keys(tokens).length };
+  return { ok: errors.length === 0, errors, tokenCount: Object.keys(tokens).length, themeCount: THEMES.length };
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  const { ok, errors, tokenCount } = checkErpStandard();
-  if (ok) console.log(`ERP 표준 규격 검사 통과 — 토큰 ${tokenCount}개, 템플릿 ${Object.keys(TEMPLATES).length}개`);
+  const { ok, errors, tokenCount, themeCount } = checkErpStandard();
+  if (ok) console.log(`ERP 표준 규격 검사 통과 — 토큰 ${tokenCount}개, 테마 ${themeCount}개, 템플릿 ${Object.keys(TEMPLATES).length}개`);
   else { console.error(`ERP 표준 규격 위반 ${errors.length}건`); for (const e of errors) console.error(' - ' + e); process.exit(1); }
 }

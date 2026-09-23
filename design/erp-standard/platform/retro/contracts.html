@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FreePass ERP 시안 B(레트로) — 계약진행</title>
+<!-- ERP 표준 UI 규격 v1 적용 시안 B — 레트로 테마(themes/retro.css). 구조·데이터는 시안 A 와 같다. 도메인·메뉴·상태값은 freepasserp4 정본 기준, 사람·회사 이름은 가상 예시다. -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/galmuri@2.40.3/dist/galmuri.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/ibm-plex-mono@5.3.0/400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/ibm-plex-mono@5.3.0/600.css">
+<link rel="stylesheet" href="../../erp.css">
+<link rel="stylesheet" href="../../themes/retro.css">
+</head>
+<body class="erp-app" data-theme="retro" data-screen="contracts">
+
+<header class="erp-topbar" data-region="topbar">
+  <div class="erp-brand"><span class="erp-brand-mark">F</span>FreePass ERP</div>
+  <button class="erp-company" type="button" aria-label="워크스페이스 전환"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 9h1M14 9h1M9 13h1M14 13h1M9 17h1M14 17h1"/></svg>프리패스 본사 · 관리 워크스페이스<svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
+  <button class="erp-gsearch" type="button" aria-label="통합 검색"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>계약번호, 고객, 차량번호, 공급사 검색<kbd>Ctrl K</kbd></button>
+  <div class="erp-topbar-right">
+    <button class="erp-iconbtn" type="button" aria-label="알림 5건" data-alert><svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 0 0 3.4 0"/></svg></button>
+    <div class="erp-user"><span class="erp-avatar">관</span><div>김관리<small>관리자 · 본사</small></div></div>
+  </div>
+</header>
+
+<nav class="erp-sidenav" data-region="sidenav" aria-label="주 메뉴">
+  <a class="erp-nav-item" href="home.html"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>업무 콕핏</a>
+  <div class="erp-nav-group">영업</div>
+  <a class="erp-nav-item" href="finder.html"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>상품찾기</a>
+  <a class="erp-nav-item" href="estimate.html"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h4"/></svg>견적</a>
+  <div class="erp-nav-group">계약</div>
+  <a class="erp-nav-item" href="contracts.html" aria-current="page"><svg viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2M9 14l2 2 4-4"/></svg>계약진행<span class="erp-nav-count">14</span></a>
+  <a class="erp-nav-item" href="esign.html"><svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>전자계약</a>
+  <div class="erp-nav-group">정산</div>
+  <a class="erp-nav-item" href="settlements.html"><svg viewBox="0 0 24 24"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>정산확인</a>
+  <a class="erp-nav-item" href="invoice.html"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8"/></svg>청구서</a>
+  <a class="erp-nav-item" href="ledger.html"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V2H6.5A2.5 2.5 0 0 0 4 4.5zM4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg>정산원장</a>
+  <div class="erp-nav-group">재고</div>
+  <a class="erp-nav-item" href="inventory.html"><svg viewBox="0 0 24 24"><path d="M5 17h14M5 17a2 2 0 1 1-4 0v-5l2-6h18l2 6v5a2 2 0 1 1-4 0M5 17a2 2 0 1 0 4 0M15 17a2 2 0 1 0 4 0M3 12h18"/></svg>재고관리</a>
+  <div class="erp-nav-group">기준정보</div>
+  <a class="erp-nav-item" href="members.html"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg>회원 · 영업자</a>
+  <a class="erp-nav-item" href="suppliers.html"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 9h1M14 9h1M9 13h1M14 13h1M9 17h1M14 17h1"/></svg>공급사</a>
+  <a class="erp-nav-item" href="connectors.html"><svg viewBox="0 0 24 24"><path d="M12 22v-5M9 8V2M15 8V2M18 8v5a6 6 0 0 1-12 0V8z"/></svg>커넥터</a>
+  <a class="erp-nav-item" href="settings.html"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>설정</a>
+</nav>
+
+<main class="erp-main">
+  <div class="erp-tabs" role="tablist" data-region="tabs">
+    <div class="erp-tab" role="tab" aria-selected="false">업무 콕핏 <span class="erp-tab-close">×</span></div>
+    <div class="erp-tab" role="tab" aria-selected="true">계약진행 <span class="erp-tab-close">×</span></div>
+    <div class="erp-tab" role="tab" aria-selected="false">FP-2609-0142 <span class="erp-tab-close">×</span></div>
+    <div class="erp-tab" role="tab" aria-selected="false">재고관리 <span class="erp-tab-close">×</span></div>
+    <div class="erp-tab" role="tab" aria-selected="false">정산확인 <span class="erp-tab-close">×</span></div>
+  </div>
+  <div class="erp-content">
+    <section data-region="page-header">
+      <div class="erp-crumb">홈 › 계약 › <span aria-current="page">계약진행</span></div>
+      <div class="erp-page-header">
+        <div>
+          <h1 class="erp-page-title">계약진행</h1>
+          <p class="erp-page-desc">계약요청부터 계약완료까지 모든 계약의 진행 상태와 전자서명 단계를 확인합니다.</p>
+        </div>
+        <div class="erp-actions">
+          <button class="erp-btn erp-btn--ghost" type="button"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>엑셀</button>
+          <button class="erp-btn" type="button"><svg viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4zM22 2 11 13"/></svg>전자계약 발송함</button>
+          <button class="erp-btn erp-btn--primary" type="button"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>새 계약서</button>
+        </div>
+      </div>
+    </section>
+    <section class="erp-card erp-card--fill">
+      <form class="erp-filter" data-region="filter" role="search">
+        <label class="erp-field"><span class="erp-label">계약일 <em class="erp-req">*</em></span><span class="erp-input">2026-09-01 ~ 2026-09-23<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span></label>
+        <label class="erp-field"><span class="erp-label">고객 / 차량번호</span><input class="erp-input" placeholder="고객명, 차량번호"></label>
+        <label class="erp-field"><span class="erp-label">공급사</span><span class="erp-input">전체<svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></label>
+        <label class="erp-field"><span class="erp-label">영업자</span><span class="erp-input">전체<svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></label>
+        <label class="erp-field"><span class="erp-label">상품구분</span><span class="erp-input">장기렌트, 구독<svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></label>
+        <div class="erp-filter-actions"><button class="erp-btn erp-btn--ghost" type="button">초기화</button><button class="erp-btn erp-btn--primary" type="submit"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>조회 (F3)</button></div>
+      </form>
+      <div class="erp-toolbar" data-region="grid-toolbar">
+        <span class="erp-selection">2건 선택됨</span>
+        <button class="erp-btn erp-btn--sm" type="button">계약서 발송</button><button class="erp-btn erp-btn--sm" type="button">담당 영업자 변경</button><button class="erp-btn erp-btn--sm erp-btn--danger-text" type="button">계약취소</button>
+        <span class="erp-toolbar-spacer"></span>
+        <div class="erp-seg" role="group" aria-label="계약 상태"><button type="button" aria-pressed="true">전체 142</button><button type="button" aria-pressed="false">계약요청 12</button><button type="button" aria-pressed="false">계약대기 9</button><button type="button" aria-pressed="false">계약발송 14</button><button type="button" aria-pressed="false">계약완료 98</button><button type="button" aria-pressed="false">계약취소 9</button></div>
+        <button class="erp-btn erp-btn--sm erp-btn--ghost" type="button"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 3v18M3 12h18"/></svg>컬럼 설정</button>
+      </div>
+      <div class="erp-grid-scroll" data-region="grid">
+        <table class="erp-grid">
+          <thead><tr><th class="erp-col-check"><input class="erp-check" type="checkbox" aria-label="전체 선택"></th><th>계약번호</th><th aria-sort="descending">계약일 <span class="erp-sort">↓</span></th><th>고객</th><th>차량 / 차량번호</th><th>공급사</th><th>상품</th><th class="erp-num">보증금</th><th class="erp-num">월 대여료</th><th>영업자</th><th>전자서명</th><th>상태</th></tr></thead>
+          <tbody>
+            <tr aria-selected="true"><td><input class="erp-check" type="checkbox" checked aria-label="선택"></td><td><a href="contract-detail.html">FP-2609-0142</a></td><td>2026-09-23</td><td>김*수</td><td>기아 쏘렌토 MQ4 1.6T HEV 시그니처<span class="erp-cell-sub">123하4567</span></td><td>한빛렌터카</td><td>장기렌트 · 36개월</td><td class="erp-num"><span class="erp-tag erp-tag--primary">무보증</span></td><td class="erp-num erp-strong">1,020,000</td><td>이영업</td><td class="erp-muted">검토 대기</td><td><span class="erp-badge erp-badge--warn">계약발송</span></td></tr>
+            <tr><td><input class="erp-check" type="checkbox" aria-label="선택"></td><td><a href="contract-detail.html">FP-2609-0141</a></td><td>2026-09-23</td><td>이*진</td><td>현대 그랜저 GN7 3.5 캘리그래피<span class="erp-cell-sub">98허1203</span></td><td>대성모빌리티</td><td>장기렌트 · 48개월</td><td class="erp-num">3,000,000</td><td class="erp-num erp-strong">1,180,000</td><td>박과장</td><td class="erp-muted">작성</td><td><span class="erp-badge erp-badge--info">계약요청</span></td></tr>
+            <tr aria-selected="true"><td><input class="erp-check" type="checkbox" checked aria-label="선택"></td><td><a href="contract-detail.html">FP-2609-0140</a></td><td>2026-09-22</td><td>박*호</td><td>기아 카니발 KA4 9인승 노블레스<span class="erp-cell-sub">45호7788</span></td><td>그린카렌탈</td><td>구독 · 24개월</td><td class="erp-num">2,000,000</td><td class="erp-num erp-strong">1,090,000</td><td>최대리</td><td class="erp-muted">발송 전</td><td><span class="erp-badge erp-badge--warn">계약대기</span></td></tr>
+            <tr><td><input class="erp-check" type="checkbox" aria-label="선택"></td><td><a href="contract-detail.html">FP-2609-0139</a></td><td>2026-09-22</td><td>정*아</td><td>현대 아반떼 CN7 1.6 인스퍼레이션<span class="erp-cell-sub">12하3456</span></td><td>한빛렌터카</td><td>장기렌트 · 36개월</td><td class="erp-num"><span class="erp-tag erp-tag--primary">무보증</span></td><td class="erp-num erp-strong">520,000</td><td>이영업</td><td class="erp-muted">완료</td><td><span class="erp-badge erp-badge--ok">계약완료</span></td></tr>
+            <tr><td><input class="erp-check" type="checkbox" aria-label="선택"></td><td><a href="contract-detail.html">FP-2609-0138</a></td><td>2026-09-21</td><td>최*민</td><td>제네시스 G80 RG3 2.5T AWD<span class="erp-cell-sub">77허9001</span></td><td>동해오토리스</td><td>장기렌트 · 60개월</td><td class="erp-num">5,000,000</td><td class="erp-num erp-strong">1,390,000</td><td>김팀장</td><td class="erp-muted">완료</td><td><span class="erp-badge erp-badge--ok">계약완료</span></td></tr>
+            <tr><td><input class="erp-check" type="checkbox" aria-label="선택"></td><td><a href="contract-detail.html">FP-2609-0137</a></td><td>2026-09-21</td><td>윤*희</td><td>기아 레이 PE 1.0 시그니처<span class="erp-cell-sub">31호2468</span></td><td>그린카렌탈</td><td>구독 · 12개월</td><td class="erp-num"><span class="erp-tag erp-tag--primary">무보증</span></td><td class="erp-num erp-strong">390,000</td><td>최대리</td><td class="erp-muted">—</td><td><span class="erp-badge erp-badge--err">계약취소</span></td></tr>
+            <tr><td><input class="erp-check" type="checkbox" aria-label="선택"></td><td><a href="contract-detail.html">FP-2609-0136</a></td><td>2026-09-20</td><td>강*우</td><td>현대 팰리세이드 LX2 2.2D 캘리그래피<span class="erp-cell-sub">64하1357</span></td><td>대성모빌리티</td><td>장기렌트 · 48개월</td><td class="erp-num"><span class="erp-tag erp-tag--primary">무보증</span></td><td class="erp-num erp-strong">1,240,000</td><td>박과장</td><td class="erp-muted">고객 작성 중</td><td><span class="erp-badge erp-badge--warn">계약발송</span></td></tr>
+            <tr><td><input class="erp-check" type="checkbox" aria-label="선택"></td><td><a href="contract-detail.html">FP-2609-0135</a></td><td>2026-09-20</td><td>조*연</td><td>기아 K5 DL3 2.0 노블레스<span class="erp-cell-sub">22허8642</span></td><td>한빛렌터카</td><td>장기렌트 · 36개월</td><td class="erp-num">1,000,000</td><td class="erp-num erp-strong">610,000</td><td>이영업</td><td class="erp-muted">완료</td><td><span class="erp-badge erp-badge--ok">계약완료</span></td></tr>
+            <tr><td><input class="erp-check" type="checkbox" aria-label="선택"></td><td><a href="contract-detail.html">FP-2609-0134</a></td><td>2026-09-19</td><td>한*석</td><td>기아 스포티지 NQ5 1.6T HEV<span class="erp-cell-sub">58호3690</span></td><td>동해오토리스</td><td>구독 · 36개월</td><td class="erp-num"><span class="erp-tag erp-tag--primary">무보증</span></td><td class="erp-num erp-strong">780,000</td><td>김팀장</td><td class="erp-muted">발송 전</td><td><span class="erp-badge erp-badge--warn">계약대기</span></td></tr>
+            <tr><td><input class="erp-check" type="checkbox" aria-label="선택"></td><td><a href="contract-detail.html">FP-2609-0133</a></td><td>2026-09-19</td><td>서*윤</td><td>현대 캐스퍼 1.0 인스퍼레이션<span class="erp-cell-sub">19하5724</span></td><td>그린카렌탈</td><td>장기렌트 · 24개월</td><td class="erp-num"><span class="erp-tag erp-tag--primary">무보증</span></td><td class="erp-num erp-strong">420,000</td><td>최대리</td><td class="erp-muted">작성</td><td><span class="erp-badge erp-badge--info">계약요청</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="erp-grid-foot"><span>총 <b>142</b>건</span><span>·</span><span>이번 달 월 대여료 합계 <b>48,720,000</b>원</span>
+        <nav class="erp-pager" aria-label="페이지"><button type="button" aria-label="이전">‹</button><button type="button" aria-current="page">1</button><button type="button">2</button><button type="button">3</button><button type="button" disabled>…</button><button type="button">15</button><button type="button" aria-label="다음">›</button><span class="erp-input">10건씩<svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></nav>
+      </div>
+    </section>
+  </div>
+
+  <footer class="erp-statusbar" data-region="statusbar">
+    <span class="erp-statusbar-ok">● ERP5 데이터 연결 정상</span><span>정산월 2026-09</span><span>마지막 조회 14:32:08</span>
+    <span class="erp-statusbar-keys"><kbd>F2</kbd> 신규 · <kbd>F3</kbd> 조회 · <kbd>Esc</kbd> 닫기</span>
+  </footer>
+</main>
+</body>
+</html>

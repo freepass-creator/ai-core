@@ -1,0 +1,65 @@
+{
+  "$schema_note": "시안 B — 레트로 테마. ../tokens.json 을 상속하고 여기 적은 값만 덮어쓴다. retro.css 의 [data-theme=\"retro\"] 블록은 이 파일의 투영이다. 검사: npm run erp:check",
+  "name": "retro",
+  "title": "시안 B · 90년대 사무용 단말기",
+  "extends": "../tokens.json",
+  "overrides": {
+    "color-primary": "#1E4FA0",
+    "color-primary-hover": "#163C7C",
+    "color-primary-weak": "#DDE6F5",
+    "color-focus-ring": "#BFD0EE",
+    "color-on-primary": "#FFF8E7",
+
+    "color-nav": "#1C1A17",
+    "color-nav-raised": "#2E2A24",
+    "color-nav-line": "#47413A",
+    "color-nav-text": "#D8CFBC",
+    "color-nav-text-strong": "#FFF8E7",
+    "color-nav-muted": "#9A907E",
+    "color-nav-active": "#F2C14E",
+    "color-nav-indicator": "#E4572E",
+
+    "color-bg": "#F2EDE0",
+    "color-tabs-bg": "#E3DAC4",
+    "color-surface": "#FFFDF6",
+    "color-sunken": "#EBE4D3",
+    "color-line": "#CFC6B2",
+    "color-line-row": "#E2DBC9",
+    "color-line-strong": "#1C1A17",
+
+    "color-text": "#1C1A17",
+    "color-text-2": "#4A453C",
+    "color-text-3": "#7D7566",
+
+    "color-row-selected": "#FFF1B8",
+    "color-row-hover": "#F7F1E2",
+
+    "color-ok": "#2F6B2F",
+    "color-ok-bg": "#DCEBCF",
+    "color-info": "#1E4FA0",
+    "color-info-bg": "#DDE6F5",
+    "color-warn": "#8A5100",
+    "color-warn-bg": "#FBE7B5",
+    "color-err": "#B3261E",
+    "color-err-bg": "#F8D8D2",
+    "color-err-solid": "#C0392B",
+    "color-err-ring": "#F3C4BC",
+    "color-neutral": "#4A453C",
+    "color-neutral-bg": "#E6DFCF",
+    "color-alert-dot": "#E4572E",
+    "color-favorite": "#E0A100",
+
+    "r-sm": "0px",
+    "r-md": "2px",
+    "r-lg": "2px",
+    "r-pill": "2px"
+  },
+  "extra": {
+    "retro-font-display": "Galmuri11, \"Pretendard Variable\", monospace",
+    "retro-font-mono": "\"IBM Plex Mono\", \"Pretendard Variable\", monospace",
+    "retro-border": "2px",
+    "retro-shadow": "3px 3px 0",
+    "retro-shadow-lg": "4px 4px 0",
+    "retro-grid-size": "16px"
+  }
+}
