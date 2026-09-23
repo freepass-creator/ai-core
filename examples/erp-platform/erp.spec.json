@@ -386,9 +386,25 @@
     }
   ],
 
+  "suggestions": [
+    {
+      "id": "reorder", "label": "발주 초안 만들기", "roles": ["staff", "manager", "admin"],
+      "source": "item", "when": [{ "field": "stock", "op": "lt_field", "value": "safety_stock" }],
+      "target": "purchase_order",
+      "line": { "col": "item", "qty": { "op": "refill", "to": "safety_stock", "factor": 2 }, "price": { "last_line": "price", "fallback_field": "price" } },
+      "inherit_last": ["vendor", "warehouse"],
+      "reason": "규칙 기반 제안 — 안전재고의 2배까지 채우고, 공급사·창고·단가는 이 품목의 최근 발주를 따른다. 저장 전에 사람이 확인한다."
+    }
+  ],
+
   "dashboard": {
+    "charts": [
+      { "id": "so_trend", "title": "월별 수주", "type": "monthly", "entity": "sales_order", "field": "total", "date_field": "date", "months": 7, "unit": "원", "where": [{ "field": "status", "op": "in", "value": ["approved", "shipped", "closed"] }] },
+      { "id": "so_pipeline", "title": "수주 파이프라인", "type": "states", "entity": "sales_order", "field": "total" },
+      { "id": "stock_level", "title": "재고 · 안전재고", "type": "target", "entity": "item", "value": "stock", "target": "safety_stock", "label": "name" }
+    ],
     "metrics": [
-      { "id": "so_month", "label": "이번 달 수주", "entity": "sales_order", "agg": "sum", "field": "total", "unit": "원", "where": [{ "field": "status", "op": "in", "value": ["approved", "shipped", "closed"] }, { "field": "date", "op": "month", "value": "current" }] },
+      { "id": "so_month", "label": "이번 달 수주", "entity": "sales_order", "agg": "sum", "field": "total", "unit": "원", "trend": "so_trend", "where": [{ "field": "status", "op": "in", "value": ["approved", "shipped", "closed"] }, { "field": "date", "op": "month", "value": "current" }] },
       { "id": "approvals", "label": "내 결재 대기", "agg": "approvals", "unit": "건", "tone": "warn" },
       { "id": "receivable", "label": "미수금", "entity": "invoice", "agg": "sum", "field": "total", "unit": "원", "tone": "risk", "where": [{ "field": "status", "op": "in", "value": ["issued", "overdue"] }] },
       { "id": "low_stock", "label": "안전재고 미달", "entity": "item", "agg": "count", "unit": "품목", "tone": "warn", "where": [{ "field": "stock", "op": "lt_field", "value": "safety_stock" }] }

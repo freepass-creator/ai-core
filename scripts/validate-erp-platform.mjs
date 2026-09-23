@@ -11,6 +11,8 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const E = await import(pathToFileURL(resolve(root, 'examples/erp-platform/erp-engine.js')).href);
 
+export const CSS_FILES = ['examples/erp-platform/erp.css', 'examples/erp-platform/v2/app.css'];
+
 export function validateErpPlatform(spec, seed, css = '') {
   const fail = [];
   const st = spec.standard;
@@ -96,6 +98,29 @@ export function validateErpPlatform(spec, seed, css = '') {
     if (m.agg === 'sum') need(E.entityOf(spec, m.entity).fields.some((f) => f.id === m.field), `지표 ${m.id}: 합칠 필드가 없다`);
   }
 
+  const charts = new Map((spec.dashboard.charts ?? []).map((c) => [c.id, c]));
+  for (const c of charts.values()) {
+    need(['monthly', 'states', 'target'].includes(c.type), `차트 ${c.id}: 규격에 없는 type ${c.type}`);
+    if (!entIds.includes(c.entity)) { fail.push(`차트 ${c.id}: entity ${c.entity} 가 없다`); continue; }
+    const fs = new Set(E.entityOf(spec, c.entity).fields.map((f) => f.id));
+    for (const k of [c.field, c.date_field, c.value, c.target, c.label].filter(Boolean)) need(fs.has(k), `차트 ${c.id}: 필드 ${k} 가 없다`);
+    if (c.type === 'monthly') need(Number.isInteger(c.months) && c.months >= 2 && c.months <= 24, `차트 ${c.id}: months 는 2~24`);
+  }
+  for (const m of spec.dashboard.metrics) if (m.trend) need(charts.get(m.trend)?.type === 'monthly', `지표 ${m.id}: trend ${m.trend} 는 monthly 차트여야 한다`);
+  for (const sg of spec.suggestions ?? []) {
+    const w = `제안 ${sg.id}`;
+    need(sg.roles?.length && sg.roles.every((r) => roles.has(r)), `${w}: roles 가 비었거나 명세에 없다`);
+    need(entIds.includes(sg.source) && entIds.includes(sg.target), `${w}: source/target entity 가 없다`);
+    if (!entIds.includes(sg.source) || !entIds.includes(sg.target)) continue;
+    const src = new Set(E.entityOf(spec, sg.source).fields.map((f) => f.id));
+    const tgt = E.entityOf(spec, sg.target);
+    const lf = tgt.fields.find((f) => f.type === 'lines');
+    for (const c of sg.when) need(src.has(c.field), `${w}: 조건 필드 ${c.field} 가 없다`);
+    need(lf?.columns.some((c) => c.id === sg.line.col && c.ref === sg.source), `${w}: 대상 줄에 ${sg.source} 를 가리키는 ${sg.line.col} 칸이 없다`);
+    for (const k of sg.inherit_last ?? []) need(tgt.fields.some((f) => f.id === k), `${w}: 물려받을 필드 ${k} 가 대상에 없다`);
+    need(Boolean(sg.reason), `${w}: 제안 근거(reason)가 있어야 한다 — 규칙 기반임을 사람에게 말한다`);
+  }
+
   // 시안 데이터가 명세를 지키는가 — 명세를 고치고 데이터를 두고 가면 여기서 잡힌다.
   const store = E.createStore(spec, seed);
   for (const ent of ents) {
@@ -129,7 +154,7 @@ if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   const read = (p) => readFileSync(resolve(root, p), 'utf8');
   const spec = JSON.parse(read('examples/erp-platform/erp.spec.json'));
   const seed = JSON.parse(read('examples/erp-platform/erp.seed.json'));
-  const fail = validateErpPlatform(spec, seed, read('examples/erp-platform/erp.css'));
+  const fail = validateErpPlatform(spec, seed, CSS_FILES.map(read).join('\n'));
   const ents = E.entities(spec);
   console.log(JSON.stringify({
     status: fail.length ? 'FAIL' : 'PASS',

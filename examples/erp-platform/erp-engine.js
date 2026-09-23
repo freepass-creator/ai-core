@@ -274,3 +274,67 @@ export function display(store, entId, fieldId, rec) {
 }
 
 export const isNumeric = (f) => ['money', 'number', 'percent', 'computed'].includes(f.type);
+
+/* ── 차트 자료 (dashboard.charts) ─────────────────────────────────────────── */
+
+/** 오늘이 든 달에서 거슬러 months 개 달. 빈 달도 0 으로 남긴다 — 빠진 달을 건너뛰면 추세가 거짓말을 한다. */
+export function monthlySeries(store, chart) {
+  const ent = entityOf(store.spec, chart.entity);
+  const [y, m] = store.today.split('-').map(Number);
+  const months = Array.from({ length: chart.months }, (_, i) => {
+    const d = new Date(Date.UTC(y, m - 1 - (chart.months - 1 - i), 1));
+    return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}`;
+  });
+  const sums = Object.fromEntries(months.map((k) => [k, 0]));
+  for (const r of store.records[ent.id]) {
+    const full = computeRecord(store.spec, ent, r);
+    const k = String(full[chart.date_field] ?? '').slice(0, 7);
+    if (k in sums && matchWhere(full, chart.where, store.today)) sums[k] += num(full[chart.field]);
+  }
+  return months.map((k) => ({ month: k, value: sums[k] }));
+}
+
+export function stateBreakdown(store, chart) {
+  const ent = entityOf(store.spec, chart.entity);
+  const wf = workflowOf(store.spec, ent);
+  return wf.states.map((s) => {
+    const rows = store.records[ent.id].filter((r) => r.status === s.id).map((r) => computeRecord(store.spec, ent, r));
+    return { state: s, count: rows.length, value: chart.field ? rows.reduce((a, r) => a + num(r[chart.field]), 0) : rows.length };
+  });
+}
+
+export function targetSeries(store, chart) {
+  const ent = entityOf(store.spec, chart.entity);
+  return store.records[ent.id].filter((r) => r.status !== 'inactive').map((r) => ({ id: r.id, label: r[chart.label], value: num(r[chart.value]), target: num(r[chart.target]), below: num(r[chart.value]) < num(r[chart.target]) }));
+}
+
+/* ── 제안 (spec.suggestions) — 규칙 기반. 저장은 사람이 확인한 뒤에만 ────────── */
+
+export function suggestionsFor(store, role) {
+  const out = [];
+  for (const sug of store.spec.suggestions ?? []) {
+    if (!sug.roles.includes(role)) continue;
+    for (const rec of store.records[sug.source]) if (rec.status !== 'inactive' && matchWhere(rec, sug.when)) out.push({ sug, rec });
+  }
+  return out;
+}
+
+/** 제안에서 대상 문서의 «입력값 초안»을 만든다. 등록은 하지 않는다. */
+export function draftFromSuggestion(store, sugId, recId) {
+  const sug = (store.spec.suggestions ?? []).find((s) => s.id === sugId);
+  const rec = find(store, sug.source, recId);
+  const target = entityOf(store.spec, sug.target);
+  const linesField = target.fields.find((f) => f.type === 'lines');
+  const last = store.records[target.id]
+    .filter((r) => (r[linesField.id] ?? []).some((l) => l[sug.line.col] === rec.id))
+    .sort((a, b) => String(b.date ?? '').localeCompare(String(a.date ?? '')))[0];
+  const lastLine = last?.[linesField.id].find((l) => l[sug.line.col] === rec.id);
+  const q = sug.line.qty;
+  const qty = q.op === 'refill' ? Math.max(1, Math.ceil(num(rec[q.to]) * q.factor - num(rec.stock))) : num(q.value);
+  const price = lastLine ? num(lastLine[sug.line.price.last_line]) : num(rec[sug.line.price.fallback_field]);
+  const values = {};
+  for (const f of target.fields) if (f.type !== 'computed' && !f.readonly) values[f.id] = f.type === 'date' ? store.today : f.type === 'lines' ? [] : '';
+  for (const k of sug.inherit_last ?? []) if (last?.[k]) values[k] = last[k];
+  values[linesField.id] = [{ [sug.line.col]: rec.id, qty, price }];
+  return { entity: target.id, values, basis: last ? `최근 발주 ${last.no}` : '발주 이력 없음 — 공급사를 골라 주세요' };
+}

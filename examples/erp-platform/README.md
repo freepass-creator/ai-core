@@ -1,5 +1,10 @@
 # 범용 ERP 플랫폼 — 명세 구동 시안 (Claude 공모작)
 
+> **시연 2** [`v2/`](v2/) — 같은 명세·같은 엔진 위에 화면만 다시 짰다. 오늘 브리핑 홈(지표·월별 수주 차트·파이프라인·재고 대비),
+> 한 번에 처리하는 할 일(바로 승인·반려, 규칙 기반 발주 초안), 칸반 보드(카드를 끌면 상태 전이 — 권한·가드는 엔진이 판정하고 안 되면 이유를 말함),
+> ⌘K 명령창, 밀려 나오는 상세(개요·줄·이력 탭), 반전 레일, 다크 모드, 모바일 하단 탭바.
+> 시연 1(이 폴더의 `index.html`)은 «규격이 돈다»의 최소 화면으로 남겨 둔다.
+
 이미지 목업이 아니라 **돌아가는 규격**이다. 화면의 정본은 [`erp.spec.json`](erp.spec.json) 하나이고,
 메뉴·대시보드·결재함·목록·상세·입력·상태 흐름·권한·계산·재고 반영이 전부 그 파일에서 나온다.
 모듈을 늘리려면 코드가 아니라 명세에 entity 를 더한다.
@@ -12,6 +17,7 @@
 | `erp.seed.json` | 시안용 가상 데이터 (47건) |
 | `erp-engine.js` | 순수 로직 — 계산·상태 전이·권한·가드·효과·채번·검증. 업무별 `if` 없음. Node 시험과 브라우저가 같이 씀 |
 | `erp-app.js` | 렌더러 — 명세를 읽어 화면을 그림 |
+| `v2/app.js` · `v2/app.css` · `v2/index.html` | 시연 2 화면. 명세의 `dashboard.charts`·`suggestions` 를 읽는다 |
 | `erp.css` | 배치만. 색·크기·모서리는 [claude-v1 정본](../claude/claude-v1.css) 토큰만 |
 | [`scripts/validate-erp-platform.mjs`](../../scripts/validate-erp-platform.mjs) | 규격 검사기 (`npm run erp:validate`) |
 | [`test/erp-platform.test.mjs`](../../test/erp-platform.test.mjs) | 동작 시험 + 무력화 시험(규격을 깨면 빨강) |
@@ -31,13 +37,16 @@
 5. 한 상태·한 역할에 primary 동작은 하나까지. `risk` 동작은 확인문(confirm) 또는 사유 입력 필수
 6. 가드에 막힌 동작은 숨기지 않고 **막힌 이유**를 보여 준다
 7. 효과(재고·연차 증감)는 전부 가능할 때만 한꺼번에 반영 — 반쯤 반영 없음
-8. 시안 데이터도 명세를 지켜야 한다, 배치 CSS 에 선·그림자·날색·토큰 밖 값 금지
+8. 시안 데이터도 명세를 지켜야 한다, 배치 CSS(시연 1·2 모두)에 선·그림자·날색·토큰 밖 값 금지
+9. 차트는 명세의 필드만 가리키고, 월 추세는 빈 달을 0 으로 남긴다(건너뛰지 않는다)
+10. 제안은 규칙 기반임을 `reason` 으로 밝히고, 초안만 만든다 — 등록은 사람이 확인한 뒤
 
 ## 열기
 
 ```bash
 python3 -m http.server 4178   # 저장소 루트에서 (fetch 로 명세를 읽으므로 file:// 은 안 된다)
-# → http://localhost:4178/examples/erp-platform/
+# → http://localhost:4178/examples/erp-platform/     (시연 1)
+# → http://localhost:4178/examples/erp-platform/v2/  (시연 2 · ⌘K 명령창, 보드 끌어 놓기)
 npm run erp:validate
 node --test test/erp-platform.test.mjs
 ```
@@ -47,4 +56,5 @@ node --test test/erp-platform.test.mjs
 - 저장은 브라우저 localStorage 뿐(시안). 서버·DB·인증 연결 없음
 - 권한은 역할 단위. 부서·금액 한도별 결재선(전결 규정)은 명세 확장 자리만 있다
 - 줄 입력은 품목/계정 한 종류의 lines 필드만 지원
+- 보드 끌어 놓기는 마우스 기준. 키보드 사용자는 카드를 열어 상세의 동작 버튼으로 같은 전이를 한다
 - 다크 모드는 정본 토큰(`prefers-color-scheme`)을 따르며 눈으로는 덜 봤다

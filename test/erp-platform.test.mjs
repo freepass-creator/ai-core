@@ -2,12 +2,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import * as E from '../examples/erp-platform/erp-engine.js';
-import { validateErpPlatform } from '../scripts/validate-erp-platform.mjs';
+import { validateErpPlatform, CSS_FILES } from '../scripts/validate-erp-platform.mjs';
 
 const read = (p) => readFileSync(new URL(`../${p}`, import.meta.url), 'utf8');
 const spec = JSON.parse(read('examples/erp-platform/erp.spec.json'));
 const seed = JSON.parse(read('examples/erp-platform/erp.seed.json'));
-const css = read('examples/erp-platform/erp.css');
+const css = CSS_FILES.map(read).join('\n');
 const fresh = () => E.createStore(spec, seed);
 const meta = { by: '테스트', at: '2026-09-23' };
 
@@ -103,6 +103,31 @@ test('결재함과 지표는 역할에 따라 달라진다', () => {
   assert.equal(E.metricValue(s, low, 'manager'), 3);
 });
 
+test('차트 자료: 빈 달도 0 으로 남기고, 진행 중 파이프라인과 재고 대비를 낸다', () => {
+  const s = fresh();
+  const [trend, pipe, stock] = spec.dashboard.charts;
+  const series = E.monthlySeries(s, trend);
+  assert.deepEqual(series.map((x) => x.month), ['2026-03', '2026-04', '2026-05', '2026-06', '2026-07', '2026-08', '2026-09']);
+  assert.equal(series.at(-1).value, 5676000 + 10340000);
+  const d = structuredClone(seed); d.records.sales_order = d.records.sales_order.filter((r) => !r.date.startsWith('2026-05'));
+  assert.equal(E.monthlySeries(E.createStore(spec, d), trend)[2].value, 0);
+  assert.equal(E.stateBreakdown(s, pipe).find((x) => x.state.id === 'submitted').count, 2);
+  assert.deepEqual(E.targetSeries(s, stock).filter((x) => x.below).map((x) => x.id), ['I-0002', 'I-0004', 'I-0006']);
+});
+
+test('제안: 안전재고 미달 품목 → 최근 발주를 물려받은 발주 초안(등록은 하지 않는다)', () => {
+  const s = fresh();
+  assert.deepEqual(E.suggestionsFor(s, 'staff').map((x) => x.rec.id), ['I-0002', 'I-0004', 'I-0006']);
+  assert.equal(E.suggestionsFor(s, 'finance').length, 0);
+  const before = s.records.purchase_order.length;
+  const d = E.draftFromSuggestion(s, 'reorder', 'I-0002');
+  assert.equal(s.records.purchase_order.length, before);
+  assert.equal(d.values.vendor, 'V-0002');
+  assert.deepEqual(d.values.lines, [{ item: 'I-0002', qty: 82, price: 41000 }]);
+  assert.match(E.draftFromSuggestion(s, 'reorder', 'I-0006').basis, /이력 없음/);
+  assert.equal(E.createRecord(s, 'purchase_order', d.values, meta).ok, true);
+});
+
 // 무력화 시험: 규격을 한 군데씩 깨면 검사기가 빨갛게 되어야 한다.
 const broken = [
   ['없는 상태로 가는 전이', (s) => { s.modules[0].entities[2].workflow.transitions[0].to = 'nowhere'; }, /to nowhere/],
@@ -112,6 +137,9 @@ const broken = [
   ['규격 밖 tone', (s) => { s.modules[0].entities[2].workflow.states[0].tone = 'pink'; }, /tone/],
   ['없는 entity 참조', (s) => { s.modules[0].entities[1].fields[0].ref = 'client'; }, /ref client/],
   ['목록 열이 없는 필드', (s) => { s.modules[0].entities[0].list.columns.push('fax'); }, /list 열 fax/],
+  ['제안 대상 줄에 참조 칸 없음', (s) => { s.suggestions[0].line.col = 'sku'; }, /sku 칸이 없다/],
+  ['근거 없는 제안', (s) => { delete s.suggestions[0].reason; }, /reason/],
+  ['없는 차트를 가리키는 추세', (s) => { s.dashboard.metrics[0].trend = 'nope'; }, /trend nope/],
   ['기준정보에 code 없음', (s) => { s.modules[1].entities[0].fields.shift(); }, /code 필드/]
 ];
 for (const [name, mutate, expect] of broken) {
