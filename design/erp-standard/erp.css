@@ -315,7 +315,7 @@
  *   선택지(건수 붙은 칩)로 고른다. 상태 분류는 세그먼트 탭. 드롭다운은 분류가 꼭 필요한 화면(계약 · 정산 · 실적)에서만 1~2개.
  *   상세 필터는 <details> 로 연다 — 스크립트 없이도 열리고 닫힌다. */
 .erp-searchbar { display: flex; align-items: center; gap: var(--erp-sp-2); padding: var(--erp-sp-3) var(--erp-sp-4); border-bottom: 1px solid var(--erp-color-line); }
-.erp-search { display: flex; align-items: center; gap: var(--erp-sp-2); flex: 0 1 460px; height: var(--erp-btn-h); padding: 0 var(--erp-sp-3); border: 1px solid var(--erp-color-line-strong); border-radius: var(--erp-r-md); background: var(--erp-color-surface); color: var(--erp-color-text-3); }
+.erp-search { display: flex; flex-direction: row; align-items: center; gap: var(--erp-sp-2); flex: 0 1 460px; height: var(--erp-btn-h); padding: 0 var(--erp-sp-3); border: 1px solid var(--erp-color-line-strong); border-radius: var(--erp-r-md); background: var(--erp-color-surface); color: var(--erp-color-text-3); }
 .erp-search input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--erp-color-text); font: inherit; font-size: var(--erp-fs-body); }
 .erp-search:focus-within { border-color: var(--erp-color-primary); box-shadow: 0 0 0 3px var(--erp-color-focus-ring); }
 .erp-filter-more { position: relative; }
