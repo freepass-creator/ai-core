@@ -130,7 +130,7 @@
 .erp-nav-count { margin-left: auto; padding: 1px 7px; border-radius: var(--erp-r-pill); background: var(--erp-color-nav-raised); font-size: var(--erp-fs-caption); }
 .erp-nav-sub { margin: 2px 0 6px 20px; border-left: 1px solid var(--erp-color-nav-line); }
 .erp-app .erp-nav-sub a { display: block; padding: 7px 14px; color: var(--erp-color-nav-text); font-weight: var(--erp-fw-regular); }
-.erp-app .erp-nav-sub a[aria-current="page"] { color: var(--erp-color-nav-text-strong); background: var(--erp-color-nav-active); border-radius: 0 var(--erp-r-md) var(--erp-r-md) 0; box-shadow: inset 2px 0 0 var(--erp-color-nav-indicator); font-weight: var(--erp-fw-semibold); }
+.erp-app .erp-nav-item[aria-current="page"], .erp-app .erp-nav-sub a[aria-current="page"] { color: var(--erp-color-nav-text-strong); background: var(--erp-color-nav-active); border-radius: 0 var(--erp-r-md) var(--erp-r-md) 0; box-shadow: inset 2px 0 0 var(--erp-color-nav-indicator); font-weight: var(--erp-fw-semibold); }
 
 /* ── ③ 작업 탭 (MDI) ───────────────────────────────── */
 .erp-main { display: flex; flex-direction: column; min-width: 0; overflow: hidden; }
@@ -255,3 +255,57 @@
 .erp-statusbar { display: flex; align-items: center; gap: 18px; height: var(--erp-statusbar-h); padding: 0 var(--erp-sp-4); border-top: 1px solid var(--erp-color-line); background: var(--erp-color-surface); color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
 .erp-statusbar-ok { color: var(--erp-color-ok); }
 .erp-statusbar-keys { margin-left: auto; }
+
+/* ── 플랫폼 확장 부품 (FreePass ERP 시안에서 도출) ───────── */
+/* 카드 머리 — 카드 안 제목 + 보조 링크/액션 */
+.erp-card-head { display: flex; align-items: center; justify-content: space-between; gap: var(--erp-sp-3); padding: 14px var(--erp-sp-4); border-bottom: 1px solid var(--erp-color-line); }
+.erp-card-title { margin: 0; font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); }
+.erp-card-title small { margin-left: 6px; color: var(--erp-color-text-3); font-size: var(--erp-fs-label); font-weight: var(--erp-fw-regular); }
+.erp-card-body { padding: var(--erp-sp-4); }
+
+/* 2단 배치 — 본문 + 보조 패널 */
+.erp-cols { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: var(--erp-section-gap); min-height: 0; }
+.erp-cols--half { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.erp-stack { display: flex; flex-direction: column; gap: var(--erp-section-gap); min-width: 0; }
+
+/* 진행 단계 — 업무 흐름(계약·정산·전자서명). 현재 단계는 aria-current="step" */
+.erp-steps { display: flex; margin: 0; padding: 0; list-style: none; }
+.erp-steps li { position: relative; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; color: var(--erp-color-text-3); font-size: var(--erp-fs-label); text-align: center; }
+.erp-steps li::before { content: ""; position: absolute; top: 11px; right: 50%; width: 100%; height: 2px; background: var(--erp-color-line); }
+.erp-steps li:first-child::before { display: none; }
+.erp-step-dot { position: relative; z-index: 1; width: 24px; height: 24px; display: grid; place-items: center; border: 2px solid var(--erp-color-line-strong); border-radius: var(--erp-r-pill); background: var(--erp-color-surface); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-bold); }
+.erp-steps li[data-state="done"] { color: var(--erp-color-text-2); }
+.erp-steps li[data-state="done"]::before, .erp-steps li[aria-current="step"]::before { background: var(--erp-color-primary); }
+.erp-steps li[data-state="done"] .erp-step-dot { border-color: var(--erp-color-primary); background: var(--erp-color-primary); color: var(--erp-color-on-primary); }
+.erp-steps li[aria-current="step"] { color: var(--erp-color-primary); font-weight: var(--erp-fw-semibold); }
+.erp-steps li[aria-current="step"] .erp-step-dot { border-color: var(--erp-color-primary); color: var(--erp-color-primary); box-shadow: 0 0 0 4px var(--erp-color-primary-weak); }
+.erp-step-count { color: var(--erp-color-text); font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); }
+
+/* 처리 대기열 — «지금 처리할 일». 한 줄 = 질문 + 건수 + 바로가기 */
+.erp-queue { margin: 0; padding: 0; list-style: none; }
+.erp-queue li { display: flex; align-items: center; gap: var(--erp-sp-3); padding: 11px var(--erp-sp-4); border-bottom: 1px solid var(--erp-color-line-row); }
+.erp-queue li:last-child { border-bottom: 0; }
+.erp-queue-text { flex: 1; min-width: 0; }
+.erp-queue-text small { display: block; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
+.erp-queue-count { font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); }
+
+/* 값 묶음 — 상세 화면의 라벨:값 읽기 전용 */
+.erp-props { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px var(--erp-sp-4); margin: 0; }
+.erp-props div { min-width: 0; }
+.erp-props dt { color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
+.erp-props dd { margin: 2px 0 0; font-weight: var(--erp-fw-medium); }
+
+/* 이력 — 시간순 기록 */
+.erp-timeline { margin: 0; padding: 0; list-style: none; }
+.erp-timeline li { position: relative; padding: 0 0 14px 18px; border-left: 2px solid var(--erp-color-line); margin-left: 5px; }
+.erp-timeline li:last-child { padding-bottom: 0; }
+.erp-timeline li::before { content: ""; position: absolute; left: -6px; top: 3px; width: 10px; height: 10px; border-radius: var(--erp-r-pill); background: var(--erp-color-line-strong); }
+.erp-timeline li[data-state="current"]::before { background: var(--erp-color-primary); }
+.erp-timeline time { display: block; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
+
+/* 셀 안 두 줄 — 주 텍스트 + 보조 텍스트 */
+.erp-cell-sub { display: block; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
+.erp-muted { color: var(--erp-color-text-3); }
+.erp-tags { display: inline-flex; gap: var(--erp-sp-1); }
+.erp-tag { padding: 1px 6px; border-radius: var(--erp-r-sm); background: var(--erp-color-neutral-bg); color: var(--erp-color-text-2); font-size: var(--erp-fs-caption); }
+.erp-tag--primary { background: var(--erp-color-primary-weak); color: var(--erp-color-primary); }

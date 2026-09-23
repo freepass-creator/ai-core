@@ -6,7 +6,7 @@
 //   2. erp.css 의 :root 밖에서는 색·글자 크기·굵기·모서리를 var(--erp-*) 로만 쓴다.
 //   3. 템플릿(main.html·form.html)은 인라인 style 을 쓰지 않고, erp.css 에 없는 erp-* 클래스를 쓰지 않는다.
 //   4. 템플릿은 화면 골격 영역(data-region)을 모두 갖고, 영역마다 Primary 버튼은 최대 1개다.
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -19,6 +19,11 @@ export const TEMPLATES = {
   'main.html': [...SHELL_REGIONS, 'kpi', 'filter', 'grid-toolbar', 'grid'],
   'form.html': [...SHELL_REGIONS, 'form', 'form-footer'],
 };
+// 플랫폼 적용 시안(platform/*.html)도 같은 규칙을 지킨다 — 골격 영역은 공통 5개만 요구한다.
+const platformDir = resolve(dir, 'platform');
+if (existsSync(platformDir)) {
+  for (const f of readdirSync(platformDir).filter((n) => n.endsWith('.html')).sort()) TEMPLATES[`platform/${f}`] = SHELL_REGIONS;
+}
 
 export function checkErpStandard() {
   const errors = [];
@@ -51,7 +56,7 @@ export function checkErpStandard() {
   // 3·4. 템플릿
   for (const [file, regions] of Object.entries(TEMPLATES)) {
     const html = read(file);
-    if (!/<link[^>]+href="erp\.css"/.test(html)) errors.push(`${file}: erp.css 를 불러오지 않는다`);
+    if (!/<link[^>]+href="(?:\.\.\/)?erp\.css"/.test(html)) errors.push(`${file}: erp.css 를 불러오지 않는다`);
     if (/\sstyle\s*=/.test(html)) errors.push(`${file}: 인라인 style 금지 — erp.css 클래스를 쓴다`);
     if (/<style[\s>]/.test(html)) errors.push(`${file}: <style> 블록 금지 — 공통 규칙은 erp.css 에 둔다`);
     for (const m of html.matchAll(/class="([^"]+)"/g)) {
