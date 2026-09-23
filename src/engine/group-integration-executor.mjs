@@ -17,13 +17,15 @@ function safeExecutionResult(value){
   need(EXECUTION_STATUSES.has(status),'INTEGRATION_ADAPTER_STATUS_INVALID');
   need(value.execution_authorized!==true,'INTEGRATION_ADAPTER_MUST_NOT_GRANT_AUTHORITY');
   need(value.completion_authorized!==true,'INTEGRATION_ADAPTER_MUST_NOT_GRANT_COMPLETION');
+  const evidenceRefs=value.evidence_refs??[];
+  need(Array.isArray(evidenceRefs)&&evidenceRefs.every(nonempty),'INTEGRATION_ADAPTER_EVIDENCE_REFS_INVALID');
   return {
     status,
     performed:value.performed===true,
     reason_code:value.reason_code==null?null:clean(value.reason_code),
     output_refs:Array.isArray(value.output_refs)?value.output_refs.map(clean).filter(Boolean):[],
     output_digest:value.output_digest??null,
-    evidence_refs:Array.isArray(value.evidence_refs)?value.evidence_refs.map(clean).filter(Boolean):[],
+    evidence_refs:[...evidenceRefs],
     deterministic:value.deterministic===true,
     executor_version:clean(value.executor_version)||'unknown',
     environment_revision:value.environment_revision==null?null:clean(value.environment_revision),
