@@ -1,0 +1,90 @@
+/* 시안 D — 카드만 (대표 2026-09-23 「카드타입으로만 시안 하나 더」)
+ * 칸 · 판 · 표가 없다. 바탕 위에 카드만 놓는다. 값은 var(--erp-*) 토큰만.
+ *   위: 흐름 카드 4장 · 검색 카드 / 아래 왼쪽: 차 타일 카드 격자 / 아래 오른쪽: 접수 카드 더미(1 차 → 2 기간 → 3 고객 → 4 확인 · 저장) */
+.fcd-app { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: var(--erp-topbar-h) minmax(0, 1fr); grid-template-areas: "topbar" "main"; height: 100vh; margin: 0; background: var(--erp-color-bg); color: var(--erp-color-text); font-family: var(--erp-font-family); font-size: var(--erp-fs-body); }
+.fcd-app a { color: inherit; text-decoration: none; }
+.fcd-app .erp-topbar { grid-area: topbar; grid-column: 1; }
+.fcd-app .erp-gsearch { flex: 0 1 520px; }
+.fcd-main { grid-area: main; display: flex; flex-direction: column; gap: 14px; min-height: 0; padding: var(--erp-sp-4) var(--erp-sp-6); }
+.fcd-card { border: 1px solid var(--erp-color-line); border-radius: calc(var(--erp-r-lg) * 1.5); background: var(--erp-color-surface); box-shadow: 0 8px 22px -18px var(--erp-color-text-3); }
+
+/* 흐름 카드 */
+.fcd-flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)) 220px; gap: var(--erp-sp-3); }
+.fcd-step { display: flex; align-items: center; gap: var(--erp-sp-3); padding: 12px var(--erp-sp-4); }
+.fcd-step i { display: grid; place-items: center; flex: none; width: 30px; height: 30px; border-radius: var(--erp-r-lg); background: var(--erp-color-neutral-bg); color: var(--erp-color-text-2); font-style: normal; font-weight: var(--erp-fw-bold); }
+.fcd-step b { display: block; font-weight: var(--erp-fw-bold); }
+.fcd-step small { display: block; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
+.fcd-step span:last-child { margin-left: auto; color: var(--erp-color-text-3); font-size: var(--erp-fs-label); }
+.fcd-step[aria-current="page"] { border-color: var(--erp-color-primary); background: var(--erp-color-primary); color: var(--erp-color-on-primary); }
+.fcd-step[aria-current="page"] i { background: var(--erp-color-on-primary); color: var(--erp-color-primary); }
+.fcd-step[aria-current="page"] small, .fcd-step[aria-current="page"] span:last-child { color: var(--erp-color-primary-weak); }
+.fcd-step--apart { border-style: dashed; box-shadow: none; background: transparent; }
+
+/* 본문 = 차 타일 격자 + 접수 카드 더미 */
+.fcd-body { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr) 430px; gap: var(--erp-sp-4); min-height: 0; }
+.fcd-browse { display: flex; flex-direction: column; gap: var(--erp-sp-3); min-height: 0; }
+.fcd-search { display: flex; flex-wrap: wrap; align-items: center; gap: var(--erp-sp-2); padding: var(--erp-sp-3) var(--erp-sp-4); }
+.fcd-search .erp-search { flex: 1 1 320px; }
+.fcd-search .erp-chip { flex: none; }
+.fcd-search .erp-seg { margin-left: auto; }
+.fcd-tiles { flex: 1; min-height: 0; overflow: hidden; display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); align-content: start; gap: var(--erp-sp-3); }
+
+/* 차 타일 카드 */
+.fcd-tile { position: relative; display: flex; flex-direction: column; overflow: hidden; }
+.fcd-tile-band { position: relative; display: grid; place-items: center; height: 92px; background: var(--erp-color-sunken); color: var(--erp-color-line-strong); }
+.fcd-tile-band svg { width: 110px; height: 52px; fill: none; stroke: currentColor; stroke-width: 1.3; }
+.fcd-tile-band .erp-badge { position: absolute; top: 10px; left: 10px; }
+.fcd-tile-band em { position: absolute; bottom: 8px; left: 10px; padding: 1px 7px; border: 1px solid var(--erp-color-line-strong); border-radius: var(--erp-r-sm); background: var(--erp-color-surface); color: var(--erp-color-text); font-style: normal; font-weight: var(--erp-fw-semibold); font-size: var(--erp-fs-label); }
+.fcd-tile-band .fcd-tile-sup { position: absolute; bottom: 9px; right: 10px; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
+.fcd-tile-body { display: flex; flex-direction: column; gap: 6px; padding: 12px 14px 14px; }
+.fcd-tile-name { margin: 0; font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); }
+.fcd-tile-name small { margin-left: 6px; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-regular); }
+.fcd-tile-price { display: flex; align-items: baseline; justify-content: space-between; gap: var(--erp-sp-2); }
+.fcd-tile-price strong { font-size: var(--erp-fs-title); font-weight: var(--erp-fw-bold); }
+.fcd-tile-price strong small { margin-left: 2px; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-regular); }
+.fcd-tile-price span { color: var(--erp-color-text-2); font-size: var(--erp-fs-caption); }
+.fcd-tile-meta { color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
+.fcd-tile-foot { display: flex; align-items: center; justify-content: space-between; gap: var(--erp-sp-2); padding-top: var(--erp-sp-2); border-top: 1px solid var(--erp-color-line-row); }
+.fcd-tile-foot b { color: var(--erp-color-ok); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-semibold); }
+.fcd-tile:hover { border-color: var(--erp-color-line-strong); }
+.fcd-tile[aria-current="true"] { border: 2px solid var(--erp-color-primary); box-shadow: 0 0 0 4px var(--erp-color-focus-ring); }
+.fcd-tile[aria-current="true"]::after { content: "✓ 골랐음"; position: absolute; top: 10px; right: 10px; padding: 2px 8px; border-radius: var(--erp-r-pill); background: var(--erp-color-primary); color: var(--erp-color-on-primary); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-semibold); }
+
+/* 접수 카드 더미 */
+.fcd-stack { display: flex; flex-direction: column; gap: 10px; min-height: 0; overflow: hidden; }
+.fcd-box { padding: 14px var(--erp-sp-4); }
+.fcd-box-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.fcd-box-head i { display: grid; place-items: center; width: 22px; height: 22px; border-radius: var(--erp-r-md); background: var(--erp-color-primary); color: var(--erp-color-on-primary); font-style: normal; font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-bold); }
+.fcd-box-head[data-state="done"] i { background: var(--erp-color-ok); }
+.fcd-box-head b { font-weight: var(--erp-fw-bold); }
+.fcd-box-head a { margin-left: auto; color: var(--erp-color-primary); font-size: var(--erp-fs-label); font-weight: var(--erp-fw-semibold); }
+.fcd-car { display: flex; align-items: center; gap: var(--erp-sp-3); }
+.fcd-car-img { display: grid; place-items: center; flex: none; width: 76px; height: 48px; border-radius: var(--erp-r-md); background: var(--erp-color-sunken); color: var(--erp-color-line-strong); }
+.fcd-car-img svg { width: 60px; height: 28px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+.fcd-car b { display: block; font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); }
+.fcd-car small { color: var(--erp-color-text-2); font-size: var(--erp-fs-label); }
+.fcd-terms { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--erp-sp-2); }
+.fcd-term { display: flex; flex-direction: column; gap: 2px; padding: 10px; border: 1px solid var(--erp-color-line-strong); border-radius: var(--erp-r-lg); background: var(--erp-color-surface); }
+.fcd-term b { font-size: var(--erp-fs-label); font-weight: var(--erp-fw-semibold); color: var(--erp-color-text-2); }
+.fcd-term strong { font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); }
+.fcd-term em { color: var(--erp-color-ok); font-size: var(--erp-fs-caption); font-style: normal; font-weight: var(--erp-fw-semibold); }
+.fcd-term[aria-pressed="true"] { border: 2px solid var(--erp-color-primary); background: var(--erp-color-primary-weak); }
+.fcd-term[aria-pressed="true"] b, .fcd-term[aria-pressed="true"] strong { color: var(--erp-color-primary); }
+.fcd-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px var(--erp-sp-3); }
+.fcd-form .fcd-wide { grid-column: 1 / -1; }
+.fcd-form .erp-seg { width: 100%; }
+.fcd-form .erp-seg button { flex: 1; }
+.fcd-hint { color: var(--erp-color-primary); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-semibold); }
+.fcd-sum { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--erp-sp-2); margin: 0 0 10px; }
+.fcd-sum div { padding: var(--erp-sp-2) 10px; border-radius: var(--erp-r-md); background: var(--erp-color-sunken); }
+.fcd-sum dt { color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
+.fcd-sum dd { margin: 2px 0 0; font-weight: var(--erp-fw-bold); }
+.fcd-sum div:last-child { background: var(--erp-color-ok-bg); }
+.fcd-sum div:last-child dd { color: var(--erp-color-ok); }
+.fcd-checks { margin: 0 0 12px; padding: 0; list-style: none; }
+.fcd-checks li { display: flex; gap: var(--erp-sp-2); padding: 2px 0; color: var(--erp-color-text-2); font-size: var(--erp-fs-label); }
+.fcd-checks li::before { content: "✓"; width: 14px; color: var(--erp-color-ok); font-weight: var(--erp-fw-bold); }
+.fcd-save { display: flex; gap: var(--erp-sp-2); }
+.fcd-save .erp-btn--primary { flex: 1; justify-content: center; }
+.fcd-note { margin: var(--erp-sp-2) 0 0; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
+.fcd-note b { color: var(--erp-color-ok); font-weight: var(--erp-fw-semibold); }

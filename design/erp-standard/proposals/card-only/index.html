@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FreePass Admin 시안 D — 카드만 · 상품 · 접수</title>
+<!-- 시안 D — 카드만(대표 2026-09-23 「카드타입으로만 시안 하나 더」). 칸 · 판 · 표 없이 바탕 위에 카드만. 이름 · 차량번호는 가상 예시다. -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<link rel="stylesheet" href="../../erp.css">
+<link rel="stylesheet" href="card-only.css">
+</head>
+<body class="erp-app fcd-app" data-screen="card-only">
+
+<header class="erp-topbar" data-region="topbar">
+  <div class="erp-brand"><span class="erp-brand-mark">F</span>FreePass Admin</div>
+  <button class="erp-gsearch" type="button" aria-label="통합 검색"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>차량번호 · 고객 · 모델 — 어디서든 바로 찾기<kbd>/</kbd></button>
+  <div class="erp-topbar-right">
+    <span class="erp-badge erp-badge--warn">가상 데이터</span>
+    <div class="erp-user"><span class="erp-avatar">관</span><div>관리자<small>프리패스 본사</small></div></div>
+  </div>
+</header>
+
+<main class="fcd-main">
+  <nav class="fcd-flow" aria-label="업무 흐름">
+    <a class="fcd-card fcd-step" href="#" aria-current="page"><i>1</i><span><b>상품찾기</b><small>차 · 요금 고르고 바로 접수</small></span><span>지금 여기</span></a>
+    <a class="fcd-card fcd-step" href="#"><i>2</i><span><b>계약접수</b><small>계약서 · 인도</small></span><span>›</span></a>
+    <a class="fcd-card fcd-step" href="#"><i>3</i><span><b>실적</b><small>인도된 계약</small></span><span>›</span></a>
+    <a class="fcd-card fcd-step" href="#"><i>4</i><span><b>정산관리</b><small>청구 · 지급</small></span><span>›</span></a>
+    <a class="fcd-card fcd-step fcd-step--apart" href="#"><i>✎</i><span><b>전자계약</b><small>흐름과 별도</small></span></a>
+  </nav>
+
+  <div class="fcd-body">
+    <section class="fcd-browse" aria-label="차 고르기">
+      <form class="fcd-card fcd-search" data-region="filter" role="search">
+        <label class="erp-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input placeholder="차량번호 · 차명 · 공급사" aria-label="검색"></label>
+        <details class="erp-filter-more"><summary class="erp-btn">상세 필터 <b>2</b></summary></details>
+        <a class="erp-chip" href="#">36개월 ×</a><a class="erp-chip" href="#">80만원 이하 ×</a>
+        <div class="erp-seg" role="group" aria-label="출고상태"><button type="button" aria-pressed="true">전체 24</button><button type="button" aria-pressed="false">즉시출고</button><button type="button" aria-pressed="false">출고가능</button><button type="button" aria-pressed="false">출고협의</button></div>
+      </form>
+      <div class="fcd-tiles" data-region="grid" role="list">
+          <article class="fcd-card fcd-tile">
+            <div class="fcd-tile-band"><svg viewBox="0 0 120 60" aria-hidden="true"><path d="M8 42h104M14 42l6-14c2-5 6-8 12-9l22-3c8-1 16 1 22 6l12 10 14 3c4 1 6 4 6 7M30 42a8 8 0 1 0 16 0M78 42a8 8 0 1 0 16 0M40 20l4 14h24l-6-15"/></svg><span class="erp-badge erp-badge--ok">즉시출고</span><em>67하2045</em><span class="fcd-tile-sup">그린카렌탈</span></div>
+            <div class="fcd-tile-body">
+              <h3 class="fcd-tile-name">더 뉴 레이<small>기아 · 시그니처</small></h3>
+              <div class="fcd-tile-price"><strong>360,000<small>원/월</small></strong><span>36개월 · 무보증</span></div>
+              <div class="fcd-tile-meta">2024 · 8,900km · 밀키베이지</div>
+              <div class="fcd-tile-foot"><span class="erp-tags"><span class="erp-tag erp-tag--primary">무심사</span><span class="erp-tag erp-tag--primary">분납가능</span></span><b>남는 것 298,000</b></div>
+            </div>
+          </article>
+          <article class="fcd-card fcd-tile" aria-current="true">
+            <div class="fcd-tile-band"><svg viewBox="0 0 120 60" aria-hidden="true"><path d="M8 42h104M14 42l6-14c2-5 6-8 12-9l22-3c8-1 16 1 22 6l12 10 14 3c4 1 6 4 6 7M30 42a8 8 0 1 0 16 0M78 42a8 8 0 1 0 16 0M40 20l4 14h24l-6-15"/></svg><span class="erp-badge erp-badge--ok">즉시출고</span><em>123하4567</em><span class="fcd-tile-sup">한빛렌터카</span></div>
+            <div class="fcd-tile-body">
+              <h3 class="fcd-tile-name">쏘렌토 MQ4 PE<small>기아 · 시그니처</small></h3>
+              <div class="fcd-tile-price"><strong>760,000<small>원/월</small></strong><span>36개월 · 무보증</span></div>
+              <div class="fcd-tile-meta">2024 · 12,100km · 스노우화이트펄</div>
+              <div class="fcd-tile-foot"><span class="erp-tags"><span class="erp-tag erp-tag--primary">분납가능</span><span class="erp-tag erp-tag--primary">만21세</span></span><b>남는 것 631,500</b></div>
+            </div>
+          </article>
+          <article class="fcd-card fcd-tile">
+            <div class="fcd-tile-band"><svg viewBox="0 0 120 60" aria-hidden="true"><path d="M8 42h104M14 42l6-14c2-5 6-8 12-9l22-3c8-1 16 1 22 6l12 10 14 3c4 1 6 4 6 7M30 42a8 8 0 1 0 16 0M78 42a8 8 0 1 0 16 0M40 20l4 14h24l-6-15"/></svg><span class="erp-badge erp-badge--info">출고가능</span><em>41허2286</em><span class="fcd-tile-sup">대성모빌리티</span></div>
+            <div class="fcd-tile-body">
+              <h3 class="fcd-tile-name">디 올 뉴 싼타페<small>현대 · 프레스티지</small></h3>
+              <div class="fcd-tile-price"><strong>790,000<small>원/월</small></strong><span>36개월 · 보증 200만</span></div>
+              <div class="fcd-tile-meta">2023 · 21,500km · 크리미화이트</div>
+              <div class="fcd-tile-foot"><span class="erp-tags"><span class="erp-tag erp-tag--primary">신용조회</span></span><b>남는 것 655,000</b></div>
+            </div>
+          </article>
+          <article class="fcd-card fcd-tile">
+            <div class="fcd-tile-band"><svg viewBox="0 0 120 60" aria-hidden="true"><path d="M8 42h104M14 42l6-14c2-5 6-8 12-9l22-3c8-1 16 1 22 6l12 10 14 3c4 1 6 4 6 7M30 42a8 8 0 1 0 16 0M78 42a8 8 0 1 0 16 0M40 20l4 14h24l-6-15"/></svg><span class="erp-badge erp-badge--ok">즉시출고</span><em>33호2217</em><span class="fcd-tile-sup">그린카렌탈</span></div>
+            <div class="fcd-tile-body">
+              <h3 class="fcd-tile-name">더 뉴 투싼 NX4<small>현대 · 프리미엄</small></h3>
+              <div class="fcd-tile-price"><strong>650,000<small>원/월</small></strong><span>36개월 · 무보증</span></div>
+              <div class="fcd-tile-meta">2024 · 21,300km · 아마존그레이</div>
+              <div class="fcd-tile-foot"><span class="erp-tags"><span class="erp-tag erp-tag--primary">무심사</span><span class="erp-tag erp-tag--primary">분납가능</span></span><b>남는 것 540,000</b></div>
+            </div>
+          </article>
+          <article class="fcd-card fcd-tile">
+            <div class="fcd-tile-band"><svg viewBox="0 0 120 60" aria-hidden="true"><path d="M8 42h104M14 42l6-14c2-5 6-8 12-9l22-3c8-1 16 1 22 6l12 10 14 3c4 1 6 4 6 7M30 42a8 8 0 1 0 16 0M78 42a8 8 0 1 0 16 0M40 20l4 14h24l-6-15"/></svg><span class="erp-badge erp-badge--ok">즉시출고</span><em>24하6634</em><span class="fcd-tile-sup">한빛렌터카</span></div>
+            <div class="fcd-tile-body">
+              <h3 class="fcd-tile-name">더 뉴 K5 DL3<small>기아 · 노블레스</small></h3>
+              <div class="fcd-tile-price"><strong>570,000<small>원/월</small></strong><span>36개월 · 무보증</span></div>
+              <div class="fcd-tile-meta">2023 · 35,400km · 스틸그레이</div>
+              <div class="fcd-tile-foot"><span class="erp-tags"><span class="erp-tag erp-tag--primary">무심사</span><span class="erp-tag erp-tag--primary">만21세</span></span><b>남는 것 473,000</b></div>
+            </div>
+          </article>
+          <article class="fcd-card fcd-tile">
+            <div class="fcd-tile-band"><svg viewBox="0 0 120 60" aria-hidden="true"><path d="M8 42h104M14 42l6-14c2-5 6-8 12-9l22-3c8-1 16 1 22 6l12 10 14 3c4 1 6 4 6 7M30 42a8 8 0 1 0 16 0M78 42a8 8 0 1 0 16 0M40 20l4 14h24l-6-15"/></svg><span class="erp-badge erp-badge--warn">출고협의</span><em>19호4402</em><span class="fcd-tile-sup">동해오토리스</span></div>
+            <div class="fcd-tile-body">
+              <h3 class="fcd-tile-name">캐스퍼<small>현대 · 인스퍼레이션</small></h3>
+              <div class="fcd-tile-price"><strong>395,000<small>원/월</small></strong><span>36개월 · 보증 100만</span></div>
+              <div class="fcd-tile-meta">2024 · 6,200km · 톰보이카키</div>
+              <div class="fcd-tile-foot"><span class="erp-tags"><span class="erp-tag erp-tag--primary">신용조회</span><span class="erp-tag erp-tag--primary">무사고</span></span><b>남는 것 327,000</b></div>
+            </div>
+          </article>
+          <article class="fcd-card fcd-tile">
+            <div class="fcd-tile-band"><svg viewBox="0 0 120 60" aria-hidden="true"><path d="M8 42h104M14 42l6-14c2-5 6-8 12-9l22-3c8-1 16 1 22 6l12 10 14 3c4 1 6 4 6 7M30 42a8 8 0 1 0 16 0M78 42a8 8 0 1 0 16 0M40 20l4 14h24l-6-15"/></svg><span class="erp-badge erp-badge--ok">즉시출고</span><em>14허3390</em><span class="fcd-tile-sup">한빛렌터카</span></div>
+            <div class="fcd-tile-body">
+              <h3 class="fcd-tile-name">더 뉴 아반떼 CN7<small>현대 · 모던</small></h3>
+              <div class="fcd-tile-price"><strong>450,000<small>원/월</small></strong><span>36개월 · 무보증</span></div>
+              <div class="fcd-tile-meta">2022 · 52,300km · 폴라화이트</div>
+              <div class="fcd-tile-foot"><span class="erp-tags"><span class="erp-tag erp-tag--primary">무심사</span></span><b>남는 것 372,000</b></div>
+            </div>
+          </article>
+          <article class="fcd-card fcd-tile">
+            <div class="fcd-tile-band"><svg viewBox="0 0 120 60" aria-hidden="true"><path d="M8 42h104M14 42l6-14c2-5 6-8 12-9l22-3c8-1 16 1 22 6l12 10 14 3c4 1 6 4 6 7M30 42a8 8 0 1 0 16 0M78 42a8 8 0 1 0 16 0M40 20l4 14h24l-6-15"/></svg><span class="erp-badge erp-badge--ok">즉시출고</span><em>38호9063</em><span class="fcd-tile-sup">한빛렌터카</span></div>
+            <div class="fcd-tile-body">
+              <h3 class="fcd-tile-name">스포티지 NQ5<small>기아 · 시그니처</small></h3>
+              <div class="fcd-tile-price"><strong>620,000<small>원/월</small></strong><span>36개월 · 무보증</span></div>
+              <div class="fcd-tile-meta">2024 · 15,600km · 비스타블루</div>
+              <div class="fcd-tile-foot"><span class="erp-tags"><span class="erp-tag erp-tag--primary">분납가능</span></span><b>남는 것 514,000</b></div>
+            </div>
+          </article>
+      </div>
+    </section>
+
+    <aside class="fcd-stack" aria-label="접수" data-region="form">
+      <div class="fcd-card fcd-box">
+        <div class="fcd-box-head" data-state="done"><i>✓</i><b>고른 차</b><a href="#">다른 차</a></div>
+        <div class="fcd-car"><div class="fcd-car-img"><svg viewBox="0 0 120 60" aria-hidden="true"><path d="M8 42h104M14 42l6-14c2-5 6-8 12-9l22-3c8-1 16 1 22 6l12 10 14 3c4 1 6 4 6 7M30 42a8 8 0 1 0 16 0M78 42a8 8 0 1 0 16 0M40 20l4 14h24l-6-15"/></svg></div><div><b>쏘렌토 MQ4 PE</b><small>123하4567 · 한빛렌터카 · 중고렌트 → 원장 «장기렌트»</small></div></div>
+      </div>
+      <div class="fcd-card fcd-box">
+        <div class="fcd-box-head" data-state="done"><i>✓</i><b>기간 · 요금</b><span class="fcd-hint">남는 것 = 청구 − 지급</span></div>
+        <div class="fcd-terms">
+          <div class="fcd-term" aria-pressed="false"><b>24개월</b><strong>820,000</strong><em>남는 것 412,000</em></div>
+          <div class="fcd-term" aria-pressed="true"><b>36개월 · 최고</b><strong>760,000</strong><em>남는 것 631,500</em></div>
+          <div class="fcd-term" aria-pressed="false"><b>48개월</b><strong>720,000</strong><em>남는 것 588,000</em></div>
+        </div>
+      </div>
+      <div class="fcd-card fcd-box">
+        <div class="fcd-box-head"><i>3</i><b>고객 · 영업</b><span class="fcd-hint">이전 고객 → 채널 · 담당 자동</span></div>
+        <div class="fcd-form">
+          <label class="erp-field fcd-wide"><span class="erp-label">고객 <em class="erp-req">*</em></span><input class="erp-input erp-input--focus" value="김민수 — 이전 접수 1건"></label>
+          <label class="erp-field"><span class="erp-label">영업채널 <em class="erp-req">*</em></span><span class="erp-input">프리패스 직영<svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></label>
+          <label class="erp-field"><span class="erp-label">담당 <em class="erp-req">*</em></span><span class="erp-input">이영업<svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></label>
+          <label class="erp-field"><span class="erp-label">결제</span><div class="erp-seg" role="group" aria-label="분납여부"><button type="button" aria-pressed="true">일시납</button><button type="button" aria-pressed="false">분납</button></div></label>
+          <label class="erp-field"><span class="erp-label">계약방식</span><div class="erp-seg" role="group" aria-label="계약방식"><button type="button" aria-pressed="true">개인</button><button type="button" aria-pressed="false">법인</button></div></label>
+        </div>
+      </div>
+      <div class="fcd-card fcd-box">
+        <div class="fcd-box-head"><i>4</i><b>확인 · 저장</b></div>
+        <dl class="fcd-sum"><div><dt>청구 (공급사)</dt><dd>1,684,000</dd></div><div><dt>지급 (영업채널)</dt><dd>1,052,500</dd></div><div><dt>남는 것</dt><dd>631,500</dd></div></dl>
+        <ul class="fcd-checks"><li>123하4567 — 진행 중인 접수 없음</li><li>36개월 760,000원 — ERP5 요금과 같음 · 10:02 기준</li></ul>
+        <div class="fcd-save"><button class="erp-btn" type="button">+ 더 넣기</button><button class="erp-btn erp-btn--primary" type="submit">접수 저장</button></div>
+        <p class="fcd-note"><b>필수 3/3</b> · 저장하면 계약접수 › 계약서 받기로 갑니다.</p>
+      </div>
+    </aside>
+  </div>
+</main>
+</body>
+</html>
