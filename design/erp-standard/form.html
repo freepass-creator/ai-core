@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ERP 표준 — 등록/수정 폼 화면</title>
+<!-- 규격: README.md · 값: tokens.json · 스타일: erp.css. 이 파일은 새 등록/수정 화면의 출발점이다. -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<link rel="stylesheet" href="erp.css">
+</head>
+<body class="erp-app" data-screen="form">
+
+<!-- ① 상단바 -->
+<header class="erp-topbar" data-region="topbar">
+  <div class="erp-brand"><span class="erp-brand-mark">A</span>AI Core ERP</div>
+  <button class="erp-company" type="button" aria-label="회사 전환">
+    <svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 9h1M14 9h1M9 13h1M14 13h1M9 17h1M14 17h1"/></svg>(주)프리패스 본사
+    <svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </button>
+  <button class="erp-gsearch" type="button" aria-label="통합 검색">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>메뉴, 거래처, 전표번호 검색<kbd>Ctrl K</kbd>
+  </button>
+  <div class="erp-topbar-right">
+    <button class="erp-iconbtn" type="button" aria-label="도움말"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01"/></svg></button>
+    <button class="erp-iconbtn" type="button" aria-label="일정"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></button>
+    <button class="erp-iconbtn" type="button" aria-label="알림 3건" data-alert><svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 0 0 3.4 0"/></svg></button>
+    <div class="erp-user"><span class="erp-avatar">김대</span><div>김대표<small>관리자 · 경영지원</small></div></div>
+  </div>
+</header>
+
+<!-- ② 좌측 메뉴: 모듈 › 메뉴 2단 -->
+<nav class="erp-sidenav" data-region="sidenav" aria-label="주 메뉴">
+  <a class="erp-nav-item" href="#"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>대시보드</a>
+  <a class="erp-nav-item" href="#"><svg viewBox="0 0 24 24"><path d="M9 11 12 14 22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>결재함<span class="erp-nav-count">12</span></a>
+  <div class="erp-nav-group">업무</div>
+  <a class="erp-nav-item" href="#" aria-expanded="true"><svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4zM3 6h18M16 10a4 4 0 0 1-8 0"/></svg>영업관리</a>
+  <div class="erp-nav-sub">
+    <a href="#">견적 관리</a>
+    <a href="#" aria-current="page">수주 관리</a>
+    <a href="#">출하 지시</a>
+    <a href="#">매출 마감</a>
+  </div>
+  <a class="erp-nav-item" href="#"><svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg>구매관리</a>
+  <a class="erp-nav-item" href="#"><svg viewBox="0 0 24 24"><path d="M21 16V8l-9-5-9 5v8l9 5zM3.3 7 12 12l8.7-5M12 22V12"/></svg>재고/물류</a>
+  <a class="erp-nav-item" href="#"><svg viewBox="0 0 24 24"><path d="M2 20h20M5 20V8l5 4V8l5 4V4h3l1 16"/></svg>생산관리</a>
+  <a class="erp-nav-item" href="#"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>회계/재무</a>
+  <a class="erp-nav-item" href="#"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg>인사/급여</a>
+  <div class="erp-nav-group">기준정보</div>
+  <a class="erp-nav-item" href="#"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14"/></svg>거래처</a>
+  <a class="erp-nav-item" href="#"><svg viewBox="0 0 24 24"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L2 12V2h10l8.6 8.6a2 2 0 0 1 0 2.8zM7 7h.01"/></svg>품목</a>
+  <div class="erp-nav-group">분석</div>
+  <a class="erp-nav-item" href="#"><svg viewBox="0 0 24 24"><path d="M3 3v18h18M7 16l4-6 4 4 5-7"/></svg>리포트</a>
+  <a class="erp-nav-item" href="#"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>시스템 설정</a>
+</nav>
+
+<main class="erp-main">
+  <!-- ③ 작업 탭 (MDI) -->
+  <div class="erp-tabs" role="tablist" data-region="tabs">
+    <div class="erp-tab" role="tab" aria-selected="false">대시보드 <span class="erp-tab-close">×</span></div>
+    <div class="erp-tab" role="tab" aria-selected="false">견적 관리 <span class="erp-tab-close">×</span></div>
+    <div class="erp-tab" role="tab" aria-selected="false">수주 관리 <span class="erp-tab-close">×</span></div>
+    <div class="erp-tab" role="tab" aria-selected="true">수주 등록 <span class="erp-tab-close">×</span></div>
+  </div>
+
+  <div class="erp-content">
+    <!-- ④ 페이지 헤더: 문서 상태 + 액션 -->
+    <section data-region="page-header">
+      <div class="erp-crumb">홈 › 영업관리 › 수주 관리 › <span aria-current="page">수주 등록</span></div>
+      <div class="erp-page-header">
+        <div>
+          <h1 class="erp-page-title">수주 등록 <span class="erp-badge erp-badge--neutral">작성중</span></h1>
+          <p class="erp-page-desc erp-docstate">전표번호 SO-2609-0143 (저장 시 확정) · 작성자 이영업 · 최종 수정 2026-09-23 14:40</p>
+        </div>
+        <div class="erp-actions">
+          <button class="erp-btn erp-btn--ghost" type="button">복사해서 새로</button>
+          <button class="erp-btn" type="button">견적 불러오기</button>
+          <button class="erp-btn" type="button" aria-disabled="true" title="저장 후 상신할 수 있습니다">결재 상신</button>
+        </div>
+      </div>
+    </section>
+
+    <form class="erp-form" data-region="form">
+      <!-- 섹션 1: 기본 정보 (4열 그리드, 필수 *) -->
+      <section class="erp-section">
+        <h2 class="erp-section-title">기본 정보</h2>
+        <div class="erp-form-grid">
+          <label class="erp-field"><span class="erp-label">수주일자 <em class="erp-req">*</em></span><span class="erp-input">2026-09-23<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span></label>
+          <label class="erp-field"><span class="erp-label">거래처 <em class="erp-req">*</em></span><span class="erp-input">(주)한빛정밀 · C-00128<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></span></label>
+          <label class="erp-field"><span class="erp-label">담당자 <em class="erp-req">*</em></span><span class="erp-input">이영업<svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></label>
+          <label class="erp-field"><span class="erp-label">납기일 <em class="erp-req">*</em></span><span class="erp-input erp-input--focus">2026-10-05|<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span></label>
+          <label class="erp-field"><span class="erp-label">거래처 사업자번호</span><input class="erp-input" value="123-45-678" aria-invalid="true"><span class="erp-field-error">사업자번호 10자리를 입력하세요.</span></label>
+          <label class="erp-field"><span class="erp-label">결제조건</span><span class="erp-input">월말 마감 익월 30일<svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></label>
+          <label class="erp-field"><span class="erp-label">통화</span><span class="erp-input">KRW 원화<svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></label>
+          <label class="erp-field"><span class="erp-label">여신 잔여 한도 (자동)</span><input class="erp-input erp-input--num" value="152,400,000" readonly></label>
+          <label class="erp-field erp-span-2"><span class="erp-label">납품 주소</span><input class="erp-input" value="경기도 화성시 동탄산단로 12, 2공장 자재창고"></label>
+          <label class="erp-field erp-span-2"><span class="erp-label">비고</span><input class="erp-input" placeholder="내부 메모 (고객 출력물에는 표시되지 않음)"></label>
+        </div>
+      </section>
+
+      <!-- 섹션 2: 품목 라인 (편집 그리드 + 합계행) -->
+      <section class="erp-section">
+        <h2 class="erp-section-title">품목 <span class="erp-actions"><button class="erp-btn erp-btn--sm" type="button">+ 행 추가</button><button class="erp-btn erp-btn--sm" type="button">엑셀 붙여넣기</button><button class="erp-btn erp-btn--sm erp-btn--danger-text" type="button">선택 삭제</button></span></h2>
+        <table class="erp-grid erp-grid--dense">
+          <thead><tr><th class="erp-col-check"><input class="erp-check" type="checkbox" aria-label="전체 선택"></th><th>No</th><th>품목코드</th><th>품목명 / 규격</th><th>단위</th><th class="erp-num">수량</th><th class="erp-num">단가</th><th class="erp-num">공급가액</th><th class="erp-num">부가세</th><th class="erp-num">합계</th><th>창고</th></tr></thead>
+          <tbody>
+            <tr><td><input class="erp-check" type="checkbox" aria-label="선택"></td><td>1</td><td><a href="#">AB-200</a></td><td>알루미늄 브라켓 · 200×80×3t</td><td>EA</td><td class="erp-num">800</td><td class="erp-num">40,000</td><td class="erp-num">32,000,000</td><td class="erp-num">3,200,000</td><td class="erp-num erp-strong">35,200,000</td><td>본사 1창고</td></tr>
+            <tr><td><input class="erp-check" type="checkbox" aria-label="선택"></td><td>2</td><td><a href="#">AB-120</a></td><td>알루미늄 브라켓 · 120×60×2t</td><td>EA</td><td class="erp-num">300</td><td class="erp-num">30,000</td><td class="erp-num">9,000,000</td><td class="erp-num">900,000</td><td class="erp-num erp-strong">9,900,000</td><td>본사 1창고</td></tr>
+            <tr><td><input class="erp-check" type="checkbox" aria-label="선택"></td><td>3</td><td><a href="#">BT-M8</a></td><td>스테인리스 볼트 · M8×25</td><td>EA</td><td class="erp-num">100</td><td class="erp-num">450</td><td class="erp-num">45,000</td><td class="erp-num">4,500</td><td class="erp-num erp-strong">49,500</td><td>2공장 자재</td></tr>
+            <tr aria-selected="true"><td><input class="erp-check" type="checkbox" checked aria-label="선택"></td><td>4</td><td><a href="#">PK-450</a></td><td>포장 박스 · 450×300×250</td><td>EA</td><td class="erp-num">100</td><td class="erp-num">69,550</td><td class="erp-num">6,955,000</td><td class="erp-num">695,500</td><td class="erp-num erp-strong">7,650,500</td><td>본사 1창고</td></tr>
+          </tbody>
+          <tfoot><tr><td></td><td colspan="4">합계 (4개 품목)</td><td class="erp-num">1,300</td><td></td><td class="erp-num">48,000,000</td><td class="erp-num">4,800,000</td><td class="erp-num">52,800,000</td><td></td></tr></tfoot>
+        </table>
+      </section>
+    </form>
+  </div>
+
+  <!-- 하단 고정 저장 줄: Primary(저장)는 맨 오른쪽 하나 -->
+  <div class="erp-form-footer" data-region="form-footer">
+    <span class="erp-form-footer-note">* 필수 항목 · 저장하지 않고 닫으면 변경 내용이 사라집니다.</span>
+    <button class="erp-btn erp-btn--ghost" type="button">취소 (Esc)</button>
+    <button class="erp-btn" type="button">임시저장</button>
+    <button class="erp-btn erp-btn--primary" type="submit">저장 (F8)</button>
+  </div>
+
+  <!-- ⑧ 상태바 -->
+  <footer class="erp-statusbar" data-region="statusbar">
+    <span class="erp-statusbar-ok">● 서버 연결 정상</span><span>회계기간 2026년 3분기</span><span>자동 임시저장 14:40:12</span>
+    <span class="erp-statusbar-keys">F8 저장 · Ctrl+Enter 행 추가 · Esc 닫기</span>
+  </footer>
+</main>
+</body>
+</html>
