@@ -92,6 +92,7 @@ export function buildProjectRegistryCandidate({capsule,profile,existingProject=n
   let change='CREATE';
   if(existingProject){
     need(existingProject.project_id===candidate.project_id,'EXISTING_PROJECT_ID_MISMATCH');
+    need(existingProject.repository===candidate.repository,'EXISTING_PROJECT_REPOSITORY_MISMATCH');
     change='UPDATE_REVIEW';
     review.existing_repository_lifecycle_status=existingProject.repository_lifecycle_status??null;
     review.existing_execution_readiness_status=existingProject.execution_readiness_status??null;
