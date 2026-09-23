@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FreePass Admin 시안 C — 상품 · 접수 한 화면</title>
+<title>FreePass Admin 시안 C — 상품 · 접수 한 화면 (저장 직후)</title>
 <!-- 시안 C — FreePass Admin 맞춤형. 대표 2026-09-23 「상품을 찾아가지고 접수하고 이거를 한 면에서 … 그 동선을 잘 짜줘야지」.
      ① 차 고르기 → ② 요금 고르기 → ③ 접수 넣기 를 왼쪽에서 오른쪽 한 길로. 저장하면 계약접수(queue.html) «계약서 받기» 로 간다. 이름 · 차량번호는 가상 예시다. -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
@@ -49,7 +49,7 @@
           <div class="fpa-pick-meta"><span>2024 · 8,900km</span><span>밀키베이지</span><span>그린카렌탈</span><span class="erp-tags"><span class="erp-tag erp-tag--primary">무심사</span><span class="erp-tag erp-tag--primary">분납가능</span></span></div>
         </article>
         <article class="fpa-pick" data-tone="ok" aria-current="true">
-          <div><div class="fpa-pick-name"><a class="erp-rowcard-link" href="#">쏘렌토 MQ4 PE</a><span class="erp-badge erp-badge--ok">즉시출고</span></div>
+          <div><div class="fpa-pick-name"><a class="erp-rowcard-link" href="#">쏘렌토 MQ4 PE</a><span class="erp-badge erp-badge--ok">즉시출고</span><span class="erp-tag fpa-just-tag">방금 접수 · 김민수</span></div>
             <div class="fpa-pick-car"><b>123하4567</b>기아 · 시그니처</div></div>
           <div class="fpa-pick-price"><strong>760,000<small>원/월</small></strong><span>36개월 · 무보증</span></div>
           <div class="fpa-pick-meta"><span>2024 · 12,100km</span><span>스노우화이트펄</span><span>한빛렌터카</span><span class="erp-tags"><span class="erp-tag erp-tag--primary">분납가능</span><span class="erp-tag erp-tag--primary">만21세</span></span></div>
@@ -111,41 +111,30 @@
 
   <!-- ③ 접수 넣기 -->
   <section class="fpa-col" aria-label="접수 넣기" data-region="form">
-    <div class="fpa-col-head"><span class="fpa-col-no">3</span><span><b>접수 넣기</b><small>고객 · 영업채널만 넣으면 끝</small></span></div>
+    <div class="fpa-col-head" data-state="done"><span class="fpa-col-no">✓</span><span><b>접수 넣기</b><small>저장됨 — 다음 걸음은 계약접수에서</small></span></div>
     <div class="fpa-col-body">
-      <div class="fpa-picked">
-        <div class="fpa-picked-top"><b>쏘렌토 MQ4 PE · 36개월</b><span>차 · 요금에서 자동</span></div>
-        <p>123하4567 · 한빛렌터카 · 중고렌트 → 원장 «장기렌트»</p>
-        <dl>
-          <div><dt>월 대여료</dt><dd>760,000원</dd></div>
-          <div><dt>보증금</dt><dd>없음</dd></div>
-          <div><dt>청구 (공급사)</dt><dd>1,684,000원</dd></div>
-          <div><dt>지급 (영업채널)</dt><dd>1,052,500원</dd></div>
+      <div class="fpa-saved">
+        <div class="fpa-saved-top"><i>✓</i><span><b>접수 저장됨 · FP-2609-0143</b><small>09-23 14:32 · 이영업 · ERP5 원장에 한 줄</small></span></div>
+        <dl class="erp-props">
+          <div><dt>고객</dt><dd>김민수</dd></div>
+          <div><dt>차</dt><dd>쏘렌토 MQ4 PE · 123하4567</dd></div>
+          <div><dt>요금</dt><dd>36개월 · 760,000원</dd></div>
+          <div><dt>남는 것 (예정)</dt><dd>631,500원</dd></div>
         </dl>
-        <small>ERP5 수수료표 · 기준 월 대여료 · 남는 것 631,500원. 다르게 하려면 «더 넣기»에서 고침(사유).</small>
       </div>
-      <div class="fpa-form">
-        <label class="erp-field fpa-wide fpa-suggest-wrap"><span class="erp-label">고객 <em class="erp-req">*</em></span><input class="erp-input erp-input--focus" value="김민"><ul class="fpa-suggest" role="listbox" aria-label="고객 찾기">
-          <li role="option" aria-selected="true"><span><b>김민수</b><small>이전 접수 1건 · 2025-11 캐스퍼 · 프리패스 직영 · 이영업</small></span><kbd>Enter</kbd></li>
-          <li role="option"><span><b>김민지</b><small>이전 접수 1건 · 2026-03 더 뉴 레이 · 서울중앙지점 · 박과장</small></span></li>
-          <li role="option"><span><b>«김민» 새 고객으로 넣기</b><small>영업채널 · 담당은 직접 고름</small></span></li>
-        </ul></label>
-        <label class="erp-field"><span class="erp-label">영업채널 <em class="erp-req">*</em> <span class="fpa-filled">이전 접수에서</span></span><span class="erp-input">프리패스 직영<svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></label>
-        <label class="erp-field"><span class="erp-label">담당 <em class="erp-req">*</em> <span class="fpa-filled">이전 접수에서</span></span><span class="erp-input">이영업<svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></label>
-        <label class="erp-field"><span class="erp-label">접수일</span><input class="erp-input" value="2026-09-23"></label>
-        <label class="erp-field"><span class="erp-label">결제</span><div class="erp-seg" role="group" aria-label="분납여부"><button type="button" aria-pressed="true">일시납</button><button type="button" aria-pressed="false">분납</button></div></label>
-        <label class="erp-field fpa-wide"><span class="erp-label">계약방식</span><div class="erp-seg" role="group" aria-label="계약방식"><button type="button" aria-pressed="true">개인</button><button type="button" aria-pressed="false">개인사업자</button><button type="button" aria-pressed="false">법인</button></div></label>
-        <div class="fpa-more"><b>+ 더 넣기</b> — 프로모션 · 계약서 받음 · 인도일 · 메모 (지금 몰라도 됩니다)</div>
+      <div class="fpa-next">
+        <p>이 건의 다음 걸음 — 계약접수에서 이어집니다</p>
+        <ol>
+          <li><span>계약서 받기<small> · 고객 서명 · 계약서 회수</small></span><a class="erp-btn erp-btn--sm" href="queue.html">계약접수에서 열기</a></li>
+          <li><span>인도하기<small> · 차량번호 확인 · 인도일</small></span></li>
+          <li><span>청구하기<small> · 인도 달 공급사 청구서에</small></span></li>
+          <li><span>수금 · 지급 확인<small> · 정산관리</small></span></li>
+        </ol>
       </div>
-      <ul class="fpa-checks" aria-label="저장 전 확인">
-        <li><span><b>123하4567</b> — 진행 중인 접수 없음 (중복 아님)</span></li>
-        <li><span><b>36개월 760,000원</b> — ERP5 요금과 같음 · 09-23 10:02 기준</span></li>
-        <li data-tone="warn"><span><b>분납가능</b> 차 — 분납으로 바꾸면 청구가 회차마다 나뉩니다</span></li>
-      </ul>
     </div>
     <div class="fpa-save">
-      <div><button class="erp-btn" type="button">다른 차</button><button class="erp-btn erp-btn--primary" type="submit">접수 저장 <kbd>Ctrl+Enter</kbd></button></div>
-      <p><span class="fpa-req">필수 3/3 채움</span> · 저장하면 <b>계약접수 › 계약서 받기</b>에 올라갑니다.</p>
+      <div><button class="erp-btn" type="button">같은 고객 · 다른 차</button><button class="erp-btn erp-btn--primary" type="button">다음 접수</button></div>
+      <p>차 목록은 그대로 둡니다 — 걸어 둔 조건 그대로 다음 차를 고르면 됩니다.</p>
     </div>
   </section>
 </main>

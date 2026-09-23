@@ -144,3 +144,72 @@
 .fpa-save p b { color: var(--erp-color-text-2); font-weight: var(--erp-fw-semibold); }
 .fpa-col .erp-chip { flex: none; white-space: nowrap; }
 .fpa-col .erp-search { flex: 1 1 200px; }
+
+/* ── 고도화 (대표 2026-09-23 「좋네 조금 더 고도화해줄래」) ── */
+/* ② 요금마다 «남는 것» — 기간을 돈으로 고른다 */
+.fpa-offer { grid-template-columns: 64px minmax(0, 1fr) auto; }
+.fpa-offer-sub { display: flex; flex-direction: column; gap: 2px; }
+.fpa-offer-sub em { color: var(--erp-color-ok); font-size: var(--erp-fs-caption); font-style: normal; font-weight: var(--erp-fw-semibold); }
+.fpa-offer .erp-tag { margin-left: 6px; }
+/* ③ 고객 찾기 — 이전 고객이면 채널 · 담당까지 채운다 */
+.fpa-suggest-wrap { position: relative; }
+.fpa-suggest { position: absolute; z-index: 5; top: calc(100% + 4px); left: 0; right: 0; margin: 0; padding: var(--erp-sp-1); list-style: none; border: 1px solid var(--erp-color-line-strong); border-radius: var(--erp-r-lg); background: var(--erp-color-surface); box-shadow: 0 12px 28px -14px var(--erp-color-text-3); }
+.fpa-suggest li { display: flex; align-items: center; gap: 10px; padding: var(--erp-sp-2) 10px; border-radius: var(--erp-r-md); }
+.fpa-suggest li[aria-selected="true"] { background: var(--erp-color-primary-weak); }
+.fpa-suggest b { font-weight: var(--erp-fw-semibold); }
+.fpa-suggest small { display: block; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
+.fpa-suggest kbd { margin-left: auto; padding: 0 5px; border: 1px solid var(--erp-color-line-strong); border-radius: var(--erp-r-sm); color: var(--erp-color-text-3); font-family: inherit; font-size: var(--erp-fs-caption); }
+.fpa-filled { color: var(--erp-color-primary); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-semibold); }
+/* ③ 저장 전 확인 */
+.fpa-checks { margin: var(--erp-sp-4) 0 0; padding: 10px var(--erp-sp-3); list-style: none; border-radius: var(--erp-r-lg); background: var(--erp-color-sunken); }
+.fpa-checks li { display: flex; gap: var(--erp-sp-2); padding: 3px 0; color: var(--erp-color-text-2); font-size: var(--erp-fs-label); }
+.fpa-checks li::before { content: "✓"; flex: none; width: 16px; color: var(--erp-color-ok); font-weight: var(--erp-fw-bold); }
+.fpa-checks li[data-tone="warn"]::before { content: "!"; color: var(--erp-color-warn); text-align: center; }
+.fpa-checks b { color: var(--erp-color-text); font-weight: var(--erp-fw-semibold); }
+.fpa-req { color: var(--erp-color-ok); font-weight: var(--erp-fw-semibold); }
+/* 저장 직후 — 같은 자리에 다음 걸음 */
+.fpa-saved { padding: var(--erp-sp-4); border: 1px solid var(--erp-color-ok); border-radius: var(--erp-r-lg); background: var(--erp-color-ok-bg); }
+.fpa-saved-top { display: flex; align-items: center; gap: 10px; }
+.fpa-saved-top i { display: grid; place-items: center; width: 28px; height: 28px; border-radius: var(--erp-r-pill); background: var(--erp-color-ok); color: var(--erp-color-on-primary); font-style: normal; font-weight: var(--erp-fw-bold); }
+.fpa-saved-top b { font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); }
+.fpa-saved-top small { display: block; color: var(--erp-color-text-2); font-size: var(--erp-fs-caption); }
+.fpa-saved .erp-props { margin-top: 14px; }
+.fpa-next { margin-top: var(--erp-sp-4); }
+.fpa-next p { margin: 0 0 var(--erp-sp-2); color: var(--erp-color-text-2); font-size: var(--erp-fs-label); font-weight: var(--erp-fw-semibold); }
+.fpa-next ol { margin: 0; padding: 0; list-style: none; counter-reset: n; }
+.fpa-next li { display: flex; align-items: center; gap: 10px; padding: var(--erp-sp-2) 0; border-bottom: 1px solid var(--erp-color-line-row); counter-increment: n; }
+.fpa-next li::before { content: counter(n); display: grid; place-items: center; flex: none; width: 20px; height: 20px; border-radius: var(--erp-r-pill); background: var(--erp-color-neutral-bg); color: var(--erp-color-text-2); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-bold); }
+.fpa-next li:first-child::before { background: var(--erp-color-primary); color: var(--erp-color-on-primary); }
+.fpa-next li span { flex: 1; }
+.fpa-next li small { color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
+.fpa-just { border-color: var(--erp-color-ok); }
+.fpa-just-tag { background: var(--erp-color-ok-bg); color: var(--erp-color-ok); }
+
+/* ── 폰 — ① → ② → ③ 을 한 장씩 ── */
+.fpa-phones-page { margin: 0; padding: 28px 40px 36px; background: var(--erp-color-bg); color: var(--erp-color-text); font-family: var(--erp-font-family); font-size: var(--erp-fs-body); }
+.fpa-phones-page a { color: inherit; text-decoration: none; }
+.fpa-phones-title { margin: 0 0 4px; font-size: var(--erp-fs-title); font-weight: var(--erp-fw-bold); }
+.fpa-phones-desc { margin: 0 0 22px; color: var(--erp-color-text-2); }
+.fpa-phones { display: flex; justify-content: center; align-items: flex-start; gap: 18px; }
+.fpa-phone-cap { margin: 0 0 10px; text-align: center; color: var(--erp-color-text-2); font-size: var(--erp-fs-label); font-weight: var(--erp-fw-semibold); }
+.fpa-phone-cap b { display: inline-grid; place-items: center; width: 20px; height: 20px; margin-right: 6px; border-radius: var(--erp-r-pill); background: var(--erp-color-primary); color: var(--erp-color-on-primary); font-size: var(--erp-fs-caption); }
+.fpa-phone { display: flex; flex-direction: column; width: 360px; height: 740px; overflow: hidden; border: 9px solid var(--erp-color-nav); border-radius: calc(var(--erp-r-lg) * 5); background: var(--erp-color-bg); }
+.fpa-phone-top { padding: 12px var(--erp-sp-4) 10px; background: var(--erp-color-nav); color: var(--erp-color-nav-text-strong); }
+.fpa-phone-top b { font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); }
+.fpa-phone-top small { margin-left: 6px; color: var(--erp-color-nav-text); font-size: var(--erp-fs-caption); }
+.fpa-dots { display: flex; gap: 6px; margin-top: var(--erp-sp-2); }
+.fpa-dots span { flex: 1; padding: 3px 0; border-radius: var(--erp-r-sm); background: var(--erp-color-nav-raised); color: var(--erp-color-nav-muted); font-size: var(--erp-fs-caption); text-align: center; }
+.fpa-dots span[data-state="done"] { color: var(--erp-color-nav-text-strong); }
+.fpa-dots span[aria-current="step"] { background: var(--erp-color-primary); color: var(--erp-color-on-primary); font-weight: var(--erp-fw-semibold); }
+.fpa-phone-body { flex: 1; min-height: 0; overflow: hidden; padding: var(--erp-sp-3); }
+.fpa-phone-body .erp-search { flex: none; width: 100%; margin-bottom: var(--erp-sp-2); background: var(--erp-color-surface); }
+.fpa-phone-body .fpa-pick { padding: 10px var(--erp-sp-3) 10px var(--erp-sp-4); }
+.fpa-phone-body .fpa-photo { height: 110px; }
+.fpa-phone-body .fpa-form { grid-template-columns: 1fr 1fr; }
+.fpa-phone-chips { display: flex; gap: 6px; margin-bottom: 10px; overflow: hidden; }
+.fpa-phone-chips .erp-chip { flex: none; }
+.fpa-phone-bar { display: flex; gap: var(--erp-sp-2); padding: 10px var(--erp-sp-3) 14px; border-top: 1px solid var(--erp-color-line); background: var(--erp-color-surface); }
+.fpa-phone-bar .erp-btn--primary { flex: 1; justify-content: center; }
+.fpa-phone-back { color: var(--erp-color-nav-text); font-size: var(--erp-fs-caption); }
+.fpa-save kbd { margin-left: 6px; padding: 0 5px; border: 1px solid var(--erp-color-on-primary); border-radius: var(--erp-r-sm); font-family: inherit; font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-regular); opacity: .8; }
+.fpa-phones-page.erp-app { display: block; height: auto; min-width: 0; }

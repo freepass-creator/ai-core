@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FreePass Admin 시안 C — 폰 · 상품 → 접수</title>
+<!-- 시안 C 폰판 — PC 한 화면의 세 칸(① 차 → ② 요금 → ③ 접수)을 폰에서는 한 장씩 넘긴다. 같은 카드 · 같은 양식. 이름 · 차량번호는 가상 예시다. -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<link rel="stylesheet" href="../../erp.css">
+<link rel="stylesheet" href="admin-fit.css">
+</head>
+<body class="erp-app fpa-phones-page">
+<h1 class="fpa-phones-title">폰 — 같은 길을 한 장씩</h1>
+<p class="fpa-phones-desc">PC 한 화면의 세 칸을 폰에서는 1 차 → 2 요금 → 3 접수 로 넘깁니다. 위 점이 지금 칸, 아래 단추가 다음 걸음. 카드 · 요금 · 양식은 PC 와 같은 부품입니다.</p>
+<div class="fpa-phones">
+<div><p class="fpa-phone-cap"><b>1</b>차 고르기</p><div class="fpa-phone">
+  <div class="fpa-phone-top"><b>상품찾기</b><small>24대 중 6대</small><div class="fpa-dots"><span aria-current="step">1 차</span><span>2 요금</span><span>3 접수</span></div></div>
+  <div class="fpa-phone-body">
+    <label class="erp-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input placeholder="차량번호 · 차명 · 공급사" aria-label="검색"></label>
+    <div class="fpa-phone-chips"><span class="erp-chip">필터 2</span><span class="erp-chip">36개월 ×</span><span class="erp-chip">80만원 이하 ×</span></div>
+    <article class="fpa-pick" data-tone="ok"><div><div class="fpa-pick-name">더 뉴 레이<span class="erp-badge erp-badge--ok">즉시출고</span></div><div class="fpa-pick-car"><b>67하2045</b>기아</div></div><div class="fpa-pick-price"><strong>360,000<small>원</small></strong><span>36개월</span></div></article>
+    <article class="fpa-pick" data-tone="ok" aria-current="true"><div><div class="fpa-pick-name">쏘렌토 MQ4 PE<span class="erp-badge erp-badge--ok">즉시출고</span></div><div class="fpa-pick-car"><b>123하4567</b>기아</div></div><div class="fpa-pick-price"><strong>760,000<small>원</small></strong><span>36개월</span></div></article>
+    <article class="fpa-pick" data-tone="info"><div><div class="fpa-pick-name">싼타페 MX5<span class="erp-badge erp-badge--info">출고가능</span></div><div class="fpa-pick-car"><b>41허2286</b>현대</div></div><div class="fpa-pick-price"><strong>790,000<small>원</small></strong><span>보증금 200만</span></div></article>
+    <article class="fpa-pick" data-tone="ok"><div><div class="fpa-pick-name">투싼 NX4<span class="erp-badge erp-badge--ok">즉시출고</span></div><div class="fpa-pick-car"><b>33호2217</b>현대</div></div><div class="fpa-pick-price"><strong>650,000<small>원</small></strong><span>36개월</span></div></article>
+    <article class="fpa-pick" data-tone="ok"><div><div class="fpa-pick-name">K5 DL3<span class="erp-badge erp-badge--ok">즉시출고</span></div><div class="fpa-pick-car"><b>24하6634</b>기아</div></div><div class="fpa-pick-price"><strong>570,000<small>원</small></strong><span>36개월</span></div></article>
+  </div>
+  <div class="fpa-phone-bar"><button class="erp-btn" type="button">상세 필터</button><button class="erp-btn erp-btn--primary" type="button">쏘렌토 요금 보기 ›</button></div>
+</div></div>
+<div><p class="fpa-phone-cap"><b>2</b>요금 고르기</p><div class="fpa-phone">
+  <div class="fpa-phone-top"><span class="fpa-phone-back">‹ 목록</span> <b>쏘렌토 MQ4 PE</b><div class="fpa-dots"><span data-state="done">1 차</span><span aria-current="step">2 요금</span><span>3 접수</span></div></div>
+  <div class="fpa-phone-body">
+    <div class="fpa-photo"><svg viewBox="0 0 120 60" aria-hidden="true"><path d="M8 42h104M14 42l6-14c2-5 6-8 12-9l22-3c8-1 16 1 22 6l12 10 14 3c4 1 6 4 6 7M30 42a8 8 0 1 0 16 0M78 42a8 8 0 1 0 16 0M40 20l4 14h24l-6-15"/></svg></div>
+    <p class="fpa-detail-sub"><b>123하4567</b>기아 · 시그니처 · 한빛렌터카</p>
+    <dl class="erp-props"><div><dt>연식 · 주행</dt><dd>2024 · 12,100km</dd></div><div><dt>색상</dt><dd>스노우화이트펄</dd></div></dl>
+    <div class="fpa-sec"><p class="fpa-sec-title">기간별 요금 · 남는 것</p>
+    <ul class="fpa-offers">
+      <li class="fpa-offer" aria-pressed="false"><b>24개월</b><span class="fpa-offer-sub"><em>남는 것 412,000</em></span><strong>820,000</strong></li>
+      <li class="fpa-offer" aria-pressed="true"><b>36개월</b><span class="fpa-offer-sub"><em>남는 것 631,500</em></span><strong>760,000</strong></li>
+      <li class="fpa-offer" aria-pressed="false"><b>48개월</b><span class="fpa-offer-sub"><em>남는 것 588,000</em></span><strong>720,000</strong></li>
+    </ul></div>
+  </div>
+  <div class="fpa-phone-bar"><button class="erp-btn" type="button">‹</button><button class="erp-btn erp-btn--primary" type="button">36개월로 접수 ›</button></div>
+</div></div>
+<div><p class="fpa-phone-cap"><b>3</b>접수 넣기</p><div class="fpa-phone">
+  <div class="fpa-phone-top"><span class="fpa-phone-back">‹ 요금</span> <b>접수 넣기</b><div class="fpa-dots"><span data-state="done">1 차</span><span data-state="done">2 요금</span><span aria-current="step">3 접수</span></div></div>
+  <div class="fpa-phone-body">
+    <div class="fpa-picked"><div class="fpa-picked-top"><b>쏘렌토 · 36개월</b><span>자동</span></div><p>123하4567 · 한빛렌터카</p>
+      <dl><div><dt>월 대여료</dt><dd>760,000원</dd></div><div><dt>남는 것</dt><dd>631,500원</dd></div></dl></div>
+    <div class="fpa-form">
+      <label class="erp-field fpa-wide"><span class="erp-label">고객 <em class="erp-req">*</em></span><input class="erp-input" value="김민수"></label>
+      <label class="erp-field"><span class="erp-label">영업채널 <em class="erp-req">*</em></span><span class="erp-input">프리패스 직영</span></label>
+      <label class="erp-field"><span class="erp-label">담당 <em class="erp-req">*</em></span><span class="erp-input">이영업</span></label>
+      <label class="erp-field fpa-wide"><span class="erp-label">결제</span><div class="erp-seg" role="group" aria-label="분납여부"><button type="button" aria-pressed="true">일시납</button><button type="button" aria-pressed="false">분납</button></div></label>
+    </div>
+    <ul class="fpa-checks"><li><span><b>123하4567</b> 중복 없음</span></li><li><span>요금 ERP5 와 같음</span></li></ul>
+  </div>
+  <div class="fpa-phone-bar"><button class="erp-btn" type="button">‹</button><button class="erp-btn erp-btn--primary" type="submit">접수 저장 · 필수 3/3</button></div>
+</div></div>
+</div>
+</body>
+</html>
