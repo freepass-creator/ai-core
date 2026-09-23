@@ -48,3 +48,18 @@ test('truncated Git tree는 불완전 source review라 거절한다',async()=>{
   const inspect=createGitHubProjectInspector({gh});
   await assert.rejects(inspect({project_id:'xy',repository:'x/y'}),/PROJECT_TREE_INCOMPLETE/);
 });
+
+test('registry default branch가 GitHub default branch와 다르면 stale source review를 거절한다',async()=>{
+  const calls=[];
+  const gh=async args=>{
+    const path=args[0];calls.push(path);
+    if(path==='repos/x/y') return{default_branch:'main'};
+    throw new Error('unexpected '+path);
+  };
+  const inspect=createGitHubProjectInspector({gh});
+  await assert.rejects(
+    inspect({project_id:'xy',repository:'x/y',default_branch:'develop'}),
+    /DEFAULT_BRANCH_MISMATCH/,
+  );
+  assert.deepEqual(calls,['repos/x/y']);
+});
