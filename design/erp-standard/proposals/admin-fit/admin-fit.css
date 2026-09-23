@@ -213,3 +213,37 @@
 .fpa-phone-back { color: var(--erp-color-nav-text); font-size: var(--erp-fs-caption); }
 .fpa-save kbd { margin-left: 6px; padding: 0 5px; border: 1px solid var(--erp-color-on-primary); border-radius: var(--erp-r-sm); font-family: inherit; font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-regular); opacity: .8; }
 .fpa-phones-page.erp-app { display: block; height: auto; min-width: 0; }
+
+/* ── 카드로 통일 (대표 2026-09-23 「카드타입으로 통일해봐」) ──
+ *   화면의 모든 덩어리 = 카드 한 장. 칸(① ② ③ · 서랍)은 바탕 위에 뜬 큰 카드, 칸 안의 정보 묶음(차 정보 · 요금 · 우대조건 ·
+ *   고객 · 확인 · 다음 걸음)은 우묵한 바탕 위의 작은 카드. 목록 카드와 같은 선 · 모서리 · 그림자를 쓴다. */
+.fpa-work { gap: var(--erp-sp-4); padding: var(--erp-sp-4) var(--erp-sp-6); background: var(--erp-color-bg); }
+.fpa-col, .fpa-col:first-child { border: 1px solid var(--erp-color-line); border-radius: calc(var(--erp-r-lg) * 1.5); background: var(--erp-color-surface); box-shadow: 0 8px 24px -18px var(--erp-color-text-3); overflow: visible; }
+.fpa-col-head { border-radius: calc(var(--erp-r-lg) * 1.5) calc(var(--erp-r-lg) * 1.5) 0 0; }
+.fpa-col + .fpa-col::before { left: -20px; }
+.fpa-col-body, .fpa-col:first-child .fpa-col-body { background: var(--erp-color-sunken); }
+.fpa-col .erp-searchbar { border-bottom: 1px solid var(--erp-color-line); }
+.fpa-save { border-radius: 0 0 calc(var(--erp-r-lg) * 1.5) calc(var(--erp-r-lg) * 1.5); background: var(--erp-color-surface); }
+.fpa-card { margin: 0 0 10px; padding: 14px var(--erp-sp-4); border: 1px solid var(--erp-color-line); border-radius: var(--erp-r-lg); background: var(--erp-color-surface); }
+.fpa-card:last-child { margin-bottom: 0; }
+.fpa-card .fpa-photo { height: 130px; }
+.fpa-card .fpa-detail-sub { margin-bottom: var(--erp-sp-3); }
+.fpa-form.fpa-card { margin-top: 10px; }
+.fpa-form .fpa-sec-title { margin: 0; }
+.fpa-picked { margin-bottom: 10px; }
+.fpa-checks.fpa-card { margin-top: 10px; padding: 10px 14px; }
+.fpa-next.fpa-card { margin-top: 10px; }
+.fpa-next li:last-child { border-bottom: 0; }
+.fpa-saved { margin-bottom: 0; }
+/* 계약접수 — 서랍도 뜬 카드, 서랍 안 묶음도 카드 */
+.fpa-main { gap: var(--erp-sp-4); padding-right: var(--erp-sp-6); }
+.fpa-drawer { margin: var(--erp-sp-4) 0; border: 1px solid var(--erp-color-line); border-radius: calc(var(--erp-r-lg) * 1.5); box-shadow: 0 8px 24px -18px var(--erp-color-text-3); overflow: hidden; }
+.fpa-drawer-body { background: var(--erp-color-sunken); }
+.fpa-drawer-body section, .fpa-drawer-body section + section { margin: 0 0 10px; padding: 14px var(--erp-sp-4); border: 1px solid var(--erp-color-line); border-radius: var(--erp-r-lg); background: var(--erp-color-surface); }
+.fpa-drawer-foot { background: var(--erp-color-surface); }
+.fpa-done { background: var(--erp-color-surface); border-style: solid; border-color: var(--erp-color-line); }
+/* 폰 — 같은 카드 */
+.fpa-phone-body { background: var(--erp-color-sunken); }
+.fpa-phone-body .fpa-card { padding: var(--erp-sp-3); }
+.fpa-col .erp-searchbar { flex-wrap: wrap; }
+.fpa-col .erp-search { flex: 1 1 100%; }
