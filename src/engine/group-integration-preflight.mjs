@@ -76,7 +76,7 @@ export function sealIntegrationPreflight({packet,observation}={}){
     }
   }
   for(const check of requiredChecks){
-    if(['SOURCE_REVISION_UNCHANGED','DIRTY_STATE_RECHECK','PLAN_ITEM_STILL_READY','IMPORT_CONTENT_POLICY_CHECK','CANONICAL_AUTHORITY_COLLISION_CHECK'].includes(check)) continue;
+    if(['SOURCE_REVISION_UNCHANGED','DIRTY_STATE_RECHECK','IMPORT_CONTENT_POLICY_CHECK','CANONICAL_AUTHORITY_COLLISION_CHECK'].includes(check)) continue;
     need(observedChecks.get(check)==='PASS',`INTEGRATION_PREFLIGHT_CHECK_REQUIRED_${check}`);
   }
 
