@@ -55,6 +55,7 @@ export function compileIntegrationWorkPackets(plan,{packet_prefix='INT-WP'}={}){
   need(nonempty(packet_prefix),'WORK_PACKET_PREFIX_REQUIRED');
 
   const eligible=plan.items.filter(item=>item.execution_readiness==='READY_FOR_REVIEWED_EXECUTION');
+  eligible.forEach(item=>need(Boolean(ACTION_BY_CLASSIFICATION[item.classification]),'WORK_PACKET_CLASSIFICATION_INVALID'));
 
   const packets=eligible.map((item,index)=>({
     schema:'ai-core-integration-work-packet/v1',
