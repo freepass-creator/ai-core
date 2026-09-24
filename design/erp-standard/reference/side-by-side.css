@@ -66,3 +66,9 @@ body.ref-page { margin: 0; padding: 0; height: 100vh; display: flex; flex-direct
 .sv-ref-card dl { display: flex; flex-direction: column; gap: 10px; }
 .sv-ref-card dt { margin: 0 0 3px; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
 .sv-ref-card dd { margin: 0; color: var(--erp-color-text); font-size: var(--erp-fs-label); font-weight: var(--erp-fw-medium); }
+
+/* ── 입력·저장 판(side-by-side-write.html) — §5-4 세 번째 패널 종류. 가운데 판이 상세내용에서
+ * 이 모습으로 뒤집힌다(erp-panel--flip) — 셸(erp-panel · erp-tile · erp-field/erp-input)은 전부
+ * 공통 규격이고, 여기 남는 건 필드 세로 배치 · 확인 체크리스트뿐이다. */
+.sv-write-fields { display: flex; flex-direction: column; gap: var(--erp-sp-3); }
+.sv-write-checks { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; color: var(--erp-color-text-2); font-size: var(--erp-fs-caption); }
