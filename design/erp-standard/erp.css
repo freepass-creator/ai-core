@@ -195,7 +195,7 @@
 .erp-field-error { color: var(--erp-color-err); font-size: var(--erp-fs-caption); }
 
 /* ⑦ 데이터 그리드 */
-.erp-toolbar { display: flex; align-items: center; gap: var(--erp-sp-2); padding: 10px var(--erp-sp-4); border-bottom: 1px solid var(--erp-color-line); }
+.erp-toolbar { display: flex; align-items: center; gap: var(--erp-sp-2); padding: var(--erp-sp-3) var(--erp-sp-4); border-bottom: 1px solid var(--erp-color-line); }
 .erp-toolbar-spacer { flex: 1; }
 .erp-selection { padding: 5px 10px; border-radius: var(--erp-r-md); background: var(--erp-color-primary-weak); color: var(--erp-color-primary); font-weight: var(--erp-fw-semibold); }
 .erp-chip { display: inline-flex; align-items: center; gap: 6px; padding: var(--erp-sp-1) 10px; border-radius: var(--erp-r-pill); background: var(--erp-color-neutral-bg); color: var(--erp-color-text-2); font-size: var(--erp-fs-label); }
@@ -366,7 +366,7 @@
  *   카드 한 장을 네 칸으로 나눈다: 누구·무슨 차(id) · 어디까지 왔나(steps) · 조건(facts) · 돈(amount) + 열기(go).
  *   왼쪽 띠 색 = 상태(data-tone). 좁은 창 · 폰에서는 칸이 위아래로 쌓인다 — 같은 마크업이 폰까지 간다.
  *   카드 전체를 누르면 열린다(.erp-rowcard-link 가 카드를 덮는다). 고른 카드는 aria-current="true". */
-.erp-rowcards { flex: 1; min-height: 0; overflow: auto; display: flex; flex-direction: column; gap: 10px; padding: var(--erp-sp-4); background: var(--erp-color-sunken); }
+.erp-rowcards { flex: 1; min-height: 0; overflow: auto; display: flex; flex-direction: column; gap: var(--erp-sp-2); padding: var(--erp-sp-4); background: var(--erp-color-sunken); }
 .erp-rowcards-group { margin: 6px 0 0; color: var(--erp-color-text-2); font-size: var(--erp-fs-label); font-weight: var(--erp-fw-semibold); }
 .erp-rowcards-group:first-child { margin-top: 0; }
 .erp-rowcards-group small { margin-left: 6px; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-regular); }
@@ -427,7 +427,7 @@
  *   대상(상품 · 접수 · 실적 · 정산)이 달라도 패널의 틀은 같고, 안의 카드 내용만 §5-5 를 따라 바뀐다. */
 .erp-panel { display: flex; flex-direction: column; min-height: 0; border: 1px solid var(--erp-color-line); border-radius: var(--erp-r-lg); background: var(--erp-color-surface); box-shadow: 0 8px 22px -18px var(--erp-color-text-3); overflow: hidden; }
 .erp-panel--flip { border: 2px solid var(--erp-color-primary); box-shadow: 0 0 0 4px var(--erp-color-focus-ring); }
-.erp-panel-head { display: flex; align-items: center; gap: var(--erp-sp-2); padding: 12px var(--erp-sp-4); border-bottom: 1px solid var(--erp-color-line); }
+.erp-panel-head { display: flex; align-items: center; gap: var(--erp-sp-2); padding: var(--erp-sp-3) var(--erp-sp-4); border-bottom: 1px solid var(--erp-color-line); }
 .erp-panel-kind { padding: 2px 8px; border-radius: var(--erp-r-sm); background: var(--erp-color-neutral-bg); color: var(--erp-color-text-2); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-semibold); }
 .erp-panel-head h2 { margin: 0; font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); }
 .erp-panel-head span { margin-left: auto; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
@@ -443,7 +443,7 @@
  * 보조적인 거를 쓰면 되잖아 나중에 그 항목은 바꾸더라도」) — 메인줄(erp-rowcard-title)은 이 카드가
  * 무엇/누구인지 + 상태(뱃지), 보조줄(erp-rowcard-car — 이름은 차량 맥락에서 왔지만 정산 · 실적처럼
  * 차가 없는 대상에서는 그 대상의 보조 식별 정보로 자연히 대체된다)은 메인줄을 보완하는 한 줄이다. */
-.erp-panel--compact .erp-rowcards { padding: var(--erp-sp-2) var(--erp-sp-3) var(--erp-sp-3); gap: 6px; background: transparent; }
+.erp-panel--compact .erp-rowcards { padding: var(--erp-sp-2) var(--erp-sp-3) var(--erp-sp-3); gap: var(--erp-sp-2); background: transparent; }
 /* 좁은 카드는 테두리 선 대신 그림자로 구분한다(대표 2026-09-24 「이 카드가 라인이 없이 좀 구분이
  * 됐으면 좋겠다」) — sunken 배경(erp-rowcards) 위에 surface 배경 카드가 옅은 그림자로 떠 보이면
  * 선 없이도 카드 하나하나가 또렷이 갈린다. 골랐을 때(aria-current)는 Primary 색 그림자 테로 표시한다. */
