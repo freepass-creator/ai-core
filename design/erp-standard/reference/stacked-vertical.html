@@ -3,10 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ERP 표준 — 패널 세 개를 세로로 나열 (참고)</title>
-<!-- §5-4 배치 변형 참고 — 대표 2026-09-24 「아니 그냥 세로로 3개 나열」.
+<title>ERP 표준 — 패널 세 개를 세로로 나열 (기본형, 최종)</title>
+<!-- §5-4 배치 기본형 — 대표 2026-09-24. 「아니 그냥 세로로 3개 나열」로 처음 만든 뒤 side-by-side ·
+     stacked-panels(좌우) · 뒤집은 상하안 · 목록만 넓힌 안까지 여러 배치를 거쳤다가, 「일단 제일
+     기본형으로 세로로 세로 패널로 111로 하고 빨리 세팅을 한번 해보자 — 핸드폰에서도 보기 좋아야 되고
+     스크롤하기 좋아야 되고」로 돌아와 이 안을 기본값으로 확정했다.
      패널마다 내용만큼만 높이를 쓰고 페이지 전체가 스크롤된다 — 패널 안 스크롤 · 억지 3등분 없음.
      세 패널이 위에서 아래로 놓인다 — 어느 것도 가로로 눌리지 않는다. 항상 전체 폭.
+     이게 그대로 폰 화면이다 — 뎁스 없이 한 페이지로 이어진다, PC와 같은 마크업 · 같은 스크롤 방향.
+     필터 버튼 · 툴바 패딩 · 접수하기 버튼(erp-panel-foot)은 side-by-side.html 에서 잡은 규격을 따른다.
      제목이 아주 긴 예시를 하나씩 넣어 §5-5 카드 줄 수 고정(잘림 처리)을 확인한다. 이름 · 차량번호는 가상 예시다. -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
 <link rel="stylesheet" href="../erp.css">
@@ -22,13 +27,13 @@
     <div class="erp-user"><span class="erp-avatar">관</span><div>관리자<small>프리패스 본사</small></div></div>
   </div>
 </header>
-<p class="ref-note">패널 세 개를 위에서 아래로 그냥 나열한다 — 어느 것도 가로로 눌리지 않는다(항상 전체 폭). 패널 안 스크롤은 없다 — 내용만큼 높이를 쓰고, 페이지 전체가 스크롤된다.</p>
+<p class="ref-note">기본형 — 패널 세 개를 위에서 아래로 그냥 나열한다(항상 전체 폭, 패널 안 스크롤 없이 페이지 전체가 스크롤). 폰에서도 같은 마크업이 그대로 한 페이지로 이어진다.</p>
 
 <main class="sv-main" data-region="grid">
   <section class="erp-panel">
     <div class="erp-panel-head"><span class="erp-panel-kind">목록</span><h2>상품목록</h2><span>3대</span></div>
-    <form class="erp-searchbar" data-region="filter" role="search"><label class="erp-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input placeholder="차량번호 · 차명 · 공급사" aria-label="검색"></label><details class="erp-filter-more"><summary class="erp-btn erp-btn--sm">필터</summary></details></form>
-    <div class="erp-toolbar" data-region="grid-toolbar" style="padding:0 var(--erp-sp-4) var(--erp-sp-2)"><div class="erp-seg" role="group" aria-label="퀵 필터"><button type="button" aria-pressed="true">전체 3</button><button type="button" aria-pressed="false">즉시출고 2</button><button type="button" aria-pressed="false">36개월</button></div></div>
+    <form class="erp-searchbar" data-region="filter" role="search"><label class="erp-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input placeholder="차량번호 · 차명 · 공급사" aria-label="검색"></label><details class="erp-filter-more"><summary class="erp-btn">필터</summary></details></form>
+    <div class="erp-toolbar" data-region="grid-toolbar"><span class="erp-toolbar-spacer"></span><div class="erp-seg" role="group" aria-label="퀵 필터"><button type="button" aria-pressed="true">전체 3</button><button type="button" aria-pressed="false">즉시출고 2</button><button type="button" aria-pressed="false">36개월</button></div></div>
     <div class="erp-panel-body"><div class="erp-rowcards" style="padding:0 var(--erp-sp-4) var(--erp-sp-4)"><article class="erp-rowcard erp-rowcard--no-steps">
     <div class="erp-rowcard-id"><h3 class="erp-rowcard-title"><a class="erp-rowcard-link" href="#">더 뉴 레이</a><span class="erp-badge erp-badge--ok">즉시출고</span></h3><div class="erp-rowcard-car"><b>67하2045</b>기아 · 그린카렌탈</div></div>
     <dl class="erp-rowcard-facts"><div><dt>상품구분</dt><dd>중고렌트</dd></div><div><dt>기간</dt><dd>36개월</dd></div></dl>
@@ -64,16 +69,16 @@
           <div class="sv-term" aria-pressed="false"><b>24개월</b><span>남는 것 412,000</span><strong>820,000원</strong></div>
           <div class="sv-term" aria-pressed="true"><b>36개월</b><span>남는 것 631,500 · 최고</span><strong>760,000원</strong></div>
           <div class="sv-term" aria-pressed="false"><b>48개월</b><span>남는 것 588,000</span><strong>720,000원</strong></div>
-          <div class="sv-foot"><button class="erp-btn erp-btn--primary" type="button">접수하기</button></div>
         </div>
       </div>
     </div>
+    <div class="erp-panel-foot"><button class="erp-btn erp-btn--primary" type="button">접수하기</button></div>
   </section>
 
   <section class="erp-panel">
     <div class="erp-panel-head"><span class="erp-panel-kind">목록</span><h2>접수목록</h2><span>전체 3건 · 오늘 접수 1건</span></div>
-    <form class="erp-searchbar" data-region="filter" role="search"><label class="erp-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input placeholder="고객 · 차번 · 공급사 · 담당" aria-label="검색"></label><details class="erp-filter-more"><summary class="erp-btn erp-btn--sm">필터</summary></details></form>
-    <div class="erp-toolbar" data-region="grid-toolbar" style="padding:0 var(--erp-sp-4) var(--erp-sp-2)"><div class="erp-seg" role="group" aria-label="퀵 필터"><button type="button" aria-pressed="true">전체 3</button><button type="button" aria-pressed="false">당월접수 2</button><button type="button" aria-pressed="false">미완료 1</button></div></div>
+    <form class="erp-searchbar" data-region="filter" role="search"><label class="erp-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input placeholder="고객 · 차번 · 공급사 · 담당" aria-label="검색"></label><details class="erp-filter-more"><summary class="erp-btn">필터</summary></details></form>
+    <div class="erp-toolbar" data-region="grid-toolbar"><span class="erp-toolbar-spacer"></span><div class="erp-seg" role="group" aria-label="퀵 필터"><button type="button" aria-pressed="true">전체 3</button><button type="button" aria-pressed="false">당월접수 2</button><button type="button" aria-pressed="false">미완료 1</button></div></div>
     <div class="erp-panel-body"><div class="erp-rowcards" style="padding:0 var(--erp-sp-4) var(--erp-sp-4)"><article class="erp-rowcard" data-tone="info">
     <div class="erp-rowcard-id"><h3 class="erp-rowcard-title"><a class="erp-rowcard-link" href="#">김민수 · 방금</a><span class="erp-badge erp-badge--info">당월접수</span></h3><div class="erp-rowcard-car"><b>123하4567</b>쏘렌토 MQ4 PE</div><div class="erp-rowcard-meta">접수 09-24 · 계약서 대기</div></div>
     <ol class="erp-rowcard-steps" aria-label="진행"><li data-state="done"><i></i>접수</li><li aria-current="step"><i></i>계약서</li><li><i></i>인도</li><li><i></i>청구</li><li><i></i>수금·지급</li></ol>
