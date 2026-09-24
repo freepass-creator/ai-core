@@ -24,18 +24,21 @@ body.ref-page { margin: 0; padding: 0; height: 100vh; display: flex; flex-direct
 .sv-terms-main { padding: var(--erp-sp-3) var(--erp-sp-3) 2px; border-radius: var(--erp-r-lg); background: var(--erp-color-sunken); }
 .sv-section-title--main { color: var(--erp-color-text); font-size: var(--erp-fs-body); font-weight: var(--erp-fw-bold); }
 .sv-terms { display: flex; flex-direction: column; gap: 8px; padding-bottom: var(--erp-sp-3); }
-.sv-term { display: grid; grid-template-columns: 54px minmax(0, 1fr) auto; align-items: center; gap: 4px 10px; padding: 12px; border: 1px solid var(--erp-color-line-strong); border-radius: var(--erp-r-lg); background: var(--erp-color-surface); }
+.sv-term { display: grid; grid-template-columns: 54px minmax(0, 1fr) auto; align-items: center; gap: 4px 10px; padding: var(--erp-sp-3); border: 1px solid var(--erp-color-line-strong); border-radius: var(--erp-r-lg); background: var(--erp-color-surface); }
 .sv-term b { font-weight: var(--erp-fw-bold); color: var(--erp-color-text-2); font-size: var(--erp-fs-label); }
 .sv-term span { color: var(--erp-color-ok); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-semibold); }
 .sv-term strong { font-size: var(--erp-fs-title); font-weight: var(--erp-fw-bold); color: var(--erp-color-text); }
 .sv-term[aria-pressed="true"] { border: 2px solid var(--erp-color-primary); background: var(--erp-color-primary-weak); }
 .sv-term[aria-pressed="true"] b, .sv-term[aria-pressed="true"] strong { color: var(--erp-color-primary); }
 
-/* ③ 담당자 참고 — 아래로 쭉, 카드 형태로(대표 2026-09-24 「담당자가 볼수 있게끔 쭉쭉쭉쭉쭉쭉 있어야
-   되거든」 → 「카드 형태로 하자니까」). 구분선으로 나눈 목록 대신, 항목마다 자기 테두리를 가진 작은
-   카드로 쌓는다 — 상품목록 · 접수목록의 §5-3 카드, 기간 선택의 sv-term 카드와 같은 "카드형" 어휘를
-   그대로 따른다. 항목이 늘어도 카드 하나만 더 추가하면 된다. */
-.sv-ref-list { display: flex; flex-direction: column; gap: 8px; }
-.sv-ref-list > div { padding: 10px 12px; border: 1px solid var(--erp-color-line); border-radius: var(--erp-r-lg); background: var(--erp-color-surface); }
-.sv-ref-list dt { margin: 0 0 3px; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
-.sv-ref-list dd { margin: 0; color: var(--erp-color-text); font-size: var(--erp-fs-label); font-weight: var(--erp-fw-medium); }
+/* ③ 담당자 참고 — 아래로 쭉, 섹션별 큰 카드로(대표 2026-09-24 「쭉쭉쭉쭉쭉쭉」 → 「카드 형태로 하자니까」
+   → 「밑에는 좀 큰 카드로 섹션별로 카드로 … 여백이나 규격을 다 동일하게, 좌우는 다 동일해야 돼 동일한
+   카드야, 내용이 많으면 밑으로 쭉 길어지는 거지」). 항목마다 따로 카드를 만들지 않고 성격이 같은 항목을
+   한 카드에 묶는다 — 좌우 패딩(var(--erp-sp-3), 12px)을 위 대여료 카드(sv-term)와 완전히 맞춰 이 패널
+   안의 모든 카드가 같은 규격을 쓴다. 카드 높이는 고정하지 않는다 — 안에 항목이 늘면 그만큼 길어진다. */
+.sv-ref-list { display: flex; flex-direction: column; gap: var(--erp-sp-3); }
+.sv-ref-card { padding: var(--erp-sp-3); border: 1px solid var(--erp-color-line); border-radius: var(--erp-r-lg); background: var(--erp-color-surface); }
+.sv-ref-card-title { margin: 0 0 10px; padding-bottom: 8px; border-bottom: 1px solid var(--erp-color-line); color: var(--erp-color-text); font-size: var(--erp-fs-label); font-weight: var(--erp-fw-bold); }
+.sv-ref-card dl { display: flex; flex-direction: column; gap: 10px; }
+.sv-ref-card dt { margin: 0 0 3px; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
+.sv-ref-card dd { margin: 0; color: var(--erp-color-text); font-size: var(--erp-fs-label); font-weight: var(--erp-fw-medium); }
