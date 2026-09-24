@@ -7,6 +7,7 @@ const ajv = new Ajv2020({ allErrors: true, strict: false });
 addFormats(ajv);
 const validate = ajv.compile(schema);
 const unique = (values) => new Set(values).size === values.length;
+const canonicalText = (value) => typeof value === 'string' && value.length > 0 && value.trim() === value;
 const result = (reasons) => ({ enabled: reasons.length === 0, reasons: [...new Set(reasons)] });
 
 export function evaluateControlTower(snapshot) {
@@ -69,7 +70,7 @@ export function evaluateControlTower(snapshot) {
     if (item.authorization.required && item.authorization.status !== 'GRANTED') execute.push('AUTHORIZATION_REQUIRED');
     if (item.authorization.required && item.authorization.status === 'GRANTED') {
       const authorization = item.authorization;
-      if (!authorization.action || !authorization.target || !authorization.scope?.length || !authorization.authorized_by || !authorization.authorized_at || !authorization.expires_at || authorization.revision !== item.subject_revision) execute.push('AUTHORIZATION_PROOF_INVALID');
+      if (![authorization.action, authorization.target, authorization.authorized_by].every(canonicalText) || !authorization.scope?.length || !authorization.scope.every(canonicalText) || !authorization.authorized_at || !authorization.expires_at || authorization.revision !== item.subject_revision) execute.push('AUTHORIZATION_PROOF_INVALID');
       else if (Date.parse(authorization.authorized_at) > asOf || Date.parse(authorization.expires_at) <= asOf) execute.push('AUTHORIZATION_EXPIRED');
     }
     const close = [...execute];
