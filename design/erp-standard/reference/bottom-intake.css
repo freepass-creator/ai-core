@@ -1,0 +1,29 @@
+/* 참고 페이지 — 위에 상품목록 · 상품상세를 나란히, 아래에 접수목록을 전체 폭으로 (대표 2026-09-24
+ *   「이건 접수를 하기 위한 거다 … 접수 과정을 명확하게 지켜보기 위해 아래쪽을 다 넓게 접수목록을 주고
+ *    상품찾기와 상품상세는 그 위에 배치 … 패널은 세 개가 맞다, 배치가 관건」)
+ * 접수가 이 화면의 목적이라 접수목록이 화면의 절반 가까이, 전체 폭을 갖는다. 그만큼 넓으니 접수 카드는
+ * §5-3 긴 카드(넓은 모양)를 그대로 쓴다 — erp-panel--compact 를 안 붙인다. 위 두 패널은 상품목록만 좁게(erp-panel--compact). */
+body.ref-page { margin: 0; padding: 0; height: 100vh; display: flex; flex-direction: column; background: var(--erp-color-bg); font-family: var(--erp-font-family); font-size: var(--erp-fs-body); }
+.bi-main { display: grid; grid-template-rows: 1fr 1fr; gap: var(--erp-sp-4); flex: 1; min-height: 0; padding: var(--erp-sp-4) var(--erp-sp-5); box-sizing: border-box; }
+.bi-top { display: grid; grid-template-columns: 380px minmax(0, 1fr); gap: var(--erp-sp-4); min-height: 0; }
+.ref-note { padding: 10px var(--erp-sp-5) 0; color: var(--erp-color-text-2); font-size: var(--erp-fs-label); }
+.bi-detail-body { padding: var(--erp-sp-4); display: flex; flex-direction: column; gap: 12px; }
+.bi-detail-body .photo { display: grid; place-items: center; height: 120px; border-radius: var(--erp-r-lg); background: var(--erp-color-sunken); color: var(--erp-color-line-strong); }
+.bi-detail-body .photo svg { width: 110px; height: 52px; fill: none; stroke: currentColor; stroke-width: 1.2; }
+.bi-detail-body .name { display: flex; align-items: center; gap: var(--erp-sp-2); margin: 0; font-size: var(--erp-fs-title); font-weight: var(--erp-fw-bold); color: var(--erp-color-text); }
+.bi-detail-body .sub { margin: 4px 0 0; color: var(--erp-color-text-2); }
+.bi-detail-body .sub b { margin-right: 6px; padding: 0 6px; border-radius: var(--erp-r-sm); background: var(--erp-color-neutral-bg); color: var(--erp-color-text); font-weight: var(--erp-fw-semibold); }
+.bi-detail-body .box { padding: 12px 14px; border: 1px solid var(--erp-color-line); border-radius: var(--erp-r-lg); background: var(--erp-color-sunken); }
+.bi-detail-body .box-title { margin: 0 0 8px; color: var(--erp-color-text-2); font-size: var(--erp-fs-label); font-weight: var(--erp-fw-semibold); }
+.bi-terms { display: flex; gap: var(--erp-sp-3); }
+.bi-term { flex: 1; display: flex; flex-direction: column; gap: 2px; padding: 9px 12px; border: 1px solid var(--erp-color-line-strong); border-radius: var(--erp-r-lg); background: var(--erp-color-surface); }
+.bi-term b { font-size: var(--erp-fs-label); font-weight: var(--erp-fw-semibold); color: var(--erp-color-text-2); }
+.bi-term strong { font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); color: var(--erp-color-text); }
+.bi-term em { color: var(--erp-color-ok); font-size: var(--erp-fs-caption); font-style: normal; font-weight: var(--erp-fw-semibold); }
+.bi-term[aria-pressed="true"] { border: 2px solid var(--erp-color-primary); background: var(--erp-color-primary-weak); }
+.bi-term[aria-pressed="true"] b, .bi-term[aria-pressed="true"] strong { color: var(--erp-color-primary); }
+.bi-foot { margin-top: auto; padding-top: 10px; border-top: 1px solid var(--erp-color-line); }
+.bi-foot .erp-btn--primary { width: 100%; justify-content: center; height: 40px; font-size: var(--erp-fs-section); }
+/* 아래 접수목록 — 전체 폭, 긴 카드를 그대로(§5-3), 좁은 변형 없음 */
+.bi-bottom .erp-panel-body { padding: var(--erp-sp-2) 0 0; }
+.bi-bottom .erp-rowcards { background: transparent; }
