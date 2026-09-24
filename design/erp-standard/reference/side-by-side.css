@@ -48,12 +48,18 @@ body.ref-page { margin: 0; padding: 0; height: 100vh; display: flex; flex-direct
  * 좋겠다」) — sv-term 은 옅은 sunken 배경 판 위에 옅은 그림자로 떠 보이고, sv-ref-card 는 배경색이
  * 패널과 같아 그림자만으로 뜬다(마치 종이가 겹쳐 있는 느낌). 골랐을 때(aria-pressed)만 Primary 색
  * 그림자 테로 구분한다 — 그때도 border 가 아니라 box-shadow 다. */
-.sv-term { display: grid; grid-template-columns: 54px minmax(0, 1fr) auto; align-items: center; gap: 4px 10px; padding: var(--erp-sp-3); border: 0; border-radius: var(--erp-r-lg); background: var(--erp-color-surface); box-shadow: 0 1px 3px -1px var(--erp-color-text-3); }
-.sv-term b { font-weight: var(--erp-fw-bold); color: var(--erp-color-text-2); font-size: var(--erp-fs-label); }
-.sv-term span { color: var(--erp-color-ok); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-semibold); }
-.sv-term strong { font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); color: var(--erp-color-text); }
+/* 핵심 정보는 기간 · 대여료 · 보증금 셋이다(대표 2026-09-24 「대여료만 강조하는 게 아니고 기간 대여료
+ * 보증금이 가장 핵심 정보지 우리 대여에서는」) — 1행에 기간 · 대여료, 2행에 보증금을 같은 무게로 둔다.
+ * 「남는 것」은 담당자만 보는 참고 수치라 핵심 정보 옆에 작은 캡션으로만 남긴다. */
+.sv-term { display: flex; flex-direction: column; gap: 4px; padding: var(--erp-sp-3); border: 0; border-radius: var(--erp-r-lg); background: var(--erp-color-surface); box-shadow: 0 1px 3px -1px var(--erp-color-text-3); }
+.sv-term-main { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.sv-term-sub { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.sv-term-main b { font-weight: var(--erp-fw-bold); color: var(--erp-color-text-2); font-size: var(--erp-fs-label); }
+.sv-term-main strong { font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); color: var(--erp-color-text); }
+.sv-term-deposit { color: var(--erp-color-text-2); font-size: var(--erp-fs-label); font-weight: var(--erp-fw-semibold); }
+.sv-term-margin { color: var(--erp-color-ok); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-semibold); }
 .sv-term[aria-pressed="true"] { background: var(--erp-color-primary-weak); box-shadow: 0 0 0 2px var(--erp-color-primary); }
-.sv-term[aria-pressed="true"] b, .sv-term[aria-pressed="true"] strong { color: var(--erp-color-primary); }
+.sv-term[aria-pressed="true"] .sv-term-main b, .sv-term[aria-pressed="true"] .sv-term-main strong, .sv-term[aria-pressed="true"] .sv-term-deposit { color: var(--erp-color-primary); }
 
 /* ③ 담당자 참고 — 설명하는 카드, 섹션별로 크게 */
 .sv-ref-list { display: flex; flex-direction: column; gap: var(--erp-sp-2); }
