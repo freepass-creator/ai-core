@@ -274,6 +274,18 @@
 없음 — box-shadow는 border가 아니다). `erp-tile`·`erp-tile--pressable`·`.erp-panel--compact .erp-rowcard`
 셋 다 같은 값을 쓴다. 확인 그림: `images/side-by-side.png`.
 
+**타일 안 내용 — 핵심 정보 2행(`erp-tile-row`)도 공통 규격으로** (FreePass Admin 실제 적용 중 발견,
+대표 2026-09-24 「새로 만들지 말고 그 공통 규격을 활용해서 프리패스 어드민 구성해보자」). freepass-admin
+의 실제 상품상세 화면(`ProductsScreen.tsx`)에 있는 요금 표(기간 · 월 대여료 · 보증금)가 아직 맨 HTML
+`<table>`이었다 — 이 세션에서 다듬은 "기간·대여료·보증금 2행 타일"이 상품상세 레퍼런스에만 있고
+`erp.css`에는 카드 셸(`erp-tile`)만 있고 안쪽 두 줄 배치(옛 `sv-term-main`/`sv-term-sub`)는 없었기
+때문이다. 안쪽 배치도 상품 전용이 아니라 어느 타일이든 쓸 수 있는 일반형이라 `erp-tile-row`로
+올렸다 — 한 줄에 굵은 이름(`<b>`) + 강조 값(`<strong>`)을 양 끝으로, 보조 줄은 라벨(`<span>`) + 강조
+보조값(`<span class="erp-tile-note--accent">`)을 양 끝으로 둔다. `erp-tile--pressable`이 골랐을 때
+(`aria-pressed="true"`)는 메인 줄(`<b>`·`<strong>`)이 Primary 색으로 바뀐다. 상품상세 레퍼런스의
+대여료 카드도 이 공통 클래스로 다시 그렸다 — 이제 이 페이지에 대여료 카드 안쪽 배치 CSS가 하나도
+안 남는다(셸도 안쪽 행도 전부 `erp.css` 공통 부품). 확인 그림: `images/side-by-side.png`.
+
 ## 5-5. 목록 카드 — 대상별 규격 (FreePass Admin, 대표 2026-09-24)
 
 「목록 카드를 세 줄로 관리하고, 접수 목록에서는 이 접수가 지금 어느 단계인지 명확하게 — 목록 카드 성격별로 정확하게」.

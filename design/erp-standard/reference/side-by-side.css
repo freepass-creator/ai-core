@@ -31,7 +31,7 @@ body.ref-page { margin: 0; padding: 0; height: 100vh; display: flex; flex-direct
  * 모서리 · 그림자 · 카드 사이 간격은 더 이상 이 페이지에 없다 — erp.css 의 `erp-tile`/`erp-tile-group`/
  * `erp-tile-title`/`erp-tile--pressable`(§5-4)로 옮겨 공통 규격이 됐다. 이 패널 안의 카드는 성격이
  * 둘뿐이다.
- *   A. 누르는 카드(`erp-tile erp-tile--pressable`, 여기서는 sv-term) — 골라서 접수를 결정하는 카드.
+ *   A. 누르는 카드(`erp-tile erp-tile--pressable`, 여기서는 대여료 기간 선택 카드) — 골라서 접수를 결정하는 카드.
  *      고르면 Primary 색 그림자 테로 바뀐다(aria-pressed).
  *   B. 설명하는 카드(`erp-tile`, 여기서는 sv-car-card · sv-ref-card) — 그냥 읽는 참고 카드. 상태
  *      변화가 없다.
@@ -54,17 +54,11 @@ body.ref-page { margin: 0; padding: 0; height: 100vh; display: flex; flex-direct
 /* sv-terms 는 카드 사이 간격을 더 이상 직접 안 갖는다 — erp-tile-group(erp.css)이 공통으로 준다. */
 /* 핵심 정보는 기간 · 대여료 · 보증금 셋이다(대표 2026-09-24 「대여료만 강조하는 게 아니고 기간 대여료
  * 보증금이 가장 핵심 정보지 우리 대여에서는」) — 1행에 기간 · 대여료, 2행에 보증금을 같은 무게로 둔다.
- * 「남는 것」은 담당자만 보는 참고 수치라 핵심 정보 옆에 작은 캡션으로만 남긴다. sv-term 자체의 패딩 ·
- * 모서리 · 그림자 · 골랐을 때(aria-pressed) Primary 강조는 erp-tile/erp-tile--pressable(erp.css) 몫이고,
- * 여기서는 안의 두 줄 배치만 잡는다. */
-.sv-term { display: flex; flex-direction: column; gap: 4px; }
-.sv-term-main { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
-.sv-term-sub { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
-.sv-term-main b { font-weight: var(--erp-fw-bold); color: var(--erp-color-text-2); font-size: var(--erp-fs-label); }
-.sv-term-main strong { font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); color: var(--erp-color-text); }
-.sv-term-deposit { color: var(--erp-color-text-2); font-size: var(--erp-fs-label); font-weight: var(--erp-fw-semibold); }
-.sv-term-margin { color: var(--erp-color-ok); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-semibold); }
-.sv-term[aria-pressed="true"] .sv-term-main b, .sv-term[aria-pressed="true"] .sv-term-main strong, .sv-term[aria-pressed="true"] .sv-term-deposit { color: var(--erp-color-primary); }
+ * 「남는 것」은 담당자만 보는 참고 수치라 핵심 정보 옆에 작은 캡션(`erp-tile-note--accent`)으로만
+ * 남긴다. freepass-admin 실제 적용 때 이 카드 안 두 줄 배치(옛 sv-term-main/sv-term-sub/sv-term-deposit/
+ * sv-term-margin)가 상품(대여료) 전용이 아니라 어느 타일이든 쓸 수 있는 일반형이라는 걸 깨닫고
+ * `erp-tile-row`로 erp.css 공통 규격에 올렸다 — 이 페이지는 더 이상 이 카드의 안쪽 배치조차 갖지
+ * 않는다, 셸(`erp-tile`)과 안쪽 행(`erp-tile-row`) 둘 다 공통 부품이다. */
 
 /* ③ 담당자 참고 — 설명하는 카드, 섹션별로 크게. sv-ref-list 의 카드 사이 간격 · sv-ref-card 의 패딩 ·
  * 모서리 · 그림자 · sv-ref-card-title 의 제목 규격도 전부 erp-tile-group/erp-tile/erp-tile-title
