@@ -34,6 +34,7 @@ export function validateProjectAuditResult(result, readinessRegistry) {
       need(finding.verdict === 'UNKNOWN', `PROJECT_AUDIT_MISSING_AXIS_VERDICT_FORBIDDEN:${finding.axis}`);
     }
   }
+  need(seen.size === maturityByAxis.size, 'PROJECT_AUDIT_AXES_INCOMPLETE');
   return result;
 }
 
