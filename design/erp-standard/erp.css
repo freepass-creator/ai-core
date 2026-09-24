@@ -341,6 +341,9 @@ ul.erp-field-error { padding: 0; list-style: none; display: flex; flex-direction
 /* 돋보기 아이콘도 포커스에 반응한다 — 화이트라벨(freepasserp4) SearchInput 이 흐린 색 ↔ accent 로
  * 바꾸는 것과 같다. */
 .erp-search:focus-within svg { color: var(--erp-color-primary); }
+/* 전역 :focus-visible 사각 링(.erp-std :focus-visible)을 여기서만 끈다 — 밑줄이 굵어지는 것 +
+ * 돋보기 색 변화가 이미 충분한 포커스 표시라, 사각 링까지 겹치면 다시 «상자»로 보인다. */
+.erp-search input:focus-visible { outline: none; }
 .erp-filter-more { position: relative; }
 .erp-filter-more > summary { list-style: none; }
 .erp-filter-more > summary::-webkit-details-marker { display: none; }
