@@ -9,10 +9,13 @@ const canonical = value => Array.isArray(value)
     : value;
 
 const digest = value => `sha256:${createHash('sha256').update(JSON.stringify(canonical(value))).digest('hex')}`;
+const nonempty = value => typeof value === 'string' && value.trim() === value && value.length > 0;
 
 function safeReceipt(result) {
   if (result?.schema !== 'ai-core-work-result/v1') return null;
   const checks = Array.isArray(result.checks) ? result.checks : [];
+  const evidenceRefs = result.evidence_refs ?? [];
+  if (!Array.isArray(evidenceRefs) || !evidenceRefs.every(nonempty)) return null;
   return {
     schema: result.schema,
     order_id: result.order_id ?? null,
@@ -24,7 +27,7 @@ function safeReceipt(result) {
     status: result.status,
     summary: String(result.summary ?? '').slice(0, 4000),
     artifact_refs: [...(result.artifact_refs ?? [])].map(String),
-    evidence_refs: [...(result.evidence_refs ?? [])].map(String),
+    evidence_refs: [...evidenceRefs],
     checks: checks.map(item => ({
       name: String(item?.name ?? ''),
       status: String(item?.status ?? ''),
