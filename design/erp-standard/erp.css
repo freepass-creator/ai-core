@@ -346,7 +346,8 @@ ul.erp-field-error { padding: 0; list-style: none; display: flex; flex-direction
 .erp-facet-opt[aria-pressed="true"] { border-color: var(--erp-color-primary); background: var(--erp-color-primary-weak); color: var(--erp-color-primary); font-weight: var(--erp-fw-semibold); }
 .erp-filter-panel-foot { display: flex; justify-content: flex-end; gap: var(--erp-sp-2); margin-top: var(--erp-sp-4); padding-top: var(--erp-sp-3); border-top: 1px solid var(--erp-color-line); }
 .erp-searchbar .erp-chip { text-decoration: none; }
-/* 분류 드롭다운 — 계약 · 정산 · 실적 조회에서만, 검색창 앞에 1~2개 */
+/* 분류 드롭다운 — 계약 · 정산 · 실적 조회에서만, 퀵 필터 줄(erp-toolbar) 안 1~2개(대표 2026-09-24
+ * 「그 드랍다운은 퀵필터라고 생각을 하고 퀵필터 라인에 있어야 돼」 — 검색창 줄이 아니다). */
 .erp-dd { flex: none; width: auto; min-width: 120px; height: var(--erp-btn-h); }
 /* 한 줄 처리 폼 — 상세의 «처리» 카드: 값 한 칸 + 그 값을 바꾸는 단추(차량번호 저장 · 인도 완료 · 취소 …) */
 .erp-inline-form { display: flex; align-items: flex-end; gap: var(--erp-sp-2); padding: var(--erp-sp-3) 0; border-bottom: 1px solid var(--erp-color-line-row); }
