@@ -127,6 +127,22 @@ test('granted authorization must match revision and validity window', () => {
   assert.ok(evaluateControlTower(input).items[0].actions.execute.reasons.includes('AUTHORIZATION_PROOF_INVALID'));
 });
 
+test('blank granted authorization scope fails closed', () => {
+  const input = clone(example);
+  input.items[0].authorization = {
+    required: true,
+    status: 'GRANTED',
+    action: 'DEPLOY',
+    target: 'production',
+    revision: example.items[0].subject_revision,
+    scope: ['   '],
+    authorized_by: 'owner',
+    authorized_at: '2026-09-14T23:00:00Z',
+    expires_at: '2026-09-16T00:00:00Z',
+  };
+  assert.ok(evaluateControlTower(input).items[0].actions.execute.reasons.includes('AUTHORIZATION_PROOF_INVALID'));
+});
+
 test('schema-invalid input fails closed', () => {
   const input = clone(example);
   input.items[0].extra = true;
