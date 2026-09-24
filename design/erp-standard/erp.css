@@ -448,7 +448,7 @@
  * 글자를 읽지 않아도 상태가 한눈에 들어오게 한다(대표 2026-09-24 「썸네일 쪽에 상태나 분류값 직관적으로」).
  * data-tone 이 있으면(접수 · 정산 카드) 뱃지와 같은 색을 썸네일 배경에 칠하고 짧은 상태 글자를 넣는다 —
  * 새 아이콘을 안 만들고 이미 있는 뱃지 톤 색만 재사용한다. */
-.erp-panel--compact .erp-rowcard-thumb { grid-area: thumb; width: 44px; height: 44px; display: grid; place-items: center; overflow: hidden; border-radius: var(--erp-r-md); background: var(--erp-color-sunken); color: var(--erp-color-line-strong); font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); line-height: 1; letter-spacing: -0.02em; }
+.erp-panel--compact .erp-rowcard-thumb { grid-area: thumb; align-self: center; width: 44px; height: 44px; display: grid; place-items: center; overflow: hidden; border-radius: var(--erp-r-md); background: var(--erp-color-sunken); color: var(--erp-color-line-strong); font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); line-height: 1; letter-spacing: -0.02em; }
 .erp-panel--compact .erp-rowcard-thumb svg { width: 100%; height: 100%; stroke: currentColor; fill: none; stroke-width: 1.4; }
 .erp-panel--compact .erp-rowcard[data-tone="ok"] .erp-rowcard-thumb { background: var(--erp-color-ok-bg); color: var(--erp-color-ok); }
 .erp-panel--compact .erp-rowcard[data-tone="info"] .erp-rowcard-thumb { background: var(--erp-color-info-bg); color: var(--erp-color-info); }
