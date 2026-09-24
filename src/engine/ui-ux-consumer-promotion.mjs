@@ -1,3 +1,5 @@
+import { validateUiUxConformanceReceiptSemantics } from './ui-ux-conformance-receipt.mjs';
+
 const ORDER = ['EVIDENCE_ONLY', 'MAPPED', 'PILOT', 'CONFORMANT'];
 
 function fail(code, detail = '') {
@@ -54,6 +56,7 @@ export function evaluateUiUxConsumerPromotion({
   }
 
   if (!receipt) fail('UIUX_PROMOTION_RECEIPT_REQUIRED', to);
+  validateUiUxConformanceReceiptSemantics(receipt);
   if (receipt.product?.id !== manifest.product.id) fail('UIUX_PROMOTION_RECEIPT_PRODUCT_MISMATCH');
   if (receipt.product?.repository !== manifest.product.repository) fail('UIUX_PROMOTION_RECEIPT_REPOSITORY_MISMATCH');
   if (!/^[a-f0-9]{40}$/.test(receipt.product?.subject_revision ?? '')) {
