@@ -159,9 +159,8 @@
 [data-theme="retro"] .erp-listcard-foot { border-top: 1px dashed var(--erp-color-line); }
 [data-theme="retro"] .erp-listcard-amount { font-family: var(--retro-font-mono); }
 
-/* 긴 카드 목록 — 굵은 테두리 + 찍힌 그림자, 상태 띠는 굵게, 금액은 고정폭 */
+/* 긴 카드 목록 — 굵은 테두리 + 찍힌 그림자, 금액은 고정폭(왼쪽 상태 띠는 기본 규격에서 지워져 여기도 없다) */
 [data-theme="retro"] .erp-rowcard { border: var(--retro-border) solid var(--erp-color-line-strong); box-shadow: var(--retro-shadow) var(--erp-color-line-strong); }
-[data-theme="retro"] .erp-rowcard::before { width: 6px; }
 [data-theme="retro"] .erp-rowcard[aria-current="true"] { border-color: var(--erp-color-primary); box-shadow: var(--retro-shadow) var(--erp-color-primary); }
 [data-theme="retro"] .erp-rowcard-title, [data-theme="retro"] .erp-rowcards-group { font-family: var(--retro-font-display); }
 [data-theme="retro"] .erp-rowcard-car b { border: 1.5px solid var(--erp-color-line-strong); background: var(--erp-color-surface); }
