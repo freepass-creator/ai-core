@@ -58,6 +58,16 @@ test('export pipeline projects before serialization and cannot commit canonical 
   assert.throws(()=>validateDataPipeline(broken),/EXPORT_COMMIT_FORBIDDEN/);
 });
 
+test('export delivery is terminal so delivered output cannot mutate afterward',()=>{
+  const pipeline={
+    schema_version:'core-data-pipeline-contract/v1',pipeline_id:'catalog.export',direction:'EXPORT',version:'1.0.0',
+    source:'vehicle-master',target:'public-catalog',
+    stages:['PROJECT','SERIALIZE','DELIVER','POST_PROCESS'],
+    commit_policy:'READ_ONLY',partial_failure_policy:'NOT_APPLICABLE',receipt_required:true
+  };
+  assert.throws(()=>validateDataPipeline(pipeline),/EXPORT_DELIVER_MUST_BE_LAST/);
+});
+
 
 test('best-effort batch must expose partial failure through a receipt',()=>{
   const pipeline={
