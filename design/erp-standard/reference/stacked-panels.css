@@ -24,5 +24,3 @@ body.ref-page { margin: 0; padding: 0; height: 100vh; display: flex; flex-direct
 .stack-right .term em { color: var(--erp-color-ok); font-size: var(--erp-fs-caption); font-style: normal; font-weight: var(--erp-fw-semibold); }
 .stack-right .term[aria-pressed="true"] { border: 2px solid var(--erp-color-primary); background: var(--erp-color-primary-weak); }
 .stack-right .term[aria-pressed="true"] b, .stack-right .term[aria-pressed="true"] strong { color: var(--erp-color-primary); }
-.stack-right .foot { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--erp-color-line); }
-.stack-right .foot .erp-btn--primary { width: 100%; justify-content: center; height: 42px; font-size: var(--erp-fs-section); }
