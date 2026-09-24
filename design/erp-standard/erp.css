@@ -418,3 +418,22 @@
   .erp-rowcard-facts, .erp-rowcard--no-steps .erp-rowcard-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px var(--erp-sp-4); }
   .erp-rowcard-go { display: none; }
 }
+
+/* ── 패널 — 여러 개를 한 화면에 나란히 두는 자족 카드 (대표 2026-09-24 「패널이 총 3개였으면 …
+ *    패널 규격이 있고 그 목록 카드의 규격을 또 만들어야지」) ──
+ *   패널은 화면을 조립하는 단위다. 목록 패널(검색 · 필터 · 퀵 필터 + 긴 카드 목록)과 상세내용 패널
+ *   (고른 한 건의 자세한 내용, 쓰는 화면에서는 「접수하기」 로 같은 자리가 뒤집혀 입력 면이 된다) 두 종류뿐이다.
+ *   대상(상품 · 접수 · 실적 · 정산)이 달라도 패널의 틀은 같고, 안의 카드 내용만 §5-5 를 따라 바뀐다. */
+.erp-panel { display: flex; flex-direction: column; min-height: 0; border: 1px solid var(--erp-color-line); border-radius: var(--erp-r-lg); background: var(--erp-color-surface); box-shadow: 0 8px 22px -18px var(--erp-color-text-3); overflow: hidden; }
+.erp-panel--flip { border: 2px solid var(--erp-color-primary); box-shadow: 0 0 0 4px var(--erp-color-focus-ring); }
+.erp-panel-head { display: flex; align-items: center; gap: var(--erp-sp-2); padding: 12px var(--erp-sp-4); border-bottom: 1px solid var(--erp-color-line); }
+.erp-panel-kind { padding: 2px 8px; border-radius: var(--erp-r-sm); background: var(--erp-color-neutral-bg); color: var(--erp-color-text-2); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-semibold); }
+.erp-panel-head h2 { margin: 0; font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); }
+.erp-panel-head span { margin-left: auto; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
+.erp-panel-body { flex: 1; min-height: 0; overflow: auto; }
+/* 목록 패널 안 — 좁은 폭에서도 서는 작은 긴 카드(§5-3 erp-rowcard 를 그대로 쓰되 칸을 좁힌다) */
+.erp-panel .erp-rowcards { padding: var(--erp-sp-2) var(--erp-sp-3) var(--erp-sp-3); gap: 8px; background: transparent; }
+.erp-panel .erp-rowcard { grid-template-columns: minmax(0, 1fr); grid-template-areas: "id" "steps" "facts" "amount"; gap: 6px; padding: 10px var(--erp-sp-3); }
+.erp-panel .erp-rowcard-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px var(--erp-sp-3); }
+.erp-panel .erp-rowcard-amount { text-align: left; }
+.erp-panel .erp-rowcard-go { display: none; }

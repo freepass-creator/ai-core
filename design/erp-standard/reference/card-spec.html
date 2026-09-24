@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ERP 표준 — 목록 카드 대상별 규격 (§5-5)</title>
+<!-- 규격 §5-5 참고 그림 — 같은 부품(erp-rowcard) 하나로 대상 네 가지(상품·접수·실적·정산)를 어떻게 다르게 채우는지 나란히 보인다.
+     대표 2026-09-24 「목록 카드를 세 줄로 관리하고 … 목록 카드 성격별로 정확하게」. -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<link rel="stylesheet" href="../erp.css">
+<style>
+  body { margin: 0; padding: 32px 40px 48px; background: var(--erp-color-bg); font-family: var(--erp-font-family); }
+  h1 { margin: 0 0 4px; font-size: var(--erp-fs-title); font-weight: var(--erp-fw-bold); color: var(--erp-color-text); }
+  p.desc { margin: 0 0 28px; color: var(--erp-color-text-2); font-size: var(--erp-fs-body); }
+  .grp { margin-bottom: 28px; }
+  .grp h2 { margin: 0 0 4px; font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); color: var(--erp-color-text); }
+  .grp p { margin: 0 0 10px; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
+  .erp-rowcards { padding: 0; background: transparent; overflow: visible; }
+</style>
+</head>
+<body>
+<h1>목록 카드 — 대상별 규격 (§5-5)</h1>
+<p class="desc">같은 부품(<code>erp-rowcard</code>) 하나를 대상의 핵심에 맞춰 다르게 채운다. 단계를 추적해야 하는 대상(접수 · 정산)은 3줄 + 진행 단계, 고르거나 완료된 숫자를 보는 대상(상품 · 실적)은 2줄.</p>
+
+<div class="grp"><h2>상품 카드 — 2줄 · 단계 없음</h2><p>핵심 = 이 차가 무슨 차인지(고르는 대상)</p><div class="erp-rowcards">      <article class="erp-rowcard erp-rowcard--no-steps" data-tone="ok">
+        <div class="erp-rowcard-id">
+          <h3 class="erp-rowcard-title"><a class="erp-rowcard-link" href="#">쏘렌토 MQ4 PE</a><span class="erp-badge erp-badge--ok">즉시출고</span></h3>
+          <div class="erp-rowcard-car"><b>123하4567</b>기아 · 시그니처</div>
+          
+        </div>
+        
+        <dl class="erp-rowcard-facts"><div><dt>연식·주행</dt><dd>2024 · 12,100km</dd></div><div><dt>색상</dt><dd>스노우화이트펄</dd></div><div><dt>상품구분</dt><dd>중고렌트</dd></div><div><dt>보증금</dt><dd>없음</dd></div></dl>
+        <div class="erp-rowcard-amount"><strong>760,000<small>원/월</small></strong></div>
+        <svg class="erp-rowcard-go" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+      </article></div></div>
+<div class="grp"><h2>접수 카드 — 3줄 · 단계 있음</h2><p>핵심 = 지금 어느 단계인지(추적하는 대상)</p><div class="erp-rowcards">      <article class="erp-rowcard" data-tone="info">
+        <div class="erp-rowcard-id">
+          <h3 class="erp-rowcard-title"><a class="erp-rowcard-link" href="#">김민수</a><span class="erp-badge erp-badge--info">당월접수</span></h3>
+          <div class="erp-rowcard-car"><b>123하4567</b>쏘렌토 MQ4 PE</div>
+          <div class="erp-rowcard-meta">접수 09-24 · 계약서 대기</div>
+        </div>
+        <ol class="erp-rowcard-steps" aria-label="진행"><li data-state="done"><i></i>접수</li><li aria-current="step"><i></i>계약서</li><li><i></i>인도</li><li><i></i>청구</li><li><i></i>수금·지급</li></ol>
+        <dl class="erp-rowcard-facts"><div><dt>공급사</dt><dd>한빛렌터카</dd></div><div><dt>상품·기간</dt><dd>장기렌트 · 36개월</dd></div><div><dt>영업채널</dt><dd>프리패스 직영</dd></div><div><dt>보증금</dt><dd>없음</dd></div></dl>
+        <div class="erp-rowcard-amount"><strong>760,000<small>원/월</small></strong></div>
+        <svg class="erp-rowcard-go" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+      </article></div></div>
+<div class="grp"><h2>실적 카드 — 2줄 · 단계 없음</h2><p>핵심 = 인도가 끝난 뒤 남는 돈(완료된 숫자)</p><div class="erp-rowcards">      <article class="erp-rowcard erp-rowcard--no-steps" data-tone="ok">
+        <div class="erp-rowcard-id">
+          <h3 class="erp-rowcard-title"><a class="erp-rowcard-link" href="#">최*영</a><span class="erp-badge erp-badge--ok">완납실적</span></h3>
+          <div class="erp-rowcard-car"><b>72하1193</b>쏘렌토 MQ4 PE</div>
+          
+        </div>
+        
+        <dl class="erp-rowcard-facts"><div><dt>공급사</dt><dd>한빛렌터카</dd></div><div><dt>영업채널</dt><dd>부산제휴채널</dd></div><div><dt>청구 단계</dt><dd>수금</dd></div><div><dt>지급 단계</dt><dd>지급</dd></div></dl>
+        <div class="erp-rowcard-amount"><strong>631,500<small>원 남음</small></strong></div>
+        <svg class="erp-rowcard-go" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+      </article></div></div>
+<div class="grp"><h2>정산 카드 — 3줄 · 단계 있음</h2><p>핵심 = 지금 어느 단계인지(청구/지급 탭마다 다른 다섯 단계)</p><div class="erp-rowcards">      <article class="erp-rowcard" data-tone="warn">
+        <div class="erp-rowcard-id">
+          <h3 class="erp-rowcard-title"><a class="erp-rowcard-link" href="#">강*미</a><span class="erp-badge erp-badge--warn">확인</span></h3>
+          <div class="erp-rowcard-car"><b>24하6634</b>더 뉴 K5 DL3</div>
+          <div class="erp-rowcard-meta">인도 09-17 · 청구서 보냄</div>
+        </div>
+        <ol class="erp-rowcard-steps" aria-label="진행"><li data-state="done"><i></i>접수</li><li data-state="done"><i></i>청구</li><li data-state="done"><i></i>정정</li><li aria-current="step"><i></i>확인</li><li><i></i>수금</li></ol>
+        <dl class="erp-rowcard-facts"><div><dt>공급사</dt><dd>한빛렌터카</dd></div><div><dt>상품·기간</dt><dd>장기렌트 · 36개월</dd></div><div><dt>결제</dt><dd>일시납</dd></div><div><dt></dt><dd></dd></div></dl>
+        <div class="erp-rowcard-amount"><strong>756,000<small>원</small></strong></div>
+        <svg class="erp-rowcard-go" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+      </article></div></div>
+</body>
+</html>
