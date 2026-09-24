@@ -477,4 +477,12 @@
  * 붙어 지저분해졌다(대표 2026-09-24 「검색창이랑 목록카드 사이에 라인 없애자」). 좁은 패널에서는 지운다 —
  * 카드 목록의 sunken 배경색만으로도 위 검색 영역과 구분이 된다. */
 .erp-panel--compact .erp-searchbar, .erp-panel--compact .erp-toolbar { border-bottom: 0; }
+/* 간격 규격(대표 2026-09-24 「검색창하고 빠른 필터하고 목록하고 간격이 좀 이상하고」) — 테두리 선이 있는
+ * 원안(§5-1)은 검색창 · 퀵 필터가 각자 위아래 패딩을 갖고 그 사이에 선이 있어도 자연스러운데, 좁은 패널은
+ * 위에서 선을 지웠기 때문에 두 부품이 각자의 아래 패딩 + 위 패딩을 더해서(12+12=24px, 12+8=20px) 구간마다
+ * 간격이 서로 다르게 보였다. 좁은 패널에서는 아래쪽 패딩을 0으로 접어 다음 부품의 위쪽 패딩 하나만
+ * 간격으로 남긴다 — 검색창 → 퀵 필터 → 카드 목록까지 전부 var(--erp-sp-3)(12px) 한 값으로 고르다. */
+.erp-panel--compact .erp-searchbar { padding-bottom: 0; }
+.erp-panel--compact .erp-toolbar { padding-top: var(--erp-sp-3); padding-bottom: 0; }
+.erp-panel--compact .erp-rowcards { padding-top: var(--erp-sp-3); }
 .erp-rowcard-title .erp-badge, .erp-rowcard-title small { flex: none; }
