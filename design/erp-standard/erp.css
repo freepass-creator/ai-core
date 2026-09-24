@@ -434,10 +434,14 @@
 /* 패널 하단 고정 버튼 — 패널 안 스크롤과 별도로, 필요한 버튼(예: 접수하기)이 항상 바닥에 붙는다 */
 .erp-panel-foot { flex: none; display: flex; gap: var(--erp-sp-2); padding: var(--erp-sp-3) var(--erp-sp-4); border-top: 1px solid var(--erp-color-line); background: var(--erp-color-surface); }
 .erp-panel-foot .erp-btn { flex: 1; justify-content: center; }
-/* 목록 패널 안 — 좁은 폭에서도 서는 작은 긴 카드(§5-3 erp-rowcard 를 그대로 쓰되 칸을 좁힌다) */
-.erp-panel--compact .erp-rowcards { padding: var(--erp-sp-2) var(--erp-sp-3) var(--erp-sp-3); gap: 8px; background: transparent; }
-.erp-panel--compact .erp-rowcard { grid-template-columns: minmax(0, 1fr); grid-template-areas: "id" "steps" "facts" "amount"; gap: 6px; padding: 10px var(--erp-sp-3); }
-.erp-panel--compact .erp-rowcard-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px var(--erp-sp-3); }
-.erp-panel--compact .erp-rowcard-amount { text-align: left; }
+/* 목록 패널 안 — 좁은 폭에서도 서는 작은 긴 카드(§5-3 erp-rowcard 를 그대로 쓰되 칸을 좁힌다)
+ * 눌러야 상세내용 패널이 열리므로(대표 2026-09-24 「누르면 상세가 보이는데 계속 보고 있을 것도 아니고」),
+ * 여기서는 상태(뱃지)와 고르는 데 필요한 최소 식별 정보 + 금액까지만 — steps 트래커 · facts 는 상세내용 패널 몫이라 뺀다.
+ * 모든 대상(상품 · 접수 · 실적 · 정산)이 폭 · 줄 수와 무관하게 같은 두 줄 규격으로 통일된다. */
+.erp-panel--compact .erp-rowcards { padding: var(--erp-sp-2) var(--erp-sp-3) var(--erp-sp-3); gap: 6px; background: transparent; }
+.erp-panel--compact .erp-rowcard { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "id amount"; align-items: center; gap: 2px var(--erp-sp-3); padding: 10px var(--erp-sp-3); }
+.erp-panel--compact .erp-rowcard-steps, .erp-panel--compact .erp-rowcard-facts { display: none; }
+.erp-panel--compact .erp-rowcard-amount { text-align: right; }
+.erp-panel--compact .erp-rowcard-amount strong { font-size: var(--erp-fs-section); }
 .erp-panel--compact .erp-rowcard-go { display: none; }
 .erp-rowcard-title .erp-badge, .erp-rowcard-title small { flex: none; }
