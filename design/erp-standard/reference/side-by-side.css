@@ -1,11 +1,10 @@
-/* 참고 페이지 — 패널 세 개를 가로로 붙인다 (대표 2026-09-24 「아니 세로패널을 가로로 붙이라고」 —
- * 방금 만든 세로 나열 안을 대표가 바로 되돌렸다. 세 패널이 한 화면에 나란히, 뷰포트 높이를 꽉 채우고
+/* 참고 페이지 — 패널 세 개를 가로로 붙인다 (대표 2026-09-24 「아니 세로패널을 가로로 붙이라고」 →
+ * 「3개 패널을 동일 간격으로」). 세 패널이 한 화면에 나란히, 똑같은 폭으로 뷰포트 높이를 꽉 채우고
  * 각자 안에서 스크롤한다. 목록 두 패널은 좁아지니 §5-4 erp-panel--compact 로 카드가 한 줄 흐름으로 접힌다.
- * 상세내용 패널은 compact 를 안 써서 원래 넓은 레이아웃(사진 + 정보 + 기간)을 그대로 쓴다. 부품은 §5-4 · §5-5 규격 그대로. */
+ * 상세내용 패널도 같은 폭을 쓰되 안의 사진 · 기간 목록이 좁은 폭에 맞게 세로로 쌓인다. 부품은 §5-4 · §5-5 규격 그대로. */
 body.ref-page { margin: 0; padding: 0; height: 100vh; display: flex; flex-direction: column; background: var(--erp-color-bg); font-family: var(--erp-font-family); font-size: var(--erp-fs-body); }
 .sbs-main { display: flex; flex: 1; min-height: 0; padding: var(--erp-sp-4) var(--erp-sp-5); gap: var(--erp-sp-4); }
 .sbs-main .erp-panel { flex: 1 1 0; min-width: 0; }
-.sbs-main .sbs-detail { flex: 1.6 1 0; }
 .ref-note { padding: 10px var(--erp-sp-5) 0; color: var(--erp-color-text-2); font-size: var(--erp-fs-label); }
 .sv-detail-body { display: flex; flex-direction: column; gap: var(--erp-sp-4); padding: var(--erp-sp-4); }
 .sv-detail-body .photo { display: grid; place-items: center; height: 120px; border-radius: var(--erp-r-lg); background: var(--erp-color-sunken); color: var(--erp-color-line-strong); }

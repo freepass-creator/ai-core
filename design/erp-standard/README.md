@@ -226,13 +226,14 @@
 확인 그림: [reference/stacked-vertical.html](reference/stacked-vertical.html) · `images/stacked-vertical.png`.
 (참고용으로만 남긴다 — 실제 배치로 채택하지 않았다.)
 
-**패널 배치 — 가로로 붙이기(최종)** (대표 2026-09-24 「아니 세로패널을 가로로 붙이라고」). 패널 세 개
-(상품목록 · 상품상세 · 접수목록)를 한 화면에 나란히 두고 뷰포트 높이를 꽉 채워 각자 안에서 스크롤한다 —
-시안 I 최초안과 같은 구조이되, 목록 두 패널만 `erp-panel--compact`를 붙이고 상세내용 패널은 원래 넓은 레이아웃
-(사진 · 정보 · 기간선택)을 그대로 쓴다. 확인 그림: [reference/side-by-side.html](reference/side-by-side.html) ·
-`images/side-by-side.png`. §5-5 카드 줄 수 고정 확인용으로 아주 긴 상품명 · 고객명 예시를 넣었고,
-`erp-rowcard-title`/`erp-rowcard-link`의 말줄임(`text-overflow: ellipsis`) 처리로 배지가 밀려나지 않고
-한 줄 높이가 유지되는 것을 확인했다.
+**패널 배치 — 가로로 붙이기, 동일 폭(최종)** (대표 2026-09-24 「아니 세로패널을 가로로 붙이라고」 →
+「3개 패널을 동일 간격으로」). 패널 세 개(상품목록 · 상품상세 · 접수목록)를 한 화면에 나란히, **똑같은 폭**으로
+두고 뷰포트 높이를 꽉 채워 각자 안에서 스크롤한다. 목록 두 패널은 `erp-panel--compact`를 붙여 카드가 세로 흐름으로
+접히고, 상세내용 패널도 같은 폭을 쓰되 안의 사진 · 정보 · 기간선택을 가로가 아니라 세로로 쌓아 좁은 폭에 맞춘다.
+확인 그림: [reference/side-by-side.html](reference/side-by-side.html) · `images/side-by-side.png`.
+§5-5 카드 줄 수 고정 확인용으로 아주 긴 상품명 · 고객명 예시를 넣었고, `erp-rowcard-title`/`erp-rowcard-link`의
+말줄임(`text-overflow: ellipsis`) 처리로 배지가 밀려나지 않고 한 줄 높이가 유지되는 것을 확인했다
+(동일 폭에서는 접수목록의 긴 고객명만 실제로 잘리고, 상품목록의 긴 상품명은 자리가 넉넉해 안 잘린다 — 둘 다 정상).
 
 ## 6. ERP 공통 동작 규칙
 
