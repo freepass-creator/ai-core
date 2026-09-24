@@ -404,8 +404,8 @@ ul.erp-field-error { padding: 0; list-style: none; display: flex; flex-direction
 /* 칸 1 — 누구 · 무슨 차 */
 .erp-rowcard-id { grid-area: id; min-width: 0; }
 .erp-rowcard-title { display: flex; align-items: center; gap: var(--erp-sp-2); margin: 0; min-width: 0; font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); }
-.erp-rowcard-car { margin-top: 4px; color: var(--erp-color-text); font-weight: var(--erp-fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.erp-rowcard-car b { display: inline-block; margin-right: 6px; padding: 0 6px; border-radius: var(--erp-r-sm); background: var(--erp-color-neutral-bg); color: var(--erp-color-text); font-weight: var(--erp-fw-semibold); }
+.erp-rowcard-sub { margin-top: 4px; color: var(--erp-color-text); font-weight: var(--erp-fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.erp-rowcard-sub b { display: inline-block; margin-right: 6px; padding: 0 6px; border-radius: var(--erp-r-sm); background: var(--erp-color-neutral-bg); color: var(--erp-color-text); font-weight: var(--erp-fw-semibold); }
 .erp-rowcard-meta { margin-top: 3px; overflow: hidden; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); text-overflow: ellipsis; white-space: nowrap; }
 /* 칸 2 — 어디까지 왔나 (작은 진행 단계) */
 .erp-rowcard-steps { grid-area: steps; display: flex; margin: 0; padding: 0; list-style: none; }
@@ -520,8 +520,8 @@ ul.erp-field-error { padding: 0; list-style: none; display: flex; flex-direction
  * 모든 대상(상품 · 접수 · 실적 · 정산)이 폭 · 줄 수와 무관하게 같은 두 줄 규격으로 통일된다.
  * 두 줄의 역할은 대상과 무관하게 고정(대표 2026-09-24 「메인줄에는 해당되는 내용을 쓰고 보조줄에는
  * 보조적인 거를 쓰면 되잖아 나중에 그 항목은 바꾸더라도」) — 메인줄(erp-rowcard-title)은 이 카드가
- * 무엇/누구인지 + 상태(뱃지), 보조줄(erp-rowcard-car — 이름은 차량 맥락에서 왔지만 정산 · 실적처럼
- * 차가 없는 대상에서는 그 대상의 보조 식별 정보로 자연히 대체된다)은 메인줄을 보완하는 한 줄이다. */
+ * 무엇/누구인지 + 상태(뱃지), 보조줄(erp-rowcard-sub — 처음엔 차량 맥락 이름(erp-rowcard-car)이었으나
+ * 다른 프로젝트 재사용 검토(2026-09-24)로 중립 이름으로 고쳤다)은 메인줄을 보완하는 한 줄이다. */
 .erp-panel--compact .erp-rowcards { padding: var(--erp-sp-2) var(--erp-sp-3) var(--erp-sp-3); gap: var(--erp-sp-2); background: transparent; }
 /* 좁은 카드는 테두리 선 대신 그림자로 구분한다(대표 2026-09-24 「이 카드가 라인이 없이 좀 구분이
  * 됐으면 좋겠다」→「라인이 없다고 해서 위쪽이 그냥 안 보이면 안 돼 … 살짝 보일 듯 말 듯」) — 위 .erp-tile
