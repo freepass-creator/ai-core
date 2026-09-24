@@ -10,10 +10,10 @@ body.ref-page { margin: 0; padding: 0; height: 100vh; display: flex; flex-direct
 
 /* ① 차량 정보 — 사진이 메인, 그 밑에 심플한 설명(대표 2026-09-24 「모든 내용들이 다 카드 안에 담겨야
  * 돼 … 차 사진이 메인으로는 있어야 되잖아 차 사진 메인에 그 차를 설명하는 간단한 정보 정도는 들어가야지」).
- * 예전엔 작은 사진 + 글자가 옆으로 나란한 줄이라 카드 취급이 아니었다 — sv-ref-card 와 같은 설명하는
- * 카드(B) 규격(패딩 · 모서리 · 그림자)을 그대로 써서 카드 안에 담고, 사진을 카드 폭 전체를 쓰는 배너로
- * 키워 메인으로 세우고, 그 밑에 이름 · 기본 정보를 심플하게 둔다. */
-.sv-car-card { display: flex; flex-direction: column; gap: var(--erp-sp-3); padding: var(--erp-sp-3); border: 0; border-radius: var(--erp-r-lg); background: var(--erp-color-surface); box-shadow: 0 1px 3px -1px var(--erp-color-text-3); }
+ * 예전엔 작은 사진 + 글자가 옆으로 나란한 줄이라 카드 취급이 아니었다 — 이제 erp.css 의 공통 `erp-card`
+ * (B. 설명하는 카드 규격 — 패딩 · 모서리 · 그림자)를 그대로 쓰고, 여기서는 세로 배치(사진 배너를
+ * 메인으로 키우고 그 밑에 이름 · 기본 정보)만 더한다. */
+.sv-car-card { display: flex; flex-direction: column; gap: var(--erp-sp-3); }
 .sv-car-card .photo { display: grid; place-items: center; height: 132px; border-radius: var(--erp-r-md); background: var(--erp-color-sunken); color: var(--erp-color-line-strong); }
 .sv-car-card .photo svg { width: 180px; height: 84px; fill: none; stroke: currentColor; stroke-width: 1.2; }
 .sv-detail-info { min-width: 0; }
@@ -27,12 +27,14 @@ body.ref-page { margin: 0; padding: 0; height: 100vh; display: flex; flex-direct
 /* ── 상세내용 패널의 카드 규격(대표 2026-09-24 「카드 좌우 간격 그리고 카드 안에 텍스트 폰트 규격
  * 이런 거 다 통일시켜 봐 … 누르는 카든지 설명하는 카든지」 → 「좌측에 바 대는 것도 촌스러워 보여 …
  * 폰트 크기도 위계 너무 많이 나누지 말고 심플 미니멀로」 → 「이 카드가 라인이 없이 좀 구분이 됐으면
- * 좋겠다」) ── 이 패널 안의 카드는 성격이 둘뿐이다 — 공통 규격(패딩 var(--erp-sp-3) 12px · 모서리
- * var(--erp-r-lg) · 카드 사이 간격 var(--erp-sp-2) 8px · **테두리 선 없음, box-shadow 로만 구분**)은
- * 무조건 같고, 성격에 따라 그림자 강도만 달라진다.
- *   A. 누르는 카드(sv-term) — 골라서 접수를 결정하는 카드. 고르면 Primary 색 그림자 테로 바뀐다
- *      (aria-pressed, `box-shadow: 0 0 0 2px`).
- *   B. 설명하는 카드(sv-ref-card) — 그냥 읽는 참고 카드. 옅은 그림자만 있고 상태 변화가 없다.
+ * 좋겠다」 → 「그런 위계를 임기응변으로 하지 말고 규격으로 공통 css에다가 규격으로 둬야 돼」) ── 패딩 ·
+ * 모서리 · 그림자 · 카드 사이 간격은 더 이상 이 페이지에 없다 — erp.css 의 `erp-card`/`erp-card-group`/
+ * `erp-card-title`/`erp-card--pressable`(§5-4)로 옮겨 공통 규격이 됐다. 이 패널 안의 카드는 성격이
+ * 둘뿐이다.
+ *   A. 누르는 카드(`erp-card erp-card--pressable`, 여기서는 sv-term) — 골라서 접수를 결정하는 카드.
+ *      고르면 Primary 색 그림자 테로 바뀐다(aria-pressed).
+ *   B. 설명하는 카드(`erp-card`, 여기서는 sv-car-card · sv-ref-card) — 그냥 읽는 참고 카드. 상태
+ *      변화가 없다.
  * 글자 크기 위계는 셋으로 끝낸다(대표 지시대로 더 안 나눈다) — 이 패널의 모든 카드 · 소제목이 이 셋만 쓴다.
  *   · fs-caption(11.5px) — 라벨/보조(dt, 남는 것 같은 보조 값)
  *   · fs-label(12px) — 본문/제목(카드 제목, dd 값, 대여료 기간 이름, 섹션 소제목)
@@ -49,28 +51,24 @@ body.ref-page { margin: 0; padding: 0; height: 100vh; display: flex; flex-direct
  * 와 똑같이 소제목 텍스트(margin-bottom 은 .sv-section-title 기본값 8px) + 카드 목록만 남는다 —
  * sv-terms-main 자체는 더 이상 스타일이 필요 없다. */
 .sv-section-title--main { color: var(--erp-color-text); font-size: var(--erp-fs-label); font-weight: var(--erp-fw-bold); }
-.sv-terms { display: flex; flex-direction: column; gap: var(--erp-sp-2); }
-/* 카드 구분을 테두리 선 대신 그림자로(대표 2026-09-24 「이 카드가 라인이 없이 좀 구분이 됐으면
- * 좋겠다」) — sv-term 도 sv-ref-card 도 이제 배경색이 패널과 같은 surface 라 그림자만으로 뜬다
- * (마치 종이가 겹쳐 있는 느낌). 골랐을 때(aria-pressed)만 Primary 색
- * 그림자 테로 구분한다 — 그때도 border 가 아니라 box-shadow 다. */
+/* sv-terms 는 카드 사이 간격을 더 이상 직접 안 갖는다 — erp-card-group(erp.css)이 공통으로 준다. */
 /* 핵심 정보는 기간 · 대여료 · 보증금 셋이다(대표 2026-09-24 「대여료만 강조하는 게 아니고 기간 대여료
  * 보증금이 가장 핵심 정보지 우리 대여에서는」) — 1행에 기간 · 대여료, 2행에 보증금을 같은 무게로 둔다.
- * 「남는 것」은 담당자만 보는 참고 수치라 핵심 정보 옆에 작은 캡션으로만 남긴다. */
-.sv-term { display: flex; flex-direction: column; gap: 4px; padding: var(--erp-sp-3); border: 0; border-radius: var(--erp-r-lg); background: var(--erp-color-surface); box-shadow: 0 1px 3px -1px var(--erp-color-text-3); }
+ * 「남는 것」은 담당자만 보는 참고 수치라 핵심 정보 옆에 작은 캡션으로만 남긴다. sv-term 자체의 패딩 ·
+ * 모서리 · 그림자 · 골랐을 때(aria-pressed) Primary 강조는 erp-card/erp-card--pressable(erp.css) 몫이고,
+ * 여기서는 안의 두 줄 배치만 잡는다. */
+.sv-term { display: flex; flex-direction: column; gap: 4px; }
 .sv-term-main { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
 .sv-term-sub { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
 .sv-term-main b { font-weight: var(--erp-fw-bold); color: var(--erp-color-text-2); font-size: var(--erp-fs-label); }
 .sv-term-main strong { font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); color: var(--erp-color-text); }
 .sv-term-deposit { color: var(--erp-color-text-2); font-size: var(--erp-fs-label); font-weight: var(--erp-fw-semibold); }
 .sv-term-margin { color: var(--erp-color-ok); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-semibold); }
-.sv-term[aria-pressed="true"] { background: var(--erp-color-primary-weak); box-shadow: 0 0 0 2px var(--erp-color-primary); }
 .sv-term[aria-pressed="true"] .sv-term-main b, .sv-term[aria-pressed="true"] .sv-term-main strong, .sv-term[aria-pressed="true"] .sv-term-deposit { color: var(--erp-color-primary); }
 
-/* ③ 담당자 참고 — 설명하는 카드, 섹션별로 크게 */
-.sv-ref-list { display: flex; flex-direction: column; gap: var(--erp-sp-2); }
-.sv-ref-card { padding: var(--erp-sp-3); border: 0; border-radius: var(--erp-r-lg); background: var(--erp-color-surface); box-shadow: 0 1px 3px -1px var(--erp-color-text-3); }
-.sv-ref-card-title { margin: 0 0 10px; padding-bottom: 8px; border-bottom: 1px solid var(--erp-color-line); color: var(--erp-color-text); font-size: var(--erp-fs-label); font-weight: var(--erp-fw-bold); }
+/* ③ 담당자 참고 — 설명하는 카드, 섹션별로 크게. sv-ref-list 의 카드 사이 간격 · sv-ref-card 의 패딩 ·
+ * 모서리 · 그림자 · sv-ref-card-title 의 제목 규격도 전부 erp-card-group/erp-card/erp-card-title
+ * (erp.css) 몫이다 — 여기 남는 건 dl 안 내용 배치뿐이다. */
 .sv-ref-card dl { display: flex; flex-direction: column; gap: 10px; }
 .sv-ref-card dt { margin: 0 0 3px; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
 .sv-ref-card dd { margin: 0; color: var(--erp-color-text); font-size: var(--erp-fs-label); font-weight: var(--erp-fw-medium); }

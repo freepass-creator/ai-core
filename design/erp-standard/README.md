@@ -192,6 +192,37 @@
 ("대여료")로 줄였다 — 카드 안에 이미 기간 · 금액 · 보증금이 다 있어서 문장으로 다시 설명할 필요가 없다.
 확인 그림: `images/side-by-side.png`.
 
+**카드 규격 — `sv-term`/`sv-ref-card`/`sv-car-card`를 공통 부품 `erp-card`로 승격, 그림자도 전방위로**
+(대표 2026-09-24 「그런 위계를 임기응변으로 하지 말고 규격으로 공통 css에다가 규격으로 둬야 돼, 그리고
+카드는 라인이 없다고 해서 위쪽이나 이런 쪽이 그냥 안 보이면 안 돼 … 살짝 보일 듯 말 듯 이게 카드구나라는
+건 보여줘야 된다고」). 바로 위 카드 규격표는 `sv-term`/`sv-ref-card`가 페이지(`reference/side-by-side.css`)
+안에서 패딩 · 모서리 · 그림자를 세 번(`sv-term`·`sv-ref-card`·`sv-car-card`) 따로 베껴 쓰던 상태를 설명한
+기록이다 — 표만 있고 실제로는 화면마다 다시 손으로 맞춰야 하는 "임기응변"이었다. `erp.css`에 공통 부품
+넷을 새로 만들어 이 규격을 한 곳으로 모았다.
+
+| 클래스(`erp.css`) | 역할 |
+|---|---|
+| `erp-card` | 카드 셸(패딩 `var(--erp-sp-3)` · 모서리 `var(--erp-r-lg)` · 배경 `surface` · 그림자) — B. 설명하는 카드 그 자체 |
+| `erp-card-group` | 카드 여러 장을 세로로 쌓는 목록 — 카드 사이 간격 `var(--erp-sp-2)`(8px) |
+| `erp-card-title` | 카드 안 소제목 — 밑줄 구분선 + `fs-label` 굵게 |
+| `erp-card--pressable` | `erp-card`에 더해 A. 누르는 카드로 만든다 — `cursor: pointer`, hover 시 그림자 진하게, `aria-pressed="true"`일 때 Primary 색 배경 + 2px 그림자 테 |
+
+`sv-term`(A. 누르는 카드)은 `erp-card erp-card--pressable`을, `sv-ref-card`·`sv-car-card`(B. 설명하는
+카드)는 `erp-card`만 더해서 쓴다 — 페이지 CSS(`sv-*`)에는 이제 그 카드 고유의 **안쪽 내용 배치**(사진
+배너, 두 줄 대여료, `dl` 목록)만 남고 패딩 · 모서리 · 그림자는 없다. 다음에 접수상세 · 실적상세를 만들
+때도 새로 베끼지 않고 `erp-card`(`erp-card-group`으로 묶고, 고르는 카드면 `erp-card--pressable` 추가)만
+붙이면 §5-4/§5-6 카드 규격을 그대로 물려받는다. 좁은 목록 카드(`erp-panel--compact .erp-rowcard`)는
+클래스 이름은 그대로 두되(그리드 레이아웃이 달라 `erp-card`를 직접 못 쓴다) **같은 그림자 선언**을
+써서 두 카드 체계가 시각적으로 하나로 보인다.
+
+그림자 자체도 바꿨다 — 예전 `box-shadow: 0 1px 3px -1px var(--erp-color-text-3)`는 아래로만 퍼져 카드
+위쪽 · 옆쪽 경계가 거의 안 보였다(대표 2026-09-24 「라인이 없다고 해서 위쪽이 그냥 안 보이면 안 돼」).
+`box-shadow: 0 0 0 1px var(--erp-color-line-row), 0 2px 5px -2px var(--erp-color-text-3)`로 바꿔
+아주 옅은 전방위 테(1px, `line-row`)를 깔고 그 위에 아래쪽으로 살짝 더 퍼지는 그림자를 얹었다 — 네 변
+다 "보일 듯 말 듯" 카드 경계가 보이면서도 여전히 `border` 속성은 안 쓴다(라인을 없애라는 지시와 모순
+없음 — box-shadow는 border가 아니다). `erp-card`·`erp-card--pressable`·`.erp-panel--compact .erp-rowcard`
+셋 다 같은 값을 쓴다. 확인 그림: `images/side-by-side.png`.
+
 ## 5-5. 목록 카드 — 대상별 규격 (FreePass Admin, 대표 2026-09-24)
 
 「목록 카드를 세 줄로 관리하고, 접수 목록에서는 이 접수가 지금 어느 단계인지 명확하게 — 목록 카드 성격별로 정확하게」.
