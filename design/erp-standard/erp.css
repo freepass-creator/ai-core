@@ -444,4 +444,8 @@
 .erp-panel--compact .erp-rowcard-amount { text-align: right; }
 .erp-panel--compact .erp-rowcard-amount strong { font-size: var(--erp-fs-section); }
 .erp-panel--compact .erp-rowcard-go { display: none; }
+/* 검색창 · 퀵 필터 줄 밑의 구분선 — 좁은 패널에서 검색창 바로 밑에 퀵 필터가 붙으면서 선 두 개가 다닥다닥
+ * 붙어 지저분해졌다(대표 2026-09-24 「검색창이랑 목록카드 사이에 라인 없애자」). 좁은 패널에서는 지운다 —
+ * 카드 목록의 sunken 배경색만으로도 위 검색 영역과 구분이 된다. */
+.erp-panel--compact .erp-searchbar, .erp-panel--compact .erp-toolbar { border-bottom: 0; }
 .erp-rowcard-title .erp-badge, .erp-rowcard-title small { flex: none; }
