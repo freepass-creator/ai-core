@@ -377,12 +377,12 @@
 .erp-rowcard[data-tone="err"]::before { background: var(--erp-color-err-solid); }
 .erp-rowcard:hover { border-color: var(--erp-color-line-strong); box-shadow: 0 6px 16px -12px var(--erp-color-text-3); }
 .erp-rowcard[aria-current="true"] { border-color: var(--erp-color-primary); box-shadow: 0 0 0 3px var(--erp-color-focus-ring); }
-.erp-rowcard .erp-rowcard-link { position: static; color: var(--erp-color-text); font-weight: var(--erp-fw-bold); text-decoration: none; }
+.erp-rowcard .erp-rowcard-link { position: static; min-width: 0; overflow: hidden; color: var(--erp-color-text); font-weight: var(--erp-fw-bold); text-decoration: none; text-overflow: ellipsis; white-space: nowrap; }
 .erp-rowcard-link::after { content: ""; position: absolute; inset: 0; z-index: 0; }
 .erp-rowcard a:not(.erp-rowcard-link), .erp-rowcard button { position: relative; z-index: 1; }
 /* 칸 1 — 누구 · 무슨 차 */
 .erp-rowcard-id { grid-area: id; min-width: 0; }
-.erp-rowcard-title { display: flex; align-items: center; gap: var(--erp-sp-2); margin: 0; font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); }
+.erp-rowcard-title { display: flex; align-items: center; gap: var(--erp-sp-2); margin: 0; min-width: 0; font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); }
 .erp-rowcard-car { margin-top: 4px; color: var(--erp-color-text); font-weight: var(--erp-fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .erp-rowcard-car b { display: inline-block; margin-right: 6px; padding: 0 6px; border-radius: var(--erp-r-sm); background: var(--erp-color-neutral-bg); color: var(--erp-color-text); font-weight: var(--erp-fw-semibold); }
 .erp-rowcard-meta { margin-top: 3px; overflow: hidden; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); text-overflow: ellipsis; white-space: nowrap; }
@@ -437,3 +437,4 @@
 .erp-panel--compact .erp-rowcard-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px var(--erp-sp-3); }
 .erp-panel--compact .erp-rowcard-amount { text-align: left; }
 .erp-panel--compact .erp-rowcard-go { display: none; }
+.erp-rowcard-title .erp-badge, .erp-rowcard-title small { flex: none; }

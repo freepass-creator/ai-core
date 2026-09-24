@@ -1,0 +1,24 @@
+/* 참고 페이지 — 패널 세 개를 위에서 아래로 그냥 나열한다 (대표 2026-09-24 「아니 그냥 세로로 3개 나열」 —
+ * 앞서 만든, 셋을 뷰포트 안에 억지로 3등분해 각자 안에서 스크롤하던 안을 대표가 바로 되돌렸다).
+ * 패널마다 내용만큼만 높이를 쓰고, 페이지 전체가 위에서 아래로 스크롤된다 — 패널 안 스크롤도, 억지 높이도 없다.
+ * 가로로 나누지 않으니 어느 패널도 폭이 눌리지 않는다 — 항상 전체 폭을 쓴다. 부품은 §5-4 · §5-5 규격 그대로. */
+body.ref-page { margin: 0; padding: 0; background: var(--erp-color-bg); font-family: var(--erp-font-family); font-size: var(--erp-fs-body); }
+.sv-main { display: flex; flex-direction: column; padding: var(--erp-sp-4) var(--erp-sp-5) var(--erp-sp-6); gap: var(--erp-sp-4); }
+.sv-main .erp-panel-body { flex: none; overflow: visible; }
+.ref-note { padding: 10px var(--erp-sp-5) 0; color: var(--erp-color-text-2); font-size: var(--erp-fs-label); }
+.sv-detail-body { padding: var(--erp-sp-4); display: flex; gap: var(--erp-sp-5); }
+.sv-detail-body .photo { flex: none; display: grid; place-items: center; width: 220px; height: 130px; border-radius: var(--erp-r-lg); background: var(--erp-color-sunken); color: var(--erp-color-line-strong); }
+.sv-detail-body .photo svg { width: 190px; height: 90px; fill: none; stroke: currentColor; stroke-width: 1.2; }
+.sv-detail-info { flex: 1; min-width: 0; }
+.sv-detail-info .name { display: flex; align-items: center; gap: var(--erp-sp-2); margin: 0; font-size: var(--erp-fs-title); font-weight: var(--erp-fw-bold); color: var(--erp-color-text); }
+.sv-detail-info .sub { margin: 4px 0 10px; color: var(--erp-color-text-2); }
+.sv-detail-info .sub b { margin-right: 6px; padding: 0 6px; border-radius: var(--erp-r-sm); background: var(--erp-color-neutral-bg); color: var(--erp-color-text); font-weight: var(--erp-fw-semibold); }
+.sv-terms { flex: none; width: 380px; display: flex; flex-direction: column; gap: 8px; }
+.sv-term { display: grid; grid-template-columns: 54px minmax(0, 1fr) auto; align-items: center; gap: 4px 10px; padding: 9px 12px; border: 1px solid var(--erp-color-line-strong); border-radius: var(--erp-r-lg); background: var(--erp-color-surface); }
+.sv-term b { font-weight: var(--erp-fw-bold); color: var(--erp-color-text-2); font-size: var(--erp-fs-label); }
+.sv-term span { color: var(--erp-color-ok); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-semibold); }
+.sv-term strong { font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); color: var(--erp-color-text); }
+.sv-term[aria-pressed="true"] { border: 2px solid var(--erp-color-primary); background: var(--erp-color-primary-weak); }
+.sv-term[aria-pressed="true"] b, .sv-term[aria-pressed="true"] strong { color: var(--erp-color-primary); }
+.sv-foot { flex: none; width: 380px; display: flex; align-items: flex-end; }
+.sv-foot .erp-btn--primary { width: 100%; justify-content: center; height: 40px; font-size: var(--erp-fs-section); }
