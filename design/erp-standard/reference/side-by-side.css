@@ -19,4 +19,4 @@ body.ref-page { margin: 0; padding: 0; height: 100vh; display: flex; flex-direct
 .sv-term strong { font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); color: var(--erp-color-text); }
 .sv-term[aria-pressed="true"] { border: 2px solid var(--erp-color-primary); background: var(--erp-color-primary-weak); }
 .sv-term[aria-pressed="true"] b, .sv-term[aria-pressed="true"] strong { color: var(--erp-color-primary); }
-.sv-foot .erp-btn--primary { width: 100%; justify-content: center; height: 40px; font-size: var(--erp-fs-section); }
+.sbs-detail .erp-panel-foot .erp-btn--primary { height: 40px; font-size: var(--erp-fs-section); }
