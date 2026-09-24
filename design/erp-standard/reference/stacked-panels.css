@@ -1,0 +1,28 @@
+/* 참고 페이지 — 목록 두 개를 왼쪽에 위아래로, 상세내용(작업) 패널을 오른쪽에 넓게 (대표 2026-09-24
+ *   「세로로 세 개 하는 방법 말고 … 목록을 위아래로 두 개 놓고 우측에 상세 작업 화면, 상세 패널을 두는 거지」)
+ * 왼쪽 목록 두 개가 나눠 갖는 폭보다, 오른쪽 상세내용(작업)이 넓은 게 이득이다 — 실제로 손을 쓰는 자리라서.
+ * 부품은 전부 §5-4 · §5-5 규격 그대로(erp-panel · erp-rowcard · erp-searchbar …). 배치만 다르다 — 새 컴포넌트 아님. */
+body.ref-page { margin: 0; padding: 0; height: 100vh; display: flex; flex-direction: column; background: var(--erp-color-bg); font-family: var(--erp-font-family); font-size: var(--erp-fs-body); }
+.stack-main { display: grid; grid-template-columns: 380px minmax(0, 1fr); gap: var(--erp-sp-4); flex: 1; min-height: 0; padding: var(--erp-sp-4) var(--erp-sp-5); box-sizing: border-box; }
+.stack-left { display: flex; flex-direction: column; gap: var(--erp-sp-4); min-height: 0; }
+.stack-left .erp-panel { flex: 1 1 0; min-height: 0; }
+.stack-right { min-height: 0; }
+.ref-note { padding: 10px var(--erp-sp-5) 0; color: var(--erp-color-text-2); font-size: var(--erp-fs-label); }
+/* 좁은 왼쪽 열 안에서는 §5-4 규칙(.erp-panel .erp-rowcard 좁은 변형)이 그대로 걸린다 */
+.stack-right .erp-panel-body { padding: var(--erp-sp-4); display: flex; flex-direction: column; gap: 14px; }
+.stack-right .photo { display: grid; place-items: center; height: 160px; border-radius: var(--erp-r-lg); background: var(--erp-color-sunken); color: var(--erp-color-line-strong); }
+.stack-right .photo svg { width: 140px; height: 66px; fill: none; stroke: currentColor; stroke-width: 1.2; }
+.stack-right .name { display: flex; align-items: center; gap: var(--erp-sp-2); margin: 0; font-size: var(--erp-fs-title); font-weight: var(--erp-fw-bold); color: var(--erp-color-text); }
+.stack-right .sub { margin: 4px 0 0; color: var(--erp-color-text-2); }
+.stack-right .sub b { margin-right: 6px; padding: 0 6px; border-radius: var(--erp-r-sm); background: var(--erp-color-neutral-bg); color: var(--erp-color-text); font-weight: var(--erp-fw-semibold); }
+.stack-right .box { padding: 14px 16px; border: 1px solid var(--erp-color-line); border-radius: var(--erp-r-lg); background: var(--erp-color-sunken); }
+.stack-right .box-title { margin: 0 0 10px; color: var(--erp-color-text-2); font-size: var(--erp-fs-label); font-weight: var(--erp-fw-semibold); }
+.stack-right .terms { display: flex; gap: var(--erp-sp-3); }
+.stack-right .term { flex: 1; display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border: 1px solid var(--erp-color-line-strong); border-radius: var(--erp-r-lg); background: var(--erp-color-surface); }
+.stack-right .term b { font-size: var(--erp-fs-label); font-weight: var(--erp-fw-semibold); color: var(--erp-color-text-2); }
+.stack-right .term strong { font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); color: var(--erp-color-text); }
+.stack-right .term em { color: var(--erp-color-ok); font-size: var(--erp-fs-caption); font-style: normal; font-weight: var(--erp-fw-semibold); }
+.stack-right .term[aria-pressed="true"] { border: 2px solid var(--erp-color-primary); background: var(--erp-color-primary-weak); }
+.stack-right .term[aria-pressed="true"] b, .stack-right .term[aria-pressed="true"] strong { color: var(--erp-color-primary); }
+.stack-right .foot { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--erp-color-line); }
+.stack-right .foot .erp-btn--primary { width: 100%; justify-content: center; height: 42px; font-size: var(--erp-fs-section); }
