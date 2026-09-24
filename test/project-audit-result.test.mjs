@@ -19,6 +19,18 @@ test('FreePass Admin pilot obeys readiness maturity boundaries', async () => {
   assert.equal(summary.auto_remediation_allowed, false);
 });
 
+test('audit result cannot claim completion with a readiness axis omitted', async () => {
+  const [readiness, result] = await Promise.all([
+    readJson('../registry/project-audit-readiness.json'),
+    readJson('../docs/audits/freepass-admin-pilot-2026-09-20.json'),
+  ]);
+  result.findings = result.findings.filter(finding => finding.axis !== 'workflow');
+  assert.throws(
+    () => summarizeProjectAuditResult(result, readiness),
+    /PROJECT_AUDIT_AXES_INCOMPLETE/,
+  );
+});
+
 test('research-only axes cannot be upgraded to normative CORE_MATCH', async () => {
   const [readiness, result] = await Promise.all([
     readJson('../registry/project-audit-readiness.json'),
