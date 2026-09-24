@@ -75,3 +75,12 @@ test('열린 PR — 사흘 안에 움직였고 초안이 아닌 것만', () => {
   assert.deepEqual(b.열린PR.map((x) => x.number), [1]);
   assert.deepEqual(b.대표몫, ['열린 PR ai-core#1 t1']);
 });
+
+test('열린 PR — 갱신시각을 읽을 수 없으면 «없음»이 아니라 «모름»', () => {
+  const b = 브리핑({ now: NOW, prs: [{ repo: 'ai-core', number: 9, title: 'bad-time', updated_at: 'not-a-time', draft: false }] });
+  assert.equal(b.열린PR, null);
+  assert.deepEqual(b.대표몫, []);
+  const 글 = 글로(b);
+  assert.match(글, /열린 PR 은 못 읽었다 — 모름/);
+  assert.doesNotMatch(글, /^ {3}없음$/m, '갱신시각이 깨진 PR 을 조용히 버리고 「대표 몫 없음」 이라고 하면 안 된다');
+});
