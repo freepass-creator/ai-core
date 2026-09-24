@@ -243,7 +243,7 @@ freepass-admin 실제 적용 후 「상단바랑 사이드바도 규격 맞췄�
 | **상품** | 상품목록 — ✅ `erp-panel`(`WorkspaceScreen`/`ProductsScreen`) | 상품상세 — ✅ `erp-panel`(§5-6 슬롯, `Tile`) | 없음 — 상품은 ERP5/공급사 자료에서 오고 관리자가 새로 만들지 않는다(§7 Adapter) |
 | **접수** | 접수목록 — ✅ `erp-panel`(`WorkspaceScreen` compact, 실적/전체 훑어보기까지 이 한 판에 합쳤다 — 대표 2026-09-24 「상품 찾기 말고는 다 세개 패널로」, 단독 페이지였던 `IntakeScreen` 은 폐지) | 접수상세(`?ic=`) — ✅ `erp-panel--flip`(가운데 판이 상품상세 ↔ 접수상세로 등힘, `erp-tile` 카드로만) | 신규 접수(`?w=new`) — ✅ `erp-panel--flip`(가운데 판, `erp-tile` 요약 + 입력 셸) — 안쪽 필드는 아직 기능 쪽 `dz-*` 폼을 CSS 로 겉만 두른 것(`erp-embed`), `erp-field`/`erp-input` 을 직접 쓰도록 옮기는 게 다음 후보 |
 | **실적** | 실적목록 — ✅ 접수목록과 **같은 패널**을 분납실적·완납실적 칸으로 거른 것뿐(§5-5, 새 판 없음) | 실적상세 — 접수상세와 같은 자리(별도 판 없음, 대표 2026-09-23 「실적은 따로 판이 없다」) | 없음 — 실적은 접수가 인도된 결과라 따로 입력하지 않는다 |
-| **정산** | 정산목록 — 🔶 `SettlementScreen`(§4 `erp-cols`, `erp-panel` 미적용) | 정산상세(`?g=`) — 🔶 있음, 아직 §4 `erp-cols` | 청구서 발행 — ⬜ 지금은 단추 하나(`erp-btn`), 패널로 만들지는 미정 |
+| **정산** | 정산목록 — ✅ `erp-panel`(`SettlementScreen` compact, 청구목록/지급목록 — 대표 2026-09-24 「정산관리는 이거 공통규격이 아니잖아」로 §4 `erp-cols` 폐지) | 정산상세(`?ic=`) — ✅ 접수상세와 **같은 부품**(`SettlementDetail`, `Workspace.tsx`·`SettlementScreen.tsx` 가 같이 쓴다) | 청구서 발행 — ✅ 가운데 실적 줄 판의 `erp-panel-foot`(`IssueForm` + 발행 단추), 새 판은 아니다 |
 | **전자계약** | 전자계약목록 — 🔶 `EsignScreen`(§4 `erp-cols`, `erp-panel` 미적용) | 전자계약상세(`?id=`) — 🔶 있음, 아직 §4 `erp-cols` | 없음 — 전자계약은 `erp4`/서명 흐름이 만든다, 관리자가 새로 작성하지 않는다 |
 
 ✅ = §5-4 세 판 규격(`erp-panel`)으로 이미 서 있다. 🔶 = 화면은 있지만 아직 더 오래된 §4 골격
