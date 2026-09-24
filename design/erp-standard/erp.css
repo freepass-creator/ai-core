@@ -427,10 +427,14 @@
  *   대상(상품 · 접수 · 실적 · 정산)이 달라도 패널의 틀은 같고, 안의 카드 내용만 §5-5 를 따라 바뀐다. */
 .erp-panel { display: flex; flex-direction: column; min-height: 0; border: 1px solid var(--erp-color-line); border-radius: var(--erp-r-lg); background: var(--erp-color-surface); box-shadow: 0 8px 22px -18px var(--erp-color-text-3); overflow: hidden; }
 .erp-panel--flip { border: 2px solid var(--erp-color-primary); box-shadow: 0 0 0 4px var(--erp-color-focus-ring); }
+/* 패널 머리 — 좌우 두 자리로 딱 나뉜다(대표 2026-09-24 「좌측에 어떤 페이지인지 … 밸런스가 안
+ * 맞는 것 같은데」). 왼쪽 자리(이름표 칩 + 제목)와 오른쪽 자리(건수 칩)가 똑같이 "칩 하나 + 글자"
+ * 형태라 양 끝의 시각적 무게가 같다 — 전에는 왼쪽만 칩(`erp-panel-kind`)이고 오른쪽은 맨 텍스트라
+ * 왼쪽은 무겁고 오른쪽은 휑해서 균형이 안 맞아 보였다. */
 .erp-panel-head { display: flex; align-items: center; gap: var(--erp-sp-2); padding: var(--erp-sp-3) var(--erp-sp-4); border-bottom: 1px solid var(--erp-color-line); }
 .erp-panel-kind { padding: 2px 8px; border-radius: var(--erp-r-sm); background: var(--erp-color-neutral-bg); color: var(--erp-color-text-2); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-semibold); }
 .erp-panel-head h2 { margin: 0; font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); }
-.erp-panel-head span { margin-left: auto; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
+.erp-panel-count { margin-left: auto; padding: 2px 8px; border-radius: var(--erp-r-sm); background: var(--erp-color-neutral-bg); color: var(--erp-color-text-2); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-semibold); }
 .erp-panel-body { flex: 1; min-height: 0; overflow: auto; }
 /* 패널 하단 고정 버튼 — 패널 안 스크롤과 별도로, 필요한 버튼(예: 접수하기)이 항상 바닥에 붙는다 */
 .erp-panel-foot { flex: none; display: flex; gap: var(--erp-sp-2); padding: var(--erp-sp-3) var(--erp-sp-4); border-top: 1px solid var(--erp-color-line); background: var(--erp-color-surface); }
