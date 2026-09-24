@@ -6,16 +6,35 @@ body.ref-page { margin: 0; padding: 0; height: 100vh; display: flex; flex-direct
 .sbs-main { display: flex; flex: 1; min-height: 0; padding: var(--erp-sp-4) var(--erp-sp-5); gap: var(--erp-sp-4); }
 .sbs-main .erp-panel { flex: 1 1 0; min-width: 0; }
 .ref-note { padding: 10px var(--erp-sp-5) 0; color: var(--erp-color-text-2); font-size: var(--erp-fs-label); }
-.sv-detail-body { display: flex; flex-direction: column; gap: var(--erp-sp-4); padding: var(--erp-sp-4); }
-.sv-detail-body .photo { display: grid; place-items: center; height: 120px; border-radius: var(--erp-r-lg); background: var(--erp-color-sunken); color: var(--erp-color-line-strong); }
-.sv-detail-body .photo svg { width: 170px; height: 80px; fill: none; stroke: currentColor; stroke-width: 1.2; }
-.sv-detail-info .name { display: flex; align-items: center; gap: var(--erp-sp-2); margin: 0; font-size: var(--erp-fs-title); font-weight: var(--erp-fw-bold); color: var(--erp-color-text); flex-wrap: wrap; }
-.sv-detail-info .sub { margin: 4px 0 10px; color: var(--erp-color-text-2); }
+.sv-detail-body { display: flex; flex-direction: column; gap: var(--erp-sp-5); padding: var(--erp-sp-4); }
+
+/* ① 차량 정보 — 심플하게(대표 2026-09-24 「차에 대한 정보는 심플하게」): 사진도 작게, 값도 한 줄로 */
+.sv-car-brief { display: flex; gap: var(--erp-sp-3); }
+.sv-car-brief .photo { flex: none; display: grid; place-items: center; width: 84px; height: 64px; border-radius: var(--erp-r-lg); background: var(--erp-color-sunken); color: var(--erp-color-line-strong); }
+.sv-car-brief .photo svg { width: 68px; height: 32px; fill: none; stroke: currentColor; stroke-width: 1.2; }
+.sv-detail-info { min-width: 0; }
+.sv-detail-info .name { display: flex; align-items: center; gap: var(--erp-sp-2); margin: 0; font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); color: var(--erp-color-text); flex-wrap: wrap; }
+.sv-detail-info .sub { margin: 3px 0 0; color: var(--erp-color-text-2); font-size: var(--erp-fs-label); }
 .sv-detail-info .sub b { margin-right: 6px; padding: 0 6px; border-radius: var(--erp-r-sm); background: var(--erp-color-neutral-bg); color: var(--erp-color-text); font-weight: var(--erp-fw-semibold); }
-.sv-terms { display: flex; flex-direction: column; gap: 8px; }
-.sv-term { display: grid; grid-template-columns: 54px minmax(0, 1fr) auto; align-items: center; gap: 4px 10px; padding: 9px 12px; border: 1px solid var(--erp-color-line-strong); border-radius: var(--erp-r-lg); background: var(--erp-color-surface); }
+.sv-car-line { margin: 4px 0 0; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
+
+.sv-section-title { margin: 0 0 8px; color: var(--erp-color-text-2); font-size: var(--erp-fs-label); font-weight: var(--erp-fw-semibold); }
+
+/* ② 대여료 선택 — 메인(대표 2026-09-24 「기간별 대여료 선택을 하는 걸 메인으로」): 옅은 배경 판 위에 크게 */
+.sv-terms-main { padding: var(--erp-sp-3) var(--erp-sp-3) 2px; border-radius: var(--erp-r-lg); background: var(--erp-color-sunken); }
+.sv-section-title--main { color: var(--erp-color-text); font-size: var(--erp-fs-body); font-weight: var(--erp-fw-bold); }
+.sv-terms { display: flex; flex-direction: column; gap: 8px; padding-bottom: var(--erp-sp-3); }
+.sv-term { display: grid; grid-template-columns: 54px minmax(0, 1fr) auto; align-items: center; gap: 4px 10px; padding: 12px; border: 1px solid var(--erp-color-line-strong); border-radius: var(--erp-r-lg); background: var(--erp-color-surface); }
 .sv-term b { font-weight: var(--erp-fw-bold); color: var(--erp-color-text-2); font-size: var(--erp-fs-label); }
 .sv-term span { color: var(--erp-color-ok); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-semibold); }
-.sv-term strong { font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); color: var(--erp-color-text); }
+.sv-term strong { font-size: var(--erp-fs-title); font-weight: var(--erp-fw-bold); color: var(--erp-color-text); }
 .sv-term[aria-pressed="true"] { border: 2px solid var(--erp-color-primary); background: var(--erp-color-primary-weak); }
 .sv-term[aria-pressed="true"] b, .sv-term[aria-pressed="true"] strong { color: var(--erp-color-primary); }
+
+/* ③ 담당자 참고 — 아래로 쭉(대표 2026-09-24 「담당자가 볼수 있게끔 쭉쭉쭉쭉쭉쭉 있어야 되거든」):
+   줄마다 구분선을 긋고 라벨 · 값을 세로로 늘어놓는다 — 접수 전 훑어보는 실무 정보라 항목이 늘어도 그대로 쌓인다. */
+.sv-ref-list { display: flex; flex-direction: column; }
+.sv-ref-list > div { padding: 10px 2px; border-top: 1px solid var(--erp-color-line); }
+.sv-ref-list > div:first-child { border-top: 0; padding-top: 0; }
+.sv-ref-list dt { margin: 0 0 3px; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
+.sv-ref-list dd { margin: 0; color: var(--erp-color-text); font-size: var(--erp-fs-label); font-weight: var(--erp-fw-medium); }

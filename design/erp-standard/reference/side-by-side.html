@@ -8,7 +8,10 @@
      세 패널이 한 화면에 나란히 놓이고, 뷰포트 높이를 꽉 채워 각자 안에서 스크롤한다.
      목록 두 패널(상품목록 · 접수목록)은 좁아지므로 erp-panel--compact 로 카드가 세로 흐름으로 접힌다.
      상세내용 패널은 compact 를 안 써서 원래 넓은 레이아웃을 그대로 쓴다.
-     제목이 아주 긴 예시를 하나씩 넣어 §5-5 카드 줄 수 고정(잘림 처리)을 확인한다. 이름 · 차량번호는 가상 예시다. -->
+     제목이 아주 긴 예시를 하나씩 넣어 §5-5 카드 줄 수 고정(잘림 처리)을 확인한다. 이름 · 차량번호는 가상 예시다.
+     상세내용 패널 안쪽 순서는 대표 2026-09-24 지시대로 ① 차량 정보(심플) → ② 기간별 대여료 선택(메인,
+     옅은 배경 판으로 강조) → ③ 담당자 참고(우대조건 · 공급사 담당자 · 정산조건 · 보증금 · 접수이력 · 비고,
+     구분선으로 쭉 늘어놓는다 — 항목이 늘어도 그대로 쌓이는 구조). -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
 <link rel="stylesheet" href="../erp.css">
 <link rel="stylesheet" href="side-by-side.css">
@@ -49,22 +52,38 @@
     <div class="erp-panel-head"><span class="erp-panel-kind">상세내용</span><h2>상품상세</h2><span>고른 상품</span></div>
     <div class="erp-panel-body">
       <div class="sv-detail-body">
-        <div class="photo"><svg viewBox="0 0 120 60" aria-hidden="true"><path d="M8 42h104M14 42l6-14c2-5 6-8 12-9l22-3c8-1 16 1 22 6l12 10 14 3c4 1 6 4 6 7M30 42a8 8 0 1 0 16 0M78 42a8 8 0 1 0 16 0M40 20l4 14h24l-6-15"/></svg></div>
-        <div class="sv-detail-info">
-          <h2 class="name">쏘렌토 MQ4 PE <span class="erp-badge erp-badge--ok">즉시출고</span></h2>
-          <p class="sub"><b>123하4567</b>기아 · 시그니처 · 한빛렌터카 · 디젤</p>
-          <dl class="erp-props">
-            <div><dt>연식 · 주행</dt><dd>2024 · 12,100km</dd></div>
-            <div><dt>색상</dt><dd>스노우화이트펄 / 블랙</dd></div>
-            <div><dt>상품구분</dt><dd>중고렌트</dd></div>
-            <div><dt>공급사</dt><dd>한빛렌터카</dd></div>
-          </dl>
+        <!-- ① 차량 정보 — 심플하게, 참고용 (대표 2026-09-24 「차에 대한 정보는 심플하게」) -->
+        <div class="sv-car-brief">
+          <div class="photo"><svg viewBox="0 0 120 60" aria-hidden="true"><path d="M8 42h104M14 42l6-14c2-5 6-8 12-9l22-3c8-1 16 1 22 6l12 10 14 3c4 1 6 4 6 7M30 42a8 8 0 1 0 16 0M78 42a8 8 0 1 0 16 0M40 20l4 14h24l-6-15"/></svg></div>
+          <div class="sv-detail-info">
+            <h2 class="name">쏘렌토 MQ4 PE <span class="erp-badge erp-badge--ok">즉시출고</span></h2>
+            <p class="sub"><b>123하4567</b>기아 · 시그니처 · 한빛렌터카 · 디젤</p>
+            <p class="sv-car-line">2024식 · 12,100km · 스노우화이트펄/블랙 · 중고렌트</p>
+          </div>
         </div>
-        <div class="sv-terms">
-          <p style="margin:0 0 2px;color:var(--erp-color-text-2);font-size:var(--erp-fs-label);font-weight:var(--erp-fw-semibold)">기간을 고르세요</p>
-          <div class="sv-term" aria-pressed="false"><b>24개월</b><span>남는 것 412,000</span><strong>820,000원</strong></div>
-          <div class="sv-term" aria-pressed="true"><b>36개월</b><span>남는 것 631,500 · 최고</span><strong>760,000원</strong></div>
-          <div class="sv-term" aria-pressed="false"><b>48개월</b><span>남는 것 588,000</span><strong>720,000원</strong></div>
+
+        <!-- ② 대여료(기간별) 선택 — 메인 (대표 2026-09-24 「기간별 대여료 선택을 하는 걸 메인으로」) -->
+        <div class="sv-terms-main">
+          <p class="sv-section-title sv-section-title--main">기간을 골라 대여료를 확인하세요</p>
+          <div class="sv-terms">
+            <div class="sv-term" aria-pressed="false"><b>24개월</b><span>남는 것 412,000</span><strong>820,000원</strong></div>
+            <div class="sv-term" aria-pressed="true"><b>36개월</b><span>남는 것 631,500 · 최고</span><strong>760,000원</strong></div>
+            <div class="sv-term" aria-pressed="false"><b>48개월</b><span>남는 것 588,000</span><strong>720,000원</strong></div>
+          </div>
+        </div>
+
+        <!-- ③ 담당자 참고 — 아래로 쭉, 접수 전 훑어보는 실무 정보 (대표 2026-09-24
+             「그 밑으로는 담당자가 볼수 있게끔 쭉쭉쭉쭉쭉쭉 있어야 되거든」) -->
+        <div class="sv-staff-ref">
+          <p class="sv-section-title">담당자 참고</p>
+          <dl class="sv-ref-list">
+            <div><dt>우대조건 · 정책</dt><dd><span class="erp-tags"><span class="erp-tag erp-tag--primary">분납가능</span><span class="erp-tag erp-tag--primary">만21세</span><span class="erp-tag">사고 1회 · 경미</span></span></dd></div>
+            <div><dt>공급사 담당자</dt><dd>한빛렌터카 · 김도윤 대리 · 010-1234-5678</dd></div>
+            <div><dt>정산 조건</dt><dd>청구 월말 마감 · 세금계산서 발행</dd></div>
+            <div><dt>보증금 · 취소규정</dt><dd>보증금 없음 · 인도 후 취소 시 위약금 1개월치</dd></div>
+            <div><dt>최근 접수 이력</dt><dd>최근 90일 접수 없음</dd></div>
+            <div><dt>비고</dt><dd>겨울 타이어 별도 장착 · 인도 전 점검 필요</dd></div>
+          </dl>
         </div>
       </div>
     </div>
