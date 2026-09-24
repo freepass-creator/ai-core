@@ -153,6 +153,7 @@ export function 방향적용({ 항목, 방향들, asOf, 승인확인 = null }) {
   //   is the right answer for "기계가 여기까지만 간다".
   const 허 = d.허가;
   const authorization = 허 && Array.isArray(허.scope) && 허.scope.length
+    && 허.scope.every((scope) => text(scope) === scope)
     ? {
       required: true,
       status: 'GRANTED',
