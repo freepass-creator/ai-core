@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FreePass Admin 시안 I — 조립 패널 3개 · 보기 상태</title>
+<!-- 시안 I(대표 2026-09-24 「여러 화면을 만들면 안 되니까 패널을 조립할 거야 … 상품찾기 패널은
+     검색창 · 필터 버튼 · 퀵 필터. 심플하게. 상품목록 패널 · 상세내용 패널 · 접수목록 패널」).
+     이름 · 차량번호는 가상 예시다. -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<link rel="stylesheet" href="../../erp.css">
+<link rel="stylesheet" href="three-panel-v2.css">
+</head>
+<body class="erp-app f3v-app" data-screen="three-panel-v2">
+
+<header class="erp-topbar" data-region="topbar">
+  <div class="erp-brand"><span class="erp-brand-mark">F</span>FreePass Admin</div>
+  <button class="erp-gsearch" type="button" aria-label="통합 검색"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>통합 검색<kbd>/</kbd></button>
+  <div class="erp-topbar-right">
+    <span class="erp-badge erp-badge--warn">가상 데이터</span>
+    <div class="erp-user"><span class="erp-avatar">관</span><div>관리자<small>프리패스 본사</small></div></div>
+  </div>
+</header>
+
+<main class="f3v-main" data-region="grid">
+    <section class="f3v-panel">
+      <div class="f3v-phead"><h2>상품목록</h2><span>5대</span></div>
+      <div class="f3v-searchbar" data-region="filter" role="search">
+        <label class="f3v-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input placeholder="차량번호 · 차명 · 공급사" aria-label="검색"></label>
+        <button class="erp-btn erp-btn--sm" type="button">필터</button>
+      </div>
+      <div class="f3v-quick" role="group" aria-label="퀵 필터">
+        <button type="button" aria-pressed="true">전체</button><button type="button" aria-pressed="false">즉시출고</button><button type="button" aria-pressed="false">출고가능</button><button type="button" aria-pressed="false">36개월</button><button type="button" aria-pressed="false">80만원 이하</button>
+      </div>
+      <div class="f3v-list" role="list">
+          <div class="f3v-prow"><div class="f3v-prow-img"><svg viewBox="0 0 120 60" aria-hidden="true"><path d="M8 42h104M14 42l6-14c2-5 6-8 12-9l22-3c8-1 16 1 22 6l12 10 14 3c4 1 6 4 6 7M30 42a8 8 0 1 0 16 0M78 42a8 8 0 1 0 16 0M40 20l4 14h24l-6-15"/></svg></div><div><b>더 뉴 레이</b><small>67하2045</small></div><strong>360,000원</strong></div>
+          <div class="f3v-prow" aria-current="true"><div class="f3v-prow-img"><svg viewBox="0 0 120 60" aria-hidden="true"><path d="M8 42h104M14 42l6-14c2-5 6-8 12-9l22-3c8-1 16 1 22 6l12 10 14 3c4 1 6 4 6 7M30 42a8 8 0 1 0 16 0M78 42a8 8 0 1 0 16 0M40 20l4 14h24l-6-15"/></svg></div><div><b>쏘렌토 MQ4 PE</b><small>123하4567</small></div><strong>760,000원</strong></div>
+          <div class="f3v-prow"><div class="f3v-prow-img"><svg viewBox="0 0 120 60" aria-hidden="true"><path d="M8 42h104M14 42l6-14c2-5 6-8 12-9l22-3c8-1 16 1 22 6l12 10 14 3c4 1 6 4 6 7M30 42a8 8 0 1 0 16 0M78 42a8 8 0 1 0 16 0M40 20l4 14h24l-6-15"/></svg></div><div><b>디 올 뉴 싼타페</b><small>41허2286</small></div><strong>790,000원</strong></div>
+          <div class="f3v-prow"><div class="f3v-prow-img"><svg viewBox="0 0 120 60" aria-hidden="true"><path d="M8 42h104M14 42l6-14c2-5 6-8 12-9l22-3c8-1 16 1 22 6l12 10 14 3c4 1 6 4 6 7M30 42a8 8 0 1 0 16 0M78 42a8 8 0 1 0 16 0M40 20l4 14h24l-6-15"/></svg></div><div><b>더 뉴 투싼 NX4</b><small>33호2217</small></div><strong>650,000원</strong></div>
+          <div class="f3v-prow"><div class="f3v-prow-img"><svg viewBox="0 0 120 60" aria-hidden="true"><path d="M8 42h104M14 42l6-14c2-5 6-8 12-9l22-3c8-1 16 1 22 6l12 10 14 3c4 1 6 4 6 7M30 42a8 8 0 1 0 16 0M78 42a8 8 0 1 0 16 0M40 20l4 14h24l-6-15"/></svg></div><div><b>더 뉴 K5 DL3</b><small>24하6634</small></div><strong>570,000원</strong></div>
+          <div class="f3v-prow"><div class="f3v-prow-img"><svg viewBox="0 0 120 60" aria-hidden="true"><path d="M8 42h104M14 42l6-14c2-5 6-8 12-9l22-3c8-1 16 1 22 6l12 10 14 3c4 1 6 4 6 7M30 42a8 8 0 1 0 16 0M78 42a8 8 0 1 0 16 0M40 20l4 14h24l-6-15"/></svg></div><div><b>캐스퍼</b><small>19호4402</small></div><strong>395,000원</strong></div>
+      </div>
+    </section>
+    <section class="f3v-panel">
+      <div class="f3v-phead"><h2>상세내용</h2><span>고른 상품</span></div>
+      <div class="f3v-pbody" data-region="page-header">
+        <div class="f3v-photo"><svg viewBox="0 0 120 60" aria-hidden="true"><path d="M8 42h104M14 42l6-14c2-5 6-8 12-9l22-3c8-1 16 1 22 6l12 10 14 3c4 1 6 4 6 7M30 42a8 8 0 1 0 16 0M78 42a8 8 0 1 0 16 0M40 20l4 14h24l-6-15"/></svg></div>
+        <h2 class="f3v-name">쏘렌토 MQ4 PE <span class="erp-badge erp-badge--ok">즉시출고</span></h2>
+        <p class="f3v-sub"><b>123하4567</b>기아 · 시그니처 · 한빛렌터카 · 디젤</p>
+        <dl class="erp-props">
+          <div><dt>연식 · 주행</dt><dd>2024 · 12,100km</dd></div>
+          <div><dt>색상</dt><dd>스노우화이트펄 / 블랙</dd></div>
+          <div><dt>상품구분</dt><dd>중고렌트</dd></div>
+        </dl>
+        <div class="f3v-box">
+          <p class="f3v-box-title">기간을 고르세요</p>
+          <div class="f3v-terms">
+            <div class="f3v-term" aria-pressed="false"><b>24개월</b><span>남는 것 412,000</span><strong>820,000원</strong></div>
+            <div class="f3v-term" aria-pressed="true"><b>36개월</b><span>남는 것 631,500 · 최고</span><strong>760,000원</strong></div>
+            <div class="f3v-term" aria-pressed="false"><b>48개월</b><span>남는 것 588,000</span><strong>720,000원</strong></div>
+          </div>
+        </div>
+        <div class="f3v-box"><p class="f3v-box-title">우대조건 · 정책</p><span class="erp-tags"><span class="erp-tag erp-tag--primary">분납가능</span><span class="erp-tag erp-tag--primary">만21세</span></span></div>
+        <div class="f3v-pfoot"><button class="erp-btn erp-btn--primary" type="button" id="flipbtn">접수하기</button></div>
+      </div>
+    </section>
+    <section class="f3v-panel">
+      <div class="f3v-phead"><h2>접수목록</h2><span>전체 4</span></div>
+      
+      <div class="f3v-lseg" role="group" aria-label="접수 칸"><button type="button" aria-pressed="true">전체 4</button><button type="button" aria-pressed="false">당월접수 3</button><button type="button" aria-pressed="false">미완료 1</button></div>
+      <div class="f3v-llist" role="list">
+
+          <div class="f3v-lrow" data-tone="warn">
+            <div class="f3v-lrow-top"><b>윤서아</b><span class="erp-badge erp-badge--warn">미완료</span><strong>480,000원</strong></div>
+            <div class="f3v-lrow-car"><b>14허3390</b>더 뉴 아반떼 CN7 · 한빛렌터카 · 12개월</div>
+            
+          </div>
+          <div class="f3v-lrow" data-tone="info">
+            <div class="f3v-lrow-top"><b>박지현</b><span class="erp-badge erp-badge--info">당월접수</span><strong>420,000원</strong></div>
+            <div class="f3v-lrow-car"><b>67하2045</b>더 뉴 레이 · 그린카렌탈 · 12개월</div>
+            
+          </div>
+          <div class="f3v-lrow" data-tone="info">
+            <div class="f3v-lrow-top"><b>정도훈</b><span class="erp-badge erp-badge--info">당월접수</span><strong>650,000원</strong></div>
+            <div class="f3v-lrow-car"><b>33호2217</b>더 뉴 투싼 NX4 · 그린카렌탈 · 36개월</div>
+            
+          </div>
+      </div>
+    </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,109 @@
+/* 시안 I — 조립되는 패널 3개 (대표 2026-09-24
+ *   「여러 화면을 만들면 안 되니까 … 패널을 조립할 거야, 각 페이지를 구성하는 패널이 있는데.
+ *    상품찾기 패널 — 검색창 · 필터 버튼 · 퀵 필터 버튼. 심플하게 미니멀라이즈.
+ *    상품목록 패널 · 상세내용 패널 · 접수목록 패널」)
+ * 패널은 재사용되는 조립 부품이다. 이 화면은 그중 세 개를 나란히 조립한 예:
+ *   ① 상품목록 패널 = 머리(검색창 + 필터 버튼 + 퀵 필터 칩, §5-1 그대로 미니멀) + 목록
+ *   ② 상세내용 패널 = 고른 상품의 상세 · 기간. 「접수하기」 를 누르면 같은 패널이 접수 면으로 뒤집힌다(§G)
+ *   ③ 접수목록 패널 = 쌓인 접수의 지금 상태
+ * 값은 var(--erp-*) 토큰만. */
+.f3v-app { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: var(--erp-topbar-h) minmax(0, 1fr); grid-template-areas: "topbar" "main"; height: 100vh; margin: 0; background: var(--erp-color-bg); color: var(--erp-color-text); font-family: var(--erp-font-family); font-size: var(--erp-fs-body); }
+.f3v-app a { color: inherit; text-decoration: none; }
+.f3v-app .erp-topbar { grid-area: topbar; grid-column: 1; }
+.f3v-app .erp-gsearch { flex: 0 1 420px; }
+.f3v-main { grid-area: main; display: grid; grid-template-columns: 1fr 1.15fr .95fr; gap: var(--erp-sp-4); min-height: 0; padding: var(--erp-sp-4) var(--erp-sp-5); overflow: hidden; }
+.f3v-panel { display: flex; flex-direction: column; min-height: 0; border: 1px solid var(--erp-color-line); border-radius: calc(var(--erp-r-lg) * 1.5); background: var(--erp-color-surface); box-shadow: 0 8px 22px -18px var(--erp-color-text-3); overflow: hidden; }
+.f3v-panel--flip { border: 2px solid var(--erp-color-primary); box-shadow: 0 0 0 3px var(--erp-color-focus-ring); }
+.f3v-phead { display: flex; align-items: flex-start; gap: var(--erp-sp-2); padding: 12px var(--erp-sp-4) 10px; border-bottom: 1px solid var(--erp-color-line); }
+.f3v-phead h2 { margin: 0; font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); }
+.f3v-phead span { margin-left: auto; padding-top: 2px; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
+
+/* ① 상품목록 패널 — §5-1 그대로: 검색창 + 상세 필터 + 퀵 필터(세그) */
+.f3v-searchbar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--erp-sp-2); padding: 10px var(--erp-sp-4); border-bottom: 1px solid var(--erp-color-line); }
+.f3v-search { display: flex; align-items: center; gap: 8px; flex: 1 1 200px; height: 34px; padding: 0 10px; border: 1px solid var(--erp-color-line-strong); border-radius: var(--erp-r-md); }
+.f3v-search svg { width: 16px; height: 16px; fill: none; stroke: var(--erp-color-text-3); stroke-width: 2; flex: none; }
+.f3v-search input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--erp-color-text); font: inherit; font-size: var(--erp-fs-body); }
+.f3v-quick { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 var(--erp-sp-4) 10px; }
+.f3v-quick button { padding: 4px 11px; border: 1px solid var(--erp-color-line-strong); border-radius: var(--erp-r-pill); background: var(--erp-color-surface); color: var(--erp-color-text-2); font-size: var(--erp-fs-label); }
+.f3v-quick button[aria-pressed="true"] { border-color: var(--erp-color-primary); background: var(--erp-color-primary); color: var(--erp-color-on-primary); font-weight: var(--erp-fw-semibold); }
+.f3v-count { padding: 0 var(--erp-sp-4) 4px; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
+.f3v-list { flex: 1; min-height: 0; overflow: auto; padding: 4px var(--erp-sp-3) var(--erp-sp-3); display: flex; flex-direction: column; gap: 6px; }
+.f3v-prow { display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 9px 10px; border: 1px solid var(--erp-color-line); border-radius: var(--erp-r-lg); cursor: pointer; }
+.f3v-prow-img { display: grid; place-items: center; height: 34px; border-radius: var(--erp-r-sm); background: var(--erp-color-sunken); color: var(--erp-color-line-strong); }
+.f3v-prow-img svg { width: 34px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.4; }
+.f3v-prow b { display: block; font-size: var(--erp-fs-label); font-weight: var(--erp-fw-bold); }
+.f3v-prow small { color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
+.f3v-prow strong { font-size: var(--erp-fs-label); font-weight: var(--erp-fw-bold); white-space: nowrap; }
+.f3v-prow:hover { border-color: var(--erp-color-line-strong); }
+.f3v-prow[aria-current="true"] { border: 2px solid var(--erp-color-primary); background: var(--erp-color-primary-weak); }
+
+/* ② 상세내용 패널 — 두 면(보기/접수), 스크롤 영역 */
+.f3v-pbody { flex: 1; min-height: 0; overflow: auto; padding: var(--erp-sp-4); display: flex; flex-direction: column; gap: 10px; }
+.f3v-photo { display: grid; place-items: center; height: 110px; border-radius: var(--erp-r-lg); background: var(--erp-color-sunken); color: var(--erp-color-line-strong); flex: none; }
+.f3v-photo svg { width: 100px; height: 48px; fill: none; stroke: currentColor; stroke-width: 1.2; }
+.f3v-name { display: flex; align-items: center; gap: var(--erp-sp-2); margin: 0; font-size: var(--erp-fs-title); font-weight: var(--erp-fw-bold); }
+.f3v-sub { margin: 2px 0 0; color: var(--erp-color-text-2); font-size: var(--erp-fs-caption); }
+.f3v-sub b { margin-right: 6px; padding: 0 6px; border-radius: var(--erp-r-sm); background: var(--erp-color-neutral-bg); color: var(--erp-color-text); font-weight: var(--erp-fw-semibold); }
+.f3v-box { padding: 12px 14px; border: 1px solid var(--erp-color-line); border-radius: var(--erp-r-lg); background: var(--erp-color-sunken); }
+.f3v-box-title { margin: 0 0 8px; color: var(--erp-color-text-2); font-size: var(--erp-fs-label); font-weight: var(--erp-fw-semibold); }
+.f3v-terms { display: flex; flex-direction: column; gap: 6px; }
+.f3v-term { display: grid; grid-template-columns: 54px minmax(0, 1fr) auto; align-items: center; gap: 4px 10px; padding: 8px 12px; border: 1px solid var(--erp-color-line-strong); border-radius: var(--erp-r-lg); background: var(--erp-color-surface); cursor: pointer; }
+.f3v-term b { font-weight: var(--erp-fw-bold); }
+.f3v-term span { color: var(--erp-color-ok); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-semibold); }
+.f3v-term strong { font-size: var(--erp-fs-label); font-weight: var(--erp-fw-bold); }
+.f3v-term[aria-pressed="true"] { border: 2px solid var(--erp-color-primary); background: var(--erp-color-primary-weak); }
+.f3v-term[aria-pressed="true"] b, .f3v-term[aria-pressed="true"] strong { color: var(--erp-color-primary); }
+.f3v-pfoot { margin-top: auto; padding-top: 10px; border-top: 1px solid var(--erp-color-line); }
+.f3v-pfoot .erp-btn--primary { width: 100%; justify-content: center; height: 40px; font-size: var(--erp-fs-section); }
+.f3v-flip-badge { display: flex; align-items: center; gap: 6px; margin: -4px 0 2px; color: var(--erp-color-primary); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-semibold); }
+.f3v-flip-badge svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2; }
+.f3v-mini { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: 1px solid var(--erp-color-line-strong); border-radius: var(--erp-r-lg); background: var(--erp-color-sunken); }
+.f3v-mini-img { display: grid; place-items: center; flex: none; width: 50px; height: 34px; border-radius: var(--erp-r-md); background: var(--erp-color-surface); color: var(--erp-color-line-strong); }
+.f3v-mini-img svg { width: 40px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+.f3v-mini b { display: block; font-size: var(--erp-fs-label); font-weight: var(--erp-fw-bold); }
+.f3v-mini small { color: var(--erp-color-text-2); font-size: var(--erp-fs-caption); }
+.f3v-receipt { margin: 0; }
+.f3v-receipt div { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed var(--erp-color-line); font-size: var(--erp-fs-caption); }
+.f3v-receipt dt { color: var(--erp-color-text-2); }
+.f3v-receipt dd { margin: 0; font-weight: var(--erp-fw-semibold); }
+.f3v-receipt div:last-child { border-bottom: 0; }
+.f3v-receipt .f3v-net dd { color: var(--erp-color-ok); font-size: var(--erp-fs-label); font-weight: var(--erp-fw-bold); }
+.f3v-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.f3v-wide { grid-column: 1 / -1; }
+.f3v-form .erp-field .erp-label { font-size: var(--erp-fs-caption); }
+.f3v-form .erp-input, .f3v-form .erp-field span.erp-input { height: 32px; font-size: var(--erp-fs-caption); }
+.f3v-auto { color: var(--erp-color-primary); font-size: 10px; font-weight: var(--erp-fw-semibold); }
+.f3v-checks { margin: 0; padding: 0; list-style: none; }
+.f3v-checks li { display: flex; gap: 6px; padding: 1px 0; color: var(--erp-color-text-2); font-size: var(--erp-fs-caption); }
+.f3v-checks li::before { content: "✓"; color: var(--erp-color-ok); font-weight: var(--erp-fw-bold); }
+.f3v-pfoot--split { display: flex; gap: 8px; }
+.f3v-pfoot--split .erp-btn--primary { flex: 1; justify-content: center; height: 40px; font-size: var(--erp-fs-section); }
+
+/* ③ 접수목록 패널 */
+.f3v-lrow { padding: 10px 12px; border: 1px solid var(--erp-color-line); border-radius: var(--erp-r-lg); position: relative; overflow: hidden; }
+.f3v-lrow::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--erp-color-line-strong); }
+.f3v-lrow[data-tone="ok"]::before { background: var(--erp-color-ok); }
+.f3v-lrow[data-tone="info"]::before { background: var(--erp-color-info); }
+.f3v-lrow[data-tone="warn"]::before { background: var(--erp-color-warn); }
+.f3v-lrow-top { display: flex; align-items: center; gap: 8px; }
+.f3v-lrow-top b { font-size: var(--erp-fs-label); font-weight: var(--erp-fw-bold); }
+.f3v-lrow-top strong { margin-left: auto; font-size: var(--erp-fs-label); font-weight: var(--erp-fw-bold); }
+.f3v-lrow-car { margin-top: 2px; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
+.f3v-lrow-car b { margin-right: 4px; padding: 0 5px; border-radius: var(--erp-r-sm); background: var(--erp-color-neutral-bg); color: var(--erp-color-text); font-size: 10px; font-weight: var(--erp-fw-semibold); }
+.f3v-lsteps { display: flex; margin: 8px 0 0; padding: 0; list-style: none; }
+.f3v-lsteps li { position: relative; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; color: var(--erp-color-text-3); font-size: 9.5px; text-align: center; }
+.f3v-lsteps li::before { content: ""; position: absolute; top: 6px; right: 50%; width: 100%; height: 2px; background: var(--erp-color-line); }
+.f3v-lsteps li:first-child::before { display: none; }
+.f3v-lsteps i { position: relative; z-index: 1; width: 13px; height: 13px; display: grid; place-items: center; border: 2px solid var(--erp-color-line-strong); border-radius: var(--erp-r-pill); background: var(--erp-color-surface); font-style: normal; font-size: 8px; font-weight: var(--erp-fw-bold); }
+.f3v-lsteps li[data-state="done"] { color: var(--erp-color-text-2); }
+.f3v-lsteps li[data-state="done"]::before { background: var(--erp-color-ok); }
+.f3v-lsteps li[data-state="done"] i { border-color: var(--erp-color-ok); background: var(--erp-color-ok); color: var(--erp-color-on-primary); }
+.f3v-lsteps li[aria-current="step"] { color: var(--erp-color-primary); font-weight: var(--erp-fw-semibold); }
+.f3v-lsteps li[aria-current="step"] i { border-color: var(--erp-color-primary); box-shadow: 0 0 0 2px var(--erp-color-primary-weak); }
+.f3v-lrow--just { border: 2px solid var(--erp-color-ok); background: var(--erp-color-ok-bg); }
+.f3v-toast { display: flex; align-items: center; gap: 8px; margin: var(--erp-sp-3) var(--erp-sp-3) 0; padding: 8px 12px; border: 1px solid var(--erp-color-ok); border-radius: var(--erp-r-lg); background: var(--erp-color-ok-bg); font-size: var(--erp-fs-caption); }
+.f3v-toast i { display: grid; place-items: center; width: 18px; height: 18px; border-radius: var(--erp-r-pill); background: var(--erp-color-ok); color: var(--erp-color-on-primary); font-style: normal; font-size: 10px; font-weight: var(--erp-fw-bold); }
+.f3v-lseg { display: flex; gap: 6px; margin: var(--erp-sp-3) var(--erp-sp-3) 0; }
+.f3v-lseg button { padding: 4px 10px; border: 1px solid var(--erp-color-line-strong); border-radius: var(--erp-r-pill); background: var(--erp-color-surface); color: var(--erp-color-text-2); font-size: var(--erp-fs-caption); }
+.f3v-lseg button[aria-pressed="true"] { border-color: var(--erp-color-primary); background: var(--erp-color-primary); color: var(--erp-color-on-primary); font-weight: var(--erp-fw-semibold); }
+.f3v-llist { flex: 1; min-height: 0; overflow: auto; padding: var(--erp-sp-3); display: flex; flex-direction: column; gap: 8px; }
