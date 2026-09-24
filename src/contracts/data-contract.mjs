@@ -54,7 +54,10 @@ export function validateDataPipeline(pipeline){
     need(pipeline.stages.includes('SERIALIZE'),'EXPORT_SERIALIZE_REQUIRED');
     need(before(pipeline.stages,'PROJECT','SERIALIZE'),'EXPORT_PROJECT_BEFORE_SERIALIZE');
     need(!pipeline.stages.includes('COMMIT'),'EXPORT_COMMIT_FORBIDDEN');
-    if(pipeline.stages.includes('DELIVER')) need(before(pipeline.stages,'SERIALIZE','DELIVER'),'EXPORT_SERIALIZE_BEFORE_DELIVER');
+    if(pipeline.stages.includes('DELIVER')){
+      need(before(pipeline.stages,'SERIALIZE','DELIVER'),'EXPORT_SERIALIZE_BEFORE_DELIVER');
+      need(indexOf(pipeline.stages,'DELIVER')===pipeline.stages.length-1,'EXPORT_DELIVER_MUST_BE_LAST');
+    }
   }else{
     throw new Error('PIPELINE_DIRECTION_INVALID');
   }
