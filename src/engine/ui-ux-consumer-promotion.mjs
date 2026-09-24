@@ -56,7 +56,6 @@ export function evaluateUiUxConsumerPromotion({
   }
 
   if (!receipt) fail('UIUX_PROMOTION_RECEIPT_REQUIRED', to);
-  validateUiUxConformanceReceiptSemantics(receipt);
   if (receipt.product?.id !== manifest.product.id) fail('UIUX_PROMOTION_RECEIPT_PRODUCT_MISMATCH');
   if (receipt.product?.repository !== manifest.product.repository) fail('UIUX_PROMOTION_RECEIPT_REPOSITORY_MISMATCH');
   if (!/^[a-f0-9]{40}$/.test(receipt.product?.subject_revision ?? '')) {
@@ -76,6 +75,7 @@ export function evaluateUiUxConsumerPromotion({
 
   if (to === 'PILOT') {
     if (receipt.claim_level !== 'PILOT') fail('UIUX_PROMOTION_PILOT_RECEIPT_REQUIRED');
+    validateUiUxConformanceReceiptSemantics(receipt);
     return {
       status: 'PROMOTABLE',
       from,
@@ -96,6 +96,7 @@ export function evaluateUiUxConsumerPromotion({
     }
     if (manifest.verification?.pending_conformance?.length) fail('UIUX_PROMOTION_PENDING_CONFORMANCE');
     if (manifest.exceptions?.length) fail('UIUX_PROMOTION_ACTIVE_EXCEPTION_REVIEW_REQUIRED');
+    validateUiUxConformanceReceiptSemantics(receipt);
     return {
       status: 'PROMOTABLE',
       from,
