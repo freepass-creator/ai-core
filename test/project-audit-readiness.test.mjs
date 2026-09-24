@@ -42,6 +42,15 @@ test('missing required axis blocks even read-only pilot', async () => {
   assert.deepEqual(report.axes.missing, ['security-audit']);
 });
 
+test('canonical-partial axis requires a canonical source', async () => {
+  const registry = await readRegistry();
+  registry.axes.find(axis => axis.id === 'api-event-error').canonical_sources = [];
+  assert.throws(
+    () => validateProjectAuditReadinessRegistry(registry),
+    /AUDIT_READINESS_CANONICAL_SOURCES_REQUIRED:api-event-error/,
+  );
+});
+
 test('registry rejects duplicate or unknown axes', async () => {
   const registry = await readRegistry();
   registry.axes[7] = structuredClone(registry.axes[0]);
