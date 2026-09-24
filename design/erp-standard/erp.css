@@ -439,11 +439,21 @@
  * 여기서는 상태(뱃지)와 고르는 데 필요한 최소 식별 정보 + 금액까지만 — steps 트래커 · facts 는 상세내용 패널 몫이라 뺀다.
  * 모든 대상(상품 · 접수 · 실적 · 정산)이 폭 · 줄 수와 무관하게 같은 두 줄 규격으로 통일된다. */
 .erp-panel--compact .erp-rowcards { padding: var(--erp-sp-2) var(--erp-sp-3) var(--erp-sp-3); gap: 6px; background: transparent; }
-.erp-panel--compact .erp-rowcard { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "id amount"; align-items: center; gap: 2px var(--erp-sp-3); padding: 10px var(--erp-sp-3); }
+.erp-panel--compact .erp-rowcard { grid-template-columns: 44px minmax(0, 1fr) auto; grid-template-areas: "thumb id amount"; align-items: center; gap: 2px var(--erp-sp-3); padding: 10px var(--erp-sp-3); }
 .erp-panel--compact .erp-rowcard-steps, .erp-panel--compact .erp-rowcard-facts { display: none; }
 .erp-panel--compact .erp-rowcard-amount { text-align: right; }
 .erp-panel--compact .erp-rowcard-amount strong { font-size: var(--erp-fs-section); }
 .erp-panel--compact .erp-rowcard-go { display: none; }
+/* 썸네일 — 상품은 사진(차 아이콘), 접수 · 정산처럼 사진이 없는 대상은 같은 자리에 상태색을 칠해
+ * 글자를 읽지 않아도 상태가 한눈에 들어오게 한다(대표 2026-09-24 「썸네일 쪽에 상태나 분류값 직관적으로」).
+ * data-tone 이 있으면(접수 · 정산 카드) 뱃지와 같은 색을 썸네일 배경에 칠하고 짧은 상태 글자를 넣는다 —
+ * 새 아이콘을 안 만들고 이미 있는 뱃지 톤 색만 재사용한다. */
+.erp-panel--compact .erp-rowcard-thumb { grid-area: thumb; width: 44px; height: 44px; display: grid; place-items: center; border-radius: var(--erp-r-md); background: var(--erp-color-sunken); color: var(--erp-color-line-strong); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-bold); }
+.erp-panel--compact .erp-rowcard-thumb svg { width: 26px; height: 26px; stroke: currentColor; fill: none; stroke-width: 1.4; }
+.erp-panel--compact .erp-rowcard[data-tone="ok"] .erp-rowcard-thumb { background: var(--erp-color-ok-bg); color: var(--erp-color-ok); }
+.erp-panel--compact .erp-rowcard[data-tone="info"] .erp-rowcard-thumb { background: var(--erp-color-info-bg); color: var(--erp-color-info); }
+.erp-panel--compact .erp-rowcard[data-tone="warn"] .erp-rowcard-thumb { background: var(--erp-color-warn-bg); color: var(--erp-color-warn); }
+.erp-panel--compact .erp-rowcard[data-tone="err"] .erp-rowcard-thumb { background: var(--erp-color-err-bg); color: var(--erp-color-err); }
 /* 검색창 · 퀵 필터 줄 밑의 구분선 — 좁은 패널에서 검색창 바로 밑에 퀵 필터가 붙으면서 선 두 개가 다닥다닥
  * 붙어 지저분해졌다(대표 2026-09-24 「검색창이랑 목록카드 사이에 라인 없애자」). 좁은 패널에서는 지운다 —
  * 카드 목록의 sunken 배경색만으로도 위 검색 영역과 구분이 된다. */
