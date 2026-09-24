@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ERP 표준 — 상세내용을 기본 패널로 오른쪽에, 목록 두 개를 왼쪽에 위아래로 (참고, 최종)</title>
-<!-- §5-4 배치 변형 참고 — 대표 2026-09-24 최초 「세로로 세 개 하는 방법 말고 … 목록을 위아래로 두 개 놓고
-     우측에 상세 작업 화면, 상세 패널을 두는 거지」 → 재확인 「상세 페이지는 세로 패널 하나가 기본이야 …
-     상세 패널을 기본 패널로 우측에 두고 목록을 가로로 가로 패널 하나, 그 밑으로 또 가로 패널 하나」.
-     부품은 §5-4·§5-5 규격 그대로(erp-panel·erp-rowcard…), 배치만 다르다. 좁은 노트북 화면에서
-     상세내용(실제로 손을 쓰는 자리)이 넓어지는 게 이점이다. 필터 버튼 · 툴바 패딩 · 접수하기 버튼은
-     side-by-side.html 에서 잡은 규격(기본 erp-btn · 표준 툴바 패딩 · erp-panel-foot)을 그대로 따른다.
-     이름 · 차량번호는 가상 예시다. -->
+<title>ERP 표준 — 목록 두 개를 위에 가로로, 상세내용을 아래에 세로 하나로 (참고, 최종)</title>
+<!-- §5-4 배치 변형 참고 — 대표 2026-09-24 「목록 두 개를 왼쪽에 위아래로, 상세를 오른쪽에 넓게」로 확인했다가
+     바로 재확인 「아니 반대로지 — 목록이 가로로 두 개 패널을 먹고, 상세 패널은 그냥 세로로 하나로 두라고」 —
+     열(왼쪽 목록 스택 · 오른쪽 상세)을 행(위 목록 두 개 나란히 · 아래 상세 하나)으로 뒤집었다.
+     부품은 §5-4·§5-5 규격 그대로(erp-panel·erp-rowcard…), 배치만 다르다. 상세내용 패널이 전체 폭을 가지므로
+     사진 · 정보 · 기간선택을 다시 가로 한 줄로 편다(side-by-side 의 세로 쌓기와 다르다 — 폭이 넉넉해졌다).
+     필터 버튼 · 툴바 패딩 · 접수하기 버튼은 side-by-side.html 에서 잡은 규격(기본 erp-btn · 표준 툴바 패딩 ·
+     erp-panel-foot)을 그대로 따른다. 이름 · 차량번호는 가상 예시다. -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
 <link rel="stylesheet" href="../erp.css">
 <link rel="stylesheet" href="stacked-panels.css">
@@ -25,10 +25,10 @@
     <div class="erp-user"><span class="erp-avatar">관</span><div>관리자<small>프리패스 본사</small></div></div>
   </div>
 </header>
-<p class="ref-note">1366px 노트북 폭 기준 — 왼쪽 목록 두 개(380px)는 좁아도 되지만, 오른쪽 상세내용은 실제로 손을 쓰는 자리라 넓어야 한다.</p>
+<p class="ref-note">1366px 노트북 폭 기준 — 위 목록 두 개는 폭을 반씩 나눠 좁아도 되지만, 아래 상세내용은 전체 폭으로 넓게 쓴다.</p>
 
 <main class="stack-main" data-region="grid">
-  <div class="stack-left">
+  <div class="stack-top">
     <section class="erp-panel erp-panel--compact">
       <div class="erp-panel-head"><span class="erp-panel-kind">목록</span><h2>상품목록</h2><span>3대</span></div>
       <form class="erp-searchbar" data-region="filter" role="search"><label class="erp-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input placeholder="차량번호 · 차명" aria-label="검색"></label><details class="erp-filter-more"><summary class="erp-btn">필터</summary></details></form>
@@ -70,27 +70,29 @@
     </section>
   </div>
 
-  <section class="erp-panel stack-right">
+  <section class="erp-panel stack-bottom">
     <div class="erp-panel-head"><span class="erp-panel-kind">상세내용</span><h2>상품상세</h2><span>고른 상품</span></div>
     <div class="erp-panel-body">
-      <div class="photo"><svg viewBox="0 0 120 60" aria-hidden="true"><path d="M8 42h104M14 42l6-14c2-5 6-8 12-9l22-3c8-1 16 1 22 6l12 10 14 3c4 1 6 4 6 7M30 42a8 8 0 1 0 16 0M78 42a8 8 0 1 0 16 0M40 20l4 14h24l-6-15"/></svg></div>
-      <h2 class="name">쏘렌토 MQ4 PE <span class="erp-badge erp-badge--ok">즉시출고</span></h2>
-      <p class="sub"><b>123하4567</b>기아 · 시그니처 · 한빛렌터카 · 디젤</p>
-      <dl class="erp-props">
-        <div><dt>연식 · 주행</dt><dd>2024 · 12,100km</dd></div>
-        <div><dt>색상</dt><dd>스노우화이트펄 / 블랙</dd></div>
-        <div><dt>상품구분</dt><dd>중고렌트</dd></div>
-        <div><dt>공급사</dt><dd>한빛렌터카</dd></div>
-      </dl>
-      <div class="box">
-        <p class="box-title">기간을 고르세요 — 넓어진 만큼 세 칸이 가로로 나란히 선다</p>
-        <div class="terms">
+      <div class="sb-detail-body">
+        <div class="photo"><svg viewBox="0 0 120 60" aria-hidden="true"><path d="M8 42h104M14 42l6-14c2-5 6-8 12-9l22-3c8-1 16 1 22 6l12 10 14 3c4 1 6 4 6 7M30 42a8 8 0 1 0 16 0M78 42a8 8 0 1 0 16 0M40 20l4 14h24l-6-15"/></svg></div>
+        <div class="sb-detail-info">
+          <h2 class="name">쏘렌토 MQ4 PE <span class="erp-badge erp-badge--ok">즉시출고</span></h2>
+          <p class="sub"><b>123하4567</b>기아 · 시그니처 · 한빛렌터카 · 디젤</p>
+          <dl class="erp-props">
+            <div><dt>연식 · 주행</dt><dd>2024 · 12,100km</dd></div>
+            <div><dt>색상</dt><dd>스노우화이트펄 / 블랙</dd></div>
+            <div><dt>상품구분</dt><dd>중고렌트</dd></div>
+            <div><dt>공급사</dt><dd>한빛렌터카</dd></div>
+          </dl>
+          <span class="erp-tags"><span class="erp-tag erp-tag--primary">분납가능</span><span class="erp-tag erp-tag--primary">만21세</span><span class="erp-tag">사고 1회 · 경미</span></span>
+        </div>
+        <div class="sb-terms">
+          <p class="sb-terms-title">기간을 고르세요</p>
           <div class="term" aria-pressed="false"><b>24개월</b><strong>820,000원</strong><em>남는 것 412,000</em></div>
           <div class="term" aria-pressed="true"><b>36개월</b><strong>760,000원</strong><em>남는 것 631,500 · 최고</em></div>
           <div class="term" aria-pressed="false"><b>48개월</b><strong>720,000원</strong><em>남는 것 588,000</em></div>
         </div>
       </div>
-      <div class="box"><p class="box-title">우대조건 · 정책</p><span class="erp-tags"><span class="erp-tag erp-tag--primary">분납가능</span><span class="erp-tag erp-tag--primary">만21세</span><span class="erp-tag">사고 1회 · 경미</span></span></div>
     </div>
     <div class="erp-panel-foot"><button class="erp-btn erp-btn--primary" type="button">접수하기</button></div>
   </section>
