@@ -28,7 +28,7 @@
 </header>
 <p class="ref-note">패널 세 개를 가로로 붙인다 — 뷰포트 높이를 꽉 채우고 각자 안에서 스크롤한다.</p>
 
-<main class="sbs-main" data-region="grid">
+<main class="erp-workspace" data-region="grid">
   <section class="erp-panel erp-panel--compact">
     <div class="erp-panel-head"><span class="erp-panel-kind">목록</span><h2>상품찾기</h2><span class="erp-panel-count">전체 3건</span></div>
     <form class="erp-searchbar" data-region="filter" role="search"><label class="erp-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input placeholder="차량번호 · 차명 · 공급사" aria-label="검색"></label><details class="erp-filter-more"><summary class="erp-btn">필터</summary></details></form>
@@ -48,29 +48,29 @@
   </article></div></div>
   </section>
 
-  <section class="erp-panel sbs-detail">
+  <section class="erp-panel">
     <div class="erp-panel-head"><span class="erp-panel-kind">상세내용</span><h2>123하4567 쏘렌토 MQ4 PE</h2><span class="erp-panel-count">고른 상품</span></div>
     <div class="erp-panel-body">
-      <div class="sv-detail-body">
+      <div class="erp-detail-body">
         <!-- ① 차량 정보 — 차 사진이 메인, 그 밑에 심플한 설명 (대표 2026-09-24 「차 사진이 메인으로는
              있어야 되잖아 차 사진 메인에 그 차를 설명하는 간단한 정보 정도는 들어가야지」). erp-tile =
              공통 카드 규격(erp.css, B. 설명하는 카드) — 좌우 패딩 · 모서리 · 그림자를 페이지마다
              베끼지 않고 여기서 공유한다(대표 2026-09-24 「공통 css에다가 규격으로 둬야 돼」). -->
-        <div class="sv-car-card erp-tile">
+        <div class="erp-hero-tile erp-tile">
           <div class="photo"><svg viewBox="0 0 120 60" aria-hidden="true"><path d="M8 42h104M14 42l6-14c2-5 6-8 12-9l22-3c8-1 16 1 22 6l12 10 14 3c4 1 6 4 6 7M30 42a8 8 0 1 0 16 0M78 42a8 8 0 1 0 16 0M40 20l4 14h24l-6-15"/></svg></div>
-          <div class="sv-detail-info">
+          <div class="erp-hero-info">
             <h2 class="name">쏘렌토 MQ4 PE <span class="erp-badge erp-badge--ok">즉시출고</span></h2>
             <p class="sub"><b>123하4567</b>기아 · 시그니처 · 한빛렌터카 · 디젤</p>
-            <p class="sv-car-line">2024식 · 12,100km · 스노우화이트펄/블랙 · 중고렌트</p>
+            <p class="erp-hero-line">2024식 · 12,100km · 스노우화이트펄/블랙 · 중고렌트</p>
           </div>
         </div>
 
         <!-- ② 대여료(기간별) 선택 — 메인 (대표 2026-09-24 「기간별 대여료 선택을 하는 걸 메인으로」).
              섹션 제목은 카드 안에 이미 다 있는 내용을 다시 풀어 쓰지 않는다(대표 2026-09-24 「쓸데없는
              글씨들을 넣어놨니, 텍스트만 있어야 될 거는 텍스트만」) — 배경 없이 짧은 소제목만 둔다. -->
-        <div class="sv-terms-main">
-          <p class="sv-section-title sv-section-title--main">대여료</p>
-          <div class="sv-terms erp-tile-group">
+        <div>
+          <p class="erp-subtitle erp-subtitle--lead">대여료</p>
+          <div class="erp-tile-group">
             <div class="erp-tile erp-tile--pressable" aria-pressed="false">
               <div class="erp-tile-row"><b>24개월</b><strong>820,000원</strong></div>
               <div class="erp-tile-row"><span>보증금 1,000,000원</span><span class="erp-tile-note--accent">남는 것 412,000</span></div>
@@ -91,19 +91,19 @@
              좌우는 다 동일해야 돼 동일한 카드야, 내용이 많으면 밑으로 쭉 길어지는 거지」). 항목마다 따로
              카드를 만들지 않고, 성격이 같은 항목을 한 카드 안에 묶는다 — 카드는 다른 카드(대여료 카드 ·
              목록 카드)와 좌우 패딩이 완전히 같고, 안에 든 항목 수만큼 세로로 자연스럽게 길어진다. -->
-        <div class="sv-staff-ref">
-          <p class="sv-section-title">담당자 참고</p>
-          <div class="sv-ref-list erp-tile-group">
-            <div class="sv-ref-card erp-tile">
-              <h3 class="sv-ref-card-title erp-tile-title">우대조건 · 계약조건</h3>
+        <div>
+          <p class="erp-subtitle">담당자 참고</p>
+          <div class="erp-tile-group">
+            <div class="erp-info-card erp-tile">
+              <h3 class="erp-tile-title">우대조건 · 계약조건</h3>
               <dl>
                 <div><dt>우대조건 · 정책</dt><dd><span class="erp-tags"><span class="erp-tag erp-tag--primary">분납가능</span><span class="erp-tag erp-tag--primary">만21세</span><span class="erp-tag">사고 1회 · 경미</span></span></dd></div>
                 <div><dt>정산 조건</dt><dd>청구 월말 마감 · 세금계산서 발행</dd></div>
                 <div><dt>취소규정</dt><dd>인도 후 취소 시 위약금 1개월치</dd></div>
               </dl>
             </div>
-            <div class="sv-ref-card erp-tile">
-              <h3 class="sv-ref-card-title erp-tile-title">공급사 · 이력</h3>
+            <div class="erp-info-card erp-tile">
+              <h3 class="erp-tile-title">공급사 · 이력</h3>
               <dl>
                 <div><dt>공급사 담당자</dt><dd>한빛렌터카 · 김도윤 대리 · 010-1234-5678</dd></div>
                 <div><dt>최근 접수 이력</dt><dd>최근 90일 접수 없음</dd></div>

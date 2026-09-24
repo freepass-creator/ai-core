@@ -206,6 +206,22 @@ freepass-admin 실제 적용 후 「상단바랑 사이드바도 규격 맞췄�
 [reference/side-by-side-write.html](reference/side-by-side-write.html)(가운데 판이 입력·저장으로
 뒤집힌 상태) · `images/side-by-side-write.png`.
 
+**여러 패널을 나란히 붙이는 배치 · 카드 구성은 페이지 CSS 가 아니라 `erp.css` 공통 규격이다** (대표
+2026-09-24 「공통 CSS랑 어댑터 엔진 이런 것들 다 공통으로만 쓰고 절대로 그 페이지 전용을 만들지 마」).
+`reference/side-by-side.css` 에 있던 페이지 전용 클래스(`sbs-main`, `sv-detail-body`, `sv-car-card`,
+`sv-ref-card`, `sv-section-title`, `sv-write-fields` 등 — 아래 §5-6 설명은 그때 이름 그대로 남아있다)를
+전부 `erp.css` 의 공통 클래스로 승격했다. 접수뿐 아니라 실적 · 정산 · 전자계약 같은 다른 여러-패널
+작업화면을 새로 만들 때도 이 공통 클래스만 그대로 쓴다 — 화면마다 자기만의 배치 CSS 를 다시 만들지 않는다.
+
+| 예전 페이지 전용 이름(`reference/side-by-side.css`) | 지금 공통 이름(`erp.css`) |
+|---|---|
+| `sbs-main` | `erp-workspace` |
+| `sv-detail-body` | `erp-detail-body` |
+| `sv-car-card` / `sv-detail-info` / `sv-car-line` | `erp-hero-tile` / `erp-hero-info` / `erp-hero-line` |
+| `sv-section-title` / `sv-section-title--main` | `erp-subtitle` / `erp-subtitle--lead` |
+| `sv-ref-card` / `sv-ref-list`(장식 없음, `erp-tile-group` 로 충분) | `erp-info-card` |
+| `sv-write-fields` / `sv-write-checks` | `erp-form-fields` / `erp-form-checks` |
+
 ### 5-4-1. 패널 카탈로그 — 화면(페이지) 말고 패널 기준으로 싹 다 나열 (FreePass Admin, 대표 2026-09-24)
 
 「패널 종류부터 싹 다 나열해봐, 그냥 그 페이지 상관없이 어떤 패널이 있는지는 다 있잖아」 — 화면(라우트)
@@ -216,7 +232,7 @@ freepass-admin 실제 적용 후 「상단바랑 사이드바도 규격 맞췄�
 | 대상 | 목록 패널 | 상세내용 패널 | 입력·저장 패널 |
 |---|---|---|---|
 | **상품** | 상품목록 — ✅ `erp-panel`(`WorkspaceScreen`/`ProductsScreen`) | 상품상세 — ✅ `erp-panel`(§5-6 슬롯, `Tile`) | 없음 — 상품은 ERP5/공급사 자료에서 오고 관리자가 새로 만들지 않는다(§7 Adapter) |
-| **접수** | 접수목록 — ✅ `erp-panel`(`WorkspaceScreen` compact) · 🔶 `IntakeScreen` 목록(아직 §4 `erp-cols`, `erp-panel` 미적용) | 접수상세(`?ic=`) — 🔶 있음, 아직 §4 `erp-cols`(패널 아님) — 다음 후보 | 신규 접수(`?w=new`) — 🔶 있음(`NewIntakePanel`), 아직 옛 `_design`(`dz-*`) 판 — `side-by-side-write.html` 규격으로 옮길 다음 후보 |
+| **접수** | 접수목록 — ✅ `erp-panel`(`WorkspaceScreen` compact, 실적/전체 훑어보기까지 이 한 판에 합쳤다 — 대표 2026-09-24 「상품 찾기 말고는 다 세개 패널로」, 단독 페이지였던 `IntakeScreen` 은 폐지) | 접수상세(`?ic=`) — ✅ `erp-panel--flip`(가운데 판이 상품상세 ↔ 접수상세로 등힘, `erp-tile` 카드로만) | 신규 접수(`?w=new`) — ✅ `erp-panel--flip`(가운데 판, `erp-tile` 요약 + 입력 셸) — 안쪽 필드는 아직 기능 쪽 `dz-*` 폼을 CSS 로 겉만 두른 것(`erp-embed`), `erp-field`/`erp-input` 을 직접 쓰도록 옮기는 게 다음 후보 |
 | **실적** | 실적목록 — ✅ 접수목록과 **같은 패널**을 분납실적·완납실적 칸으로 거른 것뿐(§5-5, 새 판 없음) | 실적상세 — 접수상세와 같은 자리(별도 판 없음, 대표 2026-09-23 「실적은 따로 판이 없다」) | 없음 — 실적은 접수가 인도된 결과라 따로 입력하지 않는다 |
 | **정산** | 정산목록 — 🔶 `SettlementScreen`(§4 `erp-cols`, `erp-panel` 미적용) | 정산상세(`?g=`) — 🔶 있음, 아직 §4 `erp-cols` | 청구서 발행 — ⬜ 지금은 단추 하나(`erp-btn`), 패널로 만들지는 미정 |
 | **전자계약** | 전자계약목록 — 🔶 `EsignScreen`(§4 `erp-cols`, `erp-panel` 미적용) | 전자계약상세(`?id=`) — 🔶 있음, 아직 §4 `erp-cols` | 없음 — 전자계약은 `erp4`/서명 흐름이 만든다, 관리자가 새로 작성하지 않는다 |
@@ -288,10 +304,10 @@ freepass-admin 실제 적용 후 「상단바랑 사이드바도 규격 맞췄�
 
 | 단계 | 어디 | 값 | 적용 |
 |---|---|---|---|
-| 패널 사이 | 레이아웃 안에서 패널과 패널 사이 | `var(--erp-sp-4)`(16px) | `sbs-main`/`stack-main` `gap` |
+| 패널 사이 | 레이아웃 안에서 패널과 패널 사이 | `var(--erp-sp-4)`(16px) | `erp-workspace`/`stack-main` `gap` |
 | 패널 내부 세로 리듬 | 패널 머리 · 검색창 · 퀵 필터 줄의 위아래 패딩 | `var(--erp-sp-3)`(12px) | `erp-panel-head` · `erp-searchbar` · `erp-toolbar` — 셋 다 같은 값이라 검색창에서 퀵 필터로, 퀵 필터에서 카드 목록으로 내려가는 리듬이 고르다 |
-| 카드 사이 간격 | 목록 카드끼리, 상세내용 패널의 카드끼리 — **목록 · 상세 공통** | `var(--erp-sp-2)`(8px) | `erp-rowcards`(원안 · compact 둘 다) · `sv-terms` · `sv-ref-list` |
-| 카드 묶음(섹션) 사이 간격 | 상세내용 패널 안, 슬롯①/②/③처럼 성격이 다른 카드 묶음 사이 — 카드 사이보다 한 단 넓게 띄워 묶음이 갈린다 | `var(--erp-sp-5)`(20px) | `sv-detail-body` |
+| 카드 사이 간격 | 목록 카드끼리, 상세내용 패널의 카드끼리 — **목록 · 상세 공통** | `var(--erp-sp-2)`(8px) | `erp-rowcards`(원안 · compact 둘 다) · `erp-tile-group` |
+| 카드 묶음(섹션) 사이 간격 | 상세내용 패널 안, 슬롯①/②/③처럼 성격이 다른 카드 묶음 사이 — 카드 사이보다 한 단 넓게 띄워 묶음이 갈린다 | `var(--erp-sp-5)`(20px) | `erp-detail-body` |
 
 좌우 여백은 모든 패널이 `var(--erp-sp-4)`(16px) 하나로 통일돼 있다(패널 머리 · 검색창 · 카드 목록 ·
 상세내용 패널 몸 전부 이 값 아니면 이 값에서 나온 내부 카드 패딩). 확인 그림: `images/side-by-side.png`.

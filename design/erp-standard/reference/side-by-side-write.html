@@ -24,7 +24,7 @@
 </header>
 <p class="ref-note">가운데 상세내용 판이 「접수하기」로 입력·저장 판으로 뒤집혔다 — 다른 화면으로 옮기지 않는다.</p>
 
-<main class="sbs-main" data-region="grid">
+<main class="erp-workspace" data-region="grid">
   <section class="erp-panel erp-panel--compact">
     <div class="erp-panel-head"><span class="erp-panel-kind">목록</span><h2>상품찾기</h2><span class="erp-panel-count">전체 3건</span></div>
     <form class="erp-searchbar" data-region="filter" role="search"><label class="erp-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input placeholder="차량번호 · 차명 · 공급사" aria-label="검색"></label><details class="erp-filter-more"><summary class="erp-btn">필터</summary></details></form>
@@ -47,23 +47,23 @@
   <!-- 가운데 판 — 평소엔 상세내용(side-by-side.html), 「접수하기」를 누르면 같은 자리가 입력·저장으로
        뒤집힌다(erp-panel--flip). 이름표 칩이 «상세내용» → «입력»으로, 오른쪽 칩이 «고른 상품» →
        «필수 N/M»으로, 몸 내용이 읽기 전용 카드들 → 실제로 값을 쓰는 폼으로 바뀐다 — 자리 · 틀은 그대로. -->
-  <section class="erp-panel sbs-detail erp-panel--flip">
+  <section class="erp-panel erp-panel--flip">
     <div class="erp-panel-head"><span class="erp-panel-kind">입력</span><h2>신규 접수 — 123하4567 쏘렌토 MQ4 PE</h2><span class="erp-panel-count">필수 2/2</span></div>
     <div class="erp-panel-body">
-      <div class="sv-detail-body">
+      <div class="erp-detail-body">
         <!-- 지금 뭘 접수하는 중인지 요약 — 값을 바꾸는 자리가 아니라 읽기 전용 타일 하나(B. 설명하는 카드)로만 -->
         <div class="erp-tile">
           <div class="erp-tile-row"><b>쏘렌토 MQ4 PE · 36개월</b><strong>760,000원</strong></div>
           <div class="erp-tile-row"><span>123하4567 · 한빛렌터카</span><span class="erp-tile-note--accent">남는 것 631,500원</span></div>
         </div>
 
-        <div class="sv-write-fields">
-          <p class="sv-section-title">접수 정보</p>
+        <div class="erp-form-fields">
+          <p class="erp-subtitle">접수 정보</p>
           <label class="erp-field"><span class="erp-label">고객 <em class="erp-req">*</em></span><input class="erp-input erp-input--focus" value="김민수"></label>
           <label class="erp-field"><span class="erp-label">영업채널 <em class="erp-req">*</em></span><span class="erp-input">프리패스 직영<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></label>
         </div>
 
-        <ul class="sv-write-checks">
+        <ul class="erp-form-checks">
           <li>✓ 123하4567 진행 중인 접수 없음</li>
           <li>✓ 요금 ERP5 와 같음</li>
         </ul>
