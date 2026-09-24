@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FreePass Admin 시안 F — ③ 계약접수</title>
+<!-- 시안 F(대표 2026-09-24 「한 화면에서 상품을 찾고 상세를 보고 기간을 골라 접수하기 누르면
+     접수화면으로 전환되서 접수저장을 누르면 접수목록으로 가는거지」). 실제 화면 세 장, 카드로만.
+     이름 · 차량번호는 가상 예시다. -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<link rel="stylesheet" href="../../erp.css">
+<link rel="stylesheet" href="screen-flow.css">
+</head>
+<body class="erp-app fsf-app" data-screen="list">
+<header class="erp-topbar" data-region="topbar">
+  <div class="erp-brand"><span class="erp-brand-mark">F</span>FreePass Admin</div>
+  <nav class="fsf-links" aria-label="메뉴">
+    <a href="finder.html">상품찾기</a><a href="list.html" aria-current="page">계약접수</a><a href="#">실적</a><a href="#">정산관리</a><a class="fsf-apart" href="#">전자계약</a>
+  </nav>
+  <div class="erp-topbar-right">
+    <span class="erp-badge erp-badge--warn">가상 데이터</span>
+    <div class="erp-user"><span class="erp-avatar">관</span><div>관리자<small>프리패스 본사</small></div></div>
+  </div>
+</header>
+
+<main class="fsf-main">
+  <p class="fsf-crumb">홈 › 업무 › <span aria-current="page">계약접수</span></p>
+  <div class="fsf-head">
+    <div><h1>계약접수</h1><p>방금 저장한 접수가 맨 위에 있습니다. 다음 할 일은 계약서 받기입니다.</p></div>
+    <a class="erp-btn erp-btn--primary" href="finder.html"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>상품 골라 접수</a>
+  </div>
+  <div class="fsf-list-body" data-region="grid">
+    <form class="fsf-card fsf-search" data-region="filter" role="search">
+      <label class="erp-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input placeholder="고객 · 차번 · 모델 · 공급사 · 담당" aria-label="검색"></label>
+      <details class="erp-filter-more"><summary class="erp-btn">상세 필터</summary></details>
+    </form>
+    <div class="fsf-toolbar"><div class="erp-seg" role="group" aria-label="접수 칸"><button type="button" aria-pressed="true">전체 4</button><button type="button" aria-pressed="false">당월접수 3</button><button type="button" aria-pressed="false">미완료 1</button></div></div>
+    <div class="fsf-list" role="list">
+        <article class="fsf-card fsf-row fsf-row--just" data-tone="info">
+          <div><h3 class="fsf-row-title">김민수<span class="erp-badge erp-badge--ok">방금 접수</span><span class="erp-badge erp-badge--info">당월접수</span></h3><div class="fsf-row-car"><b>123하4567</b>쏘렌토 MQ4 PE</div></div>
+          <div class="fsf-row-facts"><span>한빛렌터카</span><span>36개월</span></div>
+          <div class="fsf-row-facts"><span>09-24 10:22 · 방금 저장</span></div>
+          <div class="fsf-row-amount"><strong>760,000<small>원/월</small></strong></div>
+          <svg viewBox="0 0 24 24" aria-hidden="true" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6 6 6-6 6"/></svg>
+        </article>
+        <article class="fsf-card fsf-row" data-tone="warn">
+          <div><h3 class="fsf-row-title">윤서아<span class="erp-badge erp-badge--warn">미완료</span></h3><div class="fsf-row-car"><b>14허3390</b>더 뉴 아반떼 CN7</div></div>
+          <div class="fsf-row-facts"><span>한빛렌터카</span><span>12개월</span></div>
+          <div class="fsf-row-facts"><span>접수 09-11 · 12일째 대기</span></div>
+          <div class="fsf-row-amount"><strong>480,000<small>원/월</small></strong></div>
+          <svg viewBox="0 0 24 24" aria-hidden="true" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6 6 6-6 6"/></svg>
+        </article>
+        <article class="fsf-card fsf-row" data-tone="info">
+          <div><h3 class="fsf-row-title">박지현<span class="erp-badge erp-badge--info">당월접수</span></h3><div class="fsf-row-car"><b>67하2045</b>더 뉴 레이</div></div>
+          <div class="fsf-row-facts"><span>그린카렌탈</span><span>12개월</span></div>
+          <div class="fsf-row-facts"><span>접수 09-21 · 인도 완료</span></div>
+          <div class="fsf-row-amount"><strong>420,000<small>원/월</small></strong></div>
+          <svg viewBox="0 0 24 24" aria-hidden="true" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6 6 6-6 6"/></svg>
+        </article>
+        <article class="fsf-card fsf-row" data-tone="info">
+          <div><h3 class="fsf-row-title">정도훈<span class="erp-badge erp-badge--info">당월접수</span></h3><div class="fsf-row-car"><b>33호2217</b>더 뉴 투싼 NX4</div></div>
+          <div class="fsf-row-facts"><span>그린카렌탈</span><span>36개월</span></div>
+          <div class="fsf-row-facts"><span>접수 09-17 · 청구 대기</span></div>
+          <div class="fsf-row-amount"><strong>650,000<small>원/월</small></strong></div>
+          <svg viewBox="0 0 24 24" aria-hidden="true" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6 6 6-6 6"/></svg>
+        </article>
+    </div>
+  </div>
+</main>
+</body>
+</html>

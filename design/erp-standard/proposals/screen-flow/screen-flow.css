@@ -1,0 +1,107 @@
+/* 시안 F — 실제 화면 전환 동선, 카드로만 (대표 2026-09-24
+ *   「한 화면에서 상품을 찾고 상세내용을 확인하고 거기서 기간을 선택하고 접수하기 누르면
+ *    접수화면으로 전환되서 접수저장을 누르면 접수목록으로 가는거지」)
+ * 화면 세 장, 진짜로 옮겨간다(펼침 아님):
+ *   ① 상품찾기 — 목록 + 상세를 «한 화면»에서(2단) · 상세에서 기간을 고르고 «접수하기»
+ *   ② 접수 화면 — 고른 차 · 기간이 실려 있다. 고객 · 영업만 넣고 «접수 저장»
+ *   ③ 접수목록 — 저장한 접수가 맨 위 «방금 접수»로 와 있다
+ * 모든 덩어리 = 카드. 값은 var(--erp-*) 토큰만. */
+.fsf-app { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: var(--erp-topbar-h) minmax(0, 1fr); grid-template-areas: "topbar" "main"; height: 100vh; margin: 0; background: var(--erp-color-bg); color: var(--erp-color-text); font-family: var(--erp-font-family); font-size: var(--erp-fs-body); }
+.fsf-app a { color: inherit; text-decoration: none; }
+.fsf-app .erp-topbar { grid-area: topbar; grid-column: 1; }
+.fsf-app .erp-gsearch { flex: 0 1 480px; }
+.fsf-links { display: flex; gap: var(--erp-sp-1); margin-left: var(--erp-sp-6); }
+.fsf-links a { padding: 6px 12px; border-radius: var(--erp-r-md); color: var(--erp-color-nav-text); font-weight: var(--erp-fw-medium); }
+.fsf-links a[aria-current="page"] { background: var(--erp-color-nav-active); color: var(--erp-color-nav-text-strong); font-weight: var(--erp-fw-semibold); }
+.fsf-links a.fsf-apart { margin-left: var(--erp-sp-3); border: 1px dashed var(--erp-color-nav-line); }
+.fsf-card { border: 1px solid var(--erp-color-line); border-radius: calc(var(--erp-r-lg) * 1.5); background: var(--erp-color-surface); box-shadow: 0 8px 22px -18px var(--erp-color-text-3); }
+.fsf-main { grid-area: main; display: flex; flex-direction: column; gap: var(--erp-sp-4); min-height: 0; padding: var(--erp-sp-4) var(--erp-sp-6); overflow: hidden; }
+.fsf-crumb { color: var(--erp-color-text-2); font-size: var(--erp-fs-label); }
+.fsf-crumb span[aria-current] { color: var(--erp-color-text); font-weight: var(--erp-fw-semibold); }
+.fsf-head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--erp-sp-4); }
+.fsf-head h1 { margin: 0; font-size: var(--erp-fs-title); font-weight: var(--erp-fw-bold); }
+.fsf-head p { margin: 4px 0 0; color: var(--erp-color-text-2); }
+
+/* ── ① 상품찾기: 목록(왼쪽) + 상세(오른쪽), 둘 다 한 화면 ── */
+.fsf-body { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr) 460px; gap: var(--erp-sp-4); min-height: 0; }
+.fsf-browse { display: flex; flex-direction: column; gap: var(--erp-sp-3); min-height: 0; }
+.fsf-search { display: flex; flex-wrap: wrap; align-items: center; gap: var(--erp-sp-2); padding: var(--erp-sp-3) var(--erp-sp-4); }
+.fsf-search .erp-search { flex: 1 1 260px; }
+.fsf-tiles { flex: 1; min-height: 0; overflow: hidden; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); align-content: start; gap: var(--erp-sp-3); }
+.fsf-tile { position: relative; display: flex; flex-direction: column; overflow: hidden; cursor: pointer; }
+.fsf-tile-band { position: relative; display: grid; place-items: center; height: 78px; background: var(--erp-color-sunken); color: var(--erp-color-line-strong); }
+.fsf-tile-band svg { width: 92px; height: 44px; fill: none; stroke: currentColor; stroke-width: 1.3; }
+.fsf-tile-band .erp-badge { position: absolute; top: 8px; left: 8px; }
+.fsf-tile-body { display: flex; flex-direction: column; gap: 4px; padding: 10px 12px 12px; }
+.fsf-tile-name { margin: 0; font-size: var(--erp-fs-body); font-weight: var(--erp-fw-bold); }
+.fsf-tile-sub { color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
+.fsf-tile-price { display: flex; align-items: baseline; justify-content: space-between; margin-top: 2px; }
+.fsf-tile-price strong { font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); }
+.fsf-tile-price strong small { margin-left: 1px; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-regular); }
+.fsf-tile:hover { border-color: var(--erp-color-line-strong); }
+.fsf-tile[aria-current="true"] { border: 2px solid var(--erp-color-primary); box-shadow: 0 0 0 4px var(--erp-color-focus-ring); }
+
+/* 상세 카드 (오른쪽, 목록과 같은 화면) */
+.fsf-detail { display: flex; flex-direction: column; gap: 10px; min-height: 0; overflow: auto; padding: var(--erp-sp-4); }
+.fsf-photo { display: grid; place-items: center; height: 130px; border-radius: var(--erp-r-lg); background: var(--erp-color-sunken); color: var(--erp-color-line-strong); flex: none; }
+.fsf-photo svg { width: 120px; height: 58px; fill: none; stroke: currentColor; stroke-width: 1.2; }
+.fsf-detail-name { display: flex; align-items: center; gap: var(--erp-sp-2); margin: 0; font-size: var(--erp-fs-title); font-weight: var(--erp-fw-bold); }
+.fsf-detail-sub { margin: 4px 0 0; color: var(--erp-color-text-2); }
+.fsf-detail-sub b { margin-right: 6px; padding: 0 6px; border-radius: var(--erp-r-sm); background: var(--erp-color-neutral-bg); color: var(--erp-color-text); font-weight: var(--erp-fw-semibold); }
+.fsf-box { padding: 12px 14px; border: 1px solid var(--erp-color-line); border-radius: var(--erp-r-lg); background: var(--erp-color-sunken); }
+.fsf-box-title { margin: 0 0 8px; color: var(--erp-color-text-2); font-size: var(--erp-fs-label); font-weight: var(--erp-fw-semibold); }
+.fsf-terms { display: flex; flex-direction: column; gap: 6px; }
+.fsf-term { display: grid; grid-template-columns: 58px minmax(0, 1fr) auto; align-items: center; gap: 4px 10px; padding: 9px 12px; border: 1px solid var(--erp-color-line-strong); border-radius: var(--erp-r-lg); background: var(--erp-color-surface); cursor: pointer; }
+.fsf-term b { font-weight: var(--erp-fw-bold); }
+.fsf-term span { color: var(--erp-color-ok); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-semibold); }
+.fsf-term strong { font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); }
+.fsf-term[aria-pressed="true"] { border: 2px solid var(--erp-color-primary); background: var(--erp-color-primary-weak); }
+.fsf-term[aria-pressed="true"] b, .fsf-term[aria-pressed="true"] strong { color: var(--erp-color-primary); }
+.fsf-detail-foot { margin-top: auto; padding-top: 10px; border-top: 1px solid var(--erp-color-line); }
+.fsf-detail-foot .erp-btn--primary { width: 100%; justify-content: center; height: 42px; font-size: var(--erp-fs-section); }
+.fsf-detail-foot p { margin: 8px 0 0; text-align: center; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
+
+/* ── ② 접수 화면 (진짜 다른 화면) ── */
+.fsf-intake-body { flex: 1; display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: var(--erp-sp-4); min-height: 0; }
+.fsf-picked { padding: var(--erp-sp-4); display: flex; flex-direction: column; gap: 10px; }
+.fsf-picked .fsf-photo { height: 110px; }
+.fsf-picked dl { margin: 0; }
+.fsf-picked dl div { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px dashed var(--erp-color-line); font-size: var(--erp-fs-label); }
+.fsf-picked dt { color: var(--erp-color-text-2); }
+.fsf-picked dd { margin: 0; font-weight: var(--erp-fw-semibold); }
+.fsf-picked dl div:last-child { border-bottom: 0; }
+.fsf-picked .fsf-net dd { color: var(--erp-color-ok); font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); }
+.fsf-picked-edit { text-align: center; color: var(--erp-color-primary); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-semibold); }
+.fsf-intake-form { display: flex; flex-direction: column; gap: var(--erp-sp-3); padding: var(--erp-sp-4); min-height: 0; overflow: auto; }
+.fsf-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--erp-sp-3); }
+.fsf-wide { grid-column: 1 / -1; }
+.fsf-form-grid .erp-seg { width: 100%; }
+.fsf-form-grid .erp-seg button { flex: 1; }
+.fsf-auto { color: var(--erp-color-primary); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-semibold); }
+.fsf-prev { display: flex; justify-content: space-between; gap: var(--erp-sp-2); padding: var(--erp-sp-2) 12px; border-radius: var(--erp-r-md); background: var(--erp-color-primary-weak); font-size: var(--erp-fs-label); }
+.fsf-prev span { color: var(--erp-color-text-2); }
+.fsf-prev b { color: var(--erp-color-primary); font-weight: var(--erp-fw-semibold); }
+.fsf-checks { margin: 0; padding: 0; list-style: none; }
+.fsf-checks li { display: flex; gap: 6px; padding: 2px 0; color: var(--erp-color-text-2); font-size: var(--erp-fs-label); }
+.fsf-checks li::before { content: "✓"; color: var(--erp-color-ok); font-weight: var(--erp-fw-bold); }
+.fsf-intake-foot { display: flex; align-items: center; gap: var(--erp-sp-3); margin-top: auto; padding-top: var(--erp-sp-3); border-top: 1px solid var(--erp-color-line); }
+.fsf-intake-foot p { margin: 0; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
+.fsf-intake-foot p b { color: var(--erp-color-ok); font-weight: var(--erp-fw-semibold); }
+.fsf-intake-foot .erp-btn--primary { margin-left: auto; height: 42px; padding: 0 24px; font-size: var(--erp-fs-section); }
+
+/* ── ③ 접수목록 ── */
+.fsf-list-body { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: var(--erp-sp-3); overflow: hidden; }
+.fsf-toolbar { display: flex; align-items: center; gap: var(--erp-sp-3); padding: 0 2px; }
+.fsf-list { flex: 1; min-height: 0; overflow: auto; display: flex; flex-direction: column; gap: 10px; }
+.fsf-row { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.6fr) minmax(0, 2fr) 140px 24px; align-items: center; gap: var(--erp-sp-4); padding: 14px var(--erp-sp-4) 14px var(--erp-sp-5); position: relative; overflow: hidden; }
+.fsf-row::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--erp-color-line-strong); }
+.fsf-row[data-tone="ok"]::before { background: var(--erp-color-ok); }
+.fsf-row[data-tone="info"]::before { background: var(--erp-color-info); }
+.fsf-row-title { display: flex; align-items: center; gap: var(--erp-sp-2); margin: 0; font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); }
+.fsf-row-car { margin-top: 3px; color: var(--erp-color-text-2); font-size: var(--erp-fs-caption); }
+.fsf-row-car b { margin-right: 6px; padding: 0 6px; border-radius: var(--erp-r-sm); background: var(--erp-color-neutral-bg); color: var(--erp-color-text); font-weight: var(--erp-fw-semibold); }
+.fsf-row-facts { display: flex; flex-wrap: wrap; gap: 4px 16px; color: var(--erp-color-text-2); font-size: var(--erp-fs-caption); }
+.fsf-row-amount { text-align: right; }
+.fsf-row-amount strong { display: block; font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); }
+.fsf-row-amount small { color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
+.fsf-row--just { border-color: var(--erp-color-ok); background: var(--erp-color-ok-bg); }
