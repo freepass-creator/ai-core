@@ -1,0 +1,127 @@
+/* 시안 G — 뒤집히는 패널 (대표 2026-09-24
+ *   「화면 전환이 최대한 없이 … 상세 내용을 확인하고 접수하기를 누르면 그 상세 패널이 접수하기로
+ *    확 뒤집히는 거지 … 저장을 누르면 접수 목록으로 가서 그 접수된 목록이 현재 어떤 상태인지를
+ *    명확하게 알려주는 화면」)
+ * 화면은 실제로 두 장뿐이다:
+ *   ① 상품찾기 — 목록(왼쪽) + 오른쪽 패널. 패널은 «보기»(상세 · 기간) 쪽이 기본이고,
+ *      «접수하기» 를 누르면 같은 자리에서 뒤집혀 «접수»(고객 · 영업 · 저장) 쪽이 된다. 취소하면 도로 뒤집힌다.
+ *   ② 계약접수 목록 — 저장을 눌러야만 여기로 온다. 방금 접수한 줄은 진행 단계까지 펼쳐서 보여준다.
+ * 값은 var(--erp-*) 토큰만. */
+.fgp-app { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: var(--erp-topbar-h) minmax(0, 1fr); grid-template-areas: "topbar" "main"; height: 100vh; margin: 0; background: var(--erp-color-bg); color: var(--erp-color-text); font-family: var(--erp-font-family); font-size: var(--erp-fs-body); }
+.fgp-app a { color: inherit; text-decoration: none; }
+.fgp-app .erp-topbar { grid-area: topbar; grid-column: 1; }
+.fgp-app .erp-gsearch { flex: 0 1 480px; }
+.fgp-links { display: flex; gap: var(--erp-sp-1); margin-left: var(--erp-sp-6); }
+.fgp-links a { padding: 6px 12px; border-radius: var(--erp-r-md); color: var(--erp-color-nav-text); font-weight: var(--erp-fw-medium); }
+.fgp-links a[aria-current="page"] { background: var(--erp-color-nav-active); color: var(--erp-color-nav-text-strong); font-weight: var(--erp-fw-semibold); }
+.fgp-links a.fgp-apart { margin-left: var(--erp-sp-3); border: 1px dashed var(--erp-color-nav-line); }
+.fgp-card { border: 1px solid var(--erp-color-line); border-radius: calc(var(--erp-r-lg) * 1.5); background: var(--erp-color-surface); box-shadow: 0 8px 22px -18px var(--erp-color-text-3); }
+.fgp-main { grid-area: main; display: flex; flex-direction: column; gap: var(--erp-sp-4); min-height: 0; padding: var(--erp-sp-4) var(--erp-sp-6); overflow: hidden; }
+.fgp-crumb { color: var(--erp-color-text-2); font-size: var(--erp-fs-label); }
+.fgp-crumb span[aria-current] { color: var(--erp-color-text); font-weight: var(--erp-fw-semibold); }
+.fgp-head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--erp-sp-4); }
+.fgp-head h1 { margin: 0; font-size: var(--erp-fs-title); font-weight: var(--erp-fw-bold); }
+.fgp-head p { margin: 4px 0 0; color: var(--erp-color-text-2); }
+
+/* ── ① 상품찾기: 목록 + 뒤집히는 패널 ── */
+.fgp-body { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr) 460px; gap: var(--erp-sp-4); min-height: 0; }
+.fgp-browse { display: flex; flex-direction: column; gap: var(--erp-sp-3); min-height: 0; }
+.fgp-search { display: flex; flex-wrap: wrap; align-items: center; gap: var(--erp-sp-2); padding: var(--erp-sp-3) var(--erp-sp-4); }
+.fgp-search .erp-search { flex: 1 1 260px; }
+.fgp-tiles { flex: 1; min-height: 0; overflow: hidden; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); align-content: start; gap: var(--erp-sp-3); }
+.fgp-tile { position: relative; display: flex; flex-direction: column; overflow: hidden; cursor: pointer; }
+.fgp-tile-band { position: relative; display: grid; place-items: center; height: 78px; background: var(--erp-color-sunken); color: var(--erp-color-line-strong); }
+.fgp-tile-band svg { width: 92px; height: 44px; fill: none; stroke: currentColor; stroke-width: 1.3; }
+.fgp-tile-band .erp-badge { position: absolute; top: 8px; left: 8px; }
+.fgp-tile-body { display: flex; flex-direction: column; gap: 4px; padding: 10px 12px 12px; }
+.fgp-tile-name { margin: 0; font-size: var(--erp-fs-body); font-weight: var(--erp-fw-bold); }
+.fgp-tile-sub { color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
+.fgp-tile-price { display: flex; align-items: baseline; justify-content: space-between; margin-top: 2px; }
+.fgp-tile-price strong { font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); }
+.fgp-tile-price strong small { margin-left: 1px; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-regular); }
+.fgp-tile:hover { border-color: var(--erp-color-line-strong); }
+.fgp-tile[aria-current="true"] { border: 2px solid var(--erp-color-primary); box-shadow: 0 0 0 4px var(--erp-color-focus-ring); }
+
+/* 패널 — 두 «면». 같은 카드, 같은 자리. 접수 면은 파랑 테두리로 «뒤집힌 상태» 를 분명히 한다 */
+.fgp-panel { display: flex; flex-direction: column; gap: 10px; min-height: 0; overflow: auto; padding: var(--erp-sp-4); }
+.fgp-panel--flip { border: 2px solid var(--erp-color-primary); box-shadow: 0 0 0 4px var(--erp-color-focus-ring); }
+.fgp-flip-badge { display: none; align-items: center; gap: 6px; margin: -4px 0 2px; color: var(--erp-color-primary); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-semibold); }
+.fgp-panel--flip .fgp-flip-badge { display: flex; }
+.fgp-flip-badge svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; }
+.fgp-photo { display: grid; place-items: center; height: 118px; border-radius: var(--erp-r-lg); background: var(--erp-color-sunken); color: var(--erp-color-line-strong); flex: none; }
+.fgp-photo svg { width: 110px; height: 52px; fill: none; stroke: currentColor; stroke-width: 1.2; }
+.fgp-name { display: flex; align-items: center; gap: var(--erp-sp-2); margin: 0; font-size: var(--erp-fs-title); font-weight: var(--erp-fw-bold); }
+.fgp-sub { margin: 4px 0 0; color: var(--erp-color-text-2); }
+.fgp-sub b { margin-right: 6px; padding: 0 6px; border-radius: var(--erp-r-sm); background: var(--erp-color-neutral-bg); color: var(--erp-color-text); font-weight: var(--erp-fw-semibold); }
+.fgp-box { padding: 12px 14px; border: 1px solid var(--erp-color-line); border-radius: var(--erp-r-lg); background: var(--erp-color-sunken); }
+.fgp-box-title { margin: 0 0 8px; color: var(--erp-color-text-2); font-size: var(--erp-fs-label); font-weight: var(--erp-fw-semibold); }
+.fgp-terms { display: flex; flex-direction: column; gap: 6px; }
+.fgp-term { display: grid; grid-template-columns: 58px minmax(0, 1fr) auto; align-items: center; gap: 4px 10px; padding: 9px 12px; border: 1px solid var(--erp-color-line-strong); border-radius: var(--erp-r-lg); background: var(--erp-color-surface); cursor: pointer; }
+.fgp-term b { font-weight: var(--erp-fw-bold); }
+.fgp-term span { color: var(--erp-color-ok); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-semibold); }
+.fgp-term strong { font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); }
+.fgp-term[aria-pressed="true"] { border: 2px solid var(--erp-color-primary); background: var(--erp-color-primary-weak); }
+.fgp-term[aria-pressed="true"] b, .fgp-term[aria-pressed="true"] strong { color: var(--erp-color-primary); }
+.fgp-panel-foot { margin-top: auto; padding-top: 10px; border-top: 1px solid var(--erp-color-line); }
+.fgp-panel-foot .erp-btn--primary { width: 100%; justify-content: center; height: 42px; font-size: var(--erp-fs-section); }
+
+/* 접수 면(뒤집힌 뒤) */
+.fgp-mini { display: flex; align-items: center; gap: var(--erp-sp-2); padding: 10px 12px; border: 1px solid var(--erp-color-line-strong); border-radius: var(--erp-r-lg); background: var(--erp-color-sunken); }
+.fgp-mini-img { display: grid; place-items: center; flex: none; width: 56px; height: 38px; border-radius: var(--erp-r-md); background: var(--erp-color-surface); color: var(--erp-color-line-strong); }
+.fgp-mini-img svg { width: 44px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+.fgp-mini b { display: block; font-weight: var(--erp-fw-bold); }
+.fgp-mini small { color: var(--erp-color-text-2); font-size: var(--erp-fs-caption); }
+.fgp-receipt { margin: 0; }
+.fgp-receipt div { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px dashed var(--erp-color-line); font-size: var(--erp-fs-label); }
+.fgp-receipt dt { color: var(--erp-color-text-2); }
+.fgp-receipt dd { margin: 0; font-weight: var(--erp-fw-semibold); }
+.fgp-receipt div:last-child { border-bottom: 0; }
+.fgp-receipt .fgp-net dd { color: var(--erp-color-ok); font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); }
+.fgp-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px var(--erp-sp-3); }
+.fgp-wide { grid-column: 1 / -1; }
+.fgp-form .erp-seg { width: 100%; }
+.fgp-form .erp-seg button { flex: 1; }
+.fgp-auto { color: var(--erp-color-primary); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-semibold); }
+.fgp-checks { margin: 0; padding: 0; list-style: none; }
+.fgp-checks li { display: flex; gap: 6px; padding: 1px 0; color: var(--erp-color-text-2); font-size: var(--erp-fs-caption); }
+.fgp-checks li::before { content: "✓"; color: var(--erp-color-ok); font-weight: var(--erp-fw-bold); }
+.fgp-panel-foot--split { display: flex; gap: var(--erp-sp-2); }
+.fgp-panel-foot--split .erp-btn--primary { flex: 1; justify-content: center; height: 42px; font-size: var(--erp-fs-section); }
+.fgp-panel-foot--split .erp-btn--ghost { flex: none; }
+.fgp-hint { margin: 6px 0 0; text-align: center; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
+.fgp-hint b { color: var(--erp-color-ok); font-weight: var(--erp-fw-semibold); }
+
+/* ── ② 계약접수 목록 — 방금 접수한 줄의 상태를 명확히 ── */
+.fgp-list-body { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: var(--erp-sp-3); overflow: hidden; }
+.fgp-toast { display: flex; align-items: center; gap: var(--erp-sp-3); padding: 12px var(--erp-sp-4); border: 1px solid var(--erp-color-ok); border-radius: var(--erp-r-lg); background: var(--erp-color-ok-bg); }
+.fgp-toast i { display: grid; place-items: center; width: 26px; height: 26px; border-radius: var(--erp-r-pill); background: var(--erp-color-ok); color: var(--erp-color-on-primary); font-style: normal; font-weight: var(--erp-fw-bold); }
+.fgp-toast b { font-weight: var(--erp-fw-semibold); }
+.fgp-toast span { color: var(--erp-color-text-2); font-size: var(--erp-fs-label); }
+.fgp-list { flex: 1; min-height: 0; overflow: auto; display: flex; flex-direction: column; gap: 10px; }
+.fgp-row { position: relative; overflow: hidden; }
+.fgp-row::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--erp-color-line-strong); }
+.fgp-row[data-tone="ok"]::before { background: var(--erp-color-ok); }
+.fgp-row[data-tone="info"]::before { background: var(--erp-color-info); }
+.fgp-row[data-tone="warn"]::before { background: var(--erp-color-warn); }
+.fgp-row-top { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.6fr) minmax(0, 1.6fr) 140px 24px; align-items: center; gap: var(--erp-sp-4); padding: 14px var(--erp-sp-4) 14px var(--erp-sp-5); }
+.fgp-row-title { display: flex; align-items: center; gap: var(--erp-sp-2); margin: 0; font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); }
+.fgp-row-car { margin-top: 3px; color: var(--erp-color-text-2); font-size: var(--erp-fs-caption); }
+.fgp-row-car b { margin-right: 6px; padding: 0 6px; border-radius: var(--erp-r-sm); background: var(--erp-color-neutral-bg); color: var(--erp-color-text); font-weight: var(--erp-fw-semibold); }
+.fgp-row-facts { display: flex; flex-wrap: wrap; gap: 4px 16px; color: var(--erp-color-text-2); font-size: var(--erp-fs-caption); }
+.fgp-row-amount { text-align: right; }
+.fgp-row-amount strong { display: block; font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); }
+.fgp-row-amount small { color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); }
+.fgp-row--just { border: 2px solid var(--erp-color-ok); }
+/* 방금 접수한 줄만 — 진행 단계를 펼쳐서 «지금 어디에 있는지» 바로 보여준다 */
+.fgp-row-status { display: flex; align-items: center; gap: var(--erp-sp-2); padding: 12px var(--erp-sp-5) 14px; border-top: 1px dashed var(--erp-color-line-strong); background: var(--erp-color-ok-bg); }
+.fgp-row-status ol { display: flex; flex: 1; margin: 0; padding: 0; list-style: none; }
+.fgp-row-status li { position: relative; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--erp-color-text-3); font-size: var(--erp-fs-caption); text-align: center; }
+.fgp-row-status li::before { content: ""; position: absolute; top: 9px; right: 50%; width: 100%; height: 2px; background: var(--erp-color-line-strong); }
+.fgp-row-status li:first-child::before { display: none; }
+.fgp-row-status i { position: relative; z-index: 1; width: 18px; height: 18px; display: grid; place-items: center; border: 2px solid var(--erp-color-line-strong); border-radius: var(--erp-r-pill); background: var(--erp-color-surface); font-style: normal; font-size: 10px; font-weight: var(--erp-fw-bold); }
+.fgp-row-status li[data-state="done"] { color: var(--erp-color-text-2); }
+.fgp-row-status li[data-state="done"]::before { background: var(--erp-color-ok); }
+.fgp-row-status li[data-state="done"] i { border-color: var(--erp-color-ok); background: var(--erp-color-ok); color: var(--erp-color-on-primary); }
+.fgp-row-status li[aria-current="step"] { color: var(--erp-color-primary); font-weight: var(--erp-fw-semibold); }
+.fgp-row-status li[aria-current="step"] i { border-color: var(--erp-color-primary); box-shadow: 0 0 0 3px var(--erp-color-primary-weak); }
+.fgp-row-status .erp-btn { flex: none; }
