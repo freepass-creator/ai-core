@@ -3,13 +3,19 @@
 업계 통상 ERP(SAP Fiori · Oracle Redwood · MS Dynamics · 더존/영림원 계열) 공통 패턴을 기준으로 한 **ERP 화면 규격**이다.
 대표 승인(2026-09-23): 「표준 UI UX 아주 좋아, 지금 만드는 거 이렇게 하라」.
 
+> ✅ **지금 freepass-admin PC 관리자가 실제로 쓰는 유일한 규격은 §5-4 `erp-panel`이다**(목록 판
+> SearchBar → QuickFilter → RowCards, 상세 판, 필요하면 `erp-panel--wide`/`erp-panel--compact`).
+> 상품찾기 · 접수(계약접수) · 실적 · 정산관리 · 전자계약 다섯 화면 전부 이 규격 하나로 짜여 있다 —
+> §5-4-1 판 목록 표에 화면×종류 대응이 다 있다. `platform/`(1차 채택 시안, 대체됨)이나
+> `proposals/`(탐색용) 밑 파일을 새 작업의 출발점으로 쓰지 말 것 — 지금 코드가 아니다.
+
 | 파일 | 역할 |
 |---|---|
 | [`tokens.json`](tokens.json) | **값의 정본** — 색·글자·간격·모서리·골격 치수 76개 |
 | [`erp.css`](erp.css) | 공통 스타일. `:root` 는 tokens.json 투영, 나머지는 `erp-*` 컴포넌트 |
 | [`main.html`](main.html) | **메인(목록) 화면 템플릿** — 새 목록 화면은 이 파일을 복사해 시작 |
 | [`form.html`](form.html) | **등록/수정 폼 템플릿** — 새 입력 화면은 이 파일을 복사해 시작 |
-| [`platform/`](platform) | **우리 플랫폼(FreePass ERP) 적용 시안** 5장 — 콕핏·계약진행·계약 상세·재고관리·정산확인 |
+| [`platform/`](platform) | ⚠ **1차 적용 시안(대체됨)** — 지금은 §5-4 `erp-panel`이 실제 규격. [`platform/README.md`](platform/README.md) 상단 참고 |
 | [`themes/`](themes) | **공식 테마 2종** — 등록부 [`themes/index.json`](themes/index.json). 테마 1 `classic`(기본 = tokens.json + erp.css) · 테마 2 `retro`(`retro.json` + `retro.css`) |
 | [`images/`](images) | 규격서(`erp-spec.png`)·목록(`erp-main.png`)·폼(`erp-form.png`) 캡처 |
 | [`../../scripts/check-erp-standard.mjs`](../../scripts/check-erp-standard.mjs) | 규격 검사 — `npm run erp:check` (npm test 에도 포함) |
