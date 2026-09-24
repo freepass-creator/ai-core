@@ -8,10 +8,14 @@ body.ref-page { margin: 0; padding: 0; height: 100vh; display: flex; flex-direct
 .ref-note { padding: 10px var(--erp-sp-5) 0; color: var(--erp-color-text-2); font-size: var(--erp-fs-label); }
 .sv-detail-body { display: flex; flex-direction: column; gap: var(--erp-sp-5); padding: var(--erp-sp-4); }
 
-/* ① 차량 정보 — 심플하게(대표 2026-09-24 「차에 대한 정보는 심플하게」): 사진도 작게, 값도 한 줄로 */
-.sv-car-brief { display: flex; gap: var(--erp-sp-3); }
-.sv-car-brief .photo { flex: none; display: grid; place-items: center; width: 84px; height: 64px; border-radius: var(--erp-r-lg); background: var(--erp-color-sunken); color: var(--erp-color-line-strong); }
-.sv-car-brief .photo svg { width: 68px; height: 32px; fill: none; stroke: currentColor; stroke-width: 1.2; }
+/* ① 차량 정보 — 사진이 메인, 그 밑에 심플한 설명(대표 2026-09-24 「모든 내용들이 다 카드 안에 담겨야
+ * 돼 … 차 사진이 메인으로는 있어야 되잖아 차 사진 메인에 그 차를 설명하는 간단한 정보 정도는 들어가야지」).
+ * 예전엔 작은 사진 + 글자가 옆으로 나란한 줄이라 카드 취급이 아니었다 — sv-ref-card 와 같은 설명하는
+ * 카드(B) 규격(패딩 · 모서리 · 그림자)을 그대로 써서 카드 안에 담고, 사진을 카드 폭 전체를 쓰는 배너로
+ * 키워 메인으로 세우고, 그 밑에 이름 · 기본 정보를 심플하게 둔다. */
+.sv-car-card { display: flex; flex-direction: column; gap: var(--erp-sp-3); padding: var(--erp-sp-3); border: 0; border-radius: var(--erp-r-lg); background: var(--erp-color-surface); box-shadow: 0 1px 3px -1px var(--erp-color-text-3); }
+.sv-car-card .photo { display: grid; place-items: center; height: 132px; border-radius: var(--erp-r-md); background: var(--erp-color-sunken); color: var(--erp-color-line-strong); }
+.sv-car-card .photo svg { width: 180px; height: 84px; fill: none; stroke: currentColor; stroke-width: 1.2; }
 .sv-detail-info { min-width: 0; }
 .sv-detail-info .name { display: flex; align-items: center; gap: var(--erp-sp-2); margin: 0; font-size: var(--erp-fs-section); font-weight: var(--erp-fw-bold); color: var(--erp-color-text); flex-wrap: wrap; }
 .sv-detail-info .sub { margin: 3px 0 0; color: var(--erp-color-text-2); font-size: var(--erp-fs-label); }
