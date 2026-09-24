@@ -33,8 +33,12 @@ body.ref-page { margin: 0; padding: 0; height: 100vh; display: flex; flex-direct
  *      같은 뼈대를 쓴다 — 다만 A는 라벨이 fs-label, B는 라벨이 한 단계 더 작은 fs-caption이다(A의
  *      라벨=고르는 항목 이름이라 좀 더 또렷해야 하고, B의 라벨=참고용 소제목이라 낮아도 된다). */
 
-/* ② 대여료 선택 — 메인(대표 2026-09-24 「기간별 대여료 선택을 하는 걸 메인으로」): 옅은 배경 판 위에 크게 */
-.sv-terms-main { padding: var(--erp-sp-3) var(--erp-sp-3) 2px; border-radius: var(--erp-r-lg); background: var(--erp-color-sunken); }
+/* ② 대여료 선택 — 메인(대표 2026-09-24 「기간별 대여료 선택을 하는 걸 메인으로」): 옅은 배경 판 위에 크게.
+ * 배경 판이 좌우로 var(--erp-sp-3) 만큼 카드를 더 안쪽으로 밀어서, 카드 좌우 끝이 아래 설명하는 카드
+ * (sv-ref-card)보다 12px 안으로 들어가 있었다(대표 2026-09-24 「대여료 카드는 좌우가 또 안 맞는데 …
+ * 카드 규격은 다 동일해야지」). 배경 판은 위아래로만 여백을 주고 좌우는 0으로 — 카드 좌우 끝이
+ * sv-detail-body 패딩 하나로만 정해지게 해서 이 패널의 모든 카드가 정확히 같은 좌우 위치에 선다. */
+.sv-terms-main { padding: var(--erp-sp-3) 0 2px; border-radius: var(--erp-r-lg); background: var(--erp-color-sunken); }
 .sv-section-title--main { color: var(--erp-color-text); font-size: var(--erp-fs-body); font-weight: var(--erp-fw-bold); }
 .sv-terms { display: flex; flex-direction: column; gap: var(--erp-sp-2); padding-bottom: var(--erp-sp-3); }
 .sv-term { display: grid; grid-template-columns: 54px minmax(0, 1fr) auto; align-items: center; gap: 4px 10px; padding: var(--erp-sp-3); border: 1px solid var(--erp-color-line-strong); border-radius: var(--erp-r-lg); background: var(--erp-color-surface); }
