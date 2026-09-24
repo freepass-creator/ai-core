@@ -70,24 +70,26 @@
         <label class="f3v-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input placeholder="고객 · 차번 · 담당" aria-label="검색"></label>
         <button class="erp-btn erp-btn--sm" type="button">필터</button>
       </div>
+      <div class="f3v-quick" role="group" aria-label="퀵 필터">
+        <button type="button" aria-pressed="true">전체 4</button><button type="button" aria-pressed="false">당월접수 3</button><button type="button" aria-pressed="false">미완료 1</button>
+      </div>
       
-      <div class="f3v-lseg" role="group" aria-label="접수 칸"><button type="button" aria-pressed="true">전체 4</button><button type="button" aria-pressed="false">당월접수 3</button><button type="button" aria-pressed="false">미완료 1</button></div>
       <div class="f3v-llist" role="list">
 
           <div class="f3v-lrow" data-tone="warn">
             <div class="f3v-lrow-top"><b>윤서아</b><span class="erp-badge erp-badge--warn">미완료</span><strong>480,000원</strong></div>
             <div class="f3v-lrow-car"><b>14허3390</b>더 뉴 아반떼 CN7 · 한빛렌터카 · 12개월</div>
-            
+            <ol class="f3v-lsteps"><li data-state="done"><i>✓</i>접수</li><li aria-current="step"><i>2</i>계약서</li><li><i>3</i>인도</li><li><i>4</i>청구</li><li><i>5</i>수금·지급</li></ol>
           </div>
           <div class="f3v-lrow" data-tone="info">
             <div class="f3v-lrow-top"><b>박지현</b><span class="erp-badge erp-badge--info">당월접수</span><strong>420,000원</strong></div>
             <div class="f3v-lrow-car"><b>67하2045</b>더 뉴 레이 · 그린카렌탈 · 12개월</div>
-            
+            <ol class="f3v-lsteps"><li data-state="done"><i>✓</i>접수</li><li data-state="done"><i>✓</i>계약서</li><li data-state="done"><i>✓</i>인도</li><li aria-current="step"><i>4</i>청구</li><li><i>5</i>수금·지급</li></ol>
           </div>
           <div class="f3v-lrow" data-tone="info">
             <div class="f3v-lrow-top"><b>정도훈</b><span class="erp-badge erp-badge--info">당월접수</span><strong>650,000원</strong></div>
             <div class="f3v-lrow-car"><b>33호2217</b>더 뉴 투싼 NX4 · 그린카렌탈 · 36개월</div>
-            
+            <ol class="f3v-lsteps"><li data-state="done"><i>✓</i>접수</li><li data-state="done"><i>✓</i>계약서</li><li data-state="done"><i>✓</i>인도</li><li data-state="done"><i>✓</i>청구</li><li aria-current="step"><i>5</i>수금·지급</li></ol>
           </div>
       </div>
     </section>
