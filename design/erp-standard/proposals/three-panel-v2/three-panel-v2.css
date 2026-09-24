@@ -107,3 +107,34 @@
 .f3v-lseg button { padding: 4px 10px; border: 1px solid var(--erp-color-line-strong); border-radius: var(--erp-r-pill); background: var(--erp-color-surface); color: var(--erp-color-text-2); font-size: var(--erp-fs-caption); }
 .f3v-lseg button[aria-pressed="true"] { border-color: var(--erp-color-primary); background: var(--erp-color-primary); color: var(--erp-color-on-primary); font-weight: var(--erp-fw-semibold); }
 .f3v-llist { flex: 1; min-height: 0; overflow: auto; padding: var(--erp-sp-3); display: flex; flex-direction: column; gap: 8px; }
+
+/* ── 목록 패널 규격 — 모든 목록(상품 · 접수 · 실적 · 정산)이 같다 ──
+ *   검색창 + 필터 버튼(상세 필터를 연다) + 퀵 필터 한 줄, 그 아래 줄 카드.
+ *   대상마다 다른 건 줄 카드 안의 내용뿐이다(상품 = 이 차가 무슨 차, 접수 = 이 접수가 지금 어떤 상태). */
+
+/* ── 폰 — 패널 셋이 «뎁스» 로 한 장씩 (대표 2026-09-24 「나중에 다 모바일로 뎁스를 넣어서 봐야 되니까」) ──
+ *   PC 의 세 패널이 폰에서는 화면 하나씩이 된다. 같은 부품 · 같은 클래스, 화면 폭만 꽉 채운다.
+ *   목록 → (누르면) 상세내용 → (접수하기 누르면 그 자리에서 뒤집힘) → (저장하면) 목록으로, 접수는 새 뎁스로 쌓인다. */
+.f3v-mobile-page { margin: 0; padding: 28px 40px 36px; background: var(--erp-color-bg); color: var(--erp-color-text); font-family: var(--erp-font-family); font-size: var(--erp-fs-body); }
+.f3v-mobile-title { margin: 0 0 4px; font-size: var(--erp-fs-title); font-weight: var(--erp-fw-bold); }
+.f3v-mobile-desc { margin: 0 0 22px; color: var(--erp-color-text-2); }
+.f3v-phones { display: flex; justify-content: flex-start; align-items: flex-start; gap: 16px; }
+.f3v-phone-wrap { display: flex; flex-direction: column; align-items: center; }
+.f3v-phone-cap { display: flex; align-items: center; gap: 6px; margin: 0 0 10px; color: var(--erp-color-text-2); font-size: var(--erp-fs-label); font-weight: var(--erp-fw-semibold); }
+.f3v-phone-cap b { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: var(--erp-r-pill); background: var(--erp-color-primary); color: var(--erp-color-on-primary); font-size: var(--erp-fs-caption); }
+.f3v-phone-arrow { align-self: center; margin-top: 120px; color: var(--erp-color-text-3); font-size: 22px; }
+.f3v-phone { display: flex; flex-direction: column; width: 320px; height: 660px; overflow: hidden; border: 9px solid var(--erp-color-nav); border-radius: calc(var(--erp-r-lg) * 5); background: var(--erp-color-bg); }
+.f3v-phone-top { display: flex; align-items: center; gap: 8px; padding: 12px var(--erp-sp-3) 10px; background: var(--erp-color-nav); color: var(--erp-color-nav-text-strong); font-size: var(--erp-fs-label); font-weight: var(--erp-fw-semibold); }
+.f3v-phone-back { color: var(--erp-color-nav-text); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-regular); }
+.f3v-phone-top small { margin-left: auto; color: var(--erp-color-nav-text); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-regular); }
+.f3v-phone-body { flex: 1; min-height: 0; overflow: hidden; }
+.f3v-phone-body .f3v-searchbar { padding: 8px var(--erp-sp-3); }
+.f3v-phone-body .f3v-quick { padding: 0 var(--erp-sp-3) 8px; }
+.f3v-phone-body .f3v-list { padding: 4px var(--erp-sp-2) var(--erp-sp-2); }
+.f3v-phone-body .f3v-pbody { padding: var(--erp-sp-3); }
+.f3v-phone-body .f3v-photo { height: 100px; }
+.f3v-phone-bar { display: flex; gap: 8px; padding: 10px var(--erp-sp-3) 14px; border-top: 1px solid var(--erp-color-line); background: var(--erp-color-surface); }
+.f3v-phone-bar .erp-btn--primary { flex: 1; justify-content: center; }
+.f3v-phone-body .f3v-term { grid-template-columns: 46px minmax(0, 1fr); row-gap: 2px; }
+.f3v-phone-body .f3v-term strong { grid-column: 2; justify-self: end; }
+.f3v-phone-body .f3v-term em { grid-column: 1 / -1; }
