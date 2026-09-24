@@ -84,11 +84,20 @@ freepass-admin 실제 적용 후 「상단바랑 사이드바도 규격 맞췄�
 | 단 | 구체적으로 쓰는 곳 |
 |---|---|
 | `fs-kpi`(24) | `erp-kpi-value` — 요약 KPI 숫자, 딱 여기 하나뿐 |
-| `fs-title`(22) | `erp-page-title`(화면 맨 위 h1, 화면마다 하나) · `erp-rowcard-amount strong`(목록 카드의 대표 금액 — §5-3 원안이 "대표 금액은 크게"라고 정한 자리, 예외가 아니라 지정석이다) |
-| `fs-section`(15) | `erp-panel-head h2`(패널 제목) · `erp-card-title`(§4 큰 구획 카드 제목) · `erp-rowcard-title`(목록 카드 이름) · `erp-tile-row strong`(타일 안 강조 값) · `erp-section-title` — "이 구획이 뭔지" 를 말하는 자리는 전부 이 한 단 |
+| `fs-title`(22) | `erp-page-title`(화면 맨 위 h1, 화면마다 하나) · `erp-rowcard-amount strong`(목록 카드의 대표 금액 — §5-3 원안이 "대표 금액은 크게"라고 정한 자리, 예외가 아니라 지정석이다) · `erp-panel-head h2`(패널 제목 — 아래 참고) |
+| `fs-section`(15) | `erp-card-title`(§4 큰 구획 카드 제목) · `erp-rowcard-title`(목록 카드 이름) · `erp-tile-row strong`(타일 안 강조 값) · `erp-section-title` — "이 구획이 뭔지" 를 말하는 자리는 전부 이 한 단 |
 | `fs-label`(12) | `erp-badge` · `erp-tile-title`·`erp-tile-row b`·`erp-tag` · 본문 텍스트 대부분 |
 | `fs-caption`(11.5) | `erp-panel-kind`·`erp-panel-count`(패널 머리 좌우 칩, 완전히 같은 값) · `erp-tile-note--accent` · `dt` 라벨류 |
 | `fs-body`(13) | 화면 기본값(`.erp-app`) · 버튼(`erp-btn`) · 입력창 · 사이드메뉴 항목 — **콘텐츠 위계가 아니라 컨트롤의 기본 글자 크기**, 카드/패널 안 위계표와는 다른 층이다 |
+
+**`erp-panel-head h2`를 `fs-section`에서 `fs-title`로 올림** (대표 2026-09-24 「패널 헤드의 텍스트랑
+그 패널 내용이랑 같을 순 없지 … 패널 헤드가 제일 크면 그거보다 좀 작고」). 원래는 `erp-card-title`과
+같은 `fs-section`(15px)을 썼는데, 그러면 그 패널 안에서 `fs-section`을 쓰는 강조 글자들
+(`erp-tile-row strong`의 대여료·금액, compact 목록의 `erp-rowcard-title`·`erp-rowcard-amount`,
+`erp-hero-info .name`, 진행 카드의 `erp-step-count`)과 패널 제목이 똑같은 크기로 부딪혔다 — 패널
+머리는 그 패널 전체를 대표하는 자리라 안의 어떤 글자보다도 늘 커야 한다. 페이지 제목(`erp-page-title`)과
+같은 `fs-title`로 올려, 패널 안에서는 예외 없이 «머리 > 강조(section) > 본문(label) > 라벨(caption)»
+순서가 서게 했다.
 
 **패널 머리 좌우 칩은 완전히 같은 규격**(`erp-panel-kind` = `erp-panel-count`, 패딩 2px 8px · 모서리
 `r-sm` · `fs-caption` · `fw-semibold`) — 왼쪽 「목록/상세내용/입력」이름표와 오른쪽 건수 칩이 같은
