@@ -57,6 +57,27 @@ test('MAPPED promotes to PILOT only with matching PASS PILOT receipt', () => {
   assert.equal(result.to, 'PILOT');
 });
 
+test('promotion rejects PASS receipt that hides a non-pass feature result', () => {
+  const pilotRegistry = { ...registryConsumer, adoption_status: 'MAPPED' };
+  const pilot = structuredClone(manifest);
+  pilot.adoption_status = 'PILOT';
+  pilot.product.mapping_base_revision = receipt.product.subject_revision;
+  pilot.ai_core.revision = receipt.ai_core.revision;
+  pilot.ai_core.feature_registry_version = receipt.ai_core.feature_registry_version;
+  const contradictoryReceipt = structuredClone(receipt);
+  contradictoryReceipt.feature_results[0].status = 'FAIL';
+
+  assert.throws(
+    () => evaluateUiUxConsumerPromotion({
+      registryConsumer: pilotRegistry,
+      manifest: pilot,
+      receipt: contradictoryReceipt,
+      targetRevision: contradictoryReceipt.product.subject_revision
+    }),
+    /UIUX_RECEIPT_PASS_WITH_NONPASS_FEATURE/
+  );
+});
+
 test('PILOT cannot become CONFORMANT on candidate Core or unresolved pending checks', () => {
   const conformantRegistry = { ...registryConsumer, adoption_status: 'PILOT' };
   const conformant = structuredClone(manifest);
