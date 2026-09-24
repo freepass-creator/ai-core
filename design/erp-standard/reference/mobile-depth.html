@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ERP 표준 — 폰에서도 같은 패널 · 카드 (참고)</title>
+<!-- §5-4·§5-5 참고 그림 — 규격 클래스(erp-panel · erp-rowcard · erp-searchbar · erp-facet-opt · erp-inline-form)를
+     그대로 좁은 폭(폰)에 넣어도 같은 부품으로 똑같이 동작하는지 보인다. 대표 2026-09-24
+     「핸드폰에서 봤을 때도 동일하게 구현이 돼야 되는데 그걸 어떻게 할지도 봐야지」. 이름 · 차량번호는 가상 예시다. -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<link rel="stylesheet" href="../erp.css">
+<link rel="stylesheet" href="mobile-depth.css">
+</head>
+<body class="ref-page">
+<h1>폰 — 같은 패널 · 같은 카드로 뎁스 4장</h1>
+<p class="ref-desc">여기 쓴 클래스는 전부 규격(<code>erp.css</code>) 그대로다 — 폰 전용 클래스를 새로 만들지 않았다. 패널이 화면 하나가 되고, §5-5 카드(2줄·3줄)가 그 안에서 그대로 선다.</p>
+<div class="phones">
+<div class="phone-wrap"><p class="phone-cap"><b>1</b>목록 · 상품목록</p><div class="phone"><div class="phone-top">상품찾기<small>3대</small></div>
+  <div class="phone-body erp-panel erp-panel-body">
+    <form class="erp-searchbar" data-region="filter" role="search">
+      <label class="erp-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input placeholder="차량번호 · 차명" aria-label="검색"></label>
+      <details class="erp-filter-more"><summary class="erp-btn erp-btn--sm">필터</summary></details>
+    </form>
+    <div class="erp-toolbar" data-region="grid-toolbar" style="padding:0 var(--erp-sp-3) var(--erp-sp-2)">
+      <div class="erp-seg" role="group" aria-label="퀵 필터"><button type="button" aria-pressed="true">전체 3</button><button type="button" aria-pressed="false">당월접수 3</button></div>
+    </div>
+    <div class="erp-rowcards" style="overflow:visible"><article class="erp-rowcard erp-rowcard--no-steps">
+    <div class="erp-rowcard-id"><h3 class="erp-rowcard-title"><a class="erp-rowcard-link" href="#">더 뉴 레이</a><span class="erp-badge erp-badge--ok">즉시출고</span></h3><div class="erp-rowcard-car"><b>67하2045</b>기아 · 그린카렌탈</div></div>
+    <dl class="erp-rowcard-facts"><div><dt>연식·주행</dt><dd>2024·8,900km</dd></div><div><dt>상품구분</dt><dd>중고렌트</dd></div></dl>
+    <div class="erp-rowcard-amount"><strong>360,000<small>원/월</small></strong></div><svg class="erp-rowcard-go" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+  </article><article class="erp-rowcard erp-rowcard--no-steps" aria-current="true">
+    <div class="erp-rowcard-id"><h3 class="erp-rowcard-title"><a class="erp-rowcard-link" href="#">쏘렌토 MQ4 PE</a><span class="erp-badge erp-badge--ok">즉시출고</span></h3><div class="erp-rowcard-car"><b>123하4567</b>기아 · 한빛렌터카</div></div>
+    <dl class="erp-rowcard-facts"><div><dt>연식·주행</dt><dd>2024·12,100km</dd></div><div><dt>상품구분</dt><dd>중고렌트</dd></div></dl>
+    <div class="erp-rowcard-amount"><strong>760,000<small>원/월</small></strong></div><svg class="erp-rowcard-go" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+  </article><article class="erp-rowcard erp-rowcard--no-steps">
+    <div class="erp-rowcard-id"><h3 class="erp-rowcard-title"><a class="erp-rowcard-link" href="#">더 뉴 투싼 NX4</a><span class="erp-badge erp-badge--ok">즉시출고</span></h3><div class="erp-rowcard-car"><b>33호2217</b>현대 · 그린카렌탈</div></div>
+    <dl class="erp-rowcard-facts"><div><dt>연식·주행</dt><dd>2024·21,300km</dd></div><div><dt>상품구분</dt><dd>중고렌트</dd></div></dl>
+    <div class="erp-rowcard-amount"><strong>650,000<small>원/월</small></strong></div><svg class="erp-rowcard-go" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+  </article></div>
+  </div>
+  <div class="phone-bar"><button class="erp-btn erp-btn--primary" type="button">쏘렌토 상세 보기</button></div>
+</div></div><span class="arrow">→</span><div class="phone-wrap"><p class="phone-cap"><b>2</b>상세내용 · 상품상세</p><div class="phone"><div class="phone-top"><span class="phone-back">‹ 목록</span>쏘렌토 MQ4 PE</div>
+  <div class="phone-body erp-panel erp-panel-body" style="padding:var(--erp-sp-3)">
+    <div class="phone-photo"><svg viewBox="0 0 120 60" aria-hidden="true"><path d="M8 42h104M14 42l6-14c2-5 6-8 12-9l22-3c8-1 16 1 22 6l12 10 14 3c4 1 6 4 6 7M30 42a8 8 0 1 0 16 0M78 42a8 8 0 1 0 16 0M40 20l4 14h24l-6-15"/></svg></div>
+    <h2 style="margin:10px 0 2px;font-size:var(--erp-fs-title);font-weight:var(--erp-fw-bold)">쏘렌토 MQ4 PE <span class="erp-badge erp-badge--ok">즉시출고</span></h2>
+    <p style="margin:0 0 10px;color:var(--erp-color-text-2)"><b style="margin-right:6px;padding:0 6px;border-radius:var(--erp-r-sm);background:var(--erp-color-neutral-bg);color:var(--erp-color-text)">123하4567</b>한빛렌터카</p>
+    <dl class="erp-props"><div><dt>연식·주행</dt><dd>2024·12,100km</dd></div><div><dt>색상</dt><dd>스노우화이트펄</dd></div></dl>
+    <p style="margin:14px 0 6px;color:var(--erp-color-text-2);font-size:var(--erp-fs-label);font-weight:var(--erp-fw-semibold)">기간을 고르세요</p>
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <a class="erp-facet-opt" aria-pressed="false" href="#" style="justify-content:space-between">24개월 · 남는 것 412,000<small>820,000원</small></a>
+      <a class="erp-facet-opt" aria-pressed="true" href="#" style="justify-content:space-between">36개월 · 남는 것 631,500 · 최고<small>760,000원</small></a>
+      <a class="erp-facet-opt" aria-pressed="false" href="#" style="justify-content:space-between">48개월 · 남는 것 588,000<small>720,000원</small></a>
+    </div>
+  </div>
+  <div class="phone-bar"><button class="erp-btn erp-btn--primary" type="button">접수하기</button></div>
+</div></div><span class="arrow">→</span><div class="phone-wrap"><p class="phone-cap"><b>3</b>상세내용 · 접수 작성(뒤집힘)</p><div class="phone phone--flip"><div class="phone-top"><span class="phone-back">‹ 취소</span>접수 작성<small>필수 3/3</small></div>
+  <div class="phone-body erp-panel erp-panel-body" style="padding:var(--erp-sp-3)">
+    <div class="erp-inline-form" style="border:1px solid var(--erp-color-line-strong);border-radius:var(--erp-r-lg);padding:10px;margin-bottom:12px">
+      <div><b style="display:block;font-weight:var(--erp-fw-bold)">쏘렌토 MQ4 PE · 36개월</b><small style="color:var(--erp-color-text-2)">123하4567 · 760,000원 · 남는 것 631,500원</small></div>
+    </div>
+    <label class="erp-field"><span class="erp-label">고객 <em class="erp-req">*</em></span><input class="erp-input erp-input--focus" value="김민수"></label>
+    <label class="erp-field" style="margin-top:10px"><span class="erp-label">영업채널 <em class="erp-req">*</em></span><span class="erp-input">프리패스 직영<svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></label>
+    <ul class="erp-field-error" style="list-style:none;padding:0;margin:14px 0 0;color:var(--erp-color-text-2);font-size:var(--erp-fs-caption)"><li>✓ 123하4567 진행 중인 접수 없음</li><li>✓ 요금 ERP5 와 같음</li></ul>
+  </div>
+  <div class="phone-bar"><button class="erp-btn erp-btn--primary" type="submit">접수 저장</button></div>
+</div></div><span class="arrow">→</span><div class="phone-wrap"><p class="phone-cap"><b>4</b>목록 · 접수목록</p><div class="phone"><div class="phone-top">계약접수<small>3건</small></div>
+  <div class="phone-body erp-panel erp-panel-body">
+    <form class="erp-searchbar" data-region="filter" role="search">
+      <label class="erp-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input placeholder="고객 · 차번" aria-label="검색"></label>
+      <details class="erp-filter-more"><summary class="erp-btn erp-btn--sm">필터</summary></details>
+    </form>
+    <div class="erp-toolbar" data-region="grid-toolbar" style="padding:0 var(--erp-sp-3) var(--erp-sp-2)">
+      <div class="erp-seg" role="group" aria-label="퀵 필터"><button type="button" aria-pressed="true">전체 3</button><button type="button" aria-pressed="false">당월접수 3</button></div>
+    </div>
+    <div class="erp-rowcards" style="overflow:visible"><article class="erp-rowcard" data-tone="info">
+    <div class="erp-rowcard-id"><h3 class="erp-rowcard-title"><a class="erp-rowcard-link" href="#">김민수 · 방금</a><span class="erp-badge erp-badge--info">당월접수</span></h3><div class="erp-rowcard-car"><b>123하4567</b>쏘렌토 MQ4 PE</div><div class="erp-rowcard-meta">접수 09-24 · 계약서 대기</div></div>
+    <ol class="erp-rowcard-steps" aria-label="진행"><li data-state="done"><i></i>접수</li><li aria-current="step"><i></i>계약서</li><li><i></i>인도</li><li><i></i>청구</li><li><i></i>수금·지급</li></ol>
+    <dl class="erp-rowcard-facts"><div><dt>공급사</dt><dd>한빛렌터카</dd></div><div><dt>기간</dt><dd>36개월</dd></div></dl>
+    <div class="erp-rowcard-amount"><strong>760,000<small>원/월</small></strong></div><svg class="erp-rowcard-go" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+  </article><article class="erp-rowcard" data-tone="warn">
+    <div class="erp-rowcard-id"><h3 class="erp-rowcard-title"><a class="erp-rowcard-link" href="#">윤서아</a><span class="erp-badge erp-badge--warn">미완료</span></h3><div class="erp-rowcard-car"><b>14허3390</b>더 뉴 아반떼 CN7</div><div class="erp-rowcard-meta">접수 09-11 · 12일째 대기</div></div>
+    <ol class="erp-rowcard-steps" aria-label="진행"><li data-state="done"><i></i>접수</li><li aria-current="step"><i></i>계약서</li><li><i></i>인도</li><li><i></i>청구</li><li><i></i>수금·지급</li></ol>
+    <dl class="erp-rowcard-facts"><div><dt>공급사</dt><dd>한빛렌터카</dd></div><div><dt>기간</dt><dd>12개월</dd></div></dl>
+    <div class="erp-rowcard-amount"><strong>480,000<small>원/월</small></strong></div><svg class="erp-rowcard-go" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+  </article><article class="erp-rowcard" data-tone="info">
+    <div class="erp-rowcard-id"><h3 class="erp-rowcard-title"><a class="erp-rowcard-link" href="#">박지현</a><span class="erp-badge erp-badge--info">당월접수</span></h3><div class="erp-rowcard-car"><b>67하2045</b>더 뉴 레이</div><div class="erp-rowcard-meta">접수 09-21 · 인도 완료</div></div>
+    <ol class="erp-rowcard-steps" aria-label="진행"><li data-state="done"><i></i>접수</li><li data-state="done"><i></i>계약서</li><li data-state="done"><i></i>인도</li><li aria-current="step"><i></i>청구</li><li><i></i>수금·지급</li></ol>
+    <dl class="erp-rowcard-facts"><div><dt>공급사</dt><dd>그린카렌탈</dd></div><div><dt>기간</dt><dd>12개월</dd></div></dl>
+    <div class="erp-rowcard-amount"><strong>420,000<small>원/월</small></strong></div><svg class="erp-rowcard-go" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+  </article></div>
+  </div>
+</div></div>
+</div>
+</body>
+</html>

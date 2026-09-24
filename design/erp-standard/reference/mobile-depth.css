@@ -1,0 +1,27 @@
+/* 참고 페이지 전용 꾸밈(폰 틀 · 화살표) — 규격 부품이 아니다. 규격 클래스는 ../erp.css 그대로 쓴다. */
+body.ref-page { margin: 0; padding: 32px 40px 48px; background: var(--erp-color-bg); font-family: var(--erp-font-family); }
+h1 { margin: 0 0 4px; font-size: var(--erp-fs-title); font-weight: var(--erp-fw-bold); color: var(--erp-color-text); }
+.ref-desc { margin: 0 0 24px; color: var(--erp-color-text-2); font-size: var(--erp-fs-body); }
+.ref-desc code { padding: 1px 5px; border-radius: var(--erp-r-sm); background: var(--erp-color-neutral-bg); }
+.phones { display: flex; align-items: flex-start; gap: 16px; }
+.phone-wrap { display: flex; flex-direction: column; align-items: center; }
+.phone-cap { display: flex; align-items: center; gap: 6px; margin: 0 0 10px; color: var(--erp-color-text-2); font-size: var(--erp-fs-label); font-weight: var(--erp-fw-semibold); }
+.phone-cap b { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: var(--erp-r-pill); background: var(--erp-color-primary); color: var(--erp-color-on-primary); font-size: var(--erp-fs-caption); }
+.arrow { align-self: center; margin-top: 130px; color: var(--erp-color-text-3); font-size: 22px; }
+.phone { display: flex; flex-direction: column; width: 340px; height: 680px; overflow: hidden; border: 9px solid var(--erp-color-nav); border-radius: 44px; background: var(--erp-color-surface); }
+.phone--flip { border-color: var(--erp-color-primary); }
+.phone-top { display: flex; align-items: center; gap: 8px; padding: 12px var(--erp-sp-3) 10px; background: var(--erp-color-nav); color: var(--erp-color-nav-text-strong); font-size: var(--erp-fs-label); font-weight: var(--erp-fw-semibold); }
+.phone-back { color: var(--erp-color-nav-text); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-regular); }
+.phone-top small { margin-left: auto; color: var(--erp-color-nav-text); font-size: var(--erp-fs-caption); font-weight: var(--erp-fw-regular); }
+.phone-body { flex: 1; min-height: 0; overflow: auto; }
+.phone-photo { display: grid; place-items: center; height: 100px; border-radius: var(--erp-r-lg); background: var(--erp-color-sunken); color: var(--erp-color-line-strong); }
+.phone-photo svg { width: 90px; height: 42px; fill: none; stroke: currentColor; stroke-width: 1.3; }
+.phone-bar { display: flex; gap: 8px; padding: 10px var(--erp-sp-3) 14px; border-top: 1px solid var(--erp-color-line); background: var(--erp-color-surface); }
+.phone-bar .erp-btn--primary { flex: 1; justify-content: center; }
+/* 폰 안의 .erp-panel 은 규격 그대로다 — 바깥 틀(테두리 · 그림자)만 폰 몸통과 겹치지 않게 지운다.
+   그 안의 좁은 카드 규칙(.erp-panel .erp-rowcard)은 ../erp.css 것이 그대로 걸린다 — 여기서 다시 정의하지 않는다. */
+.phone .erp-panel { border: 0; box-shadow: none; border-radius: 0; background: transparent; }
+
+/* 이 페이지는 .erp-app 뿌리 밖이라 규격의 전역 아이콘 크기 규칙(../erp.css 의 .erp-app svg)이 안 걸린다 —
+   같은 규칙을 이 페이지 뿌리에 다시 건다(새 규칙이 아니라 자리만 옮긴 것). */
+.ref-page svg { width: var(--erp-icon); height: var(--erp-icon); flex: none; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }

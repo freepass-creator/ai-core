@@ -193,6 +193,13 @@
 
 네 가지를 나란히 보인 참고 그림: `images/card-spec.png` ([reference/card-spec.html](reference/card-spec.html), 검사 대상 화면이 아니라 부품 설명용).
 
+**폰에서도 같은 부품** — 패널(§5-4)과 카드(§5-5)는 폰 전용 규격을 따로 두지 않는다. 패널 하나가 폰에서는 화면 하나가 되고
+(‹ 뒤로 로 뎁스가 쌓인다), 안의 검색창 · 상세 필터 · 세그 · 긴 카드는 좁은 폭에서도 그대로 선다(대표 2026-09-24
+「핸드폰에서 봤을 때도 동일하게 구현이 돼야 되는데」). 확인 그림: [reference/mobile-depth.html](reference/mobile-depth.html) ·
+`images/mobile-depth.png` — 전부 `erp-panel` · `erp-rowcard` · `erp-searchbar` · `erp-facet-opt` 등 규격 클래스 그대로다.
+이 확인 과정에서 좁은 폭에서 검색창이 안 줄어들어 필터 버튼이 밀려나는 결함을 찾아 `erp-search`(줄어들게 `min-width:0`)와
+`erp-searchbar`(넘치면 줄바꿈)를 고쳤다 — 폰만이 아니라 좁은 패널에도 함께 적용되는 수정이다.
+
 ## 6. ERP 공통 동작 규칙
 
 1. **조회 우선** — 화면 진입 시 기본 조건(이번 달·내 담당)으로 자동 조회. 조건은 사용자별 저장.
