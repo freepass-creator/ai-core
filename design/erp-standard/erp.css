@@ -458,6 +458,9 @@
 .erp-panel--compact .erp-rowcard[data-tone="info"] .erp-rowcard-thumb { background: var(--erp-color-info-bg); color: var(--erp-color-info); }
 .erp-panel--compact .erp-rowcard[data-tone="warn"] .erp-rowcard-thumb { background: var(--erp-color-warn-bg); color: var(--erp-color-warn); }
 .erp-panel--compact .erp-rowcard[data-tone="err"] .erp-rowcard-thumb { background: var(--erp-color-err-bg); color: var(--erp-color-err); }
+/* 왼쪽 상태색 띠(§5-3 원안)는 썸네일이 이미 상태색을 보여주는 좁은 카드에서는 겹치는 장식이라 촌스러워
+   보인다(대표 2026-09-24 「목록 카드에 좌측에 저런 바 대는 것도 좀 촌스러워 보여」) — 좁은 카드에서 지운다. */
+.erp-panel--compact .erp-rowcard::before { display: none; }
 /* 검색창 · 퀵 필터 줄 밑의 구분선 — 좁은 패널에서 검색창 바로 밑에 퀵 필터가 붙으면서 선 두 개가 다닥다닥
  * 붙어 지저분해졌다(대표 2026-09-24 「검색창이랑 목록카드 사이에 라인 없애자」). 좁은 패널에서는 지운다 —
  * 카드 목록의 sunken 배경색만으로도 위 검색 영역과 구분이 된다. */
