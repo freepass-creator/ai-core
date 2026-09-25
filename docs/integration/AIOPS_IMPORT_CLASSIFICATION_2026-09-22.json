@@ -269,5 +269,19 @@
     "shared_library_review_files": 9,
     "default_hold_remaining_files": 197,
     "accounted_files": 1407
+  },
+  "split_2026_09_25": {
+    "decision": "대표 2026-09-25: 「AI 옵스에서 렌터카 업무는 렌터카 매니저로 뺄 거고 공통 업무만 AI 코어로」 · 「그 외적인 개발, 문서, 디자인, UI, UX 이런 것만 AI 코어에」",
+    "method": "Keyword draft, then three independent content reviews (docs, code, rental/FreePass boundary) reading every file at the pinned revision, plus a regex PII/secret scan for unreviewed paths.",
+    "hq_copy_provenance": "aiops/PROVENANCE.json",
+    "hq_copied_files": 127,
+    "excluded_by_disposition": {
+      "OWNED_BY_EXCLUDE": 88,
+      "OWNED_BY_FREEPASS_SUBSIDIARY": 39,
+      "OWNED_BY_HOLD": 1,
+      "OWNED_BY_RENTAL_RENMAN": 1146,
+      "PII_OR_SECRET_HELD_AT_SOURCE": 6
+    },
+    "note": "docs-history no longer means all 294 docs: only business-neutral docs are copied to aiops/docs/. Rental docs go to renman; PII-bearing files stay at the source until redacted."
   }
 }
