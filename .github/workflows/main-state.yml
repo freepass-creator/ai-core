@@ -4,13 +4,15 @@ name: Main State Consistency
 # changes that can alter executable behavior, canonical registries/contracts,
 # machine-readable integration policy, or shared runtime authority.
 #
-# Markdown-only documentation/handoff edits do not start GitHub Actions.
+# Markdown-only documentation/handoff edits do not start GitHub Actions, except
+# executable AI entrypoints that are themselves covered by repository tests.
 # A PR exact-head run is sufficient; the same full suite is not repeated on
 # push to main after a reviewed PR merge.
 on:
   pull_request:
     paths:
       - '.github/workflows/**'
+      - 'CLAUDE.md'
       - 'package.json'
       - 'package-lock.json'
       - 'src/**'
