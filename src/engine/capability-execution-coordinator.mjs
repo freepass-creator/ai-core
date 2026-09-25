@@ -146,6 +146,17 @@ export function createCapabilityExecutionCoordinator({
     return {...body,payload_digest:digest(body)};
   }
 
+  function recover({requestId,orderId,input={},perform=true}={}){
+    need(text(requestId)&&requestId.length<=200,'EXECUTION_REQUEST_ID_INVALID');
+    need(text(orderId),'EXECUTION_CONTEXT_REQUIRED');
+    const row=getRow(requestId);
+    if(!row) return null;
+    need(row.order_id===orderId,'CAPABILITY_EXECUTION_IDEMPOTENCY_CONFLICT');
+    need(row.input_digest===digest(input??{}),'CAPABILITY_EXECUTION_IDEMPOTENCY_CONFLICT');
+    need((row.perform===1)===(perform===true),'CAPABILITY_EXECUTION_IDEMPOTENCY_CONFLICT');
+    return {status:row.state,replay:true,row,result:rowReceipt(row)};
+  }
+
   async function reserve({requestId,orderId,workId,capability,input={},perform=true}){
     need(text(requestId)&&requestId.length<=200,'EXECUTION_REQUEST_ID_INVALID');
     need(text(orderId)&&text(workId),'EXECUTION_CONTEXT_REQUIRED');
@@ -327,5 +338,5 @@ export function createCapabilityExecutionCoordinator({
       }));
   }
 
-  return Object.freeze({reserve,complete,reconcile,list,get:(requestId)=>getRow(requestId)});
+  return Object.freeze({reserve,recover,complete,reconcile,list,get:(requestId)=>getRow(requestId)});
 }
