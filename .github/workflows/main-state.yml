@@ -81,3 +81,4 @@ jobs:
       - run: npm run design:react:check
       - run: npm run design:react:typecheck
       - run: npm run checkers:known-bad
+      - run: npm run canon:guard

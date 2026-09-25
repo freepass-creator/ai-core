@@ -1,5 +1,7 @@
 # Claude v1 ↔ 기존 정본 대조 (2026-09-23)
 
+> **Status: NOT_CANONICAL / HISTORICAL (2026-09-26)** — 2026-09-23 대조 기록이다. 현재 UI/UX 정본은 `docs/UI_UX_START_HERE.md` → `design-system/` 이다(`registry/canonical-development-lines.json`).
+
 대표: 「디자인 규격 우리가 전에 문서허브에 만들어 둔 것도 있다고」
 
 맞는 지적이다. 그리고 문서허브만이 아니다 — **AI Core 안에 이미 UI/UX 헌법이 있었다.**
