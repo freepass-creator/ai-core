@@ -1,0 +1,270 @@
+# aiops branch codex/secure-firebase-key-handoff-20260922
+# base 3d6ec8c6a0e826ae0472e3fb3e8bbaa8399b68c9
+# tip  58570912ba935a489f79375db3d0ad2cf5a2e6e3
+# redacted: False
+# apply: git apply --3way (paths are relative to the aiops root)
+#
+# commits:
+#   5857091 2026-09-22 feat: add encrypted Firebase credential handoff
+
+diff --git a/.gitignore b/.gitignore
+index b56e29f..0eda35a 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -67,3 +67,16 @@ lib/wonja/계약별수납스케줄-v2.json
+ # 작업지킴이 맥박 — 「마지막 성공 시각」. 그 PC 의 실행 사실이지 저장소의 정본이 아니다 (2026-09-16)
+ #   logs/ 는 *.log 만 막혀 있어서 .json 은 그냥 두면 올라간다.
+ logs/jikimi-maekbak.json
++# Service-account originals and private certificate exports must never enter Git.
++*service-account*.json
++*service_account*.json
++*serviceAccount*.json
++*firebase-adminsdk*.json
++*.pfx
++*.p12
++credential-bundles/*.json
++credential-bundles/**/*.json
++credentials/*.json
++credentials/**/*.json
++secrets/*.json
++secrets/**/*.json
+diff --git a/credential-bundles/README.md b/credential-bundles/README.md
+new file mode 100644
+index 0000000..e43acb2
+--- /dev/null
++++ b/credential-bundles/README.md
+@@ -0,0 +1,36 @@
++# Encrypted credential bundles
++
++Only public-key encrypted `.cms` bundles may be committed here. Raw Firebase or
++Google service-account JSON files are forbidden.
++
++## 1. Target PC: create the recipient certificate
++
++```powershell
++powershell -ExecutionPolicy Bypass -File scripts/credential-transfer/new-recipient-certificate.ps1 -RecipientName kakao-pc
++```
++
++Commit and push `credential-recipients/kakao-pc.cer`.
++
++## 2. Source PC: encrypt the JSON for that target PC
++
++Keep the JSON outside this repository, then run:
++
++```powershell
++powershell -ExecutionPolicy Bypass -File scripts/credential-transfer/encrypt-service-account.ps1 `
++  -ServiceAccountPath C:\secure\erp5-service-account.json `
++  -RecipientCertificatePath credential-recipients\kakao-pc.cer `
++  -RecipientName kakao-pc
++```
++
++Commit and push only `credential-bundles/freepasserp5-kakao-pc.cms`.
++
++## 3. Target PC: install after pulling
++
++```powershell
++powershell -ExecutionPolicy Bypass -File scripts/credential-transfer/install-service-account.ps1 `
++  -EncryptedBundlePath credential-bundles\freepasserp5-kakao-pc.cms
++```
++
++The installer writes the JSON outside the repository, restricts the directory to
++the current Windows user and SYSTEM, and sets `ERP5_SERVICE_ACCOUNT_PATH` for the
++current user. Open a new PowerShell session before starting AIOps.
+diff --git a/credential-recipients/README.md b/credential-recipients/README.md
+new file mode 100644
+index 0000000..2463027
+--- /dev/null
++++ b/credential-recipients/README.md
+@@ -0,0 +1,11 @@
++# Credential recipients
++
++This directory contains **public `.cer` certificates only**. A target Windows PC
++creates its own certificate with:
++
++```powershell
++powershell -ExecutionPolicy Bypass -File scripts/credential-transfer/new-recipient-certificate.ps1 -RecipientName kakao-pc
++```
++
++The private key stays in that PC's `Cert:\CurrentUser\My` store. Never export or
++commit the private key or a `.pfx` file.
+diff --git a/scripts/credential-transfer/encrypt-service-account.ps1 b/scripts/credential-transfer/encrypt-service-account.ps1
+new file mode 100644
+index 0000000..2445fb7
+--- /dev/null
++++ b/scripts/credential-transfer/encrypt-service-account.ps1
+@@ -0,0 +1,66 @@
++[CmdletBinding()]
++param(
++  [Parameter(Mandatory = $true)]
++  [string]$ServiceAccountPath,
++
++  [Parameter(Mandatory = $true)]
++  [string]$RecipientCertificatePath,
++
++  [Parameter(Mandatory = $true)]
++  [ValidatePattern('^[a-zA-Z0-9._-]+$')]
++  [string]$RecipientName,
++
++  [ValidateNotNullOrEmpty()]
++  [string]$ExpectedProjectId = 'freepasserp5',
++
++  [string]$OutputDirectory = (Join-Path $PSScriptRoot '..\..\credential-bundles')
++)
++
++$ErrorActionPreference = 'Stop'
++$source = (Resolve-Path -LiteralPath $ServiceAccountPath).Path
++$certificatePath = (Resolve-Path -LiteralPath $RecipientCertificatePath).Path
++$repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..'))
++
++if ($source.StartsWith($repoRoot, [System.StringComparison]::OrdinalIgnoreCase)) {
++  throw '서비스계정 원본 JSON을 저장소 안에 두지 마세요.'
++}
++
++$raw = [System.IO.File]::ReadAllText($source)
++try {
++  $account = $raw | ConvertFrom-Json
++} catch {
++  throw '서비스계정 JSON 형식이 아닙니다.'
++}
++
++foreach ($field in @('type', 'project_id', 'client_email', 'private_key')) {
++  if (-not $account.$field) { throw "서비스계정 필수 필드 누락: $field" }
++}
++if ($account.type -ne 'service_account') { throw 'type이 service_account가 아닙니다.' }
++if ($ExpectedProjectId -and $account.project_id -ne $ExpectedProjectId) {
++  throw "대상 프로젝트 불일치: expected=$ExpectedProjectId actual=$($account.project_id)"
++}
++
++$certificate = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2($certificatePath)
++$documentEncryptionOid = '1.3.6.1.4.1.311.80.1'
++$canEncryptDocuments = $certificate.Extensions |
++  Where-Object { $_.Oid.Value -eq '2.5.29.37' } |
++  ForEach-Object { $_.EnhancedKeyUsages } |
++  Where-Object { $_.Value -eq $documentEncryptionOid }
++if (-not $canEncryptDocuments) {
++  throw '수신 인증서에 Windows 문서 암호화 용도가 없습니다.'
++}
++$outputRoot = [System.IO.Path]::GetFullPath($OutputDirectory)
++New-Item -ItemType Directory -Path $outputRoot -Force | Out-Null
++$outputPath = Join-Path $outputRoot "$ExpectedProjectId-$RecipientName.cms"
++
++$raw | Protect-CmsMessage -To $certificate -OutFile $outputPath
++
++[pscustomobject]@{
++  status = 'ENCRYPTED'
++  project_id = $account.project_id
++  client_email = $account.client_email
++  recipient = $RecipientName
++  encrypted_bundle = $outputPath
++  sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $outputPath).Hash
++  next = 'Commit and push the .cms file only. Do not add the source JSON.'
++} | ConvertTo-Json
+diff --git a/scripts/credential-transfer/install-service-account.ps1 b/scripts/credential-transfer/install-service-account.ps1
+new file mode 100644
+index 0000000..0b3a159
+--- /dev/null
++++ b/scripts/credential-transfer/install-service-account.ps1
+@@ -0,0 +1,54 @@
++[CmdletBinding()]
++param(
++  [Parameter(Mandatory = $true)]
++  [string]$EncryptedBundlePath,
++
++  [ValidateNotNullOrEmpty()]
++  [string]$ExpectedProjectId = 'freepasserp5',
++
++  [string]$InstallPath = 'C:\ProgramData\Freepass\secrets\erp5-service-account.json',
++
++  [string]$EnvironmentVariable = 'ERP5_SERVICE_ACCOUNT_PATH'
++)
++
++$ErrorActionPreference = 'Stop'
++$bundle = (Resolve-Path -LiteralPath $EncryptedBundlePath).Path
++$raw = Unprotect-CmsMessage -Path $bundle
++
++try {
++  $account = $raw | ConvertFrom-Json
++} catch {
++  throw '복호화 결과가 서비스계정 JSON 형식이 아닙니다.'
++}
++
++foreach ($field in @('type', 'project_id', 'client_email', 'private_key')) {
++  if (-not $account.$field) { throw "서비스계정 필수 필드 누락: $field" }
++}
++if ($account.type -ne 'service_account') { throw 'type이 service_account가 아닙니다.' }
++if ($ExpectedProjectId -and $account.project_id -ne $ExpectedProjectId) {
++  throw "대상 프로젝트 불일치: expected=$ExpectedProjectId actual=$($account.project_id)"
++}
++
++$destination = [System.IO.Path]::GetFullPath($InstallPath)
++$repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..'))
++if ($destination.StartsWith($repoRoot, [System.StringComparison]::OrdinalIgnoreCase)) {
++  throw '복호화한 서비스계정 JSON을 저장소 안에 설치할 수 없습니다.'
++}
++$parent = Split-Path -Parent $destination
++New-Item -ItemType Directory -Path $parent -Force | Out-Null
++
++$currentUser = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
++& icacls.exe $parent /inheritance:r /grant:r "${currentUser}:(OI)(CI)F" 'SYSTEM:(OI)(CI)F' | Out-Null
++if ($LASTEXITCODE -ne 0) { throw '비밀 폴더 ACL 설정에 실패했습니다.' }
++[System.IO.File]::WriteAllText($destination, $raw, [System.Text.UTF8Encoding]::new($false))
++
++[Environment]::SetEnvironmentVariable($EnvironmentVariable, $destination, 'User')
++
++[pscustomobject]@{
++  status = 'INSTALLED'
++  project_id = $account.project_id
++  client_email = $account.client_email
++  key_path = $destination
++  environment_variable = $EnvironmentVariable
++  next = 'Open a new PowerShell session before running AIOps.'
++} | ConvertTo-Json
+diff --git a/scripts/credential-transfer/new-recipient-certificate.ps1 b/scripts/credential-transfer/new-recipient-certificate.ps1
+new file mode 100644
+index 0000000..2be2660
+--- /dev/null
++++ b/scripts/credential-transfer/new-recipient-certificate.ps1
+@@ -0,0 +1,43 @@
++[CmdletBinding()]
++param(
++  [Parameter(Mandatory = $true)]
++  [ValidatePattern('^[a-zA-Z0-9._-]+$')]
++  [string]$RecipientName,
++
++  [string]$OutputDirectory = (Join-Path $PSScriptRoot '..\..\credential-recipients')
++)
++
++$ErrorActionPreference = 'Stop'
++$outputRoot = [System.IO.Path]::GetFullPath($OutputDirectory)
++New-Item -ItemType Directory -Path $outputRoot -Force | Out-Null
++
++$subject = "CN=Freepass-Credential-Recipient-$RecipientName"
++$existing = Get-ChildItem Cert:\CurrentUser\My |
++  Where-Object { $_.Subject -eq $subject -and $_.HasPrivateKey } |
++  Sort-Object NotAfter -Descending |
++  Select-Object -First 1
++
++if ($existing) {
++  $certificate = $existing
++} else {
++  $certificate = New-SelfSignedCertificate `
++    -Type DocumentEncryptionCert `
++    -Subject $subject `
++    -CertStoreLocation Cert:\CurrentUser\My `
++    -KeyAlgorithm RSA `
++    -KeyLength 3072 `
++    -HashAlgorithm SHA256 `
++    -NotAfter (Get-Date).AddYears(2)
++}
++
++$publicPath = Join-Path $outputRoot "$RecipientName.cer"
++Export-Certificate -Cert $certificate -FilePath $publicPath -Force | Out-Null
++
++[pscustomobject]@{
++  status = 'READY'
++  recipient = $RecipientName
++  public_certificate = $publicPath
++  thumbprint = $certificate.Thumbprint
++  private_key_location = 'Cert:\CurrentUser\My (this PC only)'
++  next = 'Commit and push only the .cer public certificate. Never export the private key.'
++} | ConvertTo-Json

@@ -1,6 +1,8 @@
 # aiops — 본사로 들인 «공통» 부분
 
-`freepass-creator/aiops@3d6ec8c6a0e826ae0472e3fb3e8bbaa8399b68c9` 에서 **사업 중립 공통만** 복사해 온 자리다.
+`freepass-creator/aiops@334b9474de5a10dfb406637d54e6a55daa3e0f3a` 에서 **사업 중립 공통만** 복사해 온 자리다.
+
+> ★2026-09-25 — 대표가 aiops 저장소를 **삭제**한다(「AI 옵스도 삭제할 거니까 … 데이터 가져갈 거 가져가라」). 그래서 삭제 직전의 main 으로 다시 맞췄고, 남은 파일은 모두 주인에게 갔다 — 렌터카 1174개는 `renman/aiops-rental/`, 프리패스 영업·정산 39개는 `freepass-sales/aiops-freepass/`, `.ai-core/` 키트 사본 14개는 이 저장소 루트가 정본이라 버렸다.
 
 > 대표(2026-09-25): 「렌터카 사업 관련된 기능은 다 랩맨(renman)으로 들어간다고 보면 돼. 그 외적인 개발, 뭐 문서, 디자인, UI, UX 이런 것만 AI 코어에 모아둔다.」
 
@@ -13,13 +15,16 @@
 
 | 구분 | 어디로 | 수 |
 |---|---|---|
-| 렌터카 업무(과태료·미수·자금·보험·계약·원자·자산 …) | 렌터카 매니저 `freepass-creator/renman` | PROVENANCE `OWNED_BY_RENTAL_RENMAN` |
-| 프리패스 마켓 업무(공급사 재고·손오공 재고 API·판매시트 정산·영업) | 프리패스 자회사 | `OWNED_BY_FREEPASS_SUBSIDIARY` |
-| 운영 자료·사건·키트 사본·진입 파일·실제 기록 | 옮기지 않음 | `OWNED_BY_EXCLUDE` |
-| 개인정보·비밀이 든 공통 파일 | 가린 뒤에 들인다 | `PII_OR_SECRET_HELD_AT_SOURCE` |
+| 렌터카 업무(과태료·미수·자금·보험·계약·원자·자산·사건·진입 파일 …) | `freepass-creator/renman` `aiops-rental/` | PROVENANCE `OWNED_BY_RENTAL` |
+| 프리패스 마켓 업무(공급사 재고·손오공 재고·판매시트 정산·영업) | `freepass-creator/freepass-sales` `aiops-freepass/` | `OWNED_BY_FREEPASS` |
+| `.ai-core/` 키트 사본 | 버림 — 이 저장소 루트가 정본 | `OWNED_BY_DROP_KIT_DUPLICATE` |
+
+## 개인정보
+
+원본은 PR #16 에서 문서·주석만 가렸다. 이 사본은 코드 문자열·JSON 안의 고객 이름까지 같은 고정 가명(`고객NNN`)으로 바꿨다 — 그런 파일은 PROVENANCE 에 `TRANSFORMED` 로 적혀 있다. 전화는 `010-0000-0000`, 주민번호는 `######-#######`. 직원 이름과 회사 차량 번호는 그대로 둔다. git 이력은 가져오지 않았다.
 
 ## 규칙
 
-- **여기는 정본이 아니다.** 실행 권한은 원본 aiops 에 있다. 업무별로 따로 전환하기 전까지 여기 코드를 운영에 돌리지 않는다.
+- 원본 aiops 가 사라지므로 **이 사본이 공통 부분의 정본이다.** 다만 아직 운영에 붙인 적이 없다 — 돌리기 전에 경로·자격증명을 설정으로 빼고 시험한다.
 - 루트 규격(`docs/AI_WORKING_STANDARD.md`·`design-system/`·`registry/`·`contracts/`)으로 **올리지 않는다.** 올릴 것은 따로 PR 로 흡수한다.
 - 원본에 회사 경로·계정(`C:/dev/...`·서비스계정 경로·직원 메일)이 박힌 파일이 있다. 공통 서비스(`shared-services/`)로 옮길 때는 그 값을 설정으로 빼야 한다.
