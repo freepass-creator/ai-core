@@ -9,6 +9,7 @@ AI Core는 같은 관심사에 두 개 이상의 정본을 두지 않는다. 브
 | concern | canonical line | 비고 |
 |---|---|---|
 | UI/UX | `docs/UI_UX_START_HERE.md` → `design-system/` + `registry/ui-ux-*` | `design/claude-v1/`은 역사자료 |
+| Development Continuity | `docs/DEVELOPMENT_CONTINUITY_STANDARD.md` + `registry/development-continuity-policy.json` | Work owns branch; RESUME BEFORE CREATE |
 | Core Contract | `docs/CORE_CONTRACT_STANDARD.md` + `contracts/core-*` + `src/contracts/` | provider Adapter 표준 포함 |
 | Capability Runtime | `src/engine/capability-engine.mjs` | runtime adapter envelope는 Core Adapter 표준을 대체하지 않음 |
 | Workflow | `docs/workflow/WORKFLOW_CONSTITUTION.md` + `src/workflow/` + `registry/workflow-*` | 과거 D1~D8 브랜치는 정본 아님 |
