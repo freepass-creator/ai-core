@@ -35,6 +35,13 @@ test('source-derived facts require a source reference',()=>{
   }),/SOURCE_DERIVED_FACT_REF_REQUIRED/);
 });
 
+test('blank declared unknown cannot disappear into READY_FOR_REVIEW',()=>{
+  assert.throws(()=>buildBusinessPlanningFrame({
+    objective:'사업 방향',
+    unknowns:['   '],
+  }),/BUSINESS_UNKNOWN_QUESTION_REQUIRED/);
+});
+
 test('adapter fails closed when objective is missing',async()=>{
   const result=await aiCoreBusinessPlanning({facts:[]});
   assert.equal(result.status,'HOLD');

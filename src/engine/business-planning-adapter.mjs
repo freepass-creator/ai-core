@@ -40,7 +40,11 @@ function normalizeDecisions(values=[]){
 function normalizeUnknowns(values=[]){
   need(Array.isArray(values),'BUSINESS_UNKNOWNS_INVALID');
   return values.map((item,index)=>{
-    if(typeof item==='string') return {unknown_id:`unknown-${index+1}`,question:clean(item),decision_impact:null};
+    if(typeof item==='string'){
+      const question=clean(item);
+      need(nonempty(question),'BUSINESS_UNKNOWN_QUESTION_REQUIRED');
+      return {unknown_id:`unknown-${index+1}`,question,decision_impact:null};
+    }
     need(item&&typeof item==='object'&&!Array.isArray(item),'BUSINESS_UNKNOWN_INVALID');
     const question=clean(item.question);
     need(nonempty(question),'BUSINESS_UNKNOWN_QUESTION_REQUIRED');
