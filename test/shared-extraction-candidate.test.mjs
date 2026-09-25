@@ -67,6 +67,16 @@ test('behavior mismatch is detected on the same input case',()=>{
   assert.ok(c.assessment.blockers.includes('BEHAVIOR_MISMATCH:positive-decimal'));
 });
 
+test('ambiguous behavior outcome cannot declare both output and error',()=>{
+  assert.throws(()=>compileSharedExtractionCandidate(input([
+    impl('one'),
+    impl('two',{behavior_cases:[
+      {case_id:'zero',input:0,output:'0원',error_code:'UNEXPECTED_ERROR'},
+      {case_id:'positive-decimal',input:1234.6,output:'1,235원'},
+    ]}),
+  ])),/SHARED_BEHAVIOR_CASE_OUTCOME_AMBIGUOUS/);
+});
+
 test('missing source evidence blocks extraction review readiness',()=>{
   const c=compileSharedExtractionCandidate(input([
     impl('one'),

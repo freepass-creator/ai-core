@@ -35,6 +35,7 @@ function normalizeCases(values){
     const hasOutput=Object.prototype.hasOwnProperty.call(item,'output');
     const hasError=clean(item.error_code);
     need(hasOutput||hasError,'SHARED_BEHAVIOR_CASE_OUTCOME_REQUIRED');
+    need(!(hasOutput&&hasError),'SHARED_BEHAVIOR_CASE_OUTCOME_AMBIGUOUS');
     return {
       case_id:caseId,
       input:canonical(item.input),
