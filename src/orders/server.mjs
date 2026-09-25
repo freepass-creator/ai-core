@@ -248,6 +248,11 @@ export function startServer({
             if (!recovered.result) return json(409, { status:'HOLD', reason:'CAPABILITY_EXECUTION_RESULT_MISSING' });
             return json(200, recovered.result);
           }
+          if (recovered?.status === 'RESERVED') {
+            const reconciled = await execution.reconcile(data.requestId);
+            if (reconciled.status === 'RESULT') return json(200, reconciled.result);
+            return json(409, reconciled);
+          }
 
           const order = store.get(capabilityRunMatch[1]);
           const validation = validateWorkMap(config.workMap, config.projectRegistry, config.capabilityRegistry);
@@ -287,7 +292,7 @@ export function startServer({
           }
           if (reserved.replay) {
             if (reserved.status === 'RESULT' && reserved.result) return json(200, reserved.result);
-            const reconciled = await execution.reconcile(data.requestId, capability);
+            const reconciled = await execution.reconcile(data.requestId);
             if (reconciled.status === 'RESULT') return json(200, reconciled.result);
             return json(409, reconciled);
           }
