@@ -29,7 +29,7 @@ const observation=(overrides={})=>({
   revision:'a'.repeat(40),
   dirty_state:'CLEAN',
   observed_at:'2026-09-20T09:40:00Z',
-  checks:[{name:'PROJECT_AUTHORITY_UNCHANGED',status:'PASS'}],
+  checks:[{name:'PLAN_ITEM_STILL_READY',status:'PASS'},{name:'PROJECT_AUTHORITY_UNCHANGED',status:'PASS'}],
   ...overrides,
 });
 

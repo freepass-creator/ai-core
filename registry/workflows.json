@@ -2659,7 +2659,7 @@
         "files": [
           {
             "path": "src/engine/capability-execution-coordinator.mjs",
-            "blob_sha": "ad1404d5ce50a4c198a6a4bc56485cb56ebff123"
+            "blob_sha": "5218ded8d04359091605395ab41d2fd7f3c59d31"
           },
           {
             "path": "src/engine/execution-receipt.mjs",

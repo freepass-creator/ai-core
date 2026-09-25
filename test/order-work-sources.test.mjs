@@ -335,6 +335,8 @@ async function 과태료판(t, workId, { 승인적기 = true } = {}) {
     mappings: join(root, 'mappings.json'), ledger: join(root, 'work.jsonl') };
   // ★registry 는 저장소의 «진짜» 것을 쓴다.
   쓰기(paths.registry, await readFile(new URL('../registry/projects.json', import.meta.url), 'utf8'));
+  // ★방향은 registry «옆» 에서 읽는다 — 저장소의 진짜 방향 파일을 그 자리에 둔다.
+  쓰기(join(root, 'directions.json'), await readFile(new URL('../registry/directions.json', import.meta.url), 'utf8'));
   쓰기(paths.snapshot, JSON.stringify({ schema_version: '1.0', as_of: asOf, capacities: [],
     items: [과태료항목(workId, rev, asOf)] }));
   const 첫머리 = await appendLedgerEvent(paths.ledger, {
