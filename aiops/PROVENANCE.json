@@ -15,21 +15,23 @@
     "runtime_authority": "this copy — freepass-creator/aiops is being deleted (대표 2026-09-25)",
     "selection": "HQ",
     "decision": "대표 2026-09-25: 렌터카 사업 기능은 renman, 개발·문서·디자인·UI/UX 공통만 AI Core, 프리패스 영업·정산은 freepass-sales. aiops 저장소는 삭제 예정이라 현재 트리 전체를 주인별로 옮긴다",
-    "pii_rule": "Source revision was already partly redacted (aiops PR #16: docs and code comments). This copy additionally replaces customer names in code literals and JSON with the same stable pseudonyms (고객NNN), phone numbers with 010-0000-0000 and resident numbers with ######-#######. Company staff names and vehicle plates (company assets) are kept. Git history is not imported."
+    "pii_rule": "Source revision was already partly redacted (aiops PR #16: docs and code comments). This copy additionally replaces customer names in code literals and JSON with the same stable pseudonyms (고객NNN), phone numbers with 010-0000-0000 and resident numbers with ######-#######. Company staff names and vehicle plates (company assets) are kept. Git history is not imported.",
+    "vendoring": "이 사본이 혼자 돌도록, 다른 주인에게 간 공용 의존 파일을 vendored_from 을 달아 같이 넣었다. 정본은 vendored_from 쪽이다."
   },
   "counts": {
     "source_tracked_files": 1360,
-    "copied_files": 133,
-    "excluded_files": 1227,
+    "copied_files": 139,
+    "excluded_files": 1221,
     "excluded_by_disposition": {
       "OWNED_BY_DROP_KIT_DUPLICATE": 14,
       "OWNED_BY_FREEPASS": 39,
-      "OWNED_BY_RENTAL": 1174
+      "OWNED_BY_RENTAL": 1168
     },
     "copied_by_kind": {
-      "EXACT_COPY": 130,
+      "EXACT_COPY": 136,
       "TRANSFORMED": 3
-    }
+    },
+    "vendored_dependencies": 6
   },
   "excluded": [
     {
@@ -733,10 +735,6 @@
       "disposition": "OWNED_BY_RENTAL"
     },
     {
-      "path": "docs/sop/README.md",
-      "disposition": "OWNED_BY_RENTAL"
-    },
-    {
       "path": "docs/sop/시트/업무오더-매시간.md",
       "disposition": "OWNED_BY_RENTAL"
     },
@@ -1098,10 +1096,6 @@
     },
     {
       "path": "docs/오더_2026-08-23.md",
-      "disposition": "OWNED_BY_RENTAL"
-    },
-    {
-      "path": "docs/오류.md",
       "disposition": "OWNED_BY_RENTAL"
     },
     {
@@ -1841,10 +1835,6 @@
       "disposition": "OWNED_BY_RENTAL"
     },
     {
-      "path": "lib/gwataeryo-polder.mjs",
-      "disposition": "OWNED_BY_RENTAL"
-    },
-    {
       "path": "lib/gwataeryo-review-basis.mjs",
       "disposition": "OWNED_BY_RENTAL"
     },
@@ -1961,10 +1951,6 @@
       "disposition": "OWNED_BY_RENTAL"
     },
     {
-      "path": "lib/올리는곳.json",
-      "disposition": "OWNED_BY_RENTAL"
-    },
-    {
       "path": "lib/원자마스터.json",
       "disposition": "OWNED_BY_RENTAL"
     },
@@ -2030,10 +2016,6 @@
     },
     {
       "path": "scripts/contract-close-reconcile.mjs",
-      "disposition": "OWNED_BY_RENTAL"
-    },
-    {
-      "path": "scripts/daily.cmd",
       "disposition": "OWNED_BY_RENTAL"
     },
     {
@@ -2394,10 +2376,6 @@
     },
     {
       "path": "sheets/fix-columns-2026-08-20.mjs",
-      "disposition": "OWNED_BY_RENTAL"
-    },
-    {
-      "path": "sheets/fmt.mjs",
       "disposition": "OWNED_BY_RENTAL"
     },
     {
@@ -5237,6 +5215,14 @@
       "copy_kind": "EXACT_COPY"
     },
     {
+      "path": "docs/sop/README.md",
+      "sha256": "cc9483bd6c5764aa21d7c77b1456965c2559bf55efc61a6e3d149f69851d40b8",
+      "source_git_blob": "dad5f539ab7d0db9d174750499897b81b62d5aeb",
+      "copy_kind": "EXACT_COPY",
+      "vendored_from": "freepass-creator/renman:aiops-rental/docs/sop/README.md",
+      "note": "공용 의존 파일 사본 — 정본은 vendored_from. 고치면 정본을 먼저 고치고 여기로 다시 복사한다."
+    },
+    {
       "path": "docs/sop/_양식.md",
       "sha256": "366a694664dd8336c4140b1ab16635e402898f7a52fd5a510fb51a7f36c6a32f",
       "source_git_blob": "a4a02c963efd87d73c2da17682219f54dfc74892",
@@ -5259,6 +5245,14 @@
       "sha256": "0c59c2fdcae2ab797556441cbe26b86247fe8b6a3689581cc547d4cd7ae167e8",
       "source_git_blob": "72c488ba657ef86c9a7615281caed8b1afc3c54a",
       "copy_kind": "EXACT_COPY"
+    },
+    {
+      "path": "docs/오류.md",
+      "sha256": "dd1878e40da7b37702c7b9f8a2bed6509e788f7e2403cb1cda2aa9a652c4d6e6",
+      "source_git_blob": "e024dab8479c46a3c25055b5b761306cf39b7d61",
+      "copy_kind": "EXACT_COPY",
+      "vendored_from": "freepass-creator/renman:aiops-rental/docs/오류.md",
+      "note": "공용 의존 파일 사본 — 정본은 vendored_from. 고치면 정본을 먼저 고치고 여기로 다시 복사한다."
     },
     {
       "path": "docs/자율운영.md",
@@ -5437,6 +5431,14 @@
       "copy_kind": "EXACT_COPY"
     },
     {
+      "path": "lib/gwataeryo-polder.mjs",
+      "sha256": "e30aff0e7a6481bc68f0427cde9493c32eae48a64a449b5d20b06da53e025e9e",
+      "source_git_blob": "5eebb0cb99c2686a13d60b2aa1d7eab09ca9bb3d",
+      "copy_kind": "EXACT_COPY",
+      "vendored_from": "freepass-creator/renman:aiops-rental/lib/gwataeryo-polder.mjs",
+      "note": "공용 의존 파일 사본 — 정본은 vendored_from. 고치면 정본을 먼저 고치고 여기로 다시 복사한다."
+    },
+    {
       "path": "lib/haengjeong.mjs",
       "sha256": "ed648bdca925076b9f6bd5e22285d82b65d6233d09634883452da3ef1e8aa635",
       "source_git_blob": "4a370163cef89d09f00a84e075a91feaaf5e382a",
@@ -5529,6 +5531,14 @@
       "copy_kind": "EXACT_COPY"
     },
     {
+      "path": "lib/올리는곳.json",
+      "sha256": "884e6d13d7fa6ffc56530bfbd896dbeb5e9e0aadf8832128253d359ce82288b0",
+      "source_git_blob": "28b344e23073537af636eaf121bd16f35d14b5ba",
+      "copy_kind": "EXACT_COPY",
+      "vendored_from": "freepass-creator/renman:aiops-rental/lib/올리는곳.json",
+      "note": "공용 의존 파일 사본 — 정본은 vendored_from. 고치면 정본을 먼저 고치고 여기로 다시 복사한다."
+    },
+    {
       "path": "lib/폴더규격.json",
       "sha256": "5d53ad0ed0540dfd5a862cb092f920986f964018ef7731eb5433a2a2458f4031",
       "source_git_blob": "3df1bb15ce4b4d48e434b3329b7746b21b90edd2",
@@ -5551,6 +5561,14 @@
       "sha256": "ea8857b8f05ee83ef63487813f07fd3cf468aa6c58a4bed18e0cd78d0cf75d87",
       "source_git_blob": "f62d0475c505f9df04c3d0aad37700ab070b1930",
       "copy_kind": "EXACT_COPY"
+    },
+    {
+      "path": "scripts/daily.cmd",
+      "sha256": "ea968febbbeecd5558209cfac6dadc08cf451f8a7a8a78c635a4e25e0af9d8c4",
+      "source_git_blob": "071f3e26ebbd5aa0ce2e454057ae87076a5d48e7",
+      "copy_kind": "EXACT_COPY",
+      "vendored_from": "freepass-creator/renman:aiops-rental/scripts/daily.cmd",
+      "note": "공용 의존 파일 사본 — 정본은 vendored_from. 고치면 정본을 먼저 고치고 여기로 다시 복사한다."
     },
     {
       "path": "scripts/excel-ilkgi.py",
@@ -5695,6 +5713,14 @@
       "sha256": "6d3390ddec6d95660ad16f422e417dfc0f033dd96892f999961b72e29ae19439",
       "source_git_blob": "3e925dc4918908ed51e085bf0f3b5efee005ba44",
       "copy_kind": "EXACT_COPY"
+    },
+    {
+      "path": "sheets/fmt.mjs",
+      "sha256": "5b9cc59eb4dc8f1b0e48487cf99bd7ff842222f9ff0bc48de355dad40a8e3564",
+      "source_git_blob": "85c7fa156786790579960c512ba7d974eba3c927",
+      "copy_kind": "EXACT_COPY",
+      "vendored_from": "freepass-creator/renman:aiops-rental/sheets/fmt.mjs",
+      "note": "공용 의존 파일 사본 — 정본은 vendored_from. 고치면 정본을 먼저 고치고 여기로 다시 복사한다."
     },
     {
       "path": "test/ai-core-security-shadow.test.mjs",

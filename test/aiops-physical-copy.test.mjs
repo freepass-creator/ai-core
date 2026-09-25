@@ -8,7 +8,7 @@ import test from 'node:test';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const moduleRoot = resolve(root, 'aiops');
-const own = new Set(['PROVENANCE.json', 'README.md']);
+const own = new Set(['PROVENANCE.json', 'README.md', 'package.json']);
 
 async function walk(directory) {
   const files = [];
