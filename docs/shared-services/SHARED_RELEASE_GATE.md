@@ -47,6 +47,16 @@ AI Core는 그 값을 project registry의 expected revision과 대조한다.
 
 Recovery는 자동배포를 대체하는 것이 아니라, Git Integration 지연/실패/alias 문제를 분리해 진단하기 위한 경로다.
 
+### 5. 관측 완료 != 활성화 권한
+
+- 원천 전체를 읽고 대조했다는 사실은 `observation=COMPLETE`일 뿐이다.
+- 검토 승인과 canonical release 생성 증거가 별도로 없으면 ACTIVE/public promotion은 `HOLD`다.
+- 공통 machine contract는 `governance.activation-decision.v1`을 사용한다.
+- `AUTHORIZED`는 `COMPLETE observation + APPROVED review + BUILT release`를 모두 요구한다.
+- 따라서 부분 자료를 전체 정본처럼 공개하거나, audit PASS만으로 ACTIVE를 올리는 경로는 금지한다.
+
+이 규칙은 FreePass Data의 publication gate와 ERP4의 prepublish/pinned-engine 경로에서 공통으로 확인된 패턴을 Core로 역수입한 것이다. 세부 source/count/가격 규칙은 각 프로젝트에 남긴다.
+
 ### 5. 완료 판정
 
 다음이 모두 맞을 때 release를 실제 운영 완료로 본다.
