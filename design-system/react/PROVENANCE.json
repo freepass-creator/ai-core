@@ -1,225 +1,15 @@
 {
-  "schema": "ai-core-design-system-react-provenance/v1",
-  "source": {
-    "repository": "freepass-creator/renman",
-    "revision": "d471a00638bee407a9dc53ed0e13f30b45eefe98",
-    "note": "Files were read at renman main; the aiops-rental import merged since does not touch these paths (blobs unchanged)."
-  },
-  "files": [
+  "schema": "ai-core-design-system-react-provenance/v2",
+  "sources": [
     {
-      "source_path": "components/ui/controls.tsx",
-      "source_git_blob": "370de3677a9a4bfb4a8eb9ff91424fa0ccd6038d",
-      "path": "ui/controls.tsx",
-      "sha256": "e26f8423ace04ab658abf5b3352b144efe2ef875781995d52934814ecd9870c8",
-      "transformations": [
-        "import paths rewritten to package-relative",
-        "legacy CSS variables mapped to HQ variables",
-        "removed rental-domain CompanyFilter and PeriodBar (company session, finance period)"
-      ],
-      "copy_kind": "TRANSFORMED"
+      "repository": "freepass-creator/renman",
+      "revision": "d471a00638bee407a9dc53ed0e13f30b45eefe98",
+      "note": "Files were read at renman main; the aiops-rental import merged since does not touch these paths (blobs unchanged)."
     },
     {
-      "source_path": "components/ui/overlays.tsx",
-      "source_git_blob": "c1e7efe64cee494e99a56baccd56dd11ee8ef65a",
-      "path": "ui/overlays.tsx",
-      "sha256": "e7061ab9fad6b5df4504e259eb57570452d13412b393f2f03aa957ec3fde2fd7",
-      "transformations": [
-        "import paths rewritten to package-relative",
-        "literal shadows moved to ELEV"
-      ],
-      "copy_kind": "TRANSFORMED"
-    },
-    {
-      "source_path": "components/ui/bottom-sheet.tsx",
-      "source_git_blob": "77c8aea86f51f4c8d716b0b1bf09f7fac44d254a",
-      "path": "ui/bottom-sheet.tsx",
-      "sha256": "d38e250e773957a2480f4e521bbdddd757cf43565361f36db4fdc04838b3d019",
-      "transformations": [
-        "import paths rewritten to package-relative",
-        "legacy CSS variables mapped to HQ variables"
-      ],
-      "copy_kind": "TRANSFORMED"
-    },
-    {
-      "source_path": "components/ui/confirm.tsx",
-      "source_git_blob": "fe9f820e6abe3148f124cc5d4a84ce37638f2399",
-      "path": "ui/confirm.tsx",
-      "sha256": "98bc19ca671c44282ae99c5fb02b97d7c19dd357cd493661835469b5f07a65de",
-      "transformations": [],
-      "copy_kind": "EXACT_COPY"
-    },
-    {
-      "source_path": "components/ui/context-menu.tsx",
-      "source_git_blob": "8640c2d2492df6ba854ef9452d488daf021d6a59",
-      "path": "ui/context-menu.tsx",
-      "sha256": "b72314c4599ad82886b8c476d8a54f02ff24672f1b3b6085f9e228b43c6ede98",
-      "transformations": [],
-      "copy_kind": "EXACT_COPY"
-    },
-    {
-      "source_path": "components/ui/wizard.tsx",
-      "source_git_blob": "e896e50e3929b2a9a0a4293d568ce23b14ebe359",
-      "path": "ui/wizard.tsx",
-      "sha256": "83f98e85ee0ecaddedf62f1542e33f5992cb566cfb000211b894ad2c5487e898",
-      "transformations": [
-        "literal shadow moved to ELEV"
-      ],
-      "copy_kind": "TRANSFORMED"
-    },
-    {
-      "source_path": "components/ui/status-badge.tsx",
-      "source_git_blob": "bb2564b2f571821b71f0fe70de87fe828cab2b08",
-      "path": "ui/status-badge.tsx",
-      "sha256": "a934eb433ec37c360b2fb4b6d08d25c718971b2417b4c745ed5465be5cab1056",
-      "transformations": [],
-      "copy_kind": "EXACT_COPY"
-    },
-    {
-      "source_path": "components/ui/page-toolbar.tsx",
-      "source_git_blob": "ca110686f1ba8c17c24964ada1503e313b9dff56",
-      "path": "ui/page-toolbar.tsx",
-      "sha256": "e77d78896093a899493a1980b43a26ae65fe2fdd993694f612a07e55610ed94b",
-      "transformations": [
-        "import paths rewritten to package-relative",
-        "legacy CSS variables mapped to HQ variables"
-      ],
-      "copy_kind": "TRANSFORMED"
-    },
-    {
-      "source_path": "components/ui/mobile-toolbar.tsx",
-      "source_git_blob": "8687dd8f47209727bbfea00dcd9152ccd988ece2",
-      "path": "ui/mobile-toolbar.tsx",
-      "sha256": "619ac9575bf9b54f8bd6026584b0653715f39f039a58ef7be6d8601627f5f703",
-      "transformations": [
-        "legacy CSS variables mapped to HQ variables"
-      ],
-      "copy_kind": "TRANSFORMED"
-    },
-    {
-      "source_path": "components/ui/month-calendar.tsx",
-      "source_git_blob": "c7a9f7dd7a802ba97ad7cc5fff4c9b9fb252b820",
-      "path": "ui/month-calendar.tsx",
-      "sha256": "67909af2780c1eee2135a0c1548b1cf5bcff7ae57853758bf8fbaf076bf824c8",
-      "transformations": [
-        "#fff moved to ON_ACCENT",
-        "import paths rewritten to package-relative",
-        "legacy CSS variables mapped to HQ variables"
-      ],
-      "copy_kind": "TRANSFORMED"
-    },
-    {
-      "source_path": "components/Spinner.tsx",
-      "source_git_blob": "cbfef7946ed458b6a3d85a9ac64467cf1d78331c",
-      "path": "ui/spinner.tsx",
-      "sha256": "6bb62951e92adea53e94db8a0e034662bdf2e1bd209a15119dde0322d71dd47d",
-      "transformations": [
-        "comment no longer points at the renman barrel",
-        "import paths rewritten to package-relative",
-        "legacy CSS variables mapped to HQ variables"
-      ],
-      "copy_kind": "TRANSFORMED"
-    },
-    {
-      "source_path": "components/ToastHost.tsx",
-      "source_git_blob": "03197ffe5dd1ab6693bc8b0356e9aabe9640f5bb",
-      "path": "ui/toast-host.tsx",
-      "sha256": "9b8b40f3bc85a897ca2ef0b0821e16e016f0fd6f58b08c8564b2b5ac15d5d764",
-      "transformations": [
-        "toast palette and shadow moved to TOAST_TONE/ELEV"
-      ],
-      "copy_kind": "TRANSFORMED"
-    },
-    {
-      "source_path": "components/FileDrop.tsx",
-      "source_git_blob": "a4b79471db0cc3ff0f7c1016f579761967cae028",
-      "path": "ui/file-drop.tsx",
-      "sha256": "f5827ff51109dd1073c1c225d2832ac674ef89aa694d4862416ed5aca72cd0be",
-      "transformations": [
-        "barrel import replaced with ./tokens",
-        "import paths rewritten to package-relative",
-        "legacy CSS variables mapped to HQ variables"
-      ],
-      "copy_kind": "TRANSFORMED"
-    },
-    {
-      "source_path": "components/SignaturePad.tsx",
-      "source_git_blob": "6926115d8d95290f6a573b1520490ede13822904",
-      "path": "ui/signature-pad.tsx",
-      "sha256": "b5e58a900e700d42b5c956af8ac5bb921d57b503bba552c94607f3b7378940ba",
-      "transformations": [
-        "barrel import replaced with direct ./tokens and ./controls",
-        "import paths rewritten to package-relative",
-        "ink color moved to SIGN_INK"
-      ],
-      "copy_kind": "TRANSFORMED"
-    },
-    {
-      "source_path": "lib/toast.ts",
-      "source_git_blob": "9e1101b2f9c5ebabfa3aecc06398a68e9d0bd433",
-      "path": "lib/toast.ts",
-      "sha256": "a5349fd1756d85f7943c5f33ccb78bc9c064d2a2d52a8d2a3f409d4f1b37a205",
-      "transformations": [],
-      "copy_kind": "EXACT_COPY"
-    },
-    {
-      "source_path": "lib/haptics.ts",
-      "source_git_blob": "17103daa6c7c0f4649dcb85a2094611b07aa546c",
-      "path": "lib/haptics.ts",
-      "sha256": "ffed0fca19826a53b9c598d40e41169b1ec5f70e4025141e3fe3d4dfbda84d51",
-      "transformations": [],
-      "copy_kind": "EXACT_COPY"
-    },
-    {
-      "source_path": "lib/use-mobile.ts",
-      "source_git_blob": "dcc87ba7dc462939f1d0710b6c1ee8246530c8ac",
-      "path": "lib/use-mobile.ts",
-      "sha256": "0c3f567fa9ace1263cae5ebd0c3cedcaa5593428deaae6f604d1192500d1ed3c",
-      "transformations": [],
-      "copy_kind": "EXACT_COPY"
-    },
-    {
-      "source_path": "lib/use-sec-order.ts",
-      "source_git_blob": "211fc8db43bbcb13fba44fd9e218062b5f2f522f",
-      "path": "lib/use-sec-order.ts",
-      "sha256": "d5da97465d1c3ac3b1841b0794b3043e77165236a0704709f6d1af116124ddb0",
-      "transformations": [],
-      "copy_kind": "EXACT_COPY"
-    },
-    {
-      "source_path": "lib/use-row-selection.ts",
-      "source_git_blob": "f046c3c08780ea2ec9441e59ebc2b8d214c37951",
-      "path": "lib/use-row-selection.ts",
-      "sha256": "0bdce9fd86fe8e8b9494868570a60b2c2b2385de1c47a64d766a7db13e1d5f92",
-      "transformations": [],
-      "copy_kind": "EXACT_COPY"
-    },
-    {
-      "source_path": "lib/use-table-selection.ts",
-      "source_git_blob": "4f69fbe1ede7570638eecb6ae1bd9a079d5e94e8",
-      "path": "lib/use-table-selection.ts",
-      "sha256": "b57388670cf451101ff1a354c6afb6df80b584725a14ac18d309ef6011563ba8",
-      "transformations": [],
-      "copy_kind": "EXACT_COPY"
-    },
-    {
-      "source_path": "lib/use-busy-action.ts",
-      "source_git_blob": "22df8d3e8a193cc78f1011f214a658a06f84a7bb",
-      "path": "lib/use-busy-action.ts",
-      "sha256": "0031299435f0631bdb3be19276f80bf4abe0d0b02cc7f6402b0390d7dda9d928",
-      "transformations": [],
-      "copy_kind": "EXACT_COPY"
-    },
-    {
-      "source_path": "components/ui/tokens.tsx",
-      "source_git_blob": "01bff6bcbc7a1074c4d8d493ed5f3992be1f9649",
-      "path": "ui/tokens.ts",
-      "sha256": "b1c92cdead06f29311bcfab09ca4e22843c3d975e2bc6f5ce66d2fd5bd5de1ed",
-      "transformations": [
-        "C/R/SH/SCRIM/CELL_SUB_FS/EXCEL_ROW_H rebound from jpkerp5 CSS variables to HQ design-system variables",
-        "ELEV, ON_ACCENT, TOAST_TONE, SIGN_INK added so literal colors live in one file",
-        "NUM font changed from var(--font-mono) (not in HQ) to a monospace stack"
-      ],
-      "copy_kind": "TRANSFORMED"
+      "repository": "freepass-creator/freepasserp4",
+      "revision": "d8d30570ecba8521dd6d1f6802e49ec14c6f8b58",
+      "note": "Only atoms HQ did not already have; colliding atoms (Btn/Input/Modal/Drawer/FilterChips/ContextMenu/table styles) keep the renman versions because they meet the HQ 44px touch minimum."
     }
   ],
   "policy": {
@@ -229,5 +19,365 @@
       "literal colors only in src/ui/tokens.ts",
       "no imports outside the package except react and lucide-react"
     ]
-  }
+  },
+  "files": [
+    {
+      "source_repository": "freepass-creator/renman",
+      "source_revision": "d471a00638bee407a9dc53ed0e13f30b45eefe98",
+      "source_path": "components/ui/controls.tsx",
+      "source_git_blob": "370de3677a9a4bfb4a8eb9ff91424fa0ccd6038d",
+      "path": "ui/controls.tsx",
+      "copy_kind": "TRANSFORMED",
+      "sha256": "e26f8423ace04ab658abf5b3352b144efe2ef875781995d52934814ecd9870c8",
+      "transformations": [
+        "import paths rewritten to package-relative",
+        "legacy CSS variables mapped to HQ variables",
+        "removed rental-domain CompanyFilter and PeriodBar (company session, finance period)"
+      ]
+    },
+    {
+      "source_repository": "freepass-creator/renman",
+      "source_revision": "d471a00638bee407a9dc53ed0e13f30b45eefe98",
+      "source_path": "components/ui/overlays.tsx",
+      "source_git_blob": "c1e7efe64cee494e99a56baccd56dd11ee8ef65a",
+      "path": "ui/overlays.tsx",
+      "copy_kind": "TRANSFORMED",
+      "sha256": "e7061ab9fad6b5df4504e259eb57570452d13412b393f2f03aa957ec3fde2fd7",
+      "transformations": [
+        "import paths rewritten to package-relative",
+        "literal shadows moved to ELEV"
+      ]
+    },
+    {
+      "source_repository": "freepass-creator/renman",
+      "source_revision": "d471a00638bee407a9dc53ed0e13f30b45eefe98",
+      "source_path": "components/ui/bottom-sheet.tsx",
+      "source_git_blob": "77c8aea86f51f4c8d716b0b1bf09f7fac44d254a",
+      "path": "ui/bottom-sheet.tsx",
+      "copy_kind": "TRANSFORMED",
+      "sha256": "d38e250e773957a2480f4e521bbdddd757cf43565361f36db4fdc04838b3d019",
+      "transformations": [
+        "import paths rewritten to package-relative",
+        "legacy CSS variables mapped to HQ variables"
+      ]
+    },
+    {
+      "source_repository": "freepass-creator/renman",
+      "source_revision": "d471a00638bee407a9dc53ed0e13f30b45eefe98",
+      "source_path": "components/ui/confirm.tsx",
+      "source_git_blob": "fe9f820e6abe3148f124cc5d4a84ce37638f2399",
+      "path": "ui/confirm.tsx",
+      "copy_kind": "EXACT_COPY",
+      "sha256": "98bc19ca671c44282ae99c5fb02b97d7c19dd357cd493661835469b5f07a65de",
+      "transformations": []
+    },
+    {
+      "source_repository": "freepass-creator/renman",
+      "source_revision": "d471a00638bee407a9dc53ed0e13f30b45eefe98",
+      "source_path": "components/ui/context-menu.tsx",
+      "source_git_blob": "8640c2d2492df6ba854ef9452d488daf021d6a59",
+      "path": "ui/context-menu.tsx",
+      "copy_kind": "EXACT_COPY",
+      "sha256": "b72314c4599ad82886b8c476d8a54f02ff24672f1b3b6085f9e228b43c6ede98",
+      "transformations": []
+    },
+    {
+      "source_repository": "freepass-creator/renman",
+      "source_revision": "d471a00638bee407a9dc53ed0e13f30b45eefe98",
+      "source_path": "components/ui/wizard.tsx",
+      "source_git_blob": "e896e50e3929b2a9a0a4293d568ce23b14ebe359",
+      "path": "ui/wizard.tsx",
+      "copy_kind": "TRANSFORMED",
+      "sha256": "83f98e85ee0ecaddedf62f1542e33f5992cb566cfb000211b894ad2c5487e898",
+      "transformations": [
+        "literal shadow moved to ELEV"
+      ]
+    },
+    {
+      "source_repository": "freepass-creator/renman",
+      "source_revision": "d471a00638bee407a9dc53ed0e13f30b45eefe98",
+      "source_path": "components/ui/status-badge.tsx",
+      "source_git_blob": "bb2564b2f571821b71f0fe70de87fe828cab2b08",
+      "path": "ui/status-badge.tsx",
+      "copy_kind": "EXACT_COPY",
+      "sha256": "a934eb433ec37c360b2fb4b6d08d25c718971b2417b4c745ed5465be5cab1056",
+      "transformations": []
+    },
+    {
+      "source_repository": "freepass-creator/renman",
+      "source_revision": "d471a00638bee407a9dc53ed0e13f30b45eefe98",
+      "source_path": "components/ui/page-toolbar.tsx",
+      "source_git_blob": "ca110686f1ba8c17c24964ada1503e313b9dff56",
+      "path": "ui/page-toolbar.tsx",
+      "copy_kind": "TRANSFORMED",
+      "sha256": "e77d78896093a899493a1980b43a26ae65fe2fdd993694f612a07e55610ed94b",
+      "transformations": [
+        "import paths rewritten to package-relative",
+        "legacy CSS variables mapped to HQ variables"
+      ]
+    },
+    {
+      "source_repository": "freepass-creator/renman",
+      "source_revision": "d471a00638bee407a9dc53ed0e13f30b45eefe98",
+      "source_path": "components/ui/mobile-toolbar.tsx",
+      "source_git_blob": "8687dd8f47209727bbfea00dcd9152ccd988ece2",
+      "path": "ui/mobile-toolbar.tsx",
+      "copy_kind": "TRANSFORMED",
+      "sha256": "619ac9575bf9b54f8bd6026584b0653715f39f039a58ef7be6d8601627f5f703",
+      "transformations": [
+        "legacy CSS variables mapped to HQ variables"
+      ]
+    },
+    {
+      "source_repository": "freepass-creator/renman",
+      "source_revision": "d471a00638bee407a9dc53ed0e13f30b45eefe98",
+      "source_path": "components/ui/month-calendar.tsx",
+      "source_git_blob": "c7a9f7dd7a802ba97ad7cc5fff4c9b9fb252b820",
+      "path": "ui/month-calendar.tsx",
+      "copy_kind": "TRANSFORMED",
+      "sha256": "67909af2780c1eee2135a0c1548b1cf5bcff7ae57853758bf8fbaf076bf824c8",
+      "transformations": [
+        "#fff moved to ON_ACCENT",
+        "import paths rewritten to package-relative",
+        "legacy CSS variables mapped to HQ variables"
+      ]
+    },
+    {
+      "source_repository": "freepass-creator/renman",
+      "source_revision": "d471a00638bee407a9dc53ed0e13f30b45eefe98",
+      "source_path": "components/Spinner.tsx",
+      "source_git_blob": "cbfef7946ed458b6a3d85a9ac64467cf1d78331c",
+      "path": "ui/spinner.tsx",
+      "copy_kind": "TRANSFORMED",
+      "sha256": "6bb62951e92adea53e94db8a0e034662bdf2e1bd209a15119dde0322d71dd47d",
+      "transformations": [
+        "comment no longer points at the renman barrel",
+        "import paths rewritten to package-relative",
+        "legacy CSS variables mapped to HQ variables"
+      ]
+    },
+    {
+      "source_repository": "freepass-creator/renman",
+      "source_revision": "d471a00638bee407a9dc53ed0e13f30b45eefe98",
+      "source_path": "components/ToastHost.tsx",
+      "source_git_blob": "03197ffe5dd1ab6693bc8b0356e9aabe9640f5bb",
+      "path": "ui/toast-host.tsx",
+      "copy_kind": "TRANSFORMED",
+      "sha256": "9b8b40f3bc85a897ca2ef0b0821e16e016f0fd6f58b08c8564b2b5ac15d5d764",
+      "transformations": [
+        "toast palette and shadow moved to TOAST_TONE/ELEV"
+      ]
+    },
+    {
+      "source_repository": "freepass-creator/renman",
+      "source_revision": "d471a00638bee407a9dc53ed0e13f30b45eefe98",
+      "source_path": "components/FileDrop.tsx",
+      "source_git_blob": "a4b79471db0cc3ff0f7c1016f579761967cae028",
+      "path": "ui/file-drop.tsx",
+      "copy_kind": "TRANSFORMED",
+      "sha256": "f5827ff51109dd1073c1c225d2832ac674ef89aa694d4862416ed5aca72cd0be",
+      "transformations": [
+        "barrel import replaced with ./tokens",
+        "import paths rewritten to package-relative",
+        "legacy CSS variables mapped to HQ variables"
+      ]
+    },
+    {
+      "source_repository": "freepass-creator/renman",
+      "source_revision": "d471a00638bee407a9dc53ed0e13f30b45eefe98",
+      "source_path": "components/SignaturePad.tsx",
+      "source_git_blob": "6926115d8d95290f6a573b1520490ede13822904",
+      "path": "ui/signature-pad.tsx",
+      "copy_kind": "TRANSFORMED",
+      "sha256": "b5e58a900e700d42b5c956af8ac5bb921d57b503bba552c94607f3b7378940ba",
+      "transformations": [
+        "barrel import replaced with direct ./tokens and ./controls",
+        "import paths rewritten to package-relative",
+        "ink color moved to SIGN_INK"
+      ]
+    },
+    {
+      "source_repository": "freepass-creator/renman",
+      "source_revision": "d471a00638bee407a9dc53ed0e13f30b45eefe98",
+      "source_path": "lib/toast.ts",
+      "source_git_blob": "9e1101b2f9c5ebabfa3aecc06398a68e9d0bd433",
+      "path": "lib/toast.ts",
+      "copy_kind": "EXACT_COPY",
+      "sha256": "a5349fd1756d85f7943c5f33ccb78bc9c064d2a2d52a8d2a3f409d4f1b37a205",
+      "transformations": []
+    },
+    {
+      "source_repository": "freepass-creator/renman",
+      "source_revision": "d471a00638bee407a9dc53ed0e13f30b45eefe98",
+      "source_path": "lib/haptics.ts",
+      "source_git_blob": "17103daa6c7c0f4649dcb85a2094611b07aa546c",
+      "path": "lib/haptics.ts",
+      "copy_kind": "EXACT_COPY",
+      "sha256": "ffed0fca19826a53b9c598d40e41169b1ec5f70e4025141e3fe3d4dfbda84d51",
+      "transformations": []
+    },
+    {
+      "source_repository": "freepass-creator/renman",
+      "source_revision": "d471a00638bee407a9dc53ed0e13f30b45eefe98",
+      "source_path": "lib/use-mobile.ts",
+      "source_git_blob": "dcc87ba7dc462939f1d0710b6c1ee8246530c8ac",
+      "path": "lib/use-mobile.ts",
+      "copy_kind": "EXACT_COPY",
+      "sha256": "0c3f567fa9ace1263cae5ebd0c3cedcaa5593428deaae6f604d1192500d1ed3c",
+      "transformations": []
+    },
+    {
+      "source_repository": "freepass-creator/renman",
+      "source_revision": "d471a00638bee407a9dc53ed0e13f30b45eefe98",
+      "source_path": "lib/use-sec-order.ts",
+      "source_git_blob": "211fc8db43bbcb13fba44fd9e218062b5f2f522f",
+      "path": "lib/use-sec-order.ts",
+      "copy_kind": "EXACT_COPY",
+      "sha256": "d5da97465d1c3ac3b1841b0794b3043e77165236a0704709f6d1af116124ddb0",
+      "transformations": []
+    },
+    {
+      "source_repository": "freepass-creator/renman",
+      "source_revision": "d471a00638bee407a9dc53ed0e13f30b45eefe98",
+      "source_path": "lib/use-row-selection.ts",
+      "source_git_blob": "f046c3c08780ea2ec9441e59ebc2b8d214c37951",
+      "path": "lib/use-row-selection.ts",
+      "copy_kind": "EXACT_COPY",
+      "sha256": "0bdce9fd86fe8e8b9494868570a60b2c2b2385de1c47a64d766a7db13e1d5f92",
+      "transformations": []
+    },
+    {
+      "source_repository": "freepass-creator/renman",
+      "source_revision": "d471a00638bee407a9dc53ed0e13f30b45eefe98",
+      "source_path": "lib/use-table-selection.ts",
+      "source_git_blob": "4f69fbe1ede7570638eecb6ae1bd9a079d5e94e8",
+      "path": "lib/use-table-selection.ts",
+      "copy_kind": "EXACT_COPY",
+      "sha256": "b57388670cf451101ff1a354c6afb6df80b584725a14ac18d309ef6011563ba8",
+      "transformations": []
+    },
+    {
+      "source_repository": "freepass-creator/renman",
+      "source_revision": "d471a00638bee407a9dc53ed0e13f30b45eefe98",
+      "source_path": "lib/use-busy-action.ts",
+      "source_git_blob": "22df8d3e8a193cc78f1011f214a658a06f84a7bb",
+      "path": "lib/use-busy-action.ts",
+      "copy_kind": "EXACT_COPY",
+      "sha256": "0031299435f0631bdb3be19276f80bf4abe0d0b02cc7f6402b0390d7dda9d928",
+      "transformations": []
+    },
+    {
+      "source_repository": "freepass-creator/renman",
+      "source_revision": "d471a00638bee407a9dc53ed0e13f30b45eefe98",
+      "source_path": "components/ui/tokens.tsx",
+      "source_git_blob": "01bff6bcbc7a1074c4d8d493ed5f3992be1f9649",
+      "path": "ui/tokens.ts",
+      "copy_kind": "TRANSFORMED",
+      "sha256": "ddae8939740203243b9cae81efb1ceba84e5959075fe2fcd92447377363c5890",
+      "transformations": [
+        "C/R/SH/SCRIM/CELL_SUB_FS/EXCEL_ROW_H rebound from jpkerp5 CSS variables to HQ design-system variables",
+        "ELEV, ON_ACCENT, TOAST_TONE, SIGN_INK added so literal colors live in one file",
+        "FS, FW, ICON, R_CARD, ctrlPadX added from freepasserp4 tokens for its atoms",
+        "NUM font changed from var(--font-mono) (not in HQ) to a monospace stack"
+      ]
+    },
+    {
+      "source_repository": "freepass-creator/freepasserp4",
+      "source_revision": "d8d30570ecba8521dd6d1f6802e49ec14c6f8b58",
+      "source_path": "components/ui/feedback.tsx",
+      "source_git_blob": "449bd3d40cbee03cfbafffa0de8b03916975d29a",
+      "path": "ui/feedback.tsx",
+      "copy_kind": "TRANSFORMED",
+      "sha256": "642b4837bd79792e8b544f5b0de02606d041cc47a049ae4916ce79653d25e853",
+      "transformations": [
+        "Loading renamed PageLoading (renman spinner keeps the Loading name)",
+        "imports rewritten to package-relative; buttons -> HQ controls Btn",
+        "legacy CSS variables mapped to HQ status roles",
+        "removed FeedRowSkeleton and ProductCardSkeleton (placeholders for freepasserp4 marketplace rows/cards)"
+      ]
+    },
+    {
+      "source_repository": "freepass-creator/freepasserp4",
+      "source_revision": "d8d30570ecba8521dd6d1f6802e49ec14c6f8b58",
+      "source_path": "components/ui/layout.tsx",
+      "source_git_blob": "543c11793acf606f7da21a81efa18d6e9292fe65",
+      "path": "ui/pane-layout.tsx",
+      "copy_kind": "TRANSFORMED",
+      "sha256": "fb1e21e70c9e55e67cf779ee95b010348b978c60300f69165d3affd1ec706c31",
+      "transformations": [
+        "imports rewritten to package-relative; buttons -> HQ controls Btn"
+      ]
+    },
+    {
+      "source_repository": "freepass-creator/freepasserp4",
+      "source_revision": "d8d30570ecba8521dd6d1f6802e49ec14c6f8b58",
+      "source_path": "components/ui/metrics.tsx",
+      "source_git_blob": "b4faa559560304d2556f7741b6534d1bc4ad9871",
+      "path": "ui/metrics.tsx",
+      "copy_kind": "TRANSFORMED",
+      "sha256": "48703233f8ca7ad7dfa004dacb9aa08ad1c72ce38ff5077e87961da62c6917d5",
+      "transformations": [
+        "SH.cardRest mapped to HQ SH.card"
+      ]
+    },
+    {
+      "source_repository": "freepass-creator/freepasserp4",
+      "source_revision": "d8d30570ecba8521dd6d1f6802e49ec14c6f8b58",
+      "source_path": "components/ui/summary-stats.tsx",
+      "source_git_blob": "58def8e4ac43358c7da7492f5612d7160ad9c435",
+      "path": "ui/summary-stats.tsx",
+      "copy_kind": "TRANSFORMED",
+      "sha256": "9637de0f0c5bda7d72b084f29d88df57c402f9793413172494e00060bdaf7001",
+      "transformations": [
+        "imports rewritten to package-relative; buttons -> HQ controls Btn"
+      ]
+    },
+    {
+      "source_repository": "freepass-creator/freepasserp4",
+      "source_revision": "d8d30570ecba8521dd6d1f6802e49ec14c6f8b58",
+      "source_path": "components/ui/flow-actions.tsx",
+      "source_git_blob": "9926c5a458583f6e89a6508843c9ed950739a33e",
+      "path": "ui/flow-actions.tsx",
+      "copy_kind": "TRANSFORMED",
+      "sha256": "9ad7312bab198aeb965ac1d01c903efc4934cad756062072276a9a04134de912",
+      "transformations": [
+        "Btn full/title props mapped to HQ Btn block/tip",
+        "imports rewritten to package-relative; buttons -> HQ controls Btn",
+        "legacy CSS variables mapped to HQ variables"
+      ]
+    },
+    {
+      "source_repository": "freepass-creator/freepasserp4",
+      "source_revision": "d8d30570ecba8521dd6d1f6802e49ec14c6f8b58",
+      "source_path": "components/ui/close-btn.tsx",
+      "source_git_blob": "4d960f983e14e95c7327a09b67cb5946102efff4",
+      "path": "ui/close-btn.tsx",
+      "copy_kind": "TRANSFORMED",
+      "sha256": "475434bf1e3611d426cce9dafaefedf98bc8dbceae81552413d2110841091a33",
+      "transformations": [
+        "imports rewritten to package-relative; buttons -> HQ controls Btn",
+        "rebuilt on HQ IconBtn: onClick without event, drops haptic/style/className/onPointerDown props"
+      ]
+    },
+    {
+      "source_repository": "freepass-creator/freepasserp4",
+      "source_revision": "d8d30570ecba8521dd6d1f6802e49ec14c6f8b58",
+      "source_path": "components/ui/use-enter-exit.ts",
+      "source_git_blob": "c01f6840452fa7b78f47afecb12b46e055831833",
+      "path": "lib/use-enter-exit.ts",
+      "copy_kind": "EXACT_COPY",
+      "sha256": "80eb4fe09f31c614ba365680ef05d07784a3c0e3f3912085b4101c09262e3b7b",
+      "transformations": []
+    },
+    {
+      "source_repository": "freepass-creator/freepasserp4",
+      "source_revision": "d8d30570ecba8521dd6d1f6802e49ec14c6f8b58",
+      "source_path": "components/ui/formatters.ts",
+      "source_git_blob": "4de6c6772ecf8d9f54c70b100aee3cd4705b62ed",
+      "path": "lib/formatters.ts",
+      "copy_kind": "EXACT_COPY",
+      "sha256": "63f85e453391893d6c3c63af1e6c67e1bca946f9eef1bbcd685fc94585934ff7",
+      "transformations": []
+    }
+  ]
 }
