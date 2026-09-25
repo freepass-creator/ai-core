@@ -28,11 +28,15 @@ export async function validateCanonicalDevelopmentLines(base = root) {
   const historicalDocs = [
     ['design/claude-v1/CONCEPT.md', 'NOT_CANONICAL'],
     ['design/claude-v1/DECISIONS.md', 'NOT_CANONICAL'],
-    ['aiops/docs/CONTROL_PLANE.md', 'NOT_CANONICAL']
   ];
   for (const [path, marker] of historicalDocs) {
     const text = await readFile(resolve(base, path), 'utf8');
     if (!text.includes(marker)) errors.push(`HISTORICAL_AUTHORITY_MARKER_MISSING:${path}`);
+  }
+
+  const aiopsReadme = await readFile(resolve(base, 'aiops/README.md'), 'utf8');
+  if (!aiopsReadme.includes('docs/CONTROL_PLANE.md') || !aiopsReadme.includes('AI Core 전체의 현재 권위')) {
+    errors.push('AIOPS_IMPORTED_AUTHORITY_BOUNDARY_MISSING');
   }
 
   const adapterRuntime = await readFile(resolve(base, 'src/engine/adapter-contract.mjs'), 'utf8');
