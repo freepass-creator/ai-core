@@ -1,0 +1,33 @@
+# aiops branch claude/rental-manager-analysis-z139xg
+# base 3d6ec8c6a0e826ae0472e3fb3e8bbaa8399b68c9
+# tip  1308d3b6072fcf1c051081e6459776d2ca0305b3
+# redacted: False
+# apply: git apply --3way (paths are relative to the aiops root)
+#
+# commits:
+#   1308d3b 2026-09-25 docs(aiknowhow): 클라우드 세션 연결 상태 실측 — Drive 계정·Firebase 키 위치
+
+diff --git a/docs/aiknowhow/연결상태.md b/docs/aiknowhow/연결상태.md
+index 7b06fe9..e500abb 100644
+--- a/docs/aiknowhow/연결상태.md
++++ b/docs/aiknowhow/연결상태.md
+@@ -34,6 +34,19 @@
+ | Firebase 직접 API 호출 (일부 경로) | 차단 사례 있음(맥락에 따라 다를 수 있음 — 시도 전 확인) |
+ | `ironrentcar.com` | 차단 사례 있음 |
+ 
++## 클라우드 세션(claude.ai/code · 앱에서 연 원격 컨테이너) — 2026-09-25 실측
++
++★**PC 세션과 다른 기계다.** ai-core `memory/TOOL_CONNECTIONS.md`·이 문서의 연결(gh·gws·메일·Gemini·Firebase 키)은 전부 **대표 PC(`C:/dev`, `%USERPROFILE%`)에 있다.** 클라우드 컨테이너에는 따라오지 않는다.
++
++| 무엇 | 상태 | 확인한 것 |
++|---|---|---|
++| GitHub (세션에 붙인 저장소) | ★된다 | 클론·푸시 됨. 다른 저장소는 세션에서 `add_repo` 로 붙인다(teamjpkwork 붙여 봄) |
++| Google Drive 커넥터 | ★된다 — **계정 jpkpyh@gmail.com** | 최근 파일 목록 읽힘. ★**데이터센터 공유 드라이브(`0ALp5cUm1kqTvUk9PVA`)는 «없음»** 으로 나온다 — 그 계정이 멤버가 아니다. 공유 드라이브에 jpkpyh@gmail.com 을 넣거나 커넥터를 pyh@teamjpk.com 으로 다시 붙여야 한다 |
++| Firebase(renman-dd0a2 · teamjpkwork) | ✗ **키가 없다** | 망은 열려 있다(firestore/oauth2.googleapis.com 도달). 키 파일은 PC(`C:/dev/renman/*adminsdk*.json`, `C:/dev/teamjpkwork/.env.local`)에만 있다. 환경의 `CLOUDSDK_AUTH_ACCESS_TOKEN` 은 진짜 토큰이 아니다 → Firestore 401 `CREDENTIALS_MISSING` |
++| └ 여는 법 | 환경 설정(세션 제목줄 환경 메뉴 → Edit)에 환경변수로 키를 넣는다(base64 한 줄). 새 세션부터 적용. ★채팅에 붙여넣지 않는다 |
++| 자격증명 뒤지기 | ✗ 권한 분류기가 막는다 | 위 「Claude Code 자체 권한」 과 같다 — 말로 「권한 줄게」 는 안 통한다 |
++| npm `cdn.sheetjs.com` (renman xlsx) | ✗ 403 | 테스트 때만 `xlsx@0.18.5` 로 임시 설치하고 package.json 은 되돌린다 |
++
+ ## 이 표에 없는 걸 시도하다 안 되면
+ 
+ 1. 먼저 정확한 에러(403/404/timeout/모듈없음)를 확인한다.
