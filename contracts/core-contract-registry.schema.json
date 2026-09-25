@@ -56,7 +56,8 @@
               "ERROR",
               "RESULT",
               "RECEIPT",
-              "CODE"
+              "CODE",
+              "GOVERNANCE"
             ]
           },
           "path": {
