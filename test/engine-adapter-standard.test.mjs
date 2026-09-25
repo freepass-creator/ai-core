@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { validateEngineContract, validateAdapterContract, resolveBinding } from '../src/contracts/engine-adapter-contract.mjs';
+import { createWorkResult } from '../src/engine/result-envelope.mjs';
 
 const engine={
   schema_version:'core-engine-contract/v1',
@@ -64,4 +65,30 @@ test('missing or incompatible binding goes HOLD with machine reason',()=>{
 
   const incompatible={...writeAdapter,compatibility:{port_versions:['v2'],engine_versions:['2.0.0']}};
   assert.ok(resolveBinding({engine,adapters:[readAdapter,incompatible],profile}).errors.includes('ADAPTER_PORT_VERSION_MISMATCH:adapter.quote.mock'));
+});
+
+test('work result fails closed when a non-external mode observes an external effect',()=>{
+  const adapterResult={status:'SUCCEEDED',summary:'adapter reported success',data:{ok:true},evidence:[],artifacts:[],checks:[],blockers:[],external_effect:true};
+  for(const mode of ['READ_ONLY','LOCAL_MUTATION']){
+    const result=createWorkResult({
+      plan:{order_id:'ORD-1',work_id:'WORK-1',project_id:'project-a',capability_id:'cap-a',subject_revision:'a'.repeat(40),mode,walls:[],authorization_source:null},
+      status:'SUCCEEDED',adapterResult,performed:true,clock:()=>0,
+    });
+    assert.equal(result.status,'HOLD');
+    assert.equal(result.execution.external_effect,true);
+    assert.equal(result.outcome.observed,false);
+    assert.ok(result.blockers.includes('CAPABILITY_EFFECT_BOUNDARY_VIOLATION'));
+  }
+});
+
+test('external mutation may report an observed external effect without being downgraded',()=>{
+  const result=createWorkResult({
+    plan:{order_id:'ORD-1',work_id:'WORK-1',project_id:'project-a',capability_id:'cap-a',subject_revision:'a'.repeat(40),mode:'EXTERNAL_MUTATION',walls:[],authorization_source:null},
+    status:'SUCCEEDED',adapterResult:{status:'SUCCEEDED',summary:'adapter reported success',data:{ok:true},evidence:[],artifacts:[],checks:[],blockers:[],external_effect:true},
+    performed:true,clock:()=>0,
+  });
+  assert.equal(result.status,'SUCCEEDED');
+  assert.equal(result.execution.external_effect,true);
+  assert.equal(result.outcome.observed,true);
+  assert.deepEqual(result.blockers,[]);
 });
