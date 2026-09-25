@@ -50,6 +50,7 @@ jobs:
         with:
           node-version: 24.19.0
       - run: npm ci
+      - run: npm run security:secrets
       - run: npm test
       - run: node scripts/verify-main-state.mjs
       # The registry is a canonical file, so it must be checked like one. It sat
