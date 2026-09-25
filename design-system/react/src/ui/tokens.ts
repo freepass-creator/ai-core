@@ -16,6 +16,27 @@ export const C = {
   brand: 'var(--color-primary)', taupe: 'var(--color-muted)', taupeBg: 'var(--color-surface)', taupeLine: 'var(--color-border)',
 };
 export const R = 4; // = --radius-xs (본사 4px)
+/** 카드·패널 반경. */
+export const R_CARD = 8;
+
+/** 글자 크기 사다리(px) — 목록·패널·캡션. 원자는 숫자를 직접 쓰지 않고 이 이름을 쓴다. */
+export const FS = {
+  page: 18,    // 페이지·섹션 대제목
+  title: 14.5, // 목록 행 제목·패널 제목
+  body: 13,    // 본문
+  sub: 12,     // 보조 설명·부제
+  cap: 11,     // 캡션·메타
+  micro: 10,   // 최소(뱃지 내부)
+} as const;
+
+/** 글자 굵기 사다리. 제목은 700이 아니라 650. */
+export const FW = {
+  body: 400, meta: 500, label: 550, strong: 600, title: 650, head: 700,
+} as const;
+
+/** 아이콘 크기(px). 라벨이 붙은 버튼 아이콘은 md, 맨 글리프만 xl. */
+export const ICON = { sm: 14, md: 16, lg: 18, xl: 20, tab: 24 } as const;
+
 export const NUM = 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
 
 /** 트리 하위행 들여쓰기 단위(px). 매직넘버 금지. */
@@ -84,6 +105,13 @@ export const CTRL = {
   md: { web: 32, mobile: 44, fsWeb: 12.5, fsMobile: 16 },
   sm: { web: 28, mobile: 44, fsWeb: 12, fsMobile: 16 },
 } as const;
+
+/** 컨트롤 좌우 패딩 — 모바일 12(lg 16) · 웹 md 10 / sm 8 / lg 12. */
+export function ctrlPadX(mobile: boolean, size: CtrlSize | 'lg' = 'md'): number {
+  if (mobile) return size === 'lg' ? 16 : 12;
+  if (size === 'lg') return 12;
+  return size === 'sm' ? 8 : 10;
+}
 
 export function ctrlH(mobile: boolean, size: CtrlSize = 'md'): number {
   return mobile ? CTRL[size].mobile : CTRL[size].web;
