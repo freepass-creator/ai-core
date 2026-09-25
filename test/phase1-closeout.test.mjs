@@ -40,6 +40,18 @@ test('BASELINE_LOCKED requires every lane, gate and CI observation to pass at th
   assert.equal(result.lockable, true);
 });
 
+test('READY_FOR_BASELINE_LOCK requires green CI at the observed revision', () => {
+  const ready = {
+    ...base,
+    status: 'READY_FOR_BASELINE_LOCK',
+    gates: Object.fromEntries(Object.keys(base.gates).map(key => [key, true])),
+    lanes: ['A','B','C','D'].map(id => ({ id, owner: id, status: 'PASS', blockers: [], evidence: [{ path: `${id}.md` }] }))
+  };
+  const result = evaluatePhase1Closeout(ready);
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.some(error => error.includes('green CI at observed_revision')));
+});
+
 test('duplicate or missing lane identity is rejected', () => {
   const result = evaluatePhase1Closeout({ ...base, lanes: [base.lanes[0], base.lanes[0], base.lanes[2], base.lanes[3]] });
   assert.equal(result.valid, false);

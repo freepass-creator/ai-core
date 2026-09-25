@@ -47,8 +47,8 @@ export function evaluatePhase1Closeout(manifest) {
   if (manifest.status === 'BASELINE_LOCKED' && !lockable) {
     errors.push('BASELINE_LOCKED requires all lanes PASS, all gates true, and green CI at observed_revision');
   }
-  if (manifest.status === 'READY_FOR_BASELINE_LOCK' && !(allLanesPass && allGatesPass)) {
-    errors.push('READY_FOR_BASELINE_LOCK requires all lanes PASS and all gates true');
+  if (manifest.status === 'READY_FOR_BASELINE_LOCK' && !(allLanesPass && allGatesPass && ciGreen)) {
+    errors.push('READY_FOR_BASELINE_LOCK requires all lanes PASS, all gates true, and green CI at observed_revision');
   }
 
   return { valid: errors.length === 0, lockable, errors };
