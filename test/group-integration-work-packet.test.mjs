@@ -38,6 +38,17 @@ test('only READY_FOR_REVIEWED_EXECUTION items become packets',()=>{
   assert.equal(set.packets[0].asset_id,'sales');
 });
 
+test('READY item must bind to a known classification action',async()=>{
+  const forgedPlan=plan([ready({classification:'MYSTERY'})]);
+  assert.throws(
+    ()=>compileIntegrationWorkPackets(forgedPlan),
+    /WORK_PACKET_CLASSIFICATION_INVALID/,
+  );
+  const result=await aiCoreIntegrationWorkPackets({plan:forgedPlan});
+  assert.equal(result.status,'HOLD');
+  assert.deepEqual(result.blockers,['INTEGRATION_WORK_PACKET_CLASSIFICATION_INVALID']);
+});
+
 test('every packet requires fresh authority and never self-authorizes',()=>{
   const set=compileIntegrationWorkPackets(plan([ready()]));
   const packet=set.packets[0];
@@ -89,6 +100,13 @@ test('retire packet requires recovery verification and does not forbid source re
   assert.equal(packet.action_kind,'RETIRE_RESOURCE');
   assert.ok(packet.verification.checks.includes('RECOVERY_PATH_VERIFIED'));
   assert.equal(packet.forbidden_actions.includes('DELETE_OR_RETIRE_SOURCE'),false);
+});
+
+test('ready item with an unknown classification is rejected instead of compiling an unbound action',()=>{
+  assert.throws(
+    ()=>compileIntegrationWorkPackets(plan([ready({classification:'UNKNOWN_CLASSIFICATION'})])),
+    /INTEGRATION_WORK_PACKET_CLASSIFICATION_INVALID/,
+  );
 });
 
 test('adapter is read-only and returns no packets for all-HOLD plan',async()=>{

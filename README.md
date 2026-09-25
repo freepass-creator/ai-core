@@ -22,15 +22,13 @@ AI Core is the group's **AI academy**: a shared foundation where AIs learn the s
 
 새 파일·모듈·문서·자동화를 만들기 전에는 `npm run reuse:check -- "<만들려는 것>" --root <대상 경로>`로 기존 capability와 실제 자산을 먼저 찾는다. 기존 후보를 재사용·확장하지 않는 이유가 없으면 신규 생성을 진행하지 않는다.
 
-## 현재 작업: 공통 AI 오더 데스크
+## 현재 작업: 공통 AI 오더·실행 경로
 
-통합 기준: PR #20의 work 원장이 업무 상태의 정본이고 PR #21의 OrderStore는 접수·claim 기록이다. 읽기 어댑터와 임시 DB의 후보→확인→work 연결은 [격리 통합 실험](docs/integration/INTEGRATION_STATUS.md)으로 검증한다. 영속 매핑·outbox는 미완이므로 운영 연결과 실행·최종 완료는 HOLD다. 사용자는 말로만 요청하고 기술 입력은 담당 AI가 처리한다.
+일반 업무는 중앙 오더를 먼저 만들 필요가 없다는 현재 헌법을 유지한다. 다만 중앙 오더 경로를 사용하는 업무에서는 **자연어 routed intake → Work Map/Capability plan → immutable binding/outbox → durable Work/snapshot** 경로가 main에 연결돼 있다.
 
-2026-09-15 사용자 요청으로 `work/codex/order-control-v1`에 로컬 오더 접수·담당 배정·공통 AI 인계·처리 이력·결과 확인 기능을 구현했다. 저장소는 분리하고 모든 업무 상태와 공통 처리 기능을 AI Core에 모으는 방향이다. 이름은 임시 **이음**이며 사용자와 상의 중이다.
+현재 main은 동일 order/revision의 중복·동시 intake를 하나의 durable Work로 수렴시키고, 이미 binding된 requirement의 조용한 reroute를 막는다. 즉 과거 README의 “영속 매핑·outbox가 미완이라 실행 연결 전체가 HOLD”라는 설명은 더 이상 현재 구현 수준을 정확히 나타내지 않는다.
 
-Node.js 24.19 이상에서 격리 UI 실험은 `npm run orders:serve -- --standalone --db :memory: --port 4319`로 실행한다. CLI는 `npm run orders -- help`, 검증은 `npm test`를 사용한다. 실제 DB로의 이전이나 운영 서버 연결은 이 실험에 포함되지 않는다.
-
-현재 UI는 **접수·결과 확인을 기록하는 수동 인계 도구**다. 결과 확인 후에도 REVIEW를 유지하며 정본 CLOSED를 만들지 않는다. [공유 실행 안내](docs/SHARED_ORDER_EXECUTION.md)는 기존 접수 전송 설계 기록이다. 실제 원격 연결·자동 실행·인증된 검토자 증명은 미완이다. 아래 `main` 설명과 `DEV-EPISODE-001`은 상속한 이전 개발선의 기록이다.
+반대로 **Work가 만들어졌다는 사실은 외부 업무 결과 성공이 아니다.** Result Delivery의 durable replay/crash recovery와 project-side request identity 결속은 아직 진행 중이며, 특히 AI Core PR #183과 AIOps PR #9가 핵심 미완 경계다. 이 부분이 exact-head/merge-ref behavior test를 통과하기 전에는 safe recovery를 VERIFIED/STABLE로 올리지 않는다.
 
 The adopted operating target is a **group workspace with independent subsidiaries**:
 
@@ -61,9 +59,9 @@ Implementation handoff: [Claude work packet](docs/CLAUDE_EMERGENCY_HANDOFF.md) a
 
 ## Current implementation
 
-The repository provides memory, development contracts, safe concurrent checkpoints, UI/UX samples, self-evolution gates and a fail-closed control-tower snapshot evaluator. It does not yet implement the full group workspace/runtime or monitor source systems by itself.
+Current main now includes executable Academy start/verification gates, revision-bound project/capability/work-map registries, routed Order→Work durable intake, capability runtime paths, workflow/recovery contracts, and SHADOW shared-service extraction with provenance/parity tests. It is therefore more than a documentation-only evaluator.
 
-`main`에는 실행 가능한 오케스트레이터가 없다. The evaluator only calculates gates from a supplied snapshot and always keeps execution authority external.
+`main`에는 실행 가능한 오케스트레이터가 없다. AI Core is **not** a universal autonomous production orchestrator and does not grant live execution authority by itself. Project credentials, production writes, deployments, external sends and real-world outcomes remain inside each project's authority boundary. Result Delivery safe recovery and several verification guards are still open work, so a created Work or green partial check must not be reported as completed external execution.
 
 Conceptual route:
 

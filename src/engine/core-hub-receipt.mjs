@@ -113,6 +113,7 @@ export function buildCoreReceipt({
   requireStableId('correlationId',correlationId);
   requireDateTime('startedAt',startedAt);
   requireDateTime('endedAt',endedAt);
+  if(Date.parse(endedAt)<Date.parse(startedAt)) invalidField('endedAt','not precede startedAt');
   requireString('executorVersion',executorVersion);
   if(!CORE_TERMINAL_STATUS.has(status)){
     const error=new TypeError(`unsupported core receipt status: ${status}`);

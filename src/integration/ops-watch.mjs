@@ -34,7 +34,8 @@ export function 발행시각(문서) {
   const m = id.match(/^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})(\d{3})?/);
   if (m) {
     const t = Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5], +m[6], +(m[7] ?? 0));
-    if (Number.isFinite(t)) return t;
+    const iso = `${m[1]}-${m[2]}-${m[3]}T${m[4]}:${m[5]}:${m[6]}.${m[7] ?? '000'}Z`;
+    if (Number.isFinite(t) && new Date(t).toISOString() === iso) return t;
   }
   for (const k of ['verifiedAt', 'publishedAt', 'updatedAt']) {
     const t = Date.parse(문서?.[k] ?? '');

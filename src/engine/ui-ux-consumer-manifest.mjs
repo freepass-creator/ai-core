@@ -41,6 +41,7 @@ export function validateUiUxConsumerManifestSemantics(manifest, knownFeatureIds 
     if (manifest.ai_core?.status !== 'CANONICAL') fail('UIUX_CONSUMER_CONFORMANT_CORE_NOT_CANONICAL');
     if (!manifest.conformance_receipts?.length) fail('UIUX_CONSUMER_CONFORMANCE_RECEIPT_REQUIRED');
     if (manifest.verification?.pending_conformance?.length) fail('UIUX_CONSUMER_PENDING_CONFORMANCE_REMAINS');
+    if (manifest.exceptions?.length) fail('UIUX_CONSUMER_CONFORMANT_ACTIVE_EXCEPTION');
   }
 
   return {

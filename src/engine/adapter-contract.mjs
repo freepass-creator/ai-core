@@ -11,8 +11,9 @@ export function normalizeAdapterResult(value) {
   need(Array.isArray(blockers)&&blockers.every(nonempty),'ADAPTER_BLOCKERS_INVALID');
   need(Array.isArray(checks)&&checks.every(x=>x&&nonempty(x.name)&&['PASS','FAIL','SKIP'].includes(x.status)),'ADAPTER_CHECKS_INVALID');
   need(value.execution_authorized !== true && value.completion_authorized !== true,'ADAPTER_MUST_NOT_GRANT_AUTHORITY');
+  const hasBlockingEvidence=blockers.length>0||checks.some(x=>x.status==='FAIL');
   return {
-    status:value.status, summary:nonempty(value.summary)?value.summary:'', data:value.data??null,
+    status:value.status==='SUCCEEDED'&&hasBlockingEvidence?'HOLD':value.status, summary:nonempty(value.summary)?value.summary:'', data:value.data??null,
     evidence:[...evidence], artifacts:[...artifacts],
     checks:checks.map(x=>({name:x.name,status:x.status,detail:x.detail??null})),
     blockers:[...blockers], next_action:nonempty(value.next_action)?value.next_action:null,

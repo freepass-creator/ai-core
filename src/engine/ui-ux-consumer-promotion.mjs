@@ -1,3 +1,5 @@
+import { validateUiUxConformanceReceiptSemantics } from './ui-ux-conformance-receipt.mjs';
+
 const ORDER = ['EVIDENCE_ONLY', 'MAPPED', 'PILOT', 'CONFORMANT'];
 
 function fail(code, detail = '') {
@@ -73,6 +75,7 @@ export function evaluateUiUxConsumerPromotion({
 
   if (to === 'PILOT') {
     if (receipt.claim_level !== 'PILOT') fail('UIUX_PROMOTION_PILOT_RECEIPT_REQUIRED');
+    validateUiUxConformanceReceiptSemantics(receipt);
     return {
       status: 'PROMOTABLE',
       from,
@@ -93,6 +96,7 @@ export function evaluateUiUxConsumerPromotion({
     }
     if (manifest.verification?.pending_conformance?.length) fail('UIUX_PROMOTION_PENDING_CONFORMANCE');
     if (manifest.exceptions?.length) fail('UIUX_PROMOTION_ACTIVE_EXCEPTION_REVIEW_REQUIRED');
+    validateUiUxConformanceReceiptSemantics(receipt);
     return {
       status: 'PROMOTABLE',
       from,

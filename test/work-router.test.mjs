@@ -93,3 +93,18 @@ test('repository lifecycle and execution readiness stay separate in routing', ()
   assert.equal(docshub.repository_lifecycle_status, 'ACTIVE');
   assert.equal(docshub.execution_readiness_status, 'HOLD');
 });
+
+test('duplicate project registry identities fail closed in validation and routing', () => {
+  const registry = structuredClone(projectRegistry);
+  const duplicate = structuredClone(registry.projects.find((item) => item.project_id === 'freepass-estimate'));
+  duplicate.repository = 'freepass-creator/ambiguous-estimate-shadow';
+  registry.projects.push(duplicate);
+
+  const validation = validateWorkMap(workMap, registry, capabilityRegistry);
+  assert.equal(validation.status, 'INVALID');
+  assert.ok(validation.errors.some((error) => error.code === 'PROJECT_REGISTRY_INVALID'));
+
+  const result = routeWork('견적기 고쳐', { workMap, projectRegistry: registry, capabilityRegistry });
+  assert.equal(result.status, 'HOLD_REGISTRY_INVALID');
+  assert.equal(result.reason, 'PROJECT_REGISTRY_DUPLICATE');
+});

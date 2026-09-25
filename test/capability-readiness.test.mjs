@@ -77,6 +77,19 @@ test('external mutation requires authority scopes and reports missing terminal r
   assert.ok(item.advisories.some(x => x.code === 'TERMINAL_RECEIPT_NOT_CONFIGURED'));
 });
 
+test('external mutation does not treat a blank authority scope as execution-ready', () => {
+  const item = assess(capability({
+    id: 'sales.message',
+    status: 'ACTIVE',
+    hold_reason: undefined,
+    mode: 'EXTERNAL_MUTATION',
+    required_scopes: ['   '],
+    adapter: { kind: 'PROJECT_MODULE', entrypoint: 'lib/message.mjs', export: 'send' },
+  }));
+  assert.equal(item.readiness, 'ACTIVE_WITH_GAP');
+  assert.ok(item.machine_blockers.some(x => x.code === 'EXTERNAL_AUTHORITY_SCOPE_MISSING'));
+});
+
 test('ACTIVE module capability reports a runtime gap when project local path is unavailable', () => {
   const item = assess(capability({
     status: 'ACTIVE',

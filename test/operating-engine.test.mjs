@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { openOperatingCapabilityEngine } from '../src/engine/operating-engine.mjs';
+import { normalizeAdapterResult } from '../src/engine/adapter-contract.mjs';
 
 const fakeStore = { get() { throw new Error('should not read without sources'); } };
 
@@ -45,4 +46,22 @@ test('외부 변경은 trusted work source가 없으면 모양 맞는 receipt가
   });
   assert.equal(result.status, 'HOLD');
   assert.ok(result.blockers.includes('AUTHORITY_VERIFIER_REQUIRED'));
+});
+
+test('adapter는 blocking evidence가 있으면 SUCCEEDED를 주장할 수 없다', () => {
+  const withBlocker = normalizeAdapterResult({
+    status:'SUCCEEDED', summary:'claimed success', data:null,
+    evidence:[], artifacts:[], checks:[{name:'contract',status:'PASS'}],
+    blockers:['PROJECT_RECEIPT_MISSING'], external_effect:false,
+  });
+  assert.equal(withBlocker.status, 'HOLD');
+  assert.deepEqual(withBlocker.blockers, ['PROJECT_RECEIPT_MISSING']);
+
+  const withFailedCheck = normalizeAdapterResult({
+    status:'SUCCEEDED', summary:'claimed success', data:null,
+    evidence:[], artifacts:[], checks:[{name:'contract',status:'FAIL'}],
+    blockers:[], external_effect:false,
+  });
+  assert.equal(withFailedCheck.status, 'HOLD');
+  assert.equal(withFailedCheck.checks[0].status, 'FAIL');
 });

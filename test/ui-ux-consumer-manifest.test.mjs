@@ -45,3 +45,27 @@ test('conformant status requires canonical core receipts and no pending conforma
   broken.verification.locales = ['ko-KR', 'en-US', 'de-DE', 'ar-SA'];
   assert.throws(() => validateUiUxConsumerManifestSemantics(broken), /UIUX_CONSUMER_CONFORMANT_CORE_NOT_CANONICAL/);
 });
+
+test('conformant status rejects an active exception instead of returning false-valid', () => {
+  const broken = structuredClone(example);
+  broken.adoption_status = 'CONFORMANT';
+  broken.ai_core.status = 'CANONICAL';
+  delete broken.ai_core.pull_request;
+  broken.verification.viewports = [360, 390, 412, 1280, 1440];
+  broken.verification.input_modes = ['keyboard', 'touch', 'pointer', 'ime-composition'];
+  broken.verification.locales = ['ko-KR', 'en-US', 'de-DE', 'ar-SA'];
+  broken.verification.pending_conformance = [];
+  broken.conformance_receipts = ['receipt:conformant'];
+  broken.exceptions = [{
+    feature_id: 'navigation.bottom-action',
+    reason: 'temporary mismatch',
+    owner: 'design',
+    review_on: '2026-10-01'
+  }];
+
+  assert.equal(validate(broken), true, JSON.stringify(validate.errors));
+  assert.throws(
+    () => validateUiUxConsumerManifestSemantics(broken, registry.features.map((x) => x.id)),
+    /UIUX_CONSUMER_CONFORMANT_ACTIVE_EXCEPTION/
+  );
+});

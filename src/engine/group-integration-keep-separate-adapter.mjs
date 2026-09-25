@@ -166,6 +166,7 @@ export function createKeepSeparateMetadataVerifier({
       && actual.project_authority_preserved===true
       && actual.merge_git_history===false
       && actual.canonical_project_registry_mutated===false
+      && digest(actual)===digest(expected)
       && digest(actual)===execution.output_digest
       && CHECKSUM.test(execution.output_digest??'');
 

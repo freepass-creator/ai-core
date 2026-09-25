@@ -17,10 +17,14 @@ export function validateUiUxConformanceReceiptSemantics(receipt, knownFeatureIds
     fail('UIUX_RECEIPT_CONTRACT_INVALID');
   }
 
+  if (!Array.isArray(receipt.feature_results) || receipt.feature_results.length === 0) {
+    fail('UIUX_RECEIPT_FEATURE_RESULTS_REQUIRED');
+  }
+
   const known = new Set(knownFeatureIds);
   const featureIds = new Set();
   let nonPass = 0;
-  for (const result of receipt.feature_results ?? []) {
+  for (const result of receipt.feature_results) {
     if (featureIds.has(result.feature_id)) fail('UIUX_RECEIPT_FEATURE_DUPLICATE', result.feature_id);
     featureIds.add(result.feature_id);
     if (known.size && !known.has(result.feature_id)) fail('UIUX_RECEIPT_UNKNOWN_FEATURE', result.feature_id);

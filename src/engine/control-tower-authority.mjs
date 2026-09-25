@@ -1,6 +1,6 @@
 const need = (condition, code) => { if (!condition) throw new Error(code); };
 
-async function inspectCanonicalAuthority({ readContext, verifyLedgerText, runControlTower, plan, capability }) {
+async function inspectCanonicalAuthority({ readContext, verifyLedgerText, runControlTower, plan, capability, now }) {
   if (!plan?.order_id || !plan?.work_id || !plan?.project_id || !plan?.subject_revision) {
     return { ok: false, reason: 'EXECUTION_CONTEXT_REQUIRED' };
   }
@@ -31,6 +31,9 @@ async function inspectCanonicalAuthority({ readContext, verifyLedgerText, runCon
     || !capability.required_scopes.every(scope => canonicalAuth.scope.includes(scope))) {
     return { ok: false, reason: 'CANONICAL_AUTHORITY_SCOPE_MISSING' };
   }
+  if (canonicalAuth.expires_at && Date.parse(canonicalAuth.expires_at) <= now) {
+    return { ok: false, reason: 'AUTHORIZATION_EXPIRED' };
+  }
 
   const control = await runControlTower({
     registry: context.registry,
@@ -53,7 +56,8 @@ export function createControlTowerAuthorityBridge({ readContext, verifyLedgerTex
 
   async function issue({ plan, capability }) {
     try {
-      const inspected = await inspectCanonicalAuthority({ readContext, verifyLedgerText, runControlTower, plan, capability });
+      const issuedAt = clock();
+      const inspected = await inspectCanonicalAuthority({ readContext, verifyLedgerText, runControlTower, plan, capability, now: issuedAt });
       if (!inspected.ok) return { status: 'HOLD', reason: inspected.reason };
       const { ledger, canonicalAuth } = inspected;
       return {
@@ -70,7 +74,7 @@ export function createControlTowerAuthorityBridge({ readContext, verifyLedgerTex
         authorization_action: canonicalAuth.action,
         authorization_target: canonicalAuth.target,
         authorization_expires_at: canonicalAuth.expires_at,
-        issued_at: new Date(clock()).toISOString(),
+        issued_at: new Date(issuedAt).toISOString(),
       };
     } catch (error) {
       return { status: 'HOLD', reason: error?.message || 'AUTHORITY_ISSUE_FAILED' };
@@ -86,7 +90,7 @@ export function createControlTowerAuthorityBridge({ readContext, verifyLedgerTex
       if (!Array.isArray(authority.scopes)
         || !capability.required_scopes.every(scope => authority.scopes.includes(scope))) return false;
 
-      const inspected = await inspectCanonicalAuthority({ readContext, verifyLedgerText, runControlTower, plan, capability });
+      const inspected = await inspectCanonicalAuthority({ readContext, verifyLedgerText, runControlTower, plan, capability, now: clock() });
       if (!inspected.ok) return false;
       const { ledger, canonicalAuth } = inspected;
       if (authority.ledger_head !== ledger.head) return false;

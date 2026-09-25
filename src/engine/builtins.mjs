@@ -8,8 +8,8 @@ export function createDefaultBuiltins({readWorkProjection=null}={}){
   })}));
   m.set('work.projection',defineCapabilityAdapter({id:'work.projection',modes:['READ_ONLY'],invoke:async({input})=>{
     if(typeof readWorkProjection!=='function') return{status:'HOLD',summary:'운영 Work projection provider가 없습니다.',evidence:[],artifacts:[],checks:[{name:'work.projection.provider',status:'FAIL'}],blockers:['WORK_PROJECTION_PROVIDER_REQUIRED'],external_effect:false};
-    const p=await readWorkProjection(input.order_id), hold=['HOLD','UNLINKED'].includes(p?.status);
-    return{status:hold?'HOLD':'SUCCEEDED',summary:hold?'정본 Work projection이 HOLD입니다.':'정본 Work projection을 읽었습니다.',data:p,evidence:['READ: canonical work projection'],artifacts:[],checks:[{name:'work.projection',status:hold?'FAIL':'PASS'}],blockers:hold?[p?.reason??p?.status??'WORK_PROJECTION_HOLD']:[],external_effect:false};
+    const p=await readWorkProjection(input.order_id), status=p?.status==='SUCCEEDED'?'SUCCEEDED':['HOLD','UNLINKED'].includes(p?.status)?'HOLD':'FAILED', blocked=status!=='SUCCEEDED';
+    return{status,summary:status==='SUCCEEDED'?'정본 Work projection을 읽었습니다.':status==='HOLD'?'정본 Work projection이 HOLD입니다.':'정본 Work projection provider가 실패했습니다.',data:p,evidence:['READ: canonical work projection'],artifacts:[],checks:[{name:'work.projection',status:blocked?'FAIL':'PASS'}],blockers:blocked?[p?.reason??p?.status??'WORK_PROJECTION_PROVIDER_FAILED']:[],external_effect:false};
   }}));
   return m;
 }

@@ -97,3 +97,16 @@ test('Control Tower execute가 HOLD면 receipt를 만들지 않는다', async ()
   assert.equal(receipt.status, 'HOLD');
   assert.equal(receipt.reason, 'COMMITMENT_NOT_ACTIVE');
 });
+
+test('snapshot이 과거 READY여도 wall clock 기준 만료된 authority는 새 receipt를 발급하지 않는다', async () => {
+  const f = await fixture();
+  const bridge = createControlTowerAuthorityBridge({
+    readContext: async () => structuredClone(f.context),
+    verifyLedgerText,
+    runControlTower,
+    clock: () => Date.parse('2026-09-16T00:00:00Z'),
+  });
+  const receipt = await bridge.issue({ plan: f.plan, capability: f.capability });
+  assert.equal(receipt.status, 'HOLD');
+  assert.equal(receipt.reason, 'AUTHORIZATION_EXPIRED');
+});

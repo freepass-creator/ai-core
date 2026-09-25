@@ -75,7 +75,7 @@ function assessOne(capability, projects) {
   inspectAdapter(capability, targets, blockers, advisories);
 
   if (capability.mode === 'EXTERNAL_MUTATION') {
-    if (!Array.isArray(capability.required_scopes) || capability.required_scopes.length === 0) {
+    if (!Array.isArray(capability.required_scopes) || capability.required_scopes.length === 0 || capability.required_scopes.some(scope => !nonempty(scope))) {
       add(blockers, 'EXTERNAL_AUTHORITY_SCOPE_MISSING');
     }
     if (!capability.receipt) add(advisories, 'TERMINAL_RECEIPT_NOT_CONFIGURED');

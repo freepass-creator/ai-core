@@ -72,6 +72,7 @@ test('existing project becomes UPDATE_REVIEW and preserves both existing axes',(
     profile,
     existingProject:{
       project_id:'sample-app',
+      repository:'freepass-creator/sample-app',
       repository_lifecycle_status:'ACTIVE',
       execution_readiness_status:'HOLD',
       head_revision:'b'.repeat(40)
@@ -83,4 +84,18 @@ test('existing project becomes UPDATE_REVIEW and preserves both existing axes',(
   assert.equal(result.review.existing_revision,'b'.repeat(40));
   assert.equal(result.candidate.repository_lifecycle_status,'HOLD');
   assert.equal(result.candidate.execution_readiness_status,'HOLD');
+});
+
+test('existing project repository identity cannot be silently rebound',()=>{
+  assert.throws(()=>buildProjectRegistryCandidate({
+    capsule:capsule(),
+    profile,
+    existingProject:{
+      project_id:'sample-app',
+      repository:'freepass-creator/other-app',
+      repository_lifecycle_status:'ACTIVE',
+      execution_readiness_status:'HOLD',
+      head_revision:'b'.repeat(40)
+    },
+  }),/EXISTING_PROJECT_REPOSITORY_MISMATCH/);
 });

@@ -12,13 +12,30 @@ test('ranks existing assets using intent terms', () => {
   assert.ok(queryTokens('새 기능 만들기 existing module').includes('module'));
 });
 
-test('creation stays blocked until reuse decision is evidenced', () => {
+test('creation decision is recorded without granting write authority', () => {
   assert.equal(validateReuseDecision({}).reason, 'REUSE_DECISION_REQUIRED');
   assert.equal(validateReuseDecision({ decision: 'REUSE_EXACT', selected: [] }).reason, 'REUSE_SELECTION_REQUIRED');
   assert.equal(validateReuseDecision({ decision: 'CREATE_NEW_JUSTIFIED', reason: '없음' }).reason, 'NEW_ASSET_REASON_TOO_SHORT');
-  assert.equal(validateReuseDecision({
+
+  const creation = validateReuseDecision({
     decision: 'CREATE_NEW_JUSTIFIED',
     reason: '검색 후보는 입력과 상태 계약이 달라 기존 자산을 확장할 수 없다.',
     candidateCount: 4,
-  }).status, 'PASS');
+  });
+  assert.equal(creation.status, 'PASS');
+  assert.equal(creation.decision_scope, 'REUSE_PREFLIGHT_ONLY');
+  assert.equal(creation.write_authorized, false);
+  assert.equal(creation.write_boundary, 'EXISTING_PROJECT_OR_WORK_OWNERSHIP_REQUIRED');
+  assert.equal(creation.creation_requires_ownership, true);
+});
+
+test('reuse decisions never grant project write authority', () => {
+  const reuse = validateReuseDecision({
+    decision: 'REUSE_EXACT',
+    selected: ['src/existing.mjs'],
+  });
+  assert.equal(reuse.status, 'PASS');
+  assert.equal(reuse.decision_scope, 'REUSE_PREFLIGHT_ONLY');
+  assert.equal(reuse.write_authorized, false);
+  assert.equal(reuse.write_boundary, 'EXISTING_PROJECT_OR_WORK_OWNERSHIP_REQUIRED');
 });

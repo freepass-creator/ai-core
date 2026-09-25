@@ -29,7 +29,10 @@ const observation=(overrides={})=>({
   revision:'a'.repeat(40),
   dirty_state:'CLEAN',
   observed_at:'2026-09-20T09:40:00Z',
-  checks:[{name:'PROJECT_AUTHORITY_UNCHANGED',status:'PASS'}],
+  checks:[
+    {name:'PLAN_ITEM_STILL_READY',status:'PASS'},
+    {name:'PROJECT_AUTHORITY_UNCHANGED',status:'PASS'},
+  ],
   ...overrides,
 });
 
@@ -98,14 +101,21 @@ test('physical import preflight computes and binds a safe inventory instead of t
   });
   const sealed=sealIntegrationPreflight({packet:p,observation:observation({
     import_paths:['docs/sop/README.md','lib/google-drive-adapter.mjs'],
-    checks:[{name:'SOURCE_RUNTIME_DEPENDENCY_CHECK',status:'PASS'}],
+    checks:[
+      {name:'PLAN_ITEM_STILL_READY',status:'PASS'},
+      {name:'SOURCE_RUNTIME_DEPENDENCY_CHECK',status:'PASS'},
+    ],
   })});
   assert.equal(sealed.import_path_count,2);
   assert.match(sealed.import_inventory_digest,/^sha256:[0-9a-f]{64}$/);
 
   assert.throws(()=>sealIntegrationPreflight({packet:p,observation:observation({
     import_paths:['docs/sop/README.md','.env'],
-    checks:[{name:'SOURCE_RUNTIME_DEPENDENCY_CHECK',status:'PASS'},{name:'IMPORT_CONTENT_POLICY_CHECK',status:'PASS'}],
+    checks:[
+      {name:'PLAN_ITEM_STILL_READY',status:'PASS'},
+      {name:'SOURCE_RUNTIME_DEPENDENCY_CHECK',status:'PASS'},
+      {name:'IMPORT_CONTENT_POLICY_CHECK',status:'PASS'},
+    ],
   })}),/IMPORT_CONTENT_IMPORT_SECRET_FILE_FORBIDDEN/);
 });
 
@@ -122,12 +132,22 @@ test('preflight fails closed on revision drift or dirty worktree',()=>{
   assert.throws(()=>sealIntegrationPreflight({packet:packet(),observation:observation({dirty_state:'DIRTY'})}),/WORKTREE_NOT_CLEAN/);
 });
 
+test('preflight requires fresh evidence that the plan item is still ready',()=>{
+  assert.throws(()=>sealIntegrationPreflight({
+    packet:packet(),
+    observation:observation({checks:[{name:'PROJECT_AUTHORITY_UNCHANGED',status:'PASS'}]}),
+  }),/INTEGRATION_PREFLIGHT_CHECK_REQUIRED_PLAN_ITEM_STILL_READY/);
+});
+
 test('preflight requires classification-specific checks already demanded by packet',()=>{
   const p=packet({
     classification:'MERGE_PHYSICAL',
     revalidation:{immediately_before_execution:true,required_checks:['SOURCE_REVISION_UNCHANGED','DIRTY_STATE_RECHECK','PLAN_ITEM_STILL_READY','TARGET_PARITY_CHECK','ROLLBACK_PATH_VERIFIED']},
   });
-  assert.throws(()=>sealIntegrationPreflight({packet:p,observation:observation({checks:[]})}),/TARGET_PARITY_CHECK/);
+  assert.throws(()=>sealIntegrationPreflight({
+    packet:p,
+    observation:observation({checks:[{name:'PLAN_ITEM_STILL_READY',status:'PASS'}]}),
+  }),/TARGET_PARITY_CHECK/);
 });
 
 test('successful execution receipt reuses core-receipt/v1 and binds authority plus verification evidence',()=>{

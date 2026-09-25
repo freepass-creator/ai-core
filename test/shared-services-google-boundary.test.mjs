@@ -26,6 +26,8 @@ test('Google URL boundary permits only current Sheets and Drive API surfaces',()
   for(const url of allowed) assert.equal(assertAllowedGoogleApiUrl(url).href,new URL(url).href);
 
   const rejected=[
+    'http://sheets.googleapis.com/v4/spreadsheets/abc/values/A1',
+    'http://www.googleapis.com/drive/v3/files',
     'https://oauth2.googleapis.com/token',
     'https://firestore.googleapis.com/v1/projects/demo/databases/(default)/documents',
     'https://www.googleapis.com/calendar/v3/calendars',

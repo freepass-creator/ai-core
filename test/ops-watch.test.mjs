@@ -23,6 +23,7 @@ test('발행 시각은 snapshotId 앞자리(UTC)에서 읽는다', () => {
   assert.equal(new Date(발행시각({ snapshotId: '20260917145848487-344b1c66e52f' })).toISOString(), '2026-09-17T14:58:48.487Z');
   assert.equal(발행시각({ snapshotId: 'x', verifiedAt: '2026-09-18T04:00:00Z' }), Date.parse('2026-09-18T04:00:00Z'));
   assert.equal(발행시각({ snapshotId: 'garbage' }), null);
+  assert.equal(발행시각({ snapshotId: '20260932000000000-invalid-calendar' }), null, '잘못된 달력 날짜를 Date.UTC 정규화로 정상 발행처럼 만들지 않는다');
 });
 
 test('★밤·일요일·창 열리기 전에는 묵은 발행을 울리지 않는다 — 설계대로 안 돈 것이다', () => {

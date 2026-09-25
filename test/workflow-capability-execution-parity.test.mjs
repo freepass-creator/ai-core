@@ -22,6 +22,7 @@ const capability = {
     schema_field: 'schema',
     schema_value: 'gwataeryo-run-manifest/v1',
     state_field: 'state',
+    identity_field: 'aiCoreRequestId',
     success_states: ['COMPLETED'],
     hold_states: ['COMPLETED_WITH_HOLD'],
     failure_states: ['FAILED'],
@@ -29,8 +30,8 @@ const capability = {
 };
 
 const projectRegistry = {
-  schema_version: '1.0',
-  projects: [{ project_id: 'aiops', local_path: '/project' }],
+  schema_version: '1.1',
+  projects: [{ project_id: 'aiops', repository: 'freepass-creator/aiops', local_path: '/project' }],
 };
 
 const registry = JSON.parse(readFileSync(new URL('../registry/workflows.json', import.meta.url), 'utf8'));
@@ -71,12 +72,18 @@ function fixture({ reconcileResult = null, withBinding = true, capabilityOverrid
 
   const receiptReader = {
     snapshot: async () => new Map(),
-    reconcile: async () => reconcileResult ?? { status: 'HOLD', reason: 'EXECUTION_RECEIPT_MISSING' },
+    reconcile: async (_root, config, _before, options) => {
+      if (reconcileResult?.identity_verified === true) {
+        assert.equal(config.identity_field, 'aiCoreRequestId');
+        assert.equal(options?.expectedIdentity, reconcileResult.receipt.aiCoreRequestId);
+      }
+      return reconcileResult ?? { status: 'HOLD', reason: 'EXECUTION_RECEIPT_MISSING' };
+    },
   };
 
   const coordinator = createCapabilityExecutionCoordinator({
     store,
-    projectRegistry,
+    projectRegistry: structuredClone(projectRegistry),
     receiptReader,
     clock: () => Date.parse('2026-09-19T03:31:00Z'),
   });
@@ -140,6 +147,10 @@ test('reserve creates durable RESERVED state and replays same request identity',
   assert.equal(first.status, 'RESERVED');
   assert.equal(first.replay, false);
   assert.equal(shadow.projection(first.row).states.lifecycle, 'RESERVED');
+  const recovery = JSON.parse(first.row.before_receipts_json);
+  assert.equal(recovery.version, 2);
+  assert.deepEqual(recovery.project_binding, projectRegistry.projects[0]);
+  assert.equal(recovery.receipt.identity_field, 'aiCoreRequestId');
 
   const second = await f.coordinator.reserve({
     requestId: 'exec-1',
@@ -281,7 +292,7 @@ test('missing terminal receipt is HOLD projection and keeps persistent state RES
   assert.equal(classified.persistent_state, 'RESERVED');
   assert.equal(classified.reason, 'EXECUTION_OUTCOME_UNKNOWN');
 
-  const actual = await f.coordinator.reconcile('exec-missing', f.capability);
+  const actual = await f.coordinator.reconcile('exec-missing');
   assert.deepEqual(actual, {
     status: 'HOLD',
     reason: 'EXECUTION_OUTCOME_UNKNOWN',
@@ -290,7 +301,7 @@ test('missing terminal receipt is HOLD projection and keeps persistent state RES
   assert.equal(f.coordinator.get('exec-missing').state, 'RESERVED');
 });
 
-test('terminal receipt reconciliation maps success failure and hold into durable RESULT', async t => {
+test('identity-verified terminal receipt reconciliation maps success failure and hold into durable RESULT', async t => {
   const samples = [
     {
       observed: {
@@ -324,10 +335,15 @@ test('terminal receipt reconciliation maps success failure and hold into durable
   ];
 
   for (const [index, sample] of samples.entries()) {
-    const f = fixture({ reconcileResult: sample.observed });
+    const requestId = `exec-reconcile-${index}`;
+    const observed = {
+      ...sample.observed,
+      identity_verified: true,
+      receipt: { ...sample.observed.receipt, aiCoreRequestId: requestId },
+    };
+    const f = fixture({ reconcileResult: observed });
     t.after(() => f.store.close());
 
-    const requestId = `exec-reconcile-${index}`;
     await f.coordinator.reserve({
       requestId,
       orderId: f.order.id,
@@ -338,7 +354,7 @@ test('terminal receipt reconciliation maps success failure and hold into durable
     });
 
     const row = f.coordinator.get(requestId);
-    const classified = shadow.classifyReconciliation(row, f.capability, sample.observed, {
+    const classified = shadow.classifyReconciliation(row, f.capability, observed, {
       clock: () => Date.parse('2026-09-19T03:31:00Z'),
       projectRoot: '/project',
     });
@@ -354,7 +370,7 @@ test('terminal receipt reconciliation maps success failure and hold into durable
     assert.equal(decision.eligible, true);
     assert.equal(decision.persistent_state, 'RESULT');
 
-    const actual = await f.coordinator.reconcile(requestId, f.capability);
+    const actual = await f.coordinator.reconcile(requestId);
     assert.equal(actual.status, 'RESULT');
     assert.equal(actual.reconciled, true);
     assert.equal(actual.result.status, sample.expected);
@@ -363,7 +379,7 @@ test('terminal receipt reconciliation maps success failure and hold into durable
   }
 });
 
-test('reconcile without a configured receipt never invents a retry or persistent HOLD state', async t => {
+test('reconcile without reservation-time receipt metadata never invents a retry or persistent HOLD state', async t => {
   const noReceiptCapability = { ...capability };
   delete noReceiptCapability.receipt;
   const f = fixture({ capabilityOverride: noReceiptCapability });
@@ -379,16 +395,20 @@ test('reconcile without a configured receipt never invents a retry or persistent
   });
 
   const row = f.coordinator.get('exec-no-receipt');
+  assert.equal(row.before_receipts_json, null);
   const classified = shadow.classifyReconciliation(row, f.capability, null);
   assert.equal(classified.action, 'HOLD_NO_TRANSITION');
   assert.equal(classified.persistent_state, 'RESERVED');
   assert.equal(classified.reason, 'EXECUTION_OUTCOME_UNKNOWN');
 
-  const actual = await f.coordinator.reconcile('exec-no-receipt', f.capability);
+  // The legacy lifecycle shadow has no recovery-snapshot parser. The coordinator
+  // now supplies the more specific missing-metadata reason, with the same no-transition boundary.
+  const actual = await f.coordinator.reconcile('exec-no-receipt');
   assert.deepEqual(actual, {
     status: 'HOLD',
-    reason: 'EXECUTION_OUTCOME_UNKNOWN',
+    reason: 'CAPABILITY_RECOVERY_METADATA_MISSING',
     reconciled: false,
   });
   assert.equal(f.coordinator.get('exec-no-receipt').state, 'RESERVED');
+  assert.equal(f.store.events(f.order.id).filter(event => event.type === 'CAPABILITY_RESULT').length, 0);
 });

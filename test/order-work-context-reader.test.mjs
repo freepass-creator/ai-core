@@ -112,6 +112,17 @@ test('an order revision changed between the two reads is refused', async () => {
   await assert.rejects(() => wire(f, { store: shifting })(f.order.id), /^Error: CANONICAL_READ_CHANGED$/);
 });
 
+test('a dynamic snapshot changed during the canonical read is refused, not blended', async () => {
+  const f = await realWorld();
+  const first = structuredClone(f.snapshot);
+  const second = structuredClone(f.snapshot);
+  second.as_of = '2026-09-15T01:00:01Z';
+  let calls = 0;
+  const reader = wire(f, { snapshot: () => (++calls === 1 ? first : second) });
+  await assert.rejects(() => reader(f.order.id), /^Error: CANONICAL_READ_CHANGED$/);
+  assert.equal(calls, 2, 'dynamic canonical sources must be observed on both sides of the read window');
+});
+
 test('append/submit capabilities cannot be passed in, and missing inputs are refused', async () => {
   const f = await realWorld();
   assert.throws(() => wire(f, { appendLedgerEvent }), /^Error: DEPENDENCY_NOT_ACCEPTED$/);

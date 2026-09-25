@@ -2659,11 +2659,11 @@
         "files": [
           {
             "path": "src/engine/capability-execution-coordinator.mjs",
-            "blob_sha": "ad1404d5ce50a4c198a6a4bc56485cb56ebff123"
+            "blob_sha": "5218ded8d04359091605395ab41d2fd7f3c59d31"
           },
           {
             "path": "src/engine/execution-receipt.mjs",
-            "blob_sha": "0cbb7a0a29804b6e95557806348f44a06f29b79f"
+            "blob_sha": "942979efac77907c0aa9237395305e9cdad0e157"
           }
         ]
       },

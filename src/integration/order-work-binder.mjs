@@ -92,7 +92,8 @@ export function createOrderWorkBinder({ store, adapter }) {
         && existing.subject_revision === subjectRevision;
       if (!same) return { status: 'HOLD', reason: 'BINDING_CONFLICT', persisted: false,
         execution_authorized: false, completion_authorized: false, sent: false };
-      return { status: 'LINKED', persisted: false, mapping: { ...mapping, record_version: existing.created_record_version } };
+      return { status: 'LINKED', persisted: false, mapping: { ...mapping, record_version: existing.created_record_version },
+        execution_authorized: false, completion_authorized: false, sent: false };
     }
 
     store.db.prepare(`INSERT INTO coordination_bindings
