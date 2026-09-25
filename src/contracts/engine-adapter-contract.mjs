@@ -40,8 +40,10 @@ export function resolveBinding({engine,adapters,profile}){
     const matches=binding?.ports?.filter(x=>x.port_id===port.port_id)??[];
     if(matches.length===0){errors.push(`PORT_UNRESOLVED:${port.port_id}`);continue;}
     if(matches.length>1){errors.push(`PORT_DUPLICATE_BINDING:${port.port_id}`);continue;}
-    const adapter=adapters.find(x=>x.adapter_id===matches[0].adapter_id);
-    if(!adapter){errors.push(`ADAPTER_NOT_FOUND:${matches[0].adapter_id}`);continue;}
+    const adapterMatches=adapters.filter(x=>x.adapter_id===matches[0].adapter_id);
+    if(adapterMatches.length===0){errors.push(`ADAPTER_NOT_FOUND:${matches[0].adapter_id}`);continue;}
+    if(adapterMatches.length>1){errors.push(`ADAPTER_DUPLICATE_ID:${matches[0].adapter_id}`);continue;}
+    const [adapter]=adapterMatches;
     try{validateAdapterContract(adapter);}catch(error){errors.push(`${adapter.adapter_id}:${error.message}`);}
     if(adapter.port_id!==port.port_id) errors.push(`ADAPTER_PORT_MISMATCH:${adapter.adapter_id}`);
     if(!adapter.compatibility?.port_versions?.includes(port.port_version)) errors.push(`ADAPTER_PORT_VERSION_MISMATCH:${adapter.adapter_id}`);
