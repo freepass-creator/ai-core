@@ -61,7 +61,7 @@ Implementation handoff: [Claude work packet](docs/CLAUDE_EMERGENCY_HANDOFF.md) a
 
 Current main now includes executable Academy start/verification gates, revision-bound project/capability/work-map registries, routed Order→Work durable intake, capability runtime paths, workflow/recovery contracts, and SHADOW shared-service extraction with provenance/parity tests. It is therefore more than a documentation-only evaluator.
 
-AI Core is **not** a universal autonomous production orchestrator and does not grant live execution authority by itself. Project credentials, production writes, deployments, external sends and real-world outcomes remain inside each project's authority boundary. Result Delivery safe recovery and several verification guards are still open work, so a created Work or green partial check must not be reported as completed external execution.
+`main`에는 실행 가능한 오케스트레이터가 없다. AI Core is **not** a universal autonomous production orchestrator and does not grant live execution authority by itself. Project credentials, production writes, deployments, external sends and real-world outcomes remain inside each project's authority boundary. Result Delivery safe recovery and several verification guards are still open work, so a created Work or green partial check must not be reported as completed external execution.
 
 Conceptual route:
 
