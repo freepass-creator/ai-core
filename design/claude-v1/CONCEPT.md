@@ -1,5 +1,8 @@
 # Claude v1 — 컨셉
 
+> **Status: NOT_CANONICAL / HISTORICAL DESIGN STUDY (2026-09-26)**  
+> 이 폴더는 2026-09-23 당시의 디자인 탐색 기록이다. 아래의 `tokens.json` 정본 선언과 규칙은 현재 정본이 아니다. 현재 UI/UX 정본은 `docs/UI_UX_START_HERE.md` → `design-system/tokens.json` → `design-system/runtime-v2.css`/registries 순서다. 이 문서를 근거로 새 UI 규격이나 별도 토큰 체계를 만들지 않는다.
+
 대표가 정한 것은 한 줄이다.
 
 > **심플하고 미니멀. 대신 구분이 되어야 하고 표시가 되어야 하고 기능은 다 할 수 있어야 한다.
