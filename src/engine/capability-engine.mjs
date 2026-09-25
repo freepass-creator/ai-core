@@ -54,6 +54,7 @@ export function createCapabilityEngine({capabilityRegistry,projectRegistry,built
       if(cap.adapter.kind==='BUILTIN'){
         const a=builtinAdapters.get?.(cap.adapter.id)??builtinAdapters[cap.adapter.id];
         if(!a||typeof a.invoke!=='function') throw new Error('BUILTIN_ADAPTER_MISSING');
+        if(!Array.isArray(a.modes)||!a.modes.includes(cap.mode)) throw new Error(`BUILTIN_ADAPTER_MODE_UNSUPPORTED:${cap.adapter.id}:${cap.mode}`);
         result=await a.invoke({plan:p,capability:cap,project,input,authority:effectiveAuthority??authority});
       }else if(cap.adapter.kind==='PROJECT_MODULE'){
         result=normalizeAdapterResult(await runtime.runModule(cap,project,input,{plan:p,authority:effectiveAuthority??authority,executorIdentity,requestId}));
