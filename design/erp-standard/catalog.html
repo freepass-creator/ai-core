@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>우리 UI/UX — 부품 카탈로그</title>
+<!-- 우리 표준의 모든 부품을 한 장에 — erp.css 에 정의된 erp-* 클래스는 전부 여기 한 번 이상 나온다(npm run erp:check 가 센다).
+     새 부품을 erp.css 에 넣으면 여기에도 보여야 검사를 통과한다. 원칙은 README §0, 값은 design-system/tokens.json#erp_standard.
+     상태는 실제 속성으로 보인다(aria-pressed · aria-current · aria-disabled · disabled · aria-invalid). hover · 누름은 마우스로 확인한다. -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<link rel="stylesheet" href="erp.css">
+</head>
+<body class="erp-app" data-screen="catalog">
+
+<header class="erp-topbar" data-region="topbar">
+  <div class="erp-brand"><span class="erp-brand-mark">F</span>우리 UI/UX</div>
+  <span class="erp-company"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14"/></svg>부품 카탈로그 · 규격 v1.2</span>
+  <button class="erp-gsearch" type="button" aria-label="통합 검색"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>통합검색은 상단 한 곳<kbd>Ctrl K</kbd></button>
+  <div class="erp-topbar-right">
+    <button class="erp-iconbtn" type="button" aria-label="알림 3건" data-alert><svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 0 0 3.4 0"/></svg></button>
+    <div class="erp-user"><span class="erp-avatar">대표</span><div>대표<small>보는 사람 · 관리자</small></div></div>
+  </div>
+</header>
+
+<nav class="erp-sidenav" data-region="sidenav" aria-label="주 메뉴">
+  <div class="erp-nav-group">업무</div>
+  <a class="erp-nav-item" href="#" aria-current="page"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>상품찾기</a>
+  <a class="erp-nav-item" href="#"><svg viewBox="0 0 24 24"><path d="M9 11 12 14 22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>계약접수<span class="erp-nav-count">7</span></a>
+  <a class="erp-nav-item" href="#" aria-expanded="true"><svg viewBox="0 0 24 24"><path d="M3 3v18h18M7 16l4-6 4 4 5-7"/></svg>정산관리</a>
+  <div class="erp-nav-sub"><a href="#">청구</a><a href="#">지급</a></div>
+  <div class="erp-nav-group erp-nav-group--apart">계약서 — 업무 흐름 밖의 따로 된 문</div>
+  <a class="erp-nav-item" href="#"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6"/></svg>전자계약</a>
+</nav>
+
+<main class="erp-main">
+  <div class="erp-content">
+   <div class="erp-stack">
+
+    <section data-region="catalog-intro">
+      <div class="erp-crumb">규격 › <span aria-current="page">부품 카탈로그</span></div>
+      <div class="erp-page-header">
+        <div>
+          <h1 class="erp-page-title">우리 UI/UX 부품 <span class="erp-favorite" aria-label="즐겨찾기">★</span></h1>
+          <p class="erp-page-desc">네이비 하나 · 선 대신 면 · 네모(4/6/8) · 글자 여섯 단(24/20/18/16/14/12) · 상태는 신호 둘 이상 · 키보드 포커스는 늘 보인다.</p>
+        </div>
+        <div class="erp-actions">
+          <button class="erp-btn erp-btn--ghost" type="button">보조(ghost)</button>
+          <button class="erp-btn" type="button">기본</button>
+          <button class="erp-btn erp-btn--primary" type="button">주 단추 — 판마다 1개 · 맨 오른쪽</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="erp-kpis" data-region="catalog-kpi" aria-label="요약 KPI">
+      <div class="erp-kpi"><div class="erp-kpi-label">KPI 숫자 24 <span>9월</span></div><div class="erp-kpi-value">1,284<small>건</small></div><div class="erp-kpi-delta"><span class="erp-up">▲ 12.4%</span> 전월 대비</div></div>
+      <div class="erp-kpi"><div class="erp-kpi-label">경고 값</div><div class="erp-kpi-value erp-kpi-value--alert">4<small>건</small></div><div class="erp-kpi-delta"><span class="erp-down">▲ 2건</span> 납기 초과</div></div>
+      <div class="erp-kpi"><div class="erp-kpi-label">KPI 는 선택</div><div class="erp-kpi-value">23<small>건</small></div><div class="erp-kpi-delta">요약이 꼭 필요할 때만</div></div>
+      <div class="erp-kpi"><div class="erp-kpi-label">그냥 보여 주는 카드</div><div class="erp-kpi-value">0<small>hover 없음</small></div><div class="erp-kpi-delta">눌 수 있는 것만 움직인다</div></div>
+    </section>
+
+    <div class="erp-cols erp-cols--half" data-region="catalog-controls">
+      <section class="erp-card">
+        <div class="erp-card-head"><h2 class="erp-card-title">단추 <small>모서리 6 · 높이 36 / 소형 32</small></h2><a href="#">README §5</a></div>
+        <div class="erp-card-body erp-stack">
+          <div class="erp-actions">
+            <button class="erp-btn erp-btn--primary" type="button">주 단추</button>
+            <button class="erp-btn" type="button">기본</button>
+            <button class="erp-btn erp-btn--ghost" type="button">보조</button>
+            <button class="erp-btn erp-btn--danger" type="button">위험(확인 대화상자 필수)</button>
+            <button class="erp-btn erp-btn--danger-text" type="button">삭제</button>
+          </div>
+          <div class="erp-actions">
+            <button class="erp-btn erp-btn--sm" type="button">소형 32</button>
+            <button class="erp-btn erp-btn--sm erp-btn--ghost" type="button">소형 보조</button>
+            <button class="erp-btn" type="button" aria-disabled="true">못 쓰는 단추(aria-disabled)</button>
+            <button class="erp-btn" type="button" disabled>disabled</button>
+          </div>
+          <p class="erp-muted">키보드로 옮기면(Tab) 네이비 2px 링이 2px 띄워 그려진다 — 마우스로 누를 때는 안 보인다.</p>
+        </div>
+      </section>
+
+      <section class="erp-card">
+        <div class="erp-card-head"><h2 class="erp-card-title">입력 <small>높이 36 · 라벨 위 · 선은 값 넣는 자리에만</small></h2></div>
+        <div class="erp-card-body">
+          <div class="erp-form-grid">
+            <label class="erp-field"><span class="erp-label">고객명 <em class="erp-req">*</em></span><input class="erp-input" placeholder="이름"></label>
+            <label class="erp-field"><span class="erp-label">자리표시</span><span class="erp-input"><span class="erp-placeholder">선택하세요</span></span></label>
+            <label class="erp-field"><span class="erp-label">포커스 모습</span><input class="erp-input erp-input--focus" value="입력 중"></label>
+            <label class="erp-field"><span class="erp-label">금액(숫자 오른쪽)</span><input class="erp-input erp-input--num" value="1,284,500"></label>
+            <label class="erp-field erp-span-2"><span class="erp-label">자동값(읽기 전용)</span><input class="erp-input erp-input--readonly" value="FP-2609-0142" readonly></label>
+            <label class="erp-field erp-span-2"><span class="erp-label">오류</span><input class="erp-input" value="010-12" aria-invalid="true"><span class="erp-field-error">휴대폰 번호 11자리를 넣어 주세요.</span></label>
+            <label class="erp-field erp-span-4"><span class="erp-label">분류 드롭다운(계약 · 정산 · 실적 조회에서만)</span><select class="erp-input erp-dd"><option>전체 공급사</option><option>그린카렌탈</option></select></label>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section class="erp-card" data-region="catalog-signals">
+      <div class="erp-card-head"><h2 class="erp-card-title">신호 — 배지 · 태그 · 상태 글 <small>배지는 누르는 것이 아니다</small></h2></div>
+      <div class="erp-card-body erp-stack">
+        <div class="erp-tags">
+          <span class="erp-badge erp-badge--ok">완료 · 승인</span>
+          <span class="erp-badge erp-badge--info">확정 · 진행</span>
+          <span class="erp-badge erp-badge--warn">대기 · 주의</span>
+          <span class="erp-badge erp-badge--err">반려 · 지연</span>
+          <span class="erp-badge erp-badge--neutral">작성중</span>
+          <span class="erp-tag">태그 4</span>
+          <span class="erp-tag erp-tag--primary">무심사</span>
+          <span class="erp-chip">적용된 조건 칩 ×</span>
+          <span class="erp-chip" aria-current="true">고른 칩</span>
+        </div>
+        <p class="erp-state-ok">저장했습니다 — 결과 글은 면 없이 색 + 글로.</p>
+        <p class="erp-state-warn">서류 두 건이 아직 안 왔습니다.</p>
+        <p class="erp-state-error">청구 금액이 계약 금액보다 큽니다.</p>
+        <p class="erp-state-empty">조건에 맞는 건이 없습니다 — 빈 목록은 이유와 다음 할 일을 말한다.</p>
+      </div>
+    </section>
+
+    <section class="erp-card" data-region="catalog-query">
+      <div class="erp-card-head"><h2 class="erp-card-title">조회 — 검색창 → 필터 → 퀵 필터 <small>드롭다운은 최소로</small></h2></div>
+      <form class="erp-searchbar" role="search">
+        <label class="erp-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input placeholder="차량번호 · 차명 · 공급사" aria-label="검색"></label>
+        <details class="erp-filter-more">
+          <summary class="erp-btn">필터 <b>2</b></summary><!-- 누르면 조건판(erp-filter-panel)이 검색창 줄 오른쪽 끝에서 왼쪽으로 펴진다 -->
+          <div class="erp-filter-panel">
+            <div class="erp-facet"><p class="erp-facet-title">상품구분</p><div class="erp-facet-opts"><button class="erp-facet-opt" type="button" aria-pressed="true">중고렌트</button><button class="erp-facet-opt" type="button" aria-pressed="false">신차렌트</button><button class="erp-facet-opt" type="button" aria-pressed="false">구독</button></div></div>
+            <div class="erp-facet"><p class="erp-facet-title">기간</p><div class="erp-facet-opts"><button class="erp-facet-opt" type="button" aria-pressed="false">12개월</button><button class="erp-facet-opt" type="button" aria-pressed="true">36개월</button></div></div>
+            <div class="erp-filter-panel-foot"><button class="erp-btn erp-btn--ghost" type="reset">초기화</button><button class="erp-btn" type="button">적용</button></div>
+          </div>
+        </details>
+      </form>
+      <div class="erp-toolbar">
+        <div class="erp-facet-opts" role="group" aria-label="퀵 필터"><button class="erp-facet-opt" type="button" aria-pressed="true">전체 24</button><button class="erp-facet-opt" type="button" aria-pressed="false">즉시출고 13</button></div>
+        <span class="erp-toolbar-spacer"></span>
+        <span class="erp-selection">3건 선택됨</span>
+        <div class="erp-seg" role="group" aria-label="보기"><button type="button" aria-pressed="true">카드</button><button type="button" aria-pressed="false">표</button></div>
+      </div>
+    </section>
+
+    <div class="erp-workspace" data-region="catalog-panels">
+      <section class="erp-panel erp-panel--compact" data-region="catalog-panel-list">
+        <div class="erp-panel-head"><span class="erp-panel-kind">목록</span><h2>패널 제목 18</h2><span class="erp-panel-count">전체 24건</span></div>
+        <div class="erp-panel-body">
+          <div class="erp-rowcards" role="list" aria-label="긴 카드 목록">
+            <h2 class="erp-rowcards-group">이번 주<small>3건</small></h2>
+            <article class="erp-rowcard erp-rowcard--no-steps" role="listitem" data-tone="ok" aria-current="true">
+              <div class="erp-rowcard-thumb"><svg viewBox="0 0 120 60" aria-hidden="true"><path d="M10 45h100M25 45l10-18h45l15 18"/></svg></div>
+              <div class="erp-rowcard-id"><h3 class="erp-rowcard-title"><a class="erp-rowcard-link" aria-current="true" href="#">고른 카드</a><span class="erp-badge erp-badge--ok">즉시출고</span></h3><div class="erp-rowcard-sub"><b>67하2045</b>중고렌트</div><div class="erp-rowcard-meta">36개월 · 보증 없음</div></div>
+              <dl class="erp-rowcard-facts"><div><dt>기간</dt><dd>36개월</dd></div></dl>
+              <div class="erp-rowcard-amount"><strong>월 36만 원<small></small></strong></div>
+              <svg class="erp-rowcard-go" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+            </article>
+            <article class="erp-rowcard" role="listitem" data-tone="warn" data-thumb-status="true">
+              <div class="erp-rowcard-thumb erp-rowcard-thumb--status"><span>미완료</span></div>
+              <div class="erp-rowcard-id"><h3 class="erp-rowcard-title"><a class="erp-rowcard-link" href="#">사진 없는 대상 — 상태 타일</a></h3><div class="erp-rowcard-sub"><b>김민수</b>쏘렌토</div><div class="erp-rowcard-meta">접수 09-24 · 계약서 대기</div></div>
+              <ol class="erp-rowcard-steps" aria-label="진행"><li data-state="done"><i></i>접수</li><li aria-current="step"><i></i>계약서</li><li><i></i>인도</li><li><i></i>청구</li></ol>
+              <div class="erp-rowcard-amount"><strong>월 76만 원</strong></div>
+            </article>
+          </div>
+        </div>
+        <div class="erp-panel-foot"><span>총 24건</span><nav class="erp-pager" aria-label="페이지"><button type="button" aria-current="page">1</button><button type="button">2</button></nav></div>
+      </section>
+
+      <section class="erp-panel" data-region="catalog-panel-detail">
+        <div class="erp-panel-head"><span class="erp-panel-kind">상세내용</span><h2>67하2045 더 뉴 레이</h2><span class="erp-panel-count">고른 상품</span></div>
+        <div class="erp-panel-body">
+          <div class="erp-detail-body">
+            <div class="erp-hero-tile erp-tile"><div class="photo"><svg viewBox="0 0 120 60" aria-hidden="true"><path d="M10 45h100M25 45l10-18h45l15 18"/></svg></div><div class="erp-hero-info"><h2 class="name">더 뉴 레이 <span class="erp-badge erp-badge--ok">즉시출고</span></h2><p class="sub"><b>67하2045</b>기아 · 그린카렌탈</p><p class="erp-hero-line">2024식 · 8,900km · 밀키베이지</p></div></div>
+            <div><p class="erp-subtitle erp-subtitle--lead">기간별 대여료 — 고르는 카드</p>
+              <div class="erp-offer-list" role="list" aria-label="기간별 대여료"><a class="erp-offer-card" role="listitem" href="#"><strong class="erp-offer-term">12개월</strong><b class="erp-offer-rent">420,000원/월</b><span class="erp-offer-conditions">보증금 없음</span></a><a class="erp-offer-card" role="listitem" aria-current="true" href="#"><strong class="erp-offer-term">36개월</strong><b class="erp-offer-rent">360,000원/월</b><span class="erp-offer-conditions">보증금 없음</span></a></div>
+            </div>
+            <div><p class="erp-subtitle">담당자 참고 — 그냥 보여 주는 카드</p>
+              <div class="erp-tile-group">
+                <div class="erp-info-card erp-tile"><h3 class="erp-tile-title">우대조건</h3><dl><div><dt>우대조건</dt><dd><span class="erp-tags"><span class="erp-tag erp-tag--primary">무심사</span><span class="erp-tag erp-tag--primary">분납가능</span></span></dd></div><div><dt>공급사</dt><dd>그린카렌탈</dd></div></dl></div>
+                <button class="erp-tile erp-tile--pressable" type="button" aria-pressed="true"><h3 class="erp-tile-title">눌러 고르는 타일</h3><div class="erp-tile-row"><b>월 대여료</b><strong>360,000원</strong></div><p class="erp-tile-note--accent">고른 것은 더 뜨지 않고 눌린 채 고정</p></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="erp-panel-foot" data-action-balance="primary"><button class="erp-btn" type="button">보조 3</button><button class="erp-btn erp-btn--primary" type="button">주 7 — 접수하기</button></div>
+      </section>
+
+      <section class="erp-panel erp-panel--flip" data-region="catalog-panel-work">
+        <div class="erp-panel-head"><span class="erp-panel-kind">입력</span><h2>한 줄씩 입력</h2><span class="erp-panel-count">2 / 3</span></div>
+        <div class="erp-panel-body">
+          <div class="erp-detail-body">
+            <div class="erp-tile"><div class="erp-tile-row"><b>더 뉴 레이 · 36개월</b><strong>360,000원</strong></div><div class="erp-tile-row"><span>67하2045 · 그린카렌탈</span><span class="erp-tile-note--accent">남는 것 31,500원</span></div></div>
+            <div class="erp-section-group">
+            <div class="erp-form-fields">
+              <label class="erp-field"><span class="erp-label">계약자 <em class="erp-req">*</em></span><input class="erp-input" value="김민수"></label>
+              <div class="erp-inline-form"><label class="erp-field"><span class="erp-label">차량번호</span><input class="erp-input" value="67하2045"></label><button class="erp-btn" type="button">저장</button></div>
+            </div>
+            <ul class="erp-form-checks"><li>✓ 신분증 확인</li><li>✓ 계약서 서명</li><li>· 보증금 입금 대기</li></ul>
+            </div>
+          </div>
+        </div>
+        <div class="erp-panel-foot"><button class="erp-btn erp-btn--ghost" type="button">취소</button><button class="erp-btn erp-btn--primary" type="button">저장</button></div>
+      </section>
+    </div>
+
+    <section class="erp-card" data-region="catalog-wide">
+      <div class="erp-card-head"><h2 class="erp-card-title">넓은 목록 판 · 카드 격자 <small>erp-panel--wide · erp-cardlist</small></h2></div>
+      <div class="erp-panel erp-panel--wide">
+        <div class="erp-panel-head"><span class="erp-panel-kind">목록</span><h2>카드 격자</h2><span class="erp-panel-count">2건</span></div>
+        <div class="erp-cardlist">
+          <article class="erp-listcard" aria-current="true"><div class="erp-listcard-head"><h3 class="erp-listcard-title"><a class="erp-listcard-link" href="#">쏘렌토 MQ4 PE</a><span class="erp-listcard-sub">123하4567 · 기아</span></h3><span class="erp-badge erp-badge--ok">즉시출고</span></div><dl class="erp-props"><div><dt>연식</dt><dd>2024</dd></div><div><dt>주행</dt><dd>12,100km</dd></div></dl><div class="erp-listcard-foot"><span class="erp-tag">중고렌트</span><span class="erp-listcard-amount">760,000<small>원/월</small></span></div></article>
+          <article class="erp-listcard"><div class="erp-listcard-head"><h3 class="erp-listcard-title"><a class="erp-listcard-link" href="#">캐스퍼</a><span class="erp-listcard-sub">19호4402 · 현대</span></h3><span class="erp-badge erp-badge--info">출고가능</span></div><dl class="erp-props"><div><dt>연식</dt><dd>2023</dd></div><div><dt>주행</dt><dd>21,300km</dd></div></dl><div class="erp-listcard-foot"><span class="erp-tag">중고렌트</span><span class="erp-listcard-amount">400,000<small>원/월</small></span></div></article>
+        </div>
+      </div>
+    </section>
+
+    <div class="erp-cols" data-region="catalog-flow">
+      <div class="erp-stack">
+        <section class="erp-card">
+          <div class="erp-card-head"><h2 class="erp-card-title">진행 단계 <small>현재 단계 aria-current="step"</small></h2></div>
+          <div class="erp-card-body"><ol class="erp-steps"><li data-state="done"><span class="erp-step-dot">✓</span>계약요청<span class="erp-step-count">12</span></li><li aria-current="step"><span class="erp-step-dot">2</span>계약대기<span class="erp-step-count">5</span></li><li><span class="erp-step-dot">3</span>인도<span class="erp-step-count">3</span></li></ol></div>
+        </section>
+        <section class="erp-card">
+          <div class="erp-card-head"><h2 class="erp-card-title">표 <small>행 40 · 조밀 32 · 금액 오른쪽</small></h2></div>
+          <div class="erp-grid-scroll">
+            <table class="erp-grid">
+              <thead><tr><th class="erp-col-check"><input class="erp-check" type="checkbox" aria-label="전체 선택"></th><th aria-sort="descending">계약번호 <span class="erp-sort">↓</span></th><th>고객</th><th class="erp-num">월 대여료</th><th>상태</th></tr></thead>
+              <tbody>
+                <tr aria-selected="true"><td><input class="erp-check" type="checkbox" checked aria-label="선택"></td><td><a href="#">FP-2609-0142</a></td><td>김*수<span class="erp-cell-sub">쏘렌토 MQ4</span></td><td class="erp-num erp-strong">760,000</td><td><span class="erp-badge erp-badge--info">진행</span></td></tr>
+                <tr><td><input class="erp-check" type="checkbox" aria-label="선택"></td><td><a href="#">FP-2609-0141</a></td><td>이*진<span class="erp-cell-sub">그랜저 GN7</span></td><td class="erp-num">890,000</td><td class="erp-overdue">납기 지연</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="erp-grid-foot"><span>총 <b>2</b>건</span><nav class="erp-pager" aria-label="페이지"><button type="button" aria-current="page">1</button></nav></div>
+          <table class="erp-grid erp-grid--dense"><tbody><tr><td>조밀 표(32)</td><td class="erp-num">1,836,000</td></tr></tbody></table>
+        </section>
+      </div>
+      <div class="erp-stack">
+        <section class="erp-card">
+          <div class="erp-card-head"><h2 class="erp-card-title">지금 처리할 일</h2></div>
+          <ul class="erp-queue"><li><span class="erp-queue-text">서명 대기 계약<small>3일 넘은 건 2</small></span><span class="erp-queue-count">5</span><a href="#">바로가기 ›</a></li></ul>
+        </section>
+        <section class="erp-card">
+          <div class="erp-card-head"><h2 class="erp-card-title">값 묶음 · 이력</h2></div>
+          <div class="erp-card-body erp-stack"><dl class="erp-props"><div><dt>고객명</dt><dd>김*수</dd></div><div><dt>차량번호</dt><dd>123하4567</dd></div></dl>
+            <ul class="erp-timeline"><li><b>09-24 10:12</b> 접수</li><li><b>09-25 14:03</b> 서류 보완 요청</li></ul></div>
+        </section>
+      </div>
+    </div>
+
+    <form class="erp-form" data-region="catalog-form">
+      <div class="erp-card-head"><h2 class="erp-card-title">등록 폼 <small>4열 격자 · 하단 고정 저장 줄</small></h2><span class="erp-docstate">작성중</span></div>
+      <section class="erp-section">
+        <h2 class="erp-section-title">섹션 제목 16</h2>
+        <div class="erp-form-grid"><label class="erp-field erp-span-2"><span class="erp-label">거래처</span><input class="erp-input" placeholder="거래처명"></label><label class="erp-field"><span class="erp-label">수량</span><input class="erp-input erp-input--num" value="1"></label></div>
+      </section>
+      <div class="erp-form-footer"><span class="erp-form-footer-note">저장 전 확인 — 미저장 이탈 경고</span><button class="erp-btn erp-btn--ghost" type="button">취소</button><button class="erp-btn erp-btn--primary" type="submit">저장 (F8)</button></div>
+    </form>
+
+    <section class="erp-card erp-card--fill" data-region="catalog-mdi">
+      <div class="erp-card-head"><h2 class="erp-card-title">작업 탭 · 조회조건 바 <small>진짜 MDI 일 때만 · 검색 위주 화면은 위의 검색창</small></h2></div>
+      <div class="erp-tabs" role="tablist"><div class="erp-tab" role="tab" aria-selected="true">수주 관리 <span class="erp-tab-close">×</span></div><div class="erp-tab" role="tab" aria-selected="false">거래처 <span class="erp-tab-close">×</span></div></div>
+      <form class="erp-filter" role="search"><label class="erp-field"><span class="erp-label">수주일자</span><input class="erp-input" value="2026-09-01 ~ 2026-09-25"></label><div class="erp-filter-actions"><button class="erp-btn erp-btn--ghost" type="reset">초기화</button><button class="erp-btn erp-btn--primary" type="submit">조회 (F3)</button></div></form>
+    </section>
+
+   </div>
+  </div>
+
+  <footer class="erp-statusbar" data-region="statusbar">
+    <span class="erp-statusbar-ok">● 규격 검사 통과</span><span>값 정본 design-system/tokens.json#erp_standard</span>
+    <span class="erp-statusbar-keys">테마 <a href="#" aria-pressed="true">클래식</a><a href="#" aria-pressed="false">레트로</a></span>
+  </footer>
+</main>
+</body>
+</html>

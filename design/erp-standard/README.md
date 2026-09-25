@@ -19,6 +19,7 @@
 |---|---|
 | [`design-system/tokens.json#erp_standard`](../../design-system/tokens.json) | **값의 정본** — 색·글자·간격·모서리·골격·표면 위계·움직임 116개. AI Core 디자인 토큰 정본(헌법 3단) 안의 한 블록이다 — 2026-09-25 두 벌이던 정본을 하나로 합쳤다 |
 | [`erp.css`](erp.css) | 공통 스타일. `:root` 는 정본(erp_standard) 투영, 나머지는 `erp-*` 컴포넌트 |
+| [`catalog.html`](catalog.html) | **부품 카탈로그** — erp.css 의 부품 176개 전부를 실제 상태(고른 것 · 못 쓰는 것 · 오류 …)와 함께 한 장에. 새 부품은 여기에도 보여야 `erp:check` 를 통과한다 |
 | [`main.html`](main.html) | **메인(목록) 화면 템플릿** — 새 목록 화면은 이 파일을 복사해 시작 |
 | [`form.html`](form.html) | **등록/수정 폼 템플릿** — 새 입력 화면은 이 파일을 복사해 시작 |
 | [`platform/`](platform) | ⚠ **1차 적용 시안(대체됨)** — 지금은 §5-4 `erp-panel`이 실제 규격. [`platform/README.md`](platform/README.md) 상단 참고 |
@@ -845,7 +846,8 @@ freepass-admin PC 관리자(상품찾기 · 계약접수 · 실적 · 정산관�
 - 정본(`design-system/tokens.json#erp_standard`) ↔ erp.css `:root` 값 일치, 정본에 없는 토큰 금지, 근거(refs·decision) 필수, `design/erp-standard/tokens.json` 같은 두 번째 정본 금지
 - erp.css `:root` 밖에서 날것 색(`#hex`·`rgb()`) 금지, 글자 크기·굵기·모서리는 토큰만
 - 테마(`themes/*.json` ↔ `themes/*.css`): 덮어쓰기는 기본 토큰 이름만, 추가 변수는 `<테마>-*` 만, 블록 밖은 토큰만
-- 템플릿(`main.html`·`form.html`·`platform/**/*.html`): 인라인 `style` · `<style>` 금지, erp.css 에 없는 `erp-*` 클래스 금지, 골격 영역 필수, 영역당 Primary ≤ 1
+- 카탈로그 전수: erp.css 에 정의된 `erp-*` 부품은 전부 `catalog.html` 에 한 번 이상 나온다
+- 템플릿(`main.html`·`form.html`·`catalog.html`·`platform/**/*.html`): 인라인 `style` · `<style>` 금지, erp.css 에 없는 `erp-*` 클래스 금지, 골격 영역 필수, 영역당 Primary ≤ 1
 
 ## 9. 테마 (공식 2종)
 

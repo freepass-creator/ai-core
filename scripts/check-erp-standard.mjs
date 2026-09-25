@@ -19,6 +19,8 @@ const SHELL_REGIONS = ['topbar', 'sidenav', 'tabs', 'page-header', 'statusbar'];
 export const TEMPLATES = {
   'main.html': [...SHELL_REGIONS, 'kpi', 'filter', 'grid-toolbar', 'grid'],
   'form.html': [...SHELL_REGIONS, 'form', 'form-footer'],
+  // 부품 카탈로그 — 우리 표준의 모든 부품이 한 장에 보이는 곳. 작업 탭(MDI)은 규격상 선택이라 골격은 셋만 요구한다.
+  'catalog.html': ['topbar', 'sidenav', 'statusbar'],
 };
 // 플랫폼 적용 시안(platform/*.html)도 같은 규칙을 지킨다 — 골격 영역은 공통 5개만 요구한다.
 const platformDir = resolve(dir, 'platform');
@@ -119,6 +121,11 @@ export function checkErpStandard() {
     }
     for (const m of trules.matchAll(/\.(erp-[\w-]+)/g)) if (!defined.has(m[1])) errors.push(`themes/${name}.css: erp.css 에 없는 클래스 .${m[1]}`);
   }
+
+  // 5. 카탈로그 전수 — erp.css 에 정의된 부품은 전부 catalog.html 에 한 번 이상 나온다(보이지 않는 부품은 규격이 아니다)
+  const catalog = read('catalog.html');
+  const shown = new Set([...catalog.matchAll(/class="([^"]+)"/g)].flatMap((m) => m[1].split(/\s+/)));
+  for (const c of [...defined].sort()) if (!shown.has(c)) errors.push(`catalog.html: erp.css 부품 .${c} 이 카탈로그에 없다 — 새 부품은 카탈로그에도 보여야 한다`);
 
   // 3·4. 템플릿
   for (const [file, regions] of Object.entries(TEMPLATES)) {
