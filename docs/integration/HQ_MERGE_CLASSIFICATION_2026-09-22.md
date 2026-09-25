@@ -51,7 +51,7 @@ ai-core/
 │
 └─ aiops/                         운영 본부 — 업무 도구·SOP·판단 규칙 (허브가 아니다: Hub Architecture 「제품 고유 비즈니스 로직은 각 프로젝트에 남긴다」)
    ├─ docs/  ← aiops docs/ 294 md 전부 (sop · 제안 · 오더 · 지난것 · 미수로직 · 업무지도 …)
-   └─ (업무 도구 코드 — 대표 결정 4번: 가져오되 실행은 원본이 계속, 업무별로 전환)
+   └─ (업무 도구 코드는 오지 않는다 — 렌터카 매니저(renman) 몫. 대표 2026-09-25, 구분 4번)
 ```
 
 ### 2. 겹치면 이렇게 합친다 (규칙 7개)
@@ -107,7 +107,7 @@ ai-core/
 | 본사 · **개발센터** | `devcenter` | `devcenter/` | **① 첫 번째** 복사 합병 (디자인부터) |
 | 본사 · **경영지원** (권한·문서·감사·인수인계) | `docshub` 의 공통 문서 규격·양식·등록부 (로컬 `C:\dev\docshub` 의 `양식/`·`data/`) | `management-support/docs/` | **②** 복사 합병 — ★사건 서류(`사건/`·`_레거시/고소장`)는 자회사 `casemap` 몫이라 빼고 옮기지 않는다 |
 | 본사 · **공통 서비스** (공통 연결·계약·검증) | `aiops` 의 범용 기능 — Google·Drive·Sheet·인증·작업대장 | `shared-services/` | **③** — 모델 9절 그대로. 계약·adapter 로 추출하고 aiops 기존 호출과 같은 결과인지 검증(X-0002) |
-| 운영 도메인 | `aiops` 의 과태료·자금·보험·미수 절차 · 예약작업 · 운영 자료 | (옮기지 않음) | 모델 9절 「업무 의미와 절차는 운영 도메인에 유지」 |
+| 자회사 · **렌터카 매니저** | `aiops` 의 과태료·자금·보험·미수 절차 · 원자 · 자산 엔진 · 예약작업 · 운영 자료 → 자리는 `renman` | (옮기지 않음) | ★대표(2026-09-25): 「과태료 미수 자금 이런 거는 렌터카 매니저 프로젝트 … 렌터카 매니저에서만 하는 업무니까」 |
 | 자회사 · ERP · 영업 · 정산 · 홈페이지 · 사건 · 웹툰 | `freepasserp4` · `freepass-sales` · `fp-settlement` · `freepasshomepage` · `casemap-private` · `webtoon-studio` (+ `freepass-admin` · `freepass-data` · 견적기) | (옮기지 않음) | 독립 유지 — 배포·도메인·OIDC 가 저장소에 묶여 있다 |
 | 자회사 · work-control | 몸체 `teamjpkwork` · 옛 `workcontrol` 은 09-20 RETIRE(직원 관제 코드는 aiops 로 옮겨짐) | (옮기지 않음) | ★대표 확인 필요 — 「work컨트롤 등등 다 합쳐야돼」 는 모델의 자회사 자리와 다르다 |
 
@@ -124,7 +124,7 @@ ai-core/
 | 1 | 규격·지침·노하우 | 표준 · SOP · aiknowhow · 판단 규칙 (md) | **가져온다** | 그 조직 폴더의 `docs/` — md 하나도 빼지 않는다 |
 | 2 | 기록 | 인수인계 · 검토 · 감사 · 제안 · 지난것 · 결정 기록 (md·html) | **가져온다** | 그 조직 폴더에 원래 경로 그대로 — md 하나도 빼지 않는다 |
 | 3 | 공통 도구 코드 | Google · Drive · Sheet · 인증 · 작업대장 · lease | **가져온다** | `shared-services/` — 계약·adapter 로, 원래 호출자와 같은 결과인지 검증(X-0002) |
-| 4 | 업무 도구 코드 | 과태료 · 자금 · 보험 · 미수 · 자산 엔진 · 시트 작업 스크립트 | **대표 결정** | (가) 가져오되 **실행은 원본이 계속** — 예약작업·경로는 업무별로 따로 전환 / (나) 모델대로 운영 도메인에 둔다 |
+| 4 | 업무 도구 코드 | 과태료 · 자금 · 보험 · 미수 · 자산 엔진 · 시트 작업 스크립트 | **안 옮긴다** | ★대표 결정(2026-09-25): 렌터카 매니저(`freepass-creator/renman`) 몫이다 — 본사가 아니다. 지금 실행은 aiops 가 계속 맡고, 옮긴다면 행선지는 renman 이다 |
 | 5 | 양식·템플릿·생성기 | 문서 양식 html · 생성기 js/py · 등록부 | **가져온다** | `management-support/templates/` |
 | 6 | 운영 자료 | 실행 결과 · 대장 · 로그 · 배치 (json·ndjson) | **안 옮긴다** | 원본 자리. 업무 데이터를 git 에 새로 들이지 않는다 |
 | 7 | 회사 원본 문서 | 지분인수 · 인사 · 개인정보위 조사 · 손익 · 총회 (pdf·docx) | **안 옮긴다** | 원본 자리(또는 드라이브 보관). 개인정보·기밀 — git 이력에 한 번 들어가면 못 뺀다 |
@@ -154,7 +154,7 @@ ai-core/
 | `docs/` (제안 52 · aiknowhow 37 · sop 28 · 오더 13 · 지난것 8 …) | 294 md | 1·2 → `operations/docs/` (md 전부) |
 | `erp-uiux/` | 26 | 2 기록 |
 | `lib/` 의 goog·drive·sheet·lease·task-board·ai-core adapter 류 | (lib 102 중 일부) | 3 공통 도구 → `shared-services/` |
-| `lib/` 나머지 · `scripts/` 105 · `sheets/` 70 · `wonja/` 454 · `unyoung/` 63 · `asset-engine/` 73 · `drive/` 19 · `jageum/` 18 · `boheom/` 17 · `fb/` 14 · `misu/` 5 · `wonjang/` 1 · `test(s)/` 63 | 약 900 | 4 업무 도구 코드 — **대표 결정** |
+| `lib/` 나머지 · `scripts/` 105 · `sheets/` 70 · `wonja/` 454 · `unyoung/` 63 · `asset-engine/` 73 · `drive/` 19 · `jageum/` 18 · `boheom/` 17 · `fb/` 14 · `misu/` 5 · `wonjang/` 1 · `test(s)/` 63 | 약 900 | 4 업무 도구 코드 — **렌터카 매니저 몫, 안 옮김** (2026-09-25) |
 | `outputs/` 17 · `logs/` 6 · `batches/` 6 · `넣을것/` 7 | 36 json | 6 운영 자료 (이름부터 「미처리과태료 처리대장」·은행 원자) |
 | `사건/` | 6 | 8 사건 도구 |
 | `.ai-core/` | 14 | 10 키트 사본 |
@@ -225,6 +225,6 @@ aiops ② 물리 합병의 조건(전부 충족 시):
 ① **개발센터** → `devcenter/` — 복사 실험·참조 전환·기능 대조: **Claude** / 검사기·CI·binding: **Codex** / 병합: **Codex**
 ② **경영지원** ← docshub 공통 문서(양식·data, 사건 서류 제외) → `management-support/docs/`
 ③ **공통 서비스** ← aiops 범용 기능 → `shared-services/` — 계약·adapter 추출은 Codex 가 하던 방향 그대로, Claude 는 반례 검토
-운영 도메인(aiops 업무 절차)과 자회사는 옮기지 않는다.
+운영 도메인(aiops 업무 절차 — 과태료·미수·자금·보험 등, 자리는 렌터카 매니저 `renman`)과 자회사는 옮기지 않는다.
 
 한 번에 하나. 각 단계는 초안 PR 로 잡는다(책상 규칙 4절).

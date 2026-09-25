@@ -98,7 +98,14 @@
       "expected_count": 819,
       "disposition": "HOLD_DOMAIN_OWNER",
       "destination_prefix": null,
-      "reason": "Operational business logic remains AIOps/domain-owned until an explicit per-capability extraction proves a reusable contract and parity."
+      "reason": "Operational business logic remains AIOps/domain-owned until an explicit per-capability extraction proves a reusable contract and parity.",
+      "domain_owner": "freepass-creator/renman",
+      "owner_decision": {
+        "decided_by": "representative",
+        "decided_at": "2026-09-25",
+        "statement": "과태료 미수 자금 이런 거는 렌터카 매니저 프로젝트잖아 … 렌터카 매니저에서만 하는 업무니까",
+        "effect": "Never imported into AI Core. Runtime stays in AIOps until a separate cutover; the only future destination is renman."
+      }
     }
   ],
   "exact_rules": [
