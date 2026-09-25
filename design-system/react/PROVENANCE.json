@@ -378,6 +378,20 @@
       "copy_kind": "EXACT_COPY",
       "sha256": "63f85e453391893d6c3c63af1e6c67e1bca946f9eef1bbcd685fc94585934ff7",
       "transformations": []
+    },
+    {
+      "source_repository": "freepass-creator/freepasserp4",
+      "source_revision": "d8d30570ecba8521dd6d1f6802e49ec14c6f8b58",
+      "source_path": "components/ui/table.tsx",
+      "source_git_blob": "c59866ebfdd6f1e7658e0a23ef56d278fb0e9795",
+      "path": "ui/data-table.tsx",
+      "copy_kind": "TRANSFORMED",
+      "sha256": "2bbe910e75317a4c716396b60adc360ce9ec39c8bd335bab889fa399b917a8c6",
+      "transformations": [
+        "extracted subset: DataTable, Col, colW, cellClamp2, pinRight, colLock, colLockChars, colChars, colSoft, colFlex, colFlexW, clipN",
+        "left in freepasserp4: marketplace column-width tables (maker/model/fuel/color/price), excelFitPlan, colOpts, deprecated colFit/colFitChars",
+        "cell styles th/thR/td/tdR come from HQ tokens; fp-sheet class replaced by an inline scroll wrapper"
+      ]
     }
   ]
 }

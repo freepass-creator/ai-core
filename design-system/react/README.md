@@ -4,7 +4,7 @@
 
 > 대표(2026-09-25): 「그 외적인 개발, 문서, 디자인, UI, UX 이런 것만 AI 코어에 모아둔다」 · 「본사로 가져갈 기능들만 뽑으라는 거야. 그 프로젝트의 고유 기능은 거기에다 남겨야」
 
-## 들어 있는 것 (v0.2)
+## 들어 있는 것 (v0.3)
 
 | 묶음 | 이름 |
 |---|---|
@@ -13,6 +13,7 @@
 | 층 | `Modal` · `Drawer` · `BottomSheet` · `FilterSheet` · 확인·입력창(`ConfirmProvider` · `useConfirm` · `usePrompt`) · `ContextMenu` · 마법사(`WizPanel` · `WizCard` · `WizField` · `WizPhotos`) |
 | 화면 | `PageToolBar` · `MobileToolbar` · `MonthCalendar` · `StatusBadge` · `Spinner`/`Loading`/`LoadingOverlay` · `ToastHost`/`toast`/`toastError`/`toastInfo` · `FileDrop` · `SignaturePad` |
 | 목록·패널 | `PaneHead` · `PaneBody` · `CardGrid` · `VSplit` · `Card` · `Toolbar` · `Panel` · `Kpi` · `KpiRow` · `StatBar` · `Stepper`/`Step` · `SummaryStats` · `FlowActions` · `CloseBtn` |
+| 표 | `DataTable`(웹=표 · 모바일=같은 열 정의로 카드) · `Col` · 열 폭 `colW`/`colLock`/`colLockChars`/`colChars`/`colSoft`/`colFlex`/`colFlexW` · `cellClamp2` · `pinRight` · `clipN` |
 | 빈 화면·안내 | `EmptyState` · `Skeleton` · `CenterNote` · `Message` · `PageLoading`(화면 전체, 오래 걸리면 다시 불러오기) |
 | 글자·형식 | `FS`(크기 사다리) · `FW`(굵기) · `ICON` · `R_CARD` · `ctrlPadX` · `won` · `fmtNumber` · `fmtAt` · `fmtPhone` |
 | 훅 | `useEnterExit` · `useIsMobile` · `useMinWidth` · `useDeskTier` · `haptic` · `useSecOrder` · `useRowSelection` · `useTableSelection` · `useCtrlASelectAll` · `useBusyAction` |
@@ -39,6 +40,6 @@
 
 ## 다음 묶음 (인벤토리 `docs/integration/HQ_EXTRACTION_INVENTORY_2026-09-25.md` 1단계)
 
-- freepasserp4 `table`(DataTable) · `list` · `sec` · `detail` — 차종·연료 같은 업무 열 폭 도우미와 업무 톤맵(`badges`)을 떼어낸 뒤.
+- freepasserp4 `list` · `sec` · `detail` — 업무 톤맵(`badges`)과 접수 엔티티 타입을 떼어낸 뒤. (`table` 의 차종·연료·대여료 열 폭 표는 fp4 에 남는다.)
 - renman `table`·`ledger-frame`·`action-menu` — 업무 라벨을 걷어낸 뒤.
 - estimate 진동 설치기(프레임워크 무관판).
