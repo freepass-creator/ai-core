@@ -15,7 +15,7 @@ const capability={
   },
 };
 const identityCapability={...capability,receipt:{...capability.receipt,identity_field:'aiCoreRequestId'}};
-const projectRegistry={schema_version:'1.0',projects:[{project_id:'aiops',local_path:'/project'}]};
+const projectRegistry={schema_version:'1.1',projects:[{project_id:'aiops',repository:'freepass-creator/aiops',local_path:'/project'}]};
 
 function fixture({reconcileResult=null,withBinding=true}={}){
   const store=new OrderStore(':memory:',{now:()=>Date.parse('2026-09-19T03:30:00Z')});
@@ -116,11 +116,11 @@ test('완료된 durable RESULT는 requirement revision이 바뀐 뒤에도 같�
   );
 });
 
-test('응답 유실 뒤 terminal receipt를 찾으면 재실행 없이 결과를 복구한다',async t=>{
-  const f=fixture({reconcileResult:{status:'SUCCEEDED',path:'/project/tmp/과태료/실행기록-recovered.json',state:'COMPLETED',receipt:{schema:'gwataeryo-run-manifest/v1',state:'COMPLETED'}}});
+test('응답 유실 뒤 identity가 검증된 terminal receipt를 찾으면 재실행 없이 결과를 복구한다',async t=>{
+  const f=fixture({reconcileResult:{status:'SUCCEEDED',path:'/project/tmp/과태료/실행기록-recovered.json',state:'COMPLETED',identity_verified:true,receipt:{schema:'gwataeryo-run-manifest/v1',state:'COMPLETED',aiCoreRequestId:'exec-1'}}});
   t.after(()=>f.store.close());
-  await f.coordinator.reserve({requestId:'exec-1',orderId:f.order.id,workId:'WORK-001',capability,input:{},perform:true});
-  const recovered=await f.coordinator.reconcile('exec-1',capability);
+  await f.coordinator.reserve({requestId:'exec-1',orderId:f.order.id,workId:'WORK-001',capability:identityCapability,input:{},perform:true});
+  const recovered=await f.coordinator.reconcile('exec-1');
   assert.equal(recovered.status,'RESULT');assert.equal(recovered.reconciled,true);
   assert.equal(recovered.result.status,'SUCCEEDED');
   assert.deepEqual(recovered.result.artifact_refs,['tmp/과태료/실행기록-recovered.json']);
@@ -134,16 +134,41 @@ test('identity_field가 bind된 receipt 복구는 durable requestId를 expectedI
   const f=fixture({reconcileResult:{status:'SUCCEEDED',path:'/project/tmp/과태료/실행기록-recovered.json',state:'COMPLETED',receipt:{schema:'gwataeryo-run-manifest/v1',state:'COMPLETED',aiCoreRequestId:'exec-1'}}});
   t.after(()=>f.store.close());
   await f.coordinator.reserve({requestId:'exec-1',orderId:f.order.id,workId:'WORK-001',capability:identityCapability,input:{},perform:true});
-  const recovered=await f.coordinator.reconcile('exec-1',identityCapability);
+  const recovered=await f.coordinator.reconcile('exec-1');
   assert.equal(recovered.status,'RESULT');
   assert.deepEqual(f.reconcileOptions,{expectedIdentity:'exec-1'});
 });
 
 test('terminal receipt가 없으면 UNKNOWN으로 닫고 절대 재실행 판정을 하지 않는다',async t=>{
   const f=fixture();t.after(()=>f.store.close());
-  await f.coordinator.reserve({requestId:'exec-1',orderId:f.order.id,workId:'WORK-001',capability,input:{},perform:true});
-  const out=await f.coordinator.reconcile('exec-1',capability);
+  await f.coordinator.reserve({requestId:'exec-1',orderId:f.order.id,workId:'WORK-001',capability:identityCapability,input:{},perform:true});
+  const out=await f.coordinator.reconcile('exec-1');
   assert.deepEqual(out,{status:'HOLD',reason:'EXECUTION_OUTCOME_UNKNOWN',reconciled:false});
+});
+
+test('예약 당시 recovery snapshot은 불변이고 project binding drift에서는 복구하지 않는다',async t=>{
+  const f=fixture({reconcileResult:{status:'SUCCEEDED',path:'/project/tmp/과태료/실행기록-recovered.json',state:'COMPLETED',identity_verified:true,receipt:{schema:'gwataeryo-run-manifest/v1',state:'COMPLETED',aiCoreRequestId:'exec-drift'}}});
+  t.after(()=>f.store.close());
+  await f.coordinator.reserve({requestId:'exec-drift',orderId:f.order.id,workId:'WORK-001',capability:identityCapability,input:{},perform:true});
+
+  assert.throws(
+    ()=>f.store.db.prepare('UPDATE capability_execution_requests SET before_receipts_json=? WHERE request_id=?').run('[]','exec-drift'),
+    /CAPABILITY_EXECUTION_RECOVERY_SNAPSHOT_IMMUTABLE/
+  );
+
+  projectRegistry.projects[0].local_path='/moved-project';
+  const out=await f.coordinator.reconcile('exec-drift');
+  assert.deepEqual(out,{status:'HOLD',reason:'PROJECT_RECOVERY_BINDING_DRIFT',reconciled:false});
+  assert.equal(f.coordinator.get('exec-drift').state,'RESERVED');
+});
+
+test('identity가 검증되지 않은 receipt는 RESULT로 승격하지 않는다',async t=>{
+  const f=fixture({reconcileResult:{status:'HOLD',reason:'EXECUTION_RECEIPT_IDENTITY_MISMATCH',identity_verified:false,path:'/project/tmp/과태료/실행기록-other.json',state:'COMPLETED'}});
+  t.after(()=>f.store.close());
+  await f.coordinator.reserve({requestId:'exec-a',orderId:f.order.id,workId:'WORK-001',capability:identityCapability,input:{},perform:true});
+  const out=await f.coordinator.reconcile('exec-a');
+  assert.deepEqual(out,{status:'HOLD',reason:'EXECUTION_RECEIPT_IDENTITY_MISMATCH',reconciled:false});
+  assert.equal(f.coordinator.get('exec-a').state,'RESERVED');
 });
 
 test('현재 requirement의 immutable binding이 없으면 실행 예약 자체가 안 된다',async t=>{
