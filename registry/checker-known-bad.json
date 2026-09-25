@@ -26,6 +26,18 @@
         { "name": "기록 안 된 파일", "file": "scripts/check-design-system-react.mjs", "disable": ["if (!entry) { errors.push(`${rel}: not recorded in PROVENANCE.json`); continue; }", "if (!entry) { continue; }"] },
         { "name": "EXACT_COPY 원본 대조", "file": "scripts/check-design-system-react.mjs", "disable": ["if (blob !== entry.source_git_blob) errors.push", "if (false) errors.push"] }
       ]
+    },
+    "canon:guard": {
+      "run": ["scripts/canon-guard.mjs", "--self-test"],
+      "marker": "CHECKER BROKEN",
+      "blockades": [
+        { "name": "정본 밖 정의", "file": "src/governance/canonical-guard.mjs", "disable": ["if (count > 0) found.push({ line: line.id, guard: guard.id, path, count });", "if (false) found.push({ line: line.id, guard: guard.id, path, count });"] },
+        { "name": "역사자료의 정본 주장", "file": "src/governance/canonical-guard.mjs", "disable": ["if (CLAIM.test(head(text)) && !head(text).includes(NOT_CANONICAL)) {", "if (false) {"] },
+        { "name": "진입 파일 갈림", "file": "src/governance/canonical-guard.mjs", "disable": ["if (!identical && !pointer) {", "if (false) {"] },
+        { "name": "main 밖 고정", "file": "src/governance/canonical-guard.mjs", "disable": ["if (value.startsWith('${{') || allowed.has(value)) continue;", "continue;"] },
+        { "name": "예외 기한", "file": "src/governance/canonical-guard.mjs", "disable": ["if (b.expires && b.expires < today)", "if (false)"] },
+        { "name": "묵은 예외", "file": "src/governance/canonical-guard.mjs", "disable": ["for (const b of baseline) if (!seen.has(", "for (const b of []) if (!seen.has("] }
+      ]
     }
   }
 }
