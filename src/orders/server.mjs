@@ -229,8 +229,32 @@ export function startServer({
             throw new OrderError('INVALID_INPUT', 'capability input은 객체여야 합니다.');
           }
 
-          const order = store.get(capabilityRunMatch[1]);
           const { config, operating, execution } = await operatingCapability();
+          let recovered;
+          try {
+            recovered = execution.recover({
+              requestId:data.requestId,
+              orderId:capabilityRunMatch[1],
+              input:data.input ?? {},
+              perform:true,
+            });
+          } catch (error) {
+            if (error?.message === 'CAPABILITY_EXECUTION_IDEMPOTENCY_CONFLICT') {
+              throw new OrderError('CAPABILITY_EXECUTION_IDEMPOTENCY_CONFLICT', '같은 실행 requestId에 다른 내용이 들어왔습니다.', 409);
+            }
+            throw error;
+          }
+          if (recovered?.status === 'RESULT') {
+            if (!recovered.result) return json(409, { status:'HOLD', reason:'CAPABILITY_EXECUTION_RESULT_MISSING' });
+            return json(200, recovered.result);
+          }
+          if (recovered?.status === 'RESERVED') {
+            const reconciled = await execution.reconcile(data.requestId);
+            if (reconciled.status === 'RESULT') return json(200, reconciled.result);
+            return json(409, reconciled);
+          }
+
+          const order = store.get(capabilityRunMatch[1]);
           const validation = validateWorkMap(config.workMap, config.projectRegistry, config.capabilityRegistry);
           if (validation.status !== 'VALID') throw new OrderError('WORK_MAP_INVALID', '업무 지도를 확인해야 합니다.', 503);
           if (!order.routing || order.routing.requirement_revision !== order.revision) {
@@ -268,7 +292,7 @@ export function startServer({
           }
           if (reserved.replay) {
             if (reserved.status === 'RESULT' && reserved.result) return json(200, reserved.result);
-            const reconciled = await execution.reconcile(data.requestId, capability);
+            const reconciled = await execution.reconcile(data.requestId);
             if (reconciled.status === 'RESULT') return json(200, reconciled.result);
             return json(409, reconciled);
           }
@@ -277,6 +301,7 @@ export function startServer({
             route,
             orderId:order.id,
             workId,
+            requestId:data.requestId,
             input:data.input ?? {},
             perform:true,
           });
