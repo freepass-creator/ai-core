@@ -143,3 +143,21 @@ Delete is intentionally stricter than archive. Do not delete until:
 - no historical branch is still needed for regression/migration evidence;
 - no legal/audit/incident record requires repository retention;
 - the user explicitly approves permanent deletion.
+
+## 2026-09-25 삭제 전 검증 (대표 지시: 「한 번만 검증하고 다 삭제」)
+
+대상 7개: `freepasserp` · `freeepasserp2` · `freepasserp3` · `rentsafe` · `jpkerp2` · `jpkerp-v4` · `jpkerp5`.
+
+| 저장소 | 현행 저장소가 참조? | GitHub 자동화 | Vercel 설정(저장소 안) | 판정 |
+|---|---|---|---|---|
+| freepasserp | 없음(감사 문서만) | 없음 | 없음 | 삭제 가능 |
+| freeepasserp2 | 없음 | 없음 | 없음 | 삭제 가능 |
+| freepasserp3 | 없음 | push 때 `freepasserp3` Firebase 규칙 배포 | 없음 | 삭제 가능 — 규칙 정본은 이미 freepasserp4(`.firebaserc`·`database.rules.json`·`storage.rules`, 더 새것). 남겨 두면 push 한 번에 옛 규칙이 새 규칙을 덮을 위험 |
+| rentsafe | 없음 | CI 만 | 없음 | 삭제 가능(후속 = chakhandeal) |
+| jpkerp2 | 없음 | 없음 | 없음 | 삭제 가능 |
+| jpkerp-v4 | 없음 | 없음 | ⚠ 매일 문자 cron `/api/sms/cron/daily` | GitHub 삭제로는 Vercel cron 이 **안 멈춘다** — Vercel 프로젝트를 먼저 지운다 |
+| jpkerp5 | 없음(ERP5_ACCESS_ENTRYPOINT 는 「사용 금지」) | 일일 RTDB 백업 — **9/12 이후 실행 없음, 최근 실행 전부 실패** | ⚠ 매일 `/api/cron/license-verify` | 백업은 이미 멈춰 있어 잃을 것 없음(엔진은 aiops 로 이관됨). Vercel 프로젝트를 먼저 지운다 |
+
+- 현행 12개 저장소(ai-core·freepasserp4·admin·sales·estimate·data·welrixtable·kakao-ops·renman·aiops·devcenter·docshub)에서 위 7개를 코드·설정으로 참조하는 곳은 없다(감사 기록 문서 제외).
+- GitHub 저장소를 지워도 **Vercel 에 이미 배포된 것과 그 cron 은 계속 돈다**. 삭제 순서: Vercel 프로젝트 → GitHub 저장소.
+- GitHub 는 지운 저장소를 90일 안에 되살릴 수 있다(설정 → Repositories → Deleted repositories).
