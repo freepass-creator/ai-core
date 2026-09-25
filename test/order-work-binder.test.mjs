@@ -123,6 +123,9 @@ test('binding the same pair twice is a no-op, not an error and not a second row'
   const again = await bind(good(order));
   assert.equal(again.status, 'LINKED');
   assert.equal(again.persisted, false);
+  assert.equal(again.execution_authorized, false);
+  assert.equal(again.completion_authorized, false);
+  assert.equal(again.sent, false);
   assert.equal(readOrderMappingInventory(store.db).length, 1);
 });
 
