@@ -73,7 +73,9 @@
     "knowledge:validate": "node scripts/validate-operating-knowledge.mjs",
     "claude:status": "node scripts/claude-usage-gate.mjs status",
     "claude:review": "node scripts/claude-usage-gate.mjs run --",
-    "reuse:check": "node scripts/reuse-preflight.mjs"
+    "reuse:check": "node scripts/reuse-preflight.mjs",
+    "design:react:check": "node scripts/check-design-system-react.mjs",
+    "design:react:typecheck": "npm --prefix design-system/react ci --no-audit --no-fund && npm --prefix design-system/react run typecheck"
   },
   "dependencies": {
     "ajv": "8.20.0",

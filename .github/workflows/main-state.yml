@@ -77,3 +77,5 @@ jobs:
       - run: npm run workflow:recovery:validate
       - run: npm run uiux:validate
       - run: npm run uiux:runtime
+      - run: npm run design:react:check
+      - run: npm run design:react:typecheck
