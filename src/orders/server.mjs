@@ -229,8 +229,27 @@ export function startServer({
             throw new OrderError('INVALID_INPUT', 'capability input은 객체여야 합니다.');
           }
 
-          const order = store.get(capabilityRunMatch[1]);
           const { config, operating, execution } = await operatingCapability();
+          let recovered;
+          try {
+            recovered = execution.recover({
+              requestId:data.requestId,
+              orderId:capabilityRunMatch[1],
+              input:data.input ?? {},
+              perform:true,
+            });
+          } catch (error) {
+            if (error?.message === 'CAPABILITY_EXECUTION_IDEMPOTENCY_CONFLICT') {
+              throw new OrderError('CAPABILITY_EXECUTION_IDEMPOTENCY_CONFLICT', '같은 실행 requestId에 다른 내용이 들어왔습니다.', 409);
+            }
+            throw error;
+          }
+          if (recovered?.status === 'RESULT') {
+            if (!recovered.result) return json(409, { status:'HOLD', reason:'CAPABILITY_EXECUTION_RESULT_MISSING' });
+            return json(200, recovered.result);
+          }
+
+          const order = store.get(capabilityRunMatch[1]);
           const validation = validateWorkMap(config.workMap, config.projectRegistry, config.capabilityRegistry);
           if (validation.status !== 'VALID') throw new OrderError('WORK_MAP_INVALID', '업무 지도를 확인해야 합니다.', 503);
           if (!order.routing || order.routing.requirement_revision !== order.revision) {
