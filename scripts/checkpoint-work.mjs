@@ -118,6 +118,8 @@ export async function checkpointWork({ root, message, paths, push = false, check
   try {
     const branch = git(root, ['branch', '--show-current']);
     if (!/^work\/[a-z0-9._-]+\/[a-z0-9._-]+$/i.test(branch)) fail('HOLD_BRANCH_NOT_OWNED');
+    const [, branchOwner] = branch.split('/');
+    if (['gpt','claude','codex','cursor','gemini'].includes(branchOwner.toLowerCase())) fail('HOLD_ACTOR_OWNED_BRANCH');
     if (lines(git(root, ['diff', '--cached', '--name-only'])).length) fail('HOLD_PRESTAGED_CHANGES');
     for (const path of selected) await assertSafeFile(root, path);
     const dirty = changedPaths(root);
