@@ -103,6 +103,13 @@ Provider 특이사항은 Core Model에 넣지 않는다.
 
 Adapter terminal result는 `core-adapter-result/v1`을 사용한다. `status`, `retryable`, `adapter_version`, `source_revision`, `issues[]`, `evidence_refs[]`를 숨기지 않는다.
 
+### 4.1 Canonical Adapter Contract와 Capability Runtime Adapter의 관계
+
+- `contracts/core-adapter.schema.json` + `contracts/core-adapter-result.schema.json` + `src/contracts/engine-adapter-contract.mjs`가 **provider/port adapter의 canonical contract**다.
+- `src/engine/adapter-contract.mjs`의 `defineCapabilityAdapter()/normalizeAdapterResult()`는 Capability Engine 내부의 **runtime invocation envelope**다. 별도의 Adapter 표준이 아니며 provider/port mapping, compatibility, retry, provenance 계약을 대체하지 않는다.
+- 신규 provider adapter를 `src/engine/adapter-contract.mjs` 형식만으로 정의하는 것을 금지한다. provider/port adapter는 canonical contract를 만족한 뒤 Capability runtime에 바인딩한다.
+- 두 결과 형식이 만나는 경계에서는 canonical adapter result의 provenance/issues/retryability를 잃지 않는 명시적 mapping을 둔다. 조용한 축약은 금지한다.
+
 ## 5. API
 
 HTTP method/status semantics를 임의 재정의하지 않는다.
