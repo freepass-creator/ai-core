@@ -1,5 +1,8 @@
 # aiops 운영 헌장
 
+> **Status: NOT_CANONICAL / IMPORTED LEGACY REFERENCE (2026-09-26)**  
+> 이 문서는 삭제 예정 AIOps 저장소에서 보존한 과거 운영 규칙이다. AI Core 전체의 현재 역할·권한·협업 정본이 아니며, "정본"이라는 아래 표현은 원래 AIOps 내부에서만 유효했던 역사적 문구다. 현재 AI Core 작업은 루트 `README.md`, `docs/AI_WORKING_STANDARD.md`, 현재 contracts/registry와 대상 프로젝트의 권한 경계를 따른다. AIOps 고유 메커니즘을 재사용할 때만 provenance 자료로 읽는다.
+
 2026-08-20 대표가 확정하고 Claude Code가 구조 검토한 운영 방식이다. **Claude는 구조를 설계·승인하고, Codex는 승인된 범위의 업무를 실행·검증한다.** 이 문서와 여기서 가리키는 제어 규격은 구조의 정본이다.
 
 ## 역할
