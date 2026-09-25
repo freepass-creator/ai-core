@@ -5406,7 +5406,7 @@
     },
     {
       "path": "lib/dc-folders.json",
-      "sha256": "16b1af930874df34719bcc5da9262e50ffeefe2e8c13518b6d33125f13e320dd",
+      "sha256": "605ffee77e9c1b20f40ee1e11fa94df709cd0182b760e9d79f89194570a59243",
       "source_git_blob": "ae42d7688a4403bf554433d44baa8a4eee6e9bd0",
       "copy_kind": "TRANSFORMED",
       "source_sha256": "cb49031699c0edee511e16380fb3d978b0a8099c5f7ea54c095dbc35e1e0fce0",

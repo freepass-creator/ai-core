@@ -43,7 +43,7 @@ Start here before installing, logging in or rediscovering mail accounts. This is
 | --- | --- | --- |
 | `pyh@teamjpk.com`, TeamJPK Workspace | `%USERPROFILE%/.config/gws`, existing gws protected credentials | 2026-09-15 owner observed auth metadata and Gmail scopes; actual read/send not tested. Workspace default policy remains read-only. |
 | Same pyh account, SMTP route | `C:/dev/mailtool/send_mail.py`; existing `GMAIL_ADDRESS` / `GMAIL_APP_PASSWORD` environment references | Sender registration observed by owner; password validity and SMTP sending not tested. This route is not another account. |
-| `01046403871w@gmail.com`, user alias 웰릭스 세일즈폰 / local label 업무폰 계정 | Existing profile/credential reference UNVERIFIED | Sales reviewer reported local code/docs for MyData receiving and Contacts. Live login/read/send unverified. Preserve the lowercase `w`; do not infer sending capability. |
+| `<업무폰 Gmail — 주소는 운영 설정에만 둔다>`, user alias 웰릭스 세일즈폰 / local label 업무폰 계정 | Existing profile/credential reference UNVERIFIED | Sales reviewer reported local code/docs for MyData receiving and Contacts. Live login/read/send unverified. Preserve the lowercase `w`; do not infer sending capability. |
 
 `gws-collab` and `gws-admin` were reported as profiles of the same pyh identity, not additional mail accounts. Cursor/Claude login emails do not establish mail registration. Total user mail accounts remain UNKNOWN; no default sender is selected.
 
