@@ -1,0 +1,99 @@
+{
+  "schema": "ai-core-canonical-development-lines/v1",
+  "updated_at": "2026-09-26",
+  "policy": {
+    "one_canonical_line_per_concern": true,
+    "historical_assets_must_not_claim_authority": true,
+    "superseded_branches_are_not_runtime_authority": true
+  },
+  "lines": [
+    {
+      "id": "ui-ux",
+      "canonical_entrypoint": "docs/UI_UX_START_HERE.md",
+      "canonical_roots": [
+        "design-system/",
+        "registry/ui-ux-entrypoint.json",
+        "registry/ui-ux-features.json",
+        "registry/ui-ux-governance.json"
+      ],
+      "historical_or_noncanonical": [
+        "design/claude-v1/"
+      ]
+    },
+    {
+      "id": "core-contract",
+      "canonical_entrypoint": "docs/CORE_CONTRACT_STANDARD.md",
+      "canonical_roots": [
+        "contracts/core-",
+        "registry/core-contracts.json",
+        "src/contracts/"
+      ],
+      "historical_or_noncanonical": [
+        "docs/research/ENGINE_ADAPTER_CROSS_REPO_FINDINGS_2026-09-19.md"
+      ]
+    },
+    {
+      "id": "capability-runtime",
+      "canonical_entrypoint": "src/engine/capability-engine.mjs",
+      "canonical_roots": [
+        "src/engine/capability-engine.mjs",
+        "src/engine/adapter-contract.mjs",
+        "src/engine/project-runtime.mjs"
+      ],
+      "notes": [
+        "src/engine/adapter-contract.mjs is a runtime invocation envelope, not a second provider adapter standard"
+      ]
+    },
+    {
+      "id": "workflow",
+      "canonical_entrypoint": "docs/workflow/WORKFLOW_CONSTITUTION.md",
+      "canonical_roots": [
+        "src/workflow/",
+        "registry/workflows.json",
+        "registry/workflow-progressions.json",
+        "registry/workflow-projections.json",
+        "registry/workflow-recovery-policies.json"
+      ]
+    },
+    {
+      "id": "integration-connectors",
+      "canonical_entrypoint": "devcenter/hubs/integration/README.md",
+      "canonical_roots": [
+        "devcenter/contracts/integration-connector.schema.json",
+        "devcenter/hubs/integration/connectors.json"
+      ]
+    },
+    {
+      "id": "aiops-import",
+      "canonical_entrypoint": "aiops/README.md",
+      "canonical_roots": [
+        "aiops/"
+      ],
+      "historical_or_noncanonical": [
+        "aiops/docs/CONTROL_PLANE.md"
+      ],
+      "notes": [
+        "Imported AIOps documents retain provenance only; they do not override AI Core root governance"
+      ]
+    }
+  ],
+  "branch_families": {
+    "historical_engine_lines": [
+      "feature/orchestrator-v0.1",
+      "feature/cognitive-runtime-v0.6",
+      "feat/capability-engine-v1"
+    ],
+    "historical_ui_lines": [
+      "codex/ui-ux-new-project-starter",
+      "codex/ui-ux-starter-completion",
+      "codex/ui-ux-starter-runtime",
+      "work/gpt/ui-ux-universal-contract-v1"
+    ],
+    "historical_connector_lines": [
+      "feat/connector-registry-v1"
+    ],
+    "review_before_retire": [
+      "claude/erp-platform-ui-ux-hvfyfa"
+    ]
+  }
+}

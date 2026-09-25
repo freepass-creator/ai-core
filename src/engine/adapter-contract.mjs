@@ -1,3 +1,7 @@
+// Capability Engine runtime invocation envelope.
+// NOT a second provider/port Adapter standard. Canonical adapter contracts live in
+// contracts/core-adapter*.schema.json and src/contracts/engine-adapter-contract.mjs.
+// Provider adapters must satisfy those contracts before binding into this runtime.
 export const ADAPTER_STATUSES = Object.freeze(['SUCCEEDED','HOLD','FAILED']);
 const need = (condition, code) => { if (!condition) throw new Error(code); };
 const nonempty = value => typeof value === 'string' && value.trim() === value && value.length > 0;

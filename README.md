@@ -57,6 +57,10 @@ Implementation handoff: [Claude work packet](docs/CLAUDE_EMERGENCY_HANDOFF.md) a
 - Shared services do not grant new production, live-data, permission, payment, deletion or legal authority.
 - Common standards define quality and collaboration baselines; subsidiary business logic, brand and user experience remain independent.
 
+## Canonical development lines
+
+같은 관심사의 구현 정본을 두 벌 이상 두지 않는다. UI/UX, Core Contract, Capability Runtime, Workflow, Integration Connector, AIOps import의 현재 정본과 역사자료 경계는 [Canonical Development Lines](docs/CANONICAL_DEVELOPMENT_LINES.md)와 `registry/canonical-development-lines.json`에서 관리한다. 과거 브랜치나 imported 문서의 "정본" 표현은 현재 main의 권위를 대체하지 않는다.
+
 ## Current implementation
 
 Current main now includes executable Academy start/verification gates, revision-bound project/capability/work-map registries, routed Order→Work durable intake, capability runtime paths, workflow/recovery contracts, and SHADOW shared-service extraction with provenance/parity tests. It is therefore more than a documentation-only evaluator.

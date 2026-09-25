@@ -6,6 +6,10 @@
 
 > 대표(2026-09-25): 「렌터카 사업 관련된 기능은 다 랩맨(renman)으로 들어간다고 보면 돼. 그 외적인 개발, 뭐 문서, 디자인, UI, UX 이런 것만 AI 코어에 모아둔다.」
 
+## 정본 경계
+
+이 폴더의 imported 문서에는 원래 AIOps 내부에서 쓰던 “정본”, “헌장”, AI 역할 표현이 남아 있을 수 있다. **그 표현은 provenance를 위해 보존된 원문 내부에서만 역사적 의미를 가지며 AI Core 전체의 현재 권위를 뜻하지 않는다.** 특히 `docs/CONTROL_PLANE.md`는 exact-copy 보존 자료다. 현재 AI Core의 역할·권한·협업 정본은 루트 `README.md`, `docs/AI_WORKING_STANDARD.md`, 현재 `contracts/`·`registry/`와 대상 프로젝트 권한 경계다.
+
 ## 무엇이 들어왔나
 
 - AI 협업 방법·AI 노하우(`docs/aiknowhow/`)·범용 도구(Google·Drive·Sheet 도구, 잠금·쓰기 도구, 작업판, 승인, OCR·전사·PDF·엑셀 유틸)·데이터센터 폴더 도구.
