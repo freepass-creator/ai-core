@@ -515,6 +515,7 @@
     "docs/AI_WORKING_STANDARD.md",
     "docs/BUILD_DEPLOY_GOVERNANCE_P0_CANDIDATE.md",
     "docs/BUSINESS_PLANNING_CAPABILITY.md",
+    "docs/CANONICAL_DEVELOPMENT_LINES.md",
     "docs/CAPABILITY_READINESS_GATE.md",
     "docs/CLAUDE_EMERGENCY_HANDOFF.md",
     "docs/CLAUDE_GROUP_INTEGRATION_HANDOFF.md",
@@ -572,6 +573,7 @@
     "docs/UI_UX_USER_DECISION_2026-09-21_WEB_PANEL_EXTENSION.md",
     "docs/WORK_LEDGER.md",
     "docs/audits/AIOPS_PILOT_2026-09-20.md",
+    "docs/audits/BRANCH_CLEANUP_WAVE_1_20260926.md",
     "docs/audits/FREEPASSERP4_PILOT_2026-09-20.md",
     "docs/audits/FREEPASS_ADMIN_PILOT_2026-09-20.md",
     "docs/audits/FREEPASS_ESTIMATE_PILOT_2026-09-20.md",
@@ -773,6 +775,7 @@
     "package.json",
     "registry/adoption/freepass-estimate-quote-execution.fixture.json",
     "registry/adoption/freepasserp4-products.source-registry.json",
+    "registry/canonical-development-lines.json",
     "registry/capabilities.json",
     "registry/checker-known-bad.json",
     "registry/core-contract-adoption.json",
@@ -852,6 +855,7 @@
     "scripts/validate-a-session-work-claims.mjs",
     "scripts/validate-ai-academy-entrypoints.mjs",
     "scripts/validate-build-deploy-governance-p0.mjs",
+    "scripts/validate-canonical-development-lines.mjs",
     "scripts/validate-capability-registry.mjs",
     "scripts/validate-core-contract-adoption.mjs",
     "scripts/validate-core-contracts.mjs",
@@ -979,6 +983,7 @@
     "test/aiops-physical-copy.test.mjs",
     "test/build-deploy-governance-p0.test.mjs",
     "test/business-planning-adapter.test.mjs",
+    "test/canonical-development-lines.test.mjs",
     "test/capability-convergence.test.mjs",
     "test/capability-engine-builtin-mode.test.mjs",
     "test/capability-execution-api.test.mjs",
@@ -1220,6 +1225,7 @@
     "2026-09-23 first shared-service extraction: AIOps lib/atomic-stream-write.mjs imported as an exact-copy SHADOW under shared-services/fs with pinned source blob provenance and behavioral parity tests; AIOps remains runtime authority and no consumer cutover is authorized. changed_files updated for verifier parity only.",
     "2026-09-23 Google shared-service boundary: extracted only AIOps goog.mjs#assertAllowedGoogleApiUrl as FUNCTION_SLICE_SHADOW with pinned source blob and fail-closed URL tests; token, credential, lease and company-resource authority remain in AIOps. changed_files updated for verifier parity only.",
     "2026-09-23 Google read port shadow: reused canonical core-port/core-adapter/core-binding-profile contracts to add google.api.read, a credential-neutral shared read adapter and PARTIAL AIOps shadow binding. Retry timing intentionally differs from source and no live provider/cutover claim is made. changed_files updated for verifier parity only.",
-    "2026-09-23 Sheets pure utility extraction: AIOps lib/sheet.mjs#colL/num/serial2date/date2serial moved as FUNCTION_SLICE_SHADOW with pinned source/destination blobs and behavior tests; sheet runtime/token/write/backup authority remains AIOps. changed_files updated for verifier parity only."
+    "2026-09-23 Sheets pure utility extraction: AIOps lib/sheet.mjs#colL/num/serial2date/date2serial moved as FUNCTION_SLICE_SHADOW with pinned source/destination blobs and behavior tests; sheet runtime/token/write/backup authority remains AIOps. changed_files updated for verifier parity only.",
+    "2026-09-26 canonical development-line consolidation: added one-authority registry/validator, demoted historical UI authority, clarified Core Adapter vs Capability runtime boundary, wrapped imported AIOps legacy authority, and recorded branch cleanup wave 1. changed_files updated for verifier parity only."
   ]
 }
