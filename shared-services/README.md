@@ -35,3 +35,12 @@ renman `scripts/check-secrets.mts`(추적 파일의 키·토큰)와 aiops `scrip
 - 결과에는 파일·줄·규칙만 나온다. **값은 절대 찍지 않는다.**
 - 예외는 그 줄에 `secret-scan: allow <이유>` 를 적는 것뿐이다. 흔한 가짜 예시(뒤 7자리 `1234567` 등)는 주민번호로 세지 않는다.
 - 다른 저장소는 이 파일을 고정 revision 으로 가져가 자기 CI 에 건다(renman 의 기존 검사를 대체할 수 있다).
+
+## 검사기가 «잡는지» 증명 — `npm run checkers:known-bad` (2026-09-25)
+
+원본: freepasserp4 `scripts/check-known-bad.mts`. 「검사기가 초록」과 「검사기가 무언가를 잡는다」는 다른 주장이다.
+
+- 등록부 `registry/checker-known-bad.json` 에 검사기마다 자가진단 명령과 **봉쇄 목록**을 적는다. 봉쇄 = 그 검사기가 지키는 규칙 한 줄과, 그것을 끄는 글귀.
+- `scripts/check-known-bad.mjs` 가 봉쇄를 하나씩 끄고 자가진단을 돌린다. 끄면 **빨개져야** 하고, 빨개진 이유가 `CHECKER BROKEN` 이어야 한다. 끄는 글귀가 소스에 정확히 한 번 나오지 않으면 실패한다(규칙이 바뀌어 등록이 낡은 것).
+- 이 기계장치 자신도 `--self-test` 로 잰다: 정직한 검사기 PASS · 눈먼 · 거짓 초록 · 엉뚱하게 죽는 검사기 FAIL.
+- 지금 증명된 것: `security:secrets` 8개 · `design:react:check` 5개 봉쇄. 새 검사기를 CI 에 걸면 여기에 봉쇄를 함께 적는다.
