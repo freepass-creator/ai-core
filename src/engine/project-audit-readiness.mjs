@@ -34,6 +34,7 @@ export function validateProjectAuditReadinessRegistry(registry) {
     need(axis.machine_checks.every(nonempty), `AUDIT_READINESS_MACHINE_CHECK_INVALID:${axis.id}`);
     need(axis.gaps.every(nonempty), `AUDIT_READINESS_GAP_INVALID:${axis.id}`);
     if (axis.maturity === 'MACHINE_ENFORCED') need(axis.machine_checks.length > 0, `AUDIT_READINESS_ENFORCED_WITHOUT_CHECK:${axis.id}`);
+    if (axis.maturity === 'CANONICAL_PARTIAL') need(axis.canonical_sources.length > 0, `AUDIT_READINESS_CANONICAL_SOURCES_REQUIRED:${axis.id}`);
     if (axis.maturity === 'RESEARCH_ONLY') need(axis.gaps.length > 0, `AUDIT_READINESS_RESEARCH_GAP_REQUIRED:${axis.id}`);
   }
   return registry;
