@@ -14,7 +14,7 @@
 | SMTP 발신 등록 | `C:/dev/mailtool/send_mail.py` 35줄은 `GMAIL_ADDRESS` 선택; 현재 Process 환경 주소만 확인해 pyh 일치 | `GMAIL_APP_PASSWORD`는 존재 여부만 확인. 값/유효성은 미확인, 도구 실행 안 함 |
 | AI 로그인 단서 | 지침의 `dudguq@gmail.com`(Cursor), `jpkpyh@gmail.com`(Claude) | 이 조사에서 메일 연결/발신 등록 근거 없음. 메일 계정으로 승격 금지 |
 | 수신 예시 | send_mail.py의 `--to ksm@teamjpk.com`, `--cc a@b.com`, `--cc c@d.com` | 예시 수신 주소이며 사용자 발신 계정 목록 아님 |
-| `01046403871w@gmail.com` — 사용자 별칭 웰릭스 세일즈폰 | 총괄이 전달한 sales 담당 조사: 로컬 명칭은 업무폰 계정, 마이데이터 수신 Gmail + Google Contacts 저장용 | 이 세션의 실조회 아님. 로컬 문서/코드 근거만 확인됐으며 Google 로그인·프로필 표시명·발송 연결 미검증. 숫자 뒤 소문자 `w`를 보존한다 |
+| `<업무폰 Gmail — 주소는 운영 설정에만 둔다>` — 사용자 별칭 웰릭스 세일즈폰 | 총괄이 전달한 sales 담당 조사: 로컬 명칭은 업무폰 계정, 마이데이터 수신 Gmail + Google Contacts 저장용 | 이 세션의 실조회 아님. 로컬 문서/코드 근거만 확인됐으며 Google 로그인·프로필 표시명·발송 연결 미검증. 숫자 뒤 소문자 `w`를 보존한다 |
 
 **현재 1개는 프로필 메타데이터/발신 등록 확인, 추가 1개는 sales 담당이 로컬 문서·코드로 확인한 계정 후보다.** 두 주소 모두 실제 발송 성공을 검증한 것은 아니다. 사용자 설명의 3~4개를 전체 확정하지 않으며 나머지 주소·전체 수는 미확인이다. AI 로그인 단서 두 개를 더해 네 개로 맞추지 않는다. 이 세션은 사용자에게 추가 설정/주소 질문을 하지 않는다.
 
@@ -53,7 +53,7 @@
 +- Keep credential values in their existing protected stores; this section contains references only.
 +- Confirmed profile identity (2026-09-15): alias=teamjpk-workspace; address=pyh@teamjpk.com; provider=Google; profile_ref=%USERPROFILE%/.config/gws; tool=gws; read_scope=observed; send_scope=observed; read/send operation=not tested; send_authorized=false.
 +- Existing SMTP route for that same address: tool=C:/dev/mailtool/send_mail.py; credential_ref=existing GMAIL_ADDRESS/GMAIL_APP_PASSWORD environment; sender registration observed; send operation not tested. Do not create a second account record for this route.
-+- Local-document candidate: alias=웰릭스 세일즈폰; local_label=업무폰 계정; address=01046403871w@gmail.com; provider=Google; purpose=mydata receiving/Contacts; credential/profile_ref=unverified; login/read/send=not tested; evidence=sales docs/GITHUB-MAIL-AUTOMATION.md:6,9 and docs/서버-마이데이터-등록-매뉴얼.md:3,10,12 (reported by sales reviewer). Do not infer sending capability.
++- Local-document candidate: alias=웰릭스 세일즈폰; local_label=업무폰 계정; address=<업무폰 Gmail — 주소는 운영 설정에만 둔다>; provider=Google; purpose=mydata receiving/Contacts; credential/profile_ref=unverified; login/read/send=not tested; evidence=sales docs/GITHUB-MAIL-AUTOMATION.md:6,9 and docs/서버-마이데이터-등록-매뉴얼.md:3,10,12 (reported by sales reviewer). Do not infer sending capability.
 +- No default sender. Other accounts require confirmed identity/profile references; AI login addresses are not evidence of mail registration.
 ```
 
