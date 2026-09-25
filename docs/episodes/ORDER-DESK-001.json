@@ -242,6 +242,7 @@
     "design-system/react/src/ui/confirm.tsx",
     "design-system/react/src/ui/context-menu.tsx",
     "design-system/react/src/ui/controls.tsx",
+    "design-system/react/src/ui/data-table.tsx",
     "design-system/react/src/ui/feedback.tsx",
     "design-system/react/src/ui/file-drop.tsx",
     "design-system/react/src/ui/flow-actions.tsx",

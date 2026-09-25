@@ -29,3 +29,4 @@ export * from './ui/flow-actions';
 export * from './ui/close-btn';
 export * from './lib/use-enter-exit';
 export * from './lib/formatters';
+export * from './ui/data-table';
