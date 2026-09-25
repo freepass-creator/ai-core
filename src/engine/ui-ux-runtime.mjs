@@ -96,7 +96,7 @@ export function validateUiUxRuntimeSemantics({
   }
 
   const requiredControlRoles = {
-    desktop_compact_px: 40,
+    desktop_compact_px: 36,
     touch_minimum_px: 44,
     quick_action_preferred_px: 48,
     mobile_interactive_row_minimum_px: 64

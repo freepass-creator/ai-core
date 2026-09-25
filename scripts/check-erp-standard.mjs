@@ -39,6 +39,15 @@ export function checkErpStandard() {
   if (!Array.isArray(ev.refs) || ev.refs.length === 0 || !ev.decision) errors.push('design-system/tokens.json erp_standard: 근거(evidence.refs · decision) 없는 값은 정본이 아니다');
   if (existsSync(resolve(dir, 'tokens.json'))) errors.push('design/erp-standard/tokens.json: 두 번째 정본 금지 — 값은 design-system/tokens.json#erp_standard 에만');
   const tokens = ssot.tokens;
+  // 1-0. 같은 뜻 = 같은 값 — ERP 토큰과 공통 토큰이 따로 놀면 «하나의 규격»이 아니다(대표 2026-09-25 「v1.1로 하나로」).
+  const common = JSON.parse(readFileSync(resolve(root, 'design-system/tokens.json'), 'utf8')).css_variables;
+  const aligned = ssot.aligned_with ?? {};
+  if (Object.keys(aligned).length < 20) errors.push('erp_standard.aligned_with: 공통 토큰과의 대응이 너무 적다');
+  for (const [k, g] of Object.entries(aligned)) {
+    if (!(k in tokens)) errors.push(`erp_standard.aligned_with: ERP 토큰 ${k} 가 없다`);
+    else if (!(g in common)) errors.push(`erp_standard.aligned_with: 공통 토큰 ${g} 가 없다`);
+    else if (String(tokens[k]).toLowerCase() !== String(common[g]).toLowerCase()) errors.push(`같은 뜻 다른 값: --erp-${k} ${tokens[k]} ≠ --${g} ${common[g]}`);
+  }
   const css = read('erp.css');
 
   // 1. 정본 ↔ 투영

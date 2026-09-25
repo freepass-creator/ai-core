@@ -78,7 +78,7 @@ See `docs/DEVELOPMENT_CENTER_EXECUTION_HANDOFF.md`.
 
 Company role values currently fixed from normative/platform/internal evidence:
 
-- desktop compact control: 40px
+- desktop compact control: 36px (PC 소형 32 · 표준 36 · 행 40 — 2026-09-25 대표 「v1.1로 하나로」로 40 → 36)
 - touch target minimum: 44px
 - frequent quick action preferred: 48px
 - mobile interactive row minimum: 64px

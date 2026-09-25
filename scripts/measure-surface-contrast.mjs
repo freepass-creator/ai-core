@@ -40,12 +40,12 @@ export const 사다리 = (변수 = 토큰()) => {
   const 일반 = 변수['color-surface-subtle'];
   const 선택 = 변수['color-selected-surface'];
   return [
-    { id: 'rest_hint_on_surface', a: 일반, b: 변수['color-surface'], min: 1.06,
-      why: '흰 면 위에서 「아, 박스구나」 정도만 — 회색으로 내리지 않는다' },
+    { id: 'rest_hint_on_surface', a: 일반, b: 변수['color-surface'], min: 1.05,
+      why: '흰 면 위에서 「아, 박스구나」 정도만 — 회색으로 내리지 않는다. v1.1(대표 2026-09-25 「v1.1로 하나로」) 면 #F7F9FC 는 1.055 — 한 톤 낮은 면만으로 가른다' },
     { id: 'hover_over_rest', a: 겹침(일반, 변수['color-hover-layer']), b: 일반, min: 1.1,
       why: '커서를 올리면 일반보다 또렷해진다' },
-    { id: 'selected_over_rest', a: 선택, b: 일반, min: 1.1,
-      why: '선택은 확실하되 은은하게 — 그리고 호버와 «다른 축»(중립 층 vs 파란 면)이다' },
+    { id: 'selected_over_rest', a: 선택, b: 일반, min: 1.07,
+      why: '선택은 확실하되 은은하게 — 그리고 호버와 «다른 축»(중립 층 vs 파란 면)이다. v1.1 면 차이는 1.075 로 작으므로 굵기 · 체크(또는 Primary 글자)가 반드시 함께 바뀐다(색 하나로 말하지 않는다)' },
     { id: 'selected_hover_over_selected', a: 겹침(선택, 변수['color-hover-layer']), b: 선택, min: 1.1,
       why: '이미 선택된 것에 커서를 올린 것과 그냥 선택된 것이 달라야 한다' },
     { id: 'selected_text', a: 변수['color-primary-hover'], b: 선택, min: 4.5,
@@ -57,8 +57,8 @@ export const 사다리 = (변수 = 토큰()) => {
 
 /** 재는 짝. min 은 «무엇 때문에» 필요한지까지 적는다 — 숫자만 있으면 다음 사람이 못 고친다. */
 export const 짝들 = [
-  { id: 'surface_on_canvas', a: 'color-surface', b: 'color-bg', min: 1.12,
-    why: '선이 없으니 카드·패널이 바탕에서 떨어져 보여야 한다 (박스를 박스로 알아본다)' },
+  { id: 'surface_on_canvas', a: 'color-surface', b: 'color-bg', min: 1.08,
+    why: '선이 없으니 카드·패널이 바탕에서 떨어져 보여야 한다 (박스를 박스로 알아본다). v1.1(대표 2026-09-25) 바탕 #F2F6FC 는 1.085 — 면 차이는 옅게, 경계는 기본 그림자(shadow-sm = erp elevation-base)가 함께 진다. 그림자가 빠지면 이 값으로는 모자란다' },
   { id: 'sunken_on_surface', a: 'color-surface-sunken', b: 'color-surface', min: 1.12,
     why: '면 위의 우묵한 자리(칩 기본·표 머리·트랙)가 면과 갈라져야 한다' },
   { id: 'selected_on_surface', a: 'color-selected-surface', b: 'color-surface', min: 1.12,

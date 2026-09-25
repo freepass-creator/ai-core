@@ -2,7 +2,7 @@
   "receipt_id": "SURFACE-CONTRAST-001",
   "contract": "ai-core-measured-evidence/v1",
   "kind": "MEASURED",
-  "measured_at": "2026-09-23T00:11:42.467Z",
+  "measured_at": "2026-09-25T13:22:05.630Z",
   "method": "WCAG 2.2 relative luminance contrast computed from design-system/tokens.json by scripts/measure-surface-contrast.mjs",
   "source": "design-system/tokens.json",
   "pairs": [
@@ -12,12 +12,12 @@
       "b": "color-bg",
       "colors": [
         "#ffffff",
-        "#eaeef4"
+        "#f2f6fc"
       ],
-      "ratio": 1.164,
-      "min": 1.12,
+      "ratio": 1.085,
+      "min": 1.08,
       "pass": true,
-      "why": "선이 없으니 카드·패널이 바탕에서 떨어져 보여야 한다 (박스를 박스로 알아본다)"
+      "why": "선이 없으니 카드·패널이 바탕에서 떨어져 보여야 한다 (박스를 박스로 알아본다). v1.1(대표 2026-09-25) 바탕 #F2F6FC 는 1.085 — 면 차이는 옅게, 경계는 기본 그림자(shadow-sm = erp elevation-base)가 함께 진다. 그림자가 빠지면 이 값으로는 모자란다"
     },
     {
       "id": "sunken_on_surface",
@@ -37,10 +37,10 @@
       "a": "color-selected-surface",
       "b": "color-surface",
       "colors": [
-        "#dbe9fd",
+        "#eaf1ff",
         "#ffffff"
       ],
-      "ratio": 1.229,
+      "ratio": 1.134,
       "min": 1.12,
       "pass": true,
       "why": "선택된 것이 면 위에서 보여야 한다"
@@ -50,10 +50,10 @@
       "a": "color-selected-surface",
       "b": "color-surface-sunken",
       "colors": [
-        "#dbe9fd",
+        "#eaf1ff",
         "#dfe5ee"
       ],
-      "ratio": 1.031,
+      "ratio": 1.117,
       "min": 1.03,
       "pass": true,
       "why": "선택과 비선택의 면 차이. 작으므로 굵기·루시드 체크가 반드시 함께 바뀐다(색 하나로 말하지 않는다)"
@@ -63,10 +63,10 @@
       "a": "color-text",
       "b": "color-bg",
       "colors": [
-        "#172033",
-        "#eaeef4"
+        "#101828",
+        "#f2f6fc"
       ],
-      "ratio": 13.971,
+      "ratio": 16.364,
       "min": 4.5,
       "pass": true,
       "why": "WCAG 1.4.3 본문"
@@ -76,10 +76,10 @@
       "a": "color-text",
       "b": "color-surface",
       "colors": [
-        "#172033",
+        "#101828",
         "#ffffff"
       ],
-      "ratio": 16.268,
+      "ratio": 17.747,
       "min": 4.5,
       "pass": true,
       "why": "WCAG 1.4.3 본문"
@@ -89,10 +89,10 @@
       "a": "color-text",
       "b": "color-surface-sunken",
       "colors": [
-        "#172033",
+        "#101828",
         "#dfe5ee"
       ],
-      "ratio": 12.844,
+      "ratio": 14.011,
       "min": 4.5,
       "pass": true,
       "why": "WCAG 1.4.3 본문"
@@ -102,10 +102,10 @@
       "a": "color-muted",
       "b": "color-bg",
       "colors": [
-        "#5b6475",
-        "#eaeef4"
+        "#475467",
+        "#f2f6fc"
       ],
-      "ratio": 5.117,
+      "ratio": 7.088,
       "min": 4.5,
       "pass": true,
       "why": "보조 글자도 본문 기준을 지킨다"
@@ -115,10 +115,10 @@
       "a": "color-muted",
       "b": "color-surface",
       "colors": [
-        "#5b6475",
+        "#475467",
         "#ffffff"
       ],
-      "ratio": 5.958,
+      "ratio": 7.687,
       "min": 4.5,
       "pass": true,
       "why": "보조 글자도 본문 기준을 지킨다"
@@ -128,10 +128,10 @@
       "a": "color-muted",
       "b": "color-surface-sunken",
       "colors": [
-        "#5b6475",
+        "#475467",
         "#dfe5ee"
       ],
-      "ratio": 4.704,
+      "ratio": 6.069,
       "min": 4.5,
       "pass": true,
       "why": "보조 글자도 본문 기준을 지킨다"
@@ -141,10 +141,10 @@
       "a": "color-primary-hover",
       "b": "color-selected-surface",
       "colors": [
-        "#0b4dd8",
-        "#dbe9fd"
+        "#24395f",
+        "#eaf1ff"
       ],
-      "ratio": 5.57,
+      "ratio": 10.148,
       "min": 4.5,
       "pass": true,
       "why": "선택된 칩·카드의 글자 — 선택 면이 깊어지면 기본 파랑(4.40)으로는 모자라 한 단 진한 파랑을 쓴다"
@@ -154,10 +154,10 @@
       "a": "color-focus",
       "b": "color-bg",
       "colors": [
-        "#b54708",
-        "#eaeef4"
+        "#1b2a4a",
+        "#f2f6fc"
       ],
-      "ratio": 4.661,
+      "ratio": 13.113,
       "min": 3,
       "pass": true,
       "why": "WCAG 1.4.11 — 포커스 링은 어디에 놓여도 보여야 한다"
@@ -167,10 +167,10 @@
       "a": "color-focus",
       "b": "color-surface",
       "colors": [
-        "#b54708",
+        "#1b2a4a",
         "#ffffff"
       ],
-      "ratio": 5.427,
+      "ratio": 14.221,
       "min": 3,
       "pass": true,
       "why": "WCAG 1.4.11"
@@ -180,10 +180,10 @@
       "a": "color-focus",
       "b": "color-surface-sunken",
       "colors": [
-        "#b54708",
+        "#1b2a4a",
         "#dfe5ee"
       ],
-      "ratio": 4.285,
+      "ratio": 11.228,
       "min": 3,
       "pass": true,
       "why": "WCAG 1.4.11"
@@ -193,10 +193,10 @@
       "a": "color-focus",
       "b": "color-selected-surface",
       "colors": [
-        "#b54708",
-        "#dbe9fd"
+        "#1b2a4a",
+        "#eaf1ff"
       ],
-      "ratio": 4.415,
+      "ratio": 12.545,
       "min": 3,
       "pass": true,
       "why": "WCAG 1.4.11"
@@ -206,10 +206,10 @@
       "a": "color-primary",
       "b": "color-surface",
       "colors": [
-        "#155eef",
+        "#1b2a4a",
         "#ffffff"
       ],
-      "ratio": 5.413,
+      "ratio": 14.221,
       "min": 3,
       "pass": true,
       "why": "WCAG 1.4.11 — 테두리 없는 기본 버튼은 제 면으로 «컨트롤임»을 말한다"
@@ -219,75 +219,75 @@
       "a": "color-primary",
       "b": "color-bg",
       "colors": [
-        "#155eef",
-        "#eaeef4"
+        "#1b2a4a",
+        "#f2f6fc"
       ],
-      "ratio": 4.649,
+      "ratio": 13.113,
       "min": 3,
       "pass": true,
       "why": "WCAG 1.4.11"
     },
     {
       "id": "rest_hint_on_surface",
-      "a": "#f2f6fb",
+      "a": "#f7f9fc",
       "b": "#ffffff",
       "colors": [
-        "#f2f6fb",
+        "#f7f9fc",
         "#ffffff"
       ],
-      "ratio": 1.085,
-      "min": 1.06,
+      "ratio": 1.055,
+      "min": 1.05,
       "pass": true,
-      "why": "흰 면 위에서 「아, 박스구나」 정도만 — 회색으로 내리지 않는다"
+      "why": "흰 면 위에서 「아, 박스구나」 정도만 — 회색으로 내리지 않는다. v1.1(대표 2026-09-25 「v1.1로 하나로」) 면 #F7F9FC 는 1.055 — 한 톤 낮은 면만으로 가른다"
     },
     {
       "id": "hover_over_rest",
-      "a": "#e0e5eb",
-      "b": "#f2f6fb",
+      "a": "#e5e8ec",
+      "b": "#f7f9fc",
       "colors": [
-        "#e0e5eb",
-        "#f2f6fb"
+        "#e5e8ec",
+        "#f7f9fc"
       ],
-      "ratio": 1.167,
+      "ratio": 1.165,
       "min": 1.1,
       "pass": true,
       "why": "커서를 올리면 일반보다 또렷해진다"
     },
     {
       "id": "selected_over_rest",
-      "a": "#dbe9fd",
-      "b": "#f2f6fb",
+      "a": "#eaf1ff",
+      "b": "#f7f9fc",
       "colors": [
-        "#dbe9fd",
-        "#f2f6fb"
+        "#eaf1ff",
+        "#f7f9fc"
       ],
-      "ratio": 1.133,
-      "min": 1.1,
+      "ratio": 1.075,
+      "min": 1.07,
       "pass": true,
-      "why": "선택은 확실하되 은은하게 — 그리고 호버와 «다른 축»(중립 층 vs 파란 면)이다"
+      "why": "선택은 확실하되 은은하게 — 그리고 호버와 «다른 축»(중립 층 vs 파란 면)이다. v1.1 면 차이는 1.075 로 작으므로 굵기 · 체크(또는 Primary 글자)가 반드시 함께 바뀐다(색 하나로 말하지 않는다)"
     },
     {
       "id": "selected_hover_over_selected",
-      "a": "#cbd9ed",
-      "b": "#dbe9fd",
+      "a": "#d9e0ef",
+      "b": "#eaf1ff",
       "colors": [
-        "#cbd9ed",
-        "#dbe9fd"
+        "#d9e0ef",
+        "#eaf1ff"
       ],
-      "ratio": 1.163,
+      "ratio": 1.168,
       "min": 1.1,
       "pass": true,
       "why": "이미 선택된 것에 커서를 올린 것과 그냥 선택된 것이 달라야 한다"
     },
     {
       "id": "selected_text",
-      "a": "#0b4dd8",
-      "b": "#dbe9fd",
+      "a": "#24395f",
+      "b": "#eaf1ff",
       "colors": [
-        "#0b4dd8",
-        "#dbe9fd"
+        "#24395f",
+        "#eaf1ff"
       ],
-      "ratio": 5.57,
+      "ratio": 10.148,
       "min": 4.5,
       "pass": true,
       "why": "선택된 카드의 글자 (WCAG 1.4.3)"
@@ -295,12 +295,12 @@
     {
       "id": "disabled_over_rest",
       "a": "#e4e7ec",
-      "b": "#f2f6fb",
+      "b": "#f7f9fc",
       "colors": [
         "#e4e7ec",
-        "#f2f6fb"
+        "#f7f9fc"
       ],
-      "ratio": 1.142,
+      "ratio": 1.175,
       "min": 1.04,
       "pass": true,
       "why": "못 쓰는 것은 면과 글자 둘 다로 말한다(면 차이만으로는 약하다)"

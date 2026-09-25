@@ -350,7 +350,8 @@
         "version",
         "css_prefix",
         "evidence",
-        "tokens"
+        "tokens",
+        "aligned_with"
       ],
       "additionalProperties": false,
       "properties": {
@@ -396,6 +397,13 @@
             }
           },
           "additionalProperties": false
+        },
+        "aligned_with": {
+          "type": "object",
+          "description": "ERP 토큰 → 공통 css_variables 이름. 같은 뜻의 값은 한 글자도 다르면 안 된다(erp:check).",
+          "additionalProperties": {
+            "type": "string"
+          }
         },
         "tokens": {
           "type": "object",

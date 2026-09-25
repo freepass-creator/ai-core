@@ -443,6 +443,9 @@
   border: 0;
 }
 .ui-card, .ui-panel, .ui-receipt, .ui-disclosure, .ui-dialog { background: var(--color-surface); }
+/* v1.1(대표 2026-09-25 「v1.1로 하나로」): 바탕과 면의 차이가 옅다(1.085) — 담는 판은 기본 그림자가 경계를 함께 진다.
+   상태(선택·눌림)는 여전히 그림자로 말하지 않는다 — 면 · 굵기 · 체크로 말한다. */
+.ui-card, .ui-panel { box-shadow: var(--shadow-sm); }
 .ui-page, .ui-shell { background: var(--color-bg); }
 .ui-state { background: var(--color-disabled-surface); }
 .ui-tab[aria-selected="true"] { border: 0; background: var(--color-selected-surface); color: var(--color-primary-hover); font-weight: 700; }
@@ -600,9 +603,11 @@ dialog::backdrop { background: var(--color-scrim); }
      「버튼은 border 줄이고 · 입력창/검색/데이터 박스는 border 허용 · selected 는 옅은 면 + 굵기」를
      이미 적어 두었다. 아래는 그 규칙의 «구현»이지 새 규칙이 아니다. */
 
-/* ── 모서리 규칙: 네 값 ─────────────────────────────────────────────────
-   알약 = 버튼·뱃지·태그·아바타·스위치·라디오 / 8 = 칩·목록 줄 / 12 = 담는 것 / 4 = 체크박스 */
-.ui-button, .ui-badge, .ui-source, .ui-tag, .ui-avatar { border-radius: var(--radius-pill); }
+/* ── 모서리 규칙 — 알약을 쓰지 않는다(대표 2026-09-25 「원래 알약 안 하기로 했는데」 → 「모서리 6 네모로」) ──
+   6(radius-sm) = 버튼·뱃지·태그·칩·목록 줄 / 8(radius-md) = 담는 것 / 4(radius-xs) = 체크박스 /
+   알약(radius-pill) = 아바타·점·라디오 표식처럼 원래 동그란 것만 */
+.ui-button, .ui-badge, .ui-source, .ui-tag { border-radius: var(--radius-sm); }
+.ui-avatar { border-radius: var(--radius-pill); }
 .ui-chip, .ui-row, .ui-select-card { border-radius: var(--radius-sm); }
 .ui-card, .ui-panel, .ui-alert, .ui-dialog, .ui-receipt, .ui-state, .ui-note-box { border-radius: var(--radius-md); }
 
@@ -646,10 +651,10 @@ dialog::backdrop { background: var(--color-scrim); }
 .ui-pick input:focus-visible + .mark { outline: var(--focus-ring-width) solid var(--color-focus); outline-offset: 2px; }
 .ui-pick:has(input:disabled) { color: var(--color-muted); cursor: not-allowed; opacity: 0.55; }
 
-/* ── 뱃지·태그 — 선도 그림자도 없다. 높이 20 · 글자 12/700 · 알약 ───────── */
+/* ── 뱃지·태그 — 선도 그림자도 없다. 높이 20 · 글자 12/700 · 모서리 6 ───────── */
 .ui-tag {
   display: inline-flex; align-items: center; justify-content: center; gap: 4px;
-  min-block-size: 20px; padding-inline: 8px; border: 0; border-radius: var(--radius-pill);
+  min-block-size: 20px; padding-inline: 8px; border: 0; border-radius: var(--radius-sm);
   background: var(--color-disabled-surface); color: var(--color-muted);
   font-size: var(--font-size-xs); font-weight: 700; line-height: 1; white-space: nowrap;
 }

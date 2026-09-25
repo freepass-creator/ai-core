@@ -1049,8 +1049,12 @@ ul.erp-field-error { padding: 0; list-style: none; display: flex; flex-direction
  * focus-visible도 line-free 문법 안에서 soft halo로 통일한다.
  * ═══════════════════════════════════════════════════════════════════════ */
 @media (min-width: 901px) {
+  /* 키보드 포커스는 halo 만으로는 모자란다 — halo(투명도 .14)는 배경 대비 3:1 에 못 미친다(WCAG 1.4.11 ·
+   * AI Core 헌법 「접근성은 시각 취향으로 면제하지 않는다」). 네이비 2px 링을 2px 띄워 함께 그린다(2026-09-25).
+   * :focus-visible 이라 마우스로 누를 때는 안 보이고, 키보드로 옮길 때만 보인다. */
   .erp-app :is(.erp-btn, .erp-facet-opt, .erp-dd, .erp-tile--pressable, .erp-rowcard, .erp-seg a, .erp-statusbar-keys a):focus-visible {
-    outline: none;
+    outline: 2px solid var(--erp-color-primary);
+    outline-offset: 2px;
     box-shadow: var(--erp-focus-halo), var(--erp-elevation-base);
   }
 
@@ -1062,7 +1066,8 @@ ul.erp-field-error { padding: 0; list-style: none; display: flex; flex-direction
     .erp-seg a[aria-pressed="true"],
     .erp-statusbar-keys a[aria-pressed="true"]
   ):focus-visible {
-    outline: none;
+    outline: 2px solid var(--erp-color-primary);
+    outline-offset: 2px;
     box-shadow:
       var(--erp-focus-halo),
       var(--erp-shadow-pressed-12);
@@ -1854,6 +1859,12 @@ ul.erp-field-error { padding: 0; list-style: none; display: flex; flex-direction
  * 좁은 폭에서 세로로 비대해지지 않게 choice/action rows는 가로 흐름을 유지한다.
  * ═══════════════════════════════════════════════════════════════════════ */
 @media (min-width: 901px) {
+  /* 가로 스크롤 줄은 밖으로 나간 키보드 포커스 링(2px + 띄움 2px)을 잘라 먹는다 — 퀵 필터 줄에 4px 안쪽 여백을
+   * 주고 같은 만큼 바깥 여백을 빼서 자리는 그대로 둔다. */
+  .erp-app .erp-toolbar .erp-facet-opts {
+    padding: 4px;
+    margin: -4px;
+  }
   .erp-app .erp-toolbar .erp-facet-opts,
   .erp-app .erp-panel--compact .erp-facet-opts {
     flex-wrap: nowrap;

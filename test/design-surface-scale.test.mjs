@@ -129,7 +129,7 @@ test('★같은 면 위에 같은 면을 올리지 않는다 — 패널 «안»�
   }
   /** 한 단 내린 면이 실제로 바닥선을 넘는지 — 숫자로 확인한다. */
   const t = 토큰();
-  assert.ok(대비(t['color-surface-subtle'], t['color-surface']) >= 1.06, '패널 안 카드가 패널과 안 갈라진다');
+  assert.ok(대비(t['color-surface-subtle'], t['color-surface']) >= 1.05, '패널 안 카드가 패널과 안 갈라진다');
   assert.ok(대비(t['color-selected-surface'], t['color-surface']) >= 1.12, '선택된 카드가 패널과 안 갈라진다');
 });
 
@@ -167,4 +167,15 @@ test('★선은 꼭 있어야 하는 자리에만 남았다 — 브라우저 전
   for (const 상태 of ['data-demo="hover"', 'data-demo="pressed"', 'data-demo="focus"', 'disabled', 'checked']) {
     assert.ok(검수판.includes(상태), `검수판에 ${상태} 칸이 없다`);
   }
+});
+
+test('★옅은 면 차이는 그림자가 함께 진다 — v1.1 바탕·면 대비(1.085)는 그림자 없이는 모자란다', () => {
+  /** 대표 2026-09-25 「v1.1로 하나로」: 바탕 #F2F6FC · 면 #FFFFFF 는 면 대비 바닥(1.08)을 겨우 넘는다.
+   *  판(카드·패널)의 경계는 기본 그림자가 함께 진다 — 그 그림자가 빠지면 바닥을 낮춘 근거가 사라진다. */
+  const css = read('design-system/runtime-v2.css');
+  assert.match(css, /\.ui-card, \.ui-panel \{ box-shadow: var\(--shadow-sm\); \}/, '담는 판에 기본 그림자가 없다');
+  const t = 토큰();
+  assert.match(t['shadow-sm'], /^0 1px 2px /, '기본 그림자는 얕아야 한다 — 떠 보이게 하는 게 아니라 경계만 진다');
+  const erp = read('design/erp-standard/erp.css');
+  assert.match(erp, /\.erp-rowcard,\s*\.erp-tile,\s*\.erp-kpi\s*\) \{\s*box-shadow: var\(--erp-elevation-base\)/, 'ERP 규격 카드도 기본 그림자로 경계를 진다');
 });
