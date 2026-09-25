@@ -197,6 +197,38 @@ test('application service contract keeps orchestration separate from domain engi
 });
 
 
+test('activation decision keeps complete observation separate from activation authority',()=>{
+  const validate=schema('https://schemas.freepass.ai/governance/activation-decision/v1');
+  const base={
+    schema_version:'governance-activation-decision/v1',
+    subject:{type:'catalog',id:'freepass-products',revision:'sha256:catalog-r1'},
+    observation:{status:'COMPLETE',evidence_refs:['capture:full-r1']},
+    review:{status:'HOLD',evidence_refs:[]},
+    release:{status:'NOT_BUILT',release_id:null,evidence_refs:[]},
+    decision:'HOLD',
+    reasons:['REVIEW_NOT_APPROVED','CANONICAL_RELEASE_NOT_BUILT'],
+    decided_at:'2026-09-25T08:50:00Z'
+  };
+  assert.equal(validate(base),true);
+
+  const falsePromotion=structuredClone(base);
+  falsePromotion.decision='AUTHORIZED';
+  falsePromotion.reasons=[];
+  assert.equal(validate(falsePromotion),false,'complete observation alone must never authorize activation');
+
+  const authorized={
+    ...base,
+    review:{status:'APPROVED',evidence_refs:['review:approval-r1']},
+    release:{status:'BUILT',release_id:'release-r1',evidence_refs:['release:manifest-r1']},
+    decision:'AUTHORIZED',
+    reasons:[]
+  };
+  assert.equal(validate(authorized),true);
+
+  const unexplainedHold={...base,reasons:[]};
+  assert.equal(validate(unexplainedHold),false,'HOLD must explain why authority is withheld');
+});
+
 test('mixed repository port and service-only binding profile are valid',()=>{
   const port=schema('https://schemas.freepass.ai/core/port/v1');
   assert.equal(port({
