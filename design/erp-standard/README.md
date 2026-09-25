@@ -17,12 +17,12 @@
 
 | 파일 | 역할 |
 |---|---|
-| [`tokens.json`](tokens.json) | **값의 정본** — 색·글자·간격·모서리·골격·표면 위계·움직임 116개 |
-| [`erp.css`](erp.css) | 공통 스타일. `:root` 는 tokens.json 투영, 나머지는 `erp-*` 컴포넌트 |
+| [`design-system/tokens.json#erp_standard`](../../design-system/tokens.json) | **값의 정본** — 색·글자·간격·모서리·골격·표면 위계·움직임 116개. AI Core 디자인 토큰 정본(헌법 3단) 안의 한 블록이다 — 2026-09-25 두 벌이던 정본을 하나로 합쳤다 |
+| [`erp.css`](erp.css) | 공통 스타일. `:root` 는 정본(erp_standard) 투영, 나머지는 `erp-*` 컴포넌트 |
 | [`main.html`](main.html) | **메인(목록) 화면 템플릿** — 새 목록 화면은 이 파일을 복사해 시작 |
 | [`form.html`](form.html) | **등록/수정 폼 템플릿** — 새 입력 화면은 이 파일을 복사해 시작 |
 | [`platform/`](platform) | ⚠ **1차 적용 시안(대체됨)** — 지금은 §5-4 `erp-panel`이 실제 규격. [`platform/README.md`](platform/README.md) 상단 참고 |
-| [`themes/`](themes) | **공식 테마 2종** — 등록부 [`themes/index.json`](themes/index.json). 테마 1 `classic`(기본 = tokens.json + erp.css) · 테마 2 `retro`(`retro.json` + `retro.css`) |
+| [`themes/`](themes) | **공식 테마 2종** — 등록부 [`themes/index.json`](themes/index.json). 테마 1 `classic`(기본 = 정본 + erp.css) · 테마 2 `retro`(`retro.json` + `retro.css`) |
 | [`images/`](images) | 규격서(`erp-spec.png`)·목록(`erp-main.png`)·폼(`erp-form.png`) 캡처 |
 | [`../../scripts/check-erp-standard.mjs`](../../scripts/check-erp-standard.mjs) | 규격 검사 — `npm run erp:check` (npm test 에도 포함) |
 
@@ -814,12 +814,12 @@ freepass-admin PC 관리자(상품찾기 · 계약접수 · 실적 · 정산관�
 
 1. 목록이면 `main.html`, 입력이면 `form.html` 을 복사한다.
 2. 메뉴 경로·제목·조회조건·그리드 컬럼·액션만 바꾼다. 골격 영역(`data-region`)은 지우지 않는다.
-3. 색·크기는 `var(--erp-*)` 만 쓴다. 새 값이 필요하면 `tokens.json` 에 먼저 추가하고 `erp.css :root` 에 같은 값으로 투영한다.
+3. 색·크기는 `var(--erp-*)` 만 쓴다. 새 값이 필요하면 `design-system/tokens.json` 의 `erp_standard.tokens` 에 먼저 추가하고 `erp.css :root` 에 같은 값으로 투영한다.
 4. `npm run erp:check` 통과를 확인한다.
 
 ## 8. 검사 (`npm run erp:check`)
 
-- tokens.json ↔ erp.css `:root` 값 일치, 정본에 없는 토큰 금지
+- 정본(`design-system/tokens.json#erp_standard`) ↔ erp.css `:root` 값 일치, 정본에 없는 토큰 금지, 근거(refs·decision) 필수, `design/erp-standard/tokens.json` 같은 두 번째 정본 금지
 - erp.css `:root` 밖에서 날것 색(`#hex`·`rgb()`) 금지, 글자 크기·굵기·모서리는 토큰만
 - 테마(`themes/*.json` ↔ `themes/*.css`): 덮어쓰기는 기본 토큰 이름만, 추가 변수는 `<테마>-*` 만, 블록 밖은 토큰만
 - 템플릿(`main.html`·`form.html`·`platform/**/*.html`): 인라인 `style` · `<style>` 금지, erp.css 에 없는 `erp-*` 클래스 금지, 골격 영역 필수, 영역당 Primary ≤ 1
@@ -828,7 +828,7 @@ freepass-admin PC 관리자(상품찾기 · 계약접수 · 실적 · 정산관�
 
 | 테마 | 켜는 법 | 정본 | 성격 |
 |---|---|---|---|
-| **테마 1 · classic** (기본) | 속성 없음 또는 `data-theme="classic"` | `tokens.json` · `erp.css` | 테두리형 표준 ERP. 차분한 회청 바탕, 네이비 메뉴, 파란 Primary |
+| **테마 1 · classic** (기본) | 속성 없음 또는 `data-theme="classic"` | 정본 · `erp.css` | 우리 표준. 옅은 청회 바탕 위 흰 패널, 선 없는 카드, 네이비 메뉴 · 네이비 Primary |
 | **테마 2 · retro** | `data-theme="retro"` + `themes/retro.css` | `themes/retro.json` · `themes/retro.css` | 90년대 사무용 단말기. 크림 모눈 바탕, 잉크 2px 테두리·하드 그림자, 픽셀 제목(Galmuri11), 고정폭 숫자(IBM Plex Mono), 도장 뱃지, F키 상태바 |
 
 - 두 테마는 **같은 HTML** 을 쓴다. 테마는 색·선·모서리·글꼴·그림자만 바꾸고 자리·차례·기능은 바꾸지 않는다.

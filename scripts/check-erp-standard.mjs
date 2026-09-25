@@ -2,7 +2,8 @@
 // ERP 표준 UI 규격 v1 검사 — design/erp-standard
 //
 // 규격이 «그림»으로 끝나지 않도록 아래를 기계로 확인한다.
-//   1. tokens.json(정본) ↔ erp.css :root(투영) 가 한 글자도 어긋나지 않는다.
+//   1. design-system/tokens.json 의 erp_standard 블록(정본) ↔ erp.css :root(투영) 가 한 글자도 어긋나지 않는다.
+//      값의 정본은 AI Core 디자인 토큰 정본 하나뿐이다(대표 2026-09-25 「v1.1로 하나로」).
 //   2. erp.css 의 :root 밖에서는 색·글자 크기·굵기·모서리를 var(--erp-*) 로만 쓴다.
 //   3. 템플릿(main.html·form.html)은 인라인 style 을 쓰지 않고, erp.css 에 없는 erp-* 클래스를 쓰지 않는다.
 //   4. 템플릿은 화면 골격 영역(data-region)을 모두 갖고, 영역마다 Primary 버튼은 최대 1개다.
@@ -32,7 +33,12 @@ const THEMES = existsSync(themesDir) ? readdirSync(themesDir).filter((n) => n.en
 
 export function checkErpStandard() {
   const errors = [];
-  const tokens = JSON.parse(read('tokens.json')).tokens;
+  const ssot = JSON.parse(readFileSync(resolve(root, 'design-system/tokens.json'), 'utf8')).erp_standard;
+  if (!ssot?.tokens) return { ok: false, errors: ['design-system/tokens.json: erp_standard 블록이 없다'], tokenCount: 0, themeCount: 0 };
+  const ev = ssot.evidence ?? {};
+  if (!Array.isArray(ev.refs) || ev.refs.length === 0 || !ev.decision) errors.push('design-system/tokens.json erp_standard: 근거(evidence.refs · decision) 없는 값은 정본이 아니다');
+  if (existsSync(resolve(dir, 'tokens.json'))) errors.push('design/erp-standard/tokens.json: 두 번째 정본 금지 — 값은 design-system/tokens.json#erp_standard 에만');
+  const tokens = ssot.tokens;
   const css = read('erp.css');
 
   // 1. 정본 ↔ 투영
@@ -58,7 +64,7 @@ export function checkErpStandard() {
   }
   const defined = new Set([...rules.matchAll(/\.(erp-[\w-]+)/g)].map((m) => m[1]));
 
-  // 테마 등록부 — 등록된 테마만 쓴다. 기본 테마는 tokens.json 자체, 나머지는 themes/<id>.json + .css
+  // 테마 등록부 — 등록된 테마만 쓴다. 기본 테마는 정본(erp_standard) 자체, 나머지는 themes/<id>.json + .css
   const registry = existsSync(resolve(themesDir, 'index.json')) ? JSON.parse(read('themes/index.json')) : null;
   if (!registry) errors.push('themes/index.json: 테마 등록부가 없다');
   else {

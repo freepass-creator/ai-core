@@ -1,8 +1,8 @@
 {
-  "$schema_note": "시안 B — 레트로 테마. ../tokens.json 을 상속하고 여기 적은 값만 덮어쓴다. retro.css 의 [data-theme=\"retro\"] 블록은 이 파일의 투영이다. 검사: npm run erp:check",
+  "$schema_note": "시안 B — 레트로 테마. design-system/tokens.json#erp_standard 를 상속하고 여기 적은 값만 덮어쓴다. retro.css 의 [data-theme=\"retro\"] 블록은 이 파일의 투영이다. 검사: npm run erp:check",
   "name": "retro",
   "title": "시안 B · 90년대 사무용 단말기",
-  "extends": "../tokens.json",
+  "extends": "../../../design-system/tokens.json#erp_standard",
   "overrides": {
     "color-primary": "#1E4FA0",
     "color-primary-hover": "#163C7C",

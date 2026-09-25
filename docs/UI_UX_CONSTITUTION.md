@@ -74,7 +74,7 @@ See `docs/DEVELOPMENT_CENTER_EXECUTION_HANDOFF.md`.
 
 ## Design Token SSOT
 
-`design-system/tokens.json` is the machine source. Every locked role carries `scope`, `evidence_level`, source `refs` and a governance `decision`; a numeric value without provenance is incomplete. `design-system/tokens.runtime.css` is its CSS projection for new consumers. Legacy `tokens.css` stays as compatibility evidence until migration completes; it is not a second semantic source.
+`design-system/tokens.json` is the machine source — including the `erp_standard` block, the value SSOT of the ERP desktop standard (`design/erp-standard/erp.css` projects it as `--erp-*`; `npm run erp:check`). Since 2026-09-25 there is no second token source for ERP screens. Every locked role carries `scope`, `evidence_level`, source `refs` and a governance `decision`; a numeric value without provenance is incomplete. `design-system/tokens.runtime.css` is its CSS projection for new consumers. Legacy `tokens.css` stays as compatibility evidence until migration completes; it is not a second semantic source.
 
 Company role values currently fixed from normative/platform/internal evidence:
 

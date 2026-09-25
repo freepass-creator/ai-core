@@ -342,6 +342,69 @@
           }
         }
       }
+    },
+    "erp_standard": {
+      "type": "object",
+      "description": "ERP 표준 UI 규격(design/erp-standard)의 값 정본. erp.css :root 가 --erp-<key> 로 그대로 투영한다. 검사: npm run erp:check",
+      "required": [
+        "version",
+        "css_prefix",
+        "evidence",
+        "tokens"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "note": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "updated": {
+          "type": "string"
+        },
+        "css_prefix": {
+          "const": "erp-"
+        },
+        "evidence": {
+          "type": "object",
+          "required": [
+            "scope",
+            "evidence_level",
+            "refs",
+            "decision"
+          ],
+          "properties": {
+            "scope": {
+              "type": "string"
+            },
+            "evidence_level": {
+              "type": "string"
+            },
+            "refs": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string"
+              }
+            },
+            "decision": {
+              "type": "string"
+            },
+            "decided_by": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "tokens": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
     }
   }
 }

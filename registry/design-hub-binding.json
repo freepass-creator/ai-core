@@ -2,7 +2,7 @@
   "contract": "ai-core-design-hub-binding/v2",
   "ai_core": {
     "repository": "freepass-creator/ai-core",
-    "source_bundle_sha256": "b78a092fba77d99da39db86384bf0a422bd6fab7fb00ff8f07189afbcd44f5c7"
+    "source_bundle_sha256": "6ffac8f76e6887483256bcf6ee3351e0e147ed727cba45af98d10d8bad20b765"
   },
   "digest_algorithm": "sha256:path-and-normalized-content-v1",
   "sources": {
@@ -20,9 +20,9 @@
     },
     "tokens": {
       "path": "design-system/tokens.json",
-      "sha256": "c5ec11ff6717eb8a3cadc774f6aa300e074f84595f3d2ab344a819a4a009ad47",
+      "sha256": "dc9d6ad9a77e04145684cb753be318ac06565aafbe14dc96e12cdca633457f0f",
       "contract": "ai-core-design-token-ssot/v1",
-      "version": "1.6.0"
+      "version": "1.7.0"
     },
     "components": {
       "path": "design-system/components.registry.json",
@@ -40,7 +40,7 @@
       "path": "design-system/interaction.contract.json",
       "sha256": "4dde570dfb6256152fd2f615e3c2b7406888941e235278d273a079dcf5de6b22",
       "contract": "ai-core-ui-interaction-contract/v1",
-      "version": "1.5.0"
+      "version": "1.6.0"
     },
     "runtime_css": {
       "path": "design-system/runtime-v2.css",
@@ -65,6 +65,10 @@
       "sha256": "780331a20de420df4e2f6b9ab1e6a8b08111138755ed6102e774f93159d8ccdf",
       "contract": "ai-core-design-token-projection/v1",
       "version": "1.6.0"
+    },
+    "erp_standard_css": {
+      "path": "design/erp-standard/erp.css",
+      "sha256": "c1021fce0e682f37e1986e2192e33f79d4db0aae46f0067c26f34d45c9b32d42"
     }
   },
   "invariant": "AI Core root owns the values. Design Hub reads these current canonical files and fails when any normalized content digest drifts from this reviewed bundle."

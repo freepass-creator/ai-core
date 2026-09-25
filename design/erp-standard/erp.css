@@ -1,6 +1,6 @@
 /* ERP 표준 UI 규격 v1 — 공통 스타일
  *
- * 값의 정본은 tokens.json 이다. 아래 :root 는 그 투영본이고, 그 밖의 규칙은
+ * 값의 정본은 design-system/tokens.json 의 erp_standard 블록이다(AI Core 토큰 정본 하나). 아래 :root 는 그 투영본이고, 그 밖의 규칙은
  * 색·글자 크기·글자 굵기·모서리를 반드시 var(--erp-*) 로만 쓴다.
  * 검사: npm run erp:check  (scripts/check-erp-standard.mjs)
  */
