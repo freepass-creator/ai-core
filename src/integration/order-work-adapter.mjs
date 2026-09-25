@@ -48,7 +48,7 @@ export function createOrderWorkAdapter({ readContext, verifyLedgerText, runContr
     const mapping = candidate ?? existing;
     need(mapping, mappings.some(row => row.order_id === orderId) ? 'REQUIREMENT_REVISION_STALE' : 'UNLINKED');
     need(mapping.requirement_revision === order.revision, 'REQUIREMENT_REVISION_STALE');
-    if (candidate) need(mapping.record_version === order.version, 'RECORD_VERSION_STALE');
+    need(candidate ? mapping.record_version === order.version : mapping.record_version <= order.version, 'RECORD_VERSION_STALE');
     unique(registry?.projects, 'project_id', 'DUPLICATE_OR_INVALID_PROJECTS');
     unique(snapshot?.items, 'id', 'DUPLICATE_OR_INVALID_WORK_ITEMS');
     need(typeof ledgerText === 'string', 'LEDGER_UNAVAILABLE');
