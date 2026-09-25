@@ -23,6 +23,8 @@
 | 프리패스 마켓 업무(공급사 재고·손오공 재고·판매시트 정산·영업) | `freepass-creator/freepass-sales` `aiops-freepass/` | `OWNED_BY_FREEPASS` |
 | `.ai-core/` 키트 사본 | 버림 — 이 저장소 루트가 정본 | `OWNED_BY_DROP_KIT_DUPLICATE` |
 
+> ★**이 폴더의 규칙 문서는 본사 규격이 아니다.** `docs/ROLES.md`(역할 고정 폐지·Cursor·Gemini 사용)·`AI-같이일한다`·협업 절차 같은 aiops 시절 운영 규칙은 **이력 자료**다. AI 역할과 협업은 본사 헌법 [`docs/AI_WORKING_STANDARD.md`](../docs/AI_WORKING_STANDARD.md)를 따른다 — 둘이 다르면 헌법이 맞다. 여기 파일은 원본과 바이트가 같아야 하므로 고치지 않고, 이 문단으로 정본이 아님을 밝힌다.
+
 ## 혼자 돈다
 
 - 이 사본이 쓰는 렌터카 쪽 파일 6개(`lib/gwataeryo-polder.mjs`·`sheets/fmt.mjs`·`lib/올리는곳.json` 등)를 PROVENANCE 에 `vendored_from` 을 달아 같이 넣었다. 정본은 renman 쪽이다.
