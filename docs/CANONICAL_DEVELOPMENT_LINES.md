@@ -17,6 +17,26 @@ AI Core는 같은 관심사에 두 개 이상의 정본을 두지 않는다. 브
 
 기계용 정본은 `registry/canonical-development-lines.json`이다.
 
+## 기계 봉쇄 — 정본 지킴이 (2026-09-26)
+
+대표: 「AI 코어에서 절대 정본이 두 개나 이렇게 갈리지 않게끔 메인 브랜치만 활용하게끔 뭔가가 있어야」.
+등록부에 적는 것만으로는 막히지 않았다(2026-09-25 전 저장소 점검 — 과태료 정본 네 벌, 토큰 세 벌, AI 지시문 여덟 벌, main 밖 커밋에서 도는 운영 발행기). 그래서 등록부를 **CI 가 읽고 막는다.**
+
+| 검사 | 막는 것 |
+|---|---|
+| `DEFINITION_OUTSIDE_CANON` | 줄(line)의 `guards` 패턴(예: CSS 토큰 정의)이 정본 뿌리 밖에서 새로 나타남 |
+| `HISTORICAL_MARKER_MISSING` | `historical_or_noncanonical` 에 적힌 파일이 스스로 정본이라 말하면서 `NOT_CANONICAL` 표시가 없음 |
+| `ENTRY_FILE_DIVERGED` | `CLAUDE.md`·`GEMINI.md` 가 `AGENTS.md` 와 같지도, 그것을 가리키는 한 줄도 아님 |
+| `WORKFLOW_REF_PINNED` | 워크플로가 `main` 이 아닌 커밋·가지를 checkout 해 돎 |
+| `BRANCH_TOO_FAR_BEHIND_MAIN` | PR 가지가 main 보다 `max_behind_main` 커밋 넘게 뒤처짐 — main 을 먼저 받는다 |
+| `CANONICAL_PATH_CONTESTED` | 다른 «준비 완료» PR 이 같은 정본 뿌리를 고치고 있음 — 하나를 끝내거나 닫는다(초안끼리는 notice) |
+| `BASELINE_EXPIRED` / `BASELINE_STALE` | 이미 있던 위반은 기한 붙은 `baseline` 에만 둔다. 기한이 지나거나 이미 고쳐졌으면 빨갛다 — 목록은 줄어드는 쪽으로만 간다 |
+
+- 실행: `npm run canon:guard`(자가진단 + 이 저장소) · `npm run canon:branch`(PR 규율). 판정은 `src/governance/canonical-guard.mjs` 한 곳.
+- 워크플로 `.github/workflows/canon-guard.yml` 은 모든 PR 에서 돈다(문서만 바꾼 PR 포함 — 정본 주장은 문서에서 생긴다).
+- **다른 저장소**도 같은 형식의 `registry/canonical-development-lines.json` 을 두고, 이 워크플로를 `uses: freepass-creator/ai-core/.github/workflows/canon-guard.yml@<커밋>` 으로 부른다(버전 고정).
+- 검사를 고쳐 통과시키지 않는다. 규칙을 바꾸려면 등록부를 고치고, 그 PR 자체가 이 검사를 통과해야 한다.
+
 ## 브랜치 정리 원칙
 
 브랜치를 이름만 보고 삭제하지 않는다. 각 브랜치는 다음 중 하나로 분류한다.
