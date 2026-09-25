@@ -3,6 +3,12 @@
 업계 통상 ERP(SAP Fiori · Oracle Redwood · MS Dynamics · 더존/영림원 계열) 공통 패턴을 기준으로 한 **ERP 화면 규격**이다.
 대표 승인(2026-09-23): 「표준 UI UX 아주 좋아, 지금 만드는 거 이렇게 하라」.
 
+> **v1.1 (2026-09-25)** — freepass-admin PC 관리자에서 9-24~25 이틀간 날짜별로 쌓인 결정(`_erp/shell.css`
+> 약 2,200줄, 앱 쪽 기계 정본 `docs/ui/admin-ui-ux-ssot.json`)을 이 규격으로 승격했다(대표 2026-09-25
+> 「공통 규격을 만들어야 … 우리 이제 표준 UI UX거든」). 글자 척도 24/20/18/16/14/12 · 컨트롤 32/36/40 ·
+> 표면 위계 · 선 없는 카드 · 상태 타일 색 등 **어느 ERP 화면에나 같은 규칙은 전부 여기(erp.css)가 정본**이고,
+> 앱에는 앱 고유층만 남는다. 요약은 [§5-7](#5-7-v11--pc-실적용-규칙-freepass-admin-에서-승격-2026-09-25).
+
 > ✅ **지금 freepass-admin PC 관리자가 실제로 쓰는 유일한 규격은 §5-4 `erp-panel`이다**(목록 판
 > SearchBar → QuickFilter → RowCards, 상세 판, 필요하면 `erp-panel--wide`/`erp-panel--compact`).
 > 상품찾기 · 접수(계약접수) · 실적 · 정산관리 · 전자계약 다섯 화면 전부 이 규격 하나로 짜여 있다 —
@@ -11,7 +17,7 @@
 
 | 파일 | 역할 |
 |---|---|
-| [`tokens.json`](tokens.json) | **값의 정본** — 색·글자·간격·모서리·골격 치수 76개 |
+| [`tokens.json`](tokens.json) | **값의 정본** — 색·글자·간격·모서리·골격·표면 위계·움직임 116개 |
 | [`erp.css`](erp.css) | 공통 스타일. `:root` 는 tokens.json 투영, 나머지는 `erp-*` 컴포넌트 |
 | [`main.html`](main.html) | **메인(목록) 화면 템플릿** — 새 목록 화면은 이 파일을 복사해 시작 |
 | [`form.html`](form.html) | **등록/수정 폼 템플릿** — 새 입력 화면은 이 파일을 복사해 시작 |
@@ -37,7 +43,7 @@
 | ⑦ | 데이터 그리드 | `grid-toolbar` · `grid` | 선택 건수·일괄 액션 · 상태 탭 · 컬럼 설정 · 합계 · 페이징 |
 | ⑧ | 상태바 | `statusbar` | 높이 26 · 서버 연결 · 회계기간 · 마지막 조회 · 단축키 |
 
-본문 여백 좌우 24 / 상하 16 · 섹션 간격 14 · 최소 폭 1280 · 4px 그리드.
+본문 여백 좌우 24 / 상하 16 · 섹션 간격 16 · 최소 폭 1280 · 4px 그리드(간격 단 4/8/12/16/20/24/32).
 
 ## 1-1. 상단바 · 좌측 메뉴 — 이동은 한 곳에서만 (FreePass Admin, 대표 2026-09-24)
 
@@ -75,12 +81,16 @@ freepass-admin 실제 적용 후 「상단바랑 사이드바도 규격 맞췄�
 | 용도 | 토큰 | 크기/굵기 |
 |---|---|---|
 | KPI 숫자 | `fs-kpi` | 24 / 700 |
-| 페이지 제목 | `fs-title` | 22 / 700 |
-| 패널 제목 | `fs-panel` | 17 / 700 |
-| 섹션 제목 | `fs-section` | 15 / 700 |
-| 본문·셀·버튼 | `fs-body` | 13 / 400 (버튼 600) |
+| 페이지 제목 | `fs-title` | 20 / 700 |
+| 패널 제목 | `fs-panel` | 18 / 700 |
+| 섹션 제목 | `fs-section` | 16 / 700 |
+| 본문·셀·버튼 | `fs-body` | 14 / 400 (버튼 600) |
 | 라벨·표 헤더·소형 버튼 | `fs-label` | 12 / 500–600 |
-| 보조·캡션·상태바 | `fs-caption` | 11.5 / 400 |
+| 보조·캡션·상태바 | `fs-caption` | 12 / 400 |
+
+> v1.1(2026-09-25)에서 22/17/15/13/11.5 → **20/18/16/14/12** 로 바꿨다 — 11.5·13·15·17 같은 반 단 값을 없애고
+> 2px 단위 여섯 단(24/20/18/16/14/12)으로 정리했다. 아래 §3-1 이후 본문의 설명 중 괄호 속 옛 px 값은 그 결정
+> 당시의 기록이다 — 토큰 이름(어느 자리에 어느 단)은 그대로이고 값만 새 척도를 따른다.
 
 - 폰트 Pretendard Variable (한글·영문 한 벌). 숫자는 고정폭(`tabular-nums`).
 - 금액·수량은 **오른쪽 정렬**(`erp-num`), 천 단위 콤마. 날짜 `YYYY-MM-DD`. 전표·코드 번호는 링크색.
@@ -91,12 +101,12 @@ freepass-admin 실제 적용 후 「상단바랑 사이드바도 규격 맞췄�
 | 단 | 구체적으로 쓰는 곳 |
 |---|---|
 | `fs-kpi`(24) | `erp-kpi-value` — 요약 KPI 숫자, 딱 여기 하나뿐 |
-| `fs-title`(22) | `erp-page-title`(화면 맨 위 h1, 화면마다 하나) · `erp-rowcard-amount strong`(목록 카드의 대표 금액 — §5-3 원안이 "대표 금액은 크게"라고 정한 자리, 예외가 아니라 지정석이다) |
-| `fs-panel`(17) | `erp-panel-head h2`(패널 제목 — 아래 참고) |
-| `fs-section`(15) | `erp-card-title`(§4 큰 구획 카드 제목) · `erp-rowcard-title`(목록 카드 이름) · `erp-tile-row strong`(타일 안 강조 값) · `erp-section-title` — "이 구획이 뭔지" 를 말하는 자리는 전부 이 한 단 |
+| `fs-title`(20) | `erp-page-title`(화면 맨 위 h1, 화면마다 하나) · `erp-rowcard-amount strong`(목록 카드의 대표 금액 — §5-3 원안이 "대표 금액은 크게"라고 정한 자리, 예외가 아니라 지정석이다) |
+| `fs-panel`(18) | `erp-panel-head h2`(패널 제목 — 아래 참고) |
+| `fs-section`(16) | `erp-card-title`(§4 큰 구획 카드 제목) · `erp-rowcard-title`(목록 카드 이름) · `erp-tile-row strong`(타일 안 강조 값) · `erp-section-title` — "이 구획이 뭔지" 를 말하는 자리는 전부 이 한 단 |
 | `fs-label`(12) | `erp-badge` · `erp-tile-title`·`erp-tile-row b`·`erp-tag` · 본문 텍스트 대부분 |
-| `fs-caption`(11.5) | `erp-panel-kind`·`erp-panel-count`(패널 머리 좌우 칩, 완전히 같은 값) · `erp-tile-note--accent` · `dt` 라벨류 |
-| `fs-body`(13) | 화면 기본값(`.erp-app`) · 버튼(`erp-btn`) · 입력창 · 사이드메뉴 항목 — **콘텐츠 위계가 아니라 컨트롤의 기본 글자 크기**, 카드/패널 안 위계표와는 다른 층이다 |
+| `fs-caption`(12) | `erp-panel-kind`·`erp-panel-count`(패널 머리 좌우 칩, 완전히 같은 값) · `erp-tile-note--accent` · `dt` 라벨류 |
+| `fs-body`(14) | 화면 기본값(`.erp-app`) · 버튼(`erp-btn`) · 입력창 · 사이드메뉴 항목 — **콘텐츠 위계가 아니라 컨트롤의 기본 글자 크기**, 카드/패널 안 위계표와는 다른 층이다 |
 
 **`erp-panel-head h2`는 전용 단 `fs-panel`(17px)** (대표 2026-09-24 「패널 헤드의 텍스트랑
 그 패널 내용이랑 같을 순 없지 … 패널 헤드가 제일 크면 그거보다 좀 작고」로 처음 `fs-section`(15px)
@@ -119,7 +129,9 @@ freepass-admin 실제 적용 후 「상단바랑 사이드바도 규격 맞췄�
 
 - **Primary** `#1D4ED8` — 주요 버튼·링크·선택. **Navigation** `#0F1B2D` — 상단바·좌측 메뉴.
 - 면: 바탕 `#F4F6F9` · 카드 `#FFFFFF` · 우묵(조회바·표 헤더) `#F8FAFC`. 선: `#E3E8EF` / 입력 `#CDD5DF`.
-- 글자: `#101828` · `#475467` · `#98A2B3`.
+- 글자: `#101828` · `#475467` · `#98A2B3`. v1.1: 흐린 보조 글자 `color-text-muted` `#667085`(작은 글자가 너무 옅지 않게).
+- v1.1 표면 위계(PC): 바탕 `color-canvas` `#F2F6FC` → 패널 `color-surface` `#FFFFFF` → 패널 안 카드·컨트롤
+  `color-surface-soft` `#F7F9FC` → 눌 수 있는 것 hover `color-surface-hover` `#F3F6FA` → 고른 것 `color-selected` `#EAF1FF`.
 - 상태 5종 — 뱃지 `erp-badge--*`
 
 | 상태 | 클래스 | 쓰임 |
@@ -136,8 +148,8 @@ freepass-admin 실제 적용 후 「상단바랑 사이드바도 규격 맞췄�
 
 | 컴포넌트 | 클래스 | 치수 / 규칙 |
 |---|---|---|
-| 버튼 | `erp-btn` `--primary` `--ghost` `--danger` `--danger-text` `--sm` | 높이 34 (소형 28) · 모서리 6 · 좌우 14 · 아이콘 16. **Primary 는 영역마다 최대 1개, 맨 오른쪽.** 삭제는 확인 대화상자 필수 |
-| 입력 | `erp-field` > `erp-label` + `erp-input` | 높이 32 · 모서리 6 · 라벨 위. 포커스 파란 링, 오류 `aria-invalid="true"` + `erp-field-error`, 자동값 `readonly` 회색 |
+| 버튼 | `erp-btn` `--primary` `--ghost` `--danger` `--danger-text` `--sm` | 높이 36 (소형 32) · 모서리 6 · 좌우 14 · 아이콘 16(아이콘만 있는 단추의 누르는 자리 36). **Primary 는 영역마다 최대 1개, 맨 오른쪽.** 삭제는 확인 대화상자 필수 |
+| 입력 | `erp-field` > `erp-label` + `erp-input` | 높이 36 · 모서리 6 · 라벨 위. 포커스 파란 링, 오류 `aria-invalid="true"` + `erp-field-error`, 자동값 `readonly` 회색 |
 | 그리드 | `erp-grid` (`--dense`) | 헤더 36 · 행 40 (조밀 32) · 헤더 고정 · hover/선택(`aria-selected`) 행 색 · 합계 `tfoot` |
 | 체크박스 | `erp-check` | 16 · 모서리 4 · 일부 선택(indeterminate) 지원 |
 | 칩·세그먼트 | `erp-chip` · `erp-seg` | 적용된 조건 칩 · 상태별 건수 탭 (`aria-pressed`) |
@@ -761,6 +773,35 @@ CSS 그리드에서 형제 칸(`id`)의 내용이 더 길면 행 높이가 커�
 카드 강조 테두리(`aria-pressed`/`aria-current`의 Primary는 예외 — 그건 "상태"가 아니라 "지금 화면에서
 고른 것" 표시라 항상 Primary 고정)까지 자동으로 같이 정해진다.
 
+## 5-7. v1.1 — PC 실적용 규칙 (freepass-admin 에서 승격, 2026-09-25)
+
+freepass-admin PC 관리자(상품찾기 · 계약접수 · 실적 · 정산관리 · 전자계약)에서 9-24~25에 대표 결정으로
+굳힌 규칙을 전부 `erp.css` 끝의 «v1.1» 구역으로 옮겼다. 구역 안의 날짜 머리글(`2026-09-24 — …`)이 결정
+이력이고, 규칙은 모두 PC(`min-width: 901px`) 전용이다 — 폰 화면은 앱이 따로 세운다.
+
+| 규칙 | 내용 | 토큰 |
+|---|---|---|
+| 표면 위계 | 바탕 → 흰 패널 → 한 톤 낮은 카드/컨트롤. 그림자만으로 위계를 만들지 않고 면 색 차이를 먼저 쓴다 | `color-canvas` · `color-surface` · `color-surface-soft` |
+| 높이(그림자) 4단 | 0(평평) · base(카드·버튼 기본) · hover(눌 수 있는 것에 올렸을 때) · float(떠 있는 판) | `elevation-0/base/hover/float` |
+| 선 없는 카드 | 카드·컨트롤은 1px 자리는 두되 선은 투명 — 경계는 면 색 + 그림자로 읽힌다. **입력(input·검색)만** 입력 경계 선을 유지 | `line-card` · `line-control`(투명) · `color-line-strong`(입력) |
+| 상호작용 | 눌 수 있는 것만 hover 때 뜨고(`-1px`) 누르면 가라앉는다(`press-y`). 그냥 보여 주는 카드는 hover 가 없다. 고른 것은 더 뜨지 않고 «눌린 채» 고정(안쪽 그림자 `shadow-pressed-*`) | `elevation-hover` · `press-y` · `motion-press/state/float` |
+| 포커스 | 키보드 포커스는 선 대신 부드러운 halo | `focus-halo` · 오류 입력은 `err-halo` + `color-err-text` |
+| 패널 골격 | 머리 44 · 검색 줄 48 · 퀵 필터 줄 40 · 발치 56 · 패널 사이 16 | `panel-head-h` · `query-row-h` · `quick-row-h` · `panel-foot-h` · `section-rhythm` |
+| 목록 카드 | 표준 카드 최소 72 · compact 84 · 카드 사이 12 · 줄 높이 20/줄 간격 2 · 썸네일 64 · 상세 값 줄 36 | `row-standard-min-h` · `row-compact-min-h` · `card-gap` · `card-line-h/gap` · `detail-row-h` |
+| 상태 타일 색 | 사진 없는 대상의 썸네일 자리는 상태색 면 + 글자(info · ok · warn · err · 중립) — 배지와 같은 상태 토큰 | `color-*-bg` · `color-*` |
+| 배지는 신호 | 배지는 상태를 알리는 신호일 뿐 누르는 컨트롤이 아니다 — hover · 그림자 없음 | — |
+| 폭 구간 | 1280~1439 는 작업판 간격만 한 단 줄인다(구조 그대로), 1440+ 표준 간격 | — |
+
+**앱에 남는 것(규격 아님)**: 기능 부품 `dz-*`·`fn-*`, 기존 화면을 끼워 넣는 `erp-embed`, 앱 자신의 화면 틀
+`erp-screen`/`.erp-content` 자리 잡기, 브랜드 색(FreePass navy `#1B2A4A` — `.erp-std` 에서 `color-primary*` 네 개만
+덮어쓴다), 작업판 바깥 여백(`--fp-workspace-*`, 폭 구간별).
+
+**대표 확인 대기**: 퀵 필터 단추(`erp-facet-opt`)가 지금 완전히 둥근 알약(`r-pill`)이다(freepass-admin 2e6e02a 에서
+들어옴). 대표 2026-09-25 「원래 알약 안 하기로 했는데」 — 되돌릴지 답이 오기 전이라 승격하면서 모양은 바꾸지 않았다.
+
+**알려진 정리거리**: 고른 것의 안쪽 그림자가 결정 날짜별로 투명도 .10/.11/.12/.14 네 벌(`shadow-pressed-10…14`)로
+남아 있다. 화면을 바꾸지 않는 승격이 먼저라 그대로 옮겼고, 두 벌(기본 · hover)로 합치는 건 화면 확인과 함께 한다.
+
 ## 6. ERP 공통 동작 규칙
 
 1. **조회 우선** — 화면 진입 시 기본 조건(이번 달·내 담당)으로 자동 조회. 조건은 사용자별 저장.
@@ -802,4 +843,4 @@ CSS 그리드에서 형제 칸(`id`)의 내용이 더 길면 행 높이가 커�
 
 ## 11. 다른 규격과의 관계
 
-`design/claude-v1` 은 «버튼과 박스에 라인이 없다» 컨셉의 규격이고, 이 규격은 업계 통상 **테두리형** ERP 규격이다. 두 규격은 파일·토큰 이름(`--c-*` / `--erp-*`)이 겹치지 않아 함께 존재할 수 있다. `examples/claude/erp.html` 을 이 규격으로 옮길지는 다음 작업에서 결정한다.
+`design/claude-v1` 은 «버튼과 박스에 라인이 없다» 컨셉의 규격이고, 이 규격은 업계 통상 **테두리형** ERP 규격에서 출발했다(v1.1 부터 PC 카드·컨트롤은 선 없는 쪽으로 옮겼다 — §5-7). 두 규격은 파일·토큰 이름(`--c-*` / `--erp-*`)이 겹치지 않아 함께 존재할 수 있다. `examples/claude/erp.html` 을 이 규격으로 옮길지는 다음 작업에서 결정한다.
