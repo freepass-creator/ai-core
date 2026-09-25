@@ -91,6 +91,13 @@ test('retire packet requires recovery verification and does not forbid source re
   assert.equal(packet.forbidden_actions.includes('DELETE_OR_RETIRE_SOURCE'),false);
 });
 
+test('ready item with an unknown classification is rejected instead of compiling an unbound action',()=>{
+  assert.throws(
+    ()=>compileIntegrationWorkPackets(plan([ready({classification:'UNKNOWN_CLASSIFICATION'})])),
+    /INTEGRATION_WORK_PACKET_CLASSIFICATION_INVALID/,
+  );
+});
+
 test('adapter is read-only and returns no packets for all-HOLD plan',async()=>{
   const result=await aiCoreIntegrationWorkPackets({plan:plan([
     ready({execution_readiness:'HOLD',blockers:['REVIEW_CONSENSUS_REQUIRED']}),
