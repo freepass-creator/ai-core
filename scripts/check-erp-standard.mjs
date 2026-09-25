@@ -33,6 +33,31 @@ if (existsSync(platformDir)) {
 const themesDir = resolve(dir, 'themes');
 const THEMES = existsSync(themesDir) ? readdirSync(themesDir).filter((n) => n.endsWith('.json') && n !== 'index.json').map((n) => n.replace(/\.json$/, '')).sort() : [];
 
+// 덧칠 천장(2026-09-25 정리 직후 값). 줄면 여기 숫자도 같이 내린다 — 올리지 않는다.
+export const LAYER_CEILING = { exactDup: 10, crossLayer: 30, rawPx: 274 };
+
+/** erp.css 를 규칙 단위로 훑어 «같은 것을 두 번 정의한 자리»를 센다. */
+export function measureLayers(css) {
+  const src = css.replace(/\/\*[\s\S]*?\*\//g, '');
+  const rules = []; const stack = []; let buf = '';
+  for (const ch of src) {
+    if (ch === '{') { stack.push(buf.trim()); buf = ''; continue; }
+    if (ch === '}') { const head = stack.pop() ?? ''; if (!head.startsWith('@') && head !== ':root') rules.push({ media: stack.filter((x) => x.startsWith('@')).join(' & '), sels: head.split(/,(?![^(]*\))/).map((x) => x.replace(/\s+/g, ' ').trim()), body: buf }); buf = ''; continue; }
+    buf += ch;
+  }
+  const seen = new Map(); const base = new Set(); const pc = new Set(); let rawPx = 0;
+  for (const r of rules) {
+    const props = [...r.body.matchAll(/(^|;)\s*([\w-]+)\s*:([^;]*)/g)].map((x) => [x[2], x[3]]);
+    for (const [, v] of props) rawPx += (v.replace(/var\([^)]*\)/g, '').match(/\b\d+(?:\.\d+)?px\b/g) ?? []).length;
+    for (const sel of r.sels) for (const [p] of props) {
+      const k = `${r.media}|${sel}|${p}`; seen.set(k, (seen.get(k) ?? 0) + 1);
+      if (!r.media) base.add(`${sel}|${p}`);
+      else if (r.media === '@media (min-width: 901px)' && sel.startsWith('.erp-app ')) pc.add(`${sel.slice(9)}|${p}`);
+    }
+  }
+  return { exactDup: [...seen.values()].filter((n) => n > 1).length, crossLayer: [...pc].filter((k) => base.has(k)).length, rawPx };
+}
+
 export function checkErpStandard() {
   const errors = [];
   const ssot = JSON.parse(readFileSync(resolve(root, 'design-system/tokens.json'), 'utf8')).erp_standard;
@@ -121,6 +146,15 @@ export function checkErpStandard() {
     }
     for (const m of trules.matchAll(/\.(erp-[\w-]+)/g)) if (!defined.has(m[1])) errors.push(`themes/${name}.css: erp.css 에 없는 클래스 .${m[1]}`);
   }
+
+  // 6. 덧칠 금지 — 부품은 한 번만 정의한다(대표 2026-09-25 「공통인지 그냥 또 임기응변으로 대충 만드는 건지」).
+  //    같은 선택자·속성을 두 번 쓰거나(정확 중복), 기본 규칙 값을 PC 구역에서 다시 덮는(층 덮기) 자리는 지금 남은 수가 천장이다.
+  //    줄이는 건 언제나 좋고, 늘리면 실패한다 — 새 결정은 기존 규칙 자리를 고친다. 날짜별 머리글은 history/ 로.
+  const m = measureLayers(css);
+  if (m.exactDup > LAYER_CEILING.exactDup) errors.push(`erp.css: 같은 선택자·속성 정확 중복 ${m.exactDup}곳(천장 ${LAYER_CEILING.exactDup}) — 기존 규칙 자리를 고친다`);
+  if (m.crossLayer > LAYER_CEILING.crossLayer) errors.push(`erp.css: 기본 규칙 값을 PC 구역에서 다시 덮는 곳 ${m.crossLayer}곳(천장 ${LAYER_CEILING.crossLayer}) — 기본 규칙을 고친다`);
+  if (m.rawPx > LAYER_CEILING.rawPx) errors.push(`erp.css: 토큰 밖 px 값 ${m.rawPx}개(천장 ${LAYER_CEILING.rawPx}) — 새 치수는 토큰으로`);
+  if (/\/\* ═+\s*\n\s*\* \d{4}-\d{2}-\d{2} —/.test(css)) errors.push('erp.css: 날짜별 덧칠 머리글 금지 — 결정 이력은 design/erp-standard/history/ 에');
 
   // 5. 카탈로그 전수 — erp.css 에 정의된 부품은 전부 catalog.html 에 한 번 이상 나온다(보이지 않는 부품은 규격이 아니다)
   const catalog = read('catalog.html');

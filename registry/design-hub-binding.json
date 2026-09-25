@@ -2,7 +2,7 @@
   "contract": "ai-core-design-hub-binding/v2",
   "ai_core": {
     "repository": "freepass-creator/ai-core",
-    "source_bundle_sha256": "088c6ffb07faa1f77cfcabc5d2247cd2c5bb8d6d91face4c8a37b04fc8d74a8b"
+    "source_bundle_sha256": "a0f190e0a3ac9825afc38f8c59c408e053a2a4620c3157e8142db183ebd4066d"
   },
   "digest_algorithm": "sha256:path-and-normalized-content-v1",
   "sources": {
@@ -68,7 +68,7 @@
     },
     "erp_standard_css": {
       "path": "design/erp-standard/erp.css",
-      "sha256": "7e53d84dfb75d4815a041c71176b789391e68adaf0fa86daa0a187c2669597f1"
+      "sha256": "a381365d0ca0e3bd49ac743e8c9c4780ecedf0ecf2a83f8a6afb11f76787ec0b"
     }
   },
   "invariant": "AI Core root owns the values. Design Hub reads these current canonical files and fails when any normalized content digest drifts from this reviewed bundle."
