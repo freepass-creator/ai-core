@@ -78,7 +78,9 @@
     "design:react:typecheck": "npm --prefix design-system/react ci --no-audit --no-fund && npm --prefix design-system/react run typecheck",
     "security:secrets": "node scripts/check-secrets.mjs",
     "checkers:known-bad": "node scripts/check-known-bad.mjs --self-test && node scripts/check-known-bad.mjs",
-    "lines:validate": "node scripts/validate-canonical-development-lines.mjs"
+    "lines:validate": "node scripts/validate-canonical-development-lines.mjs",
+    "continuity:audit": "node scripts/development-continuity-audit.mjs",
+    "continuity:gate": "node scripts/development-continuity-audit.mjs --gate"
   },
   "dependencies": {
     "ajv": "8.20.0",
