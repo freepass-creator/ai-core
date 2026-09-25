@@ -29,6 +29,13 @@ test('PASS receipt cannot hide a failed or held feature', () => {
   assert.throws(() => validateUiUxConformanceReceiptSemantics(broken, known), /UIUX_RECEIPT_PASS_WITH_NONPASS_FEATURE/);
 });
 
+test('semantic validation cannot accept a receipt with no feature result evidence', () => {
+  const broken = structuredClone(example);
+  broken.feature_results = [];
+  assert.equal(validate(broken), false);
+  assert.throws(() => validateUiUxConformanceReceiptSemantics(broken, known), /UIUX_RECEIPT_FEATURE_RESULTS_REQUIRED/);
+});
+
 test('receipt cannot omit required globalization or device probes', () => {
   const broken = structuredClone(example);
   broken.required_matrix.locales = ['ko-KR', 'en-US', 'de-DE'];
