@@ -18,6 +18,7 @@ const identityCapability={...capability,receipt:{...capability.receipt,identity_
 const projectRegistry={schema_version:'1.1',projects:[{project_id:'aiops',repository:'freepass-creator/aiops',local_path:'/project'}]};
 
 function fixture({reconcileResult=null,withBinding=true}={}){
+  const runtimeProjectRegistry=structuredClone(projectRegistry);
   const store=new OrderStore(':memory:',{now:()=>Date.parse('2026-09-19T03:30:00Z')});
   const order=store.create({
     requestId:'create-1',title:'과태료',intent:'과태료 처리해',project:'aiops',kind:'general',
@@ -44,8 +45,8 @@ function fixture({reconcileResult=null,withBinding=true}={}){
       return reconcileResult??{status:'HOLD',reason:'EXECUTION_RECEIPT_MISSING'};
     },
   };
-  const coordinator=createCapabilityExecutionCoordinator({store,projectRegistry,receiptReader,clock:()=>Date.parse('2026-09-19T03:31:00Z')});
-  return{store,order,coordinator,get snapshots(){return snapshots;},get reconcileOptions(){return reconcileOptions;}};
+  const coordinator=createCapabilityExecutionCoordinator({store,projectRegistry:runtimeProjectRegistry,receiptReader,clock:()=>Date.parse('2026-09-19T03:31:00Z')});
+  return{store,order,coordinator,projectRegistry:runtimeProjectRegistry,get snapshots(){return snapshots;},get reconcileOptions(){return reconcileOptions;}};
 }
 
 function resultFor(order,{status='SUCCEEDED'}={}){
@@ -131,7 +132,7 @@ test('응답 유실 뒤 identity가 검증된 terminal receipt를 찾으면 재�
 });
 
 test('identity_field가 bind된 receipt 복구는 durable requestId를 expectedIdentity로 고정한다',async t=>{
-  const f=fixture({reconcileResult:{status:'SUCCEEDED',path:'/project/tmp/과태료/실행기록-recovered.json',state:'COMPLETED',receipt:{schema:'gwataeryo-run-manifest/v1',state:'COMPLETED',aiCoreRequestId:'exec-1'}}});
+  const f=fixture({reconcileResult:{status:'SUCCEEDED',path:'/project/tmp/과태료/실행기록-recovered.json',state:'COMPLETED',identity_verified:true,receipt:{schema:'gwataeryo-run-manifest/v1',state:'COMPLETED',aiCoreRequestId:'exec-1'}}});
   t.after(()=>f.store.close());
   await f.coordinator.reserve({requestId:'exec-1',orderId:f.order.id,workId:'WORK-001',capability:identityCapability,input:{},perform:true});
   const recovered=await f.coordinator.reconcile('exec-1');
@@ -156,7 +157,7 @@ test('예약 당시 recovery snapshot은 불변이고 project binding drift에�
     /CAPABILITY_EXECUTION_RECOVERY_SNAPSHOT_IMMUTABLE/
   );
 
-  projectRegistry.projects[0].local_path='/moved-project';
+  f.projectRegistry.projects[0].local_path='/moved-project';
   const out=await f.coordinator.reconcile('exec-drift');
   assert.deepEqual(out,{status:'HOLD',reason:'PROJECT_RECOVERY_BINDING_DRIFT',reconciled:false});
   assert.equal(f.coordinator.get('exec-drift').state,'RESERVED');
