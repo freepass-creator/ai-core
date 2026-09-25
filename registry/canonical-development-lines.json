@@ -21,6 +21,19 @@
       ]
     },
     {
+      "id": "development-continuity",
+      "canonical_entrypoint": "docs/DEVELOPMENT_CONTINUITY_STANDARD.md",
+      "canonical_roots": [
+        "registry/development-continuity-policy.json",
+        "src/development/continuity-audit.mjs",
+        "scripts/development-continuity-audit.mjs"
+      ],
+      "notes": [
+        "Development branches are owned by Work, not AI actors.",
+        "Resume existing Work/PR/branch before creating a new development line."
+      ]
+    },
+    {
       "id": "core-contract",
       "canonical_entrypoint": "docs/CORE_CONTRACT_STANDARD.md",
       "canonical_roots": [
