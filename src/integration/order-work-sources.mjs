@@ -103,9 +103,10 @@ export function createWorkSourceContextProvider({ store, workSources, ordersDbPa
     return async () => { throw new Error(reason); };
   }
   const { paths } = resolved;
+  const directionsPath = join(dirname(paths.registry), 'directions.json');
 
   const readJson = async (key) => JSON.parse(await readFile(
-    key === 'directions' ? resolve(repoRoot, 방향파일) : paths[key], 'utf8'));
+    key === 'directions' ? directionsPath : paths[key], 'utf8'));
 
   return async function readTrustedWorkContext(orderId) {
     let registry, snapshot, mappings;
@@ -143,7 +144,11 @@ export function createWorkSourceContextProvider({ store, workSources, ordersDbPa
     catch (error) { if (error?.code !== 'ENOENT') throw new Error('WORK_SOURCE_UNREADABLE_LANDED'); }
     registry = 새head입히기(registry, 관측).registry;
 
-    const 방향들 = await readJson('directions').then((d) => d?.방향 ?? []).catch(() => []);
+    let 방향들 = [];
+    try { 방향들 = (await readJson('directions'))?.방향 ?? []; }
+    catch (error) {
+      if (error?.code !== 'ENOENT') throw new Error('WORK_SOURCE_UNREADABLE_DIRECTIONS');
+    }
     const 입힌스냅샷 = 방향들.length
       ? { ...snapshot, items: (snapshot?.items ?? []).map((항목) => 방향적용({
           항목, 방향들, asOf: snapshot?.as_of, 승인확인: 원장승인확인(원장글),
