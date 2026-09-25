@@ -2,6 +2,8 @@
 
 Status: **CANONICAL ENTRYPOINT**
 
+> **정본 단일화(2026-09-26):** UI/UX의 값·컴포넌트·패턴 정본은 오직 `design-system/`과 이 문서가 가리키는 `registry/ui-ux-*`이다. `design/claude-v1/`, 과거 UI starter 브랜치, 개별 ERP 제안 폴더는 역사/검토 자료일 뿐 독립 정본이 아니다. 새 규격을 만들기 전에 현재 정본을 확장할 수 있는지 먼저 판정한다.
+
 이 문서는 사용자가 “AI Core 규격 봐”, “UI/UX 규격 맞춰”, “디자인 통일해”라고 했을 때
 모든 AI/개발자가 **가장 먼저** 읽는 진입점이다.
 
