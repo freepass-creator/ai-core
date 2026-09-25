@@ -129,6 +129,25 @@ test('preflight must be sealed for the same repository and revision',async()=>{
   });
 });
 
+test('invalid preflight is rejected before the adapter creates workspace directories',async()=>{
+  await fixture(async({workspace,source})=>{
+    const adapter=createColocateOnlyAdapter({
+      workspaceRoot:workspace,
+      areaByProject:{'freepass-sales':'subsidiaries'},
+    });
+    const area=join(workspace,'subsidiaries');
+
+    await assert.rejects(
+      adapter.execute({
+        packet:packet(source),
+        preflight:preflight({repository:'freepass-creator/other'}),
+      }),
+      /COLOCATE_PREFLIGHT_REPOSITORY_MISMATCH/,
+    );
+    await assert.rejects(realpath(area),error=>error?.code==='ENOENT');
+  });
+});
+
 test('verifier independently checks revision, cleanliness, link and path dependencies',async()=>{
   await fixture(async({workspace,source})=>{
     const p=packet(source);

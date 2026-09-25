@@ -30,12 +30,23 @@ function resolveArea(areaByProject,projectId){
   return area;
 }
 
-async function resolvePaths({workspaceRoot,areaByProject,packet}){
+function validatePacket(packet){
   need(packet?.schema==='ai-core-integration-work-packet/v1','INTEGRATION_WORK_PACKET_REQUIRED');
   need(packet.classification==='COLOCATE_ONLY','COLOCATE_CLASSIFICATION_REQUIRED');
   need(packet.action_kind==='FILESYSTEM_RELOCATION','COLOCATE_ACTION_KIND_REQUIRED');
   need(ASSET_ID.test(packet.asset_id??''),'COLOCATE_ASSET_ID_INVALID');
   need(typeof packet.current_path==='string'&&isAbsolute(packet.current_path),'COLOCATE_SOURCE_PATH_REQUIRED');
+}
+
+function validatePreflight(packet,preflight){
+  need(preflight?.schema==='ai-core-integration-preflight/v1'&&preflight.status==='SEALED','COLOCATE_PREFLIGHT_REQUIRED');
+  need(preflight.packet_id===packet.packet_id,'COLOCATE_PREFLIGHT_PACKET_MISMATCH');
+  need(preflight.repository===packet.repository,'COLOCATE_PREFLIGHT_REPOSITORY_MISMATCH');
+  need(preflight.expected_revision===packet.expected_revision,'COLOCATE_PREFLIGHT_REVISION_MISMATCH');
+}
+
+async function resolvePaths({workspaceRoot,areaByProject,packet}){
+  validatePacket(packet);
 
   const area=resolveArea(areaByProject,packet.project_id);
   need(typeof workspaceRoot==='string'&&isAbsolute(workspaceRoot),'COLOCATE_WORKSPACE_ROOT_REQUIRED');
@@ -67,10 +78,7 @@ async function resolvePaths({workspaceRoot,areaByProject,packet}){
 }
 
 function projectionRecord(packet,preflight,paths){
-  need(preflight?.schema==='ai-core-integration-preflight/v1'&&preflight.status==='SEALED','COLOCATE_PREFLIGHT_REQUIRED');
-  need(preflight.packet_id===packet.packet_id,'COLOCATE_PREFLIGHT_PACKET_MISMATCH');
-  need(preflight.repository===packet.repository,'COLOCATE_PREFLIGHT_REPOSITORY_MISMATCH');
-  need(preflight.expected_revision===packet.expected_revision,'COLOCATE_PREFLIGHT_REVISION_MISMATCH');
+  validatePreflight(packet,preflight);
 
   return {
     schema:'ai-core-group-colocation-projection/v1',
@@ -117,6 +125,8 @@ async function ensureProjectionLink(paths){
 
 export function createColocateOnlyAdapter({workspaceRoot,areaByProject}={}){
   async function execute({packet,preflight}={}){
+    validatePacket(packet);
+    validatePreflight(packet,preflight);
     const paths=await resolvePaths({workspaceRoot,areaByProject,packet});
     const record=projectionRecord(packet,preflight,paths);
     const link=await ensureProjectionLink(paths);
