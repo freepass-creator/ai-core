@@ -24,8 +24,10 @@ export function createGitHubProjectInspector({gh=defaultGh,clock=Date.now}={}){
     need(typeof project_id==='string'&&/^[a-z][a-z0-9-]{1,62}$/.test(project_id),'PROJECT_ID_INVALID');
     need(repoShape(repository),'REPOSITORY_INVALID');
     const meta=await gh([`repos/${repository}`]);
-    const branch=default_branch??meta.default_branch;
-    need(typeof branch==='string'&&branch.length>0,'DEFAULT_BRANCH_REQUIRED');
+    const repositoryDefaultBranch=meta?.default_branch;
+    need(typeof repositoryDefaultBranch==='string'&&repositoryDefaultBranch.length>0,'DEFAULT_BRANCH_REQUIRED');
+    need(default_branch===null||default_branch===repositoryDefaultBranch,'DEFAULT_BRANCH_MISMATCH');
+    const branch=repositoryDefaultBranch;
     const commit=await gh([`repos/${repository}/commits/${encodeURIComponent(branch)}`]);
     const revision=commit?.sha;
     need(typeof revision==='string'&&/^[0-9a-f]{40}$/.test(revision),'SUBJECT_REVISION_INVALID');
