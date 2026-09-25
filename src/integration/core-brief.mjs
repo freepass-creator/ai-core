@@ -70,7 +70,8 @@ export function 브리핑({ now = new Date(), ops = null, landed = null, ledgerT
   for (const d of 방향) if (d.상태 === '초안') 대표몫.push(`방향 ${d.id}: 초안 — 세운이·만료를 채우고 원장에 승인을 남겨야 산다`);
 
   /** 사흘 안에 움직인 열린 PR 만 — 오래된 연구 초안은 결정 거리가 아니다. */
-  const 열린 = prs === null ? null : prs.filter((p) => !p.draft && now.getTime() - Date.parse(p.updated_at) <= 3 * 24 * 60 * 분);
+  const PR갱신시각깨짐 = prs !== null && prs.some((p) => !p.draft && !Number.isFinite(Date.parse(p.updated_at)));
+  const 열린 = prs === null || PR갱신시각깨짐 ? null : prs.filter((p) => !p.draft && now.getTime() - Date.parse(p.updated_at) <= 3 * 24 * 60 * 분);
   for (const p of 열린 ?? []) 대표몫.push(`열린 PR ${p.repo}#${p.number} ${p.title}`);
 
   return { now: now.toISOString(), 운영, 올라감, 원장, 방향, 열린PR: 열린, 대표몫 };
