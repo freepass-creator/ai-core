@@ -19,6 +19,12 @@
 | 프리패스 마켓 업무(공급사 재고·손오공 재고·판매시트 정산·영업) | `freepass-creator/freepass-sales` `aiops-freepass/` | `OWNED_BY_FREEPASS` |
 | `.ai-core/` 키트 사본 | 버림 — 이 저장소 루트가 정본 | `OWNED_BY_DROP_KIT_DUPLICATE` |
 
+## 혼자 돈다
+
+- 이 사본이 쓰는 렌터카 쪽 파일 6개(`lib/gwataeryo-polder.mjs`·`sheets/fmt.mjs`·`lib/올리는곳.json` 등)를 PROVENANCE 에 `vendored_from` 을 달아 같이 넣었다. 정본은 renman 쪽이다.
+- 실행 의존성은 `package.json`(firebase-admin·unpdf, 원본과 같은 판). `npm install` 뒤 돌린다.
+- 확인(2026-09-25): 원본 aiops 와 같은 테스트 5개 파일이 같은 건수로 통과, 모든 `.mjs` 문법 통과, 상대 import 가 전부 이 폴더 안에서 풀린다.
+
 ## 개인정보
 
 원본은 PR #16 에서 문서·주석만 가렸다. 이 사본은 코드 문자열·JSON 안의 고객 이름까지 같은 고정 가명(`고객NNN`)으로 바꿨다 — 그런 파일은 PROVENANCE 에 `TRANSFORMED` 로 적혀 있다. 전화는 `010-0000-0000`, 주민번호는 `######-#######`. 직원 이름과 회사 차량 번호는 그대로 둔다. git 이력은 가져오지 않았다.
