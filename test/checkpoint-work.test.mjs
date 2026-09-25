@@ -10,7 +10,7 @@ function git(root, args) {
   return execFileSync('git', args, { cwd: root, encoding: 'utf8' }).trim();
 }
 
-async function repository(branch = 'work/codex/example') {
+async function repository(branch = 'work/ai-core/DEV-EXAMPLE') {
   const root = await mkdtemp(join(tmpdir(), 'ai-core-checkpoint-'));
   git(root, ['init', '-b', 'main']);
   git(root, ['config', 'user.email', 'test@example.invalid']);
@@ -37,7 +37,7 @@ async function remotePair() {
   git(other, ['clone', bare, '.']);
   git(other, ['config', 'user.email', 'other@example.invalid']);
   git(other, ['config', 'user.name', 'Other Writer']);
-  git(other, ['switch', 'work/codex/example']);
+  git(other, ['switch', 'work/ai-core/DEV-EXAMPLE']);
   return { root, bare, other };
 }
 
@@ -134,6 +134,15 @@ test('preserves but refuses unrelated dirty work', async () => {
     error => error.code === 'HOLD_UNRELATED_DIRTY'
   );
   assert.equal(await readFile(join(root, 'other.txt'), 'utf8'), 'unrelated\n');
+});
+
+test('rejects AI actor-owned branch names', async () => {
+  const root = await repository('work/codex/legacy-task');
+  await writeFile(join(root, 'selected.txt'), 'changed\n');
+  await assert.rejects(
+    checkpointWork({ root, message: 'bad actor lane', paths: ['selected.txt'], checks: false }),
+    error => error.code === 'HOLD_ACTOR_OWNED_BRANCH'
+  );
 });
 
 test('refuses main and path traversal', async () => {
@@ -262,7 +271,7 @@ test('uses an isolated lock inside a real linked worktree', async () => {
   const primary = await repository('main');
   const linked = await mkdtemp(join(tmpdir(), 'ai-core-linked-'));
   await rm(linked, { recursive: true });
-  git(primary, ['worktree', 'add', '-b', 'work/codex/linked', linked]);
+  git(primary, ['worktree', 'add', '-b', 'work/ai-core/DEV-LINKED', linked]);
   await writeFile(join(linked, 'selected.txt'), 'linked change\n');
   const primaryLock = join(primary, '.git', 'ai-core-checkpoint.lock');
   await writeFile(primaryLock, 'primary lane lock');
@@ -297,7 +306,7 @@ test('non-force push publishes a fast-forward checkpoint', async () => {
     root, message: 'publish change', paths: ['selected.txt'], checks: false, push: true
   });
   assert.equal(result.status, 'COMMITTED_AND_PUSHED');
-  assert.equal(git(bare, ['rev-parse', 'refs/heads/work/codex/example']), result.commit);
+  assert.equal(git(bare, ['rev-parse', 'refs/heads/work/ai-core/DEV-EXAMPLE']), result.commit);
 });
 
 test('push race keeps the local commit when remote rejects it', async () => {
@@ -309,13 +318,13 @@ test('push race keeps the local commit when remote rejects it', async () => {
   const hook = join(root, '.git', 'hooks', 'pre-push');
   const otherPath = other.replaceAll('\\', '/');
   await writeFile(hook,
-    `#!/bin/sh\ngit -C "${otherPath}" push origin HEAD:work/codex/example\n`, { mode: 0o755 });
+    `#!/bin/sh\ngit -C "${otherPath}" push origin HEAD:work/ai-core/DEV-EXAMPLE\n`, { mode: 0o755 });
   await assert.rejects(
     checkpointWork({ root, message: 'local retained', paths: ['selected.txt'], checks: false, push: true }),
     error => error.code === 'HOLD_PUSH_REJECTED'
   );
   const local = git(root, ['rev-parse', 'HEAD']);
-  const remote = git(bare, ['rev-parse', 'refs/heads/work/codex/example']);
+  const remote = git(bare, ['rev-parse', 'refs/heads/work/ai-core/DEV-EXAMPLE']);
   assert.notEqual(local, remote);
   assert.equal(git(root, ['show', '--format=', '--name-only', 'HEAD']), 'selected.txt');
 });
