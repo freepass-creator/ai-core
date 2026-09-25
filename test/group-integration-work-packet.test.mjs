@@ -38,6 +38,17 @@ test('only READY_FOR_REVIEWED_EXECUTION items become packets',()=>{
   assert.equal(set.packets[0].asset_id,'sales');
 });
 
+test('READY item must bind to a known classification action',async()=>{
+  const forgedPlan=plan([ready({classification:'MYSTERY'})]);
+  assert.throws(
+    ()=>compileIntegrationWorkPackets(forgedPlan),
+    /WORK_PACKET_CLASSIFICATION_INVALID/,
+  );
+  const result=await aiCoreIntegrationWorkPackets({plan:forgedPlan});
+  assert.equal(result.status,'HOLD');
+  assert.deepEqual(result.blockers,['INTEGRATION_WORK_PACKET_CLASSIFICATION_INVALID']);
+});
+
 test('every packet requires fresh authority and never self-authorizes',()=>{
   const set=compileIntegrationWorkPackets(plan([ready()]));
   const packet=set.packets[0];
