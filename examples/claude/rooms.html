@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="icon" href="data:,">
+<title>Claude v1 — 샘플 방</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<link rel="stylesheet" href="../../design-system/tokens.runtime.css">
+<link rel="stylesheet" href="claude-v1.css">
+</head>
+<body>
+<!--
+  샘플 방 — parts.html 의 부품만으로 꾸민 «꾸며 놓은 방»들이다. 방마다 「이 방에 쓴 부품」을 적어 둔다.
+  새 색도, 새 크기도, 새 부품도 여기서 만들지 않는다. 방을 꾸미다 부품이 모자라면 «부품을 먼저 만든다».
+-->
+<div class="c-app">
+  <header class="c-head">
+    <div>
+      <div class="c-where">Claude v1 · 업무 UI 제안본</div>
+      <h1>샘플 방</h1>
+    </div>
+    <nav class="c-nav c-spacer" aria-label="보기 전환">
+      <a href="parts.html">부품</a>
+      <a href="rooms.html" aria-current="page">샘플 방</a>
+    </nav>
+  </header>
+
+  <main class="c-body">
+
+    <!-- ─── 방 1 ─────────────────────────────────────────────────────────── -->
+    <section class="c-sec">
+      <h2>방 1 · 계약 검토실</h2>
+      <p class="c-note">왼쪽에서 하나 고르고, 오른쪽에서 그 하나를 끝낸다. 업무 화면의 기본형이다.</p>
+      <div class="room">
+        <p class="room-parts"><b>이 방에 쓴 부품</b>
+          <code>F-01</code><code>C-01</code><code>C-02</code><code>B-01</code><code>B-02</code><code>B-04</code><code>D-01</code><code>E-01</code><code>A-01</code><code>A-02</code></p>
+        <div class="room-stage">
+          <div class="c-head">
+            <div><div class="c-where">계약 관리 · 스위치플랜</div><h1>계약 검토 · 12가 3456</h1></div>
+            <div class="c-actions c-spacer c-desk-actions">
+              <button class="c-btn" data-kind="quiet">보완 요청</button>
+              <button class="c-btn">임시 저장</button>
+              <button class="c-btn" data-kind="primary">검토 완료</button>
+            </div>
+          </div>
+          <div class="c-body c-cols">
+            <section class="c-sec">
+              <h2>대기열 24</h2>
+              <div class="c-chips">
+                <button class="c-chip" aria-pressed="true"><svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>검토 대기</button>
+                <button class="c-chip" aria-pressed="false"><svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>보완 필요</button>
+                <button class="c-chip" aria-pressed="false"><svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>완료</button>
+              </div>
+              <div class="c-rows">
+                <label class="c-row"><span class="t">12가 3456</span><span class="n">62만</span><span class="m">홍길동 · 36개월 · 스위치플랜</span><input type="radio" name="q" checked></label>
+                <label class="c-row"><span class="t">34나 7890</span><span class="n">55만</span><span class="m">김영희 · 48개월 · 프라임구독</span><input type="radio" name="q"></label>
+                <label class="c-row"><span class="t">78마 2468</span><span class="n">48만</span><span class="m">박철수 · 36개월 · 스위치플랜</span><input type="radio" name="q"></label>
+                <label class="c-row"><span class="t">56다 1234</span><span class="n">—</span><span class="m">해지 처리 중 — 지금은 고를 수 없다</span><input type="radio" name="q" disabled></label>
+              </div>
+            </section>
+
+            <div class="c-sec">
+              <section class="c-sec">
+                <h2>계약 내용</h2>
+                <div class="c-grid2">
+                  <label class="c-field"><span>계약자</span><input class="c-input" value="홍길동"></label>
+                  <label class="c-field"><span>연락처</span><input class="c-input" value="010-1234-5678"></label>
+                  <label class="c-field"><span>계약 기간</span><select class="c-select"><option>36개월</option><option>48개월</option></select></label>
+                  <label class="c-field"><span>월 이용료</span><input class="c-input" value="620,000"></label>
+                  <label class="c-field" data-invalid="true"><span>정산 이메일</span>
+                    <input class="c-input" value="hong@" aria-invalid="true" aria-describedby="r1e">
+                    <span class="c-err" id="r1e"><svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>이메일 형식이 아닙니다</span></label>
+                </div>
+              </section>
+
+              <section class="c-sec">
+                <h2>납입 내역</h2>
+                <table class="c-table">
+                  <thead><tr><th>회차</th><th>청구일</th><th>상태</th><th class="num">금액</th></tr></thead>
+                  <tbody>
+                    <tr><td>1</td><td>2026-07-05</td><td><span class="c-state" data-tone="ok">완납</span></td><td class="num">620,000</td></tr>
+                    <tr><td>2</td><td>2026-08-05</td><td><span class="c-state" data-tone="ok">완납</span></td><td class="num">620,000</td></tr>
+                    <tr><td>3</td><td>2026-09-05</td><td><span class="c-state" data-tone="risk">미납</span></td><td class="num">620,000</td></tr>
+                  </tbody>
+                </table>
+                <div class="c-note-box" data-tone="risk"><svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg><span>3회차가 미납입니다. 검토 완료 전에 확인하세요.</span></div>
+              </section>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── 방 2 ─────────────────────────────────────────────────────────── -->
+    <section class="c-sec">
+      <h2>방 2 · 오늘 현황</h2>
+      <p class="c-note">맨 위 숫자 셋이 「오늘 어떤가」를 먼저 답하고, 그 아래 표가 근거를 댄다. 같은 부품, 다른 배치다.</p>
+      <div class="room">
+        <p class="room-parts"><b>이 방에 쓴 부품</b>
+          <code>F-01</code><code>D-02</code><code>C-03</code><code>D-01</code><code>A-04</code><code>E-02</code></p>
+        <div class="room-stage">
+          <div class="c-head">
+            <div><div class="c-where">운영 현황 · 2026-09-23</div><h1>오늘 현황</h1></div>
+            <div class="c-actions c-spacer">
+              <button class="c-btn" aria-label="새로고침"><svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg></button>
+            </div>
+          </div>
+          <div class="c-body">
+            <div class="c-metrics">
+              <div class="c-metric"><span class="k">스위치플랜 가동률</span><span class="v">89.9<small>%</small></span></div>
+              <div class="c-metric"><span class="k">프라임구독 가동률</span><span class="v">29.7<small>%</small></span></div>
+              <div class="c-metric" data-tone="risk"><span class="k">미수</span><span class="v">7,352<small>만 · 68건</small></span></div>
+            </div>
+            <section class="c-sec">
+              <h2>오늘 처리할 것</h2>
+              <table class="c-table">
+                <thead><tr><th>차번</th><th>고객</th><th>할 일</th><th class="num">금액</th></tr></thead>
+                <tbody>
+                  <tr><td>12가 3456</td><td>홍길동</td><td><span class="c-state" data-tone="warn">서류 보완</span></td><td class="num">620,000</td></tr>
+                  <tr><td>34나 7890</td><td>김영희</td><td><span class="c-state" data-tone="idle">검토 대기</span></td><td class="num">550,000</td></tr>
+                  <tr><td>78마 2468</td><td>박철수</td><td><span class="c-state" data-tone="risk">미수 3회차</span></td><td class="num">1,440,000</td></tr>
+                </tbody>
+              </table>
+            </section>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── 방 3 ─────────────────────────────────────────────────────────── -->
+    <section class="c-sec">
+      <h2>방 3 · 손에 든 화면</h2>
+      <p class="c-note">같은 부품으로 폭만 좁힌 방이다. 명령은 아래 막대로 내려오고, 기본 하나가 넓게 선다.</p>
+      <div class="room">
+        <p class="room-parts"><b>이 방에 쓴 부품</b>
+          <code>F-01</code><code>C-02</code><code>D-02</code><code>E-01</code><code>F-03</code><code>A-01</code><code>A-02</code></p>
+        <div class="room-phone">
+          <div class="c-head">
+            <div><div class="c-where">계약 · 진행 중</div><h1>계약 검토</h1></div>
+          </div>
+          <div class="c-body">
+            <div class="c-metrics">
+              <div class="c-metric"><span class="k">대기</span><span class="v">24</span></div>
+              <div class="c-metric"><span class="k">오늘 완료</span><span class="v">7</span></div>
+              <div class="c-metric" data-tone="risk"><span class="k">미납</span><span class="v">3</span></div>
+            </div>
+            <div class="c-rows">
+              <label class="c-row"><span class="t">12가 3456</span><span class="n">62만</span><span class="m">홍길동 · 36개월</span><input type="radio" name="m1" checked></label>
+              <label class="c-row"><span class="t">34나 7890</span><span class="n">55만</span><span class="m">김영희 · 48개월</span><input type="radio" name="m1"></label>
+              <label class="c-row"><span class="t">56다 1234</span><span class="n">—</span><span class="m">해지 처리 중</span><input type="radio" name="m1" disabled></label>
+            </div>
+            <div class="c-note-box" data-tone="warn"><svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg><span>서류 1건이 비어 있습니다.</span></div>
+          </div>
+          <div class="c-actions">
+            <button class="c-btn">
+              <svg class="c-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>목록</button>
+            <span class="c-spacer"></span>
+            <button class="c-btn" data-kind="primary">검토 완료</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="c-sec">
+      <h2>이 방들을 꾸미는 규칙</h2>
+      <p class="c-note">① 새 색·새 크기를 방에서 만들지 않는다 — 부품 진열대에 없으면 «부품을 먼저» 만든다.<br>
+        ② 한 방에 «면을 가진 버튼»은 하나다. ③ 면의 층은 최대 셋. ④ 상태는 신호 둘 이상(면·굵기·아이콘·글)으로 말한다.<br>
+        ⑤ 선은 값 넣는 자리와 표·목록의 읽기용 줄에만 남는다.</p>
+    </section>
+
+  </main>
+</div>
+</body>
+</html>

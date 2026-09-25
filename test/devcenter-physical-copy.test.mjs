@@ -11,6 +11,10 @@ const moduleRoot = resolve(root, 'devcenter');
 async function walk(directory) {
   const files = [];
   for (const entry of await readdir(directory, { withFileTypes: true })) {
+    // ★설치 산출물은 세지 않는다 — devcenter 쪽 검사가 portal/node_modules 를 깔고 나면
+    //   이 검사가 그 4천여 파일을 「기록되지 않은 복사본」으로 보고 빨개졌다
+    //   (2026-09-23 실측: 깨끗한 main 에서도 `npm test` 한 번 뒤 재현). 복사 대조는 추적 대상만 본다.
+    if (entry.name === 'node_modules') continue;
     const path = resolve(directory, entry.name);
     if (entry.isDirectory()) files.push(...await walk(path));
     else files.push(relative(moduleRoot, path).replaceAll('\\', '/'));
