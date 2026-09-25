@@ -18,6 +18,16 @@
       ],
       "historical_or_noncanonical": [
         "design/claude-v1/"
+      ],
+      "guards": [
+        {
+          "id": "css-token-definition",
+          "pattern": "^\\s*--[a-z0-9-]+\\s*:",
+          "include": [
+            "**/*.css"
+          ],
+          "why": "CSS 사용자 속성(토큰)은 design-system/ 에서만 정의한다. 밖에서 새로 정의하면 토큰 두 벌이 된다."
+        }
       ]
     },
     {
@@ -29,8 +39,8 @@
         "scripts/development-continuity-audit.mjs"
       ],
       "notes": [
-        "Development branches are owned by Work, not AI actors.",
-        "Resume existing Work/PR/branch before creating a new development line."
+        "Repository-wide audit layer: branch budget, age, stale unique branches and actor-owned branches.",
+        "PR-level canonical overlap and behind-main checks remain owned by canon:branch."
       ]
     },
     {
@@ -83,7 +93,11 @@
         "aiops/"
       ],
       "historical_or_noncanonical": [
-        "aiops/docs/CONTROL_PLANE.md"
+        {
+          "path": "aiops/docs/CONTROL_PLANE.md",
+          "marker_in": "aiops/README.md",
+          "reason": "exact-copy 원본이라 파일에 표시를 달 수 없다 — README 의 정본 경계 절이 가리킨다"
+        }
       ],
       "notes": [
         "Imported AIOps documents retain provenance only; they do not override AI Core root governance"
@@ -108,5 +122,40 @@
     "review_before_retire": [
       "claude/erp-platform-ui-ux-hvfyfa"
     ]
-  }
+  },
+  "repository_guards": {
+    "entry_files": {
+      "canonical": "AGENTS.md",
+      "mirrors": [
+        "CLAUDE.md",
+        "GEMINI.md"
+      ],
+      "why": "AI 가 처음 읽는 지시문은 한 벌이다. 나머지는 똑같거나 AGENTS.md 를 가리키는 한 줄이다."
+    },
+    "workflow_refs": {
+      "allow": [
+        "main"
+      ],
+      "why": "운영·예약 작업은 main 에서만 돈다. main 밖 커밋·가지를 checkout 하면 두 번째 계보가 운영을 쥔다(freepasserp4 발행기 사례)."
+    },
+    "pull_request": {
+      "max_behind_main": 30,
+      "single_open_pr_per_canonical_path": true,
+      "why": "묵은 가지·같은 정본을 동시에 고치는 PR 이 갈림의 원인이다."
+    }
+  },
+  "baseline": [
+    {
+      "guard": "css-token-definition",
+      "path": "devcenter/portal/app/globals.css",
+      "expires": "2026-10-31",
+      "reason": "DevCenter 포털 로컬 변수 — design-system 토큰으로 옮길 때까지"
+    },
+    {
+      "guard": "css-token-definition",
+      "path": "examples/claude/claude-v1.css",
+      "expires": "2026-10-31",
+      "reason": "claude-v1 역사 예시 — 역사자료로 옮기거나 지운다"
+    }
+  ]
 }
