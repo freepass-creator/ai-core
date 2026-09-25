@@ -26,6 +26,7 @@ export function bridgeLegacyAdapterResult({
     ...blockers.map(message=>({code:'LEGACY_BLOCKER',severity:'BLOCKING',message:String(message)})),
     ...failedChecks.map(check=>({code:'LEGACY_CHECK_FAILED',severity:'ERROR',field:check?.name??undefined,message:check?.detail??check?.name??'legacy check failed'}))
   ];
+  const status=legacy.status==='SUCCEEDED'&&issues.length>0?'HOLD':legacy.status;
 
   return {
     schema_version:'core-adapter-result/v1',
@@ -34,7 +35,7 @@ export function bridgeLegacyAdapterResult({
     provider_id:providerId,
     source_revision:sourceRevision,
     correlation_id:correlationId,
-    status:legacy.status,
+    status,
     retryable,
     data:legacy.data??null,
     issues,
