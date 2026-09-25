@@ -93,3 +93,11 @@ test('root agent instructions are explicit authority exclusions',()=>{
   assert.deepEqual(paths.sort(),['AGENTS.md','CLAUDE.md','GEMINI.md'].sort());
   assert.ok(manifest.exact_rules.every(rule=>rule.disposition==='EXCLUDE_AUTHORITY_DUPLICATE'));
 });
+
+test('rental business code belongs to the Rental Manager project, never to AI Core',()=>{
+  const rule=manifest.prefix_rules.find(item=>item.id==='hold-domain-code');
+  assert.equal(rule.destination_prefix,null);
+  assert.equal(rule.domain_owner,'freepass-creator/renman');
+  assert.equal(rule.owner_decision.decided_by,'representative');
+  assert.equal(rule.owner_decision.decided_at,'2026-09-25');
+});
