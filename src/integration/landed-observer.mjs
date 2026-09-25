@@ -76,6 +76,7 @@ export async function 관측한다({ registry, ledgerText = '', prior = null, gh
       if (typeof head !== 'string' || !SHA.test(head)) throw new Error('HEAD_UNOBSERVED');
       const raws = await gh.commits(프.repository, 프.default_branch, since);
       if (!Array.isArray(raws)) throw new Error('COMMITS_UNOBSERVED');
+      if (raws.some((raw) => raw && SHA.test(raw.sha ?? '') && !Number.isFinite(Date.parse(raw.committed_at)))) throw new Error('COMMITS_UNOBSERVED');
       for (const raw of raws) if (raw && SHA.test(raw.sha ?? '')) 새커밋.push(커밋정리(raw, id));
       /** covered_from — 여기서부터 지금까지 «빈틈 없이» 읽었다. 이어 읽었으면 이전 시작을 물려받는다. */
       const 이어 = 전?.until ? (전.covered_from ?? 전.since) : since;
