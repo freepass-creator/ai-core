@@ -1,0 +1,83 @@
+{
+  "schema": "ai-core-development-continuity-policy/v1",
+  "updated_at": "2026-09-26",
+  "purpose": "Keep AI-assisted development on one accumulating line instead of creating parallel branches and competing canonical implementations.",
+  "external_benchmark": {
+    "source": "DORA trunk-based development",
+    "active_branch_goal": "FEWER_THAN_3",
+    "branch_lifetime_goal_hours": 24,
+    "merge_frequency_goal_hours": 24,
+    "notes": [
+      "This is a repository-level benchmark, not a per-developer branch average.",
+      "GitHub recommends deleting merged branches so completed work cannot be accidentally reused."
+    ]
+  },
+  "principles": {
+    "work_owns_branch_not_ai": true,
+    "resume_before_create": true,
+    "one_canonical_line_per_concern": true,
+    "actor_prefixed_branches_for_new_work": "FORBIDDEN",
+    "merged_branch_retention": "DELETE",
+    "historical_milestones": "TAG_OR_PR_NOT_BRANCH",
+    "duty_to_warn_on_split": true
+  },
+  "profiles": {
+    "SIMPLE": {
+      "description": "Single surface or narrowly scoped service with little legitimate parallelism.",
+      "target_active_work_branches": 1,
+      "hard_max_active_work_branches": 2
+    },
+    "STANDARD": {
+      "description": "Normal product repository with a few independent modules.",
+      "target_active_work_branches": 2,
+      "hard_max_active_work_branches": 3
+    },
+    "COMPLEX": {
+      "description": "Multi-surface or shared platform repository. Complexity increases coordination requirements, not permission for many long-lived branches.",
+      "target_active_work_branches": 2,
+      "hard_max_active_work_branches": 3
+    },
+    "EXCEPTIONAL": {
+      "description": "Temporary exception for independently scoped child work. Requires explicit waiver, owner, expiry and merge plan.",
+      "target_active_work_branches": 3,
+      "hard_max_active_work_branches": 5,
+      "waiver_required": true
+    }
+  },
+  "branch_age_hours": {
+    "target": 24,
+    "warn": 48,
+    "critical": 72
+  },
+  "audit_rules": {
+    "recent_unique_branch_proxy_hours": 72,
+    "merged_equivalent_target": 0,
+    "stale_unique_target": 0,
+    "actor_prefixed_unique_target": 0,
+    "overlapping_canonical_scope_target": 0,
+    "duplicate_work_branch_target": 0,
+    "unregistered_unique_branch_target": 0
+  },
+  "branch_naming": {
+    "preferred": "work/<project-id>/<work-id>",
+    "examples": [
+      "work/ai-core/DEV-CONTINUITY-AUDIT-20260926",
+      "work/freepass-data/DEV-VEHICLE-MASTER-20260926"
+    ],
+    "forbidden_actor_prefixes": [
+      "gpt/",
+      "claude/",
+      "codex/",
+      "cursor/",
+      "gemini/",
+      "work/gpt/",
+      "work/claude/",
+      "work/codex/",
+      "work/cursor/",
+      "work/gemini/"
+    ]
+  },
+  "project_profiles": {
+    "ai-core": "COMPLEX"
+  }
+}
