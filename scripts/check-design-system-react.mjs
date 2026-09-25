@@ -66,6 +66,43 @@ export function checkDesignSystemReact({ base = root } = {}) {
   return { status: errors.length ? 'FAIL' : 'PASS', files: files.length, errors };
 }
 
+/** 알려진 나쁜 표본 다섯 — 임시 사본에 하나씩 심고, 그것이 그 규칙 이유로 잡히는지 본다. */
+export async function selfTest() {
+  const { cpSync, mkdtempSync, readFileSync: read, writeFileSync, rmSync, mkdirSync } = await import('node:fs');
+  const { tmpdir } = await import('node:os');
+  const cases = [
+    ['undefined CSS variable', 'src/ui/status-badge.tsx', text => text + "\nexport const _p = 'var(--text-main)';\n", 'is not defined in design-system'],
+    ['literal color', 'src/ui/wizard.tsx', text => text + "\nexport const _p = '#ff0000';\n", 'literal color #ff0000'],
+    ['leaking import', 'src/lib/haptics.ts', text => "import { x } from '@/lib/session';\n" + text, 'leaves the package'],
+    ['unrecorded file', 'src/ui/_stray.tsx', () => 'export const stray = 1;\n', 'not recorded in PROVENANCE.json'],
+    ['drifted exact copy', 'src/lib/use-mobile.ts', text => text + '\n', 'marked EXACT_COPY but differs'],
+  ];
+  const broken = [];
+  for (const [name, rel, mutate, marker] of cases) {
+    const base = mkdtempSync(join(tmpdir(), 'ds-react-self-'));
+    try {
+      mkdirSync(join(base, 'design-system'), { recursive: true });
+      cpSync(join(root, 'design-system/tokens.runtime.css'), join(base, 'design-system/tokens.runtime.css'));
+      cpSync(join(root, 'design-system/react/src'), join(base, 'design-system/react/src'), { recursive: true });
+      cpSync(join(root, 'design-system/react/PROVENANCE.json'), join(base, 'design-system/react/PROVENANCE.json'));
+      const file = join(base, 'design-system/react', rel);
+      let before = '';
+      try { before = read(file, 'utf8'); } catch {}
+      writeFileSync(file, mutate(before));
+      const { errors } = checkDesignSystemReact({ base });
+      if (!errors.some(error => error.includes(marker))) broken.push(`missed ${name}`);
+    } finally { rmSync(base, { recursive: true, force: true }); }
+  }
+  return broken;
+}
+
+if (import.meta.url === `file://${process.argv[1]}` && process.argv.includes('--self-test')) {
+  const broken = await selfTest();
+  if (broken.length) { console.error(`CHECKER BROKEN: ${broken.join(' · ')}`); process.exit(1); }
+  console.log('PASS: self-test 5 known-bad samples caught');
+  process.exit(0);
+}
+
 if (import.meta.url === `file://${process.argv[1]}`) {
   const result = checkDesignSystemReact();
   for (const error of result.errors) console.error(`FAIL: ${error}`);
