@@ -14,6 +14,7 @@ const capability={
     success_states:['COMPLETED'],hold_states:['COMPLETED_WITH_HOLD'],failure_states:['FAILED'],
   },
 };
+const identityCapability={...capability,receipt:{...capability.receipt,identity_field:'aiCoreRequestId'}};
 const projectRegistry={schema_version:'1.0',projects:[{project_id:'aiops',local_path:'/project'}]};
 
 function fixture({reconcileResult=null,withBinding=true}={}){
@@ -35,13 +36,16 @@ function fixture({reconcileResult=null,withBinding=true}={}){
       .run(order.id,1,'WORK-001','aiops',sha,'digest',order.version);
   }
 
-  let snapshots=0;
+  let snapshots=0,reconcileOptions=null;
   const receiptReader={
     snapshot:async()=>{snapshots++;return new Map();},
-    reconcile:async()=>reconcileResult??{status:'HOLD',reason:'EXECUTION_RECEIPT_MISSING'},
+    reconcile:async(_projectRoot,_receiptConfig,_before,options={})=>{
+      reconcileOptions=structuredClone(options);
+      return reconcileResult??{status:'HOLD',reason:'EXECUTION_RECEIPT_MISSING'};
+    },
   };
   const coordinator=createCapabilityExecutionCoordinator({store,projectRegistry,receiptReader,clock:()=>Date.parse('2026-09-19T03:31:00Z')});
-  return{store,order,coordinator,get snapshots(){return snapshots;}};
+  return{store,order,coordinator,get snapshots(){return snapshots;},get reconcileOptions(){return reconcileOptions;}};
 }
 
 function resultFor(order,{status='SUCCEEDED'}={}){
@@ -103,6 +107,15 @@ test('응답 유실 뒤 terminal receipt를 찾으면 재실행 없이 결과를
   assert.equal(event.detail.workflow_id,'ai-core.capability-execution');
   assert.equal(event.detail.workflow_transition_id,'capability-execution.reconcile-terminal');
   assert.equal(event.detail.workflow_event_type,'ai-core.capability-execution.reconciled');
+});
+
+test('identity_field가 bind된 receipt 복구는 durable requestId를 expectedIdentity로 고정한다',async t=>{
+  const f=fixture({reconcileResult:{status:'SUCCEEDED',path:'/project/tmp/과태료/실행기록-recovered.json',state:'COMPLETED',receipt:{schema:'gwataeryo-run-manifest/v1',state:'COMPLETED',aiCoreRequestId:'exec-1'}}});
+  t.after(()=>f.store.close());
+  await f.coordinator.reserve({requestId:'exec-1',orderId:f.order.id,workId:'WORK-001',capability:identityCapability,input:{},perform:true});
+  const recovered=await f.coordinator.reconcile('exec-1',identityCapability);
+  assert.equal(recovered.status,'RESULT');
+  assert.deepEqual(f.reconcileOptions,{expectedIdentity:'exec-1'});
 });
 
 test('terminal receipt가 없으면 UNKNOWN으로 닫고 절대 재실행 판정을 하지 않는다',async t=>{
