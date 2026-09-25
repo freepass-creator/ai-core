@@ -1,0 +1,144 @@
+# Development Continuity Standard
+
+Status: **CURRENT / CANONICAL DEVELOPMENT GOVERNANCE**
+
+## 목적
+
+AI 개발에서 가장 큰 낭비는 기능을 못 만드는 것이 아니라 **같은 목적의 개발을 여러 브랜치·여러 정본·여러 구현으로 갈라 놓고 서로 이어받지 못하는 것**이다.
+
+이 표준의 목표는 하나다.
+
+> **AI가 바뀌어도 같은 탑의 다음 층을 쌓는다.**
+
+Claude, Codex, GPT 또는 다른 AI는 개발선의 소유자가 아니다. **Work가 개발선을 소유**하고 AI는 그 Work의 현재 writer일 뿐이다.
+
+## 1. Branch ownership
+
+신규 개발의 기본 branch는 다음 형식이다.
+
+`work/<project-id>/<work-id>`
+
+예:
+
+`work/ai-core/DEV-CONTINUITY-AUDIT-20260926`
+
+금지되는 기본 패턴:
+
+- `gpt/...`
+- `claude/...`
+- `codex/...`
+- AI 이름을 branch identity로 사용하는 `work/<actor>/...`
+
+AI가 교체되어도 branch를 새로 만들지 않는다. checkpoint/handoff 뒤 같은 Work branch를 이어받는다.
+
+## 2. RESUME BEFORE CREATE
+
+개발 시작 순서는 항상 다음이다.
+
+1. 대상 repository와 canonical scope를 resolve한다.
+2. 같은 목적의 기존 Work, open PR, branch, handoff를 찾는다.
+3. 기존 개발선이 있으면 **RESUME**한다.
+4. 기존 개발선이 없다는 근거가 있을 때만 **CREATE ONCE**한다.
+
+새 branch 생성은 안전한 기본값이 아니다. **기존 개발선 미발견이 증명된 뒤 사용하는 예외 동작**이다.
+
+## 3. Branch budget
+
+업계에서 의미 있는 기준은 “개발자 한 명당 branch 평균”이 아니라 저장소 전체의 **active development branches**다.
+
+AI Core 내부 기본 budget:
+
+| project profile | target active work branches | hard max |
+|---|---:|---:|
+| SIMPLE | 1 | 2 |
+| STANDARD | 2 | 3 |
+| COMPLEX | 2 | 3 |
+| EXCEPTIONAL | 3 | 5 + waiver |
+
+COMPLEX 프로젝트라고 branch가 많아도 되는 것이 아니다. 복잡할수록 work decomposition과 integration discipline이 더 강해야 한다.
+
+EXCEPTIONAL은 다음을 모두 요구한다.
+
+- 서로 독립적인 child work
+- 겹치지 않는 canonical scope
+- owner
+- expiry
+- merge order
+- parent work
+
+반복적으로 예외가 필요하면 branch 수를 늘리는 대신 repository/project boundary를 재검토한다.
+
+## 4. Branch lifetime
+
+목표는 24시간 이내 main 통합이다.
+
+- 0–24h: 정상
+- 24–48h: 관찰
+- 48–72h: WARN
+- 72h 초과: CRITICAL 또는 명시적 장기 작업 근거 필요
+
+장기 기능은 장기 branch로 유지하지 않고 작은 통합 가능한 slice로 나눈다.
+
+## 5. Branch count와 branch debt
+
+`total branches`는 active branch 수와 다르므로 단독 성과지표로 쓰지 않는다. 그러나 AI 환경에서는 오래된 branch가 retrieval과 정본 판정에 노이즈를 만들기 때문에 **branch debt**로 감사한다.
+
+다음은 debt다.
+
+- main에 이미 흡수됐는데 남은 branch
+- open PR 없이 main보다 ahead인 branch
+- 72시간 이상 갱신되지 않은 unique-ahead branch
+- AI 이름으로 생성된 신규 branch
+- 같은 Work를 가리키는 branch 둘 이상
+- 같은 canonical scope를 동시에 변경하는 active branch 둘 이상
+- `final`, `v2`, `refresh`, `replay`, `current-main`처럼 실제 Work identity 대신 상태를 이름으로 복제한 branch
+
+역사 보존은 branch가 아니라 commit, PR, tag, decision log를 사용한다.
+
+## 6. Duty to Warn
+
+AI는 사용자가 묻기 전이라도 아래 상황을 발견하면 기능 구현보다 먼저 보고한다.
+
+- active branch가 profile hard max를 초과
+- 같은 목적의 branch/PR이 둘 이상
+- 같은 canonical scope를 두 개발선이 수정
+- main에 없는 고유 코드가 여러 오래된 branch에 흩어짐
+- 새 정본 후보가 기존 canonical line과 경쟁
+- 작업을 이어갈 branch가 있는데 새 branch를 만들려는 상황
+
+보고 형식:
+
+`DEVELOPMENT_LINE_SPLIT / 원인 / 영향 / 현재 정본 / 이어갈 Work / 폐기·회수 후보`
+
+경고 후에도 안전한 read-only 감사와 정리는 계속할 수 있지만, **세 번째 구현을 추가하지 않는다.**
+
+## 7. 감사 지표
+
+정기 감사는 최소 다음을 측정한다.
+
+- remote branch total
+- main에 고유 commit이 있는 branch 수
+- 최근 72시간 unique-ahead branch 수(활성 proxy)
+- main에 완전히 흡수된 branch 수
+- 72시간 초과 stale unique branch 수
+- actor-prefixed unique branch 수
+- open PR head branch 수
+- canonical scope overlap
+- duplicate Work branch
+- branch age p50 / p90 / max
+- merged branch cleanup debt
+
+숫자는 프로젝트 난이도와 profile을 같이 보고 판정한다.
+
+## 8. AI Core의 역할
+
+AI Core는 단순히 규칙을 가르치지 않는다.
+
+- 시작 시 기존 개발선을 찾는다.
+- 개발선이 있으면 resume 위치를 돌려준다.
+- branch budget을 감사한다.
+- split을 감지하면 Duty to Warn을 발동한다.
+- completed/merged branch는 retire 대상으로 만든다.
+- 지식은 branch에 묻어두지 않고 canonical registry/PR/history로 회수한다.
+
+즉 AI Academy가 **어떻게 개발하는가**를 가르친다면 Development Continuity는 **지금 어디까지 쌓았고 다음 층이 어디인가**를 보존한다.
