@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { analyzeBranchInventory } from '../src/development/continuity-audit.mjs';
+import { analyzeBranchInventory, selectRetirableBranches } from '../src/development/continuity-audit.mjs';
 
 const policy={
   profiles:{
@@ -49,4 +49,19 @@ test('stale unique work is never silently treated as healthy',()=>{
   ]});
   assert.equal(r.metrics.stale_unique_branches,1);
   assert.notEqual(r.status,'PASS');
+});
+
+test('cleanup selector only returns old branches with zero unique commits',()=>{
+  const selected=selectRetirableBranches({minAgeHours:24,branches:[
+    {name:'old-contained',ahead:0,behind:50,age_hours:72},
+    {name:'fresh-contained',ahead:0,behind:1,age_hours:2},
+    {name:'old-unique',ahead:1,behind:50,age_hours:100},
+    {name:'main',ahead:0,behind:0,age_hours:1000},
+    {name:'protected-contained',ahead:0,behind:50,age_hours:72,protected:true}
+  ]});
+  assert.deepEqual(selected.map(x=>x.name),['old-contained']);
+});
+
+test('cleanup selector rejects an invalid minimum age',()=>{
+  assert.throws(()=>selectRetirableBranches({branches:[],minAgeHours:-1}),/CONTINUITY_CLEANUP_MIN_AGE_INVALID/);
 });
