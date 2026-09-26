@@ -114,14 +114,13 @@
       "codex/ui-ux-new-project-starter",
       "codex/ui-ux-starter-completion",
       "codex/ui-ux-starter-runtime",
-      "work/gpt/ui-ux-universal-contract-v1"
+      "work/gpt/ui-ux-universal-contract-v1",
+      "claude/erp-platform-ui-ux-hvfyfa"
     ],
     "historical_connector_lines": [
       "feat/connector-registry-v1"
     ],
-    "review_before_retire": [
-      "claude/erp-platform-ui-ux-hvfyfa"
-    ]
+    "review_before_retire": []
   },
   "repository_guards": {
     "entry_files": {

@@ -9,6 +9,13 @@
   },
   "entries": [
     {
+      "branch": "claude/erp-platform-ui-ux-hvfyfa",
+      "expected_head_sha": "37aea96a3099a360421b1042a2a2519c8ee8a39f",
+      "classification": "SUPERSEDED",
+      "reason": "ERP UI branch review completed. Its reusable semantics are already generalized in current canonical data/filter/list/detail/card, portable-task-panel, responsive, header and bottom-action contracts; branch-local visual tokens conflict with current global token SSOT and are not recovered as a second canon.",
+      "evidence": "pr:283;main:registry/ui-ux-features.json;main:design-system/patterns.registry.json;main:design-system/tokens.json"
+    },
+    {
       "branch": "codex/ui-ux-new-project-starter",
       "expected_head_sha": "5bcf1f842c920907c77770520d09584cb3160b32",
       "classification": "SUPERSEDED",
