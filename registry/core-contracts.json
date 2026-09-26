@@ -1,7 +1,7 @@
 {
   "schema_version": "core-contract-registry/v1",
   "owner": "C_CORE_CONTRACT_STANDARD",
-  "revision": "2026-09-19",
+  "revision": "2026-09-26",
   "conventions": {
     "json_field_naming": "snake_case",
     "id_fields": "stable opaque identifiers named *_id; mutable labels/codes are not identity",
@@ -192,6 +192,13 @@
       "id": "core.execution-identity.v1",
       "domain": "DATA",
       "path": "contracts/core-execution-identity.schema.json",
+      "status": "CANONICAL",
+      "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
+    },
+    {
+      "id": "governance.activation-decision.v1",
+      "domain": "GOVERNANCE",
+      "path": "contracts/governance-activation-decision.schema.json",
       "status": "CANONICAL",
       "compatibility": "ADDITIVE_ONLY_WITHIN_V1"
     }
