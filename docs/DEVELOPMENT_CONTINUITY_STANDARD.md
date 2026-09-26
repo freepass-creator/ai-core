@@ -174,3 +174,24 @@ AI는 의미 있는 개발 진행 보고에서 최소한 다음 두 줄을 제�
 `Production`은 별도 번호가 아니라 DEV-10에서 확인하는 **실제 운영 상태**다. 브랜치 삭제는 merge 직후 무조건 하지 않고, 필요한 운영 검증과 회수 여부를 확인한 뒤 cleanup한다.
 
 문서·규칙·정적 자료처럼 **빌드나 배포 대상이 실제로 없는 작업**은 DEV-09 또는 DEV-10을 억지로 통과했다고 쓰지 않는다. `N/A — 배포 대상 없음`처럼 이유와 함께 표시한다. 단계 상태는 `DONE / IN_PROGRESS / N/A / HOLD` 중 하나로 보고하며, `N/A`는 성공을 뜻하는 PASS가 아니라 **그 단계가 적용되지 않음**을 뜻한다.
+
+## 10. AI Core 작업 레인 — 부서가 아니라 작업 분류
+
+AI Core의 반복 업무는 다음 네 레인으로 분류한다. **레인은 상시 브랜치 이름이 아니다.** 실제 Work가 있을 때만 `work/<project-id>/<work-id>` 브랜치를 하나 만들고, 검증 후 main에 병합한 뒤 retire한다.
+
+| 레인 | 담당 | 하지 않는 것 |
+|---|---|---|
+| `core` | Core Contract, Workflow, Capability Runtime, 공통 표준과 플랫폼 본체 고도화 | 개별 사업 도메인 기능 소유 |
+| `integration` | 프로젝트 간 통합, 역수입, 공통 계약·Adapter·공용 기능 승격 | 원 프로젝트를 AI Core 안에 복제 |
+| `audit` | 다른 프로젝트의 브랜치 분열, 복수 정본, UI/데이터/엔진/Adapter 중복, 릴리스·정합성 감사 | 감사 결과를 이유로 도메인 코드를 AI Core가 장기 소유 |
+| `hardening` | 오류 수정, 회귀 테스트, CI, 보안, 관측성, 성능, 중복·dead code 제거, release gate | 새 사업 기능 개발 |
+
+### 도메인 소유권 경계
+
+과태료, 카카오 자동화, 보험, 미수, ERP 같은 도메인 구현은 **소유 프로젝트의 repository가 정본**이다. AI Core는 그 구현을 장기 브랜치로 보유하지 않는다.
+
+- 과태료 구현은 Rental Manager가 소유한다. AI Core는 공통 Receipt/Evidence, Workflow, Idempotency, Error/Result, Adapter 같은 재사용 규격만 회수한다.
+- Kakao Ops 구현은 Kakao Ops가 소유한다. AI Core는 공통 Adapter, 승인/권한, retry, audit, integration 규격만 회수한다.
+- 다른 프로젝트 감사에서 수정 필요가 발견되면 기본적으로 **그 프로젝트의 Work branch로 수정 요청을 라우팅**한다. AI Core에 남길 수 있는 것은 전사 공통 규격·검증기·통합 primitive뿐이다.
+
+따라서 `work/core`, `work/integration`, `work/audit`, `work/hardening` 같은 고정 장기 브랜치를 네 개 유지하는 방식도 금지한다. **개념 레인은 네 개지만 실제 branch는 Work 수만큼만 잠깐 존재**한다.
