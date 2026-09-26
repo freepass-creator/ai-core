@@ -79,5 +79,34 @@
   },
   "project_profiles": {
     "ai-core": "COMPLEX"
+  },
+  "ai_core_work_lanes": {
+    "principle": "Lanes classify work; they are not permanent branches. Create a work/<project-id>/<work-id> branch only when a concrete Work is active, then merge to main and retire it.",
+    "lanes": {
+      "core": {
+        "purpose": "Improve AI Core itself: Core Contract, Workflow, Capability Runtime, shared governance, reusable standards and platform primitives.",
+        "owns_domain_product_code": false
+      },
+      "integration": {
+        "purpose": "Integrate or reverse-import shared contracts and reusable capabilities across project boundaries without taking ownership of the domain product.",
+        "owns_domain_product_code": false
+      },
+      "audit": {
+        "purpose": "Read-only or evidence-producing audits of other projects: branch splits, duplicate canon, data/adapter/UI divergence, release/readiness and conformance.",
+        "owns_domain_product_code": false,
+        "mutation_rule": "Findings route fixes to the owning repository unless the fix is an AI Core shared standard or integration primitive."
+      },
+      "hardening": {
+        "purpose": "Strengthen AI Core quality: errors, regression tests, CI, security, observability, performance, dead-code/duplication cleanup and release gates.",
+        "owns_domain_product_code": false
+      }
+    },
+    "domain_ownership": {
+      "rule": "Domain implementations belong to their owning product repository. AI Core may audit, integrate, or extract reusable standards, but must not become the long-term home of domain operations.",
+      "examples": {
+        "penalty": "Rental Manager owns penalty processing implementation; AI Core keeps only reusable contracts, evidence/receipt patterns, workflow rules and integration standards.",
+        "kakao_ops": "Kakao Ops owns Kakao automation implementation; AI Core keeps only reusable adapter, workflow, approval, retry, audit and integration patterns."
+      }
+    }
   }
 }
