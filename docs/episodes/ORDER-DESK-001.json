@@ -781,6 +781,7 @@
     "README.md",
     "registry/adoption/freepass-estimate-quote-execution.fixture.json",
     "registry/adoption/freepasserp4-products.source-registry.json",
+    "registry/branch-retirements.json",
     "registry/canonical-development-lines.json",
     "registry/capabilities.json",
     "registry/checker-known-bad.json",
@@ -1250,6 +1251,7 @@
     "2026-09-23 Google read port shadow: reused canonical core-port/core-adapter/core-binding-profile contracts to add google.api.read, a credential-neutral shared read adapter and PARTIAL AIOps shadow binding. Retry timing intentionally differs from source and no live provider/cutover claim is made. changed_files updated for verifier parity only.",
     "2026-09-23 Sheets pure utility extraction: AIOps lib/sheet.mjs#colL/num/serial2date/date2serial moved as FUNCTION_SLICE_SHADOW with pinned source/destination blobs and behavior tests; sheet runtime/token/write/backup authority remains AIOps. changed_files updated for verifier parity only.",
     "2026-09-26 canonical development-line consolidation: added one-authority registry/validator, demoted historical UI authority, clarified Core Adapter vs Capability runtime boundary, wrapped imported AIOps legacy authority, and recorded branch cleanup wave 1. changed_files updated for verifier parity only.",
-    "2026-09-26 Development Continuity: Work-owned branches, RESUME BEFORE CREATE, branch-budget/lifetime audit, Duty to Warn, scheduled repository audit, and PR branch-name enforcement added. Canon Guard remains PR-local conflict authority; continuity audit covers repository-wide branch debt. changed_files updated for verifier parity only."
+    "2026-09-26 Development Continuity: Work-owned branches, RESUME BEFORE CREATE, branch-budget/lifetime audit, Duty to Warn, scheduled repository audit, and PR branch-name enforcement added. Canon Guard remains PR-local conflict authority; continuity audit covers repository-wide branch debt. changed_files updated for verifier parity only.",
+    "2026-09-26 historical branch retirement: exact-head retirement manifest added for branches already classified HISTORICAL/SUPERSEDED; moved heads fail closed and ERP UI review remains excluded. changed_files updated for verifier parity only."
   ]
 }
