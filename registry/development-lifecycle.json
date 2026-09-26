@@ -9,7 +9,14 @@
     "examples": [
       "현재 단계: DEV-04/10 TEST — 브랜치에서 직접 기능을 확인 중",
       "다음 단계: DEV-05/10 COMMIT — 검증된 변경을 저장"
-    ]
+    ],
+    "allowed_stage_status": [
+      "DONE",
+      "IN_PROGRESS",
+      "N/A",
+      "HOLD"
+    ],
+    "na_rule": "Use N/A only when the project has no applicable build or release target; include the reason and do not pretend the stage passed."
   },
   "model": {
     "linear_for_reporting_not_execution": true,
