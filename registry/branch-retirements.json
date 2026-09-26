@@ -24,10 +24,10 @@
     },
     {
       "branch": "feat/capability-engine-v1",
-      "expected_head_sha": "59696404cff79b169e7235ba90f0f6950bae2b6d",
+      "expected_head_sha": "cc072791dbd454a7f9e3a33b3b5c49a8ffddbdd0",
       "classification": "SUPERSEDED",
-      "reason": "Explicitly superseded capability-engine development line.",
-      "evidence": "pr:72"
+      "reason": "Superseded capability-engine line; its late authority verifier was replaced by the stronger canonical src/engine/control-tower-authority.mjs bridge on main.",
+      "evidence": "main:src/engine/control-tower-authority.mjs;pr:72"
     },
     {
       "branch": "codex/ui-ux-new-project-starter",
