@@ -51,15 +51,28 @@ test('stale unique work is never silently treated as healthy',()=>{
   assert.notEqual(r.status,'PASS');
 });
 
-test('cleanup selector only returns old branches with zero unique commits',()=>{
+test('cleanup selector returns old contained branches and exact merged PR heads',()=>{
   const selected=selectRetirableBranches({minAgeHours:24,branches:[
     {name:'old-contained',ahead:0,behind:50,age_hours:72},
     {name:'fresh-contained',ahead:0,behind:1,age_hours:2},
     {name:'old-unique',ahead:1,behind:50,age_hours:100},
+    {name:'just-merged-squash',ahead:5,behind:12,age_hours:0.1,merged_pr_head_exact:true},
+    {name:'moved-after-merge',ahead:6,behind:12,age_hours:100,merged_pr_head_exact:false},
     {name:'main',ahead:0,behind:0,age_hours:1000},
     {name:'protected-contained',ahead:0,behind:50,age_hours:72,protected:true}
   ]});
-  assert.deepEqual(selected.map(x=>x.name),['old-contained']);
+  assert.deepEqual(selected.map(x=>x.name),['old-contained','just-merged-squash']);
+});
+
+test('exact merged PR head is classified as merged-equivalent rather than unique debt',()=>{
+  const r=analyzeBranchInventory({policy,profile:'COMPLEX',branches:[
+    {name:'work/p/DONE',ahead:9,behind:20,age_hours:1,merged_pr_head_exact:true},
+    {name:'work/p/ACTIVE',ahead:2,behind:0,age_hours:1}
+  ]});
+  assert.equal(r.metrics.merged_pr_head_exact_branches,1);
+  assert.equal(r.metrics.merged_equivalent_branches,1);
+  assert.equal(r.metrics.unique_ahead_branches,1);
+  assert.deepEqual(r.samples.merged_pr_head_exact,['work/p/DONE']);
 });
 
 test('cleanup selector rejects an invalid minimum age',()=>{
