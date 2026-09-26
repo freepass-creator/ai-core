@@ -179,6 +179,11 @@
         {
           "branch": "docs/claude-codex-desk",
           "expires": "2026-10-07"
+        },
+        {
+          "branch": "claude/ai-core-integration-standardization-ntmoli",
+          "expires": "2026-10-07",
+          "reason": "이 Claude 세션에 배정된 가지 이름이라 세션이 바꿀 수 없다. 다음 세션부터 work/<project>/<work-id> 로 연다."
         }
       ]
     }

@@ -24,6 +24,13 @@ export function canonicalPaths(registry) {
 
 export const touches = (file, root) => (root.endsWith('/') || !root.includes('.') ? file.startsWith(root) : file === root);
 
+/** 두 PR 이 같은 정본을 고칠 때 누가 쥐나 — 먼저 연 쪽. 같은 시각이면 번호가 작은 쪽. */
+export function winsOver(other, me) {
+  if (!me) return true;
+  const a = Date.parse(other.created_at), b = Date.parse(me.created_at);
+  return a < b || (a === b && other.number < me.number);
+}
+
 export function overlaps(myFiles, otherFiles, roots) {
   const mine = roots.filter(r => myFiles.some(f => touches(f, r)));
   return mine.filter(r => otherFiles.some(f => touches(f, r)));
@@ -89,15 +96,18 @@ async function main() {
     if (!token || !repo) console.log(`SKIPPED: open-PR overlap check (no GITHUB_TOKEN/GITHUB_REPOSITORY) — this PR touches canonical ${touched.join(', ')}`);
     else {
       const open = await gh(`/repos/${repo}/pulls?state=open&per_page=100`, token);
+      const me = open.find(pr => pr.number === self);
       for (const pr of open) {
         if (pr.number === self) continue;
         const shared = overlaps(myFiles, await prFiles(repo, pr.number, token), touched);
         if (!shared.length) continue;
-        // 초안끼리는 막지 않되 보이게 한다 — 초안이 «준비 완료» 로 바뀌는 순간 둘 중 하나는 여기서 막힌다.
-        if (pr.draft) console.log(`notice: draft PR #${pr.number} (${pr.head.ref}) also changes ${shared.join(', ')}`);
-        else errors.push(`CANONICAL_PATH_CONTESTED: PR #${pr.number} (${pr.head.ref}) also changes ${shared.join(', ')} — finish or close one first`);
+        // ★먼저 연 PR 이 그 정본을 쥔다(초안 포함 — 초안은 「이 개발선을 잡았다」는 표시다).
+        //   늦게 연 PR 만 빨갛다 → RESUME BEFORE CREATE: 그 PR 의 Work 가지에 이어 커밋한다.
+        //   전에는 준비된 PR 둘이 서로를 막고 초안은 아무도 막지 않았다.
+        if (winsOver(pr, me)) errors.push(`CANONICAL_PATH_CONTESTED: PR #${pr.number} (${pr.head.ref}, opened ${pr.created_at}) already holds ${shared.join(', ')} — resume that Work branch instead of a second PR, or close one`);
+        else console.log(`notice: later PR #${pr.number} (${pr.head.ref}) also changes ${shared.join(', ')} — it must resume this branch`);
       }
-      if (!errors.some(e => e.startsWith('CANONICAL_PATH_CONTESTED'))) console.log(`ok: no other ready PR changes ${touched.join(', ')}`);
+      if (!errors.some(e => e.startsWith('CANONICAL_PATH_CONTESTED'))) console.log(`ok: this PR holds ${touched.join(', ')} (no earlier open PR changes it)`);
     }
   }
   if (errors.length) { errors.forEach(e => console.error(`FAIL: ${e}`)); process.exitCode = 1; }
