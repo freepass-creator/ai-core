@@ -272,6 +272,14 @@
           "priority": "P0",
           "evidence_refs": [],
           "action": "Bind native/fallback/recovery attempts to one logical_execution_id after current production revision re-audit; keep recovery eligibility in D."
+        },
+        {
+          "contract_id": "governance.activation-decision.v1",
+          "classification": "NOT_APPLICABLE",
+          "binding_state": "NONE",
+          "priority": "NA",
+          "evidence_refs": [],
+          "action": "AI Core governance contract: project observes and reports evidence but does not own canonical activation authority."
         }
       ],
       "next_gate": "Keep source-registry SHADOW; add snapshot shadow plus truthful BEST_EFFORT_BATCH pipeline and durable partial-result receipt before validating ERP4 publication flow."
@@ -543,6 +551,14 @@
           "priority": "P1",
           "evidence_refs": [],
           "action": "Introduce logical execution identity where retries, provider attempts, asynchronous continuation, or recovery paths can represent one business execution."
+        },
+        {
+          "contract_id": "governance.activation-decision.v1",
+          "classification": "NOT_APPLICABLE",
+          "binding_state": "NONE",
+          "priority": "NA",
+          "evidence_refs": [],
+          "action": "AI Core governance contract: project observes and reports evidence but does not own canonical activation authority."
         }
       ],
       "next_gate": "Bind Core port/engine/adapter/source/snapshot contracts to the existing backend architecture before production persistence/auth adapters are introduced."
@@ -814,6 +830,14 @@
           "priority": "P1",
           "evidence_refs": [],
           "action": "Introduce logical execution identity where retries, provider attempts, asynchronous continuation, or recovery paths can represent one business execution."
+        },
+        {
+          "contract_id": "governance.activation-decision.v1",
+          "classification": "NOT_APPLICABLE",
+          "binding_state": "NONE",
+          "priority": "NA",
+          "evidence_refs": [],
+          "action": "AI Core governance contract: project observes and reports evidence but does not own canonical activation authority."
         }
       ],
       "next_gate": "Extract one save/external-action boundary and shadow Core request/error/event/receipt semantics without rewriting the sales UI."
@@ -1090,6 +1114,14 @@
           "priority": "P1",
           "evidence_refs": [],
           "action": "Introduce logical execution identity where retries, provider attempts, asynchronous continuation, or recovery paths can represent one business execution."
+        },
+        {
+          "contract_id": "governance.activation-decision.v1",
+          "classification": "NOT_APPLICABLE",
+          "binding_state": "NONE",
+          "priority": "NA",
+          "evidence_refs": [],
+          "action": "AI Core governance contract: project observes and reports evidence but does not own canonical activation authority."
         }
       ],
       "next_gate": "Shadow-bind quote execution/provider/snapshot to Core adapter/source/snapshot/receipt contracts and prove equivalence in the estimator verify command."
