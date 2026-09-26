@@ -33,6 +33,8 @@ test('human development standard exposes the same numbered vocabulary', async ()
   }
   assert.match(body, /현재 단계: DEV-07\/10 CI/);
   assert.match(body, /다음 단계: DEV-08\/10 MERGE/);
+  assert.match(body, /DONE \/ IN_PROGRESS \/ N\/A \/ HOLD/);
+  assert.match(body, /N\/A — 배포 대상 없음/);
 });
 
 test('AI work result requires development stage reporting', async () => {
