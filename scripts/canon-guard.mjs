@@ -53,6 +53,7 @@ const KNOWN_BAD = [
   ['second token definition outside canon', { 'app/page.css': ':root {\n  --color-primary: #1b2a4a;\n}\n' }, {}, 'DEFINITION_OUTSIDE_CANON'],
   ['historical file claims authority', { 'design/old/tokens.json': '{"note":"이 파일이 값의 정본이다"}\n' }, {}, 'HISTORICAL_MARKER_MISSING'],
   ['entry file diverged', { 'GEMINI.md': '# other rules\nuse any branch\nfreely\nmore\n' }, {}, 'ENTRY_FILE_DIVERGED'],
+  ['workflow pinned as the last line of a step', { '.github/workflows/ci.yml': 'jobs:\n  a:\n    steps:\n      - name: engine\n        uses: actions/checkout@v4\n        with:\n          # 설명 주석\n          ref: 3c98e1b616392ee6d47e07c7d08dbb30320f67ff\n      - name: next\n        uses: actions/checkout@v4\n        with:\n          ref: ${{ github.workflow_sha }}\n' }, {}, 'WORKFLOW_REF_PINNED'],
   ['workflow pinned to a commit', { '.github/workflows/ci.yml': 'jobs:\n  a:\n    steps:\n      - uses: actions/checkout@v4\n        with:\n          ref: 3c98e1b6\n' }, {}, 'WORKFLOW_REF_PINNED'],
   ['expired baseline', { 'app/page.css': ':root {\n  --x: 1px;\n}\n' }, { baseline: [{ guard: 'css-token-definition', path: 'app/page.css', expires: '2000-01-01' }] }, 'BASELINE_EXPIRED'],
   ['stale baseline', {}, { baseline: [{ guard: 'css-token-definition', path: 'app/gone.css', expires: '2999-01-01' }] }, 'BASELINE_STALE'],

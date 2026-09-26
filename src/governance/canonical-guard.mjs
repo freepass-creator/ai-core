@@ -120,7 +120,8 @@ function checkWorkflowRefs(base, files, config, found) {
     const blocks = text.split(/\n\s*-\s+(?=uses:|name:)/);
     for (const block of blocks) {
       if (!/uses:\s*actions\/checkout@/.test(block)) continue;
-      const ref = block.match(/\n\s+ref:\s*['"]?([^'"\n#]+?)['"]?\s*(?:#.*)?\n/);
+      // 단계로 자르면 ref: 가 조각의 «마지막 줄»이 되어 뒤 줄바꿈이 없을 수 있다(freepasserp4 발행기가 그랬다).
+      const ref = `${block}\n`.match(/\n\s+ref:[ \t]*['"]?([^'"\n#]+?)['"]?[ \t]*(?:#[^\n]*)?\n/);
       if (!ref) continue;
       const value = ref[1].trim();
       if (value.startsWith('${{') || allowed.has(value)) continue;
