@@ -87,10 +87,10 @@ Canon Guard의 `canon:branch`는 **현재 PR 하나가 main에서 너무 멀거�
 
 현 DevCenter Integration Hub와 의미를 대조한 뒤 retire한다.
 
-### 별도 검토가 필요한 현행 충돌선
-- `claude/erp-platform-ui-ux-hvfyfa` (PR #283)
+### 검토 완료된 ERP UI 계보
+- `claude/erp-platform-ui-ux-hvfyfa` (PR #283) — **SUPERSEDED**
 
-ERP 패턴 중 회수할 것은 현재 `design-system/` 정본에 흡수하고, 별도 ERP UI 정본을 추가하지 않는다. PR 전체를 그대로 병합하는 방식은 사용하지 않는다.
+2026-09-26 재검토 결과, 이 가지의 공통 의미는 현재 main의 `data.filter/list/detail/card`, `system.portable-task-panel`, `system.responsive`, `navigation.header`, `navigation.bottom-action`으로 이미 일반화되어 있다. 가지의 별도 ERP 색상·타이포·radius 값은 현재 전역 `design-system/tokens.json`과 경쟁하므로 두 번째 정본으로 회수하지 않는다. 따라서 PR 전체 병합이나 `design/erp-standard/` 복제 없이 역사 계보로 retire한다.
 
 ## Adapter 단일화
 
