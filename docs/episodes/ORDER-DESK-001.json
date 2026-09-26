@@ -1026,6 +1026,7 @@
     "test/design-system-react.test.mjs",
     "test/devcenter-physical-copy.test.mjs",
     "test/development-continuity-audit.test.mjs",
+    "test/development-continuity-lanes.test.mjs",
     "test/development-lifecycle.test.mjs",
     "test/direction-authorization-scope.test.mjs",
     "test/direction-registry.test.mjs",
