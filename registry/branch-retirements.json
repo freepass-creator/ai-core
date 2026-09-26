@@ -1,0 +1,68 @@
+{
+  "schema": "ai-core-branch-retirements/v1",
+  "updated_at": "2026-09-26",
+  "policy": {
+    "exact_head_sha_required": true,
+    "branch_move_blocks_retirement": true,
+    "main_forbidden": true,
+    "protected_forbidden": true
+  },
+  "entries": [
+    {
+      "branch": "feature/orchestrator-v0.1",
+      "expected_head_sha": "6184a83151ee638db255093ecd8ac5e38c39b936",
+      "classification": "HISTORICAL",
+      "reason": "Superseded orchestration prototype; current runtime is canonical elsewhere.",
+      "evidence": "commit:6184a83151ee638db255093ecd8ac5e38c39b936"
+    },
+    {
+      "branch": "feature/cognitive-runtime-v0.6",
+      "expected_head_sha": "4178339dec64d44de54bda66b5060af5e220b887",
+      "classification": "HISTORICAL",
+      "reason": "Superseded cognitive runtime prototype.",
+      "evidence": "pr:18"
+    },
+    {
+      "branch": "feat/capability-engine-v1",
+      "expected_head_sha": "59696404cff79b169e7235ba90f0f6950bae2b6d",
+      "classification": "SUPERSEDED",
+      "reason": "Explicitly superseded capability-engine development line.",
+      "evidence": "pr:72"
+    },
+    {
+      "branch": "codex/ui-ux-new-project-starter",
+      "expected_head_sha": "5bcf1f842c920907c77770520d09584cb3160b32",
+      "classification": "SUPERSEDED",
+      "reason": "Replaced by current Design System / Academy UI entrypoint.",
+      "evidence": "pr:195"
+    },
+    {
+      "branch": "codex/ui-ux-starter-completion",
+      "expected_head_sha": "dd24126a496d08c39e1b96a36f404872208807d9",
+      "classification": "SUPERSEDED",
+      "reason": "Replaced by current Design System / Academy UI entrypoint.",
+      "evidence": "pr:194"
+    },
+    {
+      "branch": "codex/ui-ux-starter-runtime",
+      "expected_head_sha": "8c0ac21e7a7240cfc9b9348f5ba6276ea6a8aa56",
+      "classification": "SUPERSEDED",
+      "reason": "Replaced by current Design System / Academy UI entrypoint.",
+      "evidence": "pr:196"
+    },
+    {
+      "branch": "work/gpt/ui-ux-universal-contract-v1",
+      "expected_head_sha": "10364e4fc551aef8ddc715a1fcb53de0021d6b91",
+      "classification": "SUPERSEDED",
+      "reason": "Current UI/UX registry and Design System are canonical.",
+      "evidence": "pr:89"
+    },
+    {
+      "branch": "feat/connector-registry-v1",
+      "expected_head_sha": "ecc48148604986f9ed75f8dea061cdfa0bc10bec",
+      "classification": "SUPERSEDED",
+      "reason": "Current DevCenter Integration Hub owns connector canon.",
+      "evidence": "commit:ecc48148604986f9ed75f8dea061cdfa0bc10bec"
+    }
+  ]
+}
