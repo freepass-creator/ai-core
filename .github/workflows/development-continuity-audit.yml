@@ -1,12 +1,19 @@
 name: Development Continuity Audit
 
 on:
+  push:
+    branches:
+      - main
   schedule:
     - cron: '17 */6 * * *'
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
+
+concurrency:
+  group: development-continuity-audit
+  cancel-in-progress: false
 
 jobs:
   audit:
@@ -19,5 +26,5 @@ jobs:
         with:
           node-version: 24.19.0
       - run: npm ci
-      - name: Audit development continuity
-        run: npm run continuity:audit -- --profile COMPLEX --fetch
+      - name: Audit development continuity and prune contained branch debt
+        run: npm run continuity:audit -- --profile COMPLEX --fetch --cleanup-contained --min-age-hours 24
