@@ -1,6 +1,0 @@
-{
-  "checks": [
-    ["npm", "test"],
-    ["npm", "run", "build"]
-  ]
-}

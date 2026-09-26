@@ -1,7 +1,0 @@
-{
-  "contract": "ai-core-ui-ux-governance/v1",
-  "version": "1.0.0",
-  "feature_registry": "registry/ui-ux-features.json",
-  "exceptions": [],
-  "deprecations": []
-}
