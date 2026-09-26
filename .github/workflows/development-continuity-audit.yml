@@ -26,5 +26,7 @@ jobs:
         with:
           node-version: 24.19.0
       - run: npm ci
-      - name: Audit development continuity and prune contained branch debt
+      - name: Audit development continuity and prune merged branch debt
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: npm run continuity:audit -- --profile COMPLEX --fetch --cleanup-contained --min-age-hours 24
