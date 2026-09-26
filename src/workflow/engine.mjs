@@ -378,8 +378,9 @@ export function createWorkflowEngine(workflow, {
     need(Number.isInteger(attempt) && attempt >= 1, 'ATTEMPT_INVALID');
 
     const retry = transition.retry;
-    const retryable = retry.retryable_error_codes.length === 0
-      || retry.retryable_error_codes.includes(error_code);
+    const classifiedError = typeof error_code === 'string' && error_code.trim().length > 0;
+    const retryable = classifiedError && (retry.retryable_error_codes.length === 0
+      || retry.retryable_error_codes.includes(error_code));
 
     if (retry.strategy !== 'NONE' && retryable && attempt < retry.max_attempts) {
       const delay = computeDelay(retry, attempt);
