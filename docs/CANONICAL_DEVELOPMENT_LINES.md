@@ -105,3 +105,9 @@ ERP 패턴 중 회수할 것은 현재 `design-system/` 정본에 흡수하고, 
 - 보존 목적
 
 검색이나 AI retrieval이 과거 문서를 현재 정본으로 오인하지 않도록 하기 위함이다.
+
+## AI Core 작업 레인과 프로젝트 소유권
+
+AI Core의 작업은 `core / integration / audit / hardening` 네 레인으로 분류하지만, 레인 자체를 영구 branch로 만들지 않는다. 실제 branch는 구체적인 Work 하나에 대응하는 `work/<project-id>/<work-id>`만 허용한다.
+
+도메인 구현은 원 프로젝트가 소유한다. AI Core는 다른 프로젝트를 감사하거나 공통 규격을 회수할 수 있지만, 과태료·Kakao Ops 같은 제품 기능을 AI Core의 장기 정본으로 복제하지 않는다. 기계용 기준은 `registry/development-continuity-policy.json#ai_core_work_lanes`다.
