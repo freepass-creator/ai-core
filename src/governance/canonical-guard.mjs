@@ -14,7 +14,8 @@
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join, relative } from 'node:path';
 
-const SKIP_DIRS = new Set(['.git', 'node_modules', '.next', 'dist', 'build', 'coverage', '.turbo', '.vercel']);
+// .canon-guard = 재사용 워크플로가 호출 저장소 안에 받아 둔 AI Core 사본. 호출 저장소의 파일이 아니다.
+const SKIP_DIRS = new Set(['.git', '.canon-guard', 'node_modules', '.next', 'dist', 'build', 'coverage', '.turbo', '.vercel']);
 const CLAIM = /(정본|canonical|SSOT|single source of truth)/i;
 export const NOT_CANONICAL = 'NOT_CANONICAL';
 

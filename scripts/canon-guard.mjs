@@ -47,6 +47,8 @@ const clean = {
   'CLAUDE.md': '# rules\nuse main\n',
   'GEMINI.md': 'Read AGENTS.md.\n',
   '.github/workflows/ci.yml': 'jobs:\n  a:\n    steps:\n      - uses: actions/checkout@v4\n        with:\n          ref: main\n',
+  // 워크플로가 받아 둔 AI Core 사본 — 정의가 있어도 호출 저장소의 위반이 아니다(welrixtable 에서 오탐).
+  '.canon-guard/design/x.css': ':root {\n  --color-primary: #000000;\n}\n',
 };
 
 const KNOWN_BAD = [
