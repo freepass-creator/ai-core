@@ -40,6 +40,8 @@ AI가 교체되어도 branch를 새로 만들지 않는다. checkpoint/handoff �
 3. 기존 개발선이 있으면 **RESUME**한다.
 4. 기존 개발선이 없다는 근거가 있을 때만 **CREATE ONCE**한다.
 
+같은 canonical scope를 이미 고치는 open PR이 있으면(초안 포함) **먼저 연 그 PR이 개발선을 쥔다** — 늦게 연 PR은 canon-guard가 막는다(`scripts/check-branch-discipline.mjs` `winsOver`).
+
 새 branch 생성은 안전한 기본값이 아니다. **기존 개발선 미발견이 증명된 뒤 사용하는 예외 동작**이다.
 
 ## 3. Branch budget

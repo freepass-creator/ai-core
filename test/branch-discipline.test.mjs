@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { validateHeadBranch } from '../scripts/check-branch-discipline.mjs';
+import { validateHeadBranch, winsOver } from '../scripts/check-branch-discipline.mjs';
 
 const policy={
   allowed_head_patterns:['^work/[a-z0-9._-]+/[a-z0-9._-]+$','^dependabot/'],
@@ -23,4 +23,13 @@ test('non-work ad-hoc branch is rejected',()=>{
 test('legacy open PR exception expires',()=>{
   assert.deepEqual(validateHeadBranch('claude/legacy-open-pr',policy,'2026-09-26'),[]);
   assert.match(validateHeadBranch('claude/legacy-open-pr',policy,'2026-10-08')[0],/ACTOR_OWNED_BRANCH_FORBIDDEN/);
+});
+
+test('earliest open PR holds a canonical scope (drafts included)',()=>{
+  const older={number:5,created_at:'2026-09-26T00:00:00Z'};
+  const newer={number:9,created_at:'2026-09-26T01:00:00Z'};
+  assert.equal(winsOver(older,newer),true);
+  assert.equal(winsOver(newer,older),false);
+  assert.equal(winsOver({number:3,created_at:older.created_at},older),true);
+  assert.equal(winsOver(older,undefined),true);
 });
