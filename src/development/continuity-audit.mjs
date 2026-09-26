@@ -20,9 +20,10 @@ export function selectRetirableBranches({branches=[], minAgeHours=24, nowMs=Date
         ? b.age_hours
         : Number.isFinite(b.commit_time_ms) ? Math.max(0,(nowMs-b.commit_time_ms)/3600000) : null;
       const ahead=Number.isInteger(b.ahead)?b.ahead:null;
-      return {...b,ahead,age_hours:ageHours};
+      const mergedPrHeadExact=b.merged_pr_head_exact===true;
+      return {...b,ahead,age_hours:ageHours,merged_pr_head_exact:mergedPrHeadExact};
     })
-    .filter(b=>b.ahead===0 && Number.isFinite(b.age_hours) && b.age_hours>=threshold)
+    .filter(b=>b.merged_pr_head_exact===true || (b.ahead===0 && Number.isFinite(b.age_hours) && b.age_hours>=threshold))
     .sort((a,b)=>b.age_hours-a.age_hours || a.name.localeCompare(b.name));
 }
 
@@ -41,15 +42,18 @@ export function analyzeBranchInventory({branches=[], policy, profile='STANDARD',
         : Number.isFinite(b.commit_time_ms) ? Math.max(0,(nowMs-b.commit_time_ms)/3600000) : null;
       const ahead=Number.isInteger(b.ahead)?b.ahead:null;
       const behind=Number.isInteger(b.behind)?b.behind:null;
-      const unique=ahead!==null ? ahead>0 : null;
+      const mergedPrHeadExact=b.merged_pr_head_exact===true;
+      const unique=ahead!==null ? ahead>0 && !mergedPrHeadExact : null;
       return {
         ...b, ahead, behind, age_hours:ageHours, unique,
+        merged_pr_head_exact:mergedPrHeadExact,
         actor_prefixed:ACTOR_PREFIXES.some(prefix=>b.name.startsWith(prefix)),
       };
     });
 
   const knownUnique=normalized.filter(b=>b.unique===true);
-  const mergedEquivalent=normalized.filter(b=>b.unique===false);
+  const mergedPrHeadExact=normalized.filter(b=>b.merged_pr_head_exact===true);
+  const mergedEquivalent=normalized.filter(b=>b.ahead===0 || b.merged_pr_head_exact===true);
   const recentUnique=knownUnique.filter(b=>b.age_hours!==null && b.age_hours<=recentProxyHours);
   const staleUnique=knownUnique.filter(b=>b.age_hours!==null && b.age_hours>criticalHours);
   const actorPrefixedUnique=knownUnique.filter(b=>b.actor_prefixed);
@@ -98,6 +102,7 @@ export function analyzeBranchInventory({branches=[], policy, profile='STANDARD',
       unique_ahead_branches:knownUnique.length,
       recent_unique_branch_proxy:recentUnique.length,
       merged_equivalent_branches:mergedEquivalent.length,
+      merged_pr_head_exact_branches:mergedPrHeadExact.length,
       stale_unique_branches:staleUnique.length,
       actor_prefixed_unique_branches:actorPrefixedUnique.length,
       unique_branch_age_p50_hours:percentile(.5),
@@ -109,6 +114,7 @@ export function analyzeBranchInventory({branches=[], policy, profile='STANDARD',
       recent_unique:recentUnique.slice(0,20).map(b=>b.name),
       stale_unique:staleUnique.slice(0,20).map(b=>b.name),
       merged_equivalent:mergedEquivalent.slice(0,20).map(b=>b.name),
+      merged_pr_head_exact:mergedPrHeadExact.slice(0,20).map(b=>b.name),
       actor_prefixed_unique:actorPrefixedUnique.slice(0,20).map(b=>b.name),
     }
   };
