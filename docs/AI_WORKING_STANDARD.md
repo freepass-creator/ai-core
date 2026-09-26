@@ -142,6 +142,7 @@ AI는 사용자가 어떤 개발 용어를 말하지 않았다는 이유로 그 
 
 - 목적: 사용자가 실제로 원한 결과
 - 대상: repo/source, branch 또는 문서 ID, 확인한 revision/time
+- 개발단계: 개발 작업이면 `DEV-XX/10 NAME` + 다음 단계 (정본: `registry/development-lifecycle.json`)
 - 변경: 실제로 바뀐 파일·데이터·상태
 - 검증: 실행한 검사와 결과, 실제 소비자 확인 여부
 - 남음: 미검증·실패·위험·HOLD
