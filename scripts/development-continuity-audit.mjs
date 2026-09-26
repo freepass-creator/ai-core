@@ -24,6 +24,26 @@ if(refresh){
 
 const policy=JSON.parse(await readFile(resolve(coreRoot,'registry/development-continuity-policy.json'),'utf8'));
 const mainRef=(()=>{try{return git(['rev-parse','refs/remotes/origin/main']);}catch{return git(['rev-parse','main']);}})();
+
+const mergedPrHeads=new Map();
+const mergedPrObservation={status:'UNAVAILABLE',count:0};
+try{
+  const raw=execFileSync('gh',[
+    'pr','list','--state','merged','--limit','1000',
+    '--json','number,headRefName,headRefOid,mergedAt'
+  ],{cwd:root,encoding:'utf8',windowsHide:true}).trim();
+  const prs=JSON.parse(raw || '[]');
+  for(const pr of prs){
+    if(!pr?.headRefName || !pr?.headRefOid) continue;
+    const prior=mergedPrHeads.get(pr.headRefName);
+    if(!prior || String(pr.mergedAt ?? '')>String(prior.merged_at ?? '')){
+      mergedPrHeads.set(pr.headRefName,{sha:pr.headRefOid,number:pr.number,merged_at:pr.mergedAt ?? null});
+    }
+  }
+  mergedPrObservation.status='OBSERVED';
+  mergedPrObservation.count=prs.length;
+}catch{}
+
 const refs=git(['for-each-ref','--format=%(refname:short)|%(objectname)|%(committerdate:unix)','refs/remotes/origin'])
   .split(/\r?\n/).filter(Boolean);
 
@@ -39,13 +59,22 @@ for(const line of refs){
     const counts=git(['rev-list','--left-right','--count',`${mainRef}...${sha}`]).split(/\s+/).map(Number);
     behind=counts[0]; ahead=counts[1];
   }catch{}
-  branches.push({name,sha,ahead,behind,commit_time_ms:Number(unix)*1000,age_hours:(nowMs-Number(unix)*1000)/3600000});
+  const mergedPr=mergedPrHeads.get(name);
+  const mergedPrHeadExact=Boolean(mergedPr && mergedPr.sha===sha);
+  branches.push({
+    name,sha,ahead,behind,
+    commit_time_ms:Number(unix)*1000,
+    age_hours:(nowMs-Number(unix)*1000)/3600000,
+    merged_pr_head_exact:mergedPrHeadExact,
+    merged_pr_number:mergedPrHeadExact ? mergedPr.number : null
+  });
 }
 
 const report=analyzeBranchInventory({branches,policy,profile,nowMs});
 report.repository=(()=>{try{return git(['remote','get-url','origin']);}catch{return null;}})();
 report.main_revision=mainRef;
 report.observed_at=new Date(nowMs).toISOString();
+report.merged_pr_observation=mergedPrObservation;
 
 const cleanup={
   requested:cleanupContained,
