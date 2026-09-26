@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { analyzeBranchInventory, selectRetirableBranches } from '../src/development/continuity-audit.mjs';
+import { analyzeBranchInventory, selectRetirableBranches, selectApprovedRetirements } from '../src/development/continuity-audit.mjs';
 
 const policy={
   profiles:{
@@ -77,4 +77,22 @@ test('exact merged PR head is classified as merged-equivalent rather than unique
 
 test('cleanup selector rejects an invalid minimum age',()=>{
   assert.throws(()=>selectRetirableBranches({branches:[],minAgeHours:-1}),/CONTINUITY_CLEANUP_MIN_AGE_INVALID/);
+});
+
+
+test('approved retirement requires exact branch head SHA',()=>{
+  const selected=selectApprovedRetirements({
+    branches:[
+      {name:'old-history',sha:'aaa',ahead:9,protected:false},
+      {name:'moved-history',sha:'new',ahead:4,protected:false},
+      {name:'protected-history',sha:'ccc',protected:true}
+    ],
+    retirements:[
+      {branch:'old-history',expected_head_sha:'aaa',classification:'HISTORICAL'},
+      {branch:'moved-history',expected_head_sha:'old',classification:'SUPERSEDED'},
+      {branch:'protected-history',expected_head_sha:'ccc',classification:'HISTORICAL'}
+    ]
+  });
+  assert.deepEqual(selected.map(x=>x.name),['old-history']);
+  assert.equal(selected[0].retirement.classification,'HISTORICAL');
 });
