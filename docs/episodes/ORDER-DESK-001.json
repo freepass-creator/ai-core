@@ -1079,6 +1079,7 @@
     "test/project-audit-aiops-result.test.mjs",
     "test/project-audit-erp4-result.test.mjs",
     "test/project-audit-estimate-result.test.mjs",
+    "test/project-audit-readiness-machine-source.test.mjs",
     "test/project-audit-readiness.test.mjs",
     "test/project-audit-result.test.mjs",
     "test/project-capsule-schema.test.mjs",
