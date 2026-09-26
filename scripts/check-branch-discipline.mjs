@@ -38,7 +38,7 @@ export function validateHeadBranch(headRef, policy = {}, today = new Date().toIS
   if (actor) return [`ACTOR_OWNED_BRANCH_FORBIDDEN: ${headRef} starts with ${actor} — resume/create work/<project-id>/<work-id>`];
   const patterns = policy.allowed_head_patterns ?? [];
   if (!patterns.length) return [];
-  const allowed = patterns.some(pattern => new RegExp(pattern).test(headRef));
+  const allowed = patterns.some(pattern => new RegExp(pattern, 'i').test(headRef));
   return allowed ? [] : [`WORK_BRANCH_REQUIRED: ${headRef} — use work/<project-id>/<work-id> or an explicitly allowed automation branch`];
 }
 
