@@ -30,6 +30,12 @@ test('working standard preserves the start, result, handoff, learning and comple
   assert.match(body, /Cursor Agent와 Gemini CLI는 기본 협업 풀에서 제외한다/);
   assert.match(body, /npm run reuse:check/);
   assert.match(body, /CREATE_NEW_JUSTIFIED/);
+  assert.match(body, /## 1\.2 Operator Essential Knowledge/);
+  assert.match(body, /생활 비유:[\s\S]*정식 용어:[\s\S]*현재 위험:[\s\S]*AI 오더:/);
+  assert.match(body, /사용자가 보호 규칙의 이름을 알아야 보호받는 구조는 실패다/);
+  for (const concept of ['main / branch / commit / PR / merge / conflict', 'DB schema / migration / backup / rollback', 'Dev / Staging / Production']) {
+    assert.ok(body.includes(concept), `missing operator-essential concept: ${concept}`);
+  }
 });
 
 test('academy curriculum separates document classes and covers real work tracks', async () => {
