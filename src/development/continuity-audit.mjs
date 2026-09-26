@@ -9,6 +9,23 @@ export function profilePolicy(policy, profile='STANDARD') {
   return selected;
 }
 
+export function selectRetirableBranches({branches=[], minAgeHours=24, nowMs=Date.now()}={}) {
+  const threshold=Number(minAgeHours);
+  if(!Number.isFinite(threshold) || threshold<0) throw new Error('CONTINUITY_CLEANUP_MIN_AGE_INVALID');
+
+  return branches
+    .filter(b=>b && b.name && b.name!=='main' && b.protected!==true)
+    .map(b=>{
+      const ageHours=Number.isFinite(b.age_hours)
+        ? b.age_hours
+        : Number.isFinite(b.commit_time_ms) ? Math.max(0,(nowMs-b.commit_time_ms)/3600000) : null;
+      const ahead=Number.isInteger(b.ahead)?b.ahead:null;
+      return {...b,ahead,age_hours:ageHours};
+    })
+    .filter(b=>b.ahead===0 && Number.isFinite(b.age_hours) && b.age_hours>=threshold)
+    .sort((a,b)=>b.age_hours-a.age_hours || a.name.localeCompare(b.name));
+}
+
 export function analyzeBranchInventory({branches=[], policy, profile='STANDARD', nowMs=Date.now()}={}) {
   const p=profilePolicy(policy, profile);
   const targetHours=policy?.branch_age_hours?.target ?? 24;
