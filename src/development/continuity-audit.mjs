@@ -27,6 +27,20 @@ export function selectRetirableBranches({branches=[], minAgeHours=24, nowMs=Date
     .sort((a,b)=>b.age_hours-a.age_hours || a.name.localeCompare(b.name));
 }
 
+export function selectApprovedRetirements({branches=[], retirements=[]}={}) {
+  const byName=new Map(branches.filter(Boolean).map(b=>[b.name,b]));
+  return retirements
+    .filter(r=>r?.branch && r?.expected_head_sha)
+    .map(r=>{
+      const branch=byName.get(r.branch);
+      if(!branch || branch.name==='main' || branch.protected===true) return null;
+      if(branch.sha!==r.expected_head_sha) return null;
+      return {...branch,retirement:r};
+    })
+    .filter(Boolean)
+    .sort((a,b)=>a.name.localeCompare(b.name));
+}
+
 export function analyzeBranchInventory({branches=[], policy, profile='STANDARD', nowMs=Date.now()}={}) {
   const p=profilePolicy(policy, profile);
   const targetHours=policy?.branch_age_hours?.target ?? 24;

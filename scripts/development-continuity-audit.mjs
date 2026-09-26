@@ -2,7 +2,7 @@ import { execFileSync } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { analyzeBranchInventory, selectRetirableBranches } from '../src/development/continuity-audit.mjs';
+import { analyzeBranchInventory, selectRetirableBranches, selectApprovedRetirements } from '../src/development/continuity-audit.mjs';
 
 const coreRoot=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 const argv=process.argv.slice(2);
@@ -23,6 +23,10 @@ if(refresh){
 }
 
 const policy=JSON.parse(await readFile(resolve(coreRoot,'registry/development-continuity-policy.json'),'utf8'));
+let retirementRegistry={entries:[]};
+try{
+  retirementRegistry=JSON.parse(await readFile(resolve(coreRoot,'registry/branch-retirements.json'),'utf8'));
+}catch{}
 const mainRef=(()=>{try{return git(['rev-parse','refs/remotes/origin/main']);}catch{return git(['rev-parse','main']);}})();
 
 const mergedPrHeads=new Map();
@@ -80,12 +84,22 @@ const cleanup={
   requested:cleanupContained,
   min_age_hours:minAgeHours,
   candidates:[],
+  approved_retirements:[],
   deleted:[],
   failed:[]
 };
 
 if(cleanupContained){
-  const candidates=selectRetirableBranches({branches,minAgeHours,nowMs});
+  const automatic=selectRetirableBranches({branches,minAgeHours,nowMs});
+  const approved=selectApprovedRetirements({branches,retirements:retirementRegistry.entries ?? []});
+  cleanup.approved_retirements=approved.map(b=>({
+    branch:b.name,
+    classification:b.retirement.classification ?? null,
+    evidence:b.retirement.evidence ?? null
+  }));
+  const byName=new Map();
+  for(const candidate of [...automatic,...approved]) byName.set(candidate.name,candidate);
+  const candidates=[...byName.values()];
   cleanup.candidates=candidates.map(b=>b.name);
 
   for(const branch of candidates){
