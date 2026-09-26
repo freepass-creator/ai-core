@@ -63,6 +63,8 @@ Canon Guard의 `canon:branch`는 **현재 PR 하나가 main에서 너무 멀거�
 
 삭제는 `MERGED_EQUIVALENT` 또는 검토 완료된 `SUPERSEDED/HISTORICAL`만 대상으로 한다.
 
+검토가 끝난 `SUPERSEDED/HISTORICAL` 브랜치는 `registry/branch-retirements.json`에 **브랜치명 + 기대 head SHA**를 함께 고정한다. 실제 원격 head가 그 SHA와 정확히 일치할 때만 자동 retire하며, 이후 커밋이 하나라도 추가되면 삭제하지 않는다.
+
 ## 1차 확정 분류
 
 ### 역사/대체된 엔진 계보
