@@ -73,6 +73,17 @@ AI는 전체 문서를 무차별적으로 읽지 않는다. 다음 순서로 필
 
 오래된 handoff, 계획서, AI 의견은 현재 정본보다 앞설 수 없다. 정본이나 대상이 불명확하면 확인 가능한 부분까지 진행하고, 결과를 추정하지 않고 `HOLD`로 표시한다.
 
+## 1.1 개발 연속성 — 같은 탑을 이어 쌓는다
+
+코드 수정 작업은 [Development Continuity Standard](DEVELOPMENT_CONTINUITY_STANDARD.md)를 추가로 적용한다.
+
+- AI가 branch를 소유하지 않는다. **Work가 branch를 소유**한다.
+- 신규 개발은 `work/<project-id>/<work-id>`를 기본으로 하고 AI 이름을 branch identity로 쓰지 않는다.
+- 개발 시작은 `RESUME BEFORE CREATE`다. 같은 목적의 Work/PR/branch/handoff가 있으면 새 branch를 만들지 않고 이어간다.
+- 같은 canonical scope의 개발선이 둘 이상이거나 branch budget을 넘으면 세 번째 구현을 만들지 않는다.
+- AI는 개발선 분열, 복수 정본, 오래된 unique branch, 겹치는 PR을 발견하면 사용자가 묻지 않아도 먼저 경고한다. 이것은 **Duty to Warn**이다.
+- 복잡한 프로젝트도 무제한 branch를 허용하지 않는다. 병렬성이 필요하면 독립 child work로 분해하고 merge 순서를 명시한다.
+
 ## 2. 작업 규격
 
 모든 AI는 다음 원칙을 지킨다.

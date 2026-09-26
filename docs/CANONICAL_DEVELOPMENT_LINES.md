@@ -9,6 +9,7 @@ AI Core는 같은 관심사에 두 개 이상의 정본을 두지 않는다. 브
 | concern | canonical line | 비고 |
 |---|---|---|
 | UI/UX | `docs/UI_UX_START_HERE.md` → `design-system/` + `registry/ui-ux-*` | `design/claude-v1/`은 역사자료 |
+| Development Continuity | `docs/DEVELOPMENT_CONTINUITY_STANDARD.md` + `registry/development-continuity-policy.json` | repo-wide branch budget/lifetime audit; PR overlap is Canon Guard |
 | Core Contract | `docs/CORE_CONTRACT_STANDARD.md` + `contracts/core-*` + `src/contracts/` | provider Adapter 표준 포함 |
 | Capability Runtime | `src/engine/capability-engine.mjs` | runtime adapter envelope는 Core Adapter 표준을 대체하지 않음 |
 | Workflow | `docs/workflow/WORKFLOW_CONSTITUTION.md` + `src/workflow/` + `registry/workflow-*` | 과거 D1~D8 브랜치는 정본 아님 |
@@ -36,6 +37,19 @@ AI Core는 같은 관심사에 두 개 이상의 정본을 두지 않는다. 브
 - 워크플로 `.github/workflows/canon-guard.yml` 은 모든 PR 에서 돈다(문서만 바꾼 PR 포함 — 정본 주장은 문서에서 생긴다).
 - **다른 저장소**도 같은 형식의 `registry/canonical-development-lines.json` 을 두고, 이 워크플로를 `uses: freepass-creator/ai-core/.github/workflows/canon-guard.yml@<커밋>` 으로 부른다(버전 고정).
 - 검사를 고쳐 통과시키지 않는다. 규칙을 바꾸려면 등록부를 고치고, 그 PR 자체가 이 검사를 통과해야 한다.
+
+## Repository-wide 개발연속성 감사
+
+Canon Guard의 `canon:branch`는 **현재 PR 하나가 main에서 너무 멀거나 같은 canonical path를 다른 ready PR과 동시에 고치는지** 막는다. 별도의 `continuity:audit`는 저장소 전체를 보며 다음을 감사한다.
+
+- active work branch budget
+- 24/48/72시간 branch lifetime
+- stale unique-ahead branch
+- merged-equivalent cleanup debt
+- AI actor-prefixed branch
+- 전체 branch debt와 수렴 추세
+
+두 검사는 경쟁 정본이 아니라 서로 다른 층이다. PR gate는 국소 충돌을 막고, repository audit는 개발선이 전체적으로 흩어지는 것을 찾는다.
 
 ## 브랜치 정리 원칙
 

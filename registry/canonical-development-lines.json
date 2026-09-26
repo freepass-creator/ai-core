@@ -31,6 +31,19 @@
       ]
     },
     {
+      "id": "development-continuity",
+      "canonical_entrypoint": "docs/DEVELOPMENT_CONTINUITY_STANDARD.md",
+      "canonical_roots": [
+        "registry/development-continuity-policy.json",
+        "src/development/continuity-audit.mjs",
+        "scripts/development-continuity-audit.mjs"
+      ],
+      "notes": [
+        "Repository-wide audit layer: branch budget, age, stale unique branches and actor-owned branches.",
+        "PR-level canonical overlap and behind-main checks remain owned by canon:branch."
+      ]
+    },
+    {
       "id": "core-contract",
       "canonical_entrypoint": "docs/CORE_CONTRACT_STANDARD.md",
       "canonical_roots": [
@@ -128,7 +141,46 @@
     "pull_request": {
       "max_behind_main": 30,
       "single_open_pr_per_canonical_path": true,
-      "why": "묵은 가지·같은 정본을 동시에 고치는 PR 이 갈림의 원인이다."
+      "why": "묵은 가지·같은 정본을 동시에 고치는 PR 이 갈림의 원인이다.",
+      "allowed_head_patterns": [
+        "^work/[a-z0-9._-]+/[a-z0-9._-]+$",
+        "^dependabot/",
+        "^renovate/"
+      ],
+      "forbidden_actor_prefixes": [
+        "gpt/",
+        "claude/",
+        "codex/",
+        "cursor/",
+        "gemini/",
+        "work/gpt/",
+        "work/claude/",
+        "work/codex/",
+        "work/cursor/",
+        "work/gemini/"
+      ],
+      "legacy_head_exceptions": [
+        {
+          "branch": "gpt/activation-authority-contract-20260925",
+          "expires": "2026-10-07"
+        },
+        {
+          "branch": "claude/erp-platform-ui-ux-hvfyfa",
+          "expires": "2026-10-07"
+        },
+        {
+          "branch": "integration/shadow-freshness",
+          "expires": "2026-10-07"
+        },
+        {
+          "branch": "integration/docshub-templates",
+          "expires": "2026-10-07"
+        },
+        {
+          "branch": "docs/claude-codex-desk",
+          "expires": "2026-10-07"
+        }
+      ]
     }
   },
   "baseline": [

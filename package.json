@@ -80,7 +80,9 @@
     "checkers:known-bad": "node scripts/check-known-bad.mjs --self-test && node scripts/check-known-bad.mjs",
     "lines:validate": "node scripts/validate-canonical-development-lines.mjs",
     "canon:guard": "node scripts/canon-guard.mjs --self-test && node scripts/canon-guard.mjs",
-    "canon:branch": "node scripts/check-branch-discipline.mjs"
+    "canon:branch": "node scripts/check-branch-discipline.mjs",
+    "continuity:audit": "node scripts/development-continuity-audit.mjs",
+    "continuity:gate": "node scripts/development-continuity-audit.mjs --gate"
   },
   "dependencies": {
     "ajv": "8.20.0",

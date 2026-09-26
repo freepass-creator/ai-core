@@ -29,6 +29,19 @@ export function overlaps(myFiles, otherFiles, roots) {
   return mine.filter(r => otherFiles.some(f => touches(f, r)));
 }
 
+export function validateHeadBranch(headRef, policy = {}, today = new Date().toISOString().slice(0, 10)) {
+  if (!headRef) return [];
+  const exceptions = new Map((policy.legacy_head_exceptions ?? []).map(x => [x.branch, x]));
+  const legacy = exceptions.get(headRef);
+  if (legacy && (!legacy.expires || legacy.expires >= today)) return [];
+  const actor = (policy.forbidden_actor_prefixes ?? []).find(prefix => headRef.startsWith(prefix));
+  if (actor) return [`ACTOR_OWNED_BRANCH_FORBIDDEN: ${headRef} starts with ${actor} — resume/create work/<project-id>/<work-id>`];
+  const patterns = policy.allowed_head_patterns ?? [];
+  if (!patterns.length) return [];
+  const allowed = patterns.some(pattern => new RegExp(pattern, 'i').test(headRef));
+  return allowed ? [] : [`WORK_BRANCH_REQUIRED: ${headRef} — use work/<project-id>/<work-id> or an explicitly allowed automation branch`];
+}
+
 async function gh(path, token) {
   const res = await fetch(`https://api.github.com${path}`, { headers: { authorization: `Bearer ${token}`, accept: 'application/vnd.github+json' } });
   if (!res.ok) throw new Error(`GitHub API ${res.status} ${path}`);
@@ -56,6 +69,8 @@ async function main() {
   const policy = registry.repository_guards?.pull_request ?? {};
   const git = (...a) => execFileSync('git', ['-c', 'core.quotepath=false', ...a], { cwd: root, encoding: 'utf8' }).trim();
   const errors = [];
+  const headRef = process.env.PR_HEAD_REF || process.env.GITHUB_HEAD_REF || null;
+  errors.push(...validateHeadBranch(headRef, policy));
 
   // CI 의 pull_request checkout 은 main 이 이미 합쳐진 병합 커밋이라 HEAD 로 재면 늘 0 이다 — PR 끝 커밋으로 잰다.
   const head = process.env.PR_HEAD_SHA || 'HEAD';

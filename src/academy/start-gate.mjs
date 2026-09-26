@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 
 const TRACK_DOCS = {
-  development: ['docs/AI_ACADEMY_CURRICULUM.md', 'docs/DEVELOPMENT_RUNTIME.md', 'docs/shared-services/SHARED_RELEASE_GATE.md'],
+  development: ['docs/AI_ACADEMY_CURRICULUM.md', 'docs/DEVELOPMENT_CONTINUITY_STANDARD.md', 'docs/DEVELOPMENT_RUNTIME.md', 'docs/shared-services/SHARED_RELEASE_GATE.md'],
   design: ['docs/AI_ACADEMY_CURRICULUM.md', 'docs/UI_UX_CONSTITUTION.md', 'docs/SCREEN_DESIGN_STANDARD.md', 'docs/RESPONSIVE_STANDARD.md', 'docs/ACCESSIBILITY_STANDARD.md'],
   data: ['docs/AI_ACADEMY_CURRICULUM.md', 'docs/CORE_CONTRACT_STANDARD.md', 'docs/workflow/WORKFLOW_CONSTITUTION.md'],
   operations: ['docs/AI_ACADEMY_CURRICULUM.md', 'docs/AI_CORE_OPERATING_PLAYBOOK.md', 'docs/EMERGENCY_RUNBOOK.md'],

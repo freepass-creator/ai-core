@@ -1,14 +1,14 @@
 # Concurrent Local and GitHub Work
 
-Status: `PROPOSED`
+Status: `CURRENT / SUBORDINATE TO DEVELOPMENT CONTINUITY STANDARD`
 
 ## Rule
 
-Each writer owns one branch and one worktree:
+Each **Work** owns one branch and one worktree:
 
-`work/<actor>/<task>`
+`work/<project-id>/<work-id>`
 
-Local Codex, Cursor, Claude, Gemini or a GitHub-hosted worker must not write to the same branch concurrently. Shared truth moves through commits and pull requests. A writer reads another writer's work by fetching its branch or reviewing its PR.
+The writer is a temporary lease holder, not the branch identity. Claude, Codex, GPT or another AI may hand the same Work to one another, but they continue on the same branch after checkpoint/handoff. Two writers must not write to the same Work branch concurrently. Shared truth moves through commits and pull requests.
 
 ## Start a lane
 
@@ -16,10 +16,10 @@ From a clean primary checkout:
 
 ```powershell
 git fetch origin --prune
-git worktree add -b work/cursor/example C:\dev\ai-core-cursor-example origin/main
+git worktree add -b work/ai-core/DEV-EXAMPLE C:\dev\ai-core-dev-example origin/main
 ```
 
-Use a unique actor/task pair. If the branch already exists, inspect its owner and state instead of recreating or force-moving it.
+Resolve the existing Work first. If the Work branch already exists, resume it instead of recreating, suffixing, versioning or force-moving it. A new branch is created only for a new Work with a distinct scope.
 
 ## Validated automatic checkpoint
 
@@ -51,7 +51,7 @@ Copy `examples/development.config.json` to the target repository as `.ai-core/de
 
 The checkpoint tool:
 
-- requires a `work/<actor>/<task>` branch;
+- requires a `work/<project-id>/<work-id>` branch and rejects known AI actor prefixes for new work;
 - accepts exact repository-relative paths, never broad implicit staging;
 - refuses pre-staged changes, directories, path traversal and linked paths whose real location leaves the worktree;
 - requires the lane to have no dirty paths outside the selected set, so checks run against the exact prospective commit;
