@@ -9,27 +9,6 @@
   },
   "entries": [
     {
-      "branch": "feature/orchestrator-v0.1",
-      "expected_head_sha": "6184a83151ee638db255093ecd8ac5e38c39b936",
-      "classification": "HISTORICAL",
-      "reason": "Superseded orchestration prototype; current runtime is canonical elsewhere.",
-      "evidence": "commit:6184a83151ee638db255093ecd8ac5e38c39b936"
-    },
-    {
-      "branch": "feature/cognitive-runtime-v0.6",
-      "expected_head_sha": "4178339dec64d44de54bda66b5060af5e220b887",
-      "classification": "HISTORICAL",
-      "reason": "Superseded cognitive runtime prototype.",
-      "evidence": "pr:18"
-    },
-    {
-      "branch": "feat/capability-engine-v1",
-      "expected_head_sha": "cc072791dbd454a7f9e3a33b3b5c49a8ffddbdd0",
-      "classification": "SUPERSEDED",
-      "reason": "Superseded capability-engine line; its late authority verifier was replaced by the stronger canonical src/engine/control-tower-authority.mjs bridge on main.",
-      "evidence": "main:src/engine/control-tower-authority.mjs;pr:72"
-    },
-    {
       "branch": "codex/ui-ux-new-project-starter",
       "expected_head_sha": "5bcf1f842c920907c77770520d09584cb3160b32",
       "classification": "SUPERSEDED",
@@ -51,11 +30,11 @@
       "evidence": "pr:196"
     },
     {
-      "branch": "work/gpt/ui-ux-universal-contract-v1",
-      "expected_head_sha": "10364e4fc551aef8ddc715a1fcb53de0021d6b91",
+      "branch": "feat/capability-engine-v1",
+      "expected_head_sha": "cc072791dbd454a7f9e3a33b3b5c49a8ffddbdd0",
       "classification": "SUPERSEDED",
-      "reason": "Current UI/UX registry and Design System are canonical.",
-      "evidence": "pr:89"
+      "reason": "Superseded capability-engine line; its late authority verifier was replaced by the stronger canonical src/engine/control-tower-authority.mjs bridge on main.",
+      "evidence": "main:src/engine/control-tower-authority.mjs;pr:72"
     },
     {
       "branch": "feat/connector-registry-v1",
@@ -63,6 +42,83 @@
       "classification": "SUPERSEDED",
       "reason": "Current DevCenter Integration Hub owns connector canon.",
       "evidence": "commit:ecc48148604986f9ed75f8dea061cdfa0bc10bec"
+    },
+    {
+      "branch": "feature/cognitive-runtime-v0.6",
+      "expected_head_sha": "4178339dec64d44de54bda66b5060af5e220b887",
+      "classification": "HISTORICAL",
+      "reason": "Superseded cognitive runtime prototype.",
+      "evidence": "pr:18"
+    },
+    {
+      "branch": "feature/orchestrator-v0.1",
+      "expected_head_sha": "6184a83151ee638db255093ecd8ac5e38c39b936",
+      "classification": "HISTORICAL",
+      "reason": "Superseded orchestration prototype; current runtime is canonical elsewhere.",
+      "evidence": "commit:6184a83151ee638db255093ecd8ac5e38c39b936"
+    },
+    {
+      "branch": "research/a-review-allocator-v1-final3-20260920",
+      "expected_head_sha": "002a3924737a76efb97ec033fc1d65c8f934c80c",
+      "classification": "HISTORICAL",
+      "reason": "Closed research PR; no longer a canonical development line. Pull request preserves review and head history.",
+      "evidence": "pr:126"
+    },
+    {
+      "branch": "research/a-session-evidence-gate-20260920",
+      "expected_head_sha": "6b4eeba3ae699c68260dc5171ec94e3a9cdf2aa4",
+      "classification": "HISTORICAL",
+      "reason": "Closed research PR; no longer a canonical development line. Pull request preserves review and head history.",
+      "evidence": "pr:104"
+    },
+    {
+      "branch": "research/a-session-sales-adoption-20260920",
+      "expected_head_sha": "e28b0462ac2a4b2bd430cb0c50528b96968f3633",
+      "classification": "HISTORICAL",
+      "reason": "Closed research PR; no longer a canonical development line. Pull request preserves review and head history.",
+      "evidence": "pr:112"
+    },
+    {
+      "branch": "research/a-session-sales-adoption-v2-20260920",
+      "expected_head_sha": "c6ffdb23ef1f726f2123a56635ca88719755fc84",
+      "classification": "HISTORICAL",
+      "reason": "Closed research PR; no longer a canonical development line. Pull request preserves review and head history.",
+      "evidence": "pr:113"
+    },
+    {
+      "branch": "research/a-session-sales-d8-reobserve-20260920",
+      "expected_head_sha": "da7bcf76ad57ab73a7732c63bb13d2061c051fc8",
+      "classification": "HISTORICAL",
+      "reason": "Closed research PR; no longer a canonical development line. Pull request preserves review and head history.",
+      "evidence": "pr:125"
+    },
+    {
+      "branch": "research/development-autonomy-v0.1",
+      "expected_head_sha": "719fb45d814f17bab8797a08283e874d603cc681",
+      "classification": "HISTORICAL",
+      "reason": "Closed research PR; no longer a canonical development line. Pull request preserves review and head history.",
+      "evidence": "pr:14"
+    },
+    {
+      "branch": "research/engine-adapter-contract-v0.1",
+      "expected_head_sha": "5e4063a779b0643192318bc863d88b64fb2493e9",
+      "classification": "HISTORICAL",
+      "reason": "Closed research PR; no longer a canonical development line. Pull request preserves review and head history.",
+      "evidence": "pr:15"
+    },
+    {
+      "branch": "research/semantic-capability-fabric-v0.1",
+      "expected_head_sha": "02b7d9a75755b0ff1056069aae0b1254b8245e28",
+      "classification": "HISTORICAL",
+      "reason": "Closed research PR; no longer a canonical development line. Pull request preserves review and head history.",
+      "evidence": "pr:16"
+    },
+    {
+      "branch": "work/gpt/ui-ux-universal-contract-v1",
+      "expected_head_sha": "10364e4fc551aef8ddc715a1fcb53de0021d6b91",
+      "classification": "SUPERSEDED",
+      "reason": "Current UI/UX registry and Design System are canonical.",
+      "evidence": "pr:89"
     }
   ]
 }
