@@ -22,6 +22,8 @@ AI Core is the group's **AI academy**: a shared foundation where AIs learn the s
 
 새 파일·모듈·문서·자동화를 만들기 전에는 `npm run reuse:check -- "<만들려는 것>" --root <대상 경로>`로 기존 capability와 실제 자산을 먼저 찾는다. 기존 후보를 재사용·확장하지 않는 이유가 없으면 신규 생성을 진행하지 않는다.
 
+로컬 도구가 필요한 작업은 [로컬 공통 도구 운영 플레이북](docs/LOCAL_TOOLCHAIN_PLAYBOOK.md)을 적용하고 `npm run tools:doctor`로 현재 셸의 실제 실행 가능 상태를 확인한다. 설치됨·로그인됨·권한 있음·실행 성공·운영 반영을 하나의 PASS로 합치지 않는다.
+
 ## 현재 작업: 공통 AI 오더·실행 경로
 
 일반 업무는 중앙 오더를 먼저 만들 필요가 없다는 현재 헌법을 유지한다. 다만 중앙 오더 경로를 사용하는 업무에서는 **자연어 routed intake → Work Map/Capability plan → immutable binding/outbox → durable Work/snapshot** 경로가 main에 연결돼 있다.

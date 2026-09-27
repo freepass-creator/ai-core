@@ -24,6 +24,7 @@
 | 09-27 | claude → codex | duo 채널 검토 — 「Codex 가 우편함을 실제 흐름에서 읽게 하려면?」 | `FAILED` | ★첫 호출이 Windows 에서 `spawnSync codex ENOENT` 로 실패했다. **그 실패가 우편함에 남아서 알았다** — 조용히 넘어가지 않는 게 이 채널의 요점이다 |
 | 09-27 | claude → codex | 같은 질문, 셸 경유로 재시도 | `ANSWERED` | 「작업 시작 지침에 `npm run duo -- inbox` 실행을 필수화하고, 미답변 요청은 처리·회신(`answer`) 뒤 `CROSS_AI_LOG.md` 기록을 완료 조건으로 검사하라」 → **1순위 절에 반영함** |
 | 09-27 | (검사) | aiops 그림자 신선도 | `ANSWERED` | ★새 검사가 실제 드리프트를 처음 잡았다 — aiops 가 `3d6ec8c`→`334b9474` 로 움직였는데 아무도 몰랐다. `--remote` 재확인 결과 경로 4개 모두 변화 없음 → `REVALIDATED` |
+| 09-28 | Codex → Claude | 로컬 공통 도구 플레이북·doctor 반례 검토 | `FAILED` | `claude:status`는 사용 가능했으나 읽기 전용 호출이 90초 이상 출력 없이 정지해 중단. 독립 검토 PASS로 세지 않고 결정론적 테스트로 계속함 |
 
 ---
 
