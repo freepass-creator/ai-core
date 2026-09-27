@@ -312,6 +312,16 @@ async function aiops레비전() {
   return r.projects.find((p) => p.project_id === AIOPS).head_revision;
 }
 
+/** ★이 구역은 «실제» 등록부를 쓴다(고정물이 아니다). 그래서 프로젝트가 HOLD 로 내려가면
+ *  기대도 달라져야 한다 — 2026-09-27 Codex 와 상의해 정한 (나)안:
+ *  실제 정본 연동이라는 목적을 지키되, ACTIVE 면 LINKED, HOLD 면 «막힌다»를 확인한다.
+ *  서명 철회나 revision 이동이 조용한 초록이 되지 않고, 명시적 HOLD 로 잡힌다. */
+async function aiops실행가능() {
+  const { readFile } = await import('node:fs/promises');
+  const r = JSON.parse(await readFile(new URL('../registry/projects.json', import.meta.url)));
+  return r.projects.find((p) => p.project_id === AIOPS)?.execution_readiness_status === 'ACTIVE';
+}
+
 const 과태료항목 = (id, rev, asOf) => ({
   id, project_id: AIOPS, title: '과태료 한 판',
   intent: { status: 'INFERRED', provenance: 'AI_INFERRED' },
@@ -368,6 +378,13 @@ async function 과태료판(t, workId, { 승인적기 = true } = {}) {
 
 test('★★서명된 과태료 방향이 «운영 경로»에서 사람 선언을 모두 푼다', async (t) => {
   const r = await 과태료판(t, 'GWATAERYO-001');
+  if (!(await aiops실행가능())) {
+    /** 프로젝트가 HOLD 면 방향이 서명돼 있어도 «막히는 것»이 옳다. 그 계약을 대신 확인한다. */
+    assert.equal(r.status, 'HOLD', JSON.stringify(r));
+    assert.equal(r.reason, 'PROJECT_NOT_ACTIVE');
+    assert.equal(r.execution_authorized, false);
+    return;
+  }
   assert.equal(r.status, 'LINKED', JSON.stringify(r));
 
   /** ★여기가 GPT 가 「비었다」고 지적한 자리다. 이름이 약속한 것을 실제로 검사한다.
@@ -396,6 +413,12 @@ test('★★서명된 과태료 방향이 «운영 경로»에서 사람 선언�
 
 test('★★같은 프로젝트라도 방향 밖이면 «그대로 막힌다»', async (t) => {
   const r = await 과태료판(t, 'MISU-001');
+  if (!(await aiops실행가능())) {
+    /** HOLD 여도 «막힌다»는 결론은 같아야 한다 — 다만 이유가 방향 밖이 아니라 프로젝트 준비 상태다. */
+    assert.equal(r.status, 'HOLD');
+    assert.equal(r.reason, 'PROJECT_NOT_ACTIVE');
+    return;
+  }
   assert.equal(r.status, 'LINKED');
   // 「과태료만 켜라」 가 지켜지는지를 «운영 경로에서» 본다.
   assert.equal(r.control_status, 'HOLD');
@@ -409,6 +432,12 @@ test('★★승인근거가 원장에 «없으면» 서명된 방향도 안 선�
    *  ★위 판과 «똑같은 서명된 방향» 인데 원장의 승인 사건 한 줄만 뺀다.
    *    그것만으로 사람 선언이 전부 되살아나야 한다. */
   const r = await 과태료판(t, 'GWATAERYO-001', { 승인적기: false });
+  if (!(await aiops실행가능())) {
+    /** 프로젝트가 HOLD 면 승인근거 유무와 무관하게 막힌다. «안 선다»는 결론은 유지된다. */
+    assert.equal(r.status, 'HOLD');
+    assert.equal(r.reason, 'PROJECT_NOT_ACTIVE');
+    return;
+  }
   assert.equal(r.status, 'LINKED');
   assert.equal(r.control_status, 'HOLD');
   const 막는이유 = r.control_result.execute.reasons;

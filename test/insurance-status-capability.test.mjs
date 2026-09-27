@@ -7,11 +7,8 @@ import { createCapabilityEngine } from '../src/engine/capability-engine.mjs';
 const readJson=async p=>JSON.parse(await readFile(new URL(p,import.meta.url),'utf8'));
 
 test('insurance status query routes to AIOps read-only evidence adapter',async()=>{
-  const [workMap,projectRegistry,capabilityRegistry]=await Promise.all([
-    readJson('../registry/work-map.json'),
-    readJson('../registry/projects.json'),
-    readJson('../registry/capabilities.json')
-  ]);
+  /** 실행 준비 상태만 고정한 등록부를 쓴다 — 왜인지는 test/fixtures/routing-registry.mjs 머리에 있다. */
+  const {workMap,projectRegistry,capabilityRegistry}=(await import('./fixtures/routing-registry.mjs')).routingConfig;
   const route=routeWork('보험 정합성 확인',{workMap,projectRegistry,capabilityRegistry});
   assert.equal(route.status,'RESOLVED');
   assert.equal(route.target_project_id,'aiops');

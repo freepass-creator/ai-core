@@ -1,0 +1,5 @@
+HOLD 연쇄가 의도대로인가
+
+registry-refresh 가 원격 head 변화를 보면 execution_readiness_status 를 ACTIVE→HOLD 로 내린다. 오늘 자동 갱신으로 ACTIVE 5→2 가 됐다. 질문 하나만: refresh 가 readiness 까지 내리는 게 맞나, 아니면 revision 만 갱신하고 readiness 는 사람이 올리게 분리해야 하나? 한 줄로 답하고 이유도 한 줄.
+
+200자 이내 한국어로 답해라.

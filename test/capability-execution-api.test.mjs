@@ -7,7 +7,8 @@ import { join } from 'node:path';
 import { startServer } from '../src/orders/server.mjs';
 
 const workMap=JSON.parse(readFileSync(new URL('../registry/work-map.json',import.meta.url),'utf8'));
-const baseProjects=JSON.parse(readFileSync(new URL('../registry/projects.json',import.meta.url),'utf8'));
+/** 실행 준비 상태만 고정한 등록부를 쓴다 — 이유는 test/fixtures/routing-registry.mjs 머리에 적혀 있다. */
+const {projectRegistry:baseProjects}=await import('./fixtures/routing-registry.mjs');
 const capabilityRegistry=JSON.parse(readFileSync(new URL('../registry/capabilities.json',import.meta.url),'utf8'));
 
 async function fixture(t,{enabled=true,moduleExecution=false}={}){

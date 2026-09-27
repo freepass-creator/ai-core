@@ -2,17 +2,22 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import { checkRepository, globToRegExp } from '../src/governance/canonical-guard.mjs';
 import { canonicalPaths, overlaps, touches } from '../scripts/check-branch-discipline.mjs';
+
+/** ★Windows 에서 `new URL('..').pathname` 은 `/C:/…` 를 돌려줘 `scandir 'C:\C:\…'` 로 깨졌다.
+ *  리눅스 CI 에서만 통과하던 자리다(2026-09-27 실측). 경로는 fileURLToPath 로 만든다. */
+const 저장소root = fileURLToPath(new URL('..', import.meta.url));
 
 const registry = JSON.parse(readFileSync(new URL('../registry/canonical-development-lines.json', import.meta.url), 'utf8'));
 
 test('AI Core itself keeps one canonical line per concern', () => {
-  assert.deepEqual(checkRepository(new URL('..', import.meta.url).pathname, registry), []);
+  assert.deepEqual(checkRepository(저장소root, registry), []);
 });
 
 test('canon-guard self-test catches every known-bad sample', () => {
-  const r = spawnSync(process.execPath, ['scripts/canon-guard.mjs', '--self-test'], { cwd: new URL('..', import.meta.url).pathname, encoding: 'utf8' });
+  const r = spawnSync(process.execPath, ['scripts/canon-guard.mjs', '--self-test'], { cwd: 저장소root, encoding: 'utf8' });
   assert.equal(r.status, 0, r.stdout + r.stderr);
 });
 

@@ -9,7 +9,7 @@ import { createDefaultBuiltins } from '../src/engine/builtins.mjs';
 import { routeWork } from '../src/routing/work-router.mjs';
 
 const capabilities=JSON.parse(readFileSync(new URL('../registry/capabilities.json',import.meta.url),'utf8'));
-const projects=JSON.parse(readFileSync(new URL('../registry/projects.json',import.meta.url),'utf8'));
+const {projectRegistry: projects} = await import('./fixtures/routing-registry.mjs');
 const workMap=JSON.parse(readFileSync(new URL('../registry/work-map.json',import.meta.url),'utf8'));
 
 test('canonical capability registry references only registered projects',()=>{

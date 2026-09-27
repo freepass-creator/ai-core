@@ -60,8 +60,13 @@ export function 부른다(쪽지) {
       const 답 = execSync(`codex exec -s read-only -C "${root}" --skip-git-repo-check "$(cat "${임시}")" < /dev/null`, {
         encoding: 'utf8', shell: 'bash', timeout: 300000, maxBuffer: 16 * 1024 * 1024
       });
-      const 줄 = 답.trim().split('\n').map((l) => l.trim()).filter(Boolean);
-      return { state: 상태.답함, answer: 줄[줄.length - 1] ?? 답.trim() };
+      /** ★codex exec 는 진행 로그 뒤에 답을 낸다. 마지막 «한 줄»만 집으면 여러 줄 답이 잘린다
+       *  (2026-09-27 실측: (1)(2) 두 줄 답에서 (1)이 사라졌다). `codex` 표시 뒤부터 `tokens used` 앞까지가 답이다. */
+      const 전체 = 답.replace(/\r/g, '');
+      const 시작 = 전체.lastIndexOf('\ncodex\n');
+      const 몸통 = 시작 >= 0 ? 전체.slice(시작 + 7) : 전체;
+      const 답본문 = 몸통.split(/\ntokens used\b/)[0].trim();
+      return { state: 상태.답함, answer: 답본문 || 전체.trim().split('\n').filter(Boolean).slice(-1)[0] };
     } catch (오류) {
       return { state: 상태.실패, answer: `codex 호출 실패: ${String(오류.message).split('\n')[0]}` };
     }

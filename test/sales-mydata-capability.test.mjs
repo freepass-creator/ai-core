@@ -6,11 +6,7 @@ import { routeWork } from '../src/routing/work-router.mjs';
 const readJson=async p=>JSON.parse(await readFile(new URL(p,import.meta.url),'utf8'));
 
 test('MyData intake is registered but remains fail-closed until production binding',async()=>{
-  const [workMap,projectRegistry,capabilityRegistry]=await Promise.all([
-    readJson('../registry/work-map.json'),
-    readJson('../registry/projects.json'),
-    readJson('../registry/capabilities.json')
-  ]);
+  const {workMap,projectRegistry,capabilityRegistry}=(await import('./fixtures/routing-registry.mjs')).routingConfig;
   const route=routeWork('마이데이터 수집',{workMap,projectRegistry,capabilityRegistry});
   assert.equal(route.target_project_id,'freepass-sales');
   assert.equal(route.capability_id,'sales.mydata-intake');

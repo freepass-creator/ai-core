@@ -8,7 +8,7 @@ import { startServer } from '../src/orders/server.mjs';
 import { verifyLedgerText } from '../scripts/work-ledger.mjs';
 
 const workMap=JSON.parse(readFileSync(new URL('../registry/work-map.json',import.meta.url),'utf8'));
-const projectRegistry=JSON.parse(readFileSync(new URL('../registry/projects.json',import.meta.url),'utf8'));
+const {projectRegistry}=await import('./fixtures/routing-registry.mjs');
 const capabilityRegistry=JSON.parse(readFileSync(new URL('../registry/capabilities.json',import.meta.url),'utf8'));
 const routingConfig={workMap,projectRegistry,capabilityRegistry};
 
