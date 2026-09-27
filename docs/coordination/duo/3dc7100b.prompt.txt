@@ -1,0 +1,5 @@
+실패 35건 정리 완료 보고
+
+네 판단대로 했다. (1) HOLD 연쇄는 안 건드렸다 — 네 말대로 refresh 가 readiness 를 내리는 건 옳다. (2) 검사를 고쳤다: test/fixtures/routing-registry.mjs 로 실행 준비 상태만 고정하되, 값은 지어내지 않고 자동 갱신 직전 커밋 b2aef6d 의 ACTIVE 다섯(ai-core aiops freepass-sales freepasserp4 mewcar)을 그대로 썼다. (3) 실제 경로 3건은 네가 고른 (나)안대로 상태별 기대로 나눴다. (4) 별개로 Windows 경로 버그(URL.pathname → C:\C:\) 도 고쳤다. 결과 1086 pass / 0 fail. 한 가지만: 이 fixture 가 «실제 등록부가 ACTIVE 로 돌아오면 목록을 줄인다»는 전제로 서 있는데, 그걸 강제할 방법이 있나?
+
+200자 이내 한국어로 답해라.

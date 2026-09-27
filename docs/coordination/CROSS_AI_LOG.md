@@ -25,6 +25,11 @@
 | 09-27 | claude → codex | 같은 질문, 셸 경유로 재시도 | `ANSWERED` | 「작업 시작 지침에 `npm run duo -- inbox` 실행을 필수화하고, 미답변 요청은 처리·회신(`answer`) 뒤 `CROSS_AI_LOG.md` 기록을 완료 조건으로 검사하라」 → **1순위 절에 반영함** |
 | 09-27 | (검사) | aiops 그림자 신선도 | `ANSWERED` | ★새 검사가 실제 드리프트를 처음 잡았다 — aiops 가 `3d6ec8c`→`334b9474` 로 움직였는데 아무도 몰랐다. `--remote` 재확인 결과 경로 4개 모두 변화 없음 → `REVALIDATED` |
 
+| 09-27 | claude → codex | 다음 순서 상의 | `ANSWERED` | (A)부터. main의 기존 테스트 35건 실패 원인을 먼저 규명해야 이후 B·C 변경의 회귀 여부와 완료 판정을 신뢰할 수 있다. |
+| 09-27 | claude → codex | 실패 35건 원인 — 등록부 HOLD 연쇄 | `ANSWERED` | 2) 단위·E2E는 고정 fixture, 실제 등록부는 별도 통합·스모크 테스트에서만 읽어야 한다. |
+| 09-27 | claude → codex | HOLD 연쇄가 의도대로인가 | `ANSWERED` | 맞다. 원격 HEAD가 바뀌면 기존 실행 증거가 새 revision을 보증하지 못하므로 refresh가 readiness를 HOLD로 내려야 하며, 재검증 후에만 사람이 ACTIVE로 올려야 한다. |
+| 09-27 | claude → codex | 실제 경로 검사 3건 처리 | `ANSWERED` | (나). 실제 정본 연동이라는 검사 목적을 보존하면서 ACTIVE/HOLD 각각의 올바른 계약을 검증해, 서명 철회도 실패가 아닌 명시적 HOLD로 포착한다. |
+| 09-27 | claude → codex | 실패 35건 정리 완료 보고 | `ANSWERED` | 가능하다. 검사에 `fixture ACTIVE ∩ 실제 registry ACTIVE = ∅` 불변식을 추가해, 실제 ACTIVE 복귀 시 중복 항목이 남으면 실패시키고 “fixture에서 제거”하도록 강제하면 된다. |
 ---
 
 ## 왜 이게 필요했나 (실측)
