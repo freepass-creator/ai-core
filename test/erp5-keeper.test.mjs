@@ -1,0 +1,79 @@
+// 지킴이의 «판단»을 고정한다 — 여기가 틀리면 상품이 안 갱신되거나 이중으로 걸린다.
+//
+// ★대표 2026-09-28: 「뭘 또 내 손이 필요해. 너는 왜 못 하냐」
+//   지킴이가 Claude 예약작업이라 권한 승인 대기에서 멈췄고, 멈춘 회차가 이후 44회를 막았다.
+//   판단에 판단이랄 게 없으므로(다섯 조건) 순수 스크립트로 옮겼다. 그 판단을 여기서 지킨다.
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { 걸까, 창안인가, 한국시각 } from '../scripts/erp5-keeper.mjs';
+
+/** KST 로 원하는 시각을 만든다 — 검사가 이 PC 의 시간대에 휘둘리면 안 된다. */
+const kst = (날짜, 시, 분 = 0) => new Date(`${날짜}T${String(시).padStart(2, '0')}:${String(분).padStart(2, '0')}:00+09:00`);
+const 회차 = (분전, 덮을것 = {}) => ({
+  databaseId: 1, event: 'schedule', status: 'completed', conclusion: 'success',
+  createdAt: new Date(kst('2026-09-30', 14).getTime() - 분전 * 60000).toISOString(), ...덮을것
+});
+const 정상사실 = { 상태: 'LATE', 나이분: 95, 자료안바뀜: false };
+
+test('창은 월~토 09:30~19:59 KST 다 — 일요일과 이른 아침은 밖이다', () => {
+  /** ★2026-09-26 이 토, 09-27 이 일이다. 나(Claude)는 이걸 09-27 토 / 09-28 일 로 잘못 알고
+   *  대표에게 「오늘은 일요일이라 안 돈다」고 틀리게 보고했다. 이 검사가 그 자리에서 잡았다 —
+   *  요일은 세지 말고 «계산»한다. */
+  assert.equal(창안인가(kst('2026-09-26', 14)), true, '토요일 오후는 안이다');
+  assert.equal(창안인가(kst('2026-09-27', 14)), false, '일요일은 밖이다');
+  assert.equal(창안인가(kst('2026-09-28', 14)), true, '월요일 오후는 안이다');
+  assert.equal(창안인가(kst('2026-09-30', 9, 29)), false, '09:29 는 아직 밖이다');
+  assert.equal(창안인가(kst('2026-09-30', 9, 30)), true, '09:30 부터 안이다');
+  assert.equal(창안인가(kst('2026-09-30', 19, 59)), true, '19:59 까지 안이다');
+  assert.equal(창안인가(kst('2026-09-30', 20)), false, '20:00 은 밖이다');
+});
+
+test('★시간대를 UTC 로 세지 않는다 — KST 로 날이 바뀌는 자정 언저리', () => {
+  /** UTC 로 세면 KST 오전 8시가 «전날»이 된다. 그러면 하루 11회 제한이 이틀에 걸쳐 흐트러진다. */
+  assert.equal(한국시각(kst('2026-09-30', 8)).날짜, '2026-09-30');
+  assert.equal(한국시각(kst('2026-09-30', 0, 30)).날짜, '2026-09-30');
+});
+
+test('조건이 다 맞으면 건다', () => {
+  const 판단 = 걸까(정상사실, [회차(95)], kst('2026-09-30', 14));
+  assert.equal(판단.건다, true, 판단.까닭);
+});
+
+test('★이미 도는 회차가 있으면 걸지 않는다 — 이중 발행이 제일 나쁘다', () => {
+  for (const 상태 of ['queued', 'in_progress', 'pending', 'waiting', 'requested']) {
+    const 판단 = 걸까(정상사실, [회차(95, { status: 상태 })], kst('2026-09-30', 14));
+    assert.equal(판단.건다, false, `${상태} 인데 걸려 한다`);
+  }
+});
+
+test('최근 회차가 50분이 안 됐으면 걸지 않는다', () => {
+  assert.equal(걸까(정상사실, [회차(49)], kst('2026-09-30', 14)).건다, false);
+  assert.equal(걸까(정상사실, [회차(51)], kst('2026-09-30', 14)).건다, true);
+});
+
+test('★「자료도 안 바뀜」이면 걸지 않는다 — 다시 걸어도 같은 자리에서 죽는다', () => {
+  const 판단 = 걸까({ ...정상사실, 자료안바뀜: true }, [회차(95)], kst('2026-09-30', 14));
+  assert.equal(판단.건다, false);
+  assert.match(판단.까닭, /진짜 고장/);
+});
+
+test('하루 11번을 넘기지 않는다 — 그리고 «어제 것»은 오늘로 세지 않는다', () => {
+  const 오늘열하나 = Array.from({ length: 11 }, () => 회차(95, { event: 'workflow_dispatch' }));
+  assert.equal(걸까(정상사실, 오늘열하나, kst('2026-09-30', 14)).건다, false, '11회를 넘겨 건다');
+
+  const 어제것 = Array.from({ length: 11 }, () => 회차(95 + 24 * 60, { event: 'workflow_dispatch' }));
+  assert.equal(걸까(정상사실, 어제것, kst('2026-09-30', 14)).건다, true, '어제 회차를 오늘로 세고 있다');
+});
+
+test('★회차 목록이 비면 «모르는» 것이다 — 모르면 걸지 않는다', () => {
+  const 판단 = 걸까(정상사실, [], kst('2026-09-30', 14));
+  assert.equal(판단.건다, false);
+  assert.match(판단.까닭, /못 읽었다/);
+});
+
+test('★거는 판단은 부작용이 없다 — 검사가 실제 판단을 그대로 시험할 수 있어야 한다', () => {
+  const 회차들 = [회차(95)];
+  const 사본 = JSON.parse(JSON.stringify(회차들));
+  걸까(정상사실, 회차들, kst('2026-09-30', 14));
+  assert.deepEqual(회차들, 사본, '판단하면서 입력을 바꾼다');
+});

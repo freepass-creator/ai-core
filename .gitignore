@@ -1,3 +1,12 @@
 node_modules/
 .local/
 .claude/worktrees/
+
+# 세션이 남기는 로컬 부스러기 — 저장소의 것이 아니다.
+# ★main-state 게이트가 «추적 안 되는 파일»까지 변경으로 세기 때문에, 여기 적지 않으면
+#   커밋할 때마다 엉뚱한 파일이 목록에 끼어 FAIL 이 난다(2026-09-28 실측).
+# ★.codex-remote-attachments 에는 원격 세션에 붙인 사진이 들어온다 — 개인정보가 섞일 수 있어
+#   실수로도 올라가면 안 된다.
+.claude/launch.json
+.claude/settings.local.json
+.codex-remote-attachments/

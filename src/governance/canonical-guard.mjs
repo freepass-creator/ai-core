@@ -16,6 +16,15 @@ import { join, relative } from 'node:path';
 
 // .canon-guard = 재사용 워크플로가 호출 저장소 안에 받아 둔 AI Core 사본. 호출 저장소의 파일이 아니다.
 const SKIP_DIRS = new Set(['.git', '.canon-guard', 'node_modules', '.next', 'dist', 'build', 'coverage', '.turbo', '.vercel']);
+/** ★«이 저장소를 통째로 복사해 둔 자리»는 훑지 않는다 — `.canon-guard` 와 똑같은 사정이다.
+ *
+ *  `.claude/worktrees/…`            다른 체크아웃(워크트리)
+ *  `artifacts/ai-core-collection-…` 수집 도구가 떠 둔 저장소 스냅샷
+ *
+ *  둘 다 «정본을 두 벌 둔 것»이 아니라 같은 정본의 사본이다. 그런데 훑다가 걸려서
+ *  `DEFINITION_OUTSIDE_CANON: design-system/tokens.css ×31` 로 빨개졌다(2026-09-28 실측).
+ *  사본을 중복으로 세면 이 검사가 «진짜 중복»을 가리키지 못하게 된다. 둘 다 git 추적 대상도 아니다. */
+const SKIP_PREFIXES = ['.claude/worktrees', 'artifacts/ai-core-collection-'];
 const CLAIM = /(정본|canonical|SSOT|single source of truth)/i;
 export const NOT_CANONICAL = 'NOT_CANONICAL';
 
@@ -40,6 +49,8 @@ export function listFiles(base) {
     for (const name of readdirSync(dir)) {
       if (SKIP_DIRS.has(name)) continue;
       const full = join(dir, name);
+      const 상대 = relative(base, full).split('\\').join('/');
+      if (SKIP_PREFIXES.some((p) => 상대 === p || 상대.startsWith(p.endsWith('-') ? p : `${p}/`))) continue;
       const st = statSync(full);
       if (st.isDirectory()) walk(full);
       else if (st.size <= 2_000_000) out.push(relative(base, full).split('\\').join('/'));
