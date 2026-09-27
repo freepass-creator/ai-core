@@ -4,6 +4,12 @@ Updated: 2026-09-22
 
 This file records user-confirmed availability of development executors/tools. It is an operational hint, not independent proof that a tool executed successfully on a specific task/revision.
 
+## Local toolchain entrypoint
+
+The canonical selection, usage and verification guide is [Local Toolchain Playbook](../docs/LOCAL_TOOLCHAIN_PLAYBOOK.md). Run `npm run tools:doctor` at the start of tool-dependent work. Its result is a current local observation only: executable availability is separate from authentication, project binding, authority and outcome.
+
+On the TeamJPK Windows host, the 2026-09-28 setup observed Git/GitHub, Node package managers, Python tooling, agent-browser/Playwright, data/document/media utilities, Firebase/gcloud/Vercel, Docker CLI/Kubernetes/Terraform, Android, AI CLIs and `gws`. Do not copy that observation to another host. WebKit and `kubectl` were installed but blocked by Windows application-control policy during the setup smoke test, so they remain task-level HOLD until a fresh doctor and functional probe succeed.
+
 ## GitHub connection reuse
 
 - intended identity: `freepass-creator`
