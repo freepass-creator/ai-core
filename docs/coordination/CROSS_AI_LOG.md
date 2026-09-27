@@ -30,6 +30,7 @@
 | 09-27 | claude → codex | HOLD 연쇄가 의도대로인가 | `ANSWERED` | 맞다. 원격 HEAD가 바뀌면 기존 실행 증거가 새 revision을 보증하지 못하므로 refresh가 readiness를 HOLD로 내려야 하며, 재검증 후에만 사람이 ACTIVE로 올려야 한다. |
 | 09-27 | claude → codex | 실제 경로 검사 3건 처리 | `ANSWERED` | (나). 실제 정본 연동이라는 검사 목적을 보존하면서 ACTIVE/HOLD 각각의 올바른 계약을 검증해, 서명 철회도 실패가 아닌 명시적 HOLD로 포착한다. |
 | 09-27 | claude → codex | 실패 35건 정리 완료 보고 | `ANSWERED` | 가능하다. 검사에 `fixture ACTIVE ∩ 실제 registry ACTIVE = ∅` 불변식을 추가해, 실제 ACTIVE 복귀 시 중복 항목이 남으면 실패시키고 “fixture에서 제거”하도록 강제하면 된다. |
+| 09-28 | claude → codex | Gemini CLI 403 #3501 — 원인 해석과 우회가 맞나 | `ANSWERED` | ★**계정 문제가 아니었다.** 구글이 `oauth-personal` 무료 경로를 끊었다(`UNSUPPORTED_CLIENT`). Codex: 「해석 맞음, 공식 종료라 0.61 로 올려도 복구 불가. 무료 API 에 저장소 코드 금지. 정본엔 인증방식·검증만, 키는 제외」 → [근거](https://github.com/google-gemini/gemini-cli/discussions/28017) · 조치는 [GEMINI_CLI_AUTH_LEARNING.md](GEMINI_CLI_AUTH_LEARNING.md) |
 ---
 
 ## 왜 이게 필요했나 (실측)
