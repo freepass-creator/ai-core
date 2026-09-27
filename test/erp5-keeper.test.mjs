@@ -5,7 +5,7 @@
 //   판단에 판단이랄 게 없으므로(다섯 조건) 순수 스크립트로 옮겼다. 그 판단을 여기서 지킨다.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { 걸까, 창안인가, 한국시각 } from '../scripts/erp5-keeper.mjs';
+import { 걸까, 깨우는인자, 자료나이분, 자료시각, 창안인가, 한국시각 } from '../scripts/erp5-keeper.mjs';
 
 /** KST 로 원하는 시각을 만든다 — 검사가 이 PC 의 시간대에 휘둘리면 안 된다. */
 const kst = (날짜, 시, 분 = 0) => new Date(`${날짜}T${String(시).padStart(2, '0')}:${String(분).padStart(2, '0')}:00+09:00`);
@@ -84,4 +84,39 @@ test('★거는 판단은 부작용이 없다 — 검사가 실제 판단을 그
   const 사본 = JSON.parse(JSON.stringify(회차들));
   걸까(정상사실, 회차들, kst('2026-09-30', 14));
   assert.deepEqual(회차들, 사본, '판단하면서 입력을 바꾼다');
+});
+
+// ★2026-09-28 — 지킴이가 «틀린 방아쇠»를 당기고 있었다.
+//   erp5-ssot-refresh.yml 은 이벤트마다 도는 단계가 다르다. workflow_dispatch apply=true 는
+//   「재수집 없이」 옛 스냅샷을 시트에만 다시 쓴다(입력 설명 그대로). 빠진 회차를 «채우는» 이벤트는
+//   repository_dispatch 뿐이고 저장소 자체 워치독도 그걸 쓴다. 성공 84건 중 38건이 틀린 쪽이었다.
+test('★기본 방아쇠는 repository_dispatch 다 — apply=true 는 자료를 복구하지 않는다', () => {
+  const 인자 = 깨우는인자();
+  assert.deepEqual(인자, [
+    'api', 'repos/freepass-creator/freepasserp4/dispatches',
+    '-f', 'event_type=erp5_refresh_watchdog'
+  ]);
+  assert.ok(!인자.includes('apply=true'), 'apply=true 로 되돌아가면 시트만 새로 쓰고 자료는 낡은 채로 남는다');
+});
+
+test('옛 길은 남겨 두되 «명시»해야 쓰인다 — 그리고 모르는 방식은 던진다', () => {
+  assert.ok(깨우는인자('workflow_dispatch').includes('apply=true'));
+  assert.throws(() => 깨우는인자('아무거나'), /KEEPER_UNKNOWN_TRIGGER/);
+});
+
+// ★2026-09-28 — 신선도를 「발행 시각」으로 보던 것을 고친다.
+//   발행 시각은 «시트에 마지막으로 쓴 때»지 «자료를 언제 떴나»가 아니다. 옛 스냅샷을 다시 쓰면
+//   발행만 새로워지고 자료는 낡은 채로 남는데, 그 상태를 우리 감시는 「정상」으로 읽었다.
+test('★자료 나이는 발행판 id 에서 읽는다 — 발행 시각과 «따로» 봐야 한다', () => {
+  const 판 = '20260927163804258-464407be62f2';
+  assert.equal(자료시각(판).toISOString(), '2026-09-27T16:38:04.258Z');
+  assert.equal(자료나이분(판, new Date('2026-09-27T17:38:04.258Z')), 60);
+});
+
+test('★못 읽으면 null 이다 — 「모른다」를 0분으로 세지 않는다', () => {
+  /** 0 으로 세면 읽지 못한 것이 「방금 뜬 자료」로 둔갑한다. 그게 이 사건의 병이었다. */
+  for (const 나쁜것 of [null, undefined, '', '이상한값', 'abcdefghijklmnopq-1234']) {
+    assert.equal(자료시각(나쁜것), null);
+    assert.equal(자료나이분(나쁜것), null);
+  }
 });
