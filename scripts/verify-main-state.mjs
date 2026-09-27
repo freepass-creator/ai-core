@@ -162,7 +162,17 @@ export async function verifyRepository(root) {
     const deletedSince = new Set(execFileSync('git', ['-c', 'core.quotepath=false', 'diff', '--name-only', '--diff-filter=D', active.base_revision], { cwd: root, encoding: 'utf8' }).trim().split(/\r?\n/).filter(Boolean));
     const newFiles = execFileSync('git', ['-c', 'core.quotepath=false', 'ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim().split(/\r?\n/).filter(Boolean);
     const actual = combineChangedFiles(changedSince, newFiles).sort();
-    const recorded = [...(active.changed_files ?? [])].sort();
+    // ★2026-09-23: `changed_files` 는 git diff 와 «정확히 같아야» 하므로 git 이 이미 아는 것을 손으로 다시 적는 목록이다.
+    //   그 대가가 크다 — 모든 PR 이 이 한 배열에 자기 경로를 적어야 해서, 실측 15개 PR 이 서로를 충돌시키고 있었다
+    //   (docs/integration/PR_BACKLOG_TRIAGE.md). 내용이 달라서가 아니라 «같은 줄에 적어야 해서» 나는 충돌이다.
+    //   그래서 목록을 «선택»으로 바꾼다: 적었으면 지금처럼 정확히 대조하고(기존 PR 이 깨지지 않는다),
+    //   적지 않았으면 `changed_files_derived: true` 로 «일부러 비웠음»을 밝힌 경우에만 git 에서 유도한다.
+    const 유도선언 = active.changed_files_derived === true;
+    const 목록없음 = active.changed_files === undefined;
+    if (목록없음 && !유도선언) {
+      errors.push('successor episode must either list changed_files or set changed_files_derived: true');
+    }
+    const recorded = 목록없음 && 유도선언 ? actual : [...(active.changed_files ?? [])].sort();
     if (JSON.stringify(actual) !== JSON.stringify(recorded)) {
       const actualSet = new Set(actual);
       const recordedSet = new Set(recorded);

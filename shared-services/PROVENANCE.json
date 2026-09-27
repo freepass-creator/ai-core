@@ -62,5 +62,27 @@
     "AIOps remains runtime authority until a separate revision-bound consumer migration is verified.",
     "No company IDs, credentials, operational data, or AIOps domain policy may enter through this extraction.",
     "FUNCTION_SLICE_SHADOW entries transfer only the named pure symbol; auth, config and write-policy authority remain at the source."
-  ]
+  ],
+  "revalidation": {
+    "checked_head": "334b9474de5a10dfb406637d54e6a55daa3e0f3a",
+    "checked_at": "2026-09-27T12:48:12.018Z",
+    "entries": [
+      {
+        "source_path": "lib/atomic-stream-write.mjs",
+        "source_blob_sha_at_checked_head": "4e4da3becc6d3d3eebbc8108708c0d5e5dc4197d"
+      },
+      {
+        "source_path": "lib/goog.mjs",
+        "source_blob_sha_at_checked_head": "447deabfbfedf9e0eb26ab2dffbaed4f8ada0100"
+      },
+      {
+        "source_path": "lib/goog.mjs",
+        "source_blob_sha_at_checked_head": "447deabfbfedf9e0eb26ab2dffbaed4f8ada0100"
+      },
+      {
+        "source_path": "lib/sheet.mjs",
+        "source_blob_sha_at_checked_head": "32940fd3edc5d0ec718410472a41476a921d55ff"
+      }
+    ]
+  }
 }

@@ -1,0 +1,764 @@
+{
+  "schema": "ai-core-cutover-manifest/v1",
+  "observed_at": "2026-09-23T06:41:11+00:00",
+  "state": "PRE_CUTOVER_EVIDENCE_ONLY",
+  "why": "전환(cutover)은 아직 승인되지 않았다(DOCSHUB_IMPORT_CLASSIFICATION cutover_authorized=false). 그래서 파일을 management-support 로 옮기지 않고, «옮길 것의 목록과 해시»만 증거로 남긴다. 승인되면 이 목록 그대로 복사하고 해시로 대조한다.",
+  "source": {
+    "kind": "LOCAL_FOLDER",
+    "path": "C:\\dev\\docshub",
+    "git": "NOT_A_REPOSITORY",
+    "note": "★실측(2026-09-23): C:/dev/docshub 는 git 저장소가 아니다(추적 파일 0). 원격 freepass-creator/docshub 는 파일 6개뿐이라 기존 판정의 revision 4059d82 는 이 자산의 정본이 아니다. 그래서 revision 이 아니라 «파일 내용 해시»로 고정한다.",
+    "local_counts": {
+      "양식": 150,
+      "data": 10,
+      "업무": 187,
+      "사건": 112,
+      "_레거시": 122
+    }
+  },
+  "scope": {
+    "included": [
+      "양식/ 빈 틀(_*.html)",
+      "양식/ 규격 엔진(css·js)",
+      "양식/assets",
+      "data/ 규격 문서와 도구"
+    ],
+    "excluded": [
+      "업무/",
+      "사건/",
+      "_레거시/",
+      "data/registry.js · data/schedule.js (사건·업무 문서 카탈로그 — 사건명 포함)",
+      "tmp/"
+    ],
+    "why_excluded": "사건·업무 문서와 그 카탈로그는 고객·사건 정보다. 본사 저장소로 옮기지 않는다."
+  },
+  "personal_data_check": {
+    "method": "대상 전체에서 전화번호·주민등록번호 형태를 찾고, 맞은 것을 사람이 읽어 자리표시자인지 확인했다.",
+    "result": "자리표시자만 발견(010-0000-0000 · 0000-00-00). 실데이터 없음."
+  },
+  "spec_wiring": {
+    "registered_in_doc_js": [
+      "custom",
+      "가로",
+      "격식",
+      "공문",
+      "내용증명",
+      "보고서",
+      "비즈니스",
+      "비즈니스A4",
+      "자료디자인",
+      "화면"
+    ],
+    "allowed_in_forms_js": [
+      "가로",
+      "격식",
+      "공문",
+      "내용증명",
+      "보고서",
+      "비즈니스",
+      "비즈니스A4",
+      "자료디자인",
+      "화면"
+    ],
+    "declared_in_templates": [
+      "가로",
+      "거래",
+      "격식",
+      "계약",
+      "공문",
+      "내용증명",
+      "범용",
+      "보고서",
+      "비즈니스",
+      "비즈니스A4",
+      "자료디자인",
+      "증명",
+      "화면"
+    ],
+    "unregistered": [
+      "거래",
+      "계약",
+      "범용",
+      "증명"
+    ],
+    "inline_style_templates": [
+      "_결정기록.html",
+      "_기획안.html",
+      "_범용-계약서.html",
+      "_범용-뮤카.html",
+      "_범용-보고서.html",
+      "_범용-현황점검.html",
+      "_범용-회의결과.html",
+      "_범용.html",
+      "_비즈니스-견본.html",
+      "_비즈니스.html",
+      "_비즈니스A4-견본.html",
+      "_비즈니스A4.html",
+      "_사업계획서.html",
+      "_원페이저.html",
+      "_재직증명서.html",
+      "_제안서.html",
+      "_회의록.html"
+    ],
+    "single_file_variants_exempt": [
+      "_비즈니스-견본_한파일.html",
+      "_비즈니스A4-견본_한파일.html",
+      "_비즈니스A4_한파일.html",
+      "_제안서_한파일.html"
+    ],
+    "finding": "선언된 규격 4 종이 부팅 경로에 없다 — 그 규격을 쓰는 문서는 CSS 가 주입되지 않는다. 빈 틀 17 장은 저장소 자신의 금지(인라인 style)를 어기고 있다."
+  },
+  "counts": {
+    "files": 108
+  },
+  "files": [
+    {
+      "source_path": "양식/_가로.html",
+      "target_path": "templates/_가로.html",
+      "sha256": "4ba6c9f7d7c25fdd1ad0375f9a3a16d9f76e24e2b0bb90ae0824ea3db9947a12",
+      "bytes": 1522
+    },
+    {
+      "source_path": "양식/_가로.pdf",
+      "target_path": "templates/_가로.pdf",
+      "sha256": "7079a6b6f3a94c14d4df5286f2582ebb1e0cb7574d3662b89d435cd306d393c8",
+      "bytes": 27969
+    },
+    {
+      "source_path": "양식/_거래명세서.html",
+      "target_path": "templates/_거래명세서.html",
+      "sha256": "b5d16a82e4f8a6c79e5661f4b5c066113f41865fb749945e02f279914a7e01d9",
+      "bytes": 3331
+    },
+    {
+      "source_path": "양식/_거래명세서.pdf",
+      "target_path": "templates/_거래명세서.pdf",
+      "sha256": "191ceac0cc4be77152322e38fffb4fdeed03e187bc95eb8ecd76f080e075a02d",
+      "bytes": 43499
+    },
+    {
+      "source_path": "양식/_견적서.html",
+      "target_path": "templates/_견적서.html",
+      "sha256": "8066635162b2c010326b27a1721e4baea19499029929b4d4077701d4f612855a",
+      "bytes": 3839
+    },
+    {
+      "source_path": "양식/_견적서.pdf",
+      "target_path": "templates/_견적서.pdf",
+      "sha256": "67ab05ef88df0418803f4b7f2b0c0e73940b8071cb1fb7af965bd5ebff9c3844",
+      "bytes": 51100
+    },
+    {
+      "source_path": "양식/_결정기록.html",
+      "target_path": "templates/_결정기록.html",
+      "sha256": "b2e55fc3ac42b1132d0a26f538ee738acdca24a6b2af12c9a17eda9c0c788bff",
+      "bytes": 7149
+    },
+    {
+      "source_path": "양식/_결정기록.pdf",
+      "target_path": "templates/_결정기록.pdf",
+      "sha256": "a2317b3f9bfcd22cee1986e3f628c395cb786b98557a992d70007d94815b856a",
+      "bytes": 60619
+    },
+    {
+      "source_path": "양식/_경력증명서.html",
+      "target_path": "templates/_경력증명서.html",
+      "sha256": "e781a7b0d7a478a5a73a76e50306568215794cbdd82d3d7efe711898301cef14",
+      "bytes": 2647
+    },
+    {
+      "source_path": "양식/_경력증명서.pdf",
+      "target_path": "templates/_경력증명서.pdf",
+      "sha256": "b55066012d039b62892d3f4554cd6dccdaa32e80e1fc9bcdb822b0d28ceeb3c3",
+      "bytes": 47006
+    },
+    {
+      "source_path": "양식/_고소장.html",
+      "target_path": "templates/_고소장.html",
+      "sha256": "f72612727df30a559768625d90ded354f6fe1b5b1ce99d6ef63bf5965b7684dd",
+      "bytes": 2690
+    },
+    {
+      "source_path": "양식/_고소장.pdf",
+      "target_path": "templates/_고소장.pdf",
+      "sha256": "66bafe6167817d84f0934e8c63c32fa588c3c12659adf49e685869e3aebca1a1",
+      "bytes": 36872
+    },
+    {
+      "source_path": "양식/_공문.html",
+      "target_path": "templates/_공문.html",
+      "sha256": "ce21ce8088b738743dd9394a11d143e06080398c54e45d4ea966b75e2dab1575",
+      "bytes": 1634
+    },
+    {
+      "source_path": "양식/_공문.pdf",
+      "target_path": "templates/_공문.pdf",
+      "sha256": "1174f7d049ae0af560e7a0fe118a381548c0c17135ebeab19c544b0a2fd44b5d",
+      "bytes": 27919
+    },
+    {
+      "source_path": "양식/_근로계약서.html",
+      "target_path": "templates/_근로계약서.html",
+      "sha256": "4daceedaba325a52129f14612165cf95932b0e51c4b5f76b2afc0099617d69ad",
+      "bytes": 6690
+    },
+    {
+      "source_path": "양식/_근로계약서.pdf",
+      "target_path": "templates/_근로계약서.pdf",
+      "sha256": "f389ad1a4d599541d93f83968da252575990ae47b509f28d9e53a6488357c3b3",
+      "bytes": 64506
+    },
+    {
+      "source_path": "양식/_기획안.html",
+      "target_path": "templates/_기획안.html",
+      "sha256": "53d106374871f272bd49f396c9b1ade6633f89d239346330c233ce1bc01e920d",
+      "bytes": 9925
+    },
+    {
+      "source_path": "양식/_기획안.pdf",
+      "target_path": "templates/_기획안.pdf",
+      "sha256": "c8c595114e6da155229607846db06f4c4629b366b90b57eb89cb38a1f747f2d4",
+      "bytes": 86193
+    },
+    {
+      "source_path": "양식/_내부보고서.html",
+      "target_path": "templates/_내부보고서.html",
+      "sha256": "e922ded629641877abd82645898215bc3fc875c0cff0fd9879a194b9c19014cb",
+      "bytes": 2417
+    },
+    {
+      "source_path": "양식/_내부보고서.pdf",
+      "target_path": "templates/_내부보고서.pdf",
+      "sha256": "95fa34376749ce0aef1164273dc936a5510af005696f7d2cf449a47265018840",
+      "bytes": 45685
+    },
+    {
+      "source_path": "양식/_내용증명.html",
+      "target_path": "templates/_내용증명.html",
+      "sha256": "571c362ca109ae29f313cb491d21efcdb1818652d830aa57919bd1b3150404e5",
+      "bytes": 1926
+    },
+    {
+      "source_path": "양식/_내용증명.pdf",
+      "target_path": "templates/_내용증명.pdf",
+      "sha256": "36369a337287a635ea6d1bde9522b75f76435fc3d7bae378c2bbf46f02dcfbc4",
+      "bytes": 46706
+    },
+    {
+      "source_path": "양식/_대외문건.html",
+      "target_path": "templates/_대외문건.html",
+      "sha256": "f302aa4fd1b9604f78d9c34543ba3f0d43fef2b2eb0ff2008bda14dbeb04a92b",
+      "bytes": 2378
+    },
+    {
+      "source_path": "양식/_대외문건.pdf",
+      "target_path": "templates/_대외문건.pdf",
+      "sha256": "55b562d27446a9d368f6bd9347b91f7b147009c6b0e7f080edbf0c1b254d3144",
+      "bytes": 37589
+    },
+    {
+      "source_path": "양식/_범용-계약서.html",
+      "target_path": "templates/_범용-계약서.html",
+      "sha256": "6711433da39cee31683f5a1f78b6622415aa75fe984dd6fb32fc78c4430ea539",
+      "bytes": 10942
+    },
+    {
+      "source_path": "양식/_범용-계약서.pdf",
+      "target_path": "templates/_범용-계약서.pdf",
+      "sha256": "3643772cf89c0c9bf0a3d7bb18c660c6ea1d02be65c04075075b902e9be2bff0",
+      "bytes": 130517
+    },
+    {
+      "source_path": "양식/_범용-뮤카.html",
+      "target_path": "templates/_범용-뮤카.html",
+      "sha256": "840c39729e76ff3e9f2743b8aad78adcb632cf9d63bfc91d56a6658a2507b2c6",
+      "bytes": 12018
+    },
+    {
+      "source_path": "양식/_범용-뮤카.pdf",
+      "target_path": "templates/_범용-뮤카.pdf",
+      "sha256": "2aa135ae5bfe1e311a132509a87ee100643def1c7656146b3f40e9778ca65fae",
+      "bytes": 213438
+    },
+    {
+      "source_path": "양식/_범용-보고서.html",
+      "target_path": "templates/_범용-보고서.html",
+      "sha256": "c5da5d85389cdac87f3b2a1692805b6c98a4e100c997dc8aa8b3c7fc3e0f5686",
+      "bytes": 5237
+    },
+    {
+      "source_path": "양식/_범용-보고서.pdf",
+      "target_path": "templates/_범용-보고서.pdf",
+      "sha256": "0c6bfe572750b3fc229fb0796f32c192933b24fedde20008f057bbe888bca90f",
+      "bytes": 85419
+    },
+    {
+      "source_path": "양식/_범용-현황점검.html",
+      "target_path": "templates/_범용-현황점검.html",
+      "sha256": "2ddf6fca05bc83f1f39129c5442f3a58dc8fba306cb5cba62c82bc178058da02",
+      "bytes": 6232
+    },
+    {
+      "source_path": "양식/_범용-현황점검.pdf",
+      "target_path": "templates/_범용-현황점검.pdf",
+      "sha256": "ba888a18c2630a5bfbb6440fdd98d8396b7ad81c013d5571595490a947a2fa4c",
+      "bytes": 89554
+    },
+    {
+      "source_path": "양식/_범용-회의결과.html",
+      "target_path": "templates/_범용-회의결과.html",
+      "sha256": "a8763ef78b9a835385a3a6d6d252d82ef097a661e1ecf28ef7bab201380bf553",
+      "bytes": 4588
+    },
+    {
+      "source_path": "양식/_범용-회의결과.pdf",
+      "target_path": "templates/_범용-회의결과.pdf",
+      "sha256": "42e2cdfb4dcbcf09113fd8d4f31e18b51a6b7e79426d0db2f204887ce16586a0",
+      "bytes": 88019
+    },
+    {
+      "source_path": "양식/_범용.html",
+      "target_path": "templates/_범용.html",
+      "sha256": "3b7887ea52e26d32be8b8786abf6a5413744b8f09085b48932f1e272052432ba",
+      "bytes": 3510
+    },
+    {
+      "source_path": "양식/_범용.pdf",
+      "target_path": "templates/_범용.pdf",
+      "sha256": "e62502adc857c657a3aef49a29895997da5a629804c85901d092b93461e1c5de",
+      "bytes": 55077
+    },
+    {
+      "source_path": "양식/_비즈니스-견본.html",
+      "target_path": "templates/_비즈니스-견본.html",
+      "sha256": "2406575e49c00a83990bcc5f13d5802d626782b42808b871016240e7ec99b03c",
+      "bytes": 30013
+    },
+    {
+      "source_path": "양식/_비즈니스-견본_한파일.html",
+      "target_path": "templates/_비즈니스-견본_한파일.html",
+      "sha256": "1330d7a7fe1c951f982cd5e8b2bfd8255a7701da925672e14e3d9983570e62f5",
+      "bytes": 50336
+    },
+    {
+      "source_path": "양식/_비즈니스.html",
+      "target_path": "templates/_비즈니스.html",
+      "sha256": "6888f7a89e999055088f923c2f03e3ecf6d59b464f803944fe00c5db0239d85c",
+      "bytes": 4009
+    },
+    {
+      "source_path": "양식/_비즈니스A4-견본.html",
+      "target_path": "templates/_비즈니스A4-견본.html",
+      "sha256": "374e3d6dbbcc2aa8ef7ca017802fad31fd63229f5f9a28fbe5186cb65398e0bf",
+      "bytes": 20424
+    },
+    {
+      "source_path": "양식/_비즈니스A4-견본.pdf",
+      "target_path": "templates/_비즈니스A4-견본.pdf",
+      "sha256": "e4a9ad28855e08d4b2b549e81ea1300e8f739baef0c4f3dc53934c03ab8ff5ab",
+      "bytes": 181941
+    },
+    {
+      "source_path": "양식/_비즈니스A4-견본_한파일.html",
+      "target_path": "templates/_비즈니스A4-견본_한파일.html",
+      "sha256": "c309afe76c2932bf9c9ef379fd2464d964b290ab6648d70240a21ea60efd86a4",
+      "bytes": 37981
+    },
+    {
+      "source_path": "양식/_비즈니스A4.html",
+      "target_path": "templates/_비즈니스A4.html",
+      "sha256": "a1fa9660b68225b4f89e0cc0cc61b1879ad0a2455e7d67af83dc20033747a5ec",
+      "bytes": 4959
+    },
+    {
+      "source_path": "양식/_비즈니스A4.pdf",
+      "target_path": "templates/_비즈니스A4.pdf",
+      "sha256": "1c66290d07ba1cfeb1368db42b6550a00895323bd5dcf24d63b2cab7b90d4e36",
+      "bytes": 52406
+    },
+    {
+      "source_path": "양식/_비즈니스A4_한파일.html",
+      "target_path": "templates/_비즈니스A4_한파일.html",
+      "sha256": "618820a7e9f010b5cb7873f9188f57fbbcaeb12ca05f3a755155676d716e9a18",
+      "bytes": 19717
+    },
+    {
+      "source_path": "양식/_사실확인서.html",
+      "target_path": "templates/_사실확인서.html",
+      "sha256": "649f7cf07264324b360c12c3dff8a682b856eef6f7a4480e311768f51106cf75",
+      "bytes": 2687
+    },
+    {
+      "source_path": "양식/_사실확인서.pdf",
+      "target_path": "templates/_사실확인서.pdf",
+      "sha256": "ca9247f5549576a2fdeb5b66c1ce945ef2f50fbda61e2d929ba8a0697c4bc580",
+      "bytes": 41235
+    },
+    {
+      "source_path": "양식/_사업계획서.html",
+      "target_path": "templates/_사업계획서.html",
+      "sha256": "cb6f995853bed5ed60ebb4f2d5b79ea99615b83b31fbcc9288f1d0ccf8ad6abd",
+      "bytes": 14840
+    },
+    {
+      "source_path": "양식/_사업계획서.pdf",
+      "target_path": "templates/_사업계획서.pdf",
+      "sha256": "61fbd263e14dab424c5668aa8c01e6653e0dd105ea6f1045b9e7865cf7f176bc",
+      "bytes": 137618
+    },
+    {
+      "source_path": "양식/_우편발송패키지.html",
+      "target_path": "templates/_우편발송패키지.html",
+      "sha256": "9c3ddfb61b2b9426be633e6067ead5256371cd1c949d8cdef06a525f16755dc6",
+      "bytes": 3898
+    },
+    {
+      "source_path": "양식/_우편발송패키지.pdf",
+      "target_path": "templates/_우편발송패키지.pdf",
+      "sha256": "0c2348b471c952ca3c871c408bd4af827d72ce95f7f4e36f97c064351e3ec1ba",
+      "bytes": 81158
+    },
+    {
+      "source_path": "양식/_원페이저.html",
+      "target_path": "templates/_원페이저.html",
+      "sha256": "3e8d8bc1258cf3cf543f65fa334935ff2af24e0dddbf39dbaf1447a81fcae114",
+      "bytes": 5326
+    },
+    {
+      "source_path": "양식/_원페이저.pdf",
+      "target_path": "templates/_원페이저.pdf",
+      "sha256": "f119e5251b0bbe70c05e4f53588d804bc6f2445d32644eede26e40f5e974ded7",
+      "bytes": 52474
+    },
+    {
+      "source_path": "양식/_위임장.html",
+      "target_path": "templates/_위임장.html",
+      "sha256": "41635f6d6d5f2e9a2729a10477aceaf374a45aeccaccdd94a90e1aaeb06a105f",
+      "bytes": 3168
+    },
+    {
+      "source_path": "양식/_위임장.pdf",
+      "target_path": "templates/_위임장.pdf",
+      "sha256": "387874522509753da4747bb2eafbb9649deb63e2f4de041022aa4e1ac8738ddf",
+      "bytes": 42866
+    },
+    {
+      "source_path": "양식/_인수인계서.html",
+      "target_path": "templates/_인수인계서.html",
+      "sha256": "4c147b2be08817db08f5a86817d5609285074ac72cb62368d2a45ba2e28f8455",
+      "bytes": 5629
+    },
+    {
+      "source_path": "양식/_인수인계서.pdf",
+      "target_path": "templates/_인수인계서.pdf",
+      "sha256": "a76803ce1b433f2a5374a37602a3d7cba754c92e0da3dd860021e7c5bc4d09ee",
+      "bytes": 62525
+    },
+    {
+      "source_path": "양식/_임금명세서.html",
+      "target_path": "templates/_임금명세서.html",
+      "sha256": "626ea89f4c65cb9a3dec1d6f5762ba9de8fa505598af2f0c0a9586df9c6e97a8",
+      "bytes": 4584
+    },
+    {
+      "source_path": "양식/_임금명세서.pdf",
+      "target_path": "templates/_임금명세서.pdf",
+      "sha256": "049de52a6832c1e7971285eb69454dbda1a339b8d8f469a81d285a575835886b",
+      "bytes": 46863
+    },
+    {
+      "source_path": "양식/_재직증명서.html",
+      "target_path": "templates/_재직증명서.html",
+      "sha256": "330a37b30c91fc4f62fc90e288dbf4a30bdd2218ce1384fba818127fe6efbb8e",
+      "bytes": 3359
+    },
+    {
+      "source_path": "양식/_재직증명서.pdf",
+      "target_path": "templates/_재직증명서.pdf",
+      "sha256": "e53a8c91a82e22484539450cf92483cb1c37103f4ca754e7c351397305c2a582",
+      "bytes": 41378
+    },
+    {
+      "source_path": "양식/_제안서.html",
+      "target_path": "templates/_제안서.html",
+      "sha256": "aed2dbf19f3780079e5b976708840052a75bdf69be4acb5c6f945d2cb302ba3f",
+      "bytes": 13308
+    },
+    {
+      "source_path": "양식/_제안서.pdf",
+      "target_path": "templates/_제안서.pdf",
+      "sha256": "2868a1fb9f85cdb4a5240edc8571030d6990c542e8013e4a9420d754402683fe",
+      "bytes": 111419
+    },
+    {
+      "source_path": "양식/_제안서_한파일.html",
+      "target_path": "templates/_제안서_한파일.html",
+      "sha256": "bd35192f16abd47ec4955c3ebdbd9731ac6aa63e410550abe6fbb76392eefceb",
+      "bytes": 34091
+    },
+    {
+      "source_path": "양식/_퇴직증명서.html",
+      "target_path": "templates/_퇴직증명서.html",
+      "sha256": "a3fa6b696f50b3822f32d6ccc4d620c1e0147c5724476b5b0913e527f7c2a1d0",
+      "bytes": 2316
+    },
+    {
+      "source_path": "양식/_퇴직증명서.pdf",
+      "target_path": "templates/_퇴직증명서.pdf",
+      "sha256": "5eb305037b2b8eb7f9636f2f957c1ffc6f71d29225f47e58f497c4e8e011d43c",
+      "bytes": 40400
+    },
+    {
+      "source_path": "양식/_품의서.html",
+      "target_path": "templates/_품의서.html",
+      "sha256": "e33a1d52d50a24e888809002d3caaa84de142e2f2798379d8ef56e6b77881996",
+      "bytes": 5028
+    },
+    {
+      "source_path": "양식/_품의서.pdf",
+      "target_path": "templates/_품의서.pdf",
+      "sha256": "76c1c279d31d4fa069dd99064f7c59e69a64724bb531547446d827c2e2c28cfa",
+      "bytes": 57726
+    },
+    {
+      "source_path": "양식/_합의서.html",
+      "target_path": "templates/_합의서.html",
+      "sha256": "d06a9c87f9591bee2e3e1b732fc7fbf8fe50033c01994fd6fbedd2f76df10e03",
+      "bytes": 4304
+    },
+    {
+      "source_path": "양식/_합의서.pdf",
+      "target_path": "templates/_합의서.pdf",
+      "sha256": "06af41d7b7d183eb6773773ab0a7ba6d4332e06d15d3f6e28d5bf61b2d9ae409",
+      "bytes": 54982
+    },
+    {
+      "source_path": "양식/_화면.html",
+      "target_path": "templates/_화면.html",
+      "sha256": "9cacc48385d12fd9144f5fec741d90fb86bdc15dba5e0fbd81a3e463c2a9caf3",
+      "bytes": 2185
+    },
+    {
+      "source_path": "양식/_회의록.html",
+      "target_path": "templates/_회의록.html",
+      "sha256": "a968cd386122afcfe623dd80af4d5dd6fa0cbce7af35e4ad004cec69a3dea64c",
+      "bytes": 4573
+    },
+    {
+      "source_path": "양식/_회의록.pdf",
+      "target_path": "templates/_회의록.pdf",
+      "sha256": "ce462a892ed1c11b73c015b032dd50eda5c5db9999a79ee5c820ca14b9ddd591",
+      "bytes": 48180
+    },
+    {
+      "source_path": "양식/doc.js",
+      "target_path": "templates/doc.js",
+      "sha256": "1f7c4628099cc97bb17cd02200bc3eae38fc8f221668486a5b509abee6ea361f",
+      "bytes": 2837
+    },
+    {
+      "source_path": "양식/html2docx.py",
+      "target_path": "templates/html2docx.py",
+      "sha256": "15acac20d325f691998957d349aa4a859c22f042a7917391136f1e22963f05f4",
+      "bytes": 6976
+    },
+    {
+      "source_path": "양식/make-pdf.sh",
+      "target_path": "templates/make-pdf.sh",
+      "sha256": "3b86396a73a5d823345303d8574f26b8633b9838c0a909156507fdd01953306d",
+      "bytes": 2174
+    },
+    {
+      "source_path": "양식/toolbar.js",
+      "target_path": "templates/toolbar.js",
+      "sha256": "8829483ade00f9ddcdb374a9d6376a6ce48f0e12a58de62f6995c24941ecdc1c",
+      "bytes": 8615
+    },
+    {
+      "source_path": "양식/workspace.css",
+      "target_path": "templates/workspace.css",
+      "sha256": "ea67c647ed7e4c71b97808a3376b1c8035233ff0e770a70c583514dabadd5909",
+      "bytes": 15939
+    },
+    {
+      "source_path": "양식/workspace.js",
+      "target_path": "templates/workspace.js",
+      "sha256": "175a761e3c3f671f1c6c6968dac82d8ecd0919b2c070be90dc4742f2c7d30dbf",
+      "bytes": 18473
+    },
+    {
+      "source_path": "양식/가로.css",
+      "target_path": "templates/가로.css",
+      "sha256": "d689cc96e2f2c0e3ceec58e5ad9b87ec0130f252eea931f11ea4066a1cdcdb73",
+      "bytes": 3113
+    },
+    {
+      "source_path": "양식/가로.js",
+      "target_path": "templates/가로.js",
+      "sha256": "16a645fff1cd36186e89c3db512e462ab8dad8fb4e8cd5a97016dcc77414d9dd",
+      "bytes": 1079
+    },
+    {
+      "source_path": "양식/격식.css",
+      "target_path": "templates/격식.css",
+      "sha256": "b94e996e08755c02381eb2129ddb0d6d7c1dc638483be7eb54ba0c92952356e1",
+      "bytes": 14744
+    },
+    {
+      "source_path": "양식/격식.js",
+      "target_path": "templates/격식.js",
+      "sha256": "5493173e34c2630b09cd08cd5fd6a50c5fb703fee20236b8325e0b21f1e90b18",
+      "bytes": 8303
+    },
+    {
+      "source_path": "양식/공문.js",
+      "target_path": "templates/공문.js",
+      "sha256": "13d54c653dabc22641438cd5f400a3a24ef5feac0bf6bd2d5e23de433c898771",
+      "bytes": 4660
+    },
+    {
+      "source_path": "양식/문서v2.css",
+      "target_path": "templates/문서v2.css",
+      "sha256": "d7c542ad8c31168d15a9a60efd19f490b73751d093619da8dbf6f84e9ddd3393",
+      "bytes": 19645
+    },
+    {
+      "source_path": "양식/문서v2가로.css",
+      "target_path": "templates/문서v2가로.css",
+      "sha256": "e1ed0646fb72fd2a66a2154b3b18fb0a729c7e5319bee41d9c309a0eb5fbe29a",
+      "bytes": 904
+    },
+    {
+      "source_path": "양식/범용.css",
+      "target_path": "templates/범용.css",
+      "sha256": "b6b4035bfd3297359017c58730a828e6cebbeee4d9b485a533c118b494d40228",
+      "bytes": 49716
+    },
+    {
+      "source_path": "양식/보고서.js",
+      "target_path": "templates/보고서.js",
+      "sha256": "8a38580bd8eb103e91c3a69aac1ee9ecfd2438134ffb42ff802e40e6dc735837",
+      "bytes": 7730
+    },
+    {
+      "source_path": "양식/비즈니스.css",
+      "target_path": "templates/비즈니스.css",
+      "sha256": "005de300159729d0600cf031fe60475997b739d28780cd6a8adb3f7f8507e93d",
+      "bytes": 26211
+    },
+    {
+      "source_path": "양식/비즈니스A4.css",
+      "target_path": "templates/비즈니스A4.css",
+      "sha256": "3866b6c182758d18e954edfb3eab6ddaa60262878f328cab3dd841994329e572",
+      "bytes": 26452
+    },
+    {
+      "source_path": "양식/자료디자인.css",
+      "target_path": "templates/자료디자인.css",
+      "sha256": "d8f3d8722b1247b44550af416af7633aa725901a93c3e29d94df404376856695",
+      "bytes": 13934
+    },
+    {
+      "source_path": "양식/자료디자인.js",
+      "target_path": "templates/자료디자인.js",
+      "sha256": "af55a2cada408bbbba9978698e5f80c227cf8dfda0bc0330c4a0644c966a070e",
+      "bytes": 5472
+    },
+    {
+      "source_path": "양식/화면.css",
+      "target_path": "templates/화면.css",
+      "sha256": "1e5cc50420bc6072b6f764095366760cf3793099e4e381e40ad9b0d789a6cb1e",
+      "bytes": 4482
+    },
+    {
+      "source_path": "양식/화면.js",
+      "target_path": "templates/화면.js",
+      "sha256": "ad6b79db18c9d4cec25f83ce5d504e4e3ae7568fcce9131319f953f61584ebcd",
+      "bytes": 801
+    },
+    {
+      "source_path": "양식/assets/logo-freepass.png",
+      "target_path": "templates/assets/logo-freepass.png",
+      "sha256": "8238bc4eb7fc628f7f2aa7b30d3499380fc024d51e5752ab37e9e01a47648bdd",
+      "bytes": 89585
+    },
+    {
+      "source_path": "양식/assets/logo-jpk-white.png",
+      "target_path": "templates/assets/logo-jpk-white.png",
+      "sha256": "05279c434c4f85e94436e1bb31640489ca63470c82b13406e72e50a9401c4979",
+      "bytes": 127490
+    },
+    {
+      "source_path": "양식/assets/logo-jpk.png",
+      "target_path": "templates/assets/logo-jpk.png",
+      "sha256": "a7da061eaf1c34155fd17e479ce48f3b775320ab649051fb04764d3411da07b5",
+      "bytes": 154986
+    },
+    {
+      "source_path": "양식/assets/logo-sonogong.webp",
+      "target_path": "templates/assets/logo-sonogong.webp",
+      "sha256": "eabadfad8e9973dc7a33e8b15dbe1d68cc65df16329ae5aa4b1d51f684576b82",
+      "bytes": 8954
+    },
+    {
+      "source_path": "양식/assets/뮤카-CI-가로.png",
+      "target_path": "templates/assets/뮤카-CI-가로.png",
+      "sha256": "1409ec804a08ff73918597f750b268a34b3def861e29b1aafd2d3dfd420d8e6c",
+      "bytes": 12602
+    },
+    {
+      "source_path": "양식/assets/뮤카-CI-웹.png",
+      "target_path": "templates/assets/뮤카-CI-웹.png",
+      "sha256": "ce3b047cd3c822e1b0d5911386dc98ac84993bb54286134de0c1f9f46c3b915b",
+      "bytes": 5233
+    },
+    {
+      "source_path": "data/SPECS.md",
+      "target_path": "docs/SPECS.md",
+      "sha256": "b55cff28004738c51cd84f0d3f08c0deb626a0c514b0572bc60de35bc00bf989",
+      "bytes": 3678
+    },
+    {
+      "source_path": "data/AUDIT_STATUS.md",
+      "target_path": "docs/AUDIT_STATUS.md",
+      "sha256": "24ec0ab1b10104d0012003eee8315da04dfa197c7a2f84a623c5fc8a477958a5",
+      "bytes": 2219
+    },
+    {
+      "source_path": "data/forms.js",
+      "target_path": "docs/forms.js",
+      "sha256": "5d89fd6d7aa6500c50d3b2949af71a3eebc6e10cb87a667414fb5674356ea0c7",
+      "bytes": 2821
+    },
+    {
+      "source_path": "data/catalog.py",
+      "target_path": "docs/catalog.py",
+      "sha256": "3b22e271cd42c967c98e172493ce0bd0f878b76841b2c4de3dabde0055e2f546",
+      "bytes": 17181
+    },
+    {
+      "source_path": "data/check.py",
+      "target_path": "docs/check.py",
+      "sha256": "231b31e7d510c0964189c61ec322bde196f7d77c806bde0e7a9438a996d1075b",
+      "bytes": 7764
+    },
+    {
+      "source_path": "data/make_pdfs.py",
+      "target_path": "docs/make_pdfs.py",
+      "sha256": "18e1fd116cf355f6e5fd0cb2b7f4bbf78040b8d3a66e7552a6663f5910ba755b",
+      "bytes": 9554
+    },
+    {
+      "source_path": "data/stamp_updated.py",
+      "target_path": "docs/stamp_updated.py",
+      "sha256": "1748dbc2d6b4e320d67ab5ec63a14656e177e60f3efc3ca97bfea0fef215baeb",
+      "bytes": 1163
+    },
+    {
+      "source_path": "data/한파일.py",
+      "target_path": "docs/한파일.py",
+      "sha256": "2251fd0a5f78c35f99df2a13b4985cdc63a52dd3a35fdac9542011560c9c4b0f",
+      "bytes": 6049
+    }
+  ]
+}
