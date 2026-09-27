@@ -5,7 +5,7 @@
 //   이 검사는 1단계(관측 → 원장)를 고정한다. 아무것도 «시키지» 않는다.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { 읽어내다, 이벤트로 } from '../scripts/ops-to-ledger.mjs';
@@ -71,8 +71,12 @@ test('★대상 revision 은 저장소 head 가 아니라 «그 회차가 발행
   assert.match(본문, /변화 없음/, '같은 발행판을 또 적지 않는 길이 없다');
 });
 
-test('원장에 실제 관측이 이미 한 건 들어가 있다 — 이 일이 «동상»이 아니라는 증거', () => {
-  const 원장 = readFileSync(resolve(root, '.local/work-ledger.jsonl'), 'utf8');
+const 실제원장경로 = resolve(root, '.local/work-ledger.jsonl');
+
+test('원장에 실제 관측이 이미 한 건 들어가 있다 — 이 일이 «동상»이 아니라는 증거', {
+  skip: existsSync(실제원장경로) ? false : '로컬 운영 원장은 Git/CI 정본이 아니므로 실제 파일이 있는 환경에서만 검사한다'
+}, () => {
+  const 원장 = readFileSync(실제원장경로, 'utf8');
   const 줄 = 원장.trim().split('\n').map((l) => JSON.parse(l));
   const 우리것 = 줄.filter((e) => e.work_id === 'OPS-ERP5-CATALOG-001');
   assert.ok(우리것.length >= 1, '실제 운영 관측이 원장에 없다');

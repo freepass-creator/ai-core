@@ -1162,7 +1162,13 @@
     "test/workflow-state-machine.test.mjs",
     "web/orders/app.js",
     "web/orders/index.html",
-    "web/orders/style.css"
+    "web/orders/style.css",
+    "docs/coordination/GEMINI_CLI_AUTH_LEARNING.md",
+    "docs/coordination/duo/c8b7773c.json",
+    "docs/coordination/duo/c8b7773c.prompt.txt",
+    "docs/coordination/duo/fc0315af.json",
+    "docs/coordination/duo/fc0315af.prompt.txt",
+    "docs/integration/ERP5_CATALOG_WATCHDOG_DESIGN_2026-09-28.md"
   ],
   "verification": {
     "behavior_tests": "Shared/client focused suite: 22 passed, 0 failed. Full suite result is recorded in SHARED-ORDER-VERIFICATION.json.",
