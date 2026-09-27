@@ -1,0 +1,5 @@
+실패 35건 원인 — 등록부 HOLD 연쇄
+
+원인 찾았다. scripts/registry-refresh.mjs 72행: 원격 head 가 기록된 head 와 다르면 execution_readiness_status 를 ACTIVE→HOLD 로 내린다(설계 의도: 관측 못 한 revision 위에서 실행 금지). 오늘 10:03 자동 갱신이 돌면서 ACTIVE 5개 → 2개가 됐고, aiops 등이 HOLD 라서 order-capability-e2e 등 33건이 PLANNED 대신 HOLD 를 받아 실패한다. 나머지 2건은 canonical-guard 의 Windows 경로 버그(URL.pathname 이 C:\C:\ 를 만든다)로 별개다. 질문: (1) HOLD 연쇄가 의도대로인가, 아니면 refresh 는 revision 만 갱신하고 readiness 는 사람이 올리게 해야 하나 (2) 테스트가 실제 등록부를 읽는 게 맞나, 고정 fixture 를 써야 하나. 각 한 줄.
+
+200자 이내 한국어로 답해라.

@@ -7,11 +7,8 @@ import { createCapabilityEngine } from '../src/engine/capability-engine.mjs';
 const readJson = async path => JSON.parse(await readFile(new URL(path, import.meta.url), 'utf8'));
 
 test('Sales customer search routes to the verified read-only adapter', async () => {
-  const [workMap, projectRegistry, capabilityRegistry] = await Promise.all([
-    readJson('../registry/work-map.json'),
-    readJson('../registry/projects.json'),
-    readJson('../registry/capabilities.json'),
-  ]);
+  /** 실행 준비 상태만 고정한 등록부를 쓴다. 이유는 test/fixtures/routing-registry.mjs 머리에 적혀 있다. */
+  const { workMap, projectRegistry, capabilityRegistry } = (await import('./fixtures/routing-registry.mjs')).routingConfig;
 
   const route = routeWork('고객 조회', { workMap, projectRegistry, capabilityRegistry });
   assert.equal(route.status, 'RESOLVED');

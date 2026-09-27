@@ -9,6 +9,9 @@ import { request } from 'node:http';
 import { OrderStore } from '../src/orders/store.mjs';
 import { startServer } from '../src/orders/server.mjs';
 
+/** 라우팅은 실행 준비 상태만 고정한 등록부로 본다 — 이유는 test/fixtures/routing-registry.mjs 머리에 있다. */
+const {routingConfig: 고정라우팅} = await import('./fixtures/routing-registry.mjs');
+
 const input = (extra = {}) => ({ requestId: randomUUID(), title: '공통 오더', intent: '같은 업무를 다른 AI와 이어서 처리한다.', project: 'ai-core', kind: 'general', criteria: ['재시작 뒤 같은 기록을 복구한다.'], ...extra });
 const command = (order, action, extra = {}) => ({ requestId: randomUUID(), version: order.version, action, ...extra });
 function fixture(t, options) { const s = new OrderStore(':memory:', options); t.after(() => s.close()); return s; }
@@ -106,7 +109,7 @@ test('two processes sharing SQLite deduplicate simultaneous intake', async t => 
 });
 test('HTTP and direct CLI store share truth; cross-origin, bad host and malformed writes fail', async t => {
   const dir = mkdtempSync(join(tmpdir(), 'ai-core-http-'));
-  const { server, store, url } = await startServer({ dbPath: join(dir, 'orders.sqlite'), port: 0, standalone: true }); t.after(async () => { server.closeAllConnections(); await new Promise(resolve => server.close(resolve)); rmSync(dir, { recursive: true, force: true }); });
+  const { server, store, url } = await startServer({ dbPath: join(dir, 'orders.sqlite'), port: 0, standalone: true, routingConfig: 고정라우팅 }); t.after(async () => { server.closeAllConnections(); await new Promise(resolve => server.close(resolve)); rmSync(dir, { recursive: true, force: true }); });
   const req = input(); const post = (body, headers = {}) => fetch(`${url}/api/orders`, { method: 'POST', headers: { 'Content-Type': 'application/json', ...headers }, body: JSON.stringify(body) });
   const first = await (await post(req)).json(); assert.equal(store.get(first.id).intent, req.intent);
   const projection = await (await fetch(`${url}/api/orders/${first.id}/work`)).json();

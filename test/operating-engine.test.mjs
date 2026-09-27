@@ -3,10 +3,13 @@ import assert from 'node:assert/strict';
 import { openOperatingCapabilityEngine } from '../src/engine/operating-engine.mjs';
 import { normalizeAdapterResult } from '../src/engine/adapter-contract.mjs';
 
+/** 실행 준비 상태만 고정한 등록부를 주입한다 — 이유는 test/fixtures/routing-registry.mjs 머리에 있다. */
+const {projectRegistry: 고정프로젝트} = await import('./fixtures/routing-registry.mjs');
+
 const fakeStore = { get() { throw new Error('should not read without sources'); } };
 
 test('workSources가 없으면 capability plan은 살아 있고 projection/authority만 닫힌다', async () => {
-  const operating = await openOperatingCapabilityEngine({ store: fakeStore, workSources: null });
+  const operating = await openOperatingCapabilityEngine({ store: fakeStore, workSources: null, projectRegistry: 고정프로젝트 });
   assert.equal(operating.source_mode, 'ROUTING_ONLY');
   assert.equal(operating.readWorkProjection, null);
   assert.equal(operating.verifyAuthority, null);
@@ -30,7 +33,7 @@ test('외부 변경은 trusted work source가 없으면 모양 맞는 receipt가
     runCommand: async () => { throw new Error('must not execute'); },
     runModule: async () => { throw new Error('must not execute'); },
   };
-  const operating = await openOperatingCapabilityEngine({ store: fakeStore, workSources: null, runtime: fakeRuntime });
+  const operating = await openOperatingCapabilityEngine({ store: fakeStore, workSources: null, runtime: fakeRuntime, projectRegistry: 고정프로젝트 });
   const aiops = operating.projectRegistry.projects.find(p => p.project_id === 'aiops');
   const cap = operating.capabilityRegistry.capabilities.find(c => c.id === 'operations.penalty.prepare');
   const route = { capability_id: cap.id, target_project_id: 'aiops', target_revision: aiops.head_revision };

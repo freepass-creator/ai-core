@@ -7,7 +7,7 @@ import { routeWork, validateWorkMap } from '../src/routing/work-router.mjs';
 
 const workMap = JSON.parse(readFileSync(new URL('../registry/work-map.json', import.meta.url), 'utf8'));
 const workMapSchema = JSON.parse(readFileSync(new URL('../contracts/work-map.schema.json', import.meta.url), 'utf8'));
-const projectRegistry = JSON.parse(readFileSync(new URL('../registry/projects.json', import.meta.url), 'utf8'));
+const {projectRegistry} = await import('./fixtures/routing-registry.mjs');
 const capabilityRegistry = JSON.parse(readFileSync(new URL('../registry/capabilities.json', import.meta.url), 'utf8'));
 const fixtures = JSON.parse(readFileSync(new URL('../registry/work-routing-fixtures.json', import.meta.url), 'utf8')).fixtures;
 

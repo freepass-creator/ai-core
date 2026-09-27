@@ -82,7 +82,8 @@
     "canon:guard": "node scripts/canon-guard.mjs --self-test && node scripts/canon-guard.mjs",
     "canon:branch": "node scripts/check-branch-discipline.mjs",
     "continuity:audit": "node scripts/development-continuity-audit.mjs",
-    "continuity:gate": "node scripts/development-continuity-audit.mjs --gate"
+    "continuity:gate": "node scripts/development-continuity-audit.mjs --gate",
+    "duo": "node scripts/duo.mjs"
   },
   "dependencies": {
     "ajv": "8.20.0",

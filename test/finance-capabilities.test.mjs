@@ -5,7 +5,7 @@ import { routeWork,validateWorkMap } from '../src/routing/work-router.mjs';
 import { validateCapabilityRegistryReferences } from '../src/engine/capability-registry.mjs';
 
 const workMap=JSON.parse(await readFile(new URL('../registry/work-map.json',import.meta.url),'utf8'));
-const projects=JSON.parse(await readFile(new URL('../registry/projects.json',import.meta.url),'utf8'));
+const {projectRegistry: projects} = await import('./fixtures/routing-registry.mjs');
 const capabilities=JSON.parse(await readFile(new URL('../registry/capabilities.json',import.meta.url),'utf8'));
 
 test('재무 capability registry와 work map이 함께 유효하다',()=>{
