@@ -6,6 +6,38 @@ const LIMIT_PATTERNS = [
   /한도.*초과/,
 ];
 
+export function claudeReviewArgs(rawArgs = []) {
+  const args = rawArgs.filter((value) => value !== '--');
+  const promptFlag = args.findIndex((value) => value === '-p' || value === '--print');
+  let prompt;
+
+  if (promptFlag >= 0) {
+    prompt = args[promptFlag + 1];
+  } else {
+    prompt = args.filter((value) => !value.startsWith('-')).join(' ').trim();
+  }
+
+  if (!prompt) throw new Error('CLAUDE_REVIEW_PROMPT_REQUIRED');
+
+  return [
+    '-p', prompt,
+    '--permission-mode', 'plan',
+    '--output-format', 'text',
+  ];
+}
+
+export function claudeRunOutcome(result) {
+  const stdout = String(result?.stdout ?? '').trim();
+  const stderr = String(result?.stderr ?? '').trim();
+  const error = result?.error?.message ? String(result.error.message) : '';
+  const combined = [stdout, stderr, error].filter(Boolean).join('\n');
+
+  if (isClaudeUsageLimit(combined)) return { status: 'USAGE_LIMIT', stdout, combined };
+  if (result?.status !== 0) return { status: 'FAILED', stdout, combined };
+  if (!stdout) return { status: 'EMPTY_RESPONSE', stdout, combined };
+  return { status: 'ANSWERED', stdout, combined };
+}
+
 export function isClaudeUsageLimit(text) {
   const normalized = String(text ?? '').replace(/\u001b\[[0-?]*[ -\/]*[@-~]/g, '').replace(/\s+/g, ' ');
   return LIMIT_PATTERNS.some((pattern) => pattern.test(normalized)) || /hit.{0,20}your.{0,20}(?:weekly\s+)?limit/i.test(normalized);
