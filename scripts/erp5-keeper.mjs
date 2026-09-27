@@ -40,12 +40,17 @@ export function 한국시각(지금 = new Date()) {
   return { 요일: kst.getUTCDay(), 시: kst.getUTCHours(), 분: kst.getUTCMinutes(), 날짜: kst.toISOString().slice(0, 10) };
 }
 
-/** 창 안인가 — 월~토 09:30~19:59 KST. SKILL.md 의 조건 그대로다. */
+/** 창 안인가 — 월~토 08:00~19:59 KST.
+ *
+ *  ★2026-09-28 대표: 「업무 시간에 하지 말고 업무 시간 «좀 전»에 해서, 투입했을 때 문제 있는 걸 알려주는 게 낫지 않나」
+ *    맞다. 09:35 에 빠진 걸 알아채면 복구는 09:50 쯤인데, 그때까지 영업자는 «틀린 값을 본 뒤»다.
+ *    고치는 데 11분쯤 걸리므로 08:00 에 걸면 08:15 에는 최신이다 — 업무는 이미 정상인 채로 시작한다.
+ *    그래서 창의 «시작»을 09:30 에서 08:00 으로 당겼다. 끝(19:59)과 요일(월~토)은 그대로다.
+ */
 export function 창안인가(지금 = new Date()) {
-  const { 요일, 시, 분 } = 한국시각(지금);
+  const { 요일, 시 } = 한국시각(지금);
   if (요일 === 0) return false;
-  if (시 < 9 || 시 > 19) return false;
-  if (시 === 9 && 분 < 30) return false;
+  if (시 < 8 || 시 > 19) return false;
   return true;
 }
 
