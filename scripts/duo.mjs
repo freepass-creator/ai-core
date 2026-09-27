@@ -77,9 +77,25 @@ export function 부른다(쪽지) {
     if (!게이트.available) {
       return { state: 상태.막힘, answer: `Claude 게이트 닫힘(${게이트.status}) · 풀림 ${게이트.blocked_until}` };
     }
-    return { state: 상태.열림, answer: 'Claude 게이트 열림 — `npm run claude:review -- <인자>` 로 부르면 된다' };
+    const 물음 = `${쪽지.about}\n\n${쪽지.body}\n\n읽기 전용으로 검토하고 500자 이내 한국어로 답해라.`;
+    const 답 = execFileSync(process.execPath, [
+      'scripts/claude-usage-gate.mjs', 'run', '--', 물음,
+    ], {
+      cwd: root,
+      encoding: 'utf8',
+      timeout: 300000,
+      maxBuffer: 16 * 1024 * 1024,
+    }).trim();
+    if (!답) return { state: 상태.실패, answer: 'Claude 호출 실패: 빈 응답' };
+    return { state: 상태.답함, answer: 답 };
   } catch (오류) {
-    return { state: 상태.실패, answer: `게이트 확인 실패: ${String(오류.message).split('\n')[0]}` };
+    const 출력 = [오류.stdout, 오류.stderr, 오류.message]
+      .map((값) => String(값 ?? '').trim())
+      .find(Boolean) ?? '원인 미상';
+    if (/UNAVAILABLE_(?:UNTIL_RESET|RESET_UNKNOWN)/.test(출력)) {
+      return { state: 상태.막힘, answer: `Claude 게이트 닫힘: ${출력.split('\n').find((줄) => 줄.includes('UNAVAILABLE_')) ?? 출력}` };
+    }
+    return { state: 상태.실패, answer: `Claude 호출 실패: ${출력.split('\n')[0]}` };
   }
 }
 
