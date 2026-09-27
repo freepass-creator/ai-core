@@ -1,6 +1,28 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { gateStatus, isClaudeUsageLimit, parseClaudeResetAt } from '../src/collaboration/claude-usage-gate.mjs';
+import {
+  claudeReviewArgs,
+  claudeRunOutcome,
+  gateStatus,
+  isClaudeUsageLimit,
+  parseClaudeResetAt,
+} from '../src/collaboration/claude-usage-gate.mjs';
+
+test('normalizes every Claude consultation into non-interactive read-only review', () => {
+  assert.deepEqual(claudeReviewArgs(['검토해 줘']), [
+    '-p', '검토해 줘', '--permission-mode', 'plan', '--output-format', 'text',
+  ]);
+  assert.deepEqual(claudeReviewArgs(['-p', '반례를 찾아']), [
+    '-p', '반례를 찾아', '--permission-mode', 'plan', '--output-format', 'text',
+  ]);
+  assert.throws(() => claudeReviewArgs([]), /CLAUDE_REVIEW_PROMPT_REQUIRED/);
+});
+
+test('never treats an empty or failed Claude process as an answer', () => {
+  assert.equal(claudeRunOutcome({ status: 0, stdout: '', stderr: '' }).status, 'EMPTY_RESPONSE');
+  assert.equal(claudeRunOutcome({ status: 1, stdout: '', stderr: 'boom' }).status, 'FAILED');
+  assert.equal(claudeRunOutcome({ status: 0, stdout: '검토 답변', stderr: '' }).status, 'ANSWERED');
+});
 
 test('detects Claude usage-limit output', () => {
   assert.equal(isClaudeUsageLimit("You've hit your weekly usage limit. Resets 1pm (Asia/Seoul)."), true);

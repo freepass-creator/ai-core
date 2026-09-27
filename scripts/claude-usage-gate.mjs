@@ -2,7 +2,12 @@ import { readFile, writeFile, mkdir, rm } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
 import { dirname, join } from 'node:path';
 import { homedir } from 'node:os';
-import { gateStatus, isClaudeUsageLimit, parseClaudeResetAt } from '../src/collaboration/claude-usage-gate.mjs';
+import {
+  claudeReviewArgs,
+  claudeRunOutcome,
+  gateStatus,
+  parseClaudeResetAt,
+} from '../src/collaboration/claude-usage-gate.mjs';
 
 const statePath = process.env.AI_CORE_CLAUDE_GATE_STATE
   ?? join(homedir(), '.codex', 'state', 'claude-usage-gate.json');
@@ -34,24 +39,34 @@ if (command === 'status') {
     process.exitCode = 3;
   } else {
     const separator = args.indexOf('--');
-    const claudeArgs = separator >= 0 ? args.slice(separator + 1) : args;
+    const requestedArgs = separator >= 0 ? args.slice(separator + 1) : args;
+    let claudeArgs;
+    try {
+      claudeArgs = claudeReviewArgs(requestedArgs);
+    } catch (error) {
+      console.error(JSON.stringify({ status: 'FAILED', reason: error.message }));
+      process.exitCode = 2;
+      claudeArgs = null;
+    }
+    if (!claudeArgs) process.exit(2);
     const result = spawnSync('claude', claudeArgs, { encoding: 'utf8', shell: false, windowsHide: true });
     if (result.stdout) process.stdout.write(result.stdout);
     if (result.stderr) process.stderr.write(result.stderr);
-    const combined = [result.stdout, result.stderr, result.error?.message, ...(result.output ?? [])]
-      .filter(Boolean)
-      .map((value) => Buffer.isBuffer(value) ? value.toString('utf8') : String(value))
-      .join('\n');
-    if (isClaudeUsageLimit(combined)) {
-      const blockedUntil = parseClaudeResetAt(combined, { now });
+    const outcome = claudeRunOutcome(result);
+    if (outcome.status === 'USAGE_LIMIT') {
+      const blockedUntil = parseClaudeResetAt(outcome.combined, { now });
       if (blockedUntil) {
         await saveState({ schema: 'ai-core-claude-usage-gate-state/v1', reason: 'CLAUDE_USAGE_LIMIT', observed_at: now.toISOString(), blocked_until: blockedUntil });
         console.log(JSON.stringify({ status: 'UNAVAILABLE_UNTIL_RESET', blocked_until: blockedUntil, action: 'SKIP_CLAUDE_AND_DO_NOT_ASK_USER' }));
       } else {
         console.log(JSON.stringify({ status: 'UNAVAILABLE_RESET_UNKNOWN', action: 'DO_NOT_REPEAT_DURING_CURRENT_TASK' }));
       }
+    } else if (outcome.status === 'EMPTY_RESPONSE') {
+      console.error(JSON.stringify({ status: 'FAILED', reason: 'CLAUDE_EMPTY_RESPONSE' }));
+    } else if (outcome.status === 'FAILED' && !outcome.combined) {
+      console.error(JSON.stringify({ status: 'FAILED', reason: 'CLAUDE_PROCESS_FAILED_WITHOUT_OUTPUT' }));
     }
-    process.exitCode = result.status ?? 1;
+    process.exitCode = outcome.status === 'ANSWERED' ? 0 : (result.status || 1);
   }
 } else {
   console.error('Usage: node scripts/claude-usage-gate.mjs status|clear|run [-- <claude args>]');

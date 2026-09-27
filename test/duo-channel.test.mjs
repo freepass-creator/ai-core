@@ -31,6 +31,10 @@ test('★막힘·실패를 조용히 넘기지 않는다 — 상태 넷이 다 �
   /** Claude 쪽은 사용량 게이트를 먼저 보고, 닫혀 있으면 풀리는 시각을 답에 적는다. */
   assert.match(본문, /claude-usage-gate\.mjs/, 'Claude 게이트를 확인하지 않는다');
   assert.match(본문, /blocked_until/, '막혔을 때 풀리는 시각을 적어야 한다');
+  assert.match(본문, /claude-usage-gate\.mjs', 'run'/, 'Claude 게이트가 열렸을 때 실제 질문을 보내지 않는다');
+  assert.match(본문, /상태\.답함/, 'Claude 답을 ANSWERED 상태로 회수하지 않는다');
+  assert.match(본문, /\.find\(Boolean\)/, '빈 stdout이 실제 stderr 실패 사유를 가릴 수 있다');
+  assert.match(본문, /UNAVAILABLE_.*상태\.막힘/s, '첫 사용량 한도 응답을 BLOCKED로 기록하지 않는다');
 });
 
 test('1순위 규칙이 이 우편함을 «세션 시작의 첫 일»로 지정한다', () => {
