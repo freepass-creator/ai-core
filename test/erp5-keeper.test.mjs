@@ -120,3 +120,20 @@ test('★못 읽으면 null 이다 — 「모른다」를 0분으로 세지 않�
     assert.equal(자료나이분(나쁜것), null);
   }
 });
+
+// ★2026-09-28 실측 고장 — 방아쇠를 repository_dispatch 로 바꾸면서 세는 곳을 안 고쳤다.
+//   workflow_dispatch 만 세니 «우리가 건 것»이 하나도 안 세어져 하루 제한이 통째로 풀렸다.
+//   로그에 「오늘 7번째 → 6번째 → 4번째 → 3번째 → 2번째」로 줄어드는 숫자가 그 증거였다.
+test('★우리가 «실제로 거는» 이벤트를 세야 제한이 산다', () => {
+  const 우리것 = Array.from({ length: 11 }, () => 회차(95, { event: 'repository_dispatch' }));
+  const 판단 = 걸까(정상사실, 우리것, kst('2026-09-30', 14));
+  assert.equal(판단.건다, false, 'repository_dispatch 를 안 세면 하루 제한이 없는 것과 같다');
+  assert.match(판단.까닭, /11회 제한/);
+});
+
+test('예약과 이어달리기는 «깨운 것»이 아니라 세지 않는다', () => {
+  const 예약만 = Array.from({ length: 20 }, () => 회차(95, { event: 'schedule' }));
+  assert.equal(걸까(정상사실, 예약만, kst('2026-09-30', 14)).건다, true, '예약 회차를 제한에 세면 정작 필요할 때 못 건다');
+  const 이어 = Array.from({ length: 20 }, () => 회차(95, { event: 'workflow_run' }));
+  assert.equal(걸까(정상사실, 이어, kst('2026-09-30', 14)).건다, true);
+});

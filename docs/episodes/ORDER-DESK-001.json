@@ -861,6 +861,7 @@
     "scripts/derive-control-snapshot.mjs",
     "scripts/development-continuity-audit.mjs",
     "scripts/duo.mjs",
+    "scripts/erp5-keeper-hidden.vbs",
     "scripts/erp5-keeper.cmd",
     "scripts/erp5-keeper.mjs",
     "scripts/evaluate-control-tower.mjs",

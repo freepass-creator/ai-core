@@ -73,11 +73,19 @@ export function 걸까(사실, 회차들, 지금 = new Date()) {
   const 나이분 = (지금 - new Date(최근.createdAt)) / 60000;
   if (나이분 < 50) return { 건다: false, 까닭: `최근 회차가 ${Math.round(나이분)}분 전 — 50분이 안 됐다` };
 
+  /** 하루 몇 번이나 «사람·자동이 손수 깨웠나». 예약(schedule)·이어달리기(workflow_run)는 세지 않는다.
+   *
+   *  ★2026-09-28 실측 고장: 방아쇠를 repository_dispatch 로 바꾸면서 여기를 안 고쳤다.
+   *    `workflow_dispatch` 만 세고 있었으니 «우리가 건 것»이 하나도 안 세어졌고, 제한이 통째로 풀렸다.
+   *    로그에 그게 그대로 보였다 — 「오늘 7번째 → 6번째 → 4번째 → 3번째 → 2번째」로 «줄었다».
+   *    거는 족족 안 세니, 남은 것은 어젯밤 수동 회차가 목록에서 밀려나며 줄어드는 숫자뿐이었다.
+   *    깨우는 이벤트 둘 다 센다. 저장소 워치독도 repository_dispatch 를 쓰므로 함께 세는 편이 안전하다. */
+  const 깨움이벤트 = new Set(['workflow_dispatch', 'repository_dispatch']);
   const 오늘 = 한국시각(지금).날짜;
   const 오늘손수 = 회차들.filter(
-    (r) => r.event === 'workflow_dispatch' && 한국시각(new Date(r.createdAt)).날짜 === 오늘
+    (r) => 깨움이벤트.has(r.event) && 한국시각(new Date(r.createdAt)).날짜 === 오늘
   );
-  if (오늘손수.length >= 11) return { 건다: false, 까닭: `오늘 이미 ${오늘손수.length}번 걸었다 (11회 제한)` };
+  if (오늘손수.length >= 11) return { 건다: false, 까닭: `오늘 이미 ${오늘손수.length}번 깨웠다 (11회 제한)` };
 
   return { 건다: true, 까닭: `발행 ${사실.나이분 ?? '?'}분 전 · 최근 회차 ${Math.round(나이분)}분 전 · 오늘 ${오늘손수.length}번째` };
 }
@@ -152,7 +160,9 @@ if (process.argv[1] && resolve(process.argv[1]) === resolve(fileURLToPath(import
   try {
     const { stdout } = await run(
       'gh',
-      ['run', 'list', '-R', 저장소, '--workflow', 워크플로, '--limit', '10', '--json', 'databaseId,event,status,conclusion,createdAt'],
+      /** ★10 건은 하루치를 못 덮는다 — 매시 도는 일이라 10 건이면 대여섯 시간뿐이고,
+       *  그러면 「오늘 몇 번 깨웠나」가 구조적으로 적게 세어져 제한이 헐거워진다(2026-09-28 실측). */
+      ['run', 'list', '-R', 저장소, '--workflow', 워크플로, '--limit', '60', '--json', 'databaseId,event,status,conclusion,createdAt'],
       { cwd: root, timeout: 120_000, windowsHide: true }
     );
     회차들 = JSON.parse(stdout);
