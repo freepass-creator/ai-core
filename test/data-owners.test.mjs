@@ -69,3 +69,11 @@ test('★서로 어긋나는 출처는 «확정»이 아니라 HOLD 로 적는�
   assert.match(표.kinds.정산.canon, /HOLD/);
   assert.match(표.kinds.정산.hold, /대표 확인/);
 });
+
+test('★읽는 길은 코드가 실제로 읽는 것만 적는다 — bogi 요약은 문서 수뿐(Codex 검토)', () => {
+  /** 「bogi 요약 = 대수 정본」「bogi 는 bank_deposit 도 읽는다」라고 적었다가 둘 다 틀렸다.
+   *  없는 읽는 길을 적으면 세션이 그 길로 «답»을 만든다. */
+  assert.match(표.kinds.대수가동률.read, /읽는 도구 없음/);
+  assert.doesNotMatch(표.kinds.수납입금.read, /bank_deposit 도|둘 다 읽는다/);
+  assert.match(표.read_tool_defect, /catch/);
+});

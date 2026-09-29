@@ -68,8 +68,8 @@
     "수납입금": {
       "owner": "BUSINESS",
       "input": "CMS 엑셀 · 계좌내역 · 손오공 「채권」 탭 · 수납 시트",
-      "canon": "Firestore bank_deposit · money_tx — ★둘이 공존한다. 조회는 money_tx 쪽(Codex 확인), fb/bogi.mjs 는 둘 다 읽는다",
-      "read": "node fb/bogi.mjs <차번>",
+      "canon": "Firestore bank_deposit · money_tx — ★둘이 공존한다. 조회는 money_tx 쪽(Codex 확인), fb/bogi.mjs 차 한 대 모드는 money_tx 만 읽는다(Codex 검토로 정정 — 처음엔 「둘 다 읽는다」고 적었다)",
+      "read": "node fb/bogi.mjs <차번> — money_tx 만 읽는다. bank_deposit 은 요약의 문서 수에만 나온다",
       "sources": [
         "관리지도 §2",
         "fb/bogi.mjs"
@@ -145,7 +145,7 @@
     "대수가동률": {
       "owner": "BUSINESS",
       "canon": "Firestore fleet_count",
-      "read": "node fb/bogi.mjs",
+      "read": "★읽는 도구 없음 — 「모른다」. fb/bogi.mjs 요약은 fleet_count 의 «문서 수»만 찍는다(2026-09-29 Codex 검토·코드 확인)",
       "note": "예전 답 자리 lib/daesu-jeongbon.json 은 없다",
       "sources": [
         "fb/bogi.mjs",
@@ -166,7 +166,7 @@
       "owner": "BUSINESS",
       "input": "구글 드라이브(데이터센터) — 파일 원본",
       "canon": "파일은 드라이브 · 「어디 있나」 색인은 Firestore documents",
-      "read": "★읽는 도구 확인 안 됨",
+      "read": "node fb/bogi.mjs <차번> — documents (차 한 대 단위). 전체로 «어디까지 있나»를 읽는 도구는 없다",
       "sources": [
         "어디를보나 149·269행",
         "데이터지도 §8②"
@@ -202,7 +202,7 @@
     },
     "보험배서": {
       "owner": "UNKNOWN",
-      "conflicts": "「없다」",
+      "conflicts": "보험 모음은 있다 — insurance · insurance_status · insurance_check 를 fb/bogi.mjs <차번> 이 읽는다. «배서»가 그 안에 있는지는 모른다",
       "proposal": "BUSINESS — 다만 원천 자체가 있는지부터 모른다"
     },
     "정비사고": {
@@ -238,5 +238,6 @@
       ],
       "codex": "「차량은 VIN·매입회차·취소/반품 이력이 필요하다」"
     }
-  }
+  },
+  "read_tool_defect": "★fb/bogi.mjs 의 서류·보험 읽기는 .catch(() => []) — 실패가 «빈 목록»이 된다. 빈 목록을 「없다」로 답하면 안 된다(모른다). 고치는 곳은 aiops."
 }
