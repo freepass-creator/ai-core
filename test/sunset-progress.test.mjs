@@ -57,6 +57,7 @@ test('★문서허브의 «옮길 수 없는 절반»이 정본에 남아 있다
 test('★실제 저장소가 기준선을 넘지 않는다 — 이 수는 내려가기만 한다', () => {
   const { 목록, 본문 } = 저장소파일();
   const 넘은것 = 설정.areas
+    .filter((a) => !a.retired_at)
     .map((a) => 준비도(a, 본문, 목록.filter((f) => f.startsWith(a.path)).length, 모든구역, 설정.self?.files ?? [], 설정.self?.record_prefixes ?? []))
     .filter((r) => r.넘음.끌어씀 || r.넘음.언급);
   assert.deepEqual(
@@ -72,4 +73,34 @@ test('★재는 도구는 재는 대상에 안 잡힌다 — 그리고 그 제�
   for (const f of 설정.self.files) assert.match(f, /sunset/, `일몰 측정과 무관한 파일이 제외에 들어갔다: ${f}`);
   const 파일 = [{ path: 'src/governance/sunset.mjs', text: "참조찾기(본문, 'aiops/')" }];
   assert.deepEqual(참조찾기(파일, 'aiops/', ['aiops/'], 설정.self.files).끌어씀, []);
+});
+
+test('★구역은 저장소 «뿌리» 폴더다 — 이름이 같은 다른 폴더를 세지 않고, 상대 import 는 놓치지 않는다', () => {
+  /** 2026-09-29 에 두 번 틀렸다: 그냥 찾으니 docs/shared-services/ 를 잡았고(오탐),
+   *  앞을 좁혔더니 '../shared-services/a.mjs' 를 놓쳤다(누락). 둘 다 여기서 고정한다. */
+  const 판 = (text, path = 'src/x.mjs') => {
+    const r = 참조찾기([{ path, text }], 'shared-services/');
+    return r.끌어씀.length ? '끌어씀' : r.언급.length ? '언급' : '없음';
+  };
+  assert.equal(판("'docs/shared-services/SHARED.md'"), '없음', '다른 폴더를 일몰 구역으로 셌다');
+  assert.equal(판("import a from '../shared-services/a.mjs'"), '끌어씀', '상대 import 를 놓쳤다');
+  assert.equal(판("import a from './shared-services/a.mjs'"), '끌어씀');
+  assert.equal(판("const p = 'shared-services/PROVENANCE.json'"), '끌어씀');
+  assert.equal(판('예전엔 shared-services/ 에 있었다', 'docs/e.md'), '언급');
+});
+
+test('★지운 구역은 코드가 «절대» 끌어 쓰지 않는다 — 톱니가 아니라 0 이다', () => {
+  /** 지우기 전에는 줄어드는지를 보고, 지운 뒤에는 0 만 본다. 없는 경로를 끌어 쓰면 그건 고장이다.
+   *  문서의 언급은 세지 않는다 — 「9/22 에 aiops 를 복사해 왔다」는 참인 역사다. */
+  const { 본문 } = 저장소파일();
+  for (const a of 설정.areas.filter((x) => x.retired_at)) {
+    const { 끌어씀 } = 참조찾기(본문, a.path, 모든구역, 설정.self?.files ?? [], 설정.self?.record_prefixes ?? []);
+    assert.deepEqual(끌어씀, [], `${a.path} 는 ${a.retired_at} 에 지웠는데 코드가 아직 끌어 쓴다`);
+  }
+});
+
+test('지운 구역에는 «어떻게 지웠는지»가 남아 있다', () => {
+  for (const a of 설정.areas.filter((x) => x.retired_at)) {
+    assert.ok(a.retired_how?.length > 40, `${a.path} 를 왜·어떻게 지웠는지 없으면 다음 사람이 되살린다`);
+  }
 });

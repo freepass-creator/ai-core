@@ -17,9 +17,11 @@
       "preserved_how": "원본이 살아 있는 git 저장소다. PROVENANCE.json 이 revision 과 파일별 sha256 을 고정한다.",
       "destination": "쓰는 곳을 끊고 지운다. 필요한 것은 shared-services 로 이미 뽑았거나 원본에서 다시 가져온다.",
       "baseline": {
-        "끌어씀": 3,
-        "언급": 23
-      }
+        "끌어씀": 0,
+        "언급": 0
+      },
+      "retired_at": "2026-09-29",
+      "retired_how": "원본 freepass-creator/aiops 가 git 저장소로 살아 있음을 확인한 뒤 지웠다. 바깥 코드 의존은 0 이었고(남은 것은 사본을 감시하던 장치뿐), devcenter/ 에서 온 참조 9건은 전부 주석·문서·기록이었다. 사본이 다시 생기면 validate-canonical-development-lines 가 AIOPS_COPY_RESURRECTED 로 막는다."
     },
     {
       "path": "shared-services/",
@@ -29,9 +31,11 @@
       "preserved_how": "원본 blob sha 를 PROVENANCE 가 고정하고 그림자 신선도 검사가 재확인한다.",
       "destination": "ai-core 가 계속 쓸 것만 ai-core 자신의 코드로 승격하고 나머지는 지운다.",
       "baseline": {
-        "끌어씀": 6,
-        "언급": 14
-      }
+        "끌어씀": 0,
+        "언급": 0
+      },
+      "retired_at": "2026-09-29",
+      "retired_how": "원본 freepass-creator/aiops 가 git 저장소로 살아 있음을 확인한 뒤 지웠다. 바깥 코드 의존은 0 이었고(남은 것은 사본을 감시하던 장치뿐), devcenter/ 에서 온 참조 9건은 전부 주석·문서·기록이었다. 사본이 다시 생기면 validate-canonical-development-lines 가 AIOPS_COPY_RESURRECTED 로 막는다."
     },
     {
       "path": "devcenter/",

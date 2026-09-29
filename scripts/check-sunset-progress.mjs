@@ -57,6 +57,22 @@ if (process.argv[1] && resolve(process.argv[1]) === resolve(fileURLToPath(import
     console.log(`\n기준선 ${내림}개 내림 (올리지는 않는다)`);
   }
 
+  /** ★지운 구역은 규칙이 바뀐다 (2026-09-29 — aiops/·shared-services/ 를 실제로 지운 뒤).
+   *
+   *  지우기 «전»에는 참조가 줄어드는지를 본다(톱니). 지운 «뒤»에는 딱 하나만 본다 —
+   *  **코드가 없는 경로를 끌어 쓰면 안 된다.** 그건 기준선 문제가 아니라 그냥 고장이다.
+   *
+   *  문서의 «언급»은 세지 않는다. 「9/22 에 aiops 를 복사해 왔다」는 참인 역사다.
+   *  그걸 0 으로 만들라는 건 역사를 고쳐 쓰라는 뜻이고, 그러면 다음 사람이 무슨 일이 있었는지 모른다. */
+  const 지운뒤고장 = 결과.filter((r) => 설정.areas.find((a) => a.path === r.구역)?.retired_at && r.끌어씀 > 0);
+  for (const r of 결과) {
+    if (설정.areas.find((a) => a.path === r.구역)?.retired_at) { r.넘음.끌어씀 = 0; r.넘음.언급 = 0; }
+  }
+  if (지운뒤고장.length) {
+    for (const r of 지운뒤고장) console.error(`FAIL: ${r.구역} 는 이미 지웠는데 코드가 아직 끌어 쓴다 — ${r.막는것.join(', ')}`);
+    process.exit(1);
+  }
+
   const 넘은것 = 결과.filter((r) => r.넘음.끌어씀 || r.넘음.언급);
   if (넘은것.length) {
     console.error('');

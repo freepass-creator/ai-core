@@ -34,10 +34,13 @@ export async function validateCanonicalDevelopmentLines(base = root) {
     if (!text.includes(marker)) errors.push(`HISTORICAL_AUTHORITY_MARKER_MISSING:${path}`);
   }
 
-  const aiopsReadme = await readFile(resolve(base, 'aiops/README.md'), 'utf8');
-  if (!aiopsReadme.includes('docs/CONTROL_PLANE.md') || !aiopsReadme.includes('AI Core 전체의 현재 권위')) {
-    errors.push('AIOPS_IMPORTED_AUTHORITY_BOUNDARY_MISSING');
-  }
+  /** ★2026-09-29 — 여기 있던 「aiops/README.md 가 AI Core 를 권위로 가리키나」 검사를 지웠다.
+   *  aiops 물리 사본(aiops/)을 일몰로 지웠기 때문이다. 사본이 없으면 그 사본이 누구를 가리키는지 물을 까닭도 없다.
+   *  원본 freepass-creator/aiops 는 그대로 살아 있다 — 권위 경계는 이제 «사본이 없다»는 사실로 지켜진다. */
+  try {
+    await access(resolve(base, 'aiops'));
+    errors.push('AIOPS_COPY_RESURRECTED: aiops/ 사본이 다시 생겼다 — 일몰된 사본이다. 원본 저장소에 쓰라');
+  } catch { /* 없어야 정상이다 */ }
 
   const adapterRuntime = await readFile(resolve(base, 'src/engine/adapter-contract.mjs'), 'utf8');
   if (!adapterRuntime.includes('NOT a second provider/port Adapter standard')) {

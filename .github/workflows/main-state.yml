@@ -22,7 +22,6 @@ on:
       - 'registry/**'
       - 'design-system/**'
       - 'devcenter/**'
-      - 'shared-services/**'
       - 'config/**'
       - 'examples/**/*.json'
       - 'docs/**/*.json'

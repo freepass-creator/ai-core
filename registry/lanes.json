@@ -45,14 +45,21 @@
       "name": "검사와 계약은 대상의 lane 을 따른다",
       "why": "test/erp5-keeper.test.mjs 는 scripts/erp5-keeper.mjs 가 I 라서 I 다. 검사를 따로 떼면 한 작업이 늘 두 lane 을 건드린다(실측: 횡단 10건 중 6건이 이 모양이었다).",
       "derive_from_basename": true,
-      "applies_to": ["^test/", "^contracts/"]
+      "applies_to": [
+        "^test/",
+        "^contracts/"
+      ]
     },
     {
       "id": "B",
       "name": "사본은 I",
       "why": "PROVENANCE.json 이 있는 자리는 개발하는 곳이 아니라 원본과 어긋났는지 «재검증»하는 곳이다. 그 일이 곧 그림자 신선도이고 I 의 책임이다.",
       "lane": "I",
-      "applies_to": ["^aiops/", "^shared-services/"]
+      "applies_to": [
+        "^aiops/",
+        "^shared-services/"
+      ],
+      "retired_2026_09_29": "aiops/·shared-services/ 사본을 일몰로 지웠다. 이 규칙이 덮던 자리가 사라졌다. 사본이 다시 생기면 validate-canonical-development-lines 가 막는다."
     },
     {
       "id": "C",
@@ -73,46 +80,174 @@
     "  안 좁히면 examples/control-tower.json 이나 registry/work-map.json 까지 끌고 가 «겹침»이 난다(실측 5건)."
   ],
   "paths": [
-    { "pattern": "^design-system/", "lane": "U" },
-    { "pattern": "^design/", "lane": "U" },
-    { "pattern": "^examples/", "lane": "U" },
-    { "pattern": "^web/", "lane": "U", "note": "주문데스크 화면(HTML·CSS·JS) — 표시층이다" },
-    { "pattern": "^docs/(UI_UX|DESIGN|ACCESSIBILITY|ADAPTIVE_WEB)", "lane": "U" },
-    { "pattern": "^docs/design/", "lane": "U", "rule": "C" },
-    { "pattern": "^(scripts|src|test)/.*(design-system|claude-v1|ui-ux|token)", "lane": "U" },
-
-    { "pattern": "^aiops/", "lane": "I", "rule": "B" },
-    { "pattern": "^shared-services/", "lane": "I", "rule": "B" },
-    { "pattern": "^registry/", "lane": "I" },
-    { "pattern": "^src/integration/", "lane": "I" },
-    { "pattern": "^docs/(integration|shared-services|inventory)/", "lane": "I", "rule": "C" },
-    { "pattern": "^management-support/", "lane": "I" },
-    { "pattern": "^(scripts|src|test)/.*(ops-watch|ops-to-ledger|erp5-keeper|registry-refresh|shadow-freshness)", "lane": "I" },
-
-    { "pattern": "^src/engine/", "lane": "E" },
-    { "pattern": "^src/workflow/", "lane": "E" },
-    { "pattern": "^src/contracts/", "lane": "E" },
-    { "pattern": "^src/orders/", "lane": "E", "note": "주문데스크 뒷단 — 화면은 web/ 이라 U 다" },
-    { "pattern": "^docs/workflow/", "lane": "E", "rule": "C" },
-    { "pattern": "^contracts/(core|workflow|work|observability|project)", "lane": "E", "rule": "A", "note": "엔진이 지키는 계약 — 대상의 lane 을 따른다" },
-    { "pattern": "^(scripts|src|test)/.*(routing|capability|control-tower|work-ledger|work-map|workflow)", "lane": "E", "note": "★`order` 를 넣지 않는다 — src/integration/order-*.mjs 를 끌고 가 I 와 겹쳤다(실측). 주문은 위 두 줄이 이미 나눈다: 뒷단 src/orders→E · 어댑터 src/integration→I" },
-
-    { "pattern": "^src/governance/", "lane": "F" },
-    { "pattern": "^src/(development|improvement|intake|qa|security)/", "lane": "F", "note": "★일부러 하나씩 적는다. `^src/` 로 뭉뚱그리면 새 도메인 폴더가 조용히 규율로 빨려 들어간다 — 그때는 빨개져야 맞다" },
-    { "pattern": "^memory/", "lane": "F", "rule": "D", "note": "AI Core 자신의 기억·계보 기록 — 규율이 소유한다" },
-    { "pattern": "^docs/business/", "lane": "F", "rule": "C" },
-    { "pattern": "^src/collaboration/", "lane": "F" },
-    { "pattern": "^devcenter/", "lane": "F", "rule": "D" },
-    { "pattern": "^\\.github/", "lane": "F", "rule": "D" },
-    { "pattern": "^test/fixtures/known-bad/", "lane": "F", "note": "관문 «자신»을 시험하는 붙박이 표본. 나머지 fixture 는 규칙 A 대로 대상의 lane 을 따른다(routing-registry → E)" },
-    { "pattern": "^docs/(coordination|episodes|research|evidence|audits|handoffs|reviews|intake|improvement)/", "lane": "F", "rule": "C", "note": "일의 «기록과 증거». 규율 lane 이 관문과 함께 소유한다" },
-    { "pattern": "^contracts/(ui-ux)", "lane": "U", "rule": "A" },
-    { "pattern": "^contracts/(?!core|workflow|work|observability|project|ui-ux)", "lane": "F", "rule": "A", "note": "나머지 계약(governance 등)은 규율이 지킨다. ★부정 전방탐색이라 위 두 줄과 «겹치지 않는다» — 순서로 얼버무리지 않는다" },
-    { "pattern": "^[^/]+\\.(md|json|lock)$", "lane": "F", "rule": "D", "note": "저장소 뿌리 문서·매니페스트 — AGENTS·CLAUDE·README·package. 누구의 것도 아니면 규율이 맡는다" },
-    { "pattern": "^\\.[^/]+$", "lane": "F", "rule": "D", "note": ".gitignore 같은 뿌리 점파일" },
-    { "pattern": "^docs/(?!UI_UX|DESIGN|ACCESSIBILITY|ADAPTIVE_WEB)[^/]+$", "lane": "F", "rule": "C", "note": "docs 최상위 문서는 표준·규약·플레이북이다 — 규율이 소유한다. 디자인 표준은 위 U 규칙이 먼저 가져간다" },
-    { "pattern": "^scripts/", "lane": "F", "rule": "D", "note": "도구와 관문은 규율 lane 이 맡는다. I·E·U 의 도구는 위에서 이름으로 «먼저» 가져가므로 여기 남는 것은 실제로 규율 도구다" },
-    { "pattern": "^(scripts|src|test)/.*(academy|reuse|canon-guard|canonical-guard|branch-discipline|verify-main-state|duo|claude-usage-gate|checkpoint-work|secret|lane-)", "lane": "F" }
+    {
+      "pattern": "^design-system/",
+      "lane": "U"
+    },
+    {
+      "pattern": "^design/",
+      "lane": "U"
+    },
+    {
+      "pattern": "^examples/",
+      "lane": "U"
+    },
+    {
+      "pattern": "^web/",
+      "lane": "U",
+      "note": "주문데스크 화면(HTML·CSS·JS) — 표시층이다"
+    },
+    {
+      "pattern": "^docs/(UI_UX|DESIGN|ACCESSIBILITY|ADAPTIVE_WEB)",
+      "lane": "U"
+    },
+    {
+      "pattern": "^docs/design/",
+      "lane": "U",
+      "rule": "C"
+    },
+    {
+      "pattern": "^(scripts|src|test)/.*(design-system|claude-v1|ui-ux|token)",
+      "lane": "U"
+    },
+    {
+      "pattern": "^registry/",
+      "lane": "I"
+    },
+    {
+      "pattern": "^src/integration/",
+      "lane": "I"
+    },
+    {
+      "pattern": "^docs/(integration|shared-services|inventory)/",
+      "lane": "I",
+      "rule": "C"
+    },
+    {
+      "pattern": "^management-support/",
+      "lane": "I"
+    },
+    {
+      "pattern": "^(scripts|src|test)/.*(ops-watch|ops-to-ledger|erp5-keeper|registry-refresh|shadow-freshness)",
+      "lane": "I"
+    },
+    {
+      "pattern": "^src/engine/",
+      "lane": "E"
+    },
+    {
+      "pattern": "^src/workflow/",
+      "lane": "E"
+    },
+    {
+      "pattern": "^src/contracts/",
+      "lane": "E"
+    },
+    {
+      "pattern": "^src/orders/",
+      "lane": "E",
+      "note": "주문데스크 뒷단 — 화면은 web/ 이라 U 다"
+    },
+    {
+      "pattern": "^docs/workflow/",
+      "lane": "E",
+      "rule": "C"
+    },
+    {
+      "pattern": "^contracts/(core|workflow|work|observability|project)",
+      "lane": "E",
+      "rule": "A",
+      "note": "엔진이 지키는 계약 — 대상의 lane 을 따른다"
+    },
+    {
+      "pattern": "^(scripts|src|test)/.*(routing|capability|control-tower|work-ledger|work-map|workflow)",
+      "lane": "E",
+      "note": "★`order` 를 넣지 않는다 — src/integration/order-*.mjs 를 끌고 가 I 와 겹쳤다(실측). 주문은 위 두 줄이 이미 나눈다: 뒷단 src/orders→E · 어댑터 src/integration→I"
+    },
+    {
+      "pattern": "^src/governance/",
+      "lane": "F"
+    },
+    {
+      "pattern": "^src/(development|improvement|intake|qa|security)/",
+      "lane": "F",
+      "note": "★일부러 하나씩 적는다. `^src/` 로 뭉뚱그리면 새 도메인 폴더가 조용히 규율로 빨려 들어간다 — 그때는 빨개져야 맞다"
+    },
+    {
+      "pattern": "^memory/",
+      "lane": "F",
+      "rule": "D",
+      "note": "AI Core 자신의 기억·계보 기록 — 규율이 소유한다"
+    },
+    {
+      "pattern": "^docs/business/",
+      "lane": "F",
+      "rule": "C"
+    },
+    {
+      "pattern": "^src/collaboration/",
+      "lane": "F"
+    },
+    {
+      "pattern": "^devcenter/",
+      "lane": "F",
+      "rule": "D"
+    },
+    {
+      "pattern": "^\\.github/",
+      "lane": "F",
+      "rule": "D"
+    },
+    {
+      "pattern": "^test/fixtures/known-bad/",
+      "lane": "F",
+      "note": "관문 «자신»을 시험하는 붙박이 표본. 나머지 fixture 는 규칙 A 대로 대상의 lane 을 따른다(routing-registry → E)"
+    },
+    {
+      "pattern": "^docs/(coordination|episodes|research|evidence|audits|handoffs|reviews|intake|improvement)/",
+      "lane": "F",
+      "rule": "C",
+      "note": "일의 «기록과 증거». 규율 lane 이 관문과 함께 소유한다"
+    },
+    {
+      "pattern": "^contracts/(ui-ux)",
+      "lane": "U",
+      "rule": "A"
+    },
+    {
+      "pattern": "^contracts/(?!core|workflow|work|observability|project|ui-ux)",
+      "lane": "F",
+      "rule": "A",
+      "note": "나머지 계약(governance 등)은 규율이 지킨다. ★부정 전방탐색이라 위 두 줄과 «겹치지 않는다» — 순서로 얼버무리지 않는다"
+    },
+    {
+      "pattern": "^[^/]+\\.(md|json|lock)$",
+      "lane": "F",
+      "rule": "D",
+      "note": "저장소 뿌리 문서·매니페스트 — AGENTS·CLAUDE·README·package. 누구의 것도 아니면 규율이 맡는다"
+    },
+    {
+      "pattern": "^\\.[^/]+$",
+      "lane": "F",
+      "rule": "D",
+      "note": ".gitignore 같은 뿌리 점파일"
+    },
+    {
+      "pattern": "^docs/(?!UI_UX|DESIGN|ACCESSIBILITY|ADAPTIVE_WEB)[^/]+$",
+      "lane": "F",
+      "rule": "C",
+      "note": "docs 최상위 문서는 표준·규약·플레이북이다 — 규율이 소유한다. 디자인 표준은 위 U 규칙이 먼저 가져간다"
+    },
+    {
+      "pattern": "^scripts/",
+      "lane": "F",
+      "rule": "D",
+      "note": "도구와 관문은 규율 lane 이 맡는다. I·E·U 의 도구는 위에서 이름으로 «먼저» 가져가므로 여기 남는 것은 실제로 규율 도구다"
+    },
+    {
+      "pattern": "^(scripts|src|test)/.*(academy|reuse|canon-guard|canonical-guard|branch-discipline|verify-main-state|duo|claude-usage-gate|checkpoint-work|secret|lane-)",
+      "lane": "F"
+    }
   ],
   "unmatched": {
     "checker": "FAIL",
