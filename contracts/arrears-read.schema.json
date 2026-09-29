@@ -1,0 +1,196 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.freepass.ai/data/arrears-read/v1",
+  "title": "미수 읽는 계약 (arrears read contract) v1",
+  "description": "Firestore arrears 문서 하나의 모양. 쓰는 곳은 하나, 읽는 곳은 fb/bogi.mjs. ★2026-09-29 Claude·Codex 합의. 근거와 까닭은 registry/data-owners.json 「미수」.read_contract. ★아직 설계다 — aiops 쓰는 코드는 이 모양으로 바뀌지 않았다.",
+  "type": "object",
+  "required": [
+    "계약판",
+    "키",
+    "법인",
+    "차량번호",
+    "계약상태",
+    "미수",
+    "출처",
+    "기준월",
+    "원본행",
+    "수집시각",
+    "확인상태",
+    "기록"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "계약판": {
+      "const": 1,
+      "description": "이 계약의 판. 모양이 바뀌면 올린다 — 읽는 쪽이 옛 판을 새 판으로 착각하지 않게(Codex)."
+    },
+    "키": {
+      "type": "string",
+      "pattern": "^(SW|PR)-[^-]+-(live|end-.+)$",
+      "description": "★문서 키는 하나의 규칙만 쓴다: 유지 = 법인-차량번호-live · 종료 = 법인-차량번호-end-계약ID. 같은 차에 끝난 계약이 여럿일 수 있어 종료는 계약ID 로 가른다(Codex 정정). 2026-09-29 까지 put.mjs 는 3칸(SW-차번-end), put-galrae.mjs 는 2칸(SW-차번)을 써서, put-galrae 의 갈래는 진짜 문서에 닿지 못하고 따로 문서를 만들었다."
+    },
+    "법인": {
+      "enum": [
+        "SW",
+        "PR"
+      ],
+      "description": "스위치플랜·프라임구독. ★모르는 법인을 PR 로 바꿔 넣지 않는다(Codex) — fb/put.mjs 는 지금 「스위치플랜이 아니면 PR」로 쓴다. 법인을 모르면 문서를 쓰지 않고 HOLD 로 보고한다."
+    },
+    "차량번호": {
+      "type": "string",
+      "minLength": 1
+    },
+    "계약ID": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "contract_history 와 잇는 열쇠. 유지 계약은 모르면 null 로 둘 수 있다 — 지어내지 않는다. ★종료 계약은 키에 들어가므로 꼭 있어야 한다."
+    },
+    "계약상태": {
+      "enum": [
+        "live",
+        "end"
+      ],
+      "description": "계약유지 · 계약종료"
+    },
+    "미수": {
+      "type": "integer",
+      "description": "★답. «수납» 시트에서 온 값이다(대표 결정: 「수납」 = 답의 정본). 원 단위 정수."
+    },
+    "출처": {
+      "const": "수납탭",
+      "description": "답이 어디서 왔나. 계좌에서 계산한 값은 절대 이 칸에 들어가지 않는다 — 그건 «검산»이다."
+    },
+    "기준월": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}$",
+      "description": "수납 시트의 어느 달 기준인가 (예: 2026-08)"
+    },
+    "원본행": {
+      "type": "object",
+      "required": [
+        "시트",
+        "탭",
+        "행"
+      ],
+      "properties": {
+        "시트": {
+          "type": "string"
+        },
+        "탭": {
+          "type": "string"
+        },
+        "행": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "description": "답이 온 정확한 자리. 의심스러우면 여기로 돌아가 본다(Codex)."
+    },
+    "수집시각": {
+      "type": "string",
+      "format": "date-time",
+      "description": "시트에서 읽어 온 때"
+    },
+    "검산": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "계좌·CMS 에서 계산한 값. ★답이 아니다 — 대표 결정: 「계좌 도출은 검산값, 답으로 쓰지 않는다」.",
+      "properties": {
+        "계좌도출": {
+          "type": "integer"
+        },
+        "차이": {
+          "type": "integer",
+          "description": "미수 − 계좌도출"
+        }
+      }
+    },
+    "갈래": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "지금 무엇을 할 수 있나(할 일 분류). ★자동과 수동을 나눈다 — 한 번의 쓰기가 사람의 판정을 덮지 않게(Codex: 통일하되 수동판정은 보존).",
+      "properties": {
+        "자동": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "수동판정": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "properties": {
+            "값": {
+              "type": "string"
+            },
+            "누가": {
+              "type": "string"
+            },
+            "언제": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        }
+      }
+    },
+    "확인상태": {
+      "enum": [
+        "확인",
+        "미확인",
+        "HOLD"
+      ],
+      "description": "★검산 차이가 허용 기준을 넘고 해명이 없으면 HOLD. 답을 자동으로 바꾸지 않는다(Codex). 허용 기준은 대표가 승인한다."
+    },
+    "기록": {
+      "type": "object",
+      "required": [
+        "쓴곳",
+        "쓴시각"
+      ],
+      "properties": {
+        "쓴곳": {
+          "const": "fb/put.mjs",
+          "description": "★쓰는 곳은 하나다. 다른 코드가 이 문서를 쓰면 계약 위반이다."
+        },
+        "쓴시각": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "계약상태": {
+            "const": "end"
+          }
+        },
+        "required": [
+          "계약상태"
+        ]
+      },
+      "then": {
+        "properties": {
+          "계약ID": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "계약ID"
+        ]
+      }
+    }
+  ]
+}

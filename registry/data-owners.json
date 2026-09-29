@@ -84,6 +84,36 @@
       "read": "node fb/bogi.mjs <차번>",
       "correction_2026_09_29": "★처음엔 「미수는 계산값 — 주인 없음」이라 적었다. 틀렸다. Codex 가 코드로 «시트값도 적재한다»를 짚었고 직접 확인했다(wonja/saeop-jido.mjs 미수 → 통 arrears · 시트 「계약종료 미수」).",
       "one_writer_violation": "★쓰기 자리가 최소 둘이다 — misu/put-galrae.mjs(직접 set) · fb/put.mjs(범용). 정확한 수는 쓰기가 범용 헬퍼를 거쳐 모음 이름을 변수로 넘기므로 grep 으로 셀 수 없다(상한선 10곳은 «쓰는 곳 수»가 아니다).",
+      "answer_vs_check": "★시트 적재는 결함이 아니라 대표의 설계다(전역 지침): 답 = 「수납」 탭에서 읽은 값 · 계좌 도출 = 검산값, 답으로 쓰지 않는다. fb/moa.mjs 도 arrears_read 를 「수납 탭에서 읽은 미수 (계좌 계산 아님)」로 적는다.",
+      "writer_fight": {
+        "finding": "★두 쓰는 곳이 서로 다른 열쇠로 같은 차를 쓴다. 싸우는 게 아니라 «쌓인다»: put-galrae 가 넣은 2칸 문서는 아무도 치우지 않고, put-galrae 의 갈래는 진짜(3칸) 문서에 닿지 못한다.",
+        "evidence": [
+          "fb/put.mjs:178 — 열쇠 `SW|PR-<차번>-end|live` (3칸), 넣을 때 `_출처: 'aiops'` 를 박는다(:63)",
+          "fb/put.mjs 맞춘다() :54–55 — `_출처 == 'aiops'` 인 문서 중 이번 묶음에 없는 것만 지운다",
+          "misu/put-galrae.mjs:27 — 열쇠 `${법인}-${차량번호}` (2칸) · :41 merge set, `_출처` 없음 · 미수 칸 없음 → 3칸 문서와 따로 남고 지워지지도 않는다",
+          "fb/bogi.mjs 요약 — 모음마다 count() 로 전부 센다 → 2칸 문서만큼 arrears 문서 수가 부풀 수 있다(미수 합은 2칸 문서에 미수 칸이 없어 영향 없음)",
+          "fb/put.mjs:178·180 — 「스위치플랜이 아니면 PR」: 모르는 법인이 PR 로 들어간다(Codex)",
+          "fb/put.mjs:193–197 — holding 에도 미수 칸이 있다. 미수의 두 번째 사본이다"
+        ],
+        "correction_2026_09_29": "★처음엔 「put.mjs 가 put-galrae 문서를 지워 서로 싸운다」고 적었다. 틀렸다 — 지우기는 _출처=aiops 에만 걸린다. Codex 가 반박했고 코드(:54)로 확인했다.",
+        "measured": "코드 읽기로 확인. Firestore 실물은 읽지 않았다(열쇠 없음) — 지금 2칸 문서가 몇 개 쌓였는지는 «모른다»."
+      },
+      "read_contract": {
+        "schema": "contracts/arrears-read.schema.json",
+        "status": "DESIGN — aiops 쓰는 코드는 아직 바뀌지 않았다",
+        "agreed_with": "Codex 2026-09-29 — 필드 제안 + 최종 검토(열쇠에 계약ID · 모르는 법인 PR 치환 금지 · 단일 쓰기 동의 · 지우기 판독 반박)",
+        "one_writer": "fb/put.mjs 하나. put-galrae 의 갈래 계산은 put 파이프라인 안으로 흡수한다. 열쇠는 유지 `법인-차번-live` · 종료 `법인-차번-end-계약ID` 로 통일한다.",
+        "manual_kept": "갈래.수동판정은 자동 쓰기가 덮지 않는다(Codex).",
+        "tolerance": "검산 차이는 같은 달·같은 계약끼리 담당자가 맞춘다. 허용 기준은 대표가 승인한다. 해명 없는 차이 → 확인상태 HOLD. ★답을 자동으로 바꾸지 않는다.",
+        "migration_order": [
+          "1. 대표가 FIREBASE_ADMIN_KEY 를 둔다 → node fb/bogi.mjs 로 arrears 실물 모양을 읽는다(세지 않고 읽는다)",
+          "2. 2칸 열쇠 문서 수 · 같은 차에 끝난 계약이 여럿인 경우 · 법인이 스위치/프라임 밖인 줄을 기록한다",
+          "3. put-galrae 를 put.mjs 로 흡수하는 PR — 수동판정 보존 검사 포함",
+          "4. 2칸 문서 정리는 대표 승인 뒤. 지우기 전에 내보내 둔다",
+          "5. holding.미수 사본을 없앨지 읽기 전용 참조로 둘지 정한다"
+        ],
+        "unknown_corp": "법인을 모르면 쓰지 않고 HOLD 로 보고한다. PR 로 바꿔 넣지 않는다."
+      },
       "resolves": [
         "「node 미수.mjs 가 정본」 → 그 도구는 없는 파일을 읽는다(2026-09-29 실측). 정본이 아니다",
         "「lib/wonja/미수.json」·「미수-정본.json」 → 디스크에 없다",
@@ -94,7 +124,9 @@
         "관리지도 §3",
         "데이터지도",
         "업무지도",
-        "misu/put-galrae.mjs:41",
+        "misu/put-galrae.mjs:27·41",
+        "fb/put.mjs 맞춘다()",
+        "fb/bogi.mjs",
         "wonja/saeop-jido.mjs:42"
       ]
     },
