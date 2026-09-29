@@ -23,8 +23,12 @@ const 읽기 = (이름) => JSON.parse(readFileSync(new URL(`../../registry/${이
  *  ★임의로 늘리거나 줄이면 다른 검사의 전제가 흔들린다(실측):
  *    · 다섯에 freepass-admin 을 더했더니 라우팅이 HOLD_PROJECT_HOLD → HOLD_CAPABILITY_HOLD 로 바뀌었다.
  *    · 둘로 줄였더니 ERP·work-map 검사가 반대로 깨졌다.
- *  그래서 «그때의 값»을 기준으로 삼는다. 실제 등록부가 재검증을 거쳐 ACTIVE 로 돌아오면 이 목록을 줄여 간다. */
-export const 고정ACTIVE = ['ai-core', 'aiops', 'freepass-sales', 'freepasserp4', 'mewcar'];
+ *  그래서 «그때의 값»을 기준으로 삼는다. 실제 등록부가 재검증을 거쳐 ACTIVE 로 돌아오면 이 목록을 줄여 간다.
+ *
+ *  ★그리고 «이미 실제로 ACTIVE 인 것»은 여기 두지 않는다 — 덮어 봐야 아무것도 증명하지 않는다.
+ *    `test/routing-fixture-shrinks.test.mjs` 가 실제와 겹치면 빨개져서, 재검증으로 ACTIVE 가 돌아올 때마다
+ *    이 목록이 스스로 줄어든다(넣자마자 ai-core·mewcar 가 걸려 빠졌다). */
+export const 고정ACTIVE = ['aiops', 'freepass-sales', 'freepasserp4'];
 
 /**
  * 살아 있는 등록부를 바탕으로, 실행 준비 상태만 고정한 사본을 만든다.

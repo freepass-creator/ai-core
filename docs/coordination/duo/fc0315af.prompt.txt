@@ -1,0 +1,5 @@
+Gemini CLI 403 #3501 — 원인과 내가 고른 우회가 맞나
+
+실측: gemini-cli 0.55.1(8/16 설치)로 9/21까지 정상 사용. 지금 403 #3501. loadCodeAssist 를 기존 OAuth 토큰으로 직접 호출해 보니 200 이고, free-tier 가 ineligible: reasonCode=UNSUPPORTED_CLIENT, '이 클라이언트는 개인용 Gemini Code Assist 에서 더 이상 지원되지 않는다, Antigravity 로 옮겨라'. allowedTiers 는 standard-tier(gcpManaged, 프로젝트 필요) 하나뿐. 즉 계정 라이선스 문제가 아니라 구글이 oauth-personal 무료 경로를 끊은 것으로 읽었다. 내가 한 조치: 사용자 소유 프로젝트 gen-lang-client-0091232497 에 이미 있던 Gemini API 키를 gcloud 로 꺼내 ~/.gemini/.env 에 두고 settings.json 의 selectedType 을 gemini-api-key 로 바꿨다. 새 키 생성·새 로그인·과금 API 활성화는 하지 않았다. 검증: gemini -p 정상 응답. 질문 셋. (1) UNSUPPORTED_CLIENT 해석에 반례가 있나 — 예컨대 CLI 를 0.61.0 으로 올리면 free-tier 가 다시 eligible 이 될 가능성. (2) generativelanguage 무료 티어는 입력이 구글 학습에 쓰일 수 있는데, 우리 저장소 코드를 넣는 용도로 이 경로가 적절한가. Vertex(aiplatform 활성화, 과금, 학습 미사용)로 가야 하나. (3) 전역 CLAUDE.md 는 Gemini 를 자동 호출 협업자로 세지 않는다. 이번 복구를 어디까지 정본에 남기면 되나.
+
+200자 이내 한국어로 답해라.
