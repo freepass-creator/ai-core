@@ -5,7 +5,7 @@ import { execFileSync, spawnSync } from 'node:child_process';
 import { mkdtemp, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { installAcademyStarterKit } from '../src/academy/starter-kit.mjs';
+import { installAcademyStarterKit, kitFreshness, KIT_GENERATOR_INPUTS } from '../src/academy/starter-kit.mjs';
 
 const receipt={status:'READY',observed_at:'2026-09-22T00:00:00Z',task:'기능 구현',track:'development',target:{repository:'o/r',revision:'a'.repeat(40)},precheck:{completion_verification:{test:'npm test'}}};
 const git=(root,...args)=>execFileSync('git',args,{cwd:root,encoding:'utf8'}).trim();
@@ -253,4 +253,49 @@ test('★kit integrity survives a Windows CRLF checkout but still catches a real
   const edited=verify();
   assert.deepEqual(edited.changed,['standards/AI_WORKING_STANDARD.md'],'글이 바뀌었는데 통과시켰다');
   assert.equal(edited.status,'FAIL');
+});
+
+test('★kit is stale only when its own inputs changed — not whenever ai-core main moves',()=>{
+  /** 2026-09-30 실측: 옛 규칙(main head === kit.core_revision)은 341커밋 뒤 20곳을 전부 HOLD 로 만들었고,
+   *  새로 깔아도 ai-core 에 아무 PR 이나 병합되면 다시 HOLD 였다. Codex 합의: 내용 기준, 의심스러우면 닫는다. */
+  const base={kitRevision:'a'.repeat(40),coreHead:'b'.repeat(40),inputs:['docs/AI_WORKING_STANDARD.md','registry/operating-knowledge.json'],catalogInputs:['registry/projects.json']};
+  const cmp=(files,status='ahead')=>({ok:true,status,files});
+  assert.equal(kitFreshness({...base,coreHead:base.kitRevision}).status,'CURRENT');
+  const unrelated=kitFreshness({...base,compare:cmp(['README.md','registry/projects.json'])});
+  assert.equal(unrelated.status,'CURRENT_CONTENT','관계없는 파일만 바뀌었는데 낡았다고 했다 — 옛 병이 돌아왔다');
+  assert.deepEqual(unrelated.catalog_changed,['registry/projects.json'],'catalog 변경은 막지 않되 알려야 한다');
+  assert.deepEqual(kitFreshness({...base,compare:cmp(['docs/AI_WORKING_STANDARD.md'])}).changed,['docs/AI_WORKING_STANDARD.md']);
+  assert.equal(kitFreshness({...base,compare:cmp(['docs/AI_WORKING_STANDARD.md'])}).status,'STALE');
+  // 닫는 쪽 — Codex 반례: 갈라진 이력 · 잘린 비교 · 비교 실패 · 입력 목록 없는 옛 키트
+  assert.equal(kitFreshness({...base,compare:cmp([],'diverged')}).status,'STALE');
+  assert.equal(kitFreshness({...base,compare:cmp(Array.from({length:300},(_,i)=>'f'+i))}).reason,'COMPARE_TRUNCATED');
+  assert.equal(kitFreshness({...base,compare:{ok:false}}).status,'UNKNOWN');
+  assert.equal(kitFreshness({...base,compare:null}).status,'UNKNOWN');
+  assert.equal(kitFreshness({...base,inputs:undefined,compare:cmp([])}).status,'STALE');
+  assert.equal(kitFreshness({...base,coreHead:null}).status,'UNKNOWN');
+});
+
+test('★kit records its freshness inputs and the bootstrap embeds the tested judgement verbatim',async()=>{
+  const root=await mkdtemp(join(tmpdir(),'academy-kit-fresh-')), out=join(root,'.ai-core');
+  const {manifest}=await installAcademyStarterKit({output:out,receipt,coreRevision:'b'.repeat(40),readings:[{path:'docs/AI_WORKING_STANDARD.md',body:'one'}],operatingKnowledge:{schema_version:'1.0'},catalog:[{name:'projects.json',source:'registry/projects.json',data:{}}]});
+  for(const p of ['docs/AI_WORKING_STANDARD.md','registry/operating-knowledge.json',...KIT_GENERATOR_INPUTS]) assert.ok(manifest.freshness_inputs.includes(p),`${p} 가 신선도 입력에서 빠졌다 — 바뀌어도 모른다`);
+  assert.deepEqual(manifest.catalog_inputs,['registry/projects.json']);
+  assert.ok(!manifest.freshness_inputs.includes('registry/projects.json'),'catalog 를 신선도에 넣으면 registry 가 매일 바뀌어 다시 늘 STALE 이 된다');
+  const boot=await readFile(join(out,'session-bootstrap.mjs'),'utf8');
+  assert.ok(boot.includes(kitFreshness.toString()),'bootstrap 에 박힌 판정이 테스트한 함수와 다르다');
+  const parsed=spawnSync(process.execPath,['--check',join(out,'session-bootstrap.mjs')],{encoding:'utf8'});
+  assert.equal(parsed.status,0,parsed.stderr);
+});
+
+test('★verification commands are compared field-wise — projects.json may change daily, commands must not change silently',()=>{
+  /** Codex 검토(PR #346) 재현: projects.json 의 commands 가 바뀌어도 CURRENT_CONTENT 였다. */
+  const base={kitRevision:'a'.repeat(40),coreHead:'b'.repeat(40),inputs:['docs/AI_WORKING_STANDARD.md'],catalogInputs:['registry/projects.json'],verificationSource:'registry/projects.json',
+    verification:{test:'npm test',build:'npm run build'},compare:{ok:true,status:'ahead',files:['registry/projects.json']}};
+  assert.equal(kitFreshness({...base,currentVerification:{build:'npm run build',test:'npm test'}}).status,'CURRENT_CONTENT','열쇠 순서만 다른 같은 명령을 바뀌었다고 했다');
+  const moved=kitFreshness({...base,currentVerification:{test:'npm test -- --strict',build:'npm run build'}});
+  assert.equal(moved.status,'STALE');
+  assert.deepEqual(moved.changed,['registry/projects.json#commands']);
+  assert.equal(kitFreshness({...base,currentVerification:undefined}).status,'UNKNOWN','못 읽은 것을 같다고 봤다');
+  assert.equal(kitFreshness({...base,currentVerification:null}).status,'STALE','프로젝트가 등록부에서 사라졌는데 같다고 봤다');
+  assert.equal(kitFreshness({...base,compare:{ok:true,status:'ahead',files:['README.md']},currentVerification:undefined}).status,'CURRENT_CONTENT','projects.json 이 안 바뀌었으면 읽을 필요가 없다');
 });
