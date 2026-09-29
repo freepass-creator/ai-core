@@ -109,7 +109,7 @@
             "유지계약": 123,
             "계약ID_있음": 0
           },
-          "meaning": "★지금 arrears 는 fb/put.mjs 하나가 쓴 3칸 문서뿐이다 — 쌓인 2칸 문서 없음, 요약 count() 이중계산 없음. 위험은 «코드에» 남아 있다: misu/put-galrae.mjs 를 --쓴다 로 한 번 돌리면 2칸 문서가 생기기 시작한다."
+          "meaning": "★지금 arrears 에 2칸 문서는 없고 요약 count() 이중계산도 없다. 3칸 열쇠와 _출처=aiops 표식은 fb/put.mjs 가 쓰는 꼴과 «일치»한다 — 다만 이것만으로 다른 코드가 쓰지 않았다고 확정할 수는 없다(Codex 검토). 위험은 코드에 남아 있다: misu/put-galrae.mjs 를 --쓴다 로 한 번 돌리면 2칸 문서가 생기기 시작한다."
         }
       },
       "read_contract": {

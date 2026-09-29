@@ -123,3 +123,19 @@ test('★키가 다른 칸과 어긋나면 막힌다 — 스키마만으로는 �
   }
   assert.equal(계약['x-also-required'], 'src/contracts/arrears-read.mjs#키검사');
 });
+
+test('★실측 숫자는 서로 맞아야 하고, 계약ID 공백이 있으면 열쇠 전환은 보류다(Codex 검토)', () => {
+  /** 처음 판은 칸이 «있는지»만 봤다 — Codex 가 숫자를 바꿔 넣어도 전부 통과했다. */
+  const 미수 = 주인표.kinds.미수, a = 미수.writer_fight.measured_2026_09_30.arrears, 순서 = 미수.read_contract.migration_order.join('\n');
+  assert.equal(a.끝난계약 + a.유지계약, a.세칸열쇠, '끝난+유지 가 3칸 열쇠 수와 다르다');
+  assert.ok(a.출처_aiops <= a.전체 && a.계약ID_있음 <= a.전체, '부분이 전체보다 크다');
+  assert.doesNotMatch(미수.writer_fight.measured_2026_09_30.meaning, /하나가 쓴/, '모양이 같다고 쓴 곳이 하나라고 확정하지 않는다');
+  if (a.계약ID_있음 < a.끝난계약) {
+    assert.match(순서, /계약ID[^\n]*정하기 전엔 열쇠를 바꾸지 않는다/, '계약ID 가 빈 종료 문서가 있는데 열쇠 전환 보류가 없다');
+    const 계약ID단계 = 미수.read_contract.migration_order.findIndex((s) => /계약ID 출처/.test(s));
+    const 흡수단계 = 미수.read_contract.migration_order.findIndex((s) => /흡수/.test(s));
+    assert.ok(계약ID단계 >= 0 && 흡수단계 >= 0, '계약ID·흡수 단계가 빠졌다');
+  }
+  if (a.두칸열쇠 > 0) assert.doesNotMatch(순서, /할 일 없음/, '2칸 문서가 있는데 정리할 일이 없다고 적었다');
+  assert.match(순서, /put-galrae --쓴다 금지/, '위험한 쓰기를 막는 말이 빠졌다');
+});
