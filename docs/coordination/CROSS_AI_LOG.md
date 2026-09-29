@@ -21,7 +21,7 @@
 | 09-30 | claude → codex | PR #346 재검토 — commands 칸 비교 | `ANSWERED` | **APPROVE** `1e1abd0` |
 | 09-30 | claude → codex | PR #345 상의 기록이 당신 답과 맞나 | `ANSWERED` | **REQUEST_CHANGES** — 「APPROVE 1e1abd0 원문이 이 가지에 없어 입증 불가」「#346 1차의 Claude 호출 실패 누락」. 둘 다 맞았다 → 원문 첨부·기록 추가 → **APPROVE** `d111e45` |
 | 09-30 | claude → codex | registry 관측 갱신 PR #347 | `ANSWERED` | 1차 **REQUEST_CHANGES** — 「원격 검증 미완료」(Codex 샌드박스가 GitHub 에 못 닿음). Claude 가 gh 로 17곳 대조 → kakao-ops 가 그새 앞서 나가 재갱신 → 17/17 → **APPROVE** `7d2cab0`. 로컬 미커밋 사본(C:/dev/ai-core)은 09-29 관측·작성자 미확인 — 보존, 병합은 막지 않음 |
-| 09-30 | claude → codex | aiops 키트 재생성 PR 검토(시험대 1곳) | `ANSWERED` | **APPROVE** — 「.ai-core/ 14개만 · 생성물 15개가 생성기 출력과 일치 · verify PASS」. Codex 샌드박스 bootstrap 은 gh 인증 없어 HOLD, Claude 실측 READY. ★Codex 쪽 Claude 호출 **실패** |
+| 09-30 | claude → codex | aiops 키트 재생성 PR 검토(시험대 1곳) | `ANSWERED` | **APPROVE** — 「.ai-core/ 14개만 · 생성물 15개가 **LF 정규화 후** 생성기 출력과 일치 · verify PASS」. Codex 샌드박스 bootstrap 은 gh 인증 없어 HOLD, Claude 실측 READY. ★Codex 쪽 Claude 호출 **실패** |
 # 둘이 상의한 기록 (Codex ↔ Claude)
 
 1순위 규칙(`AGENTS.md` · `CLAUDE.md` 머리)의 «기록» 부분이 여기다.
