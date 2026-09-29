@@ -11,7 +11,7 @@ import { resolve, dirname, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const 표 = JSON.parse(readFileSync(resolve(root, 'registry/devcenter-absorption.json'), 'utf8'));
+const 표 = JSON.parse(readFileSync(resolve(root, 'registry/sunset-devcenter-absorption.json'), 'utf8'));
 const 통 = new Set(['ABSORB', 'REVIEW', 'ARCHIVE']);
 const 읽기 = (p) => readFileSync(resolve(root, p), 'utf8');
 
