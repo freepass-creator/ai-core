@@ -46,7 +46,17 @@ test('AIOps common copy is pinned, complete and traceable to source blobs', asyn
     assert.match(file.sha256, /^[0-9a-f]{64}$/);
     assert.match(file.source_git_blob, /^[0-9a-f]{40}$/);
     const bytes = await readFile(resolve(moduleRoot, file.path));
-    assert.equal(createHash('sha256').update(bytes).digest('hex'), file.sha256, `${file.path} differs from its recorded sha256`);
+    /** ★실패가 «무엇을 하라»고 말해야 한다 (2026-09-29).
+     *  이 검사가 깨지는 실제 이유는 언제나 하나다 — 사본을 «제자리에서» 고친 것이다.
+     *  47b2cbd 가 gws 절차 9줄을 여기 덧붙여 열린 PR 셋이 전부 막혔고, 원인을 찾는 데 한참 걸렸다.
+     *  사본은 원본을 재현하는 자리이지 쓰는 자리가 아니다. */
+    assert.equal(
+      createHash('sha256').update(bytes).digest('hex'), file.sha256,
+      `${file.path} 가 기록된 sha256 과 다르다.\n` +
+      '      ★사본을 직접 고치지 마라 — 여기는 freepass-creator/aiops 를 «재현»하는 자리다.\n' +
+      '      고칠 내용이면 원본 저장소에 쓰고, 거기서 다시 복사해 PROVENANCE 를 갱신한다.\n' +
+      '      선례: 2026-09-29 이 파일에 9줄을 덧붙여 열린 PR 셋이 막혔다(aiops bef8fbf 로 옮겨 해결).'
+    );
     if (file.copy_kind === 'EXACT_COPY') {
       assert.equal(index.get(file.path), file.source_git_blob, `${file.path} differs from the source Git blob`);
     } else {
