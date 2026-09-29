@@ -10,6 +10,30 @@ const lf = body => String(body).replace(/\r\n/g, '\n');
 const digest = body => createHash('sha256').update(lf(body)).digest('hex');
 const portable = path => path.replaceAll('\\', '/').replace(/^docs\//, 'standards/');
 
+// ★2026-09-30: 키트가 «낡았다»는 ai-core main 이 움직였다는 뜻이 아니라, 키트를 만든 «입력»이 바뀌었다는 뜻이어야 한다.
+//   예전 규칙(main head === kit.core_revision)은 ai-core 에 무엇이든 병합되는 순간 모든 프로젝트를 HOLD 로 만들었다.
+//   실측: 87b0f4f 이후 341커밋 — 배포된 키트 20곳 전부 AI_CORE_KIT_STALE. 늘 켜진 경보는 아무도 보지 않는다.
+//   Codex 합의: 내용 기준(태그는 발행 누락 위험). 이름변경·간접 입력·갈라진 이력·잘린 비교는 닫는 쪽(STALE/UNKNOWN)으로.
+export const KIT_GENERATOR_INPUTS = ['src/academy/starter-kit.mjs', 'src/academy/start-gate.mjs', 'scripts/academy-start.mjs'];
+
+/** 키트 신선도 판정. 순수 함수 — 이 소스가 그대로 session-bootstrap.mjs 에 박힌다(밖의 이름을 쓰지 않는다). */
+export function kitFreshness({ kitRevision, coreHead, inputs, catalogInputs, compare }) {
+  const none = { changed: [], catalog_changed: [] };
+  if (!coreHead) return { status: 'UNKNOWN', reason: 'CORE_HEAD_UNAVAILABLE', ...none };
+  if (coreHead === kitRevision) return { status: 'CURRENT', reason: 'SAME_REVISION', ...none };
+  if (!Array.isArray(inputs) || inputs.length === 0) return { status: 'STALE', reason: 'LEGACY_KIT_WITHOUT_INPUTS', ...none };
+  if (!compare || !compare.ok || !Array.isArray(compare.files)) return { status: 'UNKNOWN', reason: 'COMPARE_UNAVAILABLE', ...none };
+  if (compare.status === 'identical') return { status: 'CURRENT_CONTENT', reason: 'IDENTICAL', ...none };
+  if (compare.status !== 'ahead') return { status: 'STALE', reason: 'HISTORY_' + String(compare.status).toUpperCase(), ...none };
+  if (compare.files.length >= 300) return { status: 'STALE', reason: 'COMPARE_TRUNCATED', ...none };
+  const touched = new Set(compare.files);
+  const changed = inputs.filter((p) => touched.has(p));
+  const catalog_changed = (catalogInputs || []).filter((p) => touched.has(p));
+  return changed.length
+    ? { status: 'STALE', reason: 'INPUT_CHANGED', changed, catalog_changed }
+    : { status: 'CURRENT_CONTENT', reason: 'INPUTS_UNCHANGED', changed, catalog_changed };
+}
+
 async function put(path, body) {
   await mkdir(dirname(path), { recursive: true });
   try {
@@ -32,6 +56,8 @@ export async function installAcademyStarterKit({ output, receipt, readings, core
   const manifest = {
     schema: 'ai-core-starter-kit/v1', digest_rule: KIT_DIGEST_RULE, core_revision: coreRevision, generated_at: receipt.observed_at,
     task: receipt.task, track: receipt.track, target: receipt.target, files,
+    freshness_inputs: [...new Set([...readings.map(item => item.path.replaceAll('\\', '/')), ...(operatingKnowledge ? ['registry/operating-knowledge.json'] : []), ...KIT_GENERATOR_INPUTS])],
+    catalog_inputs: catalog.map(item => item.source),
     verification: receipt.precheck.completion_verification,
     reuse_policy: 'New assets require a recorded reuse decision before creation.',
   };
@@ -70,7 +96,11 @@ else if(sync)syncResult='REMOTE_HEAD_UNAVAILABLE';
 const coreRepo='freepass-creator/ai-core';
 const coreHead=ghAuth.ok?run('gh',['api','repos/'+coreRepo+'/commits/main','--jq','.sha']):{ok:false,error:'GH_AUTH_UNAVAILABLE'};
 const projectFreshness=remoteHead&&head.ok?(remoteHead===head.stdout?'CURRENT':'STALE_OR_DIVERGED'):'UNKNOWN';
-const coreFreshness=coreHead.ok?(coreHead.stdout===kit.core_revision?'CURRENT':'STALE'):'UNKNOWN';
+${kitFreshness.toString()}
+const coreCompareRun=coreHead.ok&&coreHead.stdout!==kit.core_revision&&Array.isArray(kit.freshness_inputs)?run('gh',['api','repos/'+coreRepo+'/compare/'+kit.core_revision+'...'+coreHead.stdout,'--jq','{status:.status,ahead_by:.ahead_by,files:[.files[]|.filename,(.previous_filename//empty)]}']):null;
+let coreCompare=null;try{coreCompare=coreCompareRun?.ok?{ok:true,...JSON.parse(coreCompareRun.stdout)}:(coreCompareRun?{ok:false}:null)}catch{coreCompare={ok:false}}
+const freshness=kitFreshness({kitRevision:kit.core_revision,coreHead:coreHead.ok?coreHead.stdout:null,inputs:kit.freshness_inputs,catalogInputs:kit.catalog_inputs,compare:coreCompare});
+const coreFreshness=freshness.status;
 const authorityPaths=['.ai-core/kit.json','.ai-core/session-bootstrap.mjs','.ai-core/verify-kit.mjs','.ai-core/START_HERE.md'];
 const authorityEpochPaths=['.ai-core/session-bootstrap.mjs','.ai-core/kit.json','.ai-core/START_HERE.md'];
 const authorityHistory=run('git',['log','--format=%H','--','.ai-core/session-bootstrap.mjs']);
@@ -94,11 +124,12 @@ if(!ghVersion.ok)blockers.push('GH_CLI_UNAVAILABLE');else if(!ghAuth.ok)blockers
 if(!repoAccess.ok)blockers.push('GITHUB_REPOSITORY_UNAVAILABLE');
 if(dirty.ok&&dirty.stdout)blockers.push('DIRTY_WORKTREE_REVIEW_REQUIRED');
 if(!remoteHead)blockers.push('REMOTE_BRANCH_HEAD_UNAVAILABLE');else if(projectFreshness!=='CURRENT')blockers.push(syncResult==='DIVERGED'?'LOCAL_BRANCH_DIVERGED':'LOCAL_BRANCH_NOT_CURRENT');
-if(!coreHead.ok)blockers.push('AI_CORE_REMOTE_HEAD_UNAVAILABLE');else if(coreFreshness!=='CURRENT')blockers.push('AI_CORE_KIT_STALE');
+if(!coreHead.ok)blockers.push('AI_CORE_REMOTE_HEAD_UNAVAILABLE');else if(coreFreshness==='UNKNOWN')blockers.push('AI_CORE_KIT_FRESHNESS_UNKNOWN');else if(coreFreshness==='STALE')blockers.push('AI_CORE_KIT_STALE');
+const warnings=freshness.catalog_changed.length?['AI_CORE_CATALOG_CHANGED: catalog/ 는 참고용 사본이다 — 쓰기 전에 ai-core registry 에서 다시 읽는다 ('+freshness.catalog_changed.join(', ')+')']:[];
 if(!kitReady){if(kitRevisionStatus==='MISMATCH')blockers.push('STARTER_KIT_REVISION_MISMATCH');else blockers.push('STARTER_KIT_VERIFICATION_FAILED');}
 if(syncResult==='FETCH_FAILED'||syncResult==='FAST_FORWARD_FAILED')blockers.push('SAFE_SYNC_FAILED');
 const next=blockers.includes('STARTER_KIT_REVISION_MISMATCH')?'Regenerate the AI Core starter kit against this exact project revision before starting work.':blockers.includes('STARTER_KIT_VERIFICATION_FAILED')?'Repair starter-kit verification before starting work.':blockers.includes('AI_CORE_KIT_STALE')?'Refresh this project through the AI Core starter-kit distribution PR, then rerun bootstrap.':blockers.includes('LOCAL_BRANCH_NOT_CURRENT')?'If the worktree is clean and the branch should follow origin, rerun with --sync.':blockers.length?'Resolve only the listed blockers; preserve local work and continue safe read-only work where possible.':'Read project instructions and begin the user task directly.';
-const out={schema:'ai-core-session-bootstrap/v2',status:blockers.length?'HOLD':'READY',mode:sync?'SYNC':'OBSERVE',project:{repository:repo,expected_baseline:kit.target?.revision??null,remote:remote.ok?remote.stdout:null,branch:branch.ok?branch.stdout:null,head:head.ok?head.stdout:null,remote_head:remoteHead,remote_freshness:projectFreshness,dirty:dirty.ok?Boolean(dirty.stdout):null,sync_result:syncResult,kit_authority:{status:authorityStatus,anchor_commit:authorityAnchor,changed:authorityChanged},kit_verification:kitVerification},civilization:{core_repository:coreRepo,kit_revision:kit.core_revision,remote_head:coreHead.ok?coreHead.stdout:null,remote_freshness:coreFreshness,constitution:'standards/AI_WORKING_STANDARD.md',operating_knowledge:'OPERATING_KNOWLEDGE.json',catalog:'catalog/',handoff:'WORK_RESULT.md',evolution_inbox:'https://github.com/freepass-creator/ai-core/issues/211',verification:kit.verification},access:{node:nodeVersion.stdout,git:gitVersion.ok?gitVersion.stdout:null,github:{expected_identity:expected,actual_identity:ghUser.ok?ghUser.stdout:null,cli:ghVersion.ok?'AVAILABLE':'UNAVAILABLE',auth:ghAuth.ok?'READY':'UNAVAILABLE',repository:repoAccess.ok?'READY':'UNAVAILABLE'}},rules:{github_latest_required:true,fast_forward_only:true,reuse_first:true,preserve_dirty_work:true,no_secret_output:true,no_repeated_login:true},blockers,next_action:next};
+const out={schema:'ai-core-session-bootstrap/v2',status:blockers.length?'HOLD':'READY',mode:sync?'SYNC':'OBSERVE',project:{repository:repo,expected_baseline:kit.target?.revision??null,remote:remote.ok?remote.stdout:null,branch:branch.ok?branch.stdout:null,head:head.ok?head.stdout:null,remote_head:remoteHead,remote_freshness:projectFreshness,dirty:dirty.ok?Boolean(dirty.stdout):null,sync_result:syncResult,kit_authority:{status:authorityStatus,anchor_commit:authorityAnchor,changed:authorityChanged},kit_verification:kitVerification},civilization:{core_repository:coreRepo,kit_revision:kit.core_revision,remote_head:coreHead.ok?coreHead.stdout:null,remote_freshness:coreFreshness,freshness_reason:freshness.reason,ahead_by:coreCompare?.ahead_by??null,changed_inputs:freshness.changed,constitution:'standards/AI_WORKING_STANDARD.md',operating_knowledge:'OPERATING_KNOWLEDGE.json',catalog:'catalog/',handoff:'WORK_RESULT.md',evolution_inbox:'https://github.com/freepass-creator/ai-core/issues/211',verification:kit.verification},access:{node:nodeVersion.stdout,git:gitVersion.ok?gitVersion.stdout:null,github:{expected_identity:expected,actual_identity:ghUser.ok?ghUser.stdout:null,cli:ghVersion.ok?'AVAILABLE':'UNAVAILABLE',auth:ghAuth.ok?'READY':'UNAVAILABLE',repository:repoAccess.ok?'READY':'UNAVAILABLE'}},rules:{github_latest_required:true,fast_forward_only:true,reuse_first:true,preserve_dirty_work:true,no_secret_output:true,no_repeated_login:true},blockers,warnings,next_action:next};
 console.log(JSON.stringify(out,null,2));if(blockers.length)process.exitCode=2;
 `;
   files.push({ path: 'session-bootstrap.mjs', sha256: digest(bootstrap), source: 'generated:session-bootstrap/v2' });
