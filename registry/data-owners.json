@@ -63,7 +63,15 @@
         "어디를보나 317행",
         "관리지도 §1",
         "fb/bogi.mjs"
-      ]
+      ],
+      "two_collections_2026_09_30": {
+        "finding": "★계약이 Firestore 에 두 모음으로 있고, 읽는 쪽이 갈린다.",
+        "contract_history": "1,098 문서(bogi 요약) — fb/bogi.mjs 가 읽는다. 날짜만 있고 시:분 0%(표본 300)",
+        "contract_history_sheet": "1,631 행(Codex 실측, ai-ops 읽기 전용 연결) — aiops lib/gwataeryo-panjeong.mjs(과태료 판정)와 ai-ops 가 읽는다",
+        "risk": "같은 물음(이 차 그날 누가 탔나)에 두 모음이 다른 답을 낼 수 있다. 판정기도 둘이 될 위험(aiops panjeong ↔ ai-ops CLI, duo 18317a37).",
+        "status": "HOLD — 어느 모음이 계약 정본인지 대표 결정 필요. 과태료 매뉴얼도 「팀JPK워크 vs 렌터카 매니저 — 대표 확인 중」이라 적음"
+      },
+      "conflicts": "★모음이 둘(contract_history ↔ contract_history_sheet) — two_collections_2026_09_30"
     },
     "수납입금": {
       "owner": "BUSINESS",

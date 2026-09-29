@@ -1,0 +1,5 @@
+aiops PR #19 재검토
+
+읽기 전용. 하위폴더 반영: readdirSync('docs',{recursive:true}). docs/sop/ 아래에 거꾸로 된 문구를 넣으면 실패함을 확인했다. C:/dev/aiops HEAD. APPROVE 또는 REQUEST_CHANGES. 파일은 고치지 마라.
+
+200자 이내 한국어로 답해라.
