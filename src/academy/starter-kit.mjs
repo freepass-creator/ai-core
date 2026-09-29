@@ -2,14 +2,19 @@ import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 
-const digest = body => createHash('sha256').update(body).digest('hex');
+// ★2026-09-29: 해시는 «줄끝을 LF 로 맞춘 글»로 잰다. Windows(core.autocrlf=true) 체크아웃은 CRLF 로 풀려
+//   원바이트 해시가 모든 저장소에서 어긋났고, verify-kit 은 아무것도 안 고친 키트를 전부 FAIL 로 찍었다.
+//   늘 실패하는 검사는 아무도 믿지 않는다. 키트 파일은 전부 글(md·mjs·json)이다.
+export const KIT_DIGEST_RULE = 'sha256(utf8, CRLF→LF)';
+const lf = body => String(body).replace(/\r\n/g, '\n');
+const digest = body => createHash('sha256').update(lf(body)).digest('hex');
 const portable = path => path.replaceAll('\\', '/').replace(/^docs\//, 'standards/');
 
 async function put(path, body) {
   await mkdir(dirname(path), { recursive: true });
   try {
     const current = await readFile(path, 'utf8');
-    if (current !== body) throw new Error(`KIT_FILE_CONFLICT:${path}`);
+    if (lf(current) !== lf(body)) throw new Error(`KIT_FILE_CONFLICT:${path}`);
   } catch (error) {
     if (error.code !== 'ENOENT') throw error;
     await writeFile(path, body, { flag: 'wx' });
@@ -25,14 +30,14 @@ export async function installAcademyStarterKit({ output, receipt, readings, core
     files.push({ path, sha256: digest(item.body), source: item.path });
   }
   const manifest = {
-    schema: 'ai-core-starter-kit/v1', core_revision: coreRevision, generated_at: receipt.observed_at,
+    schema: 'ai-core-starter-kit/v1', digest_rule: KIT_DIGEST_RULE, core_revision: coreRevision, generated_at: receipt.observed_at,
     task: receipt.task, track: receipt.track, target: receipt.target, files,
     verification: receipt.precheck.completion_verification,
     reuse_policy: 'New assets require a recorded reuse decision before creation.',
   };
   const start = `# AI 작업 시작 키트\n\n> AI Core revision: ${coreRevision} · target revision: ${receipt.target.revision}\n\n1. 프로젝트 루트에서 \`node .ai-core/session-bootstrap.mjs\`를 실행해 정체성·정본·GitHub 연결·원격 최신성·검증 명령을 한 번에 확인한다.\n2. 원격보다 뒤처졌고 작업 트리가 깨끗하면 \`node .ai-core/session-bootstrap.mjs --sync\`로 현재 브랜치를 fast-forward only 방식으로 갱신한다. dirty·diverged·접근 실패 상태에서는 자동 반영하지 않는다.\n3. \`kit.json\`의 대상 repository와 baseline revision, 출력의 AI Core kit revision을 확인한다.\n4. \`standards/\`의 규격만 적용하고 대상 프로젝트 지침을 우선한다.\n5. 기존 자산을 먼저 찾고, 새 자산은 재사용 판정을 기록한다.\n6. \`node .ai-core/verify-kit.mjs\`로 키트 무결성과 대상 revision binding을 확인한다.\n7. 완료 시 \`WORK_RESULT.md\`를 채운다.\n`;
   const result = `# AI Work Result\n\n- 목적: ${receipt.task}\n- 대상 revision: ${receipt.target.revision}\n- 변경:\n- 검증:\n- 남음:\n- next_start_here:\n`;
-  const verifier = `import{createHash}from'node:crypto';import{execFileSync}from'node:child_process';import{readFile}from'node:fs/promises';import{dirname,join}from'node:path';import{fileURLToPath}from'node:url';const root=dirname(fileURLToPath(import.meta.url)),projectRoot=dirname(root);const git=args=>execFileSync('git',['-C',projectRoot,...args],{encoding:'utf8',stdio:['ignore','pipe','pipe']}).trim();const m=JSON.parse(await readFile(join(root,'kit.json'),'utf8'));const bad=[];for(const f of m.files){const b=await readFile(join(root,f.path),'utf8');if(createHash('sha256').update(b).digest('hex')!==f.sha256)bad.push(f.path)}let actualRevision=null,revisionStatus='UNAVAILABLE',advancedPaths=[];try{actualRevision=git(['rev-parse','HEAD']);if(m.target?.revision===actualRevision)revisionStatus='MATCH';else{git(['merge-base','--is-ancestor',m.target?.revision,actualRevision]);advancedPaths=git(['diff','--name-only',m.target.revision+'..'+actualRevision]).split(/\\r?\\n/).filter(Boolean);revisionStatus=advancedPaths.length>0&&advancedPaths.every(path=>path.startsWith('.ai-core/'))?'KIT_ONLY_ADVANCE':'MISMATCH'}}catch{}const failed=bad.length>0||!['MATCH','KIT_ONLY_ADVANCE'].includes(revisionStatus);console.log(JSON.stringify({schema:'ai-core-starter-kit-check/v2',status:failed?'FAIL':'PASS',core_revision:m.core_revision,changed:bad,revision:{expected:m.target?.revision??null,actual:actualRevision,status:revisionStatus,advanced_paths:advancedPaths}},null,2));if(failed)process.exitCode=1;\n`;
+  const verifier = `import{createHash}from'node:crypto';import{execFileSync}from'node:child_process';import{readFile}from'node:fs/promises';import{dirname,join}from'node:path';import{fileURLToPath}from'node:url';const root=dirname(fileURLToPath(import.meta.url)),projectRoot=dirname(root);const git=args=>execFileSync('git',['-C',projectRoot,...args],{encoding:'utf8',stdio:['ignore','pipe','pipe']}).trim();const m=JSON.parse(await readFile(join(root,'kit.json'),'utf8'));const bad=[];for(const f of m.files){const b=(await readFile(join(root,f.path),'utf8')).replace(/\\r\\n/g,'\\n');if(createHash('sha256').update(b).digest('hex')!==f.sha256)bad.push(f.path)}let actualRevision=null,revisionStatus='UNAVAILABLE',advancedPaths=[];try{actualRevision=git(['rev-parse','HEAD']);if(m.target?.revision===actualRevision)revisionStatus='MATCH';else{git(['merge-base','--is-ancestor',m.target?.revision,actualRevision]);advancedPaths=git(['diff','--name-only',m.target.revision+'..'+actualRevision]).split(/\\r?\\n/).filter(Boolean);revisionStatus=advancedPaths.length>0&&advancedPaths.every(path=>path.startsWith('.ai-core/'))?'KIT_ONLY_ADVANCE':'MISMATCH'}}catch{}const failed=bad.length>0||!['MATCH','KIT_ONLY_ADVANCE'].includes(revisionStatus);console.log(JSON.stringify({schema:'ai-core-starter-kit-check/v2',status:failed?'FAIL':'PASS',core_revision:m.core_revision,changed:bad,revision:{expected:m.target?.revision??null,actual:actualRevision,status:revisionStatus,advanced_paths:advancedPaths}},null,2));if(failed)process.exitCode=1;\n`;
   const bootstrap = `import{spawnSync}from'node:child_process';
 import{readFile}from'node:fs/promises';
 import{dirname,resolve,join}from'node:path';

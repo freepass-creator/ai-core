@@ -225,3 +225,32 @@ test('starter kit bootstrap admits generated refresh but holds authority drift a
   assert.equal(staleBootstrap.blockers.includes('STARTER_KIT_VERIFICATION_FAILED'),false);
   assert.match(staleBootstrap.next_action,/exact project revision/);
 });
+
+test('★kit integrity survives a Windows CRLF checkout but still catches a real edit',async()=>{
+  /** 2026-09-29 실측: core.autocrlf=true 인 이 PC 에서 배포된 키트 20곳이 «아무것도 안 고쳤는데» 전부 verify-kit FAIL 이었다.
+   *  늘 실패하는 무결성 검사는 경보가 아니라 소음이다. 줄끝만 다르면 PASS, 글이 바뀌면 FAIL 이어야 한다. */
+  const root=await mkdtemp(join(tmpdir(),'academy-kit-crlf-'));
+  git(root,'init','-q');
+  git(root,'config','user.email','ai-core-test@example.invalid');
+  git(root,'config','user.name','AI Core Test');
+  await writeFile(join(root,'tracked.txt'),'v1\n');
+  git(root,'add','tracked.txt');
+  git(root,'commit','-q','-m','baseline');
+  const bound={...receipt,target:{...receipt.target,revision:git(root,'rev-parse','HEAD')}};
+  const out=join(root,'.ai-core'), std=join(out,'standards','AI_WORKING_STANDARD.md');
+  const readings=[{path:'docs/AI_WORKING_STANDARD.md',body:'line one\nline two\n'}];
+  const {manifest}=await installAcademyStarterKit({output:out,receipt:bound,coreRevision:'b'.repeat(40),readings});
+  assert.equal(manifest.digest_rule,'sha256(utf8, CRLF→LF)');
+  const verify=()=>JSON.parse(spawnSync(process.execPath,[join(out,'verify-kit.mjs')],{encoding:'utf8'}).stdout);
+
+  await writeFile(std,'line one\r\nline two\r\n');
+  const crlf=verify();
+  assert.deepEqual(crlf.changed,[],'줄끝만 CRLF 로 바뀐 파일을 «고쳐졌다»고 찍었다');
+  assert.equal(crlf.status,'PASS');
+  await installAcademyStarterKit({output:out,receipt:bound,coreRevision:'b'.repeat(40),readings});
+
+  await writeFile(std,'line one\r\nline TWO\r\n');
+  const edited=verify();
+  assert.deepEqual(edited.changed,['standards/AI_WORKING_STANDARD.md'],'글이 바뀌었는데 통과시켰다');
+  assert.equal(edited.status,'FAIL');
+});
