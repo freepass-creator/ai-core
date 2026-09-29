@@ -108,6 +108,33 @@ export function codeowners(지도, 소유자) {
   return 줄.join('\n');
 }
 
+/** 문서의 lane 표도 «지도에서» 만든다 — 손으로 쓰면 문서와 지도가 어긋나고 그 어긋남이 새 공백이다.
+ *
+ *  문서 안 `<!-- LANES:시작 -->` ~ `<!-- LANES:끝 -->` 사이만 갈아 끼운다. 나머지 산문은 사람이 쓴다.
+ */
+export const 문서표시작 = '<!-- LANES:시작 — 이 사이는 registry/lanes.json 에서 생성된다. 손으로 고치지 마라 -->';
+export const 문서표끝 = '<!-- LANES:끝 -->';
+
+export function 문서표(지도, 세기 = null) {
+  const 줄 = [문서표시작, '', '| Lane | 뜻 | 작업선 | 소유 | 파일 |', '|---|---|---|---|---|'];
+  for (const [코드, lane] of Object.entries(지도.lanes)) {
+    const n = 세기 ? (세기[코드] ?? 0) : '';
+    줄.push(`| **${코드}**${lane.dormant ? ' 🔒' : ''} | ${lane.title} | \`${lane.branch}\` | ${lane.owns} | ${n} |`);
+  }
+  줄.push('', '규칙:', '');
+  for (const r of 지도.rules) 줄.push(`- **${r.id}. ${r.name}** — ${r.why}`);
+  줄.push('', `우선순위: ${Object.entries(지도.lanes).sort((a, b) => a[1].priority - b[1].priority).map(([k]) => k).join(' → ')}`, '', 문서표끝);
+  return 줄.join('\n');
+}
+
+/** 문서에서 생성 구간만 갈아 끼운다. 구간이 없으면 던진다 — 조용히 덧붙이지 않는다. */
+export function 문서에끼우다(본문, 새표) {
+  const i = 본문.indexOf(문서표시작);
+  const j = 본문.indexOf(문서표끝);
+  if (i < 0 || j < 0) throw new Error('LANE_DOC_MARKERS_MISSING');
+  return 본문.slice(0, i) + 새표 + 본문.slice(j + 문서표끝.length);
+}
+
 /** 정규식 경로 규칙 중 «디렉터리 형태»만 글롭으로 옮긴다. 이름 조각 규칙은 CODEOWNERS 로 표현할 수 없다. */
 export function 규칙을글롭으로(pattern) {
   const m = /^\^([A-Za-z0-9_.\\/-]+)\/$/.exec(pattern);

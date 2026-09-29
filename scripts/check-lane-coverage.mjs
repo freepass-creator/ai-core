@@ -13,7 +13,7 @@ import { execFileSync } from 'node:child_process';
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { laneOf, 덮임검사, 사문검사, codeowners } from '../src/governance/lane-map.mjs';
+import { laneOf, 덮임검사, 사문검사, codeowners, 문서표, 문서에끼우다 } from '../src/governance/lane-map.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 export const 지도읽기 = () => JSON.parse(readFileSync(resolve(root, 'registry/lanes.json'), 'utf8'));
@@ -42,6 +42,12 @@ if (process.argv[1] && resolve(process.argv[1]) === resolve(fileURLToPath(import
     mkdirSync(dirname(길), { recursive: true });
     writeFileSync(길, codeowners(지도, 소유자));
     console.log(`\nCODEOWNERS 다시 만듦: .github/CODEOWNERS`);
+
+    /** 문서의 lane 표도 «같은 지도»에서 만든다. 둘을 따로 쓰면 어긋나고 그 어긋남이 새 공백이다. */
+    const 문서길 = resolve(root, 'docs/UFEI-OPERATING-MODEL.md');
+    const 세기 = Object.fromEntries(Object.keys(지도.lanes).map((k) => [k, (lane별[k] ?? []).length]));
+    writeFileSync(문서길, 문서에끼우다(readFileSync(문서길, 'utf8'), 문서표(지도, 세기)));
+    console.log('운영 모델 문서 표 다시 만듦: docs/UFEI-OPERATING-MODEL.md');
   }
 
   const 잘못 = [];

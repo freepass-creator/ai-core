@@ -10,7 +10,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { laneOf, 덮임검사, 사문검사, codeowners, 대상이름 } from '../src/governance/lane-map.mjs';
+import { laneOf, 덮임검사, 사문검사, codeowners, 대상이름, 문서표, 문서에끼우다 } from '../src/governance/lane-map.mjs';
 import { 지도읽기, 추적파일 } from '../scripts/check-lane-coverage.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -54,4 +54,22 @@ test('CODEOWNERS 는 손으로 쓰지 않고 이 지도에서 나온다 — 어�
   const 있는것 = readFileSync(resolve(root, '.github/CODEOWNERS'), 'utf8');
   assert.equal(있는것, 만든것, '.github/CODEOWNERS 가 지도와 다르다 — node scripts/check-lane-coverage.mjs --write-codeowners');
   assert.match(만든것, /^\* @/m, '포괄 줄이 없으면 리뷰어 없는 파일이 생긴다');
+});
+
+test('운영 모델 문서의 lane 표도 지도에서 나온다 — 문서와 지도가 따로 놀면 그게 새 공백이다', () => {
+  const 본문 = readFileSync(resolve(root, 'docs/UFEI-OPERATING-MODEL.md'), 'utf8');
+  const { lane별 } = 덮임검사(파일, 지도);
+  const 세기 = Object.fromEntries(Object.keys(지도.lanes).map((k) => [k, (lane별[k] ?? []).length]));
+  assert.equal(
+    본문, 문서에끼우다(본문, 문서표(지도, 세기)),
+    'docs/UFEI-OPERATING-MODEL.md 의 표가 지도와 다르다 — node scripts/check-lane-coverage.mjs --write-codeowners'
+  );
+});
+
+test('★이 모델이 «안» 고치는 것을 문서가 말한다 — 깔끔함을 안전함으로 착각하지 않게', () => {
+  /** 2026-09-28 에 실제로 아팠던 넷(6일 침묵·틀린 방아쇠·틀린 정본·하루 전패)은 lane 으로 안 막힌다.
+   *  그 한계를 문서에서 지우면 다음 사람이 UFEI 를 만능으로 읽는다. */
+  const 본문 = readFileSync(resolve(root, 'docs/UFEI-OPERATING-MODEL.md'), 'utf8');
+  assert.match(본문, /쓰기 규율.*읽기 규율이 아니다/s);
+  assert.match(본문, /정본 대조/);
 });
