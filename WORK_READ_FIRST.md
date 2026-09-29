@@ -29,6 +29,8 @@ Work performed in a chat must follow [Chat to GitHub handoff policy](docs/CHAT_G
 
 새 세션은 GitHub 설치나 로그인을 추측하지 말고 먼저 [기존 도구 연결](memory/TOOL_CONNECTIONS.md)의 GitHub connection reuse를 적용한다. `gh` 인증, Git push 자격, Codex GitHub connector, 브라우저 로그인은 서로 별개이므로 이번 작업에 필요한 층을 실제로 확인한다. 기존 인증이 정상이라면 계정·토큰·로그인을 다시 묻지 않는다.
 
+브라우저·개발·문서·데이터·미디어·클라우드 CLI가 필요한 작업은 [로컬 공통 도구 운영 플레이북](docs/LOCAL_TOOLCHAIN_PLAYBOOK.md)에서 도구를 고르고 `npm run tools:doctor`로 현재 가용성을 관측한다. 전역 도구보다 대상 프로젝트의 lockfile·wrapper를 우선하며, 설치·인증·권한·실행·실제 결과를 분리한다.
+
 ## 비상 진입점 — 해당 작업을 계속하기 전에
 
 데이터 훼손·배포/보안 사고·AI 동시 수정·정본 불명확이 의심되면 [비상매뉴얼](docs/EMERGENCY_RUNBOOK.md)을 먼저 읽는다. 해당 작업의 추가 쓰기는 보류하고, 정상 서비스와 다른 작업은 보존한다.

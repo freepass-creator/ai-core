@@ -1,0 +1,39 @@
+# 이 파일은 생성물이다 — 손으로 고치지 마라.
+#   만드는 곳: node scripts/check-lane-coverage.mjs --write-codeowners
+#   정본:      registry/lanes.json
+#
+# ★맨 위 포괄 줄은 «리뷰어 없는 파일»을 만들지 않기 위한 것이다(GitHub 은 마지막으로 맞는 줄을 쓴다).
+#   분류를 강제하는 일은 CODEOWNERS 가 아니라 check-lane-coverage 가 한다 — 거기엔 fallback 이 없다.
+
+* @freepass-creator
+
+# I — 연결
+/aiops/ @freepass-creator
+/shared-services/ @freepass-creator
+/registry/ @freepass-creator
+/src/integration/ @freepass-creator
+/management-support/ @freepass-creator
+
+# E — 엔진
+/src/engine/ @freepass-creator
+/src/workflow/ @freepass-creator
+/src/contracts/ @freepass-creator
+/src/orders/ @freepass-creator
+/docs/workflow/ @freepass-creator
+
+# F — 규율
+/src/governance/ @freepass-creator
+/memory/ @freepass-creator
+/docs/business/ @freepass-creator
+/src/collaboration/ @freepass-creator
+/devcenter/ @freepass-creator
+/.github/ @freepass-creator
+/test/fixtures/known-bad/ @freepass-creator
+/scripts/ @freepass-creator
+
+# U — 정본 디자인 (잠금)
+/design-system/ @freepass-creator
+/design/ @freepass-creator
+/examples/ @freepass-creator
+/web/ @freepass-creator
+/docs/design/ @freepass-creator
