@@ -43,7 +43,9 @@ AI Core는 **AI 사관학교**다. 사용자가 모든 일을 접수시키는 �
 
 Cursor Agent와 Gemini CLI는 기본 협업 풀에서 제외한다. 자동 호출하거나 필수 검증자로 세지 않으며, 사용자가 해당 작업에서 직접 지정한 경우에만 사용한다. Claude가 한도·로그인·권한 문제로 불가능하면 `UNAVAILABLE`로 기록하고, 저위험 작업은 결정론적 증거로 계속 진행한다. Claude 검토가 필요한 중·고위험 작업은 검토 불가 상태를 PASS로 바꾸지 않는다.
 
-Claude 호출은 `npm run claude:review -- --root <대상 저장소 절대경로> --prompt "<읽기 전용 질문>"` 게이트를 사용한다. 정상 완료는 실제 답변과 `ANSWERED` 영수증 및 종료코드 0이 모두 있어야 한다. `FAILED`는 호출·프로세스 오류, `UNAVAILABLE_UNTIL_RESET`은 확인된 사용량 한도, `REVIEW_TIMEOUT`은 5분 안에 답변을 마치지 못한 상태다. 세 상태를 서로 대체하거나 모두 “호출 실패”로 표현하지 않는다. 시간초과 시 질문 범위를 줄여 다시 요청하되 답변 없는 시도를 검토로 세지 않는다. 사용량 한도 응답에서 reset 시각을 확인하면 로컬 상태에 `blocked_until`을 저장한다. 그 시각 전에는 Claude를 재호출하거나 사용자에게 같은 검토 가능 여부를 묻지 않고 `UNAVAILABLE_UNTIL_RESET`으로 처리한다. reset 시각이 지나면 게이트가 자동으로 호출을 다시 허용한다. 저장 상태는 사용량 제한과 reset 시각만 포함하며 업무 원문이나 프롬프트를 보관하지 않는다.
+Codex가 Claude를 부를 때는 AI Core에서 먼저 `npm run claude:status`를 실행하고, 실제 호출은 `npm run claude:review -- --root "<대상 저장소 절대경로>" --prompt "<읽기 전용 질문>"` 게이트만 사용한다. 정상 완료는 실제 답변과 `ANSWERED` 영수증 및 종료코드 0이 모두 있어야 한다. `FAILED`는 호출·프로세스 오류, `UNAVAILABLE_UNTIL_RESET`은 확인된 사용량 한도, `REVIEW_TIMEOUT`은 5분 안에 답변을 마치지 못한 상태다. 세 상태를 서로 대체하거나 모두 “호출 실패”로 표현하지 않는다. 시간초과 시 질문 범위를 줄여 다시 요청하되 답변 없는 시도를 검토로 세지 않는다. 사용량 한도 응답에서 reset 시각을 확인하면 로컬 상태에 `blocked_until`을 저장한다. 그 시각 전에는 Claude를 재호출하거나 사용자에게 같은 검토 가능 여부를 묻지 않고 `UNAVAILABLE_UNTIL_RESET`으로 처리한다. reset 시각이 지나면 게이트가 자동으로 호출을 다시 허용한다. 저장 상태는 사용량 제한과 reset 시각만 포함하며 업무 원문이나 프롬프트를 보관하지 않는다.
+
+Claude가 GPT를 부를 때 이 PC의 실행기는 Codex CLI다. `codex exec -s read-only -C "<대상 저장소 절대경로>" --skip-git-repo-check -o "<답변 파일 절대경로>" "<읽기 전용 질문>" < /dev/null`을 사용한다. 검토 호출에는 `workspace-write`, `--full-auto`, 파일 수정 요청을 사용하지 않는다. exit code 0과 비어 있지 않은 답변 파일이 함께 확인되어야 `ANSWERED`다. 세션 간 공용 기록까지 필요하면 AI Core의 `npm run duo -- ask --to codex|claude --about "<제목>" --body "<질문>" --now`를 사용한다. `--now`가 없으면 실시간 호출이 아니라 우편함 등록이다.
 
 ## 1. 시작 규격
 

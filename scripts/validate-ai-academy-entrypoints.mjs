@@ -19,6 +19,7 @@ const requiredTerms = [
   'AI_ACADEMY_CURRICULUM.md',
   'academy:start',
   'next_start_here',
+  'codex exec -s read-only',
 ];
 const preflightTerms = [
   ['목적', 'purpose'],
@@ -26,6 +27,8 @@ const preflightTerms = [
   ['규격', 'applicable rules'],
   ['노하우', 'reusable knowledge'],
   ['검증', 'completion verification'],
+  ['npm run claude:status', 'npm --prefix C:\\dev\\ai-core run claude:status'],
+  ['npm run claude:review -- --root', 'npm --prefix C:\\dev\\ai-core run claude:review -- --root'],
 ];
 
 const results = [];

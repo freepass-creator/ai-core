@@ -34,6 +34,9 @@ test('부르는 «방법»이 양방향 다 적혀 있다 — 방법 없는 규�
     assert.match(글, /npm run claude:status/, `${길}: Codex 가 열렸는지 보는 법이 없다`);
     assert.match(글, /npm run claude:review/, `${길}: Codex 가 Claude 를 부르는 법이 없다`);
     assert.match(글, /codex exec/, `${길}: Claude 가 Codex 를 부르는 법이 없다`);
+    assert.match(글, /codex exec -s read-only/, `${길}: GPT\/Codex 검토가 read-only 로 잠기지 않았다`);
+    assert.doesNotMatch(글, /codex exec -s workspace-write/, `${길}: 검토 호출에 쓰기 권한이 남아 있다`);
+    assert.match(글, /npm run duo -- ask --to codex\|claude/, `${길}: 모든 세션 공용 호출법이 없다`);
   }
 });
 
