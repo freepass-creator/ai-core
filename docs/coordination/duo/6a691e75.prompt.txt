@@ -1,0 +1,5 @@
+aiops PR #17 지도 정리 검토
+
+읽기 전용. C:/dev/aiops 의 origin/main..docs/map-refresh-20260929 (gh pr diff 17 --repo freepass-creator/aiops). 다섯 문서 머리·줄 교정이다. 확인할 것: (1) 사실 틀린 곳 — 특히 ERP4 가 Firestore products·partners 를 쓴다는 주장(freepasserp4 origin/main 으로 확인), bogi <차번> 이 documents·insurance* 를 읽는다는 주장(fb/bogi.mjs:67-68,126-127) (2) 대표 결정을 과장한 곳 (3) 실값 개인정보. APPROVE 또는 REQUEST_CHANGES(파일:줄) 하나. 파일은 고치지 마라.
+
+200자 이내 한국어로 답해라.

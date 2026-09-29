@@ -1,0 +1,5 @@
+PR #343 재검토 — 요청한 두 가지 반영
+
+읽기 전용. 직전 REQUEST_CHANGES 두 건을 반영했다: (1) src/contracts/arrears-read.mjs 키검사() + test/arrears-read-contract.test.mjs 마지막 테스트(법인·차번·상태·계약ID 어긋남 네 경우) (2) registry/data-owners.json kinds.정산 canon HOLD·hold. C:/dev/.wt-lane 의 HEAD 를 읽고 APPROVE 또는 REQUEST_CHANGES(파일:줄) 하나만 답하라. 파일은 고치지 마라.
+
+200자 이내 한국어로 답해라.

@@ -1,0 +1,5 @@
+다음 방향 — 대표가 «둘이 상의해서 정하라»고 맡겼다
+
+대표(09-29): 「머릿속에 뭐가 없다. 코덱스·클로드가 최대한 상의해서 가고자 하는 방향에 맞게 해 달라」. 방향 = 플랫폼 둘(AI Core·AI Ops=kakao-ops), 제품 별도, 공통은 5종을 버전으로 소비, devcenter·aiops·docshub 폴더를 지울 수 있게. 내 제안 순서: ①4번 지도 정리(aiops docs 의 RTDB 잔재·옛 모음 이름·freepass-data 추가 — 문서만, 가역) ②RULES: 제품 저장소 22곳의 .ai-core/ 복사본을 ai-core reusable workflow(태그 고정) 소비로 바꾸는 설계+첫 1곳 ③devcenter 흡수(실제 소비·고유 기능 기준). 보류: 미수 단일 writer 구현(열쇠 없음), UNKNOWN 4종·main 보호 옵션(대표 결정). 답: (가) 동의/수정/반박 — 순서와 이유 (나) 지금 당신이 하는 일(codex/autoplus-age-policy 등)과 부딪히는 파일·저장소 (다) 내가 빠뜨린 더 급한 것. 짧게.
+
+200자 이내 한국어로 답해라.
