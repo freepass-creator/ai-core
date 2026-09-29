@@ -39,11 +39,16 @@ test('보존이 안 된 구역은 참조가 0 이어도 «지울 수 있다» �
   assert.equal(준비도(있음, [], 0).지울수있나, true);
 });
 
-test('★devcenter 는 보존이 안 돼 있다는 사실이 정본에 남아 있다', () => {
-  /** 파일 222개짜리인데 원본이 없다. 「통합 후 삭제」를 말할 때 이게 빠지면 그냥 소실이다. */
+test('★devcenter 는 «사본이 원본보다 앞서» 지울 수 없다 — 그리고 처음 기록이 틀렸다는 것도 남아 있다', () => {
+  /** 2026-09-29: 처음엔 「원본이 없다 — ai-core 자신의 모듈」이라 적고 이 검사로 못 박았다. 틀렸다.
+   *  devcenter/PROVENANCE.json 이 원본(freepass-creator/devcenter)을 분명히 적고 있었는데 안 읽었다.
+   *  실제 막는 까닭은 «원본 없음»이 아니라 «사본에서 57개를 더 고쳤다»이다. 틀린 사실을 지키는 검사는
+   *  맞는 사실을 지키는 검사보다 나쁘다 — 틀린 것을 오래 살려 두기 때문이다. */
   const d = 설정.areas.find((a) => a.path === 'devcenter/');
-  assert.equal(d.preserved, false);
-  assert.ok(d.preserved_blocker?.includes('원본이 없다'), '막는 까닭이 없으면 다음 사람이 그냥 지운다');
+  assert.equal(d.source, 'freepass-creator/devcenter', '원본이 있다');
+  assert.equal(d.preserved, false, '앞선 작업을 원본에 돌려보내기 전에는 보존이 아니다');
+  assert.match(d.preserved_blocker, /앞서/, '막는 까닭이 «사본이 앞섬»이어야 한다');
+  assert.match(d.correction_2026_09_29 ?? '', /틀렸다/, '틀렸던 기록을 지우면 같은 실수를 다시 한다');
 });
 
 test('★문서허브의 «옮길 수 없는 절반»이 정본에 남아 있다', () => {
