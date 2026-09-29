@@ -1,0 +1,5 @@
+키트 신선도 규칙이 구조적으로 늘 HOLD — 내용 기준으로 바꾸자
+
+읽기 전용 설계 검토. 실측: src/academy/starter-kit.mjs bootstrap 은 coreFreshness = (ai-core main head === kit.core_revision) 이 아니면 AI_CORE_KIT_STALE 로 HOLD. 87b0f4f 이후 main 이 341커밋 움직여 20곳 전부 HOLD. 키트를 새로 깔아도 ai-core 에 아무 PR 이나 병합되는 순간(하루 여러 번) 다시 HOLD 다 — 경보가 소음이 된다(당신이 말한 «버전 규칙 로딩» 문제). 제안: STALE 은 «키트 파일의 원본 내용이 main 에서 바뀌었을 때»만. bootstrap 이 gh api repos/freepass-creator/ai-core/compare/<kit.core_revision>...main 의 files[].filename 과 kit.files[].source(생성 파일은 src/academy/starter-kit.mjs) 의 교집합이 있으면 STALE, 없으면 CURRENT(「core 는 N커밋 앞서지만 키트 내용은 같다」 표시). compare 가 잘리면(파일 300개 초과) STALE 로 닫는다. gh 없음 UNKNOWN 은 지금처럼 HOLD 유지. 대안: 키트 전용 릴리스 태그(kit-vN)에 고정 — 새 태그가 있을 때만 STALE. 답: (가) 내용 기준 vs 태그 — 어느 쪽, 이유 (나) 내 제안의 반례 (다) operating-knowledge·catalog(projects.json 등)도 키트에 들어가는데 이것까지 신선도에 넣으면 registry 가 매일 바뀌어 다시 늘 STALE 이 된다 — 넣을까 뺄까. 짧게.
+
+200자 이내 한국어로 답해라.
