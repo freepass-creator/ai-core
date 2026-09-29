@@ -1,0 +1,5 @@
+registry 관측 갱신 PR 검토
+
+읽기 전용. C:/dev/.wt-main (work/ai-core/REGISTRY-REFRESH-20260930) origin/main..HEAD. scripts/registry-refresh.mjs 출력 그대로다. 확인: (1) head_revision·observed_at 외 바뀐 칸이 없나 (2) 적힌 revision 이 각 저장소 원격 main 과 맞나(gh 로 한두 개 표본) (3) C:/dev/ai-core(codex/autoplus-age-policy) 의 미커밋 registry/projects.json 과 부딪히나 — 당신 작업인가. APPROVE 또는 REQUEST_CHANGES. 파일은 고치지 마라.
+
+200자 이내 한국어로 답해라.
