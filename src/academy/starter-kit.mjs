@@ -17,7 +17,10 @@ const portable = path => path.replaceAll('\\', '/').replace(/^docs\//, 'standard
 export const KIT_GENERATOR_INPUTS = ['src/academy/starter-kit.mjs', 'src/academy/start-gate.mjs', 'scripts/academy-start.mjs'];
 
 /** 키트 신선도 판정. 순수 함수 — 이 소스가 그대로 session-bootstrap.mjs 에 박힌다(밖의 이름을 쓰지 않는다). */
-export function kitFreshness({ kitRevision, coreHead, inputs, catalogInputs, compare }) {
+export function kitFreshness({ kitRevision, coreHead, inputs, catalogInputs, compare, verificationSource, verification, currentVerification }) {
+  // ★Codex 검토(PR #346): kit.verification 은 registry/projects.json 의 이 프로젝트 commands 다. 파일째 넣으면 매일 STALE,
+  //   빼면 명령이 바뀌어도 모른다 → 그 «칸»만 비교한다. 못 읽었으면(undefined) 닫는다.
+  const same = (a, b) => { const c = (v) => (v && typeof v === 'object' ? (Array.isArray(v) ? '[' + v.map(c).join(',') + ']' : '{' + Object.keys(v).sort().map((k) => JSON.stringify(k) + ':' + c(v[k])).join(',') + '}') : JSON.stringify(v ?? null)); return c(a) === c(b); };
   const none = { changed: [], catalog_changed: [] };
   if (!coreHead) return { status: 'UNKNOWN', reason: 'CORE_HEAD_UNAVAILABLE', ...none };
   if (coreHead === kitRevision) return { status: 'CURRENT', reason: 'SAME_REVISION', ...none };
@@ -29,6 +32,10 @@ export function kitFreshness({ kitRevision, coreHead, inputs, catalogInputs, com
   const touched = new Set(compare.files);
   const changed = inputs.filter((p) => touched.has(p));
   const catalog_changed = (catalogInputs || []).filter((p) => touched.has(p));
+  if (verificationSource && touched.has(verificationSource)) {
+    if (currentVerification === undefined) return { status: 'UNKNOWN', reason: 'VERIFICATION_UNREAD', changed, catalog_changed };
+    if (!same(verification, currentVerification)) changed.push(verificationSource + '#commands');
+  }
   return changed.length
     ? { status: 'STALE', reason: 'INPUT_CHANGED', changed, catalog_changed }
     : { status: 'CURRENT_CONTENT', reason: 'INPUTS_UNCHANGED', changed, catalog_changed };
@@ -58,6 +65,7 @@ export async function installAcademyStarterKit({ output, receipt, readings, core
     task: receipt.task, track: receipt.track, target: receipt.target, files,
     freshness_inputs: [...new Set([...readings.map(item => item.path.replaceAll('\\', '/')), ...(operatingKnowledge ? ['registry/operating-knowledge.json'] : []), ...KIT_GENERATOR_INPUTS])],
     catalog_inputs: catalog.map(item => item.source),
+    verification_source: 'registry/projects.json',
     verification: receipt.precheck.completion_verification,
     reuse_policy: 'New assets require a recorded reuse decision before creation.',
   };
@@ -99,7 +107,9 @@ const projectFreshness=remoteHead&&head.ok?(remoteHead===head.stdout?'CURRENT':'
 ${kitFreshness.toString()}
 const coreCompareRun=coreHead.ok&&coreHead.stdout!==kit.core_revision&&Array.isArray(kit.freshness_inputs)?run('gh',['api','repos/'+coreRepo+'/compare/'+kit.core_revision+'...'+coreHead.stdout,'--jq','{status:.status,ahead_by:.ahead_by,files:[.files[]|.filename,(.previous_filename//empty)]}']):null;
 let coreCompare=null;try{coreCompare=coreCompareRun?.ok?{ok:true,...JSON.parse(coreCompareRun.stdout)}:(coreCompareRun?{ok:false}:null)}catch{coreCompare={ok:false}}
-const freshness=kitFreshness({kitRevision:kit.core_revision,coreHead:coreHead.ok?coreHead.stdout:null,inputs:kit.freshness_inputs,catalogInputs:kit.catalog_inputs,compare:coreCompare});
+let currentVerification;
+if(coreCompare?.ok&&kit.verification_source&&coreCompare.files?.includes(kit.verification_source)){const raw=run('gh',['api','-H','Accept: application/vnd.github.raw','repos/'+coreRepo+'/contents/'+kit.verification_source+'?ref='+coreHead.stdout]);try{if(raw.ok){const reg=JSON.parse(raw.stdout);const p=(reg.projects??[]).find(x=>x.project_id===kit.target?.project_id);currentVerification=p?.commands??null;}}catch{}}
+const freshness=kitFreshness({kitRevision:kit.core_revision,coreHead:coreHead.ok?coreHead.stdout:null,inputs:kit.freshness_inputs,catalogInputs:kit.catalog_inputs,compare:coreCompare,verificationSource:kit.verification_source,verification:kit.verification,currentVerification});
 const coreFreshness=freshness.status;
 const authorityPaths=['.ai-core/kit.json','.ai-core/session-bootstrap.mjs','.ai-core/verify-kit.mjs','.ai-core/START_HERE.md'];
 const authorityEpochPaths=['.ai-core/session-bootstrap.mjs','.ai-core/kit.json','.ai-core/START_HERE.md'];

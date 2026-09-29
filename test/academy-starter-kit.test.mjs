@@ -286,3 +286,16 @@ test('★kit records its freshness inputs and the bootstrap embeds the tested ju
   const parsed=spawnSync(process.execPath,['--check',join(out,'session-bootstrap.mjs')],{encoding:'utf8'});
   assert.equal(parsed.status,0,parsed.stderr);
 });
+
+test('★verification commands are compared field-wise — projects.json may change daily, commands must not change silently',()=>{
+  /** Codex 검토(PR #346) 재현: projects.json 의 commands 가 바뀌어도 CURRENT_CONTENT 였다. */
+  const base={kitRevision:'a'.repeat(40),coreHead:'b'.repeat(40),inputs:['docs/AI_WORKING_STANDARD.md'],catalogInputs:['registry/projects.json'],verificationSource:'registry/projects.json',
+    verification:{test:'npm test',build:'npm run build'},compare:{ok:true,status:'ahead',files:['registry/projects.json']}};
+  assert.equal(kitFreshness({...base,currentVerification:{build:'npm run build',test:'npm test'}}).status,'CURRENT_CONTENT','열쇠 순서만 다른 같은 명령을 바뀌었다고 했다');
+  const moved=kitFreshness({...base,currentVerification:{test:'npm test -- --strict',build:'npm run build'}});
+  assert.equal(moved.status,'STALE');
+  assert.deepEqual(moved.changed,['registry/projects.json#commands']);
+  assert.equal(kitFreshness({...base,currentVerification:undefined}).status,'UNKNOWN','못 읽은 것을 같다고 봤다');
+  assert.equal(kitFreshness({...base,currentVerification:null}).status,'STALE','프로젝트가 등록부에서 사라졌는데 같다고 봤다');
+  assert.equal(kitFreshness({...base,compare:{ok:true,status:'ahead',files:['README.md']},currentVerification:undefined}).status,'CURRENT_CONTENT','projects.json 이 안 바뀌었으면 읽을 필요가 없다');
+});
