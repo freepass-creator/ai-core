@@ -96,7 +96,11 @@ test('★두 쓰는 곳의 충돌이 근거와 함께 적혀 있고, 실물은 �
   assert.match(싸움.correction_2026_09_29, /틀렸다/, '「서로 지운다」는 첫 판독이 틀렸다는 기록을 지우면 같은 오독을 다시 한다');
   const 근거 = 싸움.evidence.join(' ');
   for (const 꼭 of ['fb/put.mjs', '맞춘다', 'put-galrae.mjs:27', 'bogi.mjs']) assert.match(근거, new RegExp(꼭.replace('.', '\\.')));
-  assert.match(싸움.measured, /모른다/, 'Firestore 를 읽지 않고 겹친 수를 적으면 «세지 말고 읽는다»를 어긴다');
+  const 실측 = 싸움.measured_2026_09_30;
+  assert.ok(실측, 'Firestore 를 읽은 기록이 없으면 겹친 수를 적지 않는다(«세지 말고 읽는다»)');
+  assert.match(실측.by, /Codex/); assert.match(실측.by, /Claude/, '한 쪽만 읽은 값은 정본에 박지 않는다');
+  assert.equal(실측.arrears.세칸열쇠 + 실측.arrears.두칸열쇠 + 실측.arrears.그밖, 실측.arrears.전체, '열쇠 모양 분류에 공백이 있다');
+  assert.match(주인표.kinds.미수.read_contract.gap_2026_09_30, /계약ID/, '계약ID 가 비어 있다는 사실이 빠지면 열쇠를 바로 바꾸려 든다');
 });
 
 test('★시트 적재는 결함이 아니라 설계다 — 답=수납 탭, 계좌=검산', () => {
@@ -118,4 +122,20 @@ test('★키가 다른 칸과 어긋나면 막힌다 — 스키마만으로는 �
     assert.notDeepEqual(키검사(d), [], `${무엇} 이 어긋났는데 키검사가 통과시켰다`);
   }
   assert.equal(계약['x-also-required'], 'src/contracts/arrears-read.mjs#키검사');
+});
+
+test('★실측 숫자는 서로 맞아야 하고, 계약ID 공백이 있으면 열쇠 전환은 보류다(Codex 검토)', () => {
+  /** 처음 판은 칸이 «있는지»만 봤다 — Codex 가 숫자를 바꿔 넣어도 전부 통과했다. */
+  const 미수 = 주인표.kinds.미수, a = 미수.writer_fight.measured_2026_09_30.arrears, 순서 = 미수.read_contract.migration_order.join('\n');
+  assert.equal(a.끝난계약 + a.유지계약, a.세칸열쇠, '끝난+유지 가 3칸 열쇠 수와 다르다');
+  assert.ok(a.출처_aiops <= a.전체 && a.계약ID_있음 <= a.전체, '부분이 전체보다 크다');
+  assert.doesNotMatch(미수.writer_fight.measured_2026_09_30.meaning, /하나가 쓴/, '모양이 같다고 쓴 곳이 하나라고 확정하지 않는다');
+  if (a.계약ID_있음 < a.끝난계약) {
+    assert.match(순서, /계약ID[^\n]*정하기 전엔 열쇠를 바꾸지 않는다/, '계약ID 가 빈 종료 문서가 있는데 열쇠 전환 보류가 없다');
+    const 계약ID단계 = 미수.read_contract.migration_order.findIndex((s) => /계약ID 출처/.test(s));
+    const 흡수단계 = 미수.read_contract.migration_order.findIndex((s) => /흡수/.test(s));
+    assert.ok(계약ID단계 >= 0 && 흡수단계 >= 0, '계약ID·흡수 단계가 빠졌다');
+  }
+  if (a.두칸열쇠 > 0) assert.doesNotMatch(순서, /할 일 없음/, '2칸 문서가 있는데 정리할 일이 없다고 적었다');
+  assert.match(순서, /put-galrae --쓴다 금지/, '위험한 쓰기를 막는 말이 빠졌다');
 });
