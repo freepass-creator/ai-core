@@ -8,7 +8,7 @@
   우편함은 저장소 안(`docs/coordination/duo/`)에 있어 **어느 세션에서든 같은 자리**를 본다 — 세션에 매이지 않는다.
   물을 때는 `npm run duo -- ask --to codex|claude --about "제목" --body "물을 것" --now`,
   답할 때는 `npm run duo -- answer <id> --body "답"`, 기록부에 붙일 줄은 `npm run duo -- log` 가 만들어 준다.
-- **Codex → Claude**: `npm run claude:status` 로 열려 있는지 보고 `npm run claude:review -- <인자>` 로 부른다.
+- **Codex → Claude**: `npm run claude:status` 로 열려 있는지 확인한 뒤 반드시 `npm run claude:review -- --root <대상 저장소 절대경로> --prompt "<읽기 전용 질문>"` 으로 부른다. 정상 완료는 답변 본문 뒤의 `{"status":"ANSWERED","root":"...","exit_code":0}` 영수증까지 있어야 한다. `FAILED`(호출/프로세스 오류), `UNAVAILABLE_UNTIL_RESET`(사용량 한도), `REVIEW_TIMEOUT`(5분 내 검토 미완료)을 서로 바꿔 말하지 않는다. `REVIEW_TIMEOUT`이면 범위를 줄여 재호출하고, 답변 없이 검토 완료라고 기록하지 않는다.
 - **Claude → Codex**: `codex exec -s workspace-write -C <경로> --skip-git-repo-check -o <출력> "<질문>" < /dev/null`
 - 부른 사실과 답을 `docs/coordination/CROSS_AI_LOG.md` 에 한 줄 남긴다. 기록이 없으면 «안 부른 것»으로 본다.
 - 상대가 막혀 있으면(사용량 한도 등) 그 사실과 풀리는 시각을 적는다. **막힘을 통과로 세지 않는다.**

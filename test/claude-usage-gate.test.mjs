@@ -41,6 +41,7 @@ test('never treats an empty or failed Claude process as an answer', () => {
   assert.equal(claudeRunOutcome({ status: 0, stdout: '', stderr: '' }).status, 'EMPTY_RESPONSE');
   assert.equal(claudeRunOutcome({ status: 1, stdout: '', stderr: 'boom' }).status, 'FAILED');
   assert.equal(claudeRunOutcome({ status: 0, stdout: '검토 답변', stderr: '' }).status, 'ANSWERED');
+  assert.equal(claudeRunOutcome({ status: null, signal: 'SIGTERM', error: { code: 'ETIMEDOUT' }, stdout: '', stderr: '' }).status, 'REVIEW_TIMEOUT');
 });
 
 test('detects Claude usage-limit output', () => {
