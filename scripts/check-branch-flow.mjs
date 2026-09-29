@@ -12,7 +12,7 @@ import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { 전수판정 } from '../src/governance/branch-flow.mjs';
+import { 전수판정, 로컬전용 } from '../src/governance/branch-flow.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 export const 정책읽기 = () => JSON.parse(readFileSync(resolve(root, 'registry/development-continuity-policy.json'), 'utf8'));
@@ -48,6 +48,18 @@ if (process.argv[1] && resolve(process.argv[1]) === resolve(fileURLToPath(import
   const { 면제, 흐름, 위반, 한도 } = 전수판정(가지들, 정책);
   console.log(`원격 가지 ${가지들.length}개 · 면제 ${면제.length} · 흐름 ${흐름.length} · 위반 ${위반.length}`);
   console.log(`활성 작업선 ${한도.활성} / 한도 ${한도.한도} (${한도.프로필})`);
+
+  /** ★로컬도 센다. 원격만 보고 「한 방향」이라 말하면 그 말이 거짓이 된다(2026-09-29 실측: 원격 7 · 로컬 67). */
+  const 원격이름 = new Set(가지들.map((b) => b.ref));
+  const 줄나눔 = (글) => String(글 ?? '').split(/\r?\n/).filter(Boolean);
+  const 로컬목록 = 줄나눔(달리기('git', ['for-each-ref', '--format=%(refname:short)\t%(objectname)', 'refs/heads']).out)
+    .map((l) => { const [ref, sha] = l.split('\t'); return { ref, sha }; });
+  const 아카이브 = 줄나눔(달리기('git', ['for-each-ref', '--format=%(objectname)', 'refs/remotes/origin/work/ai-core/archive-*']).out);
+  for (const b of 로컬목록) b.앞선커밋 = Number(달리기('git', ['rev-list', '--count', `origin/main..${b.sha}`]).out ?? 0);
+  const 보존확인 = (b) => 아카이브.some((a) => 달리기('git', ['merge-base', '--is-ancestor', b.sha, a]).ok);
+  const 로컬 = 로컬전용(로컬목록, 원격이름, 보존확인);
+  console.log(`로컬 전용 ${로컬.main에있음.length + 로컬.보존됨.length + 로컬.어디에도없음.length}개 · main 에 있음 ${로컬.main에있음.length} · 아카이브 보존 ${로컬.보존됨.length} · ★어디에도 없음 ${로컬.어디에도없음.length}`);
+  for (const b of 로컬.어디에도없음.slice(0, 8)) console.log(`    ★${b.ref} (${b.앞선커밋} 커밋) — 푸시되지 않은 작업이다`);
 
   if (위반.length) {
     console.error('');
