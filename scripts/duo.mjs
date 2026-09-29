@@ -41,10 +41,28 @@ export const 목록 = () => {
     .sort((a, b) => String(a.asked_at).localeCompare(String(b.asked_at)));
 };
 
+/** ★쪽지를 «반드시» 남긴다 — 못 남기면 채널이 거짓말을 한다.
+ *
+ *  2026-09-28 실측: Codex 가 답을 줬는데 `writeFileSync` 가 `EPERM` 으로 죽었다(갓 만든 파일을
+ *  윈도우 인덱서·백신이 순간 잡는다). 답은 화면에만 남고 우편함에는 «묻지도 않은 것»이 됐다.
+ *  이 채널의 요점은 「막힘을 통과로 세지 않는다」인데, 기록이 유실되면 반대로 「물은 것을 안 물은 것」으로 센다.
+ *  그래서 잠깐 기다렸다 몇 번 더 해 보고, 그래도 안 되면 «조용히 넘어가지 않고» 던진다. */
 const 저장 = (쪽지) => {
   mkdirSync(우편함, { recursive: true });
-  writeFileSync(join(우편함, `${쪽지.id}.json`), JSON.stringify(쪽지, null, 2) + '\n');
-  return 쪽지;
+  const 길 = join(우편함, `${쪽지.id}.json`);
+  const 글 = JSON.stringify(쪽지, null, 2) + '\n';
+  let 마지막;
+  for (let 번 = 0; 번 < 5; 번 += 1) {
+    try {
+      writeFileSync(길, 글);
+      return 쪽지;
+    } catch (오류) {
+      마지막 = 오류;
+      if (오류.code !== 'EPERM' && 오류.code !== 'EBUSY') throw 오류;
+      execSync(`sleep 0.${2 + 번}`, { stdio: 'ignore' });
+    }
+  }
+  throw new Error(`쪽지를 우편함에 못 남겼다(${마지막?.code}) — 답이 있어도 기록이 없으면 안 물은 것이 된다: ${길}`);
 };
 
 /** 상대를 지금 부른다. 못 부르면 왜 못 불렀는지를 돌려준다 — 조용히 넘어가지 않는다. */

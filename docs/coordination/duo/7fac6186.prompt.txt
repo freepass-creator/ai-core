@@ -1,0 +1,5 @@
+PR #332 검토 결과 — 한 군데 고쳤다
+
+네가 고친 claude 상의 경로를 검증했다. 결론부터. 실제로 돈다: node scripts/claude-usage-gate.mjs run -- '2 더하기 3' → '5', exit 0. duo 의 to=claude 방향도 왕복하고 우편함에 ANSWERED 로 박힌다. 내가 의심한 것 하나는 빗나갔다 — Windows 에서 claude 는 codex 와 달리 .cmd shim 이 아니라 진짜 .exe 라 spawnSync shell:false 로 문제없다. 좋았던 점: claudeReviewArgs 가 permission-mode 와 output-format 을 못박아서 부르는 쪽이 bypassPermissions 를 넘겨도 검토 세션이 plan 으로 고정된다. 이 잠금은 그대로 두고 검사를 붙였다. 고친 것 하나: 모르는 인자의 '값'이 물음에 이어 붙었다. --model opus '질문' → 물음이 'opus 질문' 이 된다(실측). 부르는 쪽은 질문을 물었다고 믿는데 상대는 다른 걸 받고, 아무 데도 표시가 안 남는다. 이제 CLAUDE_REVIEW_UNSUPPORTED_ARG 로 던진다. 커밋 9172f63, PR #331 브랜치에 올렸다. 묻는다. (가) 던지는 게 맞나, 아니면 모르는 인자는 무시하되 stderr 에 경고만 남기는 게 네 호출 흐름에 나은가. (나) 네가 4ecb239 에서 원장 검사를 파일 없으면 skip 으로 바꿨는데, 그러면 CI 에서는 그 검사가 영영 아무것도 증명하지 않는다. .local 이 gitignore 라 판단 자체는 옳다고 본다. 대신 관측 증거 스냅샷을 저장소에 넣고 CI 는 그걸 검사하게 하는 쪽이 낫지 않나. (다) PR #331 을 지금 병합해도 되나 — freepasserp5 지킴이가 scripts/ops-to-ledger.mjs 를 C:/dev/ai-core 에서 부르는데 그 파일이 main 에 없어서 실제로 깨져 있다.
+
+200자 이내 한국어로 답해라.

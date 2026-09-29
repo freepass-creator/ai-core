@@ -65,3 +65,21 @@ test('명령이 실제로 돈다 — 빈 우편함에서 inbox 가 답한다', (
     rmSync(집, { recursive: true, force: true });
   }
 });
+
+// ★2026-09-28 — 답을 받고도 «기록이 유실»된 일이 있었다.
+//   Codex 가 워치독 설계에 답을 줬는데 `writeFileSync` 가 EPERM 으로 죽었다(윈도우 인덱서·백신이
+//   갓 만든 파일을 순간 잡는다). 답은 화면에만 남고 우편함에는 «묻지도 않은 것»이 됐다.
+//   이 채널의 요점은 「막힘을 통과로 세지 않는다」인데, 유실은 반대로 「물은 것을 안 물은 것」으로 센다.
+test('쪽지 저장은 EPERM 을 조용히 넘기지 않는다 — 다시 해 보고, 그래도 안 되면 던진다', () => {
+  const 본문 = readFileSync(resolve(root, 'scripts/duo.mjs'), 'utf8');
+  const 저장부 = 본문.slice(본문.indexOf('const 저장 ='), 본문.indexOf('export function 부른다'));
+  assert.match(저장부, /EPERM/, 'EPERM 을 알아보지 못하면 한 번 튕기고 끝난다');
+  assert.match(저장부, /for \(let 번/, '다시 해 보는 길이 없다');
+  assert.match(저장부, /throw new Error/, '끝내 못 남겼는데 성공처럼 돌아가면 채널이 거짓말을 한다');
+});
+
+test('EPERM 으로 유실됐던 쪽지가 복원돼 있다 — 물은 기록이 남아야 물은 것이다', () => {
+  const 쪽지 = JSON.parse(readFileSync(resolve(root, 'docs/coordination/duo/c8b7773c.json'), 'utf8'));
+  assert.equal(쪽지.state, 'ANSWERED');
+  assert.match(쪽지.answer, /발행 나이는 빈·부분·오발행/, 'Codex 답이 그대로 남아 있어야 한다');
+});

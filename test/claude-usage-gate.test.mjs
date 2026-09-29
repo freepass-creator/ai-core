@@ -51,3 +51,29 @@ test('blocks without prompting until reset and releases at reset', () => {
   });
   assert.equal(gateStatus(state, new Date('2026-09-22T04:00:00.000Z')).available, true);
 });
+
+// ★2026-09-28 — Claude 가 Codex 의 PR #332 를 검토하다 찾은 것.
+//   옛 판은 모르는 인자의 «값»을 물음에 이어 붙였다: `--model opus "질문"` → 물음이 `"opus 질문"`.
+//   부르는 쪽은 `질문` 을 물었다고 믿는데 상대는 다른 것을 받는다. 검토가 조용히 오염된다.
+test('모르는 인자는 조용히 삼키지 않고 던진다 — 물음이 오염되면 검토가 거짓이 된다', () => {
+  assert.throws(
+    () => claudeReviewArgs(['--model', 'opus', '질문입니다']),
+    /CLAUDE_REVIEW_UNSUPPORTED_ARG:--model/,
+    '플래그 값이 물음에 빨려 들어가면 안 된다'
+  );
+  assert.throws(
+    () => claudeReviewArgs(['-C', 'C:/dev/aiops', '-p', '질문입니다']),
+    /CLAUDE_REVIEW_UNSUPPORTED_ARG:-C/
+  );
+});
+
+test('★권한모드 잠금은 그대로다 — 부르는 쪽이 검토 세션의 권한을 못 올린다', () => {
+  /** 이건 «고쳐야 할 것»이 아니라 지켜야 할 설계다. bypassPermissions 를 넘겨도 plan 으로 간다. */
+  const 인자 = claudeReviewArgs(['--permission-mode', 'plan', '-p', '질문입니다']);
+  assert.deepEqual(인자, ['-p', '질문입니다', '--permission-mode', 'plan', '--output-format', 'text']);
+  assert.throws(
+    () => claudeReviewArgs(['--permission-mode', 'bypassPermissions', '-p', '질문입니다']),
+    /CLAUDE_REVIEW_UNSUPPORTED_ARG:bypassPermissions/,
+    '권한을 올리려는 시도는 조용히 무시되는 대신 눈에 보여야 한다'
+  );
+});

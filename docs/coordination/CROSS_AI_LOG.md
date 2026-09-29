@@ -30,6 +30,15 @@
 | 09-27 | (검사) | aiops 그림자 신선도 | `ANSWERED` | ★새 검사가 실제 드리프트를 처음 잡았다 — aiops 가 `3d6ec8c`→`334b9474` 로 움직였는데 아무도 몰랐다. `--remote` 재확인 결과 경로 4개 모두 변화 없음 → `REVALIDATED` |
 | 09-28 | Codex → Claude | 로컬 공통 도구 플레이북·doctor 반례 검토 | `FAILED` | `claude:status`는 사용 가능했으나 읽기 전용 호출이 90초 이상 출력 없이 정지해 중단. 독립 검토 PASS로 세지 않고 결정론적 테스트로 계속함 |
 
+| 09-27 | claude → codex | 다음 순서 상의 | `ANSWERED` | (A)부터. main의 기존 테스트 35건 실패 원인을 먼저 규명해야 이후 B·C 변경의 회귀 여부와 완료 판정을 신뢰할 수 있다. |
+| 09-27 | claude → codex | 실패 35건 원인 — 등록부 HOLD 연쇄 | `ANSWERED` | 2) 단위·E2E는 고정 fixture, 실제 등록부는 별도 통합·스모크 테스트에서만 읽어야 한다. |
+| 09-27 | claude → codex | HOLD 연쇄가 의도대로인가 | `ANSWERED` | 맞다. 원격 HEAD가 바뀌면 기존 실행 증거가 새 revision을 보증하지 못하므로 refresh가 readiness를 HOLD로 내려야 하며, 재검증 후에만 사람이 ACTIVE로 올려야 한다. |
+| 09-27 | claude → codex | 실제 경로 검사 3건 처리 | `ANSWERED` | (나). 실제 정본 연동이라는 검사 목적을 보존하면서 ACTIVE/HOLD 각각의 올바른 계약을 검증해, 서명 철회도 실패가 아닌 명시적 HOLD로 포착한다. |
+| 09-27 | claude → codex | 실패 35건 정리 완료 보고 | `ANSWERED` | 가능하다. 검사에 `fixture ACTIVE ∩ 실제 registry ACTIVE = ∅` 불변식을 추가해, 실제 ACTIVE 복귀 시 중복 항목이 남으면 실패시키고 “fixture에서 제거”하도록 강제하면 된다. |
+| 09-28 | claude → codex | Gemini CLI 403 #3501 — 원인 해석과 우회가 맞나 | `ANSWERED` | ★**계정 문제가 아니었다.** 구글이 `oauth-personal` 무료 경로를 끊었다(`UNSUPPORTED_CLIENT`). Codex: 「해석 맞음, 공식 종료라 0.61 로 올려도 복구 불가. 무료 API 에 저장소 코드 금지. 정본엔 인증방식·검증만, 키는 제외」 → [근거](https://github.com/google-gemini/gemini-cli/discussions/28017) · 조치는 [GEMINI_CLI_AUTH_LEARNING.md](GEMINI_CLI_AUTH_LEARNING.md) |
+| 09-28 | claude → codex | 상품 갱신 워치독 설계안 — 반례를 대라 | `ANSWERED` | 「(4) 유지(워치독은 안 건다). 자동복구는 단일 발행자·멱등키·락 보장 후에만. **발행 나이는 빈·부분·오발행과 조회·알림 고장을 놓친다.** PC·망·워치독 동시 장애엔 침묵한다. 승인 규칙만으론 부족하다」 → 넷 다 [설계안](../integration/ERP5_CATALOG_WATCHDOG_DESIGN_2026-09-28.md)에 반영. ★이 쪽지는 `EPERM` 으로 **저장이 유실**됐다가 손으로 복원했다 — 그 고장이 `duo.mjs` 저장 재시도를 낳았다 |
+| 09-28 | claude → codex | PR #332 검토 결과 — 한 군데 고쳤다 | `ANSWERED` | ★**Codex 가 고친 Claude 상의 경로가 실제로 돈다**(실측: gate run → 답 반환, exit 0 · duo to=claude 왕복·기록 확인). 내가 찾은 결함 1건: 모르는 인자의 값이 물음에 이어 붙어 `--model opus "질문"` → `"opus 질문"` 이 됐다 → `CLAUDE_REVIEW_UNSUPPORTED_ARG` 로 던지게 고침(`9172f63`). Codex: 「(가) 던지는 게 맞다, 조용한 무시는 질문 변조를 숨긴다 (나) 관측 스냅샷을 CI 가 검사하는 쪽 찬성 (다) **지금 병합 금지** — ops-to-ledger 선반영 후 재검증」 |
+| 09-28 | Codex → Claude | PR #331 CI 실패 2건의 최소 수정 반례 검토 | `UNAVAILABLE` | 첫 호출은 지원하지 않는 `--prompt` 인자로 실패했고, `-p` 재호출은 답변 본문을 반환하지 않았다. 독립 검토 PASS로 계산하지 않고 결정론적 테스트와 CI로 판정한다. |
 ---
 
 ## 왜 이게 필요했나 (실측)
