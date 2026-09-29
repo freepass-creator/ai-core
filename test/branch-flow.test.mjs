@@ -7,7 +7,8 @@
 //   **강제하는 것이 없어서** 원격 가지가 126개가 됐다. 이 검사가 그 자리다.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { 흐르나, 활성한도, 전수판정 } from '../src/governance/branch-flow.mjs';
+import { execFileSync } from 'node:child_process';
+import { 흐르나, 활성한도, 전수판정, 로컬전용 } from '../src/governance/branch-flow.mjs';
 import { 정책읽기, 원격가지, 열린PR들 } from '../scripts/check-branch-flow.mjs';
 
 const 정책 = 정책읽기();
@@ -68,5 +69,35 @@ test('★실제 저장소가 기준선을 넘지 않는다 — 이 수는 내려
     위반.length <= 정책.flow_enforcement.max_violations_allowed,
     `흐르지 않는 가지가 ${위반.length}개 — 기준선 ${정책.flow_enforcement.max_violations_allowed} 을 넘었다:\n  ` +
       위반.slice(0, 10).map((b) => `${b.ref} — ${b.까닭}`).join('\n  ')
+  );
+});
+
+// ★대표 2026-09-29: 「지금 뭐 분기 생기고 이런 거 아니지? 한 방향으로 고도화되고 있지?」
+//   그때 원격은 7개·위반 0 이었지만 **로컬은 67개**였고 24개는 어디에도 보존돼 있지 않았다.
+//   내 검사가 refs/remotes/origin 만 봐서 「한 방향」이라고 잘못 답할 뻔했다.
+test('★로컬 전용 가지도 센다 — 원격만 보면 「한 방향」이 거짓말이 된다', () => {
+  const 로컬 = [
+    { ref: 'main', 앞선커밋: 0 },
+    { ref: '이미-보냄', 앞선커밋: 3 },
+    { ref: '비어-있음', 앞선커밋: 0 },
+    { ref: '보존됨', 앞선커밋: 2 },
+    { ref: '어디에도-없음', 앞선커밋: 5 }
+  ];
+  const 통 = 로컬전용(로컬, new Set(['main', '이미-보냄']), (b) => b.ref === '보존됨');
+  assert.deepEqual(통.main에있음.map((b) => b.ref), ['비어-있음']);
+  assert.deepEqual(통.보존됨.map((b) => b.ref), ['보존됨']);
+  assert.deepEqual(통.어디에도없음.map((b) => b.ref), ['어디에도-없음'], '푸시된 적 없는 작업을 못 잡으면 조용히 사라진다');
+});
+
+test('★실제로 «어디에도 없는» 로컬 가지가 없다', () => {
+  const git = (...a) => { try { return execFileSync('git', a, { encoding: 'utf8', maxBuffer: 1 << 26 }).trim(); } catch { return null; } };
+  const 원격 = new Set(원격가지().map((b) => b.ref));
+  const 아카이브 = (git('for-each-ref', '--format=%(objectname)', 'refs/remotes/origin/work/ai-core/archive-*') ?? '').split(/\r?\n/).filter(Boolean);
+  const 로컬 = (git('for-each-ref', '--format=%(refname:short)\t%(objectname)', 'refs/heads') ?? '').split(/\r?\n/).filter(Boolean)
+    .map((l) => { const [ref, sha] = l.split('\t'); return { ref, sha, 앞선커밋: Number(git('rev-list', '--count', `origin/main..${sha}`) ?? 0) }; });
+  const 통 = 로컬전용(로컬, 원격, (b) => 아카이브.some((a) => git('merge-base', '--is-ancestor', b.sha, a) !== null));
+  assert.deepEqual(
+    통.어디에도없음.map((b) => `${b.ref}(${b.앞선커밋})`), [],
+    '푸시도 아카이브도 안 된 로컬 작업이 있다 — 아카이브에 묶어 원격으로 보내라'
   );
 });
