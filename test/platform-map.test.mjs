@@ -38,10 +38,25 @@ test('★플랫폼은 정확히 둘이다 — AI Core 하나, AI Ops 하나', ()
   assert.deepEqual(옵스, ['kakao-ops'], 'AI Ops 는 kakao-ops 다(대표 선택)');
 });
 
-test('★기존 aiops 는 AI Ops 가 아니다 — 이름이 겹쳐도 흡수 대상이다', () => {
-  /** 이름 때문에 가장 쉽게 틀리는 자리다. aiops 는 정본 숫자가 사는 저장소이고, AI Ops 로 «흡수»된다. */
-  assert.equal(지도.projects.aiops.bucket, 'ABSORB_INTO_OPS');
+test('★기존 aiops 는 AI Ops 가 아니라 «데이터 소유 서비스»다 — 처음 판단을 정정했다', () => {
+  /** 2026-09-29 처음엔 ABSORB_INTO_OPS 로 적었다. 대표가 「딱 두 개가 아니라」고 지적했고,
+   *  Codex 도 「정본 데이터는 AI Ops 와 분리한 도메인 소유 서비스가 맡아야 한다」고 했다.
+   *  실행과 정본을 한 곳에 두면 실행 코드가 정본을 고치기 쉽다. */
+  assert.equal(지도.projects.aiops.bucket, 'DATA_OWNER');
+  assert.match(지도.projects.aiops.correction_2026_09_29, /틀렸다/, '틀렸던 판단을 지우면 같은 실수를 다시 한다');
   assert.match(지도.projects.aiops.risk, /전역 CLAUDE\.md/, '정본을 옮길 때 전역 지침 경로도 바꿔야 한다는 경고가 빠지면 세션마다 숫자가 엇갈린다');
+});
+
+test('★철칙이 적혀 있다 — 공통은 복사하지 않고 버전으로 소비한다', () => {
+  assert.match(지도.iron_rule.rule, /복사하지 않고/);
+  assert.ok(지도.iron_rule.bootstrap, '진입 문서가 규칙을 못 읽는 부트스트랩 반례에 대한 답이 없다');
+});
+
+test('공통의 종류는 다섯이고, 데이터는 플랫폼이 공급하지 않는다', () => {
+  assert.deepEqual(Object.keys(지도.kinds).sort(), ['CODE', 'CONTRACTS', 'DATA', 'RULES', 'RUNTIME']);
+  assert.match(지도.kinds.DATA.provider, /도메인 소유 서비스/);
+  const 데이터소유 = Object.entries(지도.projects).filter(([, p]) => p.bucket === 'DATA_OWNER').map(([id]) => id).sort();
+  assert.deepEqual(데이터소유, ['aiops', 'freepass-data']);
 });
 
 test('판단이 들어간 분류는 «확인 대기»라고 적혀 있다 — 조용히 확정된 것처럼 보이지 않게', () => {
