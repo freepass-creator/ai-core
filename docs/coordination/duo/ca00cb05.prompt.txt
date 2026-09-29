@@ -1,0 +1,5 @@
+aiops 키트 재생성 PR 검토(시험대 1곳)
+
+읽기 전용. freepass-creator/aiops 의 chore/ai-core-kit-refresh-20260930 (C:/dev/aiops 에 체크아웃됨) origin/main..HEAD. .ai-core/ 만 바뀌었나, kit.json core_revision 5ffb4d5·target f54be4c·freshness_inputs·verification_source 가 맞나, 생성물이 ai-core main(5ffb4d5)의 starter-kit.mjs 출력과 같나. 내 실측: 생성 직후와 CRLF 재체크아웃 뒤 둘 다 verify PASS·bootstrap READY. APPROVE 또는 REQUEST_CHANGES(파일:줄). 파일은 고치지 마라.
+
+200자 이내 한국어로 답해라.
