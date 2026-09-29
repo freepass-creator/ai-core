@@ -1,0 +1,11 @@
+{
+  "id": "f20cf3d3",
+  "from": "claude",
+  "to": "codex",
+  "about": "키트 재생성 10곳 일괄 검토",
+  "body": "읽기 전용. 각 저장소 chore/ai-core-kit-refresh-20260930 가지, 로컬 worktree C:/dev/.kit-roll/<저장소>: casemap-private freepass-admin freepass-data freepass-estimate freepass-sales freepasserp4 freepasshomepage mewcar teamjpkwork welrixtable. 각각 origin/main..HEAD 가 .ai-core/ 만 바꾸나, kit.json core_revision 이 ai-core 2ca825b 이고 target.revision 이 그 저장소 origin/main 인가, LF 정규화 후 생성물이 해시와 맞나(node .ai-core/verify-kit.mjs). 예외 둘: freepass-sales 는 옛 .ai-core/ui-ux.consumer.json(프로젝트 소유) 보존, teamjpkwork 는 kit.json 목록 밖 standards 사본 둘 보존(ai-core main 과 동일·소비처 없음) — 보존이 맞나 지우는 게 맞나. 저장소별 APPROVE/REQUEST_CHANGES 한 줄씩. 파일은 고치지 마라.",
+  "asked_at": "2026-09-29T15:28:25.075Z",
+  "state": "ANSWERED",
+  "answer": "케이스맵 APPROVE  \n어드민 APPROVE  \n데이터 APPROVE  \n견적 APPROVE  \n세일즈 APPROVE·보존  \nERP4 APPROVE  \n홈페이지 APPROVE  \n뮤카 APPROVE  \n팀워크 APPROVE·보존  \n웰릭스 APPROVE  \n\n전부 범위·리비전·LF 해시 통과. 두 예외는 이번 재생성에서 보존 타당. 파일 수정 없음. Claude 호출 실패.",
+  "answered_at": "2026-09-29T15:30:29.984Z"
+}
