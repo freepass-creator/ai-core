@@ -96,7 +96,11 @@ test('★두 쓰는 곳의 충돌이 근거와 함께 적혀 있고, 실물은 �
   assert.match(싸움.correction_2026_09_29, /틀렸다/, '「서로 지운다」는 첫 판독이 틀렸다는 기록을 지우면 같은 오독을 다시 한다');
   const 근거 = 싸움.evidence.join(' ');
   for (const 꼭 of ['fb/put.mjs', '맞춘다', 'put-galrae.mjs:27', 'bogi.mjs']) assert.match(근거, new RegExp(꼭.replace('.', '\\.')));
-  assert.match(싸움.measured, /모른다/, 'Firestore 를 읽지 않고 겹친 수를 적으면 «세지 말고 읽는다»를 어긴다');
+  const 실측 = 싸움.measured_2026_09_30;
+  assert.ok(실측, 'Firestore 를 읽은 기록이 없으면 겹친 수를 적지 않는다(«세지 말고 읽는다»)');
+  assert.match(실측.by, /Codex/); assert.match(실측.by, /Claude/, '한 쪽만 읽은 값은 정본에 박지 않는다');
+  assert.equal(실측.arrears.세칸열쇠 + 실측.arrears.두칸열쇠 + 실측.arrears.그밖, 실측.arrears.전체, '열쇠 모양 분류에 공백이 있다');
+  assert.match(주인표.kinds.미수.read_contract.gap_2026_09_30, /계약ID/, '계약ID 가 비어 있다는 사실이 빠지면 열쇠를 바로 바꾸려 든다');
 });
 
 test('★시트 적재는 결함이 아니라 설계다 — 답=수납 탭, 계좌=검산', () => {
