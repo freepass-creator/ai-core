@@ -29,8 +29,8 @@
       "preserved_how": "원본 blob sha 를 PROVENANCE 가 고정하고 그림자 신선도 검사가 재확인한다.",
       "destination": "ai-core 가 계속 쓸 것만 ai-core 자신의 코드로 승격하고 나머지는 지운다.",
       "baseline": {
-        "끌어씀": 11,
-        "언급": 15
+        "끌어씀": 6,
+        "언급": 14
       }
     },
     {
@@ -84,5 +84,23 @@
     },
     "결론": "423개는 「통합 후 삭제」 대상이 아니다. ai-core 로도 git 으로도 갈 수 없다 — 제자리 보관이거나 개인정보용 별도 보관소다. 이 구분을 지우지 마라."
   },
-  "baseline_measured_at": "2026-09-29"
+  "baseline_measured_at": "2026-09-29",
+  "self": {
+    "files": [
+      "registry/sunset.json",
+      "src/governance/sunset.mjs",
+      "scripts/check-sunset-progress.mjs",
+      "test/sunset-progress.test.mjs"
+    ],
+    "why": [
+      "★재는 도구가 재는 대상에 잡히는 것을 막는다 (2026-09-29 실측).",
+      "이 파일들은 일몰 구역 이름을 «선언»한다 — 예: 참조찾기(본문, 'aiops/'). 끌어 쓰는 것이 아니다.",
+      "구역이 사라지면 이 파일들의 그 줄도 같이 사라진다. 붙잡는 쪽이 아니라 세는 쪽이다.",
+      "★「기타」 통이 아니라 «이름을 적은» 제외다. 새 파일이 조용히 끼어들 수 없다.",
+      "★대화 기록도 의존이 아니다 (2026-09-29 실측): shared-services 를 «어떻게 지울까» 물은 쪽지가 그 구역 참조로 세어져 검사가 빨개졌다. 물어보는 것이 붙잡는 것이 될 수는 없다. 우편함은 접두사로 제외한다."
+    ],
+    "record_prefixes": [
+      "docs/coordination/duo/"
+    ]
+  }
 }

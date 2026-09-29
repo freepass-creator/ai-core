@@ -6,14 +6,14 @@
       "run": ["scripts/check-secrets.mjs", "--self-test"],
       "marker": "CHECKER BROKEN",
       "blockades": [
-        { "name": "Google 키", "file": "shared-services/security/secret-scan.mjs", "disable": ["pattern: /AIza[0-9A-Za-z_-]{35}/g", "pattern: /(?!)/g"] },
-        { "name": "개인키", "file": "shared-services/security/secret-scan.mjs", "disable": ["pattern: /-----BEGIN (?:RSA |EC |OPENSSH |DSA )?PRIVATE KEY-----/g", "pattern: /(?!)/g"] },
-        { "name": "서비스계정 private_key", "file": "shared-services/security/secret-scan.mjs", "disable": ["pattern: /\"private_key\"\\s*:\\s*\"-----BEGIN/g", "pattern: /(?!)/g"] },
-        { "name": "주민번호", "file": "shared-services/security/secret-scan.mjs", "disable": ["(?:0[1-9]|[12][0-9]|3[01])-[1-4][0-9]{6}(?![0-9])/g", "(?:0[1-9]|[12][0-9]|3[01])-[1-4][0-9]{6}(?![0-9])(?!)/g"] },
-        { "name": "가짜 주민번호 무시(오탐 방지)", "file": "shared-services/security/secret-scan.mjs", "disable": ["ignore: match => /-[1-4]234567$/.test(match) || /-[1-4]000000$/.test(match)", "ignore: match => false"] },
-        { "name": "예외 표시", "file": "shared-services/security/secret-scan.mjs", "disable": ["if (ALLOW.test(lineText)) return;", "if (false) return;"] },
-        { "name": ".env 경로", "file": "shared-services/security/secret-scan.mjs", "disable": ["{ id: 'ENV_FILE', pattern: /(^|\\/)\\.env(?:\\.[^/]+)?$/i,", "{ id: 'ENV_FILE', pattern: /(?!)/i,"] },
-        { "name": ".env 견본 무시(오탐 방지)", "file": "shared-services/security/secret-scan.mjs", "disable": ["ignore: path => /\\.(?:example|sample|template)$/i.test(path)", "ignore: path => false"] }
+        { "name": "Google 키", "file": "src/security/secret-scan.mjs", "disable": ["pattern: /AIza[0-9A-Za-z_-]{35}/g", "pattern: /(?!)/g"] },
+        { "name": "개인키", "file": "src/security/secret-scan.mjs", "disable": ["pattern: /-----BEGIN (?:RSA |EC |OPENSSH |DSA )?PRIVATE KEY-----/g", "pattern: /(?!)/g"] },
+        { "name": "서비스계정 private_key", "file": "src/security/secret-scan.mjs", "disable": ["pattern: /\"private_key\"\\s*:\\s*\"-----BEGIN/g", "pattern: /(?!)/g"] },
+        { "name": "주민번호", "file": "src/security/secret-scan.mjs", "disable": ["(?:0[1-9]|[12][0-9]|3[01])-[1-4][0-9]{6}(?![0-9])/g", "(?:0[1-9]|[12][0-9]|3[01])-[1-4][0-9]{6}(?![0-9])(?!)/g"] },
+        { "name": "가짜 주민번호 무시(오탐 방지)", "file": "src/security/secret-scan.mjs", "disable": ["ignore: match => /-[1-4]234567$/.test(match) || /-[1-4]000000$/.test(match)", "ignore: match => false"] },
+        { "name": "예외 표시", "file": "src/security/secret-scan.mjs", "disable": ["if (ALLOW.test(lineText)) return;", "if (false) return;"] },
+        { "name": ".env 경로", "file": "src/security/secret-scan.mjs", "disable": ["{ id: 'ENV_FILE', pattern: /(^|\\/)\\.env(?:\\.[^/]+)?$/i,", "{ id: 'ENV_FILE', pattern: /(?!)/i,"] },
+        { "name": ".env 견본 무시(오탐 방지)", "file": "src/security/secret-scan.mjs", "disable": ["ignore: path => /\\.(?:example|sample|template)$/i.test(path)", "ignore: path => false"] }
       ]
     },
     "design:react:check": {

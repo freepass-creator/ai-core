@@ -4,7 +4,7 @@
 // 결과에는 파일·줄·규칙만 찍는다. 값은 찍지 않는다.
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
-import { scanFiles, scanText } from '../shared-services/security/secret-scan.mjs';
+import { scanFiles, scanText } from '../src/security/secret-scan.mjs';
 
 // --self-test: 알려진 나쁜 표본은 전부 잡고, 알려진 안전한 표본은 하나도 안 잡아야 한다.
 //   표본 글자는 실행 중에 이어 붙인다 — 저장소 검사에 표본 자체가 걸리지 않게.

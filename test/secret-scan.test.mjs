@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { scanText } from '../shared-services/security/secret-scan.mjs';
+import { scanText } from '../src/security/secret-scan.mjs';
 
 const rules = (path, text = '') => scanText(path, text).map(f => f.rule);
 const fakeKey = 'AIza' + 'Sy' + 'A'.repeat(33);

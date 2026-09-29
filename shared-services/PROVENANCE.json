@@ -12,48 +12,6 @@
       "source_runtime_authority": "AIOPS",
       "ai_core_runtime_authority": false,
       "consumer_cutover_authorized": false
-    },
-    {
-      "source_path": "lib/goog.mjs",
-      "source_symbol": "assertAllowedGoogleApiUrl",
-      "source_blob_sha": "447deabfbfedf9e0eb26ab2dffbaed4f8ada0100",
-      "destination_path": "shared-services/google/api-url-boundary.mjs",
-      "disposition": "FUNCTION_SLICE_SHADOW",
-      "source_runtime_authority": "AIOPS",
-      "ai_core_runtime_authority": false,
-      "consumer_cutover_authorized": false
-    },
-    {
-      "source_path": "lib/goog.mjs",
-      "source_symbol": "makeCall(read-only semantics)",
-      "source_blob_sha": "447deabfbfedf9e0eb26ab2dffbaed4f8ada0100",
-      "destination_path": "shared-services/google/read-transport.mjs",
-      "destination_blob_sha": "f6dcf58b24a8f953f1af1671559e9bed76fbae25",
-      "disposition": "ADAPTED_SHADOW",
-      "source_runtime_authority": "AIOPS",
-      "ai_core_runtime_authority": false,
-      "consumer_cutover_authorized": false,
-      "semantic_differences": [
-        "AIOps source uses linear retry wait (20s + 15s per retry); shadow adapter uses fixed 20s retry because core-adapter/v1 currently expresses NONE/FIXED/EXPONENTIAL only.",
-        "Shadow adapter rejects non-read methods before provider fetch.",
-        "Shadow adapter prevents caller headers from overriding the supplied bearer token."
-      ]
-    },
-    {
-      "source_path": "lib/sheet.mjs",
-      "source_symbols": [
-        "colL",
-        "num",
-        "serial2date",
-        "date2serial"
-      ],
-      "source_blob_sha": "32940fd3edc5d0ec718410472a41476a921d55ff",
-      "destination_path": "shared-services/google/sheets-utils.mjs",
-      "destination_blob_sha": "35387fe9c28bbc57da3a6ee681a8c89b00e1f44c",
-      "disposition": "FUNCTION_SLICE_SHADOW",
-      "source_runtime_authority": "AIOPS",
-      "ai_core_runtime_authority": false,
-      "consumer_cutover_authorized": false
     }
   ],
   "invariants": [
@@ -84,5 +42,23 @@
         "source_blob_sha_at_checked_head": "32940fd3edc5d0ec718410472a41476a921d55ff"
       }
     ]
-  }
+  },
+  "retired": [
+    {
+      "at": "2026-09-29",
+      "removed": [
+        "shared-services/google/api-url-boundary.mjs",
+        "shared-services/google/read-transport.mjs",
+        "shared-services/google/sheets-utils.mjs"
+      ],
+      "why": "★일몰 진행 — 바깥에서 아무도 안 쓰는 그림자였다(소비자 0, 실측). 원본 freepass-creator/aiops 의 lib/goog.mjs · lib/sheet.mjs 가 현재 main 과 기록된 revision 3d6ec8c 양쪽에 살아 있음을 확인한 뒤 지웠다. Codex 조건(소비자 0 · 원본 보존 확인) 충족.",
+      "promoted": [
+        {
+          "from": "shared-services/security/secret-scan.mjs",
+          "to": "src/security/secret-scan.mjs",
+          "why": "비밀 스캔은 도메인 구현이 아니라 «재사용 표준»이다. AI Core 정본이 「재사용 표준은 AI Core 가 소유한다」고 정한다. Codex: 「승격이 맞다. AI Core 를 단일 정본으로 하고 aiops 는 버전 고정 소비하라」"
+        }
+      ]
+    }
+  ]
 }

@@ -28,7 +28,7 @@ const 코드파일 = /\.(mjs|js|cjs|ts|mts|tsx|jsx|ps1|cmd|sh|py)$/i;
  * @param 구역     'aiops/' 처럼 끝에 / 가 붙은 경로 앞머리
  * @param 모든구역 일몰 구역 전부 — 이 안에서 온 참조는 «일몰끼리»로 따로 센다
  */
-export function 참조찾기(파일들, 구역, 모든구역 = [구역]) {
+export function 참조찾기(파일들, 구역, 모든구역 = [구역], 자기파일 = [], 기록접두사 = []) {
   const 이름 = 구역.replace(/\/$/, '');
   /** 끌어 쓰기 — import/require/실행 경로처럼 «없으면 깨지는» 자리. */
   const 끌기 = new RegExp(`(?:from\\s+['"\`]|require\\(\\s*['"\`]|import\\(\\s*['"\`]|node\\s+|--root\\s+|['"\`])[^'"\`\\s]*${이름}/`);
@@ -39,6 +39,10 @@ export function 참조찾기(파일들, 구역, 모든구역 = [구역]) {
   const 일몰끼리 = [];
   for (const { path, text } of 파일들) {
     if (path.startsWith(구역)) continue;
+    /** ★재는 도구는 재는 대상에 안 잡힌다. 이 파일들은 구역 «이름을 선언»할 뿐 끌어 쓰지 않는다. */
+    if (자기파일.includes(path)) continue;
+    /** ★물어본 것이 붙잡는 것이 될 수는 없다 — 우편함 쪽지는 기록이지 의존이 아니다. */
+    if (기록접두사.some((p) => path.startsWith(p))) continue;
     if (!부르기.test(text)) continue;
     if (모든구역.some((다른) => 다른 !== 구역 && path.startsWith(다른))) { 일몰끼리.push(path); continue; }
     (코드파일.test(path) && 끌기.test(text) ? 끌어씀 : 언급).push(path);
@@ -52,8 +56,8 @@ export function 참조찾기(파일들, 구역, 모든구역 = [구역]) {
  * ★기준선은 내려가기만 한다. 브랜치 흐름에 건 것과 같은 톱니(ratchet)다 —
  *   올릴 수 있으면 「통합 중」이라는 말이 아무 뜻도 없어진다.
  */
-export function 준비도(구역설정, 파일들, 구역파일수, 모든구역 = [구역설정.path]) {
-  const { 끌어씀, 언급, 일몰끼리 } = 참조찾기(파일들, 구역설정.path, 모든구역);
+export function 준비도(구역설정, 파일들, 구역파일수, 모든구역 = [구역설정.path], 자기파일 = [], 기록접두사 = []) {
+  const { 끌어씀, 언급, 일몰끼리 } = 참조찾기(파일들, 구역설정.path, 모든구역, 자기파일, 기록접두사);
   const 넘음 = {
     끌어씀: Math.max(0, 끌어씀.length - 구역설정.baseline.끌어씀),
     언급: Math.max(0, 언급.length - 구역설정.baseline.언급)

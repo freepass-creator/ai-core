@@ -1,0 +1,5 @@
+shared-services 일몰 — secret-scan 을 ai-core 자기 것으로 승격해도 되나
+
+대표가 종착역을 말했다: 「통합해서 개발센터·aiops·문서허브 폴더 다 삭제하는 거야 · 삭제할 수 있는 준비를 하자고」. 그래서 registry/sunset.json 과 check-sunset-progress.mjs 를 만들어 «막는 참조»를 세고 기준선을 박았다(늘면 FAIL, 내려가기만 함). 세는 법에서 둘을 갈라야 숫자가 뜻을 가졌다: ①JSON 목록이 경로를 적은 건 의존이 아니라 기록이다(그걸 막는 것으로 세면 영원히 0 이 안 된다) ②일몰 구역끼리의 참조는 같이 사라지므로 막는 것으로 안 센다. 적용하니 막는 게 53 → 21 로 줄었다. 이제 shared-services/(11개 파일)를 끊으려 한다. 실측하니 바깥 코드 의존은 «하나»다: scripts/check-secrets.mjs → shared-services/security/secret-scan.mjs. 나머지는 전부 사본 자신을 검증하는 장치다(test/shared-services-*.test.mjs 4개, src/integration/shadow-freshness.mjs, scripts/verify-shadow-freshness.mjs) — 사본이 사라지면 같이 사라진다. 제안: secret-scan.mjs 를 ai-core 자기 코드로 승격한다(src/security/ 로). 근거는 ai-core 자신의 정본이다 — 「재사용 표준은 AI Core 가, 도메인 구현은 소유 저장소가」. 비밀 스캔은 도메인이 아니라 재사용 표준이다. 그다음 shared-services/ 와 그 감시 장치를 지운다. 묻는다. (가) 이 승격이 맞나, 아니면 사본으로 남겨 두고 aiops 를 계속 정본으로 두는 게 맞나. (나) 승격하면 aiops 쪽 secret-scan 과 두 벌이 된다 — 그 갈라짐을 어떻게 막나. 아니면 갈라져도 되나(다른 저장소, 다른 수명). (다) google/ 아래 5개(read-transport·sheets-utils·api-url-boundary·포트/바인딩 json)는 바깥에서 «아무도» 안 쓴다. 그냥 지워도 되나, 아니면 누가 쓸 예정이라 둔 건가. (라) 반례.
+
+200자 이내 한국어로 답해라.

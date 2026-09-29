@@ -57,10 +57,19 @@ test('★문서허브의 «옮길 수 없는 절반»이 정본에 남아 있다
 test('★실제 저장소가 기준선을 넘지 않는다 — 이 수는 내려가기만 한다', () => {
   const { 목록, 본문 } = 저장소파일();
   const 넘은것 = 설정.areas
-    .map((a) => 준비도(a, 본문, 목록.filter((f) => f.startsWith(a.path)).length, 모든구역))
+    .map((a) => 준비도(a, 본문, 목록.filter((f) => f.startsWith(a.path)).length, 모든구역, 설정.self?.files ?? [], 설정.self?.record_prefixes ?? []))
     .filter((r) => r.넘음.끌어씀 || r.넘음.언급);
   assert.deepEqual(
     넘은것.map((r) => `${r.구역} 끌어씀+${r.넘음.끌어씀} 언급+${r.넘음.언급}`), [],
     '일몰 구역 참조가 늘었다 — 새로 끌어 쓰지 말고 옮겨 갈 자리에 써라'
   );
+});
+
+test('★재는 도구는 재는 대상에 안 잡힌다 — 그리고 그 제외는 «이름이 적혀» 있다', () => {
+  /** 2026-09-29 실측: sunset.mjs 와 그 검사가 예시로 'aiops/' 를 적었다는 이유로 참조로 세어졌다.
+   *  선언과 의존은 다르다. 다만 「기타」 통으로 빠져나가지 않게 파일 이름을 명시로 적는다. */
+  assert.ok(설정.self?.files?.length > 0, '제외 목록이 없으면 도구가 스스로를 막는다');
+  for (const f of 설정.self.files) assert.match(f, /sunset/, `일몰 측정과 무관한 파일이 제외에 들어갔다: ${f}`);
+  const 파일 = [{ path: 'src/governance/sunset.mjs', text: "참조찾기(본문, 'aiops/')" }];
+  assert.deepEqual(참조찾기(파일, 'aiops/', ['aiops/'], 설정.self.files).끌어씀, []);
 });

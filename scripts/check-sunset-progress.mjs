@@ -36,7 +36,7 @@ if (process.argv[1] && resolve(process.argv[1]) === resolve(fileURLToPath(import
   const 설정 = 설정읽기();
   const { 목록, 본문 } = 저장소파일();
   const 모든구역 = 설정.areas.map((a) => a.path);
-  const 결과 = 설정.areas.map((a) => 준비도(a, 본문, 목록.filter((f) => f.startsWith(a.path)).length, 모든구역));
+  const 결과 = 설정.areas.map((a) => 준비도(a, 본문, 목록.filter((f) => f.startsWith(a.path)).length, 모든구역, 설정.self?.files ?? [], 설정.self?.record_prefixes ?? []));
 
   console.log('일몰 구역 — 참조가 0 이 되고 보존이 끝나야 지울 수 있다\n');
   for (const r of 결과) {
