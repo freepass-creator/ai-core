@@ -81,7 +81,12 @@
         "where": "ssot/work · ssot/audits · ssot/reviews · scaffold/gates · design/projects 등",
         "why": "★원본 .gitignore 가 허용 목록 방식으로 «일부러» 뺀 산출물이다. GitHub 에 올리지 않았다 — 저장소의 의도를 덮어쓰는 일이고, 업무 자료로 보이는 이름이 있다. 문서허브의 업무·사건·_레거시 와 같은 결론: 「제자리 보관」. 이 폴더를 지우면 이 2,864개가 사라진다."
       },
-      "preserved_note": "원본 저장소는 보관됐고 로컬 전용 작업 두 갈래도 원격에 보존됐다. ★그러나 ai-core 사본에서 더 고친 57개는 아직 «여기에만» 있다. 흡수가 끝나야 보존이다 — 그 전에 지우면 그 57개가 사라진다. (2026-09-29 에 true 로 바꿨다가 이 검사에 막혀 되돌렸다.)"
+      "preserved_note": "원본 저장소는 보관됐고 로컬 전용 작업 두 갈래도 원격에 보존됐다. ★그러나 ai-core 사본에서 더 고친 57개는 아직 «여기에만» 있다. 흡수가 끝나야 보존이다 — 그 전에 지우면 그 57개가 사라진다. (2026-09-29 에 true 로 바꿨다가 이 검사에 막혀 되돌렸다.)",
+      "absorption_plan": {
+        "registry": "registry/sunset-devcenter-absorption.json",
+        "status": "PLAN 2026-09-30 — ABSORB 12 · REVIEW 49 · ARCHIVE 161",
+        "blocker_update": "「지우면 57개가 사라진다」는 보호된 복구 태그(archive/devcenter-final-*)가 Codex 조건 넷을 채우면 해소된다. 그 전까지 preserved 는 false."
+      }
     },
     {
       "path": "management-support/",
@@ -127,14 +132,17 @@
       "registry/sunset.json",
       "src/governance/sunset.mjs",
       "scripts/check-sunset-progress.mjs",
-      "test/sunset-progress.test.mjs"
+      "test/sunset-progress.test.mjs",
+      "registry/sunset-devcenter-absorption.json",
+      "test/sunset-devcenter-absorption.test.mjs"
     ],
     "why": [
       "★재는 도구가 재는 대상에 잡히는 것을 막는다 (2026-09-29 실측).",
       "이 파일들은 일몰 구역 이름을 «선언»한다 — 예: 참조찾기(본문, 'aiops/'). 끌어 쓰는 것이 아니다.",
       "구역이 사라지면 이 파일들의 그 줄도 같이 사라진다. 붙잡는 쪽이 아니라 세는 쪽이다.",
       "★「기타」 통이 아니라 «이름을 적은» 제외다. 새 파일이 조용히 끼어들 수 없다.",
-      "★대화 기록도 의존이 아니다 (2026-09-29 실측): shared-services 를 «어떻게 지울까» 물은 쪽지가 그 구역 참조로 세어져 검사가 빨개졌다. 물어보는 것이 붙잡는 것이 될 수는 없다. 우편함은 접두사로 제외한다."
+      "★대화 기록도 의존이 아니다 (2026-09-29 실측): shared-services 를 «어떻게 지울까» 물은 쪽지가 그 구역 참조로 세어져 검사가 빨개졌다. 물어보는 것이 붙잡는 것이 될 수는 없다. 우편함은 접두사로 제외한다.",
+      "★2026-09-30: devcenter 흡수표와 그 검사도 «세는 쪽»이다 — 222개 경로를 적는 것은 지울 준비를 하는 것이지 붙잡는 것이 아니다. 이름에 sunset 을 넣어 이 목록의 규칙(일몰 측정 파일만)을 지킨다."
     ],
     "record_prefixes": [
       "docs/coordination/duo/"

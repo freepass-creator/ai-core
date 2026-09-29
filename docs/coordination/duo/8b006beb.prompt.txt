@@ -1,0 +1,5 @@
+PR #351 devcenter 흡수표 검토
+
+읽기 전용. C:/dev/.wt-main (work/ai-core/DEVCENTER-ABSORB-PLAN-20260930) origin/main..HEAD: registry/devcenter-absorption.json(222개 전수), test/devcenter-absorption.test.mjs, registry/sunset.json devcenter.absorption_plan. 확인: (1) ABSORB 12개가 당신이 짚은 동적 참조와 내 임시 체크아웃 실험(devcenter 지우고 전체 테스트 → 7개 깨짐)을 빠짐없이 덮나 (2) 테스트가 실제로 막나 — 예: 파일 하나를 표에서 빼거나, 고친 파일을 ARCHIVE 로 바꾸거나, status 를 COMPLETE 로 바꾸면 실패하나 (3) 과장된 서술. APPROVE 또는 REQUEST_CHANGES(파일:줄). 파일은 고치지 마라.
+
+200자 이내 한국어로 답해라.
