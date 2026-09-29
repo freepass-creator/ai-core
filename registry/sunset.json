@@ -1,0 +1,88 @@
+{
+  "schema": "ai-core-sunset-areas/v1",
+  "why": [
+    "★대표 2026-09-29: 「여기 종착역은 통합해서 개발센터·aiops·문서허브 폴더 다 삭제하는 거야」 · 「삭제할 수 있는 준비를 하자고」",
+    "lane 지도(registry/lanes.json)는 이 자리들을 «소유»로 적는다. 그건 「누가 고치나」를 정할 뿐이다.",
+    "여기는 「언제 없어지나」를 적는다. 둘 다 있어야 한다 — 소유만 적으면 영구 자산처럼 굳는다.",
+    "지울 수 있는 조건은 둘이다: ①보존(내용이 다른 곳에 살아 있다) ②참조 0(바깥에서 아무도 안 가리킨다).",
+    "★참조가 남았는데 지우면 정리가 아니라 고장이다. 그래서 세고, 늘면 막는다."
+  ],
+  "ratchet": "baseline 은 내려가기만 한다. `--baseline` 은 내리기만 하고 올리지 않는다. 올릴 수 있으면 「통합 중」이라는 말이 아무 뜻도 없어진다.",
+  "areas": [
+    {
+      "path": "aiops/",
+      "kind": "PHYSICAL_COPY",
+      "source": "freepass-creator/aiops",
+      "preserved": true,
+      "preserved_how": "원본이 살아 있는 git 저장소다. PROVENANCE.json 이 revision 과 파일별 sha256 을 고정한다.",
+      "destination": "쓰는 곳을 끊고 지운다. 필요한 것은 shared-services 로 이미 뽑았거나 원본에서 다시 가져온다.",
+      "baseline": {
+        "끌어씀": 3,
+        "언급": 23
+      }
+    },
+    {
+      "path": "shared-services/",
+      "kind": "EXTRACTED_COPY",
+      "source": "freepass-creator/aiops",
+      "preserved": true,
+      "preserved_how": "원본 blob sha 를 PROVENANCE 가 고정하고 그림자 신선도 검사가 재확인한다.",
+      "destination": "ai-core 가 계속 쓸 것만 ai-core 자신의 코드로 승격하고 나머지는 지운다.",
+      "baseline": {
+        "끌어씀": 11,
+        "언급": 15
+      }
+    },
+    {
+      "path": "devcenter/",
+      "kind": "OWN_MODULE",
+      "source": null,
+      "preserved": false,
+      "preserved_how": null,
+      "preserved_blocker": "★원본이 없다 — ai-core 자신의 모듈이다. 지우면 그냥 없어진다. 접어 넣을지 폐지할지 먼저 정해야 한다.",
+      "destination": "미정. 쓰는 것을 ai-core 본체로 접어 넣고 나머지를 폐지하는 쪽으로 본다.",
+      "baseline": {
+        "끌어씀": 6,
+        "언급": 27
+      }
+    },
+    {
+      "path": "management-support/",
+      "kind": "DOCSHUB_INTAKE",
+      "source": "C:/dev/docshub",
+      "preserved": true,
+      "preserved_how": "2026-09-29 에 원본을 git 저장소로 만들었다(첫 커밋 6c7b21e, 161개). 다만 «절반만»이다 — 아래를 볼 것.",
+      "destination": "문서허브 반입이 끝나면 지운다. cutover 는 아직 승인 전이다(PRE_CUTOVER_EVIDENCE_ONLY).",
+      "baseline": {
+        "끌어씀": 1,
+        "언급": 9
+      }
+    }
+  ],
+  "docshub_split": {
+    "why": "★삭제 대상과 «아닌 것»을 갈라 두지 않으면, 「문서허브 폴더 삭제」가 개인정보 자료 삭제로 번진다.",
+    "measured_2026_09_29": {
+      "버전관리_가능": {
+        "양식": 150,
+        "data": 10,
+        "근거": "사업자등록번호가 전부 000-00-00000 자리표시자였다(직접 읽어 확인)"
+      },
+      "버전관리_불가": {
+        "업무": {
+          "files": 189,
+          "발견": "휴대폰 127건 · 주민등록번호꼴 1건 · 계좌꼴 6건 (실제 값)"
+        },
+        "사건": {
+          "files": 112,
+          "발견": "실제 소송 자료 — PDF 판결문·답변서이고 파일명에 실명이 들어 있다"
+        },
+        "_레거시": {
+          "files": 122,
+          "발견": "휴대폰 5건 · 주민등록번호꼴 5건"
+        }
+      }
+    },
+    "결론": "423개는 「통합 후 삭제」 대상이 아니다. ai-core 로도 git 으로도 갈 수 없다 — 제자리 보관이거나 개인정보용 별도 보관소다. 이 구분을 지우지 마라."
+  },
+  "baseline_measured_at": "2026-09-29"
+}
