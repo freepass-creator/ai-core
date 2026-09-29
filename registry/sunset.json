@@ -81,7 +81,12 @@
         "where": "ssot/work · ssot/audits · ssot/reviews · scaffold/gates · design/projects 등",
         "why": "★원본 .gitignore 가 허용 목록 방식으로 «일부러» 뺀 산출물이다. GitHub 에 올리지 않았다 — 저장소의 의도를 덮어쓰는 일이고, 업무 자료로 보이는 이름이 있다. 문서허브의 업무·사건·_레거시 와 같은 결론: 「제자리 보관」. 이 폴더를 지우면 이 2,864개가 사라진다."
       },
-      "preserved_note": "원본 저장소는 보관됐고 로컬 전용 작업 두 갈래도 원격에 보존됐다. ★그러나 ai-core 사본에서 더 고친 57개는 아직 «여기에만» 있다. 흡수가 끝나야 보존이다 — 그 전에 지우면 그 57개가 사라진다. (2026-09-29 에 true 로 바꿨다가 이 검사에 막혀 되돌렸다.)"
+      "preserved_note": "원본 저장소는 보관됐고 로컬 전용 작업 두 갈래도 원격에 보존됐다. ★그러나 ai-core 사본에서 더 고친 57개는 아직 «여기에만» 있다. 흡수가 끝나야 보존이다 — 그 전에 지우면 그 57개가 사라진다. (2026-09-29 에 true 로 바꿨다가 이 검사에 막혀 되돌렸다.)",
+      "absorption_plan": {
+        "registry": "registry/devcenter-absorption.json",
+        "status": "PLAN 2026-09-30 — ABSORB 12 · REVIEW 49 · ARCHIVE 161",
+        "blocker_update": "「지우면 57개가 사라진다」는 보호된 복구 태그(archive/devcenter-final-*)가 Codex 조건 넷을 채우면 해소된다. 그 전까지 preserved 는 false."
+      }
     },
     {
       "path": "management-support/",

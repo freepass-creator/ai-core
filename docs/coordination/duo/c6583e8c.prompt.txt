@@ -1,0 +1,5 @@
+미수 실측 반영 PR 검토
+
+읽기 전용. C:/dev/.wt-main (work/ai-core/ARREARS-MEASURED-20260930) origin/main..HEAD. registry/data-owners.json 미수 measured_2026_09_30·gap_2026_09_30·migration_order 가 당신 실측(d43cf8df)과 내 재읽기(끝난 107·유지 123·계약ID 0)를 부풀리지 않고 적었나, 테스트가 실제로 막는 게 있나. APPROVE 또는 REQUEST_CHANGES(파일:줄). 파일은 고치지 마라.
+
+200자 이내 한국어로 답해라.

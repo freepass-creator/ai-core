@@ -1,0 +1,5 @@
+PR #350 재검토
+
+읽기 전용. 두 지적 반영: data-owners 미수 measured_2026_09_30.meaning 을 «일치할 뿐, 단일 작성자 확정 아님»으로, test/arrears-read-contract.test.mjs 마지막 테스트가 숫자 상호 대조·계약ID 공백 시 전환 보류·put-galrae 금지를 요구. 당신 변조(끝난·유지 0, 계약ID 230, 이행순서 삭제)를 넣으면 실패함을 확인했다. C:/dev/.wt-main HEAD. APPROVE 또는 REQUEST_CHANGES. 파일은 고치지 마라.
+
+200자 이내 한국어로 답해라.
