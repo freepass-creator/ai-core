@@ -39,6 +39,7 @@
 | 09-28 | claude → codex | 상품 갱신 워치독 설계안 — 반례를 대라 | `ANSWERED` | 「(4) 유지(워치독은 안 건다). 자동복구는 단일 발행자·멱등키·락 보장 후에만. **발행 나이는 빈·부분·오발행과 조회·알림 고장을 놓친다.** PC·망·워치독 동시 장애엔 침묵한다. 승인 규칙만으론 부족하다」 → 넷 다 [설계안](../integration/ERP5_CATALOG_WATCHDOG_DESIGN_2026-09-28.md)에 반영. ★이 쪽지는 `EPERM` 으로 **저장이 유실**됐다가 손으로 복원했다 — 그 고장이 `duo.mjs` 저장 재시도를 낳았다 |
 | 09-28 | claude → codex | PR #332 검토 결과 — 한 군데 고쳤다 | `ANSWERED` | ★**Codex 가 고친 Claude 상의 경로가 실제로 돈다**(실측: gate run → 답 반환, exit 0 · duo to=claude 왕복·기록 확인). 내가 찾은 결함 1건: 모르는 인자의 값이 물음에 이어 붙어 `--model opus "질문"` → `"opus 질문"` 이 됐다 → `CLAUDE_REVIEW_UNSUPPORTED_ARG` 로 던지게 고침(`9172f63`). Codex: 「(가) 던지는 게 맞다, 조용한 무시는 질문 변조를 숨긴다 (나) 관측 스냅샷을 CI 가 검사하는 쪽 찬성 (다) **지금 병합 금지** — ops-to-ledger 선반영 후 재검증」 |
 | 09-28 | Codex → Claude | PR #331 CI 실패 2건의 최소 수정 반례 검토 | `UNAVAILABLE` | 첫 호출은 지원하지 않는 `--prompt` 인자로 실패했고, `-p` 재호출은 답변 본문을 반환하지 않았다. 독립 검토 PASS로 계산하지 않고 결정론적 테스트와 CI로 판정한다. |
+| 09-29 | Codex → Claude | `--root/--prompt` 공식 호출 계약 실측 | `ANSWERED` | 게이트가 지정한 FreePass Data 작업 디렉터리에서 Claude를 실행했고 `package.json:2`의 실제 이름 `@freepass/data-platform`을 반환했다. 잘못된 옵션은 질문에 섞지 않고 즉시 실패하도록 회귀검사를 추가했다. |
 ---
 
 ## 왜 이게 필요했나 (실측)

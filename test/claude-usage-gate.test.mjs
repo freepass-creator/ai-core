@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   claudeReviewArgs,
+  claudeReviewInvocation,
   claudeRunOutcome,
   gateStatus,
   isClaudeUsageLimit,
@@ -16,6 +17,24 @@ test('normalizes every Claude consultation into non-interactive read-only review
     '-p', '반례를 찾아', '--permission-mode', 'plan', '--output-format', 'text',
   ]);
   assert.throws(() => claudeReviewArgs([]), /CLAUDE_REVIEW_PROMPT_REQUIRED/);
+});
+
+test('공식 --root/--prompt 형식은 실제 Claude cwd와 질문으로 분리된다', () => {
+  assert.deepEqual(
+    claudeReviewInvocation(['--root', 'C:\\dev\\freepass-data', '--prompt', '표준을 검토해'], { defaultCwd: 'C:\\dev\\ai-core' }),
+    {
+      cwd: 'C:\\dev\\freepass-data',
+      args: ['-p', '표준을 검토해', '--permission-mode', 'plan', '--output-format', 'text'],
+    }
+  );
+});
+
+test('root 또는 prompt 오타는 질문에 섞이지 않고 즉시 실패한다', () => {
+  assert.throws(() => claudeReviewInvocation(['--root']), /CLAUDE_REVIEW_ROOT_REQUIRED/);
+  assert.throws(
+    () => claudeReviewInvocation(['--root', 'C:\\repo', '--promt', '오타']),
+    /CLAUDE_REVIEW_UNSUPPORTED_ARG:--promt/
+  );
 });
 
 test('never treats an empty or failed Claude process as an answer', () => {

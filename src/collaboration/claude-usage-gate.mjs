@@ -17,18 +17,32 @@ const LIMIT_PATTERNS = [
  *    부르는 쪽은 `질문` 을 물었다고 믿는데 상대는 `opus 질문` 을 받는다. 검토 자체가 오염되고,
  *    아무 데도 표시가 남지 않는다. 막힘을 통과로 세지 않는 것과 같은 이유로 여기서 멈춘다.
  */
-export function claudeReviewArgs(rawArgs = []) {
+export function claudeReviewInvocation(rawArgs = [], { defaultCwd = process.cwd() } = {}) {
   const args = rawArgs.filter((value) => value !== '--');
-  const promptFlag = args.findIndex((value) => value === '-p' || value === '--print');
+  const promptFlag = args.findIndex((value) => value === '-p' || value === '--print' || value === '--prompt');
+  const rootFlag = args.findIndex((value) => value === '--root' || value === '--cwd');
+  const isRootToken = (index) => rootFlag >= 0 && (index === rootFlag || index === rootFlag + 1);
   let prompt;
   let 남은것;
+  let cwd = defaultCwd;
+
+  if (rootFlag >= 0) {
+    cwd = args[rootFlag + 1];
+    if (!cwd || cwd.startsWith('-')) throw new Error('CLAUDE_REVIEW_ROOT_REQUIRED');
+  }
 
   if (promptFlag >= 0) {
     prompt = args[promptFlag + 1];
-    남은것 = [...args.slice(0, promptFlag), ...args.slice(promptFlag + 2)];
+    남은것 = args.filter((_, index) =>
+      index !== promptFlag && index !== promptFlag + 1 && !isRootToken(index)
+    );
   } else {
-    남은것 = args.filter((value) => value.startsWith('-'));
-    prompt = args.filter((value) => !value.startsWith('-')).join(' ').trim();
+    남은것 = args.filter((value, index) =>
+      value.startsWith('-') && !isRootToken(index)
+    );
+    prompt = args.filter((value, index) =>
+      !value.startsWith('-') && !isRootToken(index)
+    ).join(' ').trim();
   }
 
   if (!prompt) throw new Error('CLAUDE_REVIEW_PROMPT_REQUIRED');
@@ -37,11 +51,15 @@ export function claudeReviewArgs(rawArgs = []) {
   const 모르는것 = 남은것.filter((value) => !받아주는것.has(value));
   if (모르는것.length) throw new Error(`CLAUDE_REVIEW_UNSUPPORTED_ARG:${모르는것.join(',')}`);
 
-  return [
+  return { cwd, args: [
     '-p', prompt,
     '--permission-mode', 'plan',
     '--output-format', 'text',
-  ];
+  ] };
+}
+
+export function claudeReviewArgs(rawArgs = []) {
+  return claudeReviewInvocation(rawArgs).args;
 }
 
 export function claudeRunOutcome(result) {
