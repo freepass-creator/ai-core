@@ -3,7 +3,7 @@ import { spawnSync } from 'node:child_process';
 import { dirname, join } from 'node:path';
 import { homedir } from 'node:os';
 import {
-  claudeReviewArgs,
+  claudeReviewInvocation,
   claudeRunOutcome,
   gateStatus,
   parseClaudeResetAt,
@@ -40,16 +40,16 @@ if (command === 'status') {
   } else {
     const separator = args.indexOf('--');
     const requestedArgs = separator >= 0 ? args.slice(separator + 1) : args;
-    let claudeArgs;
+    let invocation;
     try {
-      claudeArgs = claudeReviewArgs(requestedArgs);
+      invocation = claudeReviewInvocation(requestedArgs);
     } catch (error) {
       console.error(JSON.stringify({ status: 'FAILED', reason: error.message }));
       process.exitCode = 2;
-      claudeArgs = null;
+      invocation = null;
     }
-    if (!claudeArgs) process.exit(2);
-    const result = spawnSync('claude', claudeArgs, { encoding: 'utf8', shell: false, windowsHide: true });
+    if (!invocation) process.exit(2);
+    const result = spawnSync('claude', invocation.args, { cwd: invocation.cwd, encoding: 'utf8', shell: false, windowsHide: true });
     if (result.stdout) process.stdout.write(result.stdout);
     if (result.stderr) process.stderr.write(result.stderr);
     const outcome = claudeRunOutcome(result);
