@@ -1,0 +1,5 @@
+PR #349 상의 기록 정확성
+
+읽기 전용. C:/dev/.wt-kit HEAD (gh pr diff 349). 새 세 줄과 결과 요약이 duo 원문(f20cf3d3·3db9fb46·0221eaec·e1d150a3)과 GitHub 실제 상태(병합 7곳·열린 4곳)에 맞나. 특히 freepass-admin BLOCKED 원인 서술(필수 Vercel 이 app 8329 check 인데 status 로만 옴)이 맞는지 gh api repos/freepass-creator/freepass-admin/branches/main/protection/required_status_checks 로 확인 가능하면 확인. APPROVE 또는 REQUEST_CHANGES(파일:줄). 파일은 고치지 마라.
+
+200자 이내 한국어로 답해라.
