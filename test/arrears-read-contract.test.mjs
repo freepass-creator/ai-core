@@ -8,6 +8,7 @@ import assert from 'node:assert/strict';
 import Ajv2020 from 'ajv/dist/2020.js';
 import addFormats from 'ajv-formats';
 import { readFileSync } from 'node:fs';
+import { 키검사 } from '../src/contracts/arrears-read.mjs';
 
 const 읽기 = (p) => JSON.parse(readFileSync(new URL(`../${p}`, import.meta.url), 'utf8'));
 const 계약 = 읽기('contracts/arrears-read.schema.json');
@@ -101,4 +102,20 @@ test('★두 쓰는 곳의 충돌이 근거와 함께 적혀 있고, 실물은 �
 test('★시트 적재는 결함이 아니라 설계다 — 답=수납 탭, 계좌=검산', () => {
   assert.match(주인표.kinds.미수.answer_vs_check, /수납/);
   assert.match(주인표.kinds.미수.answer_vs_check, /검산/);
+});
+
+test('★키가 다른 칸과 어긋나면 막힌다 — 스키마만으로는 통과하던 것(Codex 검토)', () => {
+  const 좋은 = 좋은문서();
+  assert.deepEqual(키검사(좋은), []);
+  const 어긋남 = {
+    법인: { ...좋은, 법인: 'PR' },
+    차번: { ...좋은, 차량번호: '11나1111' },
+    상태: { ...좋은, 계약상태: 'end', 계약ID: 'C1' },
+    계약ID: { ...좋은, 계약상태: 'end', 키: 'SW-00가0000-end-C1', 계약ID: 'C2' },
+  };
+  for (const [무엇, d] of Object.entries(어긋남)) {
+    assert.ok(맞나(d), `${무엇}: 스키마는 통과한다 — 그래서 키검사가 따로 필요하다`);
+    assert.notDeepEqual(키검사(d), [], `${무엇} 이 어긋났는데 키검사가 통과시켰다`);
+  }
+  assert.equal(계약['x-also-required'], 'src/contracts/arrears-read.mjs#키검사');
 });

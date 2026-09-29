@@ -27,7 +27,7 @@
     "키": {
       "type": "string",
       "pattern": "^(SW|PR)-[^-]+-(live|end-.+)$",
-      "description": "★문서 키는 하나의 규칙만 쓴다: 유지 = 법인-차량번호-live · 종료 = 법인-차량번호-end-계약ID. 같은 차에 끝난 계약이 여럿일 수 있어 종료는 계약ID 로 가른다(Codex 정정). 2026-09-29 까지 put.mjs 는 3칸(SW-차번-end), put-galrae.mjs 는 2칸(SW-차번)을 써서, put-galrae 의 갈래는 진짜 문서에 닿지 못하고 따로 문서를 만들었다."
+      "description": "★문서 키는 하나의 규칙만 쓴다: 유지 = 법인-차량번호-live · 종료 = 법인-차량번호-end-계약ID. 같은 차에 끝난 계약이 여럿일 수 있어 종료는 계약ID 로 가른다(Codex 정정). 2026-09-29 까지 put.mjs 는 3칸(SW-차번-end), put-galrae.mjs 는 2칸(SW-차번)을 써서, put-galrae 의 갈래는 진짜 문서에 닿지 못하고 따로 문서를 만들었다. ★키는 다른 칸에서 만든 값과 같아야 한다 — 스키마로는 못 보므로 src/contracts/arrears-read.mjs 키검사() 를 함께 통과해야 계약을 지킨 것이다(Codex 검토)."
     },
     "법인": {
       "enum": [
@@ -192,5 +192,6 @@
         ]
       }
     }
-  ]
+  ],
+  "x-also-required": "src/contracts/arrears-read.mjs#키검사"
 }

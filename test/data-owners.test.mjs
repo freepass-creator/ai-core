@@ -63,3 +63,9 @@ test('정본 저장소는 Firestore 이고 RTDB 는 폐기다 — 전역 지침�
   assert.match(표.principles.canon_store, /Firestore/);
   assert.match(표.principles.canon_store, /RTDB.*폐기/);
 });
+
+test('★서로 어긋나는 출처는 «확정»이 아니라 HOLD 로 적는다 — 정산(Codex 검토)', () => {
+  /** 「ERP 만 쓴다」와 「입력 기본은 아직 F04」가 한 칸에 확정처럼 같이 있었다. */
+  assert.match(표.kinds.정산.canon, /HOLD/);
+  assert.match(표.kinds.정산.hold, /대표 확인/);
+});
