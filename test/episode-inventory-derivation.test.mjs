@@ -33,10 +33,18 @@ test('유도해도 «파일이 실제로 있는지»는 계속 본다', () => {
   assert.match(검사기본문, /if \(!fileExists\(path\) && !deletedSince\.has\(path\)\)/);
 });
 
-test('지금 저장소는 목록을 적는 쪽이다 — 바꾸더라도 한 번에 하나씩', () => {
+test('★이제 저장소는 «유도하는» 쪽이다 — 손으로 적던 목록으로 돌아가지 않는다', () => {
+  /** 2026-09-23 에 이 검사는 「아직은 목록을 적는다(호환)」를 고정하고 있었다. 2026-09-29 에 실제로 넘어갔다.
+   *
+   *  왜 넘어갔나: 그 목록은 git diff 와 «완전일치»해야 해서 고유 검출력이 0 이었다(Codex 확인).
+   *  잡아내는 것은 없으면서 모든 변경이 같은 배열에 append 해야 했고 — 최근 커밋 120개 중 28개가 이 파일을
+   *  건드렸다. 내용이 달라서가 아니라 «같은 줄에 적어야 해서» 나는 충돌이라 PR 15개가 서로 깨졌다.
+   *
+   *  ★남은 위험(Codex 반례): base_revision 이 오래되면 무관한 변경까지 흡수하고도 PASS 한다.
+   *    그건 요구사항·receipt 로 막아야 한다 — 목록을 되살려서 막을 수 있는 것이 아니다. */
   const 활성 = JSON.parse(readFileSync(resolve(여기, '../docs/episodes/ORDER-DESK-001.json'), 'utf8'));
-  assert.ok(Array.isArray(활성.changed_files), '아직은 목록을 적는다(호환)');
-  assert.equal(활성.changed_files_derived, undefined, '둘 다 켜 두지 않는다');
+  assert.equal(활성.changed_files, undefined, '목록이 되살아났다 — 그러면 다시 모든 PR 이 한 배열에서 만난다');
+  assert.equal(활성.changed_files_derived, true, '유도 선언이 없으면 관문이 「둘 다 아님」으로 막는다');
 });
 
 test('★유도 경로가 실제로 돈다 — 작은 저장소를 만들어 확인한다', () => {
