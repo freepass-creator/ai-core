@@ -84,7 +84,13 @@ terraform plan
 
 ### AI·Workspace
 
-Claude는 `npm run claude:status` 후 `npm run claude:review -- <질문>`을 사용한다. 자세한 실패 구분은 [`AI-CLI연동.md`](../aiops/docs/aiknowhow/AI-CLI연동.md)를 따른다. Google Workspace는 `gws`, `gws-collab`, `gws-admin`의 정해진 범위를 재사용하며 로그인 계정과 원문 접근을 추정하지 않는다. 외부 발송·수정·삭제·공유는 별도 승인 대상이다.
+Claude는 `npm run claude:status` 후 아래 고정 형식으로 호출한다. `--root`는 Claude 프로세스의 실제 작업 디렉터리이고 `--prompt`는 질문이다. 알 수 없는 옵션과 값 누락은 게이트가 즉시 거부한다.
+
+```powershell
+npm run claude:review -- --root C:\dev\target-repo --prompt "대상 revision과 요구사항을 기준으로 읽기 전용 검토해 줘"
+```
+
+현재 저장소만 검토할 때는 `npm run claude:review -- -p "질문"`도 허용한다. 실제 답변 본문과 종료코드 0이 함께 있어야 검토 완료다. 자세한 실패 구분은 [`AI-CLI연동.md`](../aiops/docs/aiknowhow/AI-CLI연동.md)를 따른다. Google Workspace는 `gws`, `gws-collab`, `gws-admin`의 정해진 범위를 재사용하며 로그인 계정과 원문 접근을 추정하지 않는다. 외부 발송·수정·삭제·공유는 별도 승인 대상이다.
 
 ## 4. 공통 실패 처리
 
