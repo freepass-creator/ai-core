@@ -15,6 +15,17 @@ export function 흐르나(가지, 정책, 지금 = new Date()) {
   if (흐름.exempt_refs.includes(가지.ref)) return { 흐름: '면제', 까닭: '정책이 면제로 지정' };
   if (흐름.exempt_prefixes.some((p) => 가지.ref.startsWith(p))) return { 흐름: '면제', 까닭: '아카이브 — 닫힌 가지의 도달 가능성을 붙잡는다' };
 
+  /** ★만료형 예외만 받는다 (Codex 반례 2026-09-29: 「동시 생성 경합·긴급 작업 차단」).
+   *  만료 없는 예외는 영구 구멍이 된다 — 이 저장소가 그렇게 126개가 됐다.
+   *  expires 가 지나면 «스스로» 사라져 다시 위반으로 돌아온다. */
+  const 예외 = (흐름.expiring_exceptions ?? []).find((x) => x.branch === 가지.ref);
+  if (예외) {
+    const 오늘 = 지금.toISOString().slice(0, 10);
+    if (!예외.expires) return { 흐름: '위반', 까닭: 'EXCEPTION_WITHOUT_EXPIRY: 만료 없는 예외는 받지 않는다', 고치는법: 'expires 를 적거나 예외를 지운다' };
+    if (예외.expires >= 오늘) return { 흐름: '면제', 까닭: `만료형 예외 — ${예외.expires} 까지 · ${예외.why}` };
+    return { 흐름: '위반', 까닭: `EXCEPTION_EXPIRED: ${예외.expires} 에 만료됐다`, 고치는법: 예외.then ?? '예외를 갱신하거나 가지를 정리한다' };
+  }
+
   const 금지 = (정책.branch_naming.forbidden_actor_prefixes ?? []).find((p) => 가지.ref.startsWith(p));
   if (금지) return { 흐름: '위반', 까닭: `ACTOR_PREFIX: '${금지}' — 가지는 «일»의 것이지 AI 의 것이 아니다`, 고치는법: 'work/<project-id>/<work-id> 로 다시 연다' };
 
