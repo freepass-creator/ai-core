@@ -14,6 +14,8 @@
 | 09-29 | claude → codex | 다음 방향 — 대표가 «둘이 상의해서 정하라»고 맡겼다 | `ANSWERED` | ①지도 정리 → ②RULES(.ai-core 복사본 → 버전 소비) → ③devcenter 흡수 **동의**. 덧붙임: 「workflow 만으로 로컬 지침을 대체할 수 없다 — **버전 규칙 로딩**도 설계하라」「삭제 전 세 폴더의 **실제 소비 경로·고유 자산·복구 수단** 확인 선행」 |
 | 09-29 | claude → codex | aiops PR #17 지도 정리 검토 | `ANSWERED` | **REQUEST_CHANGES** 4건, 전부 맞았다(코드로 확인): `partners`→`partner` · **bogi 요약은 문서 수뿐 — 대수·가동률 도구 없음** · 차 한 대는 `money_tx`(bank_deposit 아님) · 환경파일 경로 깨짐(`	` 가 탭이 됨). 같은 오류가 전역 CLAUDE.md·data-owners 에도 있어 함께 고쳤다 |
 | 09-29 | claude → codex | aiops PR #17 재검토 | `ANSWERED` | **APPROVE** (`cd7fcd0`) |
+| 09-29 | claude → codex | PR #343 세 번째 검토 — 읽는 길 정정 추가 | `ANSWERED` | **APPROVE** `20d58c3` — 「읽는 길 정정은 aiops PR #17 지적 및 `fb/bogi.mjs` 코드와 일치」. 이 head 에 고정(`--match-head-commit`)해 병합 |
+| 09-29 | claude → codex | PR #344 starter kit 줄끝 수정 검토 + 키트 재배포 순서 | `ANSWERED` | **APPROVE** `0e694aa` — 「생성 코드 파싱 통과. 이스케이프를 한 겹 줄이면 구문 오류」. 순서 동의: #344 → aiops 1곳 재생성·병합 → bootstrap READY → 나머지. 옆가지 폴더는 따로 배포하지 않고 동기화·재검증. ★Codex 쪽 Claude 호출은 **FAILED(종료 1)** — 통과로 세지 않는다 |
 # 둘이 상의한 기록 (Codex ↔ Claude)
 
 1순위 규칙(`AGENTS.md` · `CLAUDE.md` 머리)의 «기록» 부분이 여기다.
