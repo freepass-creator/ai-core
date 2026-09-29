@@ -11,6 +11,7 @@ import {
 
 const statePath = process.env.AI_CORE_CLAUDE_GATE_STATE
   ?? join(homedir(), '.codex', 'state', 'claude-usage-gate.json');
+const reviewTimeoutMs = 5 * 60 * 1000;
 
 async function readState() {
   try { return JSON.parse(await readFile(statePath, 'utf8')); }
@@ -49,7 +50,14 @@ if (command === 'status') {
       invocation = null;
     }
     if (!invocation) process.exit(2);
-    const result = spawnSync('claude', invocation.args, { cwd: invocation.cwd, encoding: 'utf8', shell: false, windowsHide: true });
+    const result = spawnSync('claude', invocation.args, {
+      cwd: invocation.cwd,
+      encoding: 'utf8',
+      shell: false,
+      windowsHide: true,
+      timeout: reviewTimeoutMs,
+      killSignal: 'SIGTERM',
+    });
     if (result.stdout) process.stdout.write(result.stdout);
     if (result.stderr) process.stderr.write(result.stderr);
     const outcome = claudeRunOutcome(result);
@@ -63,10 +71,14 @@ if (command === 'status') {
       }
     } else if (outcome.status === 'EMPTY_RESPONSE') {
       console.error(JSON.stringify({ status: 'FAILED', reason: 'CLAUDE_EMPTY_RESPONSE' }));
-    } else if (outcome.status === 'FAILED' && !outcome.combined) {
-      console.error(JSON.stringify({ status: 'FAILED', reason: 'CLAUDE_PROCESS_FAILED_WITHOUT_OUTPUT' }));
+    } else if (outcome.status === 'REVIEW_TIMEOUT') {
+      console.error(JSON.stringify({ status: 'REVIEW_TIMEOUT', timeout_ms: reviewTimeoutMs, root: invocation.cwd, action: 'RETRY_WITH_NARROWER_SCOPE' }));
+    } else if (outcome.status === 'FAILED') {
+      console.error(JSON.stringify({ status: 'FAILED', reason: 'CLAUDE_PROCESS_FAILED', exit_code: result.status, signal: result.signal ?? null }));
+    } else if (outcome.status === 'ANSWERED') {
+      console.log(JSON.stringify({ status: 'ANSWERED', root: invocation.cwd, exit_code: 0 }));
     }
-    process.exitCode = outcome.status === 'ANSWERED' ? 0 : (result.status || 1);
+    process.exitCode = outcome.status === 'ANSWERED' ? 0 : outcome.status === 'REVIEW_TIMEOUT' ? 4 : (result.status || 1);
   }
 } else {
   console.error('Usage: node scripts/claude-usage-gate.mjs status|clear|run [-- <claude args>]');

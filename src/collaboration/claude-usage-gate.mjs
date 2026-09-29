@@ -68,6 +68,9 @@ export function claudeRunOutcome(result) {
   const error = result?.error?.message ? String(result.error.message) : '';
   const combined = [stdout, stderr, error].filter(Boolean).join('\n');
 
+  if (result?.error?.code === 'ETIMEDOUT' || result?.signal === 'SIGTERM') {
+    return { status: 'REVIEW_TIMEOUT', stdout, combined };
+  }
   if (isClaudeUsageLimit(combined)) return { status: 'USAGE_LIMIT', stdout, combined };
   if (result?.status !== 0) return { status: 'FAILED', stdout, combined };
   if (!stdout) return { status: 'EMPTY_RESPONSE', stdout, combined };
