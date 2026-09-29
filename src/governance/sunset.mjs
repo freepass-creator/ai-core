@@ -31,8 +31,15 @@ const 코드파일 = /\.(mjs|js|cjs|ts|mts|tsx|jsx|ps1|cmd|sh|py)$/i;
 export function 참조찾기(파일들, 구역, 모든구역 = [구역], 자기파일 = [], 기록접두사 = []) {
   const 이름 = 구역.replace(/\/$/, '');
   /** 끌어 쓰기 — import/require/실행 경로처럼 «없으면 깨지는» 자리. */
-  const 끌기 = new RegExp(`(?:from\\s+['"\`]|require\\(\\s*['"\`]|import\\(\\s*['"\`]|node\\s+|--root\\s+|['"\`])[^'"\`\\s]*${이름}/`);
-  const 부르기 = new RegExp(`${이름}/`);
+  /** ★구역은 저장소 «뿌리»의 폴더다 — 앞머리로만 센다 (2026-09-29 실측, 두 번 틀렸다).
+   *
+   *  ① 그냥 찾으면 `docs/shared-services/…` 라는 «다른 문서 폴더»까지 잡았다(오탐).
+   *  ② 앞을 따옴표·공백으로만 좁혔더니 `'../shared-services/a.mjs'` 같은 «진짜 import»를 놓쳤다(누락).
+   *  그래서 앞이 «시작·따옴표·공백·괄호·=·,» 이거나 «./ · ../» 일 때만 센다.
+   *  `docs/` 처럼 다른 폴더 이름이 앞에 붙으면 그건 다른 자리다. */
+  const 앞 = `(?:^|[\\s'"\`(=,]|\\.\\.?/)`;
+  const 끌기 = new RegExp(`(?:from\\s+['"\`]|require\\(\\s*['"\`]|import\\(\\s*['"\`]|node\\s+|--root\\s+|['"\`])(?:\\.\\.?/)*${이름}/`);
+  const 부르기 = new RegExp(`${앞}${이름}/`, 'm');
 
   const 끌어씀 = [];
   const 언급 = [];

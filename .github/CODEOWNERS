@@ -8,8 +8,6 @@
 * @freepass-creator
 
 # I — 연결
-/aiops/ @freepass-creator
-/shared-services/ @freepass-creator
 /registry/ @freepass-creator
 /src/integration/ @freepass-creator
 /management-support/ @freepass-creator

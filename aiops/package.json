@@ -1,9 +1,0 @@
-{
-  "name": "ai-core-aiops-common",
-  "private": true,
-  "description": "aiops 에서 들인 공통 도구의 실행 의존성 — 원본 aiops package.json 과 같은 판을 쓴다",
-  "dependencies": {
-    "firebase-admin": "^14.3.0",
-    "unpdf": "^1.8.1"
-  }
-}

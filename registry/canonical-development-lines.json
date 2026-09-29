@@ -1,6 +1,6 @@
 {
   "schema": "ai-core-canonical-development-lines/v1",
-  "updated_at": "2026-09-26",
+  "updated_at": "2026-09-29",
   "policy": {
     "one_canonical_line_per_concern": true,
     "historical_assets_must_not_claim_authority": true,
@@ -84,23 +84,6 @@
       "canonical_roots": [
         "devcenter/contracts/integration-connector.schema.json",
         "devcenter/hubs/integration/connectors.json"
-      ]
-    },
-    {
-      "id": "aiops-import",
-      "canonical_entrypoint": "aiops/README.md",
-      "canonical_roots": [
-        "aiops/"
-      ],
-      "historical_or_noncanonical": [
-        {
-          "path": "aiops/docs/CONTROL_PLANE.md",
-          "marker_in": "aiops/README.md",
-          "reason": "exact-copy 원본이라 파일에 표시를 달 수 없다 — README 의 정본 경계 절이 가리킨다"
-        }
-      ],
-      "notes": [
-        "Imported AIOps documents retain provenance only; they do not override AI Core root governance"
       ]
     }
   ],
@@ -199,6 +182,27 @@
       "path": "examples/claude/claude-v1.css",
       "expires": "2026-10-31",
       "reason": "claude-v1 역사 예시 — 역사자료로 옮기거나 지운다"
+    }
+  ],
+  "retired_lines": [
+    {
+      "id": "aiops-import",
+      "canonical_entrypoint": "aiops/README.md",
+      "canonical_roots": [
+        "aiops/"
+      ],
+      "historical_or_noncanonical": [
+        {
+          "path": "aiops/docs/CONTROL_PLANE.md",
+          "marker_in": "aiops/README.md",
+          "reason": "exact-copy 원본이라 파일에 표시를 달 수 없다 — README 의 정본 경계 절이 가리킨다"
+        }
+      ],
+      "notes": [
+        "Imported AIOps documents retain provenance only; they do not override AI Core root governance"
+      ],
+      "retired_at": "2026-09-29",
+      "why": "★aiops/ 물리 사본을 일몰로 지웠다(대표: 「통합해서 개발센터·aiops·문서허브 폴더 다 삭제하는 거야」). 원본 freepass-creator/aiops 는 git 저장소로 살아 있고, ai-core 안에서 사본을 끌어 쓰는 코드는 0 이었다. 이 라인이 가리키던 aiops/README.md 가 없어져 정본 검사가 CANONICAL_ENTRYPOINT_MISSING 으로 실패했다 — Codex 도 같은 반례를 독립적으로 짚었다. 사본이 다시 생기면 validate-canonical-development-lines 가 AIOPS_COPY_RESURRECTED 로 막는다."
     }
   ]
 }

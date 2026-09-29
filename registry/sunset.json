@@ -17,9 +17,11 @@
       "preserved_how": "원본이 살아 있는 git 저장소다. PROVENANCE.json 이 revision 과 파일별 sha256 을 고정한다.",
       "destination": "쓰는 곳을 끊고 지운다. 필요한 것은 shared-services 로 이미 뽑았거나 원본에서 다시 가져온다.",
       "baseline": {
-        "끌어씀": 3,
-        "언급": 23
-      }
+        "끌어씀": 0,
+        "언급": 0
+      },
+      "retired_at": "2026-09-29",
+      "retired_how": "원본 freepass-creator/aiops 가 git 저장소로 살아 있음을 확인한 뒤 지웠다. 바깥 코드 의존은 0 이었고(남은 것은 사본을 감시하던 장치뿐), devcenter/ 에서 온 참조 9건은 전부 주석·문서·기록이었다. 사본이 다시 생기면 validate-canonical-development-lines 가 AIOPS_COPY_RESURRECTED 로 막는다."
     },
     {
       "path": "shared-services/",
@@ -29,22 +31,57 @@
       "preserved_how": "원본 blob sha 를 PROVENANCE 가 고정하고 그림자 신선도 검사가 재확인한다.",
       "destination": "ai-core 가 계속 쓸 것만 ai-core 자신의 코드로 승격하고 나머지는 지운다.",
       "baseline": {
-        "끌어씀": 6,
-        "언급": 14
-      }
+        "끌어씀": 0,
+        "언급": 0
+      },
+      "retired_at": "2026-09-29",
+      "retired_how": "원본 freepass-creator/aiops 가 git 저장소로 살아 있음을 확인한 뒤 지웠다. 바깥 코드 의존은 0 이었고(남은 것은 사본을 감시하던 장치뿐), devcenter/ 에서 온 참조 9건은 전부 주석·문서·기록이었다. 사본이 다시 생기면 validate-canonical-development-lines 가 AIOPS_COPY_RESURRECTED 로 막는다."
     },
     {
       "path": "devcenter/",
-      "kind": "OWN_MODULE",
-      "source": null,
+      "kind": "PHYSICAL_COPY",
+      "source": "freepass-creator/devcenter",
       "preserved": false,
       "preserved_how": null,
-      "preserved_blocker": "★원본이 없다 — ai-core 자신의 모듈이다. 지우면 그냥 없어진다. 접어 넣을지 폐지할지 먼저 정해야 한다.",
-      "destination": "미정. 쓰는 것을 ai-core 본체로 접어 넣고 나머지를 폐지하는 쪽으로 본다.",
+      "preserved_blocker": "★사본이 원본보다 «앞서» 있다. 원본 freepass-creator/devcenter 는 살아 있고(HEAD = 복사 revision 7d750606), 그러나 복사 이후 ai-core 안에서 사본에 직접 한 작업이 57개 파일에 있다(줄바꿈 무시하고 내용 비교, 2026-09-29 실측). 지금 지우면 그 57개가 사라진다. 원본으로 되돌려 보낸 뒤에야 지울 수 있다.",
+      "destination": "★흡수: ai-core 가 쓰는 것·고유 기능·검증 가치만 ai-core 본체(docs/·contracts/·src/)로 옮긴다. 섞인 26개는 파일마다 갈라서. 그다음 devcenter/ 삭제.",
       "baseline": {
         "끌어씀": 6,
         "언급": 27
-      }
+      },
+      "correction_2026_09_29": "★정정: 처음엔 「원본이 없다 — ai-core 자신의 모듈이다」라고 적었다. 틀렸다. devcenter/PROVENANCE.json 이 ai-core-physical-copy-provenance/v1 로 원본을 분명히 적고 있었는데 읽지 않고 썼다. 원본을 «새로 만들자»고 추천까지 했는데, 그 저장소는 이미 있었다.",
+      "decision_2026_09_29": "대표: 「보존해 보관하고 흡수만 하는 거로 하자」 — 원본으로 «돌려보내기»가 아니라 ai-core 로 «흡수». 원본은 9/22 이후 커밋 0 으로 멈춰 있었고 실제 개발은 ai-core 사본에서 일어나고 있었다(8커밋·57파일). Codex 도 흡수에 동의(반례 셋 — 외부 소비자·독립 릴리스·법적 소유권 — 모두 없음 확인).",
+      "source_repository_state": {
+        "archived": true,
+        "archived_at": "2026-09-29",
+        "preserved_branches": [
+          {
+            "branch": "work/devcenter/archive-local-portal-20260929",
+            "sha": "0d2b43a",
+            "what": "C:/dev/devcenter/portal — 원격 없는 로컬 저장소, 미커밋 4282개(대부분 생성된 카탈로그). 개인정보 0."
+          },
+          {
+            "branch": "work/devcenter/archive-local-edits-20260929",
+            "sha": "841381a",
+            "what": "C:/dev/devcenter 최상위 .git 이 빈 폴더라 버전 관리 밖이 된 상태에서 로컬로만 고친 추적 파일 50개. 개인정보 0."
+          }
+        ],
+        "stale_prs_kept_readonly": [
+          4,
+          5,
+          21,
+          23
+        ],
+        "stale_prs_why": "Codex: 병합하지 말고 보존·분류 후 보관. 보관하면 읽기 전용으로 그대로 남는다."
+      },
+      "local_only_do_not_delete": {
+        "path": "C:/dev/devcenter",
+        "files": 2864,
+        "size_mb": 224.6,
+        "where": "ssot/work · ssot/audits · ssot/reviews · scaffold/gates · design/projects 등",
+        "why": "★원본 .gitignore 가 허용 목록 방식으로 «일부러» 뺀 산출물이다. GitHub 에 올리지 않았다 — 저장소의 의도를 덮어쓰는 일이고, 업무 자료로 보이는 이름이 있다. 문서허브의 업무·사건·_레거시 와 같은 결론: 「제자리 보관」. 이 폴더를 지우면 이 2,864개가 사라진다."
+      },
+      "preserved_note": "원본 저장소는 보관됐고 로컬 전용 작업 두 갈래도 원격에 보존됐다. ★그러나 ai-core 사본에서 더 고친 57개는 아직 «여기에만» 있다. 흡수가 끝나야 보존이다 — 그 전에 지우면 그 57개가 사라진다. (2026-09-29 에 true 로 바꿨다가 이 검사에 막혀 되돌렸다.)"
     },
     {
       "path": "management-support/",

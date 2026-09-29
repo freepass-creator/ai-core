@@ -39,11 +39,16 @@ test('보존이 안 된 구역은 참조가 0 이어도 «지울 수 있다» �
   assert.equal(준비도(있음, [], 0).지울수있나, true);
 });
 
-test('★devcenter 는 보존이 안 돼 있다는 사실이 정본에 남아 있다', () => {
-  /** 파일 222개짜리인데 원본이 없다. 「통합 후 삭제」를 말할 때 이게 빠지면 그냥 소실이다. */
+test('★devcenter 는 «사본이 원본보다 앞서» 지울 수 없다 — 그리고 처음 기록이 틀렸다는 것도 남아 있다', () => {
+  /** 2026-09-29: 처음엔 「원본이 없다 — ai-core 자신의 모듈」이라 적고 이 검사로 못 박았다. 틀렸다.
+   *  devcenter/PROVENANCE.json 이 원본(freepass-creator/devcenter)을 분명히 적고 있었는데 안 읽었다.
+   *  실제 막는 까닭은 «원본 없음»이 아니라 «사본에서 57개를 더 고쳤다»이다. 틀린 사실을 지키는 검사는
+   *  맞는 사실을 지키는 검사보다 나쁘다 — 틀린 것을 오래 살려 두기 때문이다. */
   const d = 설정.areas.find((a) => a.path === 'devcenter/');
-  assert.equal(d.preserved, false);
-  assert.ok(d.preserved_blocker?.includes('원본이 없다'), '막는 까닭이 없으면 다음 사람이 그냥 지운다');
+  assert.equal(d.source, 'freepass-creator/devcenter', '원본이 있다');
+  assert.equal(d.preserved, false, '앞선 작업을 원본에 돌려보내기 전에는 보존이 아니다');
+  assert.match(d.preserved_blocker, /앞서/, '막는 까닭이 «사본이 앞섬»이어야 한다');
+  assert.match(d.correction_2026_09_29 ?? '', /틀렸다/, '틀렸던 기록을 지우면 같은 실수를 다시 한다');
 });
 
 test('★문서허브의 «옮길 수 없는 절반»이 정본에 남아 있다', () => {
@@ -57,6 +62,7 @@ test('★문서허브의 «옮길 수 없는 절반»이 정본에 남아 있다
 test('★실제 저장소가 기준선을 넘지 않는다 — 이 수는 내려가기만 한다', () => {
   const { 목록, 본문 } = 저장소파일();
   const 넘은것 = 설정.areas
+    .filter((a) => !a.retired_at)
     .map((a) => 준비도(a, 본문, 목록.filter((f) => f.startsWith(a.path)).length, 모든구역, 설정.self?.files ?? [], 설정.self?.record_prefixes ?? []))
     .filter((r) => r.넘음.끌어씀 || r.넘음.언급);
   assert.deepEqual(
@@ -72,4 +78,34 @@ test('★재는 도구는 재는 대상에 안 잡힌다 — 그리고 그 제�
   for (const f of 설정.self.files) assert.match(f, /sunset/, `일몰 측정과 무관한 파일이 제외에 들어갔다: ${f}`);
   const 파일 = [{ path: 'src/governance/sunset.mjs', text: "참조찾기(본문, 'aiops/')" }];
   assert.deepEqual(참조찾기(파일, 'aiops/', ['aiops/'], 설정.self.files).끌어씀, []);
+});
+
+test('★구역은 저장소 «뿌리» 폴더다 — 이름이 같은 다른 폴더를 세지 않고, 상대 import 는 놓치지 않는다', () => {
+  /** 2026-09-29 에 두 번 틀렸다: 그냥 찾으니 docs/shared-services/ 를 잡았고(오탐),
+   *  앞을 좁혔더니 '../shared-services/a.mjs' 를 놓쳤다(누락). 둘 다 여기서 고정한다. */
+  const 판 = (text, path = 'src/x.mjs') => {
+    const r = 참조찾기([{ path, text }], 'shared-services/');
+    return r.끌어씀.length ? '끌어씀' : r.언급.length ? '언급' : '없음';
+  };
+  assert.equal(판("'docs/shared-services/SHARED.md'"), '없음', '다른 폴더를 일몰 구역으로 셌다');
+  assert.equal(판("import a from '../shared-services/a.mjs'"), '끌어씀', '상대 import 를 놓쳤다');
+  assert.equal(판("import a from './shared-services/a.mjs'"), '끌어씀');
+  assert.equal(판("const p = 'shared-services/PROVENANCE.json'"), '끌어씀');
+  assert.equal(판('예전엔 shared-services/ 에 있었다', 'docs/e.md'), '언급');
+});
+
+test('★지운 구역은 코드가 «절대» 끌어 쓰지 않는다 — 톱니가 아니라 0 이다', () => {
+  /** 지우기 전에는 줄어드는지를 보고, 지운 뒤에는 0 만 본다. 없는 경로를 끌어 쓰면 그건 고장이다.
+   *  문서의 언급은 세지 않는다 — 「9/22 에 aiops 를 복사해 왔다」는 참인 역사다. */
+  const { 본문 } = 저장소파일();
+  for (const a of 설정.areas.filter((x) => x.retired_at)) {
+    const { 끌어씀 } = 참조찾기(본문, a.path, 모든구역, 설정.self?.files ?? [], 설정.self?.record_prefixes ?? []);
+    assert.deepEqual(끌어씀, [], `${a.path} 는 ${a.retired_at} 에 지웠는데 코드가 아직 끌어 쓴다`);
+  }
+});
+
+test('지운 구역에는 «어떻게 지웠는지»가 남아 있다', () => {
+  for (const a of 설정.areas.filter((x) => x.retired_at)) {
+    assert.ok(a.retired_how?.length > 40, `${a.path} 를 왜·어떻게 지웠는지 없으면 다음 사람이 되살린다`);
+  }
 });
