@@ -17,8 +17,11 @@ import { laneOf, 덮임검사, 사문검사, codeowners, 문서표, 문서에끼
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 export const 지도읽기 = () => JSON.parse(readFileSync(resolve(root, 'registry/lanes.json'), 'utf8'));
+/** ★`core.quotepath=false` 가 없으면 한글 이름이 `"\353\251\224…"` 로 이스케이프돼 돌아온다.
+ *  Windows 에서는 안 그러는데 Linux CI 에서는 그래서, 내 PC 는 공백 0 인데 CI 는 78개였다 —
+ *  정확히 이 저장소의 한글 이름 파일 수다(2026-09-29 실측). 저장소의 다른 검사들은 이미 끄고 있다. */
 export const 추적파일 = () =>
-  execFileSync('git', ['ls-files'], { cwd: root, encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 })
+  execFileSync('git', ['-c', 'core.quotepath=false', 'ls-files'], { cwd: root, encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 })
     .trim().split('\n').filter(Boolean);
 
 /** 소유자는 지금 둘뿐이다. lane 에 «작업별 단일 책임자»를 두라는 Codex 답을 따르되,

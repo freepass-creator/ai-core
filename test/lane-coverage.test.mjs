@@ -81,3 +81,12 @@ test('★정본 표에 «변하는 숫자»를 넣지 않는다 — 체크아웃
   const 표 = 본문.slice(본문.indexOf('LANES:시작'), 본문.indexOf('LANES:끝'));
   assert.ok(!/\|\s*\d+\s*\|/.test(표), '표에 개수가 들어가 있다 — 파일 하나 늘 때마다 정본이 흔들린다');
 });
+
+test('★한글 이름 파일도 lane 에 든다 — 이스케이프된 경로를 «다른 파일»로 세지 않는다', () => {
+  /** 2026-09-29: core.quotepath 를 안 꺼서 Linux CI 만 78개 공백이 났다. 내 PC 에서는 0 이었다.
+   *  78 은 이 저장소의 한글 이름 파일 수와 정확히 같았다 — 「내 PC 에서는 되는데」의 교과서다. */
+  const 한글 = 파일.filter((f) => /[^\x00-\x7F]/.test(f));
+  assert.ok(한글.length > 0, '한글 이름 파일이 하나도 안 잡힌다 — quotepath 가 켜져 있다');
+  assert.ok(!파일.some((f) => f.startsWith('"')), '경로가 따옴표로 감싸여 온다 — core.quotepath=false 가 빠졌다');
+  for (const f of 한글.slice(0, 5)) assert.ok(laneOf(f, 지도).lane, `한글 경로가 공백으로 샌다: ${f}`);
+});
