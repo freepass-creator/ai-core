@@ -31,12 +31,12 @@ ai-core 는 화면 제품이 아니라 **거버넌스·원장·등록부·도구
 
 <!-- LANES:시작 — 이 사이는 registry/lanes.json 에서 생성된다. 손으로 고치지 마라 -->
 
-| Lane | 뜻 | 작업선 | 소유 | 파일 |
-|---|---|---|---|---|
-| **I** | 연결 | `work/ai-core/i-01-integration` | 바깥과 닿는 자리 — 등록부, 다른 저장소 관측, 물리 사본의 신선도 | 246 |
-| **E** | 엔진 | `work/ai-core/e-01-engine` | 결정 로직 — 라우팅, capability, 컨트롤타워, 작업 원장. 바깥을 모른다 | 131 |
-| **F** | 규율 | `work/ai-core/f-01-discipline` | 일을 통과시키는 관문과 절차 — academy, reuse, canon guard, 브랜치 규율, main-state, 협업 채널 | 689 |
-| **U** 🔒 | 정본 디자인 | `work/ai-core/u-01-design` | 디자인 토큰·컴포넌트·UI/UX 헌법 | 125 |
+| Lane | 뜻 | 작업선 | 소유 |
+|---|---|---|---|
+| **I** | 연결 | `work/ai-core/i-01-integration` | 바깥과 닿는 자리 — 등록부, 다른 저장소 관측, 물리 사본의 신선도 |
+| **E** | 엔진 | `work/ai-core/e-01-engine` | 결정 로직 — 라우팅, capability, 컨트롤타워, 작업 원장. 바깥을 모른다 |
+| **F** | 규율 | `work/ai-core/f-01-discipline` | 일을 통과시키는 관문과 절차 — academy, reuse, canon guard, 브랜치 규율, main-state, 협업 채널 |
+| **U** 🔒 | 정본 디자인 | `work/ai-core/u-01-design` | 디자인 토큰·컴포넌트·UI/UX 헌법 |
 
 규칙:
 

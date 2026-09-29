@@ -115,11 +115,14 @@ export function codeowners(지도, 소유자) {
 export const 문서표시작 = '<!-- LANES:시작 — 이 사이는 registry/lanes.json 에서 생성된다. 손으로 고치지 마라 -->';
 export const 문서표끝 = '<!-- LANES:끝 -->';
 
-export function 문서표(지도, 세기 = null) {
-  const 줄 = [문서표시작, '', '| Lane | 뜻 | 작업선 | 소유 | 파일 |', '|---|---|---|---|---|'];
+/** ★파일 «개수»는 여기 넣지 않는다 (2026-09-29 실측 고장).
+ *  처음엔 lane 별 파일 수를 표에 박았는데, 그 숫자는 «지도»의 성질이 아니라 «체크아웃»의 성질이다.
+ *  PR 의 merge 미리보기는 파일 집합이 달라 246 대 177 로 어긋났고, 열린 PR 셋이 전부 빨개졌다.
+ *  정본이 파일 하나 추가될 때마다 흔들리면 그건 정본이 아니다. 개수는 검사 «출력»에만 둔다. */
+export function 문서표(지도) {
+  const 줄 = [문서표시작, '', '| Lane | 뜻 | 작업선 | 소유 |', '|---|---|---|---|'];
   for (const [코드, lane] of Object.entries(지도.lanes)) {
-    const n = 세기 ? (세기[코드] ?? 0) : '';
-    줄.push(`| **${코드}**${lane.dormant ? ' 🔒' : ''} | ${lane.title} | \`${lane.branch}\` | ${lane.owns} | ${n} |`);
+    줄.push(`| **${코드}**${lane.dormant ? ' 🔒' : ''} | ${lane.title} | \`${lane.branch}\` | ${lane.owns} |`);
   }
   줄.push('', '규칙:', '');
   for (const r of 지도.rules) 줄.push(`- **${r.id}. ${r.name}** — ${r.why}`);

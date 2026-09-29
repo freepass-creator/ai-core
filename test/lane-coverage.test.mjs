@@ -58,10 +58,10 @@ test('CODEOWNERS 는 손으로 쓰지 않고 이 지도에서 나온다 — 어�
 
 test('운영 모델 문서의 lane 표도 지도에서 나온다 — 문서와 지도가 따로 놀면 그게 새 공백이다', () => {
   const 본문 = readFileSync(resolve(root, 'docs/UFEI-OPERATING-MODEL.md'), 'utf8');
-  const { lane별 } = 덮임검사(파일, 지도);
-  const 세기 = Object.fromEntries(Object.keys(지도.lanes).map((k) => [k, (lane별[k] ?? []).length]));
+
+
   assert.equal(
-    본문, 문서에끼우다(본문, 문서표(지도, 세기)),
+    본문, 문서에끼우다(본문, 문서표(지도)),
     'docs/UFEI-OPERATING-MODEL.md 의 표가 지도와 다르다 — node scripts/check-lane-coverage.mjs --write-codeowners'
   );
 });
@@ -72,4 +72,12 @@ test('★이 모델이 «안» 고치는 것을 문서가 말한다 — 깔끔�
   const 본문 = readFileSync(resolve(root, 'docs/UFEI-OPERATING-MODEL.md'), 'utf8');
   assert.match(본문, /쓰기 규율.*읽기 규율이 아니다/s);
   assert.match(본문, /정본 대조/);
+});
+
+test('★정본 표에 «변하는 숫자»를 넣지 않는다 — 체크아웃마다 흔들리면 정본이 아니다', () => {
+  /** 2026-09-29 실측: lane 별 파일 수를 표에 박았더니 PR 의 merge 미리보기에서 246 대 177 로 어긋나
+   *  열린 PR 셋이 전부 빨개졌다. 개수는 «지도»의 성질이 아니라 «체크아웃»의 성질이다. */
+  const 본문 = readFileSync(resolve(root, 'docs/UFEI-OPERATING-MODEL.md'), 'utf8');
+  const 표 = 본문.slice(본문.indexOf('LANES:시작'), 본문.indexOf('LANES:끝'));
+  assert.ok(!/\|\s*\d+\s*\|/.test(표), '표에 개수가 들어가 있다 — 파일 하나 늘 때마다 정본이 흔들린다');
 });
