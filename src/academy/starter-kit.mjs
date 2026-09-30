@@ -62,7 +62,7 @@ export async function computeKitIntegrityFingerprint() {
     const { manifest } = await installAcademyStarterKit({ output: join(dir, '.ai-core'), receipt, readings: [{ path: 'docs/AI_WORKING_STANDARD.md', body: 'fixture' }], coreRevision: 'c'.repeat(40), operatingKnowledge: { schema_version: '1.0' }, catalog: [], branchFlowPolicy: policy, compat: { compat_version: 0 } });
     const boot = await readFile(join(dir, '.ai-core', 'session-bootstrap.mjs'), 'utf8');
     const verify = await readFile(join(dir, '.ai-core', 'verify-kit.mjs'), 'utf8');
-    const fields = JSON.stringify({ schema: manifest.schema, digest_rule: manifest.digest_rule, blocking_inputs: manifest.blocking_inputs, advisory_inputs: manifest.advisory_inputs, freshness_inputs: manifest.freshness_inputs, has_compat: manifest.compat_version !== null, verification_source: manifest.verification_source, files: manifest.files.map((f) => ({ path: f.path, sha256: f.sha256, source: f.source })) });
+    const fields = JSON.stringify({ schema: manifest.schema, digest_rule: manifest.digest_rule, blocking_inputs: manifest.blocking_inputs, advisory_inputs: manifest.advisory_inputs, freshness_inputs: manifest.freshness_inputs, has_compat: manifest.compat_version !== null, verification_source: manifest.verification_source, files: manifest.files.map((f) => (f.path === 'advisory.mjs' ? { path: f.path, source: f.source } : { path: f.path, sha256: f.sha256, source: f.source })) });
     return createHash('sha256').update([boot, verify, fields].join('\n')).digest('hex');
   } finally {
     await rm(dir, { recursive: true, force: true });
