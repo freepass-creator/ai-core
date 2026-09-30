@@ -5,6 +5,7 @@ import { execFileSync, spawnSync } from 'node:child_process';
 import { mkdtemp, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
+import { pathToFileURL } from 'node:url';
 import { installAcademyStarterKit, kitFreshness, KIT_GENERATOR_INPUTS, branchFlowWarnings } from '../src/academy/starter-kit.mjs';
 
 const receipt={status:'READY',observed_at:'2026-09-22T00:00:00Z',task:'기능 구현',track:'development',target:{repository:'o/r',revision:'a'.repeat(40)},precheck:{completion_verification:{test:'npm test'}}};
@@ -333,11 +334,24 @@ test('★kit carries the branch-flow policy and the bootstrap embeds the same ju
   assert.ok(withPid.manifest.branch_flow_policy.flow_enforcement.exempt_prefixes.includes('work/demo/archive-'), '그 프로젝트의 보관 가지 접두사가 면제에 없다(Codex 검토)');
   assert.ok(!withPid.manifest.branch_flow_policy.flow_enforcement.exempt_prefixes.includes('archive-'), '범용 archive- 면제는 구멍이다');
   for (const p of ['registry/development-continuity-policy.json', 'src/governance/branch-flow.mjs']) assert.ok(manifest.freshness_inputs.includes(p), `${p} 가 신선도 입력에 없다 — 규칙이 바뀌어도 키트가 모른다`);
+  // 가지 흐름은 경고 기능이라 advisory.mjs 에 있다(안전 핵심 bootstrap 과 분리 — Codex 합의)
+  const adv = await readFile(join(out, 'advisory.mjs'), 'utf8');
+  assert.ok(adv.includes(흐르나.toString()), 'advisory 의 판정이 governance 판정과 다르다 — 판정기가 둘이 된다');
+  assert.ok(adv.includes(branchFlowWarnings.toString()));
+  assert.ok(manifest.files.some((f) => f.path === 'advisory.mjs'), 'advisory.mjs 가 검증기 해시 목록에 없다 — 고쳐도 모른다');
+  for (const f of ['session-bootstrap.mjs', 'advisory.mjs']) {
+    const parsed = spawnSync(process.execPath, ['--check', join(out, f)], { encoding: 'utf8' });
+    assert.equal(parsed.status, 0, parsed.stderr);
+  }
+  // advisory 는 «문자열 경고»만 돌려준다 — 실제로 불러 확인
+  const mod = await import(pathToFileURL(join(out, 'advisory.mjs')).href);
+  const res = await mod.default({ run: () => ({ ok: false, stdout: '' }), kit: manifest, repo: null, ghAuthOk: false });
+  assert.ok(Array.isArray(res.warnings) && res.warnings.every((w) => typeof w === 'string'));
+  // bootstrap 은 advisory 결과를 문자열 배열로만 받고, 실패는 ADVISORY_UNAVAILABLE 경고로만
   const boot = await readFile(join(out, 'session-bootstrap.mjs'), 'utf8');
-  assert.ok(boot.includes(흐르나.toString()), 'bootstrap 의 판정이 governance 판정과 다르다 — 판정기가 둘이 된다');
-  assert.ok(boot.includes(branchFlowWarnings.toString()));
-  const parsed = spawnSync(process.execPath, ['--check', join(out, 'session-bootstrap.mjs')], { encoding: 'utf8' });
-  assert.equal(parsed.status, 0, parsed.stderr);
+  assert.ok(boot.includes("res.warnings.every(w=>typeof w==='string')") && boot.includes('Object.freeze([...res.warnings])'), 'advisory 결과를 검사·동결하지 않는다');
+  assert.ok(!/advisory[^\n]*blockers\.push/.test(boot), 'advisory 가 차단을 만들 수 있다');
+  assert.ok(!boot.includes(흐르나.toString()), '경고 판정이 안전 핵심 bootstrap 에 남아 있다');
 });
 
 test('★end to end: a stalled remote branch shows up as a warning, not a blocker', async () => {
@@ -383,10 +397,20 @@ test('★end to end: a stalled remote branch shows up as a warning, not a blocke
 test('★integrity fingerprint matches registry/academy-kit-compat.json — safety-relevant generator changes must bump compat_version', async () => {
   /** Codex 설계(2026-09-30): 생성기 변경을 영향으로 가른다. 검증기·해시 규칙·신선도·권한 판정이 바뀌면 이 테스트가 막는다 —
    *  compat_version 을 올리고 integrity_fingerprint 를 갱신하라(그러면 배포된 키트가 STALE 이 되어 다시 받는다). */
-  const { kitIntegrityFingerprint } = await import('../src/academy/starter-kit.mjs');
+  const { computeKitIntegrityFingerprint } = await import('../src/academy/starter-kit.mjs');
   const compat = JSON.parse(await readFile(new URL('../registry/academy-kit-compat.json', import.meta.url), 'utf8'));
-  assert.equal(kitIntegrityFingerprint(), compat.integrity_fingerprint, '키트의 안전 판정 코드가 바뀌었다 — registry/academy-kit-compat.json 의 compat_version 을 올리고 integrity_fingerprint 를 갱신하라');
+  const now = await computeKitIntegrityFingerprint();
+  assert.equal(now, compat.integrity_fingerprint, '키트의 안전 핵심(bootstrap·검증기·입력 분류)이 바뀌었다 — registry/academy-kit-compat.json 의 compat_version 을 올리고 integrity_fingerprint 를 갱신하라(how_to_update)');
   assert.ok(Number.isInteger(compat.compat_version) && compat.compat_version >= 2);
+  // ★버전 강제(Codex): main 과 지문이 다르면 버전도 main 보다 커야 한다. main 을 못 읽으면 건너뛰지 않고 실패한다.
+  const root = new URL('..', import.meta.url);
+  const ref = spawnSync('git', ['rev-parse', '--verify', 'origin/main'], { cwd: root, encoding: 'utf8' });
+  assert.equal(ref.status, 0, '기준(origin/main)을 읽을 수 없다 — git fetch origin main 뒤 다시 돌린다. 기준 없이 지문 변경을 통과시키지 않는다');
+  const base = spawnSync('git', ['show', 'origin/main:registry/academy-kit-compat.json'], { cwd: root, encoding: 'utf8' });
+  const baseCompat = base.status === 0 ? JSON.parse(base.stdout) : { compat_version: 0, integrity_fingerprint: null }; // main 에 아직 없으면 처음 도입
+  if (baseCompat.integrity_fingerprint !== compat.integrity_fingerprint) {
+    assert.ok(compat.compat_version > baseCompat.compat_version, `지문이 main 과 다른데 compat_version(${compat.compat_version})이 main(${baseCompat.compat_version})보다 크지 않다 — 안전 변경인데 버전을 안 올렸다`);
+  }
 });
 
 test('★advisory-only generator changes warn (UPDATE_AVAILABLE); blocking inputs still make the kit STALE; legacy kits keep blocking', () => {
