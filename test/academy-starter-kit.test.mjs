@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { mkdtemp, readFile, writeFile } from 'node:fs/promises';
-import { join, dirname } from 'node:path';
+import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { installAcademyStarterKit, kitFreshness, KIT_GENERATOR_INPUTS, branchFlowWarnings } from '../src/academy/starter-kit.mjs';
 
@@ -323,7 +323,10 @@ test('★kit carries the branch-flow policy and the bootstrap embeds the same ju
   const policy = JSON.parse(await readFile(new URL('../registry/development-continuity-policy.json', import.meta.url), 'utf8'));
   const root = await mkdtemp(join(tmpdir(), 'academy-kit-flow-')), out = join(root, '.ai-core');
   const { manifest } = await installAcademyStarterKit({ output: out, receipt, coreRevision: 'b'.repeat(40), readings: [{ path: 'docs/AI_WORKING_STANDARD.md', body: 'one' }], branchFlowPolicy: policy });
-  assert.deepEqual(manifest.branch_flow_policy.flow_enforcement, policy.flow_enforcement);
+  assert.deepEqual(manifest.branch_flow_policy.flow_enforcement.flowing_when, policy.flow_enforcement.flowing_when);
+  const withPid = await installAcademyStarterKit({ output: join(root, 'pid', '.ai-core'), receipt: { ...receipt, target: { ...receipt.target, project_id: 'demo' } }, coreRevision: 'b'.repeat(40), readings: [{ path: 'docs/AI_WORKING_STANDARD.md', body: 'one' }], branchFlowPolicy: policy });
+  assert.ok(withPid.manifest.branch_flow_policy.flow_enforcement.exempt_prefixes.includes('work/demo/archive-'), '그 프로젝트의 보관 가지 접두사가 면제에 없다(Codex 검토)');
+  assert.ok(!withPid.manifest.branch_flow_policy.flow_enforcement.exempt_prefixes.includes('archive-'), '범용 archive- 면제는 구멍이다');
   for (const p of ['registry/development-continuity-policy.json', 'src/governance/branch-flow.mjs']) assert.ok(manifest.freshness_inputs.includes(p), `${p} 가 신선도 입력에 없다 — 규칙이 바뀌어도 키트가 모른다`);
   const boot = await readFile(join(out, 'session-bootstrap.mjs'), 'utf8');
   assert.ok(boot.includes(흐르나.toString()), 'bootstrap 의 판정이 governance 판정과 다르다 — 판정기가 둘이 된다');
@@ -344,14 +347,25 @@ test('★end to end: a stalled remote branch shows up as a warning, not a blocke
   const oldEnv = { ...process.env, GIT_COMMITTER_DATE: '2026-09-01T00:00:00Z', GIT_AUTHOR_DATE: '2026-09-01T00:00:00Z' };
   git(root, 'switch', '-q', '-c', 'work/x/stalled'); await writeFile(join(root, 'b.txt'), 'x\n'); git(root, 'add', 'b.txt');
   execFileSync('git', ['commit', '-q', '-m', 'old'], { cwd: root, env: oldEnv }); git(root, 'push', '-q', 'origin', 'work/x/stalled');
+  git(root, 'switch', '-q', '-c', 'work/demo/archive-old'); execFileSync('git', ['commit', '-q', '--allow-empty', '-m', 'archived'], { cwd: root, env: oldEnv }); git(root, 'push', '-q', 'origin', 'work/demo/archive-old');
+  git(root, 'switch', '-q', '-c', 'work/x/gone'); execFileSync('git', ['commit', '-q', '--allow-empty', '-m', 'gone'], { cwd: root, env: oldEnv }); git(root, 'push', '-q', 'origin', 'work/x/gone');
   git(root, 'switch', '-q', 'main');
-  const bound = { ...receipt, target: { ...receipt.target, revision: git(root, 'rev-parse', 'HEAD') } };
+  // 다른 곳에서: 원격의 work/x/gone 을 지우고, 새 가지를 올린다 — root 는 fetch 하지 않는다
+  const other = join(base, 'other'); execFileSync('git', ['clone', '-q', bare, other]);
+  git(other, 'config', 'user.email', 'ai-core-test@example.invalid'); git(other, 'config', 'user.name', 'AI Core Test');
+  git(other, 'push', '-q', 'origin', '--delete', 'work/x/gone');
+  git(other, 'switch', '-q', '-c', 'work/x/unfetched'); execFileSync('git', ['commit', '-q', '--allow-empty', '-m', 'new'], { cwd: other, env: oldEnv }); git(other, 'push', '-q', 'origin', 'work/x/unfetched');
+  const bound = { ...receipt, target: { ...receipt.target, project_id: 'demo', revision: git(root, 'rev-parse', 'HEAD') } };
   await installAcademyStarterKit({ output: join(root, '.ai-core'), receipt: bound, coreRevision: 'b'.repeat(40), readings: [{ path: 'docs/AI_WORKING_STANDARD.md', body: 'one' }], operatingKnowledge: { schema_version: '1.0', platforms: [] }, branchFlowPolicy: policy });
-  const gitDir = dirname(execFileSync(process.platform === 'win32' ? 'where' : 'which', ['git'], { encoding: 'utf8' }).split(/\r?\n/)[0].trim());
-  const run = spawnSync(process.execPath, [join(root, '.ai-core', 'session-bootstrap.mjs')], { cwd: root, encoding: 'utf8', env: { ...process.env, PATH: gitDir } });
+  // gh 는 막되 PATH 는 그대로 둔다 — PATH 를 git 폴더 하나로 줄이면 Windows 에서 ls-remote 가 도우미를 못 찾아 죽는다(exit 139)
+  const noGh = { ...process.env, GH_CONFIG_DIR: join(base, 'no-gh'), GH_TOKEN: '', GITHUB_TOKEN: '', GH_ENTERPRISE_TOKEN: '' };
+  const run = spawnSync(process.execPath, [join(root, '.ai-core', 'session-bootstrap.mjs')], { cwd: root, encoding: 'utf8', env: noGh });
   const outp = JSON.parse(run.stdout);
   assert.deepEqual(outp.project.branch_flow.violations.map((v) => v.ref), ['work/x/stalled']);
   assert.ok(outp.warnings.some((w) => w.startsWith('BRANCH_NOT_FLOWING')), '멈춘 가지 경고가 없다');
+  // ★Codex 검토: 로컬 캐시가 아니라 실제 원격을 본다 — 원격에서 지운 가지는 경고하지 않고, 안 받은 가지는 «모른다»로 알린다
+  assert.ok(outp.warnings.some((w) => w.startsWith('BRANCH_FLOW_PARTIAL')), '로컬에 없는 원격 가지를 조용히 건너뛰었다');
+  assert.equal(outp.project.branch_flow.unscanned, 1);
   // (이 임시 저장소엔 GitHub 가 없어 다른 차단은 선다 — 가지 흐름이 차단이 되지 않는지만 본다)
   assert.ok(!outp.blockers.some((b) => /FLOW|STALL/.test(b)), '멈춘 가지가 세션을 막았다 — 경고만 해야 한다: ' + outp.blockers.join(','));
 });
