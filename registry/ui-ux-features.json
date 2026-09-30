@@ -520,7 +520,9 @@
       ],
       "rules": [
         "Applied filters are visible and removable; reset differs from closing without applying.",
-        "Filter, facet and result list read the same query snapshot."
+        "Filter, facet and result list read the same query snapshot.",
+        "Composition mode is one of SEARCH_ONLY · SEARCH_FILTER · SEARCH_QUICK · SEARCH_FILTER_QUICK, chosen lightest-first (design-system/interaction.contract.json#search_context).",
+        "A criterion shown as a quick filter and in the detailed filter is the same single state, never two."
       ],
       "verification": [
         "semantic-contract",
@@ -1304,7 +1306,8 @@
       "rules": [
         "Opening search must not destroy current work state.",
         "Closing search restores prior list or screen context where practical.",
-        "Search, filters, result count and rendered results use one query revision; UI must not present mixed snapshots as one result state."
+        "Search, filters, result count and rendered results use one query revision; UI must not present mixed snapshots as one result state.",
+        "Parsed search terms that map to a filter criterion update that criterion's single state; they do not create a parallel state."
       ],
       "verification": [
         "semantic-contract",

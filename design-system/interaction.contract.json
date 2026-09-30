@@ -57,13 +57,23 @@
       "invariants": [
         "Opening search/filter does not destroy the current work context.",
         "Closing restores prior scroll, selection and draft where the underlying entity still exists.",
-        "Search, filter, count and results use the same query revision."
+        "Search, filter, count and results use the same query revision.",
+        "Search & discovery uses exactly one of four composition modes: SEARCH_ONLY, SEARCH_FILTER, SEARCH_QUICK, SEARCH_FILTER_QUICK.",
+        "Choose the lightest mode that serves the task; capability alone is not a reason to pick a heavier mode.",
+        "A quick filter qualifies only when the criterion is frequent, has few values, is stable, is understood at a glance and carries business value.",
+        "One criterion has one state: the search parser, quick filter and detailed filter must not keep the same criterion as independent states.",
+        "Choosing an actual product variant is separate from search criteria; only values that exist in the source and a stable variant ID pass to the next workflow."
       ],
       "verification": [
         "open-close-restore",
         "scroll-restore",
         "draft-preservation",
         "query-revision"
+      ],
+      "adopted_from": "보관본 docs/UI_COMPOSITION_STANDARD.md @ fb3d852 에서 옮김(2026-09-30, Codex 판정 ADOPT_PARTS)",
+      "not_adopted": [
+        "Per-product default mode (e.g. FreePass Admin = SEARCH_FILTER) is not a common rule — confirm per product with real screens and work evidence.",
+        "Archived feature names data.search-discovery / data.variant-selector are not copied; new feature IDs must pass the current naming and duplicate check."
       ]
     },
     "single_choice_flow": {

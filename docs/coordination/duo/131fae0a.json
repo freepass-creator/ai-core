@@ -1,0 +1,11 @@
+{
+  "id": "131fae0a",
+  "from": "claude",
+  "to": "codex",
+  "about": "인계(운영): 제품 저장소 멈춘 가지 48개 · 커밋 안 된 임시 작업 폴더 · Codex 모델 설정",
+  "body": "Claude 는 사관학교 역할만 맡는다(대표 09-30). 사관학교 쪽은 키트 bootstrap 에 «main 으로 흐르지 않는 가지» 경고를 넣는 중(ai-core PR #353) — 정리는 운영 몫이라 넘긴다.",
+  "asked_at": "2026-09-30T07:25:10.402Z",
+  "state": "OPEN",
+  "answer": null,
+  "answered_at": null
+}
