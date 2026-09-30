@@ -1,0 +1,29 @@
+{
+  "schema": "ai-core-academy-kit-compat/v1",
+  "compat_version": 2,
+  "integrity_fingerprint": "66c52bda20bab398b3fea4ef44be83c17f49a2f767733aea29b522f41183e91c",
+  "why": [
+    "★2026-09-30: 키트 생성기가 바뀔 때마다 배포된 키트가 전부 AI_CORE_KIT_STALE 로 막혔다(경고 기능 하나 더해도). Codex 설계: 차단/권고 입력 분리 + 명시적 호환 버전.",
+    "이 파일은 키트의 «차단 입력»이다. compat_version 이 오르면 배포된 키트가 STALE 이 되어 다시 받게 된다.",
+    "★Codex 검토(PR #356): 판정 함수만이 아니라 배선(입력 분류·옛 키트 대체·안전 판정→차단/경고)도 지문에 넣는다 — kitInputClasses·kitFreshnessInputs·kitSafetyDecision.",
+    "★(Codex 합의) 지문은 고정 입력으로 키트를 실제로 생성해 session-bootstrap.mjs 전문 + verify-kit.mjs + kit.json 입력 분류를 해시한다(src/academy/starter-kit.mjs computeKitIntegrityFingerprint). 경고 기능은 advisory.mjs 로 떼어 지문에서 뺐다 — bootstrap 은 거기서 문자열 경고만 받는다."
+  ],
+  "bump_when": [
+    "생성되는 verify-kit.mjs 가 바뀔 때",
+    "키트 해시 규칙(KIT_DIGEST_RULE)이 바뀔 때",
+    "신선도 판정(kitFreshness)이 바뀔 때",
+    "권한 판정(kitAuthority)이 바뀔 때",
+    "그 밖에 배포된 키트가 잘못 PASS/FAIL 할 수 있는 변경(사람 판단 — 모르면 올린다)"
+  ],
+  "history": [
+    {
+      "compat_version": 1,
+      "note": "2026-09-30 이전·당일 배포분(compat_version 칸 없음) — 차단/권고 구분 없는 옛 키트"
+    },
+    {
+      "compat_version": 2,
+      "note": "2026-09-30 차단/권고 분리·권한 판정 모듈화"
+    }
+  ],
+  "how_to_update": "node --input-type=module -e \"import('./src/academy/starter-kit.mjs').then(async m=>console.log(await m.computeKitIntegrityFingerprint()))\" 로 새 지문을 얻고, compat_version 을 1 올려 둘을 함께 적는다. main 과 지문이 다른데 버전이 main 보다 크지 않으면 테스트가 실패한다."
+}

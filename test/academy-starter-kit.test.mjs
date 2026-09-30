@@ -333,11 +333,27 @@ test('★kit carries the branch-flow policy and the bootstrap embeds the same ju
   assert.ok(withPid.manifest.branch_flow_policy.flow_enforcement.exempt_prefixes.includes('work/demo/archive-'), '그 프로젝트의 보관 가지 접두사가 면제에 없다(Codex 검토)');
   assert.ok(!withPid.manifest.branch_flow_policy.flow_enforcement.exempt_prefixes.includes('archive-'), '범용 archive- 면제는 구멍이다');
   for (const p of ['registry/development-continuity-policy.json', 'src/governance/branch-flow.mjs']) assert.ok(manifest.freshness_inputs.includes(p), `${p} 가 신선도 입력에 없다 — 규칙이 바뀌어도 키트가 모른다`);
+  // 가지 흐름은 경고 기능이라 advisory.mjs 에 있다(안전 핵심 bootstrap 과 분리 — Codex 합의)
+  const adv = await readFile(join(out, 'advisory.mjs'), 'utf8');
+  assert.ok(adv.includes(흐르나.toString()), 'advisory 의 판정이 governance 판정과 다르다 — 판정기가 둘이 된다');
+  assert.ok(adv.includes(branchFlowWarnings.toString()));
+  assert.ok(manifest.files.some((f) => f.path === 'advisory.mjs'), 'advisory.mjs 가 검증기 해시 목록에 없다 — 고쳐도 모른다');
+  for (const f of ['session-bootstrap.mjs', 'advisory.mjs']) {
+    const parsed = spawnSync(process.execPath, ['--check', join(out, f)], { encoding: 'utf8' });
+    assert.equal(parsed.status, 0, parsed.stderr);
+  }
+  // advisory 는 «별도 프로세스»로 돌아 stdout 에 JSON 문자열 경고만 낸다 — 실제로 돌려 확인(Codex: 같은 프로세스면 부수효과를 못 막는다)
+  const advRun = spawnSync(process.execPath, [join(out, 'advisory.mjs')], { cwd: root, encoding: 'utf8', timeout: 60000 });
+  assert.equal(advRun.status, 0, advRun.stderr);
+  const res = JSON.parse(advRun.stdout);
+  assert.ok(Array.isArray(res.warnings) && res.warnings.every((w) => typeof w === 'string'));
+  // bootstrap 은 advisory 를 불러오지(import) 않고 프로세스로 돌리며, 결과는 문자열 배열로만, 실패는 ADVISORY_UNAVAILABLE 경고로만
   const boot = await readFile(join(out, 'session-bootstrap.mjs'), 'utf8');
-  assert.ok(boot.includes(흐르나.toString()), 'bootstrap 의 판정이 governance 판정과 다르다 — 판정기가 둘이 된다');
-  assert.ok(boot.includes(branchFlowWarnings.toString()));
-  const parsed = spawnSync(process.execPath, ['--check', join(out, 'session-bootstrap.mjs')], { encoding: 'utf8' });
-  assert.equal(parsed.status, 0, parsed.stderr);
+  assert.ok(!/import\([^)]*advisory/.test(boot) && !boot.includes('pathToFileURL'), 'bootstrap 이 advisory 를 같은 프로세스에서 불러온다');
+  assert.ok(boot.includes("spawnSync(process.execPath,[join(core,'advisory.mjs')") && boot.includes('timeout:120000'), 'advisory 를 시간 제한 있는 별도 프로세스로 돌리지 않는다');
+  assert.ok(boot.includes("advisoryResult.warnings.every(w=>typeof w==='string')") && boot.includes('Object.freeze([...advisoryResult.warnings])'), 'advisory 결과를 검사·동결하지 않는다');
+  assert.ok(!/advisory[^\n]*blockers\.push/.test(boot), 'advisory 가 차단을 만들 수 있다');
+  assert.ok(!boot.includes(흐르나.toString()), '경고 판정이 안전 핵심 bootstrap 에 남아 있다');
 });
 
 test('★end to end: a stalled remote branch shows up as a warning, not a blocker', async () => {
@@ -378,4 +394,88 @@ test('★end to end: a stalled remote branch shows up as a warning, not a blocke
   assert.equal(outp.project.branch_flow.unscanned, 1);
   // (이 임시 저장소엔 GitHub 가 없어 다른 차단은 선다 — 가지 흐름이 차단이 되지 않는지만 본다)
   assert.ok(!outp.blockers.some((b) => /FLOW|STALL/.test(b)), '멈춘 가지가 세션을 막았다 — 경고만 해야 한다: ' + outp.blockers.join(','));
+});
+
+test('★integrity fingerprint matches registry/academy-kit-compat.json — safety-relevant generator changes must bump compat_version', async () => {
+  /** Codex 설계(2026-09-30): 생성기 변경을 영향으로 가른다. 검증기·해시 규칙·신선도·권한 판정이 바뀌면 이 테스트가 막는다 —
+   *  compat_version 을 올리고 integrity_fingerprint 를 갱신하라(그러면 배포된 키트가 STALE 이 되어 다시 받는다). */
+  const { computeKitIntegrityFingerprint } = await import('../src/academy/starter-kit.mjs');
+  const compat = JSON.parse(await readFile(new URL('../registry/academy-kit-compat.json', import.meta.url), 'utf8'));
+  const now = await computeKitIntegrityFingerprint();
+  assert.equal(now, compat.integrity_fingerprint, '키트의 안전 핵심(bootstrap·검증기·입력 분류)이 바뀌었다 — registry/academy-kit-compat.json 의 compat_version 을 올리고 integrity_fingerprint 를 갱신하라(how_to_update)');
+  assert.ok(Number.isInteger(compat.compat_version) && compat.compat_version >= 2);
+  // ★버전 강제(Codex): main 과 지문이 다르면 버전도 main 보다 커야 한다. main 을 못 읽으면 건너뛰지 않고 실패한다.
+  const root = new URL('..', import.meta.url);
+  const ref = spawnSync('git', ['rev-parse', '--verify', 'origin/main'], { cwd: root, encoding: 'utf8' });
+  assert.equal(ref.status, 0, '기준(origin/main)을 읽을 수 없다 — git fetch origin main 뒤 다시 돌린다. 기준 없이 지문 변경을 통과시키지 않는다');
+  const base = spawnSync('git', ['show', 'origin/main:registry/academy-kit-compat.json'], { cwd: root, encoding: 'utf8' });
+  const baseCompat = base.status === 0 ? JSON.parse(base.stdout) : { compat_version: 0, integrity_fingerprint: null }; // main 에 아직 없으면 처음 도입
+  if (baseCompat.integrity_fingerprint !== compat.integrity_fingerprint) {
+    assert.ok(compat.compat_version > baseCompat.compat_version, `지문이 main 과 다른데 compat_version(${compat.compat_version})이 main(${baseCompat.compat_version})보다 크지 않다 — 안전 변경인데 버전을 안 올렸다`);
+  }
+});
+
+test('★advisory-only generator changes warn (UPDATE_AVAILABLE); blocking inputs still make the kit STALE; legacy kits keep blocking', () => {
+  const base = { kitRevision: 'a'.repeat(40), coreHead: 'b'.repeat(40), inputs: ['docs/AI_WORKING_STANDARD.md', 'registry/academy-kit-compat.json'], advisoryInputs: ['src/academy/starter-kit.mjs', 'registry/development-continuity-policy.json'], catalogInputs: [] };
+  const cmp = (files) => ({ ok: true, status: 'ahead', files });
+  const adv = kitFreshness({ ...base, compare: cmp(['src/academy/starter-kit.mjs']) });
+  assert.equal(adv.status, 'UPDATE_AVAILABLE');
+  assert.deepEqual(adv.advisory_changed, ['src/academy/starter-kit.mjs']);
+  assert.equal(kitFreshness({ ...base, compare: cmp(['registry/academy-kit-compat.json', 'src/academy/starter-kit.mjs']) }).status, 'STALE', '호환 버전이 오르면 막아야 한다');
+  assert.equal(kitFreshness({ ...base, compare: cmp(['docs/AI_WORKING_STANDARD.md']) }).status, 'STALE');
+  assert.equal(kitFreshness({ ...base, advisoryInputs: undefined, inputs: [...base.inputs, 'src/academy/starter-kit.mjs'], compare: cmp(['src/academy/starter-kit.mjs']) }).status, 'STALE', '옛 키트는 분류가 없으니 전부 차단(fail-closed)');
+});
+
+test('★kit splits blocking and advisory inputs and records compat_version', async () => {
+  const compat = JSON.parse(await readFile(new URL('../registry/academy-kit-compat.json', import.meta.url), 'utf8'));
+  const policy = JSON.parse(await readFile(new URL('../registry/development-continuity-policy.json', import.meta.url), 'utf8'));
+  const root = await mkdtemp(join(tmpdir(), 'academy-kit-compat-')), out = join(root, '.ai-core');
+  const { manifest } = await installAcademyStarterKit({ output: out, receipt, coreRevision: 'b'.repeat(40), readings: [{ path: 'docs/AI_WORKING_STANDARD.md', body: 'one' }], operatingKnowledge: { schema_version: '1.0' }, branchFlowPolicy: policy, compat });
+  assert.equal(manifest.compat_version, compat.compat_version);
+  assert.deepEqual(manifest.blocking_inputs, ['docs/AI_WORKING_STANDARD.md', 'registry/operating-knowledge.json', 'registry/academy-kit-compat.json']);
+  for (const p of [...KIT_GENERATOR_INPUTS, 'registry/development-continuity-policy.json']) {
+    assert.ok(manifest.advisory_inputs.includes(p), `${p} 가 권고 입력에 없다`);
+    assert.ok(!manifest.blocking_inputs.includes(p), `${p} 가 차단 입력에 있다 — 기능만 붙어도 모든 키트가 막힌다`);
+  }
+  // ★통합(Codex): bootstrap 은 권한 판정을 kitAuthority 로만 한다 — 옛 인라인 판정이 남아 우회하지 못하게
+  const { kitAuthority } = await import('../src/academy/starter-kit.mjs');
+  const boot = await readFile(join(out, 'session-bootstrap.mjs'), 'utf8');
+  assert.ok(boot.includes(kitAuthority.toString()), 'bootstrap 의 권한 판정이 지문에 든 kitAuthority 와 다르다');
+  assert.ok(boot.includes('=kitAuthority({run,kit,generatedAuthority})'), 'bootstrap 이 kitAuthority 를 부르지 않는다');
+  assert.ok(!boot.includes("const authorityPaths=['.ai-core/kit.json'"), '옛 인라인 권한 판정이 남아 있다 — 지문 밖에서 우회할 수 있다');
+  const { kitFreshnessInputs, kitSafetyDecision } = await import('../src/academy/starter-kit.mjs');
+  for (const f of [kitFreshnessInputs, kitSafetyDecision]) assert.ok(boot.includes(f.toString()), `bootstrap 의 ${f.name} 가 지문에 든 것과 다르다`);
+  assert.ok(boot.includes('=kitFreshnessInputs(kit);') && boot.includes('=kitSafetyDecision({'), 'bootstrap 이 안전 배선 함수를 부르지 않는다');
+  assert.ok(!boot.includes("else if(coreFreshness==='STALE')blockers.push"), '옛 인라인 차단 매핑이 남아 있다 — 지문 밖에서 바꿀 수 있다');
+  assert.equal(spawnSync(process.execPath, ['--check', join(out, 'session-bootstrap.mjs')], { encoding: 'utf8' }).status, 0);
+});
+
+test('★safety wiring: input classes, legacy fallback, and blocker mapping (all fingerprinted)', async () => {
+  const { kitInputClasses, kitFreshnessInputs, kitSafetyDecision } = await import('../src/academy/starter-kit.mjs');
+  const c = kitInputClasses({ readingPaths: ['docs/A.md'], hasOperatingKnowledge: true, hasCompat: true, hasBranchFlowPolicy: true });
+  assert.deepEqual(c.blocking, ['docs/A.md', 'registry/operating-knowledge.json', 'registry/academy-kit-compat.json']);
+  for (const p of KIT_GENERATOR_INPUTS) assert.ok(c.advisory.includes(p) && !c.blocking.includes(p), `${p} 분류가 틀렸다`);
+  assert.deepEqual(kitFreshnessInputs({ freshness_inputs: ['x'] }), { inputs: ['x'], advisoryInputs: undefined }, '옛 키트는 전부 차단 입력');
+  const ok = { coreHeadOk: true, authorityStatus: 'MATCH', kitCheckOk: true, kitVerification: { status: 'PASS', revision: { status: 'MATCH' } } };
+  assert.deepEqual(kitSafetyDecision({ ...ok, freshness: { status: 'CURRENT_CONTENT' } }), { blockers: [], warnings: [], kitReady: true });
+  assert.deepEqual(kitSafetyDecision({ ...ok, freshness: { status: 'STALE' } }).blockers, ['AI_CORE_KIT_STALE']);
+  const upd = kitSafetyDecision({ ...ok, freshness: { status: 'UPDATE_AVAILABLE', advisory_changed: ['src/academy/starter-kit.mjs'] } });
+  assert.deepEqual(upd.blockers, []);
+  assert.match(upd.warnings[0], /^AI_CORE_KIT_UPDATE_AVAILABLE/);
+  assert.deepEqual(kitSafetyDecision({ ...ok, freshness: { status: 'UNKNOWN' } }).blockers, ['AI_CORE_KIT_FRESHNESS_UNKNOWN']);
+  const noAuth = kitSafetyDecision({ ...ok, authorityStatus: 'MISMATCH', freshness: { status: 'CURRENT_CONTENT' } });
+  assert.equal(noAuth.kitReady, false, '권한이 안 맞는데 검증 PASS 만으로 통과했다');
+  assert.deepEqual(noAuth.blockers, ['STARTER_KIT_VERIFICATION_FAILED']);
+});
+
+test('★a hostile advisory module cannot cut the safety path short — bootstrap still reports, with ADVISORY_UNAVAILABLE', async () => {
+  /** Codex 검토: 같은 프로세스에서 불러오면 process.exit·전역 변경으로 안전 출력 전에 끝낼 수 있다 → 별도 프로세스로 격리했다. */
+  const root = await mkdtemp(join(tmpdir(), 'academy-kit-hostile-')), out = join(root, '.ai-core');
+  await installAcademyStarterKit({ output: out, receipt, coreRevision: 'b'.repeat(40), readings: [{ path: 'docs/AI_WORKING_STANDARD.md', body: 'one' }], operatingKnowledge: { schema_version: '1.0', platforms: [] } });
+  await writeFile(join(out, 'advisory.mjs'), "process.stdout.write('not json'); globalThis.JSON = null; process.exit(0);\n");
+  const run = spawnSync(process.execPath, [join(out, 'session-bootstrap.mjs')], { cwd: root, encoding: 'utf8', env: { ...process.env, GH_CONFIG_DIR: join(root, 'no-gh'), GH_TOKEN: '', GITHUB_TOKEN: '' } });
+  const outp = JSON.parse(run.stdout);
+  assert.ok(outp.warnings.some((w) => w.startsWith('ADVISORY_UNAVAILABLE')), '적대적 advisory 를 알아채지 못했다');
+  assert.ok(Array.isArray(outp.blockers) && outp.status === 'HOLD', '안전 판정 출력이 끝까지 나오지 않았다');
+  assert.ok(outp.blockers.includes('STARTER_KIT_VERIFICATION_FAILED'), '바뀐 advisory.mjs 를 검증기가 잡지 못했다(해시 목록)');
 });

@@ -61,7 +61,8 @@ if (receipt.status === 'READY' && kit) {
   const catalog=[];
   for(const name of ['projects.json','capabilities.json','work-map.json']) catalog.push({name,source:`registry/${name}`,data:JSON.parse(await read(join(coreRoot,'registry',name)))});
   const branchFlowPolicy = JSON.parse(await read(join(coreRoot, 'registry', 'development-continuity-policy.json')));
-  const installed = await installAcademyStarterKit({ output: resolve(root, kit), receipt, readings, coreRevision, operatingKnowledge, catalog, branchFlowPolicy });
+  const compat = JSON.parse(await read(join(coreRoot, 'registry', 'academy-kit-compat.json')));
+  const installed = await installAcademyStarterKit({ output: resolve(root, kit), receipt, readings, coreRevision, operatingKnowledge, catalog, branchFlowPolicy, compat });
   console.error(JSON.stringify(installed, null, 2));
 }
 if (receipt.status !== 'READY') process.exitCode = 3;
