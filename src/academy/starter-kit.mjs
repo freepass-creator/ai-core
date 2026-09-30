@@ -171,14 +171,14 @@ const defaultSha=defaultBranch?remoteHeads.get(defaultBranch):null;
 const noMergedRun=flowScan.ok&&defaultSha&&shaDate.has(defaultSha)?run('git',['for-each-ref','--no-merged='+defaultSha,'--format=%(objectname)','refs/remotes/origin']):{ok:false,stdout:''};
 const noMerged=new Set(noMergedRun.ok?noMergedRun.stdout.split(/\\r?\\n/).filter(Boolean):[]);
 const openPrs=kit.branch_flow_policy&&defaultBranch&&ghAuth.ok&&repo?run('gh',['pr','list','--repo',repo,'--state','open','--base',defaultBranch,'--limit','1000','--json','headRefName,number,isCrossRepository']):{ok:false,stdout:''};
-const prByRef=new Map();let prListTruncated=false,prKnown=false;try{if(openPrs.ok){const list=JSON.parse(openPrs.stdout||'[]');prListTruncated=list.length>=1000;for(const p of list)if(!p.isCrossRepository)prByRef.set(p.headRefName,p.number);prKnown=true;}}catch{}
+const prByRef=new Map();let prListTruncated=false,prKnown=false;try{if(openPrs.ok){const list=JSON.parse(openPrs.stdout||'[]');prListTruncated=list.length>=1000;for(const p of list)if(!p.isCrossRepository)prByRef.set(p.headRefName,p.number);prKnown=!prListTruncated;}}catch{}
 const flowBranches=[],unscanned=[];
 if(noMergedRun.ok){for(const [ref,sha] of remoteHeads){if(ref===defaultBranch)continue;if(!shaDate.has(sha)){unscanned.push(ref);continue;}if(!noMerged.has(sha))continue;flowBranches.push({ref,마지막커밋:shaDate.get(sha),열린PR:prByRef.get(ref)??null});}}
 const branchFlow=branchFlowWarnings({branches:flowBranches,policy:kit.branch_flow_policy,defaultBranch,now:new Date(),judge:흐르나,prKnown});
 if(branchFlow.unconfirmed.length)warnings.push('BRANCH_FLOW_PR_UNKNOWN: 열린 PR 을 확인하지 못해 멈춘 것으로 보이는 가지 '+branchFlow.unconfirmed.length+'개를 확정하지 못했다('+branchFlow.unconfirmed.slice(0,5).join(', ')+') — gh 인증 뒤 다시 본다');
 if(kit.branch_flow_policy&&!noMergedRun.ok)warnings.push('BRANCH_FLOW_UNKNOWN: 원격 가지를 판정하지 못했다(원격 조회 또는 기본 가지 커밋이 로컬에 없음) — 「흐르지 않는 가지 없음」이 아니라 «모른다»다. git fetch 뒤 다시 본다');
 if(unscanned.length)warnings.push('BRANCH_FLOW_PARTIAL: 로컬에 없는 원격 가지 '+unscanned.length+'개는 판정하지 못했다 — git fetch 뒤 다시 본다');
-if(prListTruncated)warnings.push('BRANCH_FLOW_PR_LIST_TRUNCATED: 열린 PR 이 1000개 이상이라 일부 가지를 잘못 경고할 수 있다');
+if(prListTruncated)warnings.push('BRANCH_FLOW_PR_LIST_TRUNCATED: 열린 PR 이 1000개 이상이라 목록이 잘렸을 수 있다 — PR 여부에 달린 판정은 확정하지 않는다');
 if(branchFlow.violations.length)warnings.push('BRANCH_NOT_FLOWING: main 으로 흐르지 않는 가지 '+branchFlow.violations.length+'개 — '+branchFlow.violations.slice(0,5).map(v=>v.ref).join(', ')+(branchFlow.violations.length>5?' …':'')+' · 정리(PR 로 보내기·보관으로 닫기)는 운영 몫이다. 이 경고는 세션을 막지 않는다');
 if(!kitReady){if(kitRevisionStatus==='MISMATCH')blockers.push('STARTER_KIT_REVISION_MISMATCH');else blockers.push('STARTER_KIT_VERIFICATION_FAILED');}
 if(syncResult==='FETCH_FAILED'||syncResult==='FAST_FORWARD_FAILED')blockers.push('SAFE_SYNC_FAILED');
