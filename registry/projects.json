@@ -1,6 +1,6 @@
 {
   "schema_version": "1.1",
-  "observed_at": "2026-09-30T10:20:27Z",
+  "observed_at": "2026-09-30T23:51:41.122Z",
   "projects": [
     {
       "project_id": "ai-core",
@@ -685,13 +685,13 @@
       "repository": "freepass-creator/renman-data",
       "default_branch": "main",
       "local_path": "C:\\dev\\renman-data",
-      "head_revision": "294a36b04bb47db2ece61963024b9d16173fb804",
+      "head_revision": "834efc35a78bd09bc4c9f695fc52bb138f8089c6",
       "authoritative_sources": [
         {
           "kind": "GIT",
           "ref": "freepass-creator/renman-data",
-          "revision": "294a36b04bb47db2ece61963024b9d16173fb804",
-          "observed_at": "2026-09-30T09:01:46Z"
+          "revision": "834efc35a78bd09bc4c9f695fc52bb138f8089c6",
+          "observed_at": "2026-09-30T23:48:23.628Z"
         }
       ],
       "commands": {
@@ -701,7 +701,7 @@
       },
       "commands_absent_reason": {
         "install": "Native Node runtime modules use no third-party package install.",
-        "build": "Container packaging exists; a successful current-revision cloud build has not been verified."
+        "build": "No single local build command is registered. Four-file Cloud Build 16e2b1bb-9931-4a26-81eb-c73e3162ffd4 and private read revision renman-data-read-00002-b9z were verified on 2026-10-01; business data publication remains HOLD."
       },
       "deploy_targets": [
         "Cloud Run teamjpkwork/asia-northeast3/renman-data-read"
@@ -714,7 +714,7 @@
       "known_blockers": [
         "READ_ONLY_DEVELOPMENT_ALLOWED; execution readiness remains HOLD for business-confirmed source publication and production changes.",
         "Immutable source retention, stable contract mapping, staff confirmation and per-consumer persistent audit remain unimplemented.",
-        "CI deployment was blocked by GitHub billing in the project history; current CI and deployed source revision need independent verification.",
+        "GitHub verify/deploy main runs 36792847815/36792847790 did not start any steps due to billing. Direct read-runtime deployment/readback verified separately; automation remains UNAVAILABLE_BILLING.",
         "AI Ops owns existing business write paths; this registration does not authorize a second arrears writer or data migration."
       ]
     }
