@@ -1,0 +1,5 @@
+PR #351 세 번째 검토 — 일몰 제외 목록을 넓혔다
+
+읽기 전용. CI verify 가 sunset 래칫(끌어씀 6→7)으로 실패했다 — 새 흡수 검사가 devcenter 경로를 읽어서. 기준선은 올리지 않았다. 대신 흡수표·검사를 registry/sunset-devcenter-absorption.json · test/sunset-devcenter-absorption.test.mjs 로 이름을 바꾸고 registry/sunset.json self.files 에 이름으로 넣었다(이유 줄 추가). ★제외 목록을 넓힌 것이 구멍이 되는지 봐 달라: 이 두 파일이 devcenter 를 «붙잡는» 의존이 될 수 있나(예: devcenter 를 지우면 이 검사가 태그 없이도 통과하나 — 지난 검토에서 막았다). C:/dev/.wt-main HEAD. APPROVE 또는 REQUEST_CHANGES(파일:줄). 파일은 고치지 마라.
+
+200자 이내 한국어로 답해라.
