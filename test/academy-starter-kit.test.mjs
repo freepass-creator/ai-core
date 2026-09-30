@@ -3,9 +3,9 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { mkdtemp, readFile, writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
-import { installAcademyStarterKit, kitFreshness, KIT_GENERATOR_INPUTS } from '../src/academy/starter-kit.mjs';
+import { installAcademyStarterKit, kitFreshness, KIT_GENERATOR_INPUTS, branchFlowWarnings } from '../src/academy/starter-kit.mjs';
 
 const receipt={status:'READY',observed_at:'2026-09-22T00:00:00Z',task:'기능 구현',track:'development',target:{repository:'o/r',revision:'a'.repeat(40)},precheck:{completion_verification:{test:'npm test'}}};
 const git=(root,...args)=>execFileSync('git',args,{cwd:root,encoding:'utf8'}).trim();
@@ -298,4 +298,60 @@ test('★verification commands are compared field-wise — projects.json may cha
   assert.equal(kitFreshness({...base,currentVerification:undefined}).status,'UNKNOWN','못 읽은 것을 같다고 봤다');
   assert.equal(kitFreshness({...base,currentVerification:null}).status,'STALE','프로젝트가 등록부에서 사라졌는데 같다고 봤다');
   assert.equal(kitFreshness({...base,compare:{ok:true,status:'ahead',files:['README.md']},currentVerification:undefined}).status,'CURRENT_CONTENT','projects.json 이 안 바뀌었으면 읽을 필요가 없다');
+});
+
+test('★branch-flow warnings reuse the governance judge: stalled and actor-named branches warn, young/open-PR/default do not', async () => {
+  /** 2026-09-30 대표: 「메인으로 붙어서 가는지도 봐야 함」. 제품 저장소 12곳에 흐르지 않는 가지 57개(48개 3일+). */
+  const { 흐르나 } = await import('../src/governance/branch-flow.mjs');
+  const policy = JSON.parse(await readFile(new URL('../registry/development-continuity-policy.json', import.meta.url), 'utf8'));
+  const now = new Date('2026-09-30T00:00:00Z');
+  const old = '2026-09-01T00:00:00Z', young = '2026-09-29T20:00:00Z';
+  const r = branchFlowWarnings({ policy, defaultBranch: 'master', now, judge: 흐르나, branches: [
+    { ref: 'work/x/stalled', 마지막커밋: old, 열린PR: null },
+    { ref: 'work/x/young', 마지막커밋: young, 열린PR: null },
+    { ref: 'work/x/in-review', 마지막커밋: old, 열린PR: 7 },
+    { ref: 'master', 마지막커밋: old, 열린PR: null },
+  ] });
+  assert.deepEqual(r.violations.map((v) => v.ref), ['work/x/stalled']);
+  assert.match(r.violations[0].why, /STALLED/);
+  assert.equal(r.checked, 4);
+  assert.deepEqual(branchFlowWarnings({ policy: null, branches: [], judge: 흐르나 }).violations, [], '정책 없는 옛 키트는 조용히 넘어간다');
+});
+
+test('★kit carries the branch-flow policy and the bootstrap embeds the same judge source', async () => {
+  const { 흐르나 } = await import('../src/governance/branch-flow.mjs');
+  const policy = JSON.parse(await readFile(new URL('../registry/development-continuity-policy.json', import.meta.url), 'utf8'));
+  const root = await mkdtemp(join(tmpdir(), 'academy-kit-flow-')), out = join(root, '.ai-core');
+  const { manifest } = await installAcademyStarterKit({ output: out, receipt, coreRevision: 'b'.repeat(40), readings: [{ path: 'docs/AI_WORKING_STANDARD.md', body: 'one' }], branchFlowPolicy: policy });
+  assert.deepEqual(manifest.branch_flow_policy.flow_enforcement, policy.flow_enforcement);
+  for (const p of ['registry/development-continuity-policy.json', 'src/governance/branch-flow.mjs']) assert.ok(manifest.freshness_inputs.includes(p), `${p} 가 신선도 입력에 없다 — 규칙이 바뀌어도 키트가 모른다`);
+  const boot = await readFile(join(out, 'session-bootstrap.mjs'), 'utf8');
+  assert.ok(boot.includes(흐르나.toString()), 'bootstrap 의 판정이 governance 판정과 다르다 — 판정기가 둘이 된다');
+  assert.ok(boot.includes(branchFlowWarnings.toString()));
+  const parsed = spawnSync(process.execPath, ['--check', join(out, 'session-bootstrap.mjs')], { encoding: 'utf8' });
+  assert.equal(parsed.status, 0, parsed.stderr);
+});
+
+test('★end to end: a stalled remote branch shows up as a warning, not a blocker', async () => {
+  const policy = JSON.parse(await readFile(new URL('../registry/development-continuity-policy.json', import.meta.url), 'utf8'));
+  const base = await mkdtemp(join(tmpdir(), 'academy-kit-flow-e2e-'));
+  const bare = join(base, 'origin.git'), root = join(base, 'work');
+  execFileSync('git', ['init', '-q', '--bare', '-b', 'main', bare]);
+  execFileSync('git', ['clone', '-q', bare, root]);
+  git(root, 'config', 'user.email', 'ai-core-test@example.invalid'); git(root, 'config', 'user.name', 'AI Core Test');
+  await writeFile(join(root, 'a.txt'), 'v1\n'); git(root, 'add', 'a.txt'); git(root, 'commit', '-q', '-m', 'base'); git(root, 'push', '-q', 'origin', 'main');
+  git(root, 'remote', 'set-head', 'origin', 'main');
+  const oldEnv = { ...process.env, GIT_COMMITTER_DATE: '2026-09-01T00:00:00Z', GIT_AUTHOR_DATE: '2026-09-01T00:00:00Z' };
+  git(root, 'switch', '-q', '-c', 'work/x/stalled'); await writeFile(join(root, 'b.txt'), 'x\n'); git(root, 'add', 'b.txt');
+  execFileSync('git', ['commit', '-q', '-m', 'old'], { cwd: root, env: oldEnv }); git(root, 'push', '-q', 'origin', 'work/x/stalled');
+  git(root, 'switch', '-q', 'main');
+  const bound = { ...receipt, target: { ...receipt.target, revision: git(root, 'rev-parse', 'HEAD') } };
+  await installAcademyStarterKit({ output: join(root, '.ai-core'), receipt: bound, coreRevision: 'b'.repeat(40), readings: [{ path: 'docs/AI_WORKING_STANDARD.md', body: 'one' }], operatingKnowledge: { schema_version: '1.0', platforms: [] }, branchFlowPolicy: policy });
+  const gitDir = dirname(execFileSync(process.platform === 'win32' ? 'where' : 'which', ['git'], { encoding: 'utf8' }).split(/\r?\n/)[0].trim());
+  const run = spawnSync(process.execPath, [join(root, '.ai-core', 'session-bootstrap.mjs')], { cwd: root, encoding: 'utf8', env: { ...process.env, PATH: gitDir } });
+  const outp = JSON.parse(run.stdout);
+  assert.deepEqual(outp.project.branch_flow.violations.map((v) => v.ref), ['work/x/stalled']);
+  assert.ok(outp.warnings.some((w) => w.startsWith('BRANCH_NOT_FLOWING')), '멈춘 가지 경고가 없다');
+  // (이 임시 저장소엔 GitHub 가 없어 다른 차단은 선다 — 가지 흐름이 차단이 되지 않는지만 본다)
+  assert.ok(!outp.blockers.some((b) => /FLOW|STALL/.test(b)), '멈춘 가지가 세션을 막았다 — 경고만 해야 한다: ' + outp.blockers.join(','));
 });
