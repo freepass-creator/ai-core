@@ -1,11 +1,12 @@
 {
   "schema": "ai-core-academy-kit-compat/v1",
   "compat_version": 2,
-  "integrity_fingerprint": "67cfa8202c0b9605ca29a5bc88345d92dae490d7b3e93b702b415d00120d650f",
+  "integrity_fingerprint": "22a0664f7103832d309ceb8d674990f5f2026214f38be2219d58a91cfb58d188",
   "why": [
     "★2026-09-30: 키트 생성기가 바뀔 때마다 배포된 키트가 전부 AI_CORE_KIT_STALE 로 막혔다(경고 기능 하나 더해도). Codex 설계: 차단/권고 입력 분리 + 명시적 호환 버전.",
     "이 파일은 키트의 «차단 입력»이다. compat_version 이 오르면 배포된 키트가 STALE 이 되어 다시 받게 된다.",
-    "integrity_fingerprint 는 src/academy/starter-kit.mjs 의 kitIntegrityFingerprint() — 검증기(verify-kit)·해시 규칙·신선도 판정·권한 판정 소스. 다르면 test/academy-starter-kit 가 실패한다."
+    "integrity_fingerprint 는 src/academy/starter-kit.mjs 의 kitIntegrityFingerprint() — 검증기(verify-kit)·해시 규칙·신선도 판정·권한 판정 소스. 다르면 test/academy-starter-kit 가 실패한다.",
+    "★Codex 검토(PR #356): 판정 함수만이 아니라 배선(입력 분류·옛 키트 대체·안전 판정→차단/경고)도 지문에 넣는다 — kitInputClasses·kitFreshnessInputs·kitSafetyDecision."
   ],
   "bump_when": [
     "생성되는 verify-kit.mjs 가 바뀔 때",

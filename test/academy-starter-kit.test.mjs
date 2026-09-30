@@ -417,7 +417,27 @@ test('★kit splits blocking and advisory inputs and records compat_version', as
   assert.ok(boot.includes(kitAuthority.toString()), 'bootstrap 의 권한 판정이 지문에 든 kitAuthority 와 다르다');
   assert.ok(boot.includes('=kitAuthority({run,kit,generatedAuthority})'), 'bootstrap 이 kitAuthority 를 부르지 않는다');
   assert.ok(!boot.includes("const authorityPaths=['.ai-core/kit.json'"), '옛 인라인 권한 판정이 남아 있다 — 지문 밖에서 우회할 수 있다');
-  assert.match(boot, /else if\(coreFreshness==='STALE'\)blockers\.push\('AI_CORE_KIT_STALE'\)/);
-  assert.ok(!/blockers\.push\('AI_CORE_KIT_UPDATE_AVAILABLE/.test(boot), '권고 갱신이 세션을 막는다');
+  const { kitFreshnessInputs, kitSafetyDecision } = await import('../src/academy/starter-kit.mjs');
+  for (const f of [kitFreshnessInputs, kitSafetyDecision]) assert.ok(boot.includes(f.toString()), `bootstrap 의 ${f.name} 가 지문에 든 것과 다르다`);
+  assert.ok(boot.includes('=kitFreshnessInputs(kit);') && boot.includes('=kitSafetyDecision({'), 'bootstrap 이 안전 배선 함수를 부르지 않는다');
+  assert.ok(!boot.includes("else if(coreFreshness==='STALE')blockers.push"), '옛 인라인 차단 매핑이 남아 있다 — 지문 밖에서 바꿀 수 있다');
   assert.equal(spawnSync(process.execPath, ['--check', join(out, 'session-bootstrap.mjs')], { encoding: 'utf8' }).status, 0);
+});
+
+test('★safety wiring: input classes, legacy fallback, and blocker mapping (all fingerprinted)', async () => {
+  const { kitInputClasses, kitFreshnessInputs, kitSafetyDecision } = await import('../src/academy/starter-kit.mjs');
+  const c = kitInputClasses({ readingPaths: ['docs/A.md'], hasOperatingKnowledge: true, hasCompat: true, hasBranchFlowPolicy: true });
+  assert.deepEqual(c.blocking, ['docs/A.md', 'registry/operating-knowledge.json', 'registry/academy-kit-compat.json']);
+  for (const p of KIT_GENERATOR_INPUTS) assert.ok(c.advisory.includes(p) && !c.blocking.includes(p), `${p} 분류가 틀렸다`);
+  assert.deepEqual(kitFreshnessInputs({ freshness_inputs: ['x'] }), { inputs: ['x'], advisoryInputs: undefined }, '옛 키트는 전부 차단 입력');
+  const ok = { coreHeadOk: true, authorityStatus: 'MATCH', kitCheckOk: true, kitVerification: { status: 'PASS', revision: { status: 'MATCH' } } };
+  assert.deepEqual(kitSafetyDecision({ ...ok, freshness: { status: 'CURRENT_CONTENT' } }), { blockers: [], warnings: [], kitReady: true });
+  assert.deepEqual(kitSafetyDecision({ ...ok, freshness: { status: 'STALE' } }).blockers, ['AI_CORE_KIT_STALE']);
+  const upd = kitSafetyDecision({ ...ok, freshness: { status: 'UPDATE_AVAILABLE', advisory_changed: ['src/academy/starter-kit.mjs'] } });
+  assert.deepEqual(upd.blockers, []);
+  assert.match(upd.warnings[0], /^AI_CORE_KIT_UPDATE_AVAILABLE/);
+  assert.deepEqual(kitSafetyDecision({ ...ok, freshness: { status: 'UNKNOWN' } }).blockers, ['AI_CORE_KIT_FRESHNESS_UNKNOWN']);
+  const noAuth = kitSafetyDecision({ ...ok, authorityStatus: 'MISMATCH', freshness: { status: 'CURRENT_CONTENT' } });
+  assert.equal(noAuth.kitReady, false, '권한이 안 맞는데 검증 PASS 만으로 통과했다');
+  assert.deepEqual(noAuth.blockers, ['STARTER_KIT_VERIFICATION_FAILED']);
 });

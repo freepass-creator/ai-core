@@ -22,8 +22,35 @@ export const KIT_COMPAT_SOURCE = 'registry/academy-kit-compat.json';
 /** 무결성 지문 — 키트의 «안전 판정»을 바꾸는 생성기 코드만 모은다(검증기·해시 규칙·신선도·권한).
  *  registry/academy-kit-compat.json 의 integrity_fingerprint 와 다르면 테스트가 실패한다 → compat_version 을 올리고 지문을 갱신한다.
  *  그 파일은 차단 입력이라, 버전이 오르면 배포된 키트가 AI_CORE_KIT_STALE 이 된다. (경고 기능은 여기 없다 → 권고) */
+
+/** 입력을 «차단/권고»로 가른다(설치 때). ★Codex 검토: 이 배선이 지문 밖이면 규격 파일을 권고로 옮겨도 가드가 모른다 → 지문에 넣는다. */
+export function kitInputClasses({ readingPaths, hasOperatingKnowledge, hasCompat, hasBranchFlowPolicy }) {
+  const blocking = [...new Set([...readingPaths, ...(hasOperatingKnowledge ? ['registry/operating-knowledge.json'] : []), ...(hasCompat ? ['registry/academy-kit-compat.json'] : [])])];
+  const advisory = [...new Set([...(hasBranchFlowPolicy ? ['registry/development-continuity-policy.json'] : []), 'src/academy/starter-kit.mjs', 'src/academy/start-gate.mjs', 'scripts/academy-start.mjs', 'src/governance/branch-flow.mjs'])];
+  return { blocking, advisory, all: [...new Set([...blocking, ...advisory])] };
+}
+
+/** 키트에서 신선도 입력을 꺼낸다(bootstrap). 분류가 없는 옛 키트는 freshness_inputs 전부를 «차단»으로 — fail-closed. */
+export function kitFreshnessInputs(kit) {
+  if (Array.isArray(kit.blocking_inputs)) return { inputs: kit.blocking_inputs, advisoryInputs: Array.isArray(kit.advisory_inputs) ? kit.advisory_inputs : [] };
+  return { inputs: kit.freshness_inputs, advisoryInputs: undefined };
+}
+
+/** 안전 판정 → 차단·경고(bootstrap). STALE·UNKNOWN 만 막고 UPDATE_AVAILABLE 은 경고.
+ *  ★키트 검증은 권한 판정이 MATCH 일 때만 인정한다 — bootstrap 이 검증기를 먼저 돌려도 여기서 막힌다. */
+export function kitSafetyDecision({ coreHeadOk, freshness, authorityStatus, kitCheckOk, kitVerification }) {
+  const blockers = [], warnings = [];
+  if (!coreHeadOk) blockers.push('AI_CORE_REMOTE_HEAD_UNAVAILABLE');
+  else if (freshness.status === 'UNKNOWN') blockers.push('AI_CORE_KIT_FRESHNESS_UNKNOWN');
+  else if (freshness.status === 'STALE') blockers.push('AI_CORE_KIT_STALE');
+  else if (freshness.status === 'UPDATE_AVAILABLE') warnings.push('AI_CORE_KIT_UPDATE_AVAILABLE: AI Core 키트 생성기에 새 기능이 있다(' + (freshness.advisory_changed || []).join(', ') + ') — 안전 판정은 그대로라 막지 않는다. 다음 키트 배포 때 받는다');
+  const kitReady = authorityStatus === 'MATCH' && kitCheckOk === true && kitVerification?.status === 'PASS';
+  if (!kitReady) blockers.push(kitVerification?.revision?.status === 'MISMATCH' ? 'STARTER_KIT_REVISION_MISMATCH' : 'STARTER_KIT_VERIFICATION_FAILED');
+  return { blockers, warnings, kitReady };
+}
+
 export function kitIntegrityFingerprint() {
-  return createHash('sha256').update([VERIFIER_SOURCE, KIT_DIGEST_RULE, kitFreshness.toString(), kitAuthority.toString()].join('\n')).digest('hex');
+  return createHash('sha256').update([VERIFIER_SOURCE, KIT_DIGEST_RULE, kitFreshness.toString(), kitAuthority.toString(), kitInputClasses.toString(), kitFreshnessInputs.toString(), kitSafetyDecision.toString()].join('\n')).digest('hex');
 }
 
 // ★2026-09-30: 「메인으로 붙어서 가는지도 봐야 함」(대표). ai-core 에만 있던 «한 방향» 검사를 모든 저장소의 세션 시작에 싣는다.
@@ -136,15 +163,16 @@ export async function installAcademyStarterKit({ output, receipt, readings, core
     await put(join(output, path), item.body);
     files.push({ path, sha256: digest(item.body), source: item.path });
   }
+  const inputClasses = kitInputClasses({ readingPaths: readings.map(item => item.path.replaceAll('\\', '/')), hasOperatingKnowledge: Boolean(operatingKnowledge), hasCompat: Boolean(compat), hasBranchFlowPolicy: Boolean(branchFlowPolicy) });
   const manifest = {
     schema: 'ai-core-starter-kit/v1', digest_rule: KIT_DIGEST_RULE, core_revision: coreRevision, generated_at: receipt.observed_at,
     task: receipt.task, track: receipt.track, target: receipt.target, files,
     compat_version: compat?.compat_version ?? null,
     // 차단: 읽은 규격·운영지식·호환 버전 파일(무결성 지문이 여기 있다). 권고: 생성기·가지 정책(경고 기능).
-    blocking_inputs: [...new Set([...readings.map(item => item.path.replaceAll('\\', '/')), ...(operatingKnowledge ? ['registry/operating-knowledge.json'] : []), ...(compat ? [KIT_COMPAT_SOURCE] : [])])],
-    advisory_inputs: [...new Set([...(branchFlowPolicy ? [BRANCH_FLOW_POLICY_SOURCE] : []), ...KIT_GENERATOR_INPUTS])],
+    blocking_inputs: inputClasses.blocking,
+    advisory_inputs: inputClasses.advisory,
     // 옛 bootstrap 과의 호환: 둘을 합친 목록(새 bootstrap 은 위 둘을 읽는다)
-    freshness_inputs: [...new Set([...readings.map(item => item.path.replaceAll('\\', '/')), ...(operatingKnowledge ? ['registry/operating-knowledge.json'] : []), ...(compat ? [KIT_COMPAT_SOURCE] : []), ...(branchFlowPolicy ? [BRANCH_FLOW_POLICY_SOURCE] : []), ...KIT_GENERATOR_INPUTS])],
+    freshness_inputs: inputClasses.all,
     // ★Codex 검토: ai-core 의 보관 접두사만 실으면 제품 저장소의 보관 가지가 늘 위반으로 뜬다. 그 프로젝트 것만 더한다 — 범용 archive- 면제는 구멍이다.
     branch_flow_policy: branchFlowPolicy ? { flow_enforcement: { ...branchFlowPolicy.flow_enforcement, exempt_prefixes: [...new Set([...(branchFlowPolicy.flow_enforcement.exempt_prefixes ?? []), ...(receipt.target?.project_id ? [`work/${receipt.target.project_id}/archive-`] : [])])] }, branch_naming: { forbidden_actor_prefixes: branchFlowPolicy.branch_naming?.forbidden_actor_prefixes ?? [] } } : null,
     catalog_inputs: catalog.map(item => item.source),
@@ -189,20 +217,23 @@ const coreHead=ghAuth.ok?run('gh',['api','repos/'+coreRepo+'/commits/main','--jq
 const projectFreshness=remoteHead&&head.ok?(remoteHead===head.stdout?'CURRENT':'STALE_OR_DIVERGED'):'UNKNOWN';
 ${kitFreshness.toString()}
 ${kitAuthority.toString()}
+${kitFreshnessInputs.toString()}
+${kitSafetyDecision.toString()}
 const 흐르나=${흐르나.toString()};
 ${branchFlowWarnings.toString()}
 const coreCompareRun=coreHead.ok&&coreHead.stdout!==kit.core_revision&&Array.isArray(kit.freshness_inputs)?run('gh',['api','repos/'+coreRepo+'/compare/'+kit.core_revision+'...'+coreHead.stdout,'--jq','{status:.status,ahead_by:.ahead_by,files:[.files[]|.filename,(.previous_filename//empty)]}']):null;
 let coreCompare=null;try{coreCompare=coreCompareRun?.ok?{ok:true,...JSON.parse(coreCompareRun.stdout)}:(coreCompareRun?{ok:false}:null)}catch{coreCompare={ok:false}}
 let currentVerification;
 if(coreCompare?.ok&&kit.verification_source&&coreCompare.files?.includes(kit.verification_source)){const raw=run('gh',['api','-H','Accept: application/vnd.github.raw','repos/'+coreRepo+'/contents/'+kit.verification_source+'?ref='+coreHead.stdout]);try{if(raw.ok){const reg=JSON.parse(raw.stdout);const p=(reg.projects??[]).find(x=>x.project_id===kit.target?.project_id);currentVerification=p?.commands??null;}}catch{}}
-const freshness=kitFreshness({kitRevision:kit.core_revision,coreHead:coreHead.ok?coreHead.stdout:null,inputs:Array.isArray(kit.blocking_inputs)?kit.blocking_inputs:kit.freshness_inputs,advisoryInputs:Array.isArray(kit.blocking_inputs)?kit.advisory_inputs:undefined,catalogInputs:kit.catalog_inputs,compare:coreCompare,verificationSource:kit.verification_source,verification:kit.verification,currentVerification});
+const freshnessInputs=kitFreshnessInputs(kit);
+const freshness=kitFreshness({kitRevision:kit.core_revision,coreHead:coreHead.ok?coreHead.stdout:null,inputs:freshnessInputs.inputs,advisoryInputs:freshnessInputs.advisoryInputs,catalogInputs:kit.catalog_inputs,compare:coreCompare,verificationSource:kit.verification_source,verification:kit.verification,currentVerification});
 const coreFreshness=freshness.status;
 const {status:authorityStatus,anchor:authorityAnchor,changed:authorityChanged}=kitAuthority({run,kit,generatedAuthority});
 const kitCheck=authorityStatus==='MATCH'?run(process.execPath,[join(core,'verify-kit.mjs')]):{ok:false,status:null,stdout:'',error:'STARTER_KIT_AUTHORITY_UNVERIFIED'};
 let kitVerification=null;
 try{kitVerification=kitCheck.stdout?JSON.parse(kitCheck.stdout):null}catch{}
-const kitRevisionStatus=kitVerification?.revision?.status??'UNAVAILABLE';
-const kitReady=authorityStatus==='MATCH'&&kitCheck.ok&&kitVerification?.status==='PASS';
+const safety=kitSafetyDecision({coreHeadOk:coreHead.ok,freshness,authorityStatus,kitCheckOk:kitCheck.ok,kitVerification});
+const kitReady=safety.kitReady;
 const blockers=[];
 if(!gitVersion.ok)blockers.push('GIT_UNAVAILABLE');
 if(!remote.ok)blockers.push('GIT_REMOTE_UNAVAILABLE');
@@ -210,9 +241,9 @@ if(!ghVersion.ok)blockers.push('GH_CLI_UNAVAILABLE');else if(!ghAuth.ok)blockers
 if(!repoAccess.ok)blockers.push('GITHUB_REPOSITORY_UNAVAILABLE');
 if(dirty.ok&&dirty.stdout)blockers.push('DIRTY_WORKTREE_REVIEW_REQUIRED');
 if(!remoteHead)blockers.push('REMOTE_BRANCH_HEAD_UNAVAILABLE');else if(projectFreshness!=='CURRENT')blockers.push(syncResult==='DIVERGED'?'LOCAL_BRANCH_DIVERGED':'LOCAL_BRANCH_NOT_CURRENT');
-if(!coreHead.ok)blockers.push('AI_CORE_REMOTE_HEAD_UNAVAILABLE');else if(coreFreshness==='UNKNOWN')blockers.push('AI_CORE_KIT_FRESHNESS_UNKNOWN');else if(coreFreshness==='STALE')blockers.push('AI_CORE_KIT_STALE');
+blockers.push(...safety.blockers);
 const warnings=freshness.catalog_changed.length?['AI_CORE_CATALOG_CHANGED: catalog/ 는 참고용 사본이다 — 쓰기 전에 ai-core registry 에서 다시 읽는다 ('+freshness.catalog_changed.join(', ')+')']:[];
-if(coreFreshness==='UPDATE_AVAILABLE')warnings.push('AI_CORE_KIT_UPDATE_AVAILABLE: AI Core 키트 생성기에 새 기능이 있다('+freshness.advisory_changed.join(', ')+') — 안전 판정은 그대로라 막지 않는다. 다음 키트 배포 때 받는다');
+warnings.push(...safety.warnings);
 const flowScan=kit.branch_flow_policy?run('git',['ls-remote','--symref','origin']):{ok:false,stdout:''};
 let defaultBranch=null;const remoteHeads=new Map();
 if(flowScan.ok){for(const line of flowScan.stdout.split(/\\r?\\n/).filter(Boolean)){const sym=line.match(/^ref:\\s+refs\\/heads\\/(\\S+)\\s+HEAD$/);if(sym){defaultBranch=sym[1];continue;}const m=line.match(/^([0-9a-f]{40})\\s+refs\\/heads\\/(.+)$/);if(m)remoteHeads.set(m[2],m[1]);}}
@@ -231,7 +262,6 @@ if(kit.branch_flow_policy&&!noMergedRun.ok)warnings.push('BRANCH_FLOW_UNKNOWN: �
 if(unscanned.length)warnings.push('BRANCH_FLOW_PARTIAL: 로컬에 없는 원격 가지 '+unscanned.length+'개는 판정하지 못했다 — git fetch 뒤 다시 본다');
 if(prListTruncated)warnings.push('BRANCH_FLOW_PR_LIST_TRUNCATED: 열린 PR 이 1000개 이상이라 목록이 잘렸을 수 있다 — PR 여부에 달린 판정은 확정하지 않는다');
 if(branchFlow.violations.length)warnings.push('BRANCH_NOT_FLOWING: main 으로 흐르지 않는 가지 '+branchFlow.violations.length+'개 — '+branchFlow.violations.slice(0,5).map(v=>v.ref).join(', ')+(branchFlow.violations.length>5?' …':'')+' · 정리(PR 로 보내기·보관으로 닫기)는 운영 몫이다. 이 경고는 세션을 막지 않는다');
-if(!kitReady){if(kitRevisionStatus==='MISMATCH')blockers.push('STARTER_KIT_REVISION_MISMATCH');else blockers.push('STARTER_KIT_VERIFICATION_FAILED');}
 if(syncResult==='FETCH_FAILED'||syncResult==='FAST_FORWARD_FAILED')blockers.push('SAFE_SYNC_FAILED');
 const next=blockers.includes('STARTER_KIT_REVISION_MISMATCH')?'Regenerate the AI Core starter kit against this exact project revision before starting work.':blockers.includes('STARTER_KIT_VERIFICATION_FAILED')?'Repair starter-kit verification before starting work.':blockers.includes('AI_CORE_KIT_STALE')?'Refresh this project through the AI Core starter-kit distribution PR, then rerun bootstrap.':blockers.includes('LOCAL_BRANCH_NOT_CURRENT')?'If the worktree is clean and the branch should follow origin, rerun with --sync.':blockers.length?'Resolve only the listed blockers; preserve local work and continue safe read-only work where possible.':'Read project instructions and begin the user task directly.';
 const out={schema:'ai-core-session-bootstrap/v2',status:blockers.length?'HOLD':'READY',mode:sync?'SYNC':'OBSERVE',project:{repository:repo,expected_baseline:kit.target?.revision??null,remote:remote.ok?remote.stdout:null,branch:branch.ok?branch.stdout:null,head:head.ok?head.stdout:null,remote_head:remoteHead,remote_freshness:projectFreshness,dirty:dirty.ok?Boolean(dirty.stdout):null,sync_result:syncResult,branch_flow:{default_branch:defaultBranch,checked:branchFlow.checked,unscanned:unscanned.length,pr_known:prKnown,unconfirmed:branchFlow.unconfirmed.slice(0,20),violations:branchFlow.violations.slice(0,20)},kit_authority:{status:authorityStatus,anchor_commit:authorityAnchor,changed:authorityChanged},kit_verification:kitVerification},civilization:{core_repository:coreRepo,kit_revision:kit.core_revision,remote_head:coreHead.ok?coreHead.stdout:null,remote_freshness:coreFreshness,freshness_reason:freshness.reason,ahead_by:coreCompare?.ahead_by??null,changed_inputs:freshness.changed,constitution:'standards/AI_WORKING_STANDARD.md',operating_knowledge:'OPERATING_KNOWLEDGE.json',catalog:'catalog/',handoff:'WORK_RESULT.md',evolution_inbox:'https://github.com/freepass-creator/ai-core/issues/211',verification:kit.verification},access:{node:nodeVersion.stdout,git:gitVersion.ok?gitVersion.stdout:null,github:{expected_identity:expected,actual_identity:ghUser.ok?ghUser.stdout:null,cli:ghVersion.ok?'AVAILABLE':'UNAVAILABLE',auth:ghAuth.ok?'READY':'UNAVAILABLE',repository:repoAccess.ok?'READY':'UNAVAILABLE'}},rules:{github_latest_required:true,fast_forward_only:true,reuse_first:true,preserve_dirty_work:true,no_secret_output:true,no_repeated_login:true},blockers,warnings,next_action:next};
