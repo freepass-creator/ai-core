@@ -1,0 +1,5 @@
+aiops PR #20 재검토
+
+읽기 전용. C:/dev/aiops 가지 work/aiops/penalty-manual-canon-20260930 HEAD. 두 지적 반영: (1) 정본 13절에 인적사항 규칙 이관 — 코드가 보장하지 않는다는 사실(gogaek-injeoksahang 이름만 대체 연결·기존값 재대조 없음)까지 적음 (2) 어디를보나 325 를 node wonja/gwataeryo.mjs --슥 으로. 덤: 옛 변경부과 매뉴얼의 실명 한 곳 가림. 옛 판 둘에 정본에 없는 살아 있는 규칙이 더 남았나도 한 번 더 봐 달라. APPROVE 또는 REQUEST_CHANGES(파일:줄). 파일은 고치지 마라.
+
+200자 이내 한국어로 답해라.
