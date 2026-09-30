@@ -62,7 +62,7 @@ export async function computeKitIntegrityFingerprint() {
     const { manifest } = await installAcademyStarterKit({ output: join(dir, '.ai-core'), receipt, readings: [{ path: 'docs/AI_WORKING_STANDARD.md', body: 'fixture' }], coreRevision: 'c'.repeat(40), operatingKnowledge: { schema_version: '1.0' }, catalog: [], branchFlowPolicy: policy, compat: { compat_version: 0 } });
     const boot = await readFile(join(dir, '.ai-core', 'session-bootstrap.mjs'), 'utf8');
     const verify = await readFile(join(dir, '.ai-core', 'verify-kit.mjs'), 'utf8');
-    const fields = JSON.stringify({ schema: manifest.schema, digest_rule: manifest.digest_rule, blocking_inputs: manifest.blocking_inputs, advisory_inputs: manifest.advisory_inputs, freshness_inputs: manifest.freshness_inputs, has_compat: manifest.compat_version !== null, verification_source: manifest.verification_source, file_paths: manifest.files.map((f) => f.path) });
+    const fields = JSON.stringify({ schema: manifest.schema, digest_rule: manifest.digest_rule, blocking_inputs: manifest.blocking_inputs, advisory_inputs: manifest.advisory_inputs, freshness_inputs: manifest.freshness_inputs, has_compat: manifest.compat_version !== null, verification_source: manifest.verification_source, files: manifest.files.map((f) => ({ path: f.path, sha256: f.sha256, source: f.source })) });
     return createHash('sha256').update([boot, verify, fields].join('\n')).digest('hex');
   } finally {
     await rm(dir, { recursive: true, force: true });
@@ -202,7 +202,7 @@ export async function installAcademyStarterKit({ output, receipt, readings, core
   const bootstrap = `import{spawnSync}from'node:child_process';
 import{readFile}from'node:fs/promises';
 import{dirname,resolve,join}from'node:path';
-import{fileURLToPath,pathToFileURL}from'node:url';
+import{fileURLToPath}from'node:url';
 const core=dirname(fileURLToPath(import.meta.url)),root=resolve(core,'..'),sync=process.argv.includes('--sync');
 const generatedAuthority={core_revision:${JSON.stringify(coreRevision)},target_revision:${JSON.stringify(receipt.target.revision)}};
 const run=(cmd,args=[])=>{const r=spawnSync(cmd,args,{cwd:root,encoding:'utf8',windowsHide:true,shell:false});return{ok:!r.error&&r.status===0,status:r.status,stdout:(r.stdout??'').trim(),error:r.error?.code??null}};
@@ -259,7 +259,7 @@ blockers.push(...safety.blockers);
 const warnings=freshness.catalog_changed.length?['AI_CORE_CATALOG_CHANGED: catalog/ 는 참고용 사본이다 — 쓰기 전에 ai-core registry 에서 다시 읽는다 ('+freshness.catalog_changed.join(', ')+')']:[];
 warnings.push(...safety.warnings);
 let advisoryDetail=null;
-try{const mod=await import(pathToFileURL(join(core,'advisory.mjs')).href);const res=await mod.default({run,kit,repo,ghAuthOk:ghAuth.ok});if(!Array.isArray(res?.warnings)||!res.warnings.every(w=>typeof w==='string'))warnings.push('ADVISORY_UNAVAILABLE: 경고 모듈의 결과 형식이 맞지 않는다 — 안전 판정은 그대로다');else warnings.push(...Object.freeze([...res.warnings]));try{advisoryDetail=res.detail?JSON.parse(JSON.stringify(res.detail)):null}catch{advisoryDetail=null}}catch{warnings.push('ADVISORY_UNAVAILABLE: 경고 모듈을 불러오지 못했다 — 안전 판정은 그대로다');}
+const advisoryRun=spawnSync(process.execPath,[join(core,'advisory.mjs'),...(ghAuth.ok?['--gh-auth-ok']:[])],{cwd:root,encoding:'utf8',windowsHide:true,shell:false,timeout:120000});let advisoryResult=null;try{advisoryResult=!advisoryRun.error&&advisoryRun.status===0?JSON.parse(advisoryRun.stdout):null}catch{advisoryResult=null}if(!advisoryResult||!Array.isArray(advisoryResult.warnings)||!advisoryResult.warnings.every(w=>typeof w==='string'))warnings.push('ADVISORY_UNAVAILABLE: 경고 모듈이 실패했거나 형식이 맞지 않는다(별도 프로세스) — 안전 판정은 그대로다');else{warnings.push(...Object.freeze([...advisoryResult.warnings]));try{advisoryDetail=advisoryResult.detail?JSON.parse(JSON.stringify(advisoryResult.detail)):null}catch{advisoryDetail=null}}
 if(syncResult==='FETCH_FAILED'||syncResult==='FAST_FORWARD_FAILED')blockers.push('SAFE_SYNC_FAILED');
 const next=blockers.includes('STARTER_KIT_REVISION_MISMATCH')?'Regenerate the AI Core starter kit against this exact project revision before starting work.':blockers.includes('STARTER_KIT_VERIFICATION_FAILED')?'Repair starter-kit verification before starting work.':blockers.includes('AI_CORE_KIT_STALE')?'Refresh this project through the AI Core starter-kit distribution PR, then rerun bootstrap.':blockers.includes('LOCAL_BRANCH_NOT_CURRENT')?'If the worktree is clean and the branch should follow origin, rerun with --sync.':blockers.length?'Resolve only the listed blockers; preserve local work and continue safe read-only work where possible.':'Read project instructions and begin the user task directly.';
 const out={schema:'ai-core-session-bootstrap/v2',status:blockers.length?'HOLD':'READY',mode:sync?'SYNC':'OBSERVE',project:{repository:repo,expected_baseline:kit.target?.revision??null,remote:remote.ok?remote.stdout:null,branch:branch.ok?branch.stdout:null,head:head.ok?head.stdout:null,remote_head:remoteHead,remote_freshness:projectFreshness,dirty:dirty.ok?Boolean(dirty.stdout):null,sync_result:syncResult,branch_flow:advisoryDetail?.branch_flow??null,kit_authority:{status:authorityStatus,anchor_commit:authorityAnchor,changed:authorityChanged},kit_verification:kitVerification},civilization:{core_repository:coreRepo,kit_revision:kit.core_revision,remote_head:coreHead.ok?coreHead.stdout:null,remote_freshness:coreFreshness,freshness_reason:freshness.reason,ahead_by:coreCompare?.ahead_by??null,changed_inputs:freshness.changed,constitution:'standards/AI_WORKING_STANDARD.md',operating_knowledge:'OPERATING_KNOWLEDGE.json',catalog:'catalog/',handoff:'WORK_RESULT.md',evolution_inbox:'https://github.com/freepass-creator/ai-core/issues/211',verification:kit.verification},access:{node:nodeVersion.stdout,git:gitVersion.ok?gitVersion.stdout:null,github:{expected_identity:expected,actual_identity:ghUser.ok?ghUser.stdout:null,cli:ghVersion.ok?'AVAILABLE':'UNAVAILABLE',auth:ghAuth.ok?'READY':'UNAVAILABLE',repository:repoAccess.ok?'READY':'UNAVAILABLE'}},rules:{github_latest_required:true,fast_forward_only:true,reuse_first:true,preserve_dirty_work:true,no_secret_output:true,no_repeated_login:true},blockers,warnings,next_action:next};
@@ -267,10 +267,13 @@ console.log(JSON.stringify(out,null,2));if(blockers.length)process.exitCode=2;
 `;
   // ★2026-09-30 (Codex 합의): 경고 기능은 advisory.mjs 로. bootstrap(안전 핵심)은 여기서 «문자열 경고»만 받는다 — 막거나 상태를 바꿀 수 없다.
   //   그래서 무결성 지문은 bootstrap 전문을 보고, advisory.mjs 는 빼도 된다(기능을 붙여도 배포된 키트가 막히지 않는다).
-  const advisory = `// AI Core 키트 — 경고 기능(advisory). 세션을 막지 못한다: bootstrap 은 여기서 문자열 경고만 받는다.
+  const advisory = `// AI Core 키트 — 경고 기능(advisory). bootstrap 이 «별도 프로세스»로 돌려 stdout 의 JSON 문자열 경고만 받는다 — 세션을 막거나 상태를 바꿀 수 없다.
 const 흐르나=${흐르나.toString()};
 ${branchFlowWarnings.toString()}
-export default async function advisory({run,kit,repo,ghAuthOk}){
+import{spawnSync}from'node:child_process';import{readFile}from'node:fs/promises';import{dirname,resolve,join}from'node:path';import{fileURLToPath}from'node:url';
+const core=dirname(fileURLToPath(import.meta.url)),root=resolve(core,'..');
+const run=(cmd,args=[])=>{const r=spawnSync(cmd,args,{cwd:root,encoding:'utf8',windowsHide:true,shell:false,timeout:60000});return{ok:!r.error&&r.status===0,status:r.status,stdout:(r.stdout??'').trim()}};
+const kit=JSON.parse(await readFile(join(core,'kit.json'),'utf8'));const repo=kit.target?.repository??null;const ghAuthOk=process.argv.includes('--gh-auth-ok');
 const warnings=[];const ghAuth={ok:ghAuthOk};
 const flowScan=kit.branch_flow_policy?run('git',['ls-remote','--symref','origin']):{ok:false,stdout:''};
 let defaultBranch=null;const remoteHeads=new Map();
@@ -290,8 +293,7 @@ if(kit.branch_flow_policy&&!noMergedRun.ok)warnings.push('BRANCH_FLOW_UNKNOWN: �
 if(unscanned.length)warnings.push('BRANCH_FLOW_PARTIAL: 로컬에 없는 원격 가지 '+unscanned.length+'개는 판정하지 못했다 — git fetch 뒤 다시 본다');
 if(prListTruncated)warnings.push('BRANCH_FLOW_PR_LIST_TRUNCATED: 열린 PR 이 1000개 이상이라 목록이 잘렸을 수 있다 — PR 여부에 달린 판정은 확정하지 않는다');
 if(branchFlow.violations.length)warnings.push('BRANCH_NOT_FLOWING: main 으로 흐르지 않는 가지 '+branchFlow.violations.length+'개 — '+branchFlow.violations.slice(0,5).map(v=>v.ref).join(', ')+(branchFlow.violations.length>5?' …':'')+' · 정리(PR 로 보내기·보관으로 닫기)는 운영 몫이다. 이 경고는 세션을 막지 않는다');
-return {warnings,detail:{branch_flow:{default_branch:defaultBranch,checked:branchFlow.checked,unscanned:unscanned.length,pr_known:prKnown,unconfirmed:branchFlow.unconfirmed.slice(0,20),violations:branchFlow.violations.slice(0,20)}}};
-}
+process.stdout.write(JSON.stringify({warnings,detail:{branch_flow:{default_branch:defaultBranch,checked:branchFlow.checked,unscanned:unscanned.length,pr_known:prKnown,unconfirmed:branchFlow.unconfirmed.slice(0,20),violations:branchFlow.violations.slice(0,20)}}}));
 `;
   files.push({ path: 'advisory.mjs', sha256: digest(advisory), source: 'generated:advisory/v1' });
   files.push({ path: 'session-bootstrap.mjs', sha256: digest(bootstrap), source: 'generated:session-bootstrap/v2' });

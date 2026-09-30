@@ -5,7 +5,6 @@ import { execFileSync, spawnSync } from 'node:child_process';
 import { mkdtemp, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { pathToFileURL } from 'node:url';
 import { installAcademyStarterKit, kitFreshness, KIT_GENERATOR_INPUTS, branchFlowWarnings } from '../src/academy/starter-kit.mjs';
 
 const receipt={status:'READY',observed_at:'2026-09-22T00:00:00Z',task:'기능 구현',track:'development',target:{repository:'o/r',revision:'a'.repeat(40)},precheck:{completion_verification:{test:'npm test'}}};
@@ -343,13 +342,16 @@ test('★kit carries the branch-flow policy and the bootstrap embeds the same ju
     const parsed = spawnSync(process.execPath, ['--check', join(out, f)], { encoding: 'utf8' });
     assert.equal(parsed.status, 0, parsed.stderr);
   }
-  // advisory 는 «문자열 경고»만 돌려준다 — 실제로 불러 확인
-  const mod = await import(pathToFileURL(join(out, 'advisory.mjs')).href);
-  const res = await mod.default({ run: () => ({ ok: false, stdout: '' }), kit: manifest, repo: null, ghAuthOk: false });
+  // advisory 는 «별도 프로세스»로 돌아 stdout 에 JSON 문자열 경고만 낸다 — 실제로 돌려 확인(Codex: 같은 프로세스면 부수효과를 못 막는다)
+  const advRun = spawnSync(process.execPath, [join(out, 'advisory.mjs')], { cwd: root, encoding: 'utf8', timeout: 60000 });
+  assert.equal(advRun.status, 0, advRun.stderr);
+  const res = JSON.parse(advRun.stdout);
   assert.ok(Array.isArray(res.warnings) && res.warnings.every((w) => typeof w === 'string'));
-  // bootstrap 은 advisory 결과를 문자열 배열로만 받고, 실패는 ADVISORY_UNAVAILABLE 경고로만
+  // bootstrap 은 advisory 를 불러오지(import) 않고 프로세스로 돌리며, 결과는 문자열 배열로만, 실패는 ADVISORY_UNAVAILABLE 경고로만
   const boot = await readFile(join(out, 'session-bootstrap.mjs'), 'utf8');
-  assert.ok(boot.includes("res.warnings.every(w=>typeof w==='string')") && boot.includes('Object.freeze([...res.warnings])'), 'advisory 결과를 검사·동결하지 않는다');
+  assert.ok(!/import\([^)]*advisory/.test(boot) && !boot.includes('pathToFileURL'), 'bootstrap 이 advisory 를 같은 프로세스에서 불러온다');
+  assert.ok(boot.includes("spawnSync(process.execPath,[join(core,'advisory.mjs')") && boot.includes('timeout:120000'), 'advisory 를 시간 제한 있는 별도 프로세스로 돌리지 않는다');
+  assert.ok(boot.includes("advisoryResult.warnings.every(w=>typeof w==='string')") && boot.includes('Object.freeze([...advisoryResult.warnings])'), 'advisory 결과를 검사·동결하지 않는다');
   assert.ok(!/advisory[^\n]*blockers\.push/.test(boot), 'advisory 가 차단을 만들 수 있다');
   assert.ok(!boot.includes(흐르나.toString()), '경고 판정이 안전 핵심 bootstrap 에 남아 있다');
 });
@@ -464,4 +466,16 @@ test('★safety wiring: input classes, legacy fallback, and blocker mapping (all
   const noAuth = kitSafetyDecision({ ...ok, authorityStatus: 'MISMATCH', freshness: { status: 'CURRENT_CONTENT' } });
   assert.equal(noAuth.kitReady, false, '권한이 안 맞는데 검증 PASS 만으로 통과했다');
   assert.deepEqual(noAuth.blockers, ['STARTER_KIT_VERIFICATION_FAILED']);
+});
+
+test('★a hostile advisory module cannot cut the safety path short — bootstrap still reports, with ADVISORY_UNAVAILABLE', async () => {
+  /** Codex 검토: 같은 프로세스에서 불러오면 process.exit·전역 변경으로 안전 출력 전에 끝낼 수 있다 → 별도 프로세스로 격리했다. */
+  const root = await mkdtemp(join(tmpdir(), 'academy-kit-hostile-')), out = join(root, '.ai-core');
+  await installAcademyStarterKit({ output: out, receipt, coreRevision: 'b'.repeat(40), readings: [{ path: 'docs/AI_WORKING_STANDARD.md', body: 'one' }], operatingKnowledge: { schema_version: '1.0', platforms: [] } });
+  await writeFile(join(out, 'advisory.mjs'), "process.stdout.write('not json'); globalThis.JSON = null; process.exit(0);\n");
+  const run = spawnSync(process.execPath, [join(out, 'session-bootstrap.mjs')], { cwd: root, encoding: 'utf8', env: { ...process.env, GH_CONFIG_DIR: join(root, 'no-gh'), GH_TOKEN: '', GITHUB_TOKEN: '' } });
+  const outp = JSON.parse(run.stdout);
+  assert.ok(outp.warnings.some((w) => w.startsWith('ADVISORY_UNAVAILABLE')), '적대적 advisory 를 알아채지 못했다');
+  assert.ok(Array.isArray(outp.blockers) && outp.status === 'HOLD', '안전 판정 출력이 끝까지 나오지 않았다');
+  assert.ok(outp.blockers.includes('STARTER_KIT_VERIFICATION_FAILED'), '바뀐 advisory.mjs 를 검증기가 잡지 못했다(해시 목록)');
 });

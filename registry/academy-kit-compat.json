@@ -1,7 +1,7 @@
 {
   "schema": "ai-core-academy-kit-compat/v1",
   "compat_version": 2,
-  "integrity_fingerprint": "a2c58c3df775cbd3a2e0152bb2977cad2bcc9032b500fb28e372a3acb7de04a2",
+  "integrity_fingerprint": "697eee7796eaff29dcf3143ba190206178f5aeed5ea8dbf24ed6d79db7939da6",
   "why": [
     "★2026-09-30: 키트 생성기가 바뀔 때마다 배포된 키트가 전부 AI_CORE_KIT_STALE 로 막혔다(경고 기능 하나 더해도). Codex 설계: 차단/권고 입력 분리 + 명시적 호환 버전.",
     "이 파일은 키트의 «차단 입력»이다. compat_version 이 오르면 배포된 키트가 STALE 이 되어 다시 받게 된다.",
