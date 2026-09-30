@@ -631,48 +631,48 @@
       ]
     },
     {
-      "project_id": "kakao-ops",
-      "name": "Kakao Ops",
+      "project_id": "ai-ops",
+      "name": "AI Ops",
       "organization": "SUBSIDIARY",
-      "mission": "Run the local KakaoTalk desktop automation and consume FreePass Data through a dedicated authenticated read contract without exposing Firestore credentials to the messaging PC.",
-      "repository": "freepass-creator/kakao-ops",
+      "mission": "Operate the company's AI employee runtime across the Windows PC: observe and act through Computer Use Core, with KakaoTalk as the first app adapter, while consuming project/domain data only through their governed contracts.",
+      "repository": "freepass-creator/ai-ops",
       "default_branch": "master",
       "work_branches": [
         "codex/freepass-data-consumer-20260922"
       ],
       "local_path": "C:\\dev\\kakao-remote",
-      "head_revision": "ce79954be509ab5cfb603e84f83498db3b45f828",
+      "head_revision": "750d50809a520f36cbbdde8c80ea3b2d63b85477",
       "authoritative_sources": [
         {
           "kind": "GIT",
-          "ref": "freepass-creator/kakao-ops",
-          "revision": "ce79954be509ab5cfb603e84f83498db3b45f828",
-          "observed_at": "2026-09-30T09:01:46Z"
+          "ref": "freepass-creator/ai-ops",
+          "revision": "750d50809a520f36cbbdde8c80ea3b2d63b85477",
+          "observed_at": "2026-09-30T09:06:25Z"
         }
       ],
       "commands": {
-        "install": null,
-        "test": null,
+        "install": "npm ci",
+        "test": "npm test",
         "build": null
       },
       "deploy_targets": [
-        "Dedicated Windows KakaoTalk operator PC"
+        "Dedicated Windows AI employee PC"
       ],
       "required_approvals": [
-        "external KakaoTalk message send",
-        "production consumer credential change"
+        "external message or email send when the active AI Ops policy requires approval",
+        "production consumer credential change",
+        "destructive or irreversible PC action"
       ],
       "known_blockers": [
-        "Dedicated kakao-ops consumer identity is not registered in FreePass Data yet.",
-        "FreePass Data has no non-empty ACTIVE erp-public release, so catalog answers must remain HOLD.",
-        "Repository has no committed deterministic test command yet."
+        "Current production mode is session-direct AI work; the legacy automatic-response pipeline remains blocked unless explicitly forced under the repository's current gate.",
+        "Windows operational verification still requires PowerShell 5.1/BOM compatibility, live DPI sender/read-count verification and outgoing-effect receipts on the target PC.",
+        "Multi-PC duplicate execution prevention and durable LIVE executor boundaries remain operational gates.",
+        "AI Ops may consume FreePass Data and other domain sources only through their governed consumer/read contracts; it must not become a second data SSOT or writer."
       ],
       "repository_lifecycle_status": "ACTIVE",
       "execution_readiness_status": "HOLD",
       "commands_absent_reason": {
-        "install": "The current repository has no package manifest or canonical installation command.",
-        "test": "Deterministic consumer-adapter tests are the next integration change and are not merged yet.",
-        "build": "PowerShell and Node.js runtime scripts execute from source without a build artifact."
+        "build": "The Node.js/PowerShell runtime executes from source and package.json has no build script."
       }
     },
     {
