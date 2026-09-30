@@ -7,7 +7,6 @@
     "처음엔 18개를 «두 통»에 나눠 담았다. 그게 너무 좁았다 — 기존 aiops 의 정본 숫자까지 AI Ops 로 밀어 넣었다.",
     "그래서 질문을 바꿨다. «무엇을 어느 통에»가 아니라 «공통을 어떻게 나누나»."
   ],
-
   "iron_rule": {
     "rule": "공통은 복사하지 않고 «버전으로 소비»한다.",
     "why": [
@@ -17,25 +16,37 @@
     "exception": "인터넷이 끊긴 곳(에어갭)만 해시로 검증한 읽기전용 묶음을 허용한다(Codex).",
     "bootstrap": "★AI 세션은 저장소를 열자마자 규칙을 읽어야 한다. 규칙이 패키지 안에만 있으면 설치 전엔 못 읽는다. 그래서 진입 문서(AGENTS.md·CLAUDE.md)는 «짧은 안내»로 남기고, 거기서 버전 고정된 AI Core 규칙으로 잇는다 — 진입 문서가 규칙의 사본이 되어선 안 된다."
   },
-
   "kinds": {
     "RULES": {
       "name": "① 규칙",
-      "examples": ["브랜치 규율", "lane 지도", "canon guard", "main-state", "CI 관문"],
+      "examples": [
+        "브랜치 규율",
+        "lane 지도",
+        "canon guard",
+        "main-state",
+        "CI 관문"
+      ],
       "provider": "AI Core",
       "how": "재사용 워크플로(`uses: freepass-creator/ai-core/.github/workflows/…@<tag|sha>`). 제품은 태그·SHA 로 고정해 부른다.",
       "now": "약 5개 저장소가 이미 이렇게 부른다(freepass-data·estimate·erp4·welrixtable). 나머지는 .ai-core/ 사본."
     },
     "CODE": {
       "name": "② 코드",
-      "examples": ["secret-scan", "시트 유틸", "원자 쓰기"],
+      "examples": [
+        "secret-scan",
+        "시트 유틸",
+        "원자 쓰기"
+      ],
       "provider": "AI Core",
       "how": "버전 패키지. 제품은 락파일로 고정해 설치한다.",
-      "now": "패키지로 받는 곳 1개(kakao-ops). ai-core 는 패키지로 나갈 설정이 아직 없다. secret-scan 은 2026-09-29 src/security/ 로 승격해 두었다."
+      "now": "패키지로 받는 곳 1개(ai-ops). ai-core 는 패키지로 나갈 설정이 아직 없다. secret-scan 은 2026-09-29 src/security/ 로 승격해 두었다."
     },
     "DATA": {
       "name": "③ 데이터",
-      "examples": ["상품·차량 재고", "대수·미수·계약·입금·과태료"],
+      "examples": [
+        "상품·차량 재고",
+        "대수·미수·계약·입금·과태료"
+      ],
       "provider": "★플랫폼이 아니라 «도메인 소유 서비스»",
       "how": "소유자 한 곳만 쓴다. 나머지는 계약(consumer boundary)으로 읽기만 한다.",
       "why_not_a_platform": "★실행하는 곳과 정본을 한 저장소에 두면 실행 코드가 정본을 고치기 쉽다. Codex: 「정본 데이터는 AI Ops 와 분리한 도메인 소유 서비스가 맡아야 한다」.",
@@ -46,26 +57,33 @@
     },
     "RUNTIME": {
       "name": "④ 실행",
-      "examples": ["카톡 자동화", "상품 갱신 지킴이", "워치독", "PC 제어"],
+      "examples": [
+        "카톡 자동화",
+        "상품 갱신 지킴이",
+        "워치독",
+        "PC 제어"
+      ],
       "provider": "AI Ops",
       "how": "하나의 런타임. 제품은 실행을 부탁할 뿐 자기 안에 실행기를 두지 않는다."
     },
     "CONTRACTS": {
       "name": "⑤ 계약·스키마·디자인 시스템",
-      "examples": ["데이터 스키마", "영수증 계약", "디자인 토큰·UI 부품"],
+      "examples": [
+        "데이터 스키마",
+        "영수증 계약",
+        "디자인 토큰·UI 부품"
+      ],
       "provider": "AI Core",
       "how": "버전 고정 패키지.",
       "why_separate": "공급자와 소비자 사이의 «약속»이다. ①②③④ 모두가 여기에 기댄다. Codex 가 넷에 더해 따로 세우자고 했다."
     }
   },
-
   "roles": {
     "AI Core": "①규칙 ②코드 ⑤계약을 «내보내는» 공급자 — 제품을 담는 통이 아니다",
-    "AI Ops":  "④실행을 «맡는» 공급자 — kakao-ops 를 키운 것",
+    "AI Ops": "④실행을 «맡는» 공급자 — ai-ops. 카카오톡은 첫 App Adapter이고 범위는 PC 전체 AI 직원 런타임이다.",
     "도메인 소유 서비스": "③데이터의 유일한 쓰기 자리 — freepass-data, 업무 정본",
     "제품·서비스": "완전 별도. 위를 «소비»만 하고, 자기 안에 공통의 사본을 두지 않는다"
   },
-
   "buckets": {
     "PLATFORM_CORE": "AI Core 자신",
     "PLATFORM_OPS": "AI Ops 자신",
@@ -75,21 +93,25 @@
     "RETIRE": "흡수할 것 없이 닫는다"
   },
   "no_gaps": "registry/projects.json 의 «모든» 프로젝트가 아래 어느 한 통에 들어가야 한다. 「미정」 통은 없다 — 판단이 들어간 것은 `confirm` 에 적는다.",
-
   "projects": {
-    "renman-data": { "bucket": "DATA_OWNER", "why": "Dedicated Renman read-contract and data-governance service; existing AI Ops business writers remain authoritative until a separately verified migration." },
-    "ai-core":                 { "bucket": "PLATFORM_CORE" },
-    "kakao-ops":               { "bucket": "PLATFORM_OPS", "note": "카톡 자동화를 넘어 PC 전체 통제로 키운다" },
-
-    "freepass-data":           { "bucket": "DATA_OWNER", "owns": "상품·차량" },
+    "renman-data": {
+      "bucket": "DATA_OWNER",
+      "why": "Dedicated Renman read-contract and data-governance service; existing AI Ops business writers remain authoritative until a separately verified migration."
+    },
+    "ai-core": {
+      "bucket": "PLATFORM_CORE"
+    },
+    "freepass-data": {
+      "bucket": "DATA_OWNER",
+      "owns": "상품·차량"
+    },
     "aiops": {
       "bucket": "DATA_OWNER",
       "owns": "대수·미수·계약·입금·과태료 — 전역 지침이 「숫자는 C:\\dev\\aiops 에서 읽는다」고 가리키는 그 정본",
-      "correction_2026_09_29": "★처음엔 ABSORB_INTO_OPS 로 적었다. 틀렸다 — 실행과 정본을 한 곳에 두게 된다. aiops 는 AI Ops 가 아니라 «데이터 소유 서비스»다(이름이 겹쳐 헷갈린다). 카톡 자동화 코드만 2026-09-22 kakao-ops 로 이미 떠났고, 남은 것은 정본 숫자다.",
+      "correction_2026_09_29": "★처음엔 ABSORB_INTO_OPS 로 적었다. 틀렸다 — 실행과 정본을 한 곳에 두게 된다. aiops 는 AI Ops 가 아니라 «데이터 소유 서비스»다(이름이 겹쳐 헷갈린다). 실행 코드는 2026-09-22 분리되었고 현재 freepass-creator/ai-ops 로 개명·확장됐으며, aiops 에 남은 것은 정본 숫자다.",
       "risk": "★정본을 어디로든 옮기면 전역 CLAUDE.md 의 경로를 «같은 변경에서» 바꿔야 한다. 안 바꾸면 모든 세션이 옛 자리를 읽는다 — 2026-08-25 대표가 지적한 「세션마다 숫자가 엇갈림」이 재현된다.",
       "confirm": "대표 확인 필요 — 이름·위치를 그대로 둘지, 별도 «업무 정본» 저장소로 떼어 낼지"
     },
-
     "docshub": {
       "bucket": "ABSORB_INTO_CORE",
       "why": "옮길 수 있는 절반(양식 150 · data 10)은 문서 규격·양식 엔진 — ⑤계약·디자인 시스템에 가깝다.",
@@ -101,21 +123,47 @@
       "why": "이미 DISABLED 이고, «업무 통제»라면 AI Ops 가 대신한다.",
       "confirm": "대표 확인 필요 — 흡수할 게 있으면 바꾼다"
     },
-
-    "freepass-admin":          { "bucket": "PRODUCT" },
-    "freepass-estimate":       { "bucket": "PRODUCT" },
-    "freepass-homepage":       { "bucket": "PRODUCT" },
-    "freepass-sales":          { "bucket": "PRODUCT" },
-    "freepasserp4":            { "bucket": "PRODUCT" },
-    "fp-settlement":           { "bucket": "PRODUCT" },
-    "sonogong-estimator":      { "bucket": "PRODUCT" },
-    "teamjpkwork":             { "bucket": "PRODUCT" },
-    "casemap-private":         { "bucket": "PRODUCT" },
-    "mewcar":                  { "bucket": "PRODUCT" },
-    "mewcar-jbwoori-proposal": { "bucket": "PRODUCT" },
-    "welrixtable":             { "bucket": "PRODUCT" }
+    "freepass-admin": {
+      "bucket": "PRODUCT"
+    },
+    "freepass-estimate": {
+      "bucket": "PRODUCT"
+    },
+    "freepass-homepage": {
+      "bucket": "PRODUCT"
+    },
+    "freepass-sales": {
+      "bucket": "PRODUCT"
+    },
+    "freepasserp4": {
+      "bucket": "PRODUCT"
+    },
+    "fp-settlement": {
+      "bucket": "PRODUCT"
+    },
+    "sonogong-estimator": {
+      "bucket": "PRODUCT"
+    },
+    "teamjpkwork": {
+      "bucket": "PRODUCT"
+    },
+    "casemap-private": {
+      "bucket": "PRODUCT"
+    },
+    "mewcar": {
+      "bucket": "PRODUCT"
+    },
+    "mewcar-jbwoori-proposal": {
+      "bucket": "PRODUCT"
+    },
+    "welrixtable": {
+      "bucket": "PRODUCT"
+    },
+    "ai-ops": {
+      "bucket": "PLATFORM_OPS",
+      "note": "PC 전체를 다루는 AI 직원 런타임. 카카오톡은 첫 App Adapter이며 현행 저장소는 freepass-creator/ai-ops."
+    }
   },
-
   "not_in_project_registry": {
     "devcenter": {
       "bucket": "ABSORB_INTO_CORE",
