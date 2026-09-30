@@ -129,6 +129,22 @@ candidate_implications:
 
 공통 교훈만 비식별 요약으로 AI Core에 올리고, 프로젝트별 원본·세부 데이터는 프로젝트 정본에 남긴다.
 
+### 6.1 실행형 Episode → Feedback 연결
+
+현장 Episode에서 위 Feedback Packet을 만들 때는 별도 원장을 새로 만들지 않고 기존 Episode JSON을 그대로 입력한다.
+
+```powershell
+npm run academy:feedback -- docs/episodes/<episode>.json
+```
+
+정본 구현은 `src/academy/episode-feedback.mjs`이며 출력은 비식별 요약·측정값·evidence pointer와 Lesson Candidate만 포함한다.
+`feedback_status=READY`는 피드백 재료가 갖춰졌다는 뜻일 뿐 채택이나 실행 승인이 아니다.
+사용자 지적 횟수만 있고 비식별 구조화 근거가 없으면 `USER_CORRECTION_DETAIL_MISSING`으로 HOLD한다.
+Lesson Candidate는 기존 Self-Evolution/Evolution Bridge를 통과해야 하며 이 경로 자체는 `auto_adopted=false`, `execution_authorized=false`를 유지한다.
+
+상세 계약: [Academy Episode Feedback Loop](ACADEMY_EPISODE_FEEDBACK_LOOP.md).
+
+
 ## 7. 고도화 채팅의 역할
 
 계속 고도화되는 채팅은 앞으로 다음 역할을 맡는다.
