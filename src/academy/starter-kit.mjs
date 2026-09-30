@@ -17,6 +17,14 @@ const portable = path => path.replaceAll('\\', '/').replace(/^docs\//, 'standard
 //   Codex 합의: 내용 기준(태그는 발행 누락 위험). 이름변경·간접 입력·갈라진 이력·잘린 비교는 닫는 쪽(STALE/UNKNOWN)으로.
 export const KIT_GENERATOR_INPUTS = ['src/academy/starter-kit.mjs', 'src/academy/start-gate.mjs', 'scripts/academy-start.mjs', 'src/governance/branch-flow.mjs'];
 export const BRANCH_FLOW_POLICY_SOURCE = 'registry/development-continuity-policy.json';
+export const KIT_COMPAT_SOURCE = 'registry/academy-kit-compat.json';
+
+/** 무결성 지문 — 키트의 «안전 판정»을 바꾸는 생성기 코드만 모은다(검증기·해시 규칙·신선도·권한).
+ *  registry/academy-kit-compat.json 의 integrity_fingerprint 와 다르면 테스트가 실패한다 → compat_version 을 올리고 지문을 갱신한다.
+ *  그 파일은 차단 입력이라, 버전이 오르면 배포된 키트가 AI_CORE_KIT_STALE 이 된다. (경고 기능은 여기 없다 → 권고) */
+export function kitIntegrityFingerprint() {
+  return createHash('sha256').update([VERIFIER_SOURCE, KIT_DIGEST_RULE, kitFreshness.toString(), kitAuthority.toString()].join('\n')).digest('hex');
+}
 
 // ★2026-09-30: 「메인으로 붙어서 가는지도 봐야 함」(대표). ai-core 에만 있던 «한 방향» 검사를 모든 저장소의 세션 시작에 싣는다.
 //   실측: 제품 저장소 12곳에 main 에 안 들어간 가지 57개, 그중 48개가 3일 넘게 멈춰 있었다.
@@ -39,7 +47,9 @@ export function branchFlowWarnings({ branches, policy, defaultBranch, now, judge
 }
 
 /** 키트 신선도 판정. 순수 함수 — 이 소스가 그대로 session-bootstrap.mjs 에 박힌다(밖의 이름을 쓰지 않는다). */
-export function kitFreshness({ kitRevision, coreHead, inputs, catalogInputs, compare, verificationSource, verification, currentVerification }) {
+export function kitFreshness({ kitRevision, coreHead, inputs, advisoryInputs, catalogInputs, compare, verificationSource, verification, currentVerification }) {
+  // ★2026-09-30 (Codex 설계): 입력을 «차단»과 «권고»로 가른다. 규격·정책·무결성(호환 버전 파일) 변경만 막고,
+  //   생성기에 기능이 붙은 것만으로는 막지 않는다(AI_CORE_KIT_UPDATE_AVAILABLE). advisoryInputs 가 없는 옛 키트는 전부 차단(그대로).
   // ★Codex 검토(PR #346): kit.verification 은 registry/projects.json 의 이 프로젝트 commands 다. 파일째 넣으면 매일 STALE,
   //   빼면 명령이 바뀌어도 모른다 → 그 «칸»만 비교한다. 못 읽었으면(undefined) 닫는다.
   const same = (a, b) => { const c = (v) => (v && typeof v === 'object' ? (Array.isArray(v) ? '[' + v.map(c).join(',') + ']' : '{' + Object.keys(v).sort().map((k) => JSON.stringify(k) + ':' + c(v[k])).join(',') + '}') : JSON.stringify(v ?? null)); return c(a) === c(b); };
@@ -58,9 +68,10 @@ export function kitFreshness({ kitRevision, coreHead, inputs, catalogInputs, com
     if (currentVerification === undefined) return { status: 'UNKNOWN', reason: 'VERIFICATION_UNREAD', changed, catalog_changed };
     if (!same(verification, currentVerification)) changed.push(verificationSource + '#commands');
   }
-  return changed.length
-    ? { status: 'STALE', reason: 'INPUT_CHANGED', changed, catalog_changed }
-    : { status: 'CURRENT_CONTENT', reason: 'INPUTS_UNCHANGED', changed, catalog_changed };
+  if (changed.length) return { status: 'STALE', reason: 'INPUT_CHANGED', changed, catalog_changed };
+  const advisory_changed = (advisoryInputs || []).filter((p) => touched.has(p));
+  if (advisory_changed.length) return { status: 'UPDATE_AVAILABLE', reason: 'ADVISORY_ONLY', changed, advisory_changed, catalog_changed };
+  return { status: 'CURRENT_CONTENT', reason: 'INPUTS_UNCHANGED', changed, catalog_changed };
 }
 
 async function put(path, body) {
@@ -74,7 +85,50 @@ async function put(path, body) {
   }
 }
 
-export async function installAcademyStarterKit({ output, receipt, readings, coreRevision, operatingKnowledge = null, catalog = [], branchFlowPolicy = null }) {
+export const VERIFIER_SOURCE = `import{createHash}from'node:crypto';import{execFileSync}from'node:child_process';import{readFile}from'node:fs/promises';import{dirname,join}from'node:path';import{fileURLToPath}from'node:url';const root=dirname(fileURLToPath(import.meta.url)),projectRoot=dirname(root);const git=args=>execFileSync('git',['-C',projectRoot,...args],{encoding:'utf8',stdio:['ignore','pipe','pipe']}).trim();const m=JSON.parse(await readFile(join(root,'kit.json'),'utf8'));const bad=[];for(const f of m.files){const b=(await readFile(join(root,f.path),'utf8')).replace(/\\r\\n/g,'\\n');if(createHash('sha256').update(b).digest('hex')!==f.sha256)bad.push(f.path)}let actualRevision=null,revisionStatus='UNAVAILABLE',advancedPaths=[];try{actualRevision=git(['rev-parse','HEAD']);if(m.target?.revision===actualRevision)revisionStatus='MATCH';else{git(['merge-base','--is-ancestor',m.target?.revision,actualRevision]);advancedPaths=git(['diff','--name-only',m.target.revision+'..'+actualRevision]).split(/\\r?\\n/).filter(Boolean);revisionStatus=advancedPaths.length>0&&advancedPaths.every(path=>path.startsWith('.ai-core/'))?'KIT_ONLY_ADVANCE':'MISMATCH'}}catch{}const failed=bad.length>0||!['MATCH','KIT_ONLY_ADVANCE'].includes(revisionStatus);console.log(JSON.stringify({schema:'ai-core-starter-kit-check/v2',status:failed?'FAIL':'PASS',core_revision:m.core_revision,changed:bad,revision:{expected:m.target?.revision??null,actual:actualRevision,status:revisionStatus,advanced_paths:advancedPaths}},null,2));if(failed)process.exitCode=1;\n`;
+
+/** 키트 권한(authority) 판정 — 이 키트 파일들이 «생성된 그대로» 커밋돼 있나. 순수에 가깝게: git 은 run 으로만 부른다.
+ *  ★Codex 검토(2026-09-30): bootstrap 안에 섞여 있으면 무결성 지문에 넣을 수 없다 → 따로 떼어 지문에 넣는다. 소스가 그대로 bootstrap 에 박힌다. */
+export function kitAuthority({ run, kit, generatedAuthority }) {
+  const authorityPaths = ['.ai-core/kit.json', '.ai-core/session-bootstrap.mjs', '.ai-core/verify-kit.mjs', '.ai-core/START_HERE.md'];
+  const authorityEpochPaths = ['.ai-core/session-bootstrap.mjs', '.ai-core/kit.json', '.ai-core/START_HERE.md'];
+  const lines = (s) => String(s || '').split(/\r?\n/).filter(Boolean);
+  const history = run('git', ['log', '--format=%H', '--', '.ai-core/session-bootstrap.mjs']);
+  const epochs = [];
+  if (history.ok) {
+    for (const candidate of lines(history.stdout)) {
+      const changed = run('git', ['diff-tree', '--no-commit-id', '--name-only', '-r', candidate]);
+      if (!changed.ok) continue;
+      const paths = lines(changed.stdout);
+      if (!authorityEpochPaths.every((path) => paths.includes(path))) continue;
+      const manifest = run('git', ['show', candidate + ':.ai-core/kit.json']);
+      if (!manifest.ok) continue;
+      try {
+        const k = JSON.parse(manifest.stdout);
+        if (!k.core_revision || !k.target?.revision) continue;
+        epochs.push({ commit: candidate, generation_key: k.core_revision + ':' + k.target.revision });
+      } catch {}
+    }
+  }
+  let anchor = null;
+  for (let i = 0; i < epochs.length; i += 1) {
+    if (!epochs.slice(i + 1).some((e) => e.generation_key === epochs[i].generation_key)) { anchor = epochs[i].commit; break; }
+  }
+  const changed = [];
+  if (anchor) {
+    for (const path of authorityPaths) {
+      const anchored = run('git', ['rev-parse', anchor + ':' + path]);
+      const current = run('git', ['hash-object', path]);
+      if (!anchored.ok || !current.ok || anchored.stdout !== current.stdout) changed.push(path.replace('.ai-core/', ''));
+    }
+  }
+  if (kit.core_revision !== generatedAuthority.core_revision || kit.target?.revision !== generatedAuthority.target_revision) {
+    if (!changed.includes('kit.json')) changed.push('kit.json');
+  }
+  return { status: !anchor ? 'UNAVAILABLE' : changed.length ? 'MISMATCH' : 'MATCH', anchor, changed };
+}
+
+export async function installAcademyStarterKit({ output, receipt, readings, coreRevision, operatingKnowledge = null, catalog = [], branchFlowPolicy = null, compat = null }) {
   if (receipt?.status !== 'READY') throw new Error('READY_RECEIPT_REQUIRED');
   const files = [];
   for (const item of readings) {
@@ -85,7 +139,12 @@ export async function installAcademyStarterKit({ output, receipt, readings, core
   const manifest = {
     schema: 'ai-core-starter-kit/v1', digest_rule: KIT_DIGEST_RULE, core_revision: coreRevision, generated_at: receipt.observed_at,
     task: receipt.task, track: receipt.track, target: receipt.target, files,
-    freshness_inputs: [...new Set([...readings.map(item => item.path.replaceAll('\\', '/')), ...(operatingKnowledge ? ['registry/operating-knowledge.json'] : []), ...(branchFlowPolicy ? [BRANCH_FLOW_POLICY_SOURCE] : []), ...KIT_GENERATOR_INPUTS])],
+    compat_version: compat?.compat_version ?? null,
+    // 차단: 읽은 규격·운영지식·호환 버전 파일(무결성 지문이 여기 있다). 권고: 생성기·가지 정책(경고 기능).
+    blocking_inputs: [...new Set([...readings.map(item => item.path.replaceAll('\\', '/')), ...(operatingKnowledge ? ['registry/operating-knowledge.json'] : []), ...(compat ? [KIT_COMPAT_SOURCE] : [])])],
+    advisory_inputs: [...new Set([...(branchFlowPolicy ? [BRANCH_FLOW_POLICY_SOURCE] : []), ...KIT_GENERATOR_INPUTS])],
+    // 옛 bootstrap 과의 호환: 둘을 합친 목록(새 bootstrap 은 위 둘을 읽는다)
+    freshness_inputs: [...new Set([...readings.map(item => item.path.replaceAll('\\', '/')), ...(operatingKnowledge ? ['registry/operating-knowledge.json'] : []), ...(compat ? [KIT_COMPAT_SOURCE] : []), ...(branchFlowPolicy ? [BRANCH_FLOW_POLICY_SOURCE] : []), ...KIT_GENERATOR_INPUTS])],
     // ★Codex 검토: ai-core 의 보관 접두사만 실으면 제품 저장소의 보관 가지가 늘 위반으로 뜬다. 그 프로젝트 것만 더한다 — 범용 archive- 면제는 구멍이다.
     branch_flow_policy: branchFlowPolicy ? { flow_enforcement: { ...branchFlowPolicy.flow_enforcement, exempt_prefixes: [...new Set([...(branchFlowPolicy.flow_enforcement.exempt_prefixes ?? []), ...(receipt.target?.project_id ? [`work/${receipt.target.project_id}/archive-`] : [])])] }, branch_naming: { forbidden_actor_prefixes: branchFlowPolicy.branch_naming?.forbidden_actor_prefixes ?? [] } } : null,
     catalog_inputs: catalog.map(item => item.source),
@@ -95,7 +154,7 @@ export async function installAcademyStarterKit({ output, receipt, readings, core
   };
   const start = `# AI 작업 시작 키트\n\n> AI Core revision: ${coreRevision} · target revision: ${receipt.target.revision}\n\n1. 프로젝트 루트에서 \`node .ai-core/session-bootstrap.mjs\`를 실행해 정체성·정본·GitHub 연결·원격 최신성·검증 명령을 한 번에 확인한다.\n2. 원격보다 뒤처졌고 작업 트리가 깨끗하면 \`node .ai-core/session-bootstrap.mjs --sync\`로 현재 브랜치를 fast-forward only 방식으로 갱신한다. dirty·diverged·접근 실패 상태에서는 자동 반영하지 않는다.\n3. \`kit.json\`의 대상 repository와 baseline revision, 출력의 AI Core kit revision을 확인한다.\n4. \`standards/\`의 규격만 적용하고 대상 프로젝트 지침을 우선한다.\n5. 기존 자산을 먼저 찾고, 새 자산은 재사용 판정을 기록한다.\n6. \`node .ai-core/verify-kit.mjs\`로 키트 무결성과 대상 revision binding을 확인한다.\n7. 완료 시 \`WORK_RESULT.md\`를 채운다.\n`;
   const result = `# AI Work Result\n\n- 목적: ${receipt.task}\n- 대상 revision: ${receipt.target.revision}\n- 변경:\n- 검증:\n- 남음:\n- next_start_here:\n`;
-  const verifier = `import{createHash}from'node:crypto';import{execFileSync}from'node:child_process';import{readFile}from'node:fs/promises';import{dirname,join}from'node:path';import{fileURLToPath}from'node:url';const root=dirname(fileURLToPath(import.meta.url)),projectRoot=dirname(root);const git=args=>execFileSync('git',['-C',projectRoot,...args],{encoding:'utf8',stdio:['ignore','pipe','pipe']}).trim();const m=JSON.parse(await readFile(join(root,'kit.json'),'utf8'));const bad=[];for(const f of m.files){const b=(await readFile(join(root,f.path),'utf8')).replace(/\\r\\n/g,'\\n');if(createHash('sha256').update(b).digest('hex')!==f.sha256)bad.push(f.path)}let actualRevision=null,revisionStatus='UNAVAILABLE',advancedPaths=[];try{actualRevision=git(['rev-parse','HEAD']);if(m.target?.revision===actualRevision)revisionStatus='MATCH';else{git(['merge-base','--is-ancestor',m.target?.revision,actualRevision]);advancedPaths=git(['diff','--name-only',m.target.revision+'..'+actualRevision]).split(/\\r?\\n/).filter(Boolean);revisionStatus=advancedPaths.length>0&&advancedPaths.every(path=>path.startsWith('.ai-core/'))?'KIT_ONLY_ADVANCE':'MISMATCH'}}catch{}const failed=bad.length>0||!['MATCH','KIT_ONLY_ADVANCE'].includes(revisionStatus);console.log(JSON.stringify({schema:'ai-core-starter-kit-check/v2',status:failed?'FAIL':'PASS',core_revision:m.core_revision,changed:bad,revision:{expected:m.target?.revision??null,actual:actualRevision,status:revisionStatus,advanced_paths:advancedPaths}},null,2));if(failed)process.exitCode=1;\n`;
+  const verifier = VERIFIER_SOURCE;
   const bootstrap = `import{spawnSync}from'node:child_process';
 import{readFile}from'node:fs/promises';
 import{dirname,resolve,join}from'node:path';
@@ -129,25 +188,16 @@ const coreRepo='freepass-creator/ai-core';
 const coreHead=ghAuth.ok?run('gh',['api','repos/'+coreRepo+'/commits/main','--jq','.sha']):{ok:false,error:'GH_AUTH_UNAVAILABLE'};
 const projectFreshness=remoteHead&&head.ok?(remoteHead===head.stdout?'CURRENT':'STALE_OR_DIVERGED'):'UNKNOWN';
 ${kitFreshness.toString()}
+${kitAuthority.toString()}
 const 흐르나=${흐르나.toString()};
 ${branchFlowWarnings.toString()}
 const coreCompareRun=coreHead.ok&&coreHead.stdout!==kit.core_revision&&Array.isArray(kit.freshness_inputs)?run('gh',['api','repos/'+coreRepo+'/compare/'+kit.core_revision+'...'+coreHead.stdout,'--jq','{status:.status,ahead_by:.ahead_by,files:[.files[]|.filename,(.previous_filename//empty)]}']):null;
 let coreCompare=null;try{coreCompare=coreCompareRun?.ok?{ok:true,...JSON.parse(coreCompareRun.stdout)}:(coreCompareRun?{ok:false}:null)}catch{coreCompare={ok:false}}
 let currentVerification;
 if(coreCompare?.ok&&kit.verification_source&&coreCompare.files?.includes(kit.verification_source)){const raw=run('gh',['api','-H','Accept: application/vnd.github.raw','repos/'+coreRepo+'/contents/'+kit.verification_source+'?ref='+coreHead.stdout]);try{if(raw.ok){const reg=JSON.parse(raw.stdout);const p=(reg.projects??[]).find(x=>x.project_id===kit.target?.project_id);currentVerification=p?.commands??null;}}catch{}}
-const freshness=kitFreshness({kitRevision:kit.core_revision,coreHead:coreHead.ok?coreHead.stdout:null,inputs:kit.freshness_inputs,catalogInputs:kit.catalog_inputs,compare:coreCompare,verificationSource:kit.verification_source,verification:kit.verification,currentVerification});
+const freshness=kitFreshness({kitRevision:kit.core_revision,coreHead:coreHead.ok?coreHead.stdout:null,inputs:Array.isArray(kit.blocking_inputs)?kit.blocking_inputs:kit.freshness_inputs,advisoryInputs:Array.isArray(kit.blocking_inputs)?kit.advisory_inputs:undefined,catalogInputs:kit.catalog_inputs,compare:coreCompare,verificationSource:kit.verification_source,verification:kit.verification,currentVerification});
 const coreFreshness=freshness.status;
-const authorityPaths=['.ai-core/kit.json','.ai-core/session-bootstrap.mjs','.ai-core/verify-kit.mjs','.ai-core/START_HERE.md'];
-const authorityEpochPaths=['.ai-core/session-bootstrap.mjs','.ai-core/kit.json','.ai-core/START_HERE.md'];
-const authorityHistory=run('git',['log','--format=%H','--','.ai-core/session-bootstrap.mjs']);
-const authorityEpochs=[];
-if(authorityHistory.ok){for(const candidate of authorityHistory.stdout.split(/\\r?\\n/).filter(Boolean)){const changed=run('git',['diff-tree','--no-commit-id','--name-only','-r',candidate]);if(!changed.ok)continue;const paths=changed.stdout.split(/\\r?\\n/).filter(Boolean);if(!authorityEpochPaths.every(path=>paths.includes(path)))continue;const manifestAtCandidate=run('git',['show',candidate+':.ai-core/kit.json']);if(!manifestAtCandidate.ok)continue;try{const candidateKit=JSON.parse(manifestAtCandidate.stdout);const coreRevisionAtCandidate=candidateKit.core_revision,targetRevisionAtCandidate=candidateKit.target?.revision;if(!coreRevisionAtCandidate||!targetRevisionAtCandidate)continue;authorityEpochs.push({commit:candidate,generation_key:coreRevisionAtCandidate+':'+targetRevisionAtCandidate});}catch{}}}
-let authorityAnchor=null;
-for(let index=0;index<authorityEpochs.length;index+=1){const candidate=authorityEpochs[index];const generationAlreadyIntroduced=authorityEpochs.slice(index+1).some(item=>item.generation_key===candidate.generation_key);if(!generationAlreadyIntroduced){authorityAnchor=candidate.commit;break;}}
-const authorityChanged=[];
-if(authorityAnchor){for(const path of authorityPaths){const anchored=run('git',['rev-parse',authorityAnchor+':'+path]);const current=run('git',['hash-object',path]);if(!anchored.ok||!current.ok||anchored.stdout!==current.stdout)authorityChanged.push(path.replace('.ai-core/',''));}}
-if(kit.core_revision!==generatedAuthority.core_revision||kit.target?.revision!==generatedAuthority.target_revision){if(!authorityChanged.includes('kit.json'))authorityChanged.push('kit.json');}
-const authorityStatus=!authorityAnchor?'UNAVAILABLE':authorityChanged.length?'MISMATCH':'MATCH';
+const {status:authorityStatus,anchor:authorityAnchor,changed:authorityChanged}=kitAuthority({run,kit,generatedAuthority});
 const kitCheck=authorityStatus==='MATCH'?run(process.execPath,[join(core,'verify-kit.mjs')]):{ok:false,status:null,stdout:'',error:'STARTER_KIT_AUTHORITY_UNVERIFIED'};
 let kitVerification=null;
 try{kitVerification=kitCheck.stdout?JSON.parse(kitCheck.stdout):null}catch{}
@@ -162,6 +212,7 @@ if(dirty.ok&&dirty.stdout)blockers.push('DIRTY_WORKTREE_REVIEW_REQUIRED');
 if(!remoteHead)blockers.push('REMOTE_BRANCH_HEAD_UNAVAILABLE');else if(projectFreshness!=='CURRENT')blockers.push(syncResult==='DIVERGED'?'LOCAL_BRANCH_DIVERGED':'LOCAL_BRANCH_NOT_CURRENT');
 if(!coreHead.ok)blockers.push('AI_CORE_REMOTE_HEAD_UNAVAILABLE');else if(coreFreshness==='UNKNOWN')blockers.push('AI_CORE_KIT_FRESHNESS_UNKNOWN');else if(coreFreshness==='STALE')blockers.push('AI_CORE_KIT_STALE');
 const warnings=freshness.catalog_changed.length?['AI_CORE_CATALOG_CHANGED: catalog/ 는 참고용 사본이다 — 쓰기 전에 ai-core registry 에서 다시 읽는다 ('+freshness.catalog_changed.join(', ')+')']:[];
+if(coreFreshness==='UPDATE_AVAILABLE')warnings.push('AI_CORE_KIT_UPDATE_AVAILABLE: AI Core 키트 생성기에 새 기능이 있다('+freshness.advisory_changed.join(', ')+') — 안전 판정은 그대로라 막지 않는다. 다음 키트 배포 때 받는다');
 const flowScan=kit.branch_flow_policy?run('git',['ls-remote','--symref','origin']):{ok:false,stdout:''};
 let defaultBranch=null;const remoteHeads=new Map();
 if(flowScan.ok){for(const line of flowScan.stdout.split(/\\r?\\n/).filter(Boolean)){const sym=line.match(/^ref:\\s+refs\\/heads\\/(\\S+)\\s+HEAD$/);if(sym){defaultBranch=sym[1];continue;}const m=line.match(/^([0-9a-f]{40})\\s+refs\\/heads\\/(.+)$/);if(m)remoteHeads.set(m[2],m[1]);}}
