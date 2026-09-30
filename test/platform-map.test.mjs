@@ -1,7 +1,7 @@
 // 플랫폼은 둘이다 — 모든 프로젝트가 그 기준으로 «공백 없이» 나뉘어 있는지 지킨다.
 //
 // ★대표 2026-09-29: 「AI 코어와 AI 옵스를 남긴다 … 두 개로 가기로 했어」
-//   범위는 «플랫폼만». 제품 저장소는 두 플랫폼이 관리하는 대상으로 남는다. AI Ops 는 kakao-ops 다.
+//   범위는 «플랫폼만». 제품 저장소는 두 플랫폼이 관리하는 대상으로 남는다. AI Ops의 현행 프로젝트 식별자는 ai-ops다.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -35,7 +35,7 @@ test('★플랫폼은 정확히 둘이다 — AI Core 하나, AI Ops 하나', ()
   const 코어 = Object.entries(지도.projects).filter(([, p]) => p.bucket === 'PLATFORM_CORE').map(([id]) => id);
   const 옵스 = Object.entries(지도.projects).filter(([, p]) => p.bucket === 'PLATFORM_OPS').map(([id]) => id);
   assert.deepEqual(코어, ['ai-core']);
-  assert.deepEqual(옵스, ['kakao-ops'], 'AI Ops 는 kakao-ops 다(대표 선택)');
+  assert.deepEqual(옵스, ['ai-ops'], 'AI Ops 는 ai-ops 다(현행 저장소/프로젝트 정본)');
 });
 
 test('★기존 aiops 는 AI Ops 가 아니라 «데이터 소유 서비스»다 — 처음 판단을 정정했다', () => {
