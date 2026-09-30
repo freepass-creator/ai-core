@@ -23,15 +23,19 @@ export const BRANCH_FLOW_POLICY_SOURCE = 'registry/development-continuity-policy
 //   판정은 새로 만들지 않는다 — src/governance/branch-flow.mjs 의 흐르나() 를 그대로 박는다(판정기가 둘이 되면 갈린다).
 //   ★경고만 한다. 정리(병합·보관)는 운영(AI Ops) 몫이고, 세션을 막으면 멈춘 가지 하나 때문에 아무 일도 못 한다.
 /** 가지 목록 → 흐르지 않는 가지 경고. 순수 함수 — 이 소스가 그대로 session-bootstrap.mjs 에 박힌다. */
-export function branchFlowWarnings({ branches, policy, defaultBranch, now, judge }) {
-  if (!policy || !Array.isArray(branches)) return { checked: 0, violations: [] };
+export function branchFlowWarnings({ branches, policy, defaultBranch, now, judge, prKnown = true }) {
+  if (!policy || !Array.isArray(branches)) return { checked: 0, violations: [], unconfirmed: [] };
   const p = { ...policy, flow_enforcement: { ...policy.flow_enforcement, exempt_refs: [...new Set([...(policy.flow_enforcement.exempt_refs || []), defaultBranch].filter(Boolean))] } };
-  const violations = [];
+  const violations = [], unconfirmed = [];
   for (const b of branches) {
     const r = judge(b, p, now);
-    if (r.흐름 === '위반') violations.push({ ref: b.ref, why: r.까닭, fix: r.고치는법 || null });
+    if (r.흐름 !== '위반') continue;
+    // ★Codex 검토: PR 을 못 읽었으면 «열린 PR 없음»이 아니라 «모른다»다. PR 여부에 달린 STALLED 는 확정하지 않는다.
+    //   (actor 접두사 위반은 PR 과 무관하므로 그대로 위반)
+    if (!prKnown && /^STALLED/.test(r.까닭)) unconfirmed.push(b.ref);
+    else violations.push({ ref: b.ref, why: r.까닭, fix: r.고치는법 || null });
   }
-  return { checked: branches.length, violations };
+  return { checked: branches.length, violations, unconfirmed };
 }
 
 /** 키트 신선도 판정. 순수 함수 — 이 소스가 그대로 session-bootstrap.mjs 에 박힌다(밖의 이름을 쓰지 않는다). */
@@ -167,10 +171,11 @@ const defaultSha=defaultBranch?remoteHeads.get(defaultBranch):null;
 const noMergedRun=flowScan.ok&&defaultSha&&shaDate.has(defaultSha)?run('git',['for-each-ref','--no-merged='+defaultSha,'--format=%(objectname)','refs/remotes/origin']):{ok:false,stdout:''};
 const noMerged=new Set(noMergedRun.ok?noMergedRun.stdout.split(/\\r?\\n/).filter(Boolean):[]);
 const openPrs=kit.branch_flow_policy&&defaultBranch&&ghAuth.ok&&repo?run('gh',['pr','list','--repo',repo,'--state','open','--base',defaultBranch,'--limit','1000','--json','headRefName,number,isCrossRepository']):{ok:false,stdout:''};
-const prByRef=new Map();let prListTruncated=false;try{if(openPrs.ok){const list=JSON.parse(openPrs.stdout||'[]');prListTruncated=list.length>=1000;for(const p of list)if(!p.isCrossRepository)prByRef.set(p.headRefName,p.number);}}catch{}
+const prByRef=new Map();let prListTruncated=false,prKnown=false;try{if(openPrs.ok){const list=JSON.parse(openPrs.stdout||'[]');prListTruncated=list.length>=1000;for(const p of list)if(!p.isCrossRepository)prByRef.set(p.headRefName,p.number);prKnown=true;}}catch{}
 const flowBranches=[],unscanned=[];
 if(noMergedRun.ok){for(const [ref,sha] of remoteHeads){if(ref===defaultBranch)continue;if(!shaDate.has(sha)){unscanned.push(ref);continue;}if(!noMerged.has(sha))continue;flowBranches.push({ref,마지막커밋:shaDate.get(sha),열린PR:prByRef.get(ref)??null});}}
-const branchFlow=branchFlowWarnings({branches:flowBranches,policy:kit.branch_flow_policy,defaultBranch,now:new Date(),judge:흐르나});
+const branchFlow=branchFlowWarnings({branches:flowBranches,policy:kit.branch_flow_policy,defaultBranch,now:new Date(),judge:흐르나,prKnown});
+if(branchFlow.unconfirmed.length)warnings.push('BRANCH_FLOW_PR_UNKNOWN: 열린 PR 을 확인하지 못해 멈춘 것으로 보이는 가지 '+branchFlow.unconfirmed.length+'개를 확정하지 못했다('+branchFlow.unconfirmed.slice(0,5).join(', ')+') — gh 인증 뒤 다시 본다');
 if(kit.branch_flow_policy&&!noMergedRun.ok)warnings.push('BRANCH_FLOW_UNKNOWN: 원격 가지를 판정하지 못했다(원격 조회 또는 기본 가지 커밋이 로컬에 없음) — 「흐르지 않는 가지 없음」이 아니라 «모른다»다. git fetch 뒤 다시 본다');
 if(unscanned.length)warnings.push('BRANCH_FLOW_PARTIAL: 로컬에 없는 원격 가지 '+unscanned.length+'개는 판정하지 못했다 — git fetch 뒤 다시 본다');
 if(prListTruncated)warnings.push('BRANCH_FLOW_PR_LIST_TRUNCATED: 열린 PR 이 1000개 이상이라 일부 가지를 잘못 경고할 수 있다');
@@ -178,7 +183,7 @@ if(branchFlow.violations.length)warnings.push('BRANCH_NOT_FLOWING: main 으로 �
 if(!kitReady){if(kitRevisionStatus==='MISMATCH')blockers.push('STARTER_KIT_REVISION_MISMATCH');else blockers.push('STARTER_KIT_VERIFICATION_FAILED');}
 if(syncResult==='FETCH_FAILED'||syncResult==='FAST_FORWARD_FAILED')blockers.push('SAFE_SYNC_FAILED');
 const next=blockers.includes('STARTER_KIT_REVISION_MISMATCH')?'Regenerate the AI Core starter kit against this exact project revision before starting work.':blockers.includes('STARTER_KIT_VERIFICATION_FAILED')?'Repair starter-kit verification before starting work.':blockers.includes('AI_CORE_KIT_STALE')?'Refresh this project through the AI Core starter-kit distribution PR, then rerun bootstrap.':blockers.includes('LOCAL_BRANCH_NOT_CURRENT')?'If the worktree is clean and the branch should follow origin, rerun with --sync.':blockers.length?'Resolve only the listed blockers; preserve local work and continue safe read-only work where possible.':'Read project instructions and begin the user task directly.';
-const out={schema:'ai-core-session-bootstrap/v2',status:blockers.length?'HOLD':'READY',mode:sync?'SYNC':'OBSERVE',project:{repository:repo,expected_baseline:kit.target?.revision??null,remote:remote.ok?remote.stdout:null,branch:branch.ok?branch.stdout:null,head:head.ok?head.stdout:null,remote_head:remoteHead,remote_freshness:projectFreshness,dirty:dirty.ok?Boolean(dirty.stdout):null,sync_result:syncResult,branch_flow:{default_branch:defaultBranch,checked:branchFlow.checked,unscanned:unscanned.length,violations:branchFlow.violations.slice(0,20)},kit_authority:{status:authorityStatus,anchor_commit:authorityAnchor,changed:authorityChanged},kit_verification:kitVerification},civilization:{core_repository:coreRepo,kit_revision:kit.core_revision,remote_head:coreHead.ok?coreHead.stdout:null,remote_freshness:coreFreshness,freshness_reason:freshness.reason,ahead_by:coreCompare?.ahead_by??null,changed_inputs:freshness.changed,constitution:'standards/AI_WORKING_STANDARD.md',operating_knowledge:'OPERATING_KNOWLEDGE.json',catalog:'catalog/',handoff:'WORK_RESULT.md',evolution_inbox:'https://github.com/freepass-creator/ai-core/issues/211',verification:kit.verification},access:{node:nodeVersion.stdout,git:gitVersion.ok?gitVersion.stdout:null,github:{expected_identity:expected,actual_identity:ghUser.ok?ghUser.stdout:null,cli:ghVersion.ok?'AVAILABLE':'UNAVAILABLE',auth:ghAuth.ok?'READY':'UNAVAILABLE',repository:repoAccess.ok?'READY':'UNAVAILABLE'}},rules:{github_latest_required:true,fast_forward_only:true,reuse_first:true,preserve_dirty_work:true,no_secret_output:true,no_repeated_login:true},blockers,warnings,next_action:next};
+const out={schema:'ai-core-session-bootstrap/v2',status:blockers.length?'HOLD':'READY',mode:sync?'SYNC':'OBSERVE',project:{repository:repo,expected_baseline:kit.target?.revision??null,remote:remote.ok?remote.stdout:null,branch:branch.ok?branch.stdout:null,head:head.ok?head.stdout:null,remote_head:remoteHead,remote_freshness:projectFreshness,dirty:dirty.ok?Boolean(dirty.stdout):null,sync_result:syncResult,branch_flow:{default_branch:defaultBranch,checked:branchFlow.checked,unscanned:unscanned.length,pr_known:prKnown,unconfirmed:branchFlow.unconfirmed.slice(0,20),violations:branchFlow.violations.slice(0,20)},kit_authority:{status:authorityStatus,anchor_commit:authorityAnchor,changed:authorityChanged},kit_verification:kitVerification},civilization:{core_repository:coreRepo,kit_revision:kit.core_revision,remote_head:coreHead.ok?coreHead.stdout:null,remote_freshness:coreFreshness,freshness_reason:freshness.reason,ahead_by:coreCompare?.ahead_by??null,changed_inputs:freshness.changed,constitution:'standards/AI_WORKING_STANDARD.md',operating_knowledge:'OPERATING_KNOWLEDGE.json',catalog:'catalog/',handoff:'WORK_RESULT.md',evolution_inbox:'https://github.com/freepass-creator/ai-core/issues/211',verification:kit.verification},access:{node:nodeVersion.stdout,git:gitVersion.ok?gitVersion.stdout:null,github:{expected_identity:expected,actual_identity:ghUser.ok?ghUser.stdout:null,cli:ghVersion.ok?'AVAILABLE':'UNAVAILABLE',auth:ghAuth.ok?'READY':'UNAVAILABLE',repository:repoAccess.ok?'READY':'UNAVAILABLE'}},rules:{github_latest_required:true,fast_forward_only:true,reuse_first:true,preserve_dirty_work:true,no_secret_output:true,no_repeated_login:true},blockers,warnings,next_action:next};
 console.log(JSON.stringify(out,null,2));if(blockers.length)process.exitCode=2;
 `;
   files.push({ path: 'session-bootstrap.mjs', sha256: digest(bootstrap), source: 'generated:session-bootstrap/v2' });

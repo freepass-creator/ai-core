@@ -316,6 +316,11 @@ test('★branch-flow warnings reuse the governance judge: stalled and actor-name
   assert.match(r.violations[0].why, /STALLED/);
   assert.equal(r.checked, 4);
   assert.deepEqual(branchFlowWarnings({ policy: null, branches: [], judge: 흐르나 }).violations, [], '정책 없는 옛 키트는 조용히 넘어간다');
+  // ★Codex 검토: PR 을 못 읽었으면 STALLED 는 «모른다» — 확정 위반으로 올리지 않는다. actor 접두사는 PR 과 무관하게 위반
+  const blind = branchFlowWarnings({ policy, defaultBranch: 'master', now, judge: 흐르나, prKnown: false, branches: [
+    { ref: 'work/x/stalled', 마지막커밋: old, 열린PR: null }, { ref: 'codex/old', 마지막커밋: old, 열린PR: null } ] });
+  assert.deepEqual(blind.unconfirmed, ['work/x/stalled']);
+  assert.deepEqual(blind.violations.map((v) => v.ref), ['codex/old']);
 });
 
 test('★kit carries the branch-flow policy and the bootstrap embeds the same judge source', async () => {
@@ -347,6 +352,7 @@ test('★end to end: a stalled remote branch shows up as a warning, not a blocke
   const oldEnv = { ...process.env, GIT_COMMITTER_DATE: '2026-09-01T00:00:00Z', GIT_AUTHOR_DATE: '2026-09-01T00:00:00Z' };
   git(root, 'switch', '-q', '-c', 'work/x/stalled'); await writeFile(join(root, 'b.txt'), 'x\n'); git(root, 'add', 'b.txt');
   execFileSync('git', ['commit', '-q', '-m', 'old'], { cwd: root, env: oldEnv }); git(root, 'push', '-q', 'origin', 'work/x/stalled');
+  git(root, 'switch', '-q', '-c', 'codex/old-actor'); execFileSync('git', ['commit', '-q', '--allow-empty', '-m', 'actor'], { cwd: root, env: oldEnv }); git(root, 'push', '-q', 'origin', 'codex/old-actor');
   git(root, 'switch', '-q', '-c', 'work/demo/archive-old'); execFileSync('git', ['commit', '-q', '--allow-empty', '-m', 'archived'], { cwd: root, env: oldEnv }); git(root, 'push', '-q', 'origin', 'work/demo/archive-old');
   git(root, 'switch', '-q', '-c', 'work/x/gone'); execFileSync('git', ['commit', '-q', '--allow-empty', '-m', 'gone'], { cwd: root, env: oldEnv }); git(root, 'push', '-q', 'origin', 'work/x/gone');
   git(root, 'switch', '-q', 'main');
@@ -361,7 +367,11 @@ test('★end to end: a stalled remote branch shows up as a warning, not a blocke
   const noGh = { ...process.env, GH_CONFIG_DIR: join(base, 'no-gh'), GH_TOKEN: '', GITHUB_TOKEN: '', GH_ENTERPRISE_TOKEN: '' };
   const run = spawnSync(process.execPath, [join(root, '.ai-core', 'session-bootstrap.mjs')], { cwd: root, encoding: 'utf8', env: noGh });
   const outp = JSON.parse(run.stdout);
-  assert.deepEqual(outp.project.branch_flow.violations.map((v) => v.ref), ['work/x/stalled']);
+  // gh 를 막았으므로 PR 을 모른다 → 멈춘 가지는 «확정 못 함», actor 접두사 가지는 PR 과 무관하게 위반
+  assert.equal(outp.project.branch_flow.pr_known, false);
+  assert.deepEqual(outp.project.branch_flow.unconfirmed, ['work/x/stalled']);
+  assert.deepEqual(outp.project.branch_flow.violations.map((v) => v.ref), ['codex/old-actor']);
+  assert.ok(outp.warnings.some((w) => w.startsWith('BRANCH_FLOW_PR_UNKNOWN')), 'PR 을 모르는데 조용했다');
   assert.ok(outp.warnings.some((w) => w.startsWith('BRANCH_NOT_FLOWING')), '멈춘 가지 경고가 없다');
   // ★Codex 검토: 로컬 캐시가 아니라 실제 원격을 본다 — 원격에서 지운 가지는 경고하지 않고, 안 받은 가지는 «모른다»로 알린다
   assert.ok(outp.warnings.some((w) => w.startsWith('BRANCH_FLOW_PARTIAL')), '로컬에 없는 원격 가지를 조용히 건너뛰었다');
