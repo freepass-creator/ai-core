@@ -1,5 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { academyCloseout, parseWorkResult } from '../scripts/academy-closeout.mjs';
 
 const work = (overrides = {}) => {
@@ -118,4 +120,19 @@ test('UNKNOWN or omitted learning counters do not masquerade as zero', () => {
   const parsed = parseWorkResult(work({ '재작업': 'UNKNOWN' }));
   assert.ok(parsed.problems.includes('WORK_RESULT_재작업_INVALID'));
   assert.equal(parsed.counts.rework_loop_count, null);
+});
+
+
+test('first real Academy episode is honestly HOLD until exact proof and independent review are bound', () => {
+  const root = resolve(new URL('..', import.meta.url).pathname);
+  const workResultMarkdown = readFileSync(resolve(root, 'docs/episodes/ACADEMY-EPISODE-002.WORK_RESULT.md'), 'utf8');
+  const realEpisode = JSON.parse(readFileSync(resolve(root, 'docs/episodes/ACADEMY-EPISODE-002.json'), 'utf8'));
+  const result = academyCloseout({ workResultMarkdown, episode: realEpisode });
+  assert.equal(result.status, 'HOLD');
+  assert.ok(result.blockers.includes('EPISODE_FEEDBACK_HOLD'));
+  assert.ok(result.feedback.unresolved.includes('PROOF_REVISION_UNBOUND'));
+  assert.ok(result.feedback.unresolved.includes('INDEPENDENT_REVIEW_UNCONFIRMED'));
+  assert.equal(result.feedback.lesson_candidates.some(item => item.status === 'RESEARCH_CANDIDATE'), true);
+  assert.equal(result.auto_adopted, false);
+  assert.equal(result.execution_authorized, false);
 });
