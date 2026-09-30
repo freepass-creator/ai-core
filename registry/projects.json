@@ -1,6 +1,6 @@
 {
   "schema_version": "1.1",
-  "observed_at": "2026-09-30T08:10:00Z",
+  "observed_at": "2026-09-30T08:46:32.506Z",
   "projects": [
     {
       "project_id": "ai-core",
@@ -685,18 +685,18 @@
       "repository": "freepass-creator/renman-data",
       "default_branch": "main",
       "local_path": "C:\\dev\\renman-data",
-      "head_revision": "2d1bb03418ec68bc8ef36346ced3112473edb527",
+      "head_revision": "294a36b04bb47db2ece61963024b9d16173fb804",
       "authoritative_sources": [
         {
           "kind": "GIT",
           "ref": "freepass-creator/renman-data",
-          "revision": "2d1bb03418ec68bc8ef36346ced3112473edb527",
-          "observed_at": "2026-09-30T08:10:00Z"
+          "revision": "294a36b04bb47db2ece61963024b9d16173fb804",
+          "observed_at": "2026-09-30T08:46:32.506Z"
         }
       ],
       "commands": {
         "install": null,
-        "test": "node --test scripts/renman-read-api.test.mjs scripts/renman-cloud-hub.test.mjs",
+        "test": "node scripts/renman-source-audit.mjs --test-profile && node --test scripts/renman-read-api.test.mjs scripts/renman-cloud-hub.test.mjs",
         "build": null
       },
       "commands_absent_reason": {
