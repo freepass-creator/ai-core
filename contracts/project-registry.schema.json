@@ -81,11 +81,13 @@
       "properties": {
         "project_id": {
           "type": "string",
-          "pattern": "^[a-z][a-z0-9-]{1,62}$"
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "description": "불변 ID — 표시명·저장소가 바뀌어도 재사용하거나 바꾸지 않는다(DEVELOPMENT_CONTINUITY_STANDARD §11)."
         },
         "name": {
           "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "description": "사람이 보는 표시명. 기술 식별자는 system_aliases 에 둔다. 바꾸는 것은 registry 의 별도 결정으로만."
         },
         "organization": {
           "enum": [
@@ -117,7 +119,8 @@
         "system_aliases": {
           "type": "array",
           "uniqueItems": true,
-          "items": { "type": "string", "minLength": 1 }
+          "items": { "type": "string", "minLength": 1 },
+          "description": "기술 식별자·옛 이름(버전 표기 포함). 표시명과 섞지 않는다."
         },
         "access_entrypoint": {
           "type": "object",
