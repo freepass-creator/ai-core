@@ -1,6 +1,6 @@
 {
   "schema_version": "1.1",
-  "observed_at": "2026-09-30T09:01:46Z",
+  "observed_at": "2026-09-30T10:20:27Z",
   "projects": [
     {
       "project_id": "ai-core",
@@ -647,7 +647,7 @@
           "kind": "GIT",
           "ref": "freepass-creator/ai-ops",
           "revision": "750d50809a520f36cbbdde8c80ea3b2d63b85477",
-          "observed_at": "2026-09-30T09:06:25Z"
+          "observed_at": "2026-09-30T10:20:27Z"
         }
       ],
       "commands": {
