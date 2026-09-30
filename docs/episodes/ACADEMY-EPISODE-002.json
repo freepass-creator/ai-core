@@ -1,0 +1,154 @@
+{
+  "episode_id": "ACADEMY-EPISODE-002",
+  "status": "CLOSED",
+  "project": {
+    "id": "ai-core",
+    "repository": "freepass-creator/ai-core",
+    "base_revision": "b1a4eb2cfd39e97ff840db70607f716cc5e905f8",
+    "authoritative_sources": [
+      "user correction: Kakao Ops is now AI Ops",
+      "PR #359",
+      "PR #360",
+      "Main State Consistency runs 36702289280 and 36702195446"
+    ]
+  },
+  "intent": {
+    "summary": "Correct the Academy's AI Ops identity and connect real work Episodes back into reusable lesson candidates.",
+    "requirement_set_digest": "sha256:9126129924210df6a1e203cd9a638dc949c4b003dfc59ed4c8c4c29435fa58e7",
+    "requirements": [
+      {
+        "id": "REQ-001",
+        "text": "AI Core registry uses AI Ops, not Kakao Ops, as current project identity.",
+        "provenance": "USER_CONFIRMED",
+        "status": "ACTIVE",
+        "evidence_refs": [
+          "https://github.com/freepass-creator/ai-core/pull/359"
+        ]
+      },
+      {
+        "id": "REQ-002",
+        "text": "AI Ops is the PC-wide AI employee runtime and KakaoTalk is its first app adapter.",
+        "provenance": "USER_CONFIRMED",
+        "status": "ACTIVE",
+        "evidence_refs": [
+          "https://github.com/freepass-creator/ai-core/pull/359"
+        ]
+      },
+      {
+        "id": "REQ-003",
+        "text": "AI Core has an executable Episode to Feedback to Lesson Candidate bridge reusing existing Self-Evolution.",
+        "provenance": "USER_CONFIRMED",
+        "status": "ACTIVE",
+        "evidence_refs": [
+          "https://github.com/freepass-creator/ai-core/pull/360"
+        ]
+      },
+      {
+        "id": "REQ-004",
+        "text": "Both implementation PRs pass their required CI before merge.",
+        "provenance": "AI_INFERRED",
+        "status": "ACTIVE",
+        "evidence_refs": [
+          "https://github.com/freepass-creator/ai-core/actions/runs/36702289280",
+          "https://github.com/freepass-creator/ai-core/actions/runs/36702195446"
+        ]
+      }
+    ]
+  },
+  "capability_resolution": {
+    "searched": true,
+    "candidate_count": 3,
+    "reused_count": 2,
+    "new_count": 1,
+    "decisions": [
+      "REUSE_EXACT",
+      "COMPOSE_OR_EXTEND",
+      "CREATE_NEW_JUSTIFIED"
+    ]
+  },
+  "execution": {
+    "executors": [
+      "GPT-5.6 Sol"
+    ],
+    "branch": "work/ai-core/AI-OPS-REGISTRY-20260930 + work/ai-core/ACADEMY-EPISODE-FEEDBACK-20260930",
+    "subject_revision": "06f5b22e25b09a5be3967eb5f14b70c0711f0f16",
+    "changed_files": [
+      "registry/projects.json",
+      "registry/platforms.json",
+      "test/platform-map.test.mjs",
+      "src/academy/episode-feedback.mjs",
+      "scripts/academy-feedback.mjs",
+      "test/academy-episode-feedback.test.mjs",
+      "docs/ACADEMY_EPISODE_FEEDBACK_LOOP.md",
+      "docs/AI_CORE_EVOLUTION_BRIDGE.md",
+      "package.json"
+    ],
+    "rework_loops": 1
+  },
+  "evidence_state": {
+    "proof_revision_matches_subject": false,
+    "independent_review": "PARTIAL",
+    "failures": 0,
+    "unresolved_p0": 0,
+    "unresolved_p1": 0,
+    "authority_violations": 0,
+    "evidence_loss_events": 0,
+    "user_control_violations": 0
+  },
+  "metrics": {
+    "clarification_question_count": 0,
+    "repeated_information_request_count": 0,
+    "user_correction_count": 1,
+    "user_review_round_count": 1,
+    "rework_loop_count": 1,
+    "false_completion_events": 0,
+    "unverified_criteria_count": 0,
+    "regression_events": 0,
+    "acceptance_criteria_total": 4,
+    "criteria_with_current_evidence": 4
+  },
+  "comparison": {
+    "key": "academy-field-learning-loop",
+    "requirement_family_digest": "sha256:9126129924210df6a1e203cd9a638dc949c4b003dfc59ed4c8c4c29435fa58e7",
+    "metric_schema_version": "1",
+    "observation_window": "user-correction-through-main-merge",
+    "observed_at": "2026-09-30T10:26:30Z"
+  },
+  "outcome": {
+    "observed": true,
+    "success": true,
+    "release_state": "MAIN_MERGED"
+  },
+  "evidence_refs": [
+    "https://github.com/freepass-creator/ai-core/pull/359",
+    "https://github.com/freepass-creator/ai-core/pull/360",
+    "https://github.com/freepass-creator/ai-core/actions/runs/36702289280",
+    "https://github.com/freepass-creator/ai-core/actions/runs/36702195446"
+  ],
+  "lesson_observations": [
+    {
+      "kind": "USER_CORRECTION",
+      "sanitized_summary": "AI Core still described the current PC-wide AI employee runtime as Kakao Ops after the project had become AI Ops.",
+      "evidence_ref": "https://github.com/freepass-creator/ai-core/pull/359",
+      "proposed_change": "Bind project identity, repository, mission and platform classification to AI Ops; treat KakaoTalk as an app adapter rather than the product identity.",
+      "prediction": "New Academy sessions should stop framing AI Ops as a Kakao-only bot.",
+      "target_scope": "DOMAIN"
+    },
+    {
+      "kind": "REWORK",
+      "sanitized_summary": "The first AI Ops registry CI run failed because the child source observation time exceeded the registry snapshot time and a regression test still pinned the old project identity.",
+      "evidence_ref": "https://github.com/freepass-creator/ai-core/actions/runs/36701816932",
+      "proposed_change": "Treat project-identity migrations as an atomic registry snapshot plus regression-test update and verify snapshot chronology before opening the PR.",
+      "prediction": "The next project-identity migration should pass registry chronology and identity regression checks on its first CI run.",
+      "target_scope": "LOCAL"
+    },
+    {
+      "kind": "SUCCESS_PATTERN",
+      "sanitized_summary": "The Episode feedback feature extended the existing Self-Evolution and Evolution Bridge instead of creating a parallel learning engine.",
+      "evidence_ref": "https://github.com/freepass-creator/ai-core/pull/360",
+      "proposed_change": "Prefer thin bridges into existing Academy/Evolution contracts before introducing a new framework.",
+      "prediction": "Future Academy improvements should create fewer overlapping ledgers or evaluators.",
+      "target_scope": "LOCAL"
+    }
+  ]
+}
