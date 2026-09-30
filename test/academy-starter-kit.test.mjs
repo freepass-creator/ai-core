@@ -17,7 +17,7 @@ test('starter kit carries pinned standards, verification and result template',as
   const manifest=JSON.parse(await readFile(join(root,'.ai-core','kit.json'),'utf8'));
   assert.equal(result.status,'INSTALLED'); assert.equal(manifest.core_revision,'b'.repeat(40));
   assert.equal(await readFile(join(root,'.ai-core','standards','AI_WORKING_STANDARD.md'),'utf8'),'constitution');
-  assert.match(await readFile(join(root,'.ai-core','WORK_RESULT.md'),'utf8'),/next_start_here/);
+  const workResult=await readFile(join(root,'.ai-core','WORK_RESULT.md'),'utf8');\n  assert.match(workResult,/next_start_here/);\n  assert.match(workResult,/사용자 수정: UNKNOWN/);\n  assert.match(workResult,/재작업: UNKNOWN/);\n  assert.match(workResult,/false completion: UNKNOWN/);\n  assert.match(workResult,/학습환류: NONE/);
   assert.equal(JSON.parse(await readFile(join(root,'.ai-core','OPERATING_KNOWLEDGE.json'),'utf8')).schema_version,'1.0');
   assert.equal(JSON.parse(await readFile(join(root,'.ai-core','catalog','projects.json'),'utf8')).projects[0].project_id,'one');
   assert.equal(JSON.parse(await readFile(join(root,'.ai-core','CATALOG_INDEX.json'),'utf8')).items[0].core_revision,'b'.repeat(40));
@@ -35,7 +35,7 @@ test('starter kit carries pinned standards, verification and result template',as
   assert.ok(bootstrap.blockers.includes('GIT_REMOTE_UNAVAILABLE'));
   assert.ok(bootstrap.blockers.includes('AI_CORE_REMOTE_HEAD_UNAVAILABLE'));
   assert.ok(bootstrap.blockers.includes('STARTER_KIT_VERIFICATION_FAILED'));
-  assert.match(await readFile(join(root,'.ai-core','START_HERE.md'),'utf8'),/--sync/);
+  const startHere=await readFile(join(root,'.ai-core','START_HERE.md'),'utf8');\n  assert.match(startHere,/--sync/);\n  assert.match(startHere,/academy:closeout/);\n  assert.match(startHere,/학습환류: EPISODE/);
 });
 
 test('starter kit never overwrites a conflicting local file',async()=>{
