@@ -69,11 +69,6 @@
         "scroll-restore",
         "draft-preservation",
         "query-revision"
-      ],
-      "adopted_from": "보관본 docs/UI_COMPOSITION_STANDARD.md @ fb3d852 에서 옮김(2026-09-30, Codex 판정 ADOPT_PARTS)",
-      "not_adopted": [
-        "Per-product default mode (e.g. FreePass Admin = SEARCH_FILTER) is not a common rule — confirm per product with real screens and work evidence.",
-        "Archived feature names data.search-discovery / data.variant-selector are not copied; new feature IDs must pass the current naming and duplicate check."
       ]
     },
     "single_choice_flow": {

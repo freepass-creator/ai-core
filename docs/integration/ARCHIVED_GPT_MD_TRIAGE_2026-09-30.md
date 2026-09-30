@@ -10,6 +10,14 @@
 - 1차 판정: ADOPT 15 · SUPERSEDED 64 · RECORD_ONLY 44. ADOPT 15개는 모두 「main 에서 대체물을 못 찾음(모름)」 — 잃지 않으려고 후보로 둔 것.
 - 2차: ADOPT 후보 중 표준 여섯은 main 정본과 내용으로 대조해 셋 SUPERSEDED · 셋 부분 반영(아래 표의 «결정»). **워크플로·일정 규격 9개는 아직 판정 전(HOLD)** — 다음 차례.
 
+## 옮긴 곳과 옮기지 않은 것
+
+- **UI 검색 조합**(보관본 `docs/UI_COMPOSITION_STANDARD.md` @ `fb3d852`) → `design-system/interaction.contract.json` `rules.search_context.invariants` 다섯 줄 · `registry/ui-ux-features.json` `data.filter`·`form.search` rules. (규칙 객체는 스키마상 출처 칸을 받지 않아 출처는 여기 적는다)
+  - ★옮기지 않음: Per-product default mode (e.g. FreePass Admin = SEARCH_FILTER) is not a common rule — confirm per product with real screens and work evidence.
+  - ★옮기지 않음: Archived feature names data.search-discovery / data.variant-selector are not copied; new feature IDs must pass the current naming and duplicate check.
+- **공개 상품 탐색** → `docs/FREEPASS_PRODUCT_UI_PROFILE.md` §10.1 (옮기지 않은 것은 그 절에)
+- **프로젝트 이름** → `docs/DEVELOPMENT_CONTINUITY_STANDARD.md` §11 · `contracts/project-registry.schema.json` description (옮기지 않은 것은 그 절에)
+
 ## 판정표
 
 | 파일 | 1차 판정 | 까닭 | 결정(2026-09-30) | 보관 가지@머리 |
