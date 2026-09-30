@@ -1,6 +1,6 @@
 {
   "schema_version": "1.1",
-  "observed_at": "2026-09-29T15:15:54Z",
+  "observed_at": "2026-09-30T08:46:32.506Z",
   "projects": [
     {
       "project_id": "ai-core",
@@ -674,6 +674,49 @@
         "test": "Deterministic consumer-adapter tests are the next integration change and are not merged yet.",
         "build": "PowerShell and Node.js runtime scripts execute from source without a build artifact."
       }
+    },
+    {
+      "project_id": "renman-data",
+      "name": "Renman Data",
+      "organization": "SUBSIDIARY",
+      "repository_lifecycle_status": "ACTIVE",
+      "execution_readiness_status": "HOLD",
+      "mission": "Dedicated Renman data contracts and policy-governed read gateway over teamjpkwork Firestore; preserves source evidence and does not duplicate AI Ops business writers.",
+      "repository": "freepass-creator/renman-data",
+      "default_branch": "main",
+      "local_path": "C:\\dev\\renman-data",
+      "head_revision": "294a36b04bb47db2ece61963024b9d16173fb804",
+      "authoritative_sources": [
+        {
+          "kind": "GIT",
+          "ref": "freepass-creator/renman-data",
+          "revision": "294a36b04bb47db2ece61963024b9d16173fb804",
+          "observed_at": "2026-09-30T08:46:32.506Z"
+        }
+      ],
+      "commands": {
+        "install": null,
+        "test": "node scripts/renman-source-audit.mjs --test-profile && node --test scripts/renman-read-api.test.mjs scripts/renman-cloud-hub.test.mjs",
+        "build": null
+      },
+      "commands_absent_reason": {
+        "install": "Native Node runtime modules use no third-party package install.",
+        "build": "Container packaging exists; a successful current-revision cloud build has not been verified."
+      },
+      "deploy_targets": [
+        "Cloud Run teamjpkwork/asia-northeast3/renman-data-read"
+      ],
+      "required_approvals": [
+        "production-data-write",
+        "production-deploy",
+        "consumer-permission-change"
+      ],
+      "known_blockers": [
+        "READ_ONLY_DEVELOPMENT_ALLOWED; execution readiness remains HOLD for business-confirmed source publication and production changes.",
+        "Immutable source retention, stable contract mapping, staff confirmation and per-consumer persistent audit remain unimplemented.",
+        "CI deployment was blocked by GitHub billing in the project history; current CI and deployed source revision need independent verification.",
+        "AI Ops owns existing business write paths; this registration does not authorize a second arrears writer or data migration."
+      ]
     }
   ]
 }

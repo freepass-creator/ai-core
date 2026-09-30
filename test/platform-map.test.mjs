@@ -56,7 +56,7 @@ test('공통의 종류는 다섯이고, 데이터는 플랫폼이 공급하지 �
   assert.deepEqual(Object.keys(지도.kinds).sort(), ['CODE', 'CONTRACTS', 'DATA', 'RULES', 'RUNTIME']);
   assert.match(지도.kinds.DATA.provider, /도메인 소유 서비스/);
   const 데이터소유 = Object.entries(지도.projects).filter(([, p]) => p.bucket === 'DATA_OWNER').map(([id]) => id).sort();
-  assert.deepEqual(데이터소유, ['aiops', 'freepass-data']);
+  assert.deepEqual(데이터소유, ['aiops', 'freepass-data', 'renman-data']);
 });
 
 test('판단이 들어간 분류는 «확인 대기»라고 적혀 있다 — 조용히 확정된 것처럼 보이지 않게', () => {
