@@ -85,7 +85,8 @@
     "continuity:gate": "node scripts/development-continuity-audit.mjs --gate",
     "duo": "node scripts/duo.mjs",
     "tools:doctor": "node scripts/local-toolchain-doctor.mjs",
-    "academy:feedback": "node scripts/academy-feedback.mjs"
+    "academy:feedback": "node scripts/academy-feedback.mjs",
+    "academy:closeout": "node scripts/academy-closeout.mjs"
   },
   "dependencies": {
     "ajv": "8.20.0",
