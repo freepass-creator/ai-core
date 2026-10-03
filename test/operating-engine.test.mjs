@@ -34,13 +34,13 @@ test('외부 변경은 trusted work source가 없으면 모양 맞는 receipt가
     runModule: async () => { throw new Error('must not execute'); },
   };
   const operating = await openOperatingCapabilityEngine({ store: fakeStore, workSources: null, runtime: fakeRuntime, projectRegistry: 고정프로젝트 });
-  const aiops = operating.projectRegistry.projects.find(p => p.project_id === 'aiops');
+  const renman = operating.projectRegistry.projects.find(p => p.project_id === 'renman');
   const cap = operating.capabilityRegistry.capabilities.find(c => c.id === 'operations.penalty.prepare');
-  const route = { capability_id: cap.id, target_project_id: 'aiops', target_revision: aiops.head_revision };
+  const route = { capability_id: cap.id, target_project_id: 'renman', target_revision: renman.head_revision };
   const authority = {
     schema:'ai-core-authority-receipt/v1', status:'GRANTED',
     order_id:'ORD-00000000-0000-4000-8000-000000000001', work_id:'GWATAERYO-001',
-    capability_id:cap.id, project_id:'aiops', subject_revision:aiops.head_revision,
+    capability_id:cap.id, project_id:'renman', subject_revision:renman.head_revision,
     ledger_head:'fake-head', scopes:[...cap.required_scopes],
   };
   const result = await operating.engine.run({

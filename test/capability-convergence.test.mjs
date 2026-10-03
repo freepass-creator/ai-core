@@ -33,7 +33,7 @@ test('Work Map uses canonical capability ids and unimplemented work is HOLD',()=
   assert.equal(plan.reason,'CAPABILITY_NOT_ACTIVE');
 });
 
-test('penalty work resolves to the existing AIOps executor capability',async()=>{
+test('penalty work resolves to the renman penalty-engine executor capability (aiops retired 2026-10-03)',async()=>{
   const route=routeWork('과태료 처리해',{workMap,projectRegistry:projects,capabilityRegistry:capabilities});
   assert.equal(route.status,'RESOLVED');
   assert.equal(route.capability_id,'operations.penalty.prepare');

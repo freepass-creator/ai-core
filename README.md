@@ -96,7 +96,7 @@ The repository/task consolidation boundary and refreshable local checkout invent
 
 - `freepass-creator/ai-core`: group headquarters order, memory, coordination and learning
 - `freepass-creator/devcenter`: headquarters development standards, registry, shared assets and verification
-- `freepass-creator/aiops`: source for shared integration candidates plus operations-domain procedures
+- `freepass-creator/aiops`: RETIRED 2026-10-03 (frozen, to be archived). Penalty engine → `freepass-creator/renman` `penalty-engine/`; rental data reads → `freepass-creator/renman-data`; PC/KakaoTalk execution and the short-term Firestore lookup tool → `freepass-creator/ai-ops`
 - subsidiary repositories: actual product code, project SSOT and real outcomes
 
 Read `WORK_READ_FIRST.md`, then `MEMORY.md`, `memory/CURRENT.md`, `memory/RESEARCH_INDEX.md`, the current Work Packet and the target subsidiary's authoritative project sources.

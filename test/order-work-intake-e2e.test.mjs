@@ -143,9 +143,9 @@ test('project head drift blocks Work creation before binding or ledger write',as
   const order=await (await f.post('/api/orders',orderInput())).json();
 
   const changed=structuredClone(projectRegistry);
-  const aiops=changed.projects.find(p=>p.project_id==='aiops');
-  aiops.head_revision='a'.repeat(40);
-  for(const source of aiops.authoritative_sources??[]) if(source.kind==='GIT') source.revision=aiops.head_revision;
+  const renman=changed.projects.find(p=>p.project_id==='renman');
+  renman.head_revision='a'.repeat(40);
+  for(const source of renman.authoritative_sources??[]) if(source.kind==='GIT') source.revision=renman.head_revision;
   writeFileSync(f.registryPath,JSON.stringify(changed,null,2));
 
   const result=await (await f.post(`/api/orders/${order.id}/work-intake`)).json();
