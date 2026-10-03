@@ -17,6 +17,7 @@
    - 새 파일·모듈·문서를 만들 거면 먼저 `npm run reuse:check -- "<만들 것>" --root <대상>` 하고 `--create … --decision …` 을 붙인다.
 3. 대상 프로젝트의 지침(AGENTS.md·CLAUDE.md)과 정본을 읽는다. 대상 프로젝트 지침이 AI Core 보다 앞선다.
 4. 설계·규격 결정, 되돌리기 어려운 변경, 중요한 문안은 상대 AI 와 상의한다 — 호출법은 [CLAUDE.md](CLAUDE.md) 머리. 사소한 단일 파일 수정은 혼자 한다.
+5. **AI Core 자체를 고도화하는 일**이면 먼저 [Evolution Inbox #211](https://github.com/freepass-creator/ai-core/issues/211) 의 최근 댓글(GPT 매시 점검이 누적된다)을 읽고 현재 main 과 대조해 이어서 한다. 반영한 제안은 #211 에 「반영: PR #번호」 댓글로 닫는다 — 대표 10-03.
 
 ## 지키는 것
 
