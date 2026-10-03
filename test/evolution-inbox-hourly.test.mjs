@@ -1,6 +1,42 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { decide, buildPrompt, formatComment, judgeAnswer, isUsageLimit, relativizePaths } from '../scripts/evolution-inbox-hourly.mjs';
+import { readFileSync } from 'node:fs';
+import { decide, ownCommentMain, buildPrompt, formatComment, judgeAnswer, isUsageLimit, relativizePaths } from '../scripts/evolution-inbox-hourly.mjs';
+
+test('자기 댓글은 머리줄의 7~40자리 main 해시로만 판별한다', () => {
+  const header = '## [GPT 매시 점검 · 2026-10-03';
+  for (const hash of ['abcdef0', '12345678', 'A'.repeat(40)]) {
+    assert.equal(ownCommentMain(`${header} · main ${hash}]\n\n본문`), hash);
+  }
+  for (const body of [undefined, null, '일반 댓글', `${header} · 첫 진단 옮김]`,
+    `${header} · 첫 진단 옮김]\nmain abcdef01`, `일반 댓글 main abcdef01`,
+    `${header} · main abcdef]`, `${header} · main ${'a'.repeat(41)}]`]) {
+    assert.equal(ownCommentMain(body), null);
+  }
+});
+
+test('state가 없거나 force여도 같은 main의 자기 댓글에는 재반응하지 않는다', () => {
+  const mainHead = 'abcdef0123456789';
+  const lastCommentBody = `## [GPT 매시 점검 · 2026-10-03 · main abcdef01]\n\n본문`;
+  for (const prev of [undefined, { main_head: mainHead, last_comment_id: 1 }]) {
+    for (const force of [false, true]) {
+      assert.deepEqual(decide({ prev, mainHead, lastCommentId: 1, lastCommentBody, force }),
+        { run: false, reason: 'OWN_LAST_COMMENT' });
+      assert.deepEqual(decide({ prev, mainHead: 'fedcba9876543210', lastCommentId: 1, lastCommentBody, force }),
+        { run: true });
+    }
+  }
+  assert.deepEqual(decide({ prev: { main_head: mainHead, last_comment_id: 1 }, mainHead,
+    lastCommentId: 1, lastCommentBody: '일반 댓글', force: true }), { run: true });
+});
+
+test('main catch는 실패를 기록하고 체크포인트를 유지하며 성공 코드로 종료한다', () => {
+  const source = readFileSync(new URL('../scripts/evolution-inbox-hourly.mjs', import.meta.url), 'utf8');
+  const catchBody = source.match(/\} catch \{([^}]+)\}\s*\}\s*if \(process\.argv/s)?.[1];
+  assert.ok(catchBody, 'main catch 경로를 찾는다');
+  assert.match(catchBody, /save\('FAILED'\);\s*return 0;/);
+  assert.doesNotMatch(catchBody, /return 1\b|checkpoint|main_head|last_comment_id/);
+});
 
 test('worktree 링크는 구분자와 대소문자에 관계없이 상대경로로 만든다', () => {
   const root = 'C:/Users/admin/AppData/Local/ai-core-evolution/main';

@@ -5,8 +5,15 @@ import { join, resolve, delimiter } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { scanText } from '../src/security/secret-scan.mjs';
 
-export function decide({ prev, mainHead, lastCommentId }) {
-  return prev && prev.main_head === mainHead && prev.last_comment_id === lastCommentId
+export function ownCommentMain(body) {
+  if (typeof body !== 'string' || !body.startsWith('## [GPT 매시 점검 · ')) return null;
+  return body.split(/\r?\n/, 1)[0].match(/\bmain ([0-9a-fA-F]{7,40})\b/)?.[1] ?? null;
+}
+
+export function decide({ prev, mainHead, lastCommentId, lastCommentBody, force }) {
+  const ownMain = ownCommentMain(lastCommentBody);
+  if (ownMain !== null && mainHead.startsWith(ownMain)) return { run: false, reason: 'OWN_LAST_COMMENT' };
+  return !force && prev && prev.main_head === mainHead && prev.last_comment_id === lastCommentId
     ? { run: false, reason: 'UNCHANGED' } : { run: true };
 }
 
@@ -81,8 +88,9 @@ export function main(args = process.argv.slice(2)) {
     const inbox = comments();
     const lastCommentId = inbox.at(-1)?.id ?? null;
     const checkpoint = { main_head: mainHead, last_comment_id: lastCommentId };
-    if (!args.includes('--force') && !decide({ prev, mainHead, lastCommentId }).run) {
-      save('UNCHANGED');
+    const decision = decide({ prev, mainHead, lastCommentId, lastCommentBody: inbox.at(-1)?.body, force: args.includes('--force') });
+    if (!decision.run) {
+      save(decision.reason);
       return 0;
     }
     const worktree = join(folder, 'main');
@@ -134,7 +142,7 @@ export function main(args = process.argv.slice(2)) {
   } catch {
     // 외부 명령의 stderr에는 민감 원문이 있을 수 있어 상태 코드만 기록한다.
     save('FAILED');
-    return 1;
+    return 0;
   }
 }
 
