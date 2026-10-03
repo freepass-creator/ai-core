@@ -35,7 +35,7 @@ Quality Receipt는 대상 프로젝트의 exact revision, 실제 실행 명령, 
 
 ## Evidence / Learning
 
-- First real receipt: `../../devcenter/evidence/quality/freepass-admin-backend-baseline.json`
+- First real receipt: `../../test/fixtures/hubs/evidence/quality/freepass-admin-backend-baseline.json`
 - Adopted QA patterns: `../../src/hubs/quality/patterns.json`
 - Consumer map: `../../src/hubs/quality/consumers.json`
 - Evidence retention/recovery: `../../src/hubs/quality/retention.json`

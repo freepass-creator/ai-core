@@ -13,7 +13,7 @@ Data Hub를 추상 규격 모음이 아니라 **실제 프로젝트 구현을 re
 ## Data Receipt
 
 실제 receipt:
-`evidence/data/freepass-data-catalog-v1.json`
+`test/fixtures/hubs/evidence/data/freepass-data-catalog-v1.json`
 
 현재 결과는 **HOLD**다.
 

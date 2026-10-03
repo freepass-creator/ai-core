@@ -18,7 +18,7 @@ Development Center의 공식 전문 실행 영역은 아래 **7개 Hub**다.
 
 - 규칙: [routing-rules.json](routing-rules.json)
 - 실행기: [../scripts/hub-router.mjs](../../src/routing/hub-router.mjs)
-- 검증기: [../scripts/validate-hubs.mjs](../scripts/validate-hubs.mjs)
+- 검증기: [../scripts/validate-hubs.mjs](../../scripts/verification/validate-hubs.mjs)
 - 회귀 테스트: [../test/hub-router.test.mjs](../../test/hub-router.test.mjs)
 
 모르는 요청은 가장 비슷한 Hub로 억지 배정하지 않고 **HOLD**한다.

@@ -75,7 +75,7 @@
             "test/design-visual-qa.test.mjs",
             "../ai-ops/test/browser-capture.test.mjs",
             "test/design-feedback.test.mjs",
-            "devcenter/evidence/design/freepass-admin-approved-shell.json"
+            "test/fixtures/hubs/evidence/design/freepass-admin-approved-shell.json"
           ],
           "gap": "Source-level adoption is revision-bound, but browser viewport/locale/input/focus/zoom/reflow conformance is not executed."
         },
@@ -92,7 +92,7 @@
         "evidence": {
           "level": "VERIFIED",
           "evidence": [
-            "devcenter/evidence/design/freepass-admin-approved-shell.json",
+            "test/fixtures/hubs/evidence/design/freepass-admin-approved-shell.json",
             "freepass-admin@92e2838b6da2df5f0b8733db494e879bd25d2e74"
           ]
         },
@@ -109,7 +109,7 @@
           "level": "VERIFIED",
           "evidence": [
             "src/hubs/design/feedback.json",
-            "devcenter/evidence/design/freepass-admin-approved-shell.json",
+            "test/fixtures/hubs/evidence/design/freepass-admin-approved-shell.json",
             "docs/hubs/DESIGN-HUB-EVIDENCE.md"
           ]
         }
@@ -159,7 +159,7 @@
         "evidence": {
           "level": "VERIFIED",
           "evidence": [
-            "devcenter/evidence/data/freepass-data-catalog-v1.json",
+            "test/fixtures/hubs/evidence/data/freepass-data-catalog-v1.json",
             "freepass-data@bd75b604fcd06358dedaa77edf62284cf0d17ae9"
           ]
         },
@@ -292,7 +292,7 @@
           "level": "PARTIAL",
           "evidence": [
             "src/hubs/engineering/assets.json",
-            "devcenter/capabilities/IMPROVEMENTS.md"
+            "docs/episodes/DEVCENTER-CAPABILITY-IMPROVEMENTS.md"
           ],
           "gap": "Asset verification metadata is normalized, but revision-bound promotion/usage receipts are not accumulated per consumer."
         },
@@ -308,7 +308,7 @@
           "level": "PARTIAL",
           "evidence": [
             "src/hubs/engineering/engineering-hub.mjs#planPromotion",
-            "devcenter/capabilities/IMPROVEMENTS.md"
+            "docs/episodes/DEVCENTER-CAPABILITY-IMPROVEMENTS.md"
           ],
           "gap": "Promotion decisions can be planned with evidence, but no end-to-end project candidate promotion receipt has been completed."
         }
@@ -403,9 +403,9 @@
         "runtime": {
           "level": "PARTIAL",
           "evidence": [
-            "devcenter/scripts/inspect-project.mjs",
+            "scripts/verification/inspect-project.mjs",
             "src/hubs/quality/quality-receipt.mjs",
-            "devcenter/evidence/quality/freepass-admin-backend-baseline.json"
+            "test/fixtures/hubs/evidence/quality/freepass-admin-backend-baseline.json"
           ],
           "gap": "Quality Receipt runtime and one real receipt exist, but project adapters/execution are not yet broad enough for generic runtime VERIFIED."
         },
@@ -429,7 +429,7 @@
         "evidence": {
           "level": "VERIFIED",
           "evidence": [
-            "devcenter/evidence/quality/freepass-admin-backend-baseline.json",
+            "test/fixtures/hubs/evidence/quality/freepass-admin-backend-baseline.json",
             "GitHub Actions run 35437766677"
           ]
         },
@@ -445,8 +445,8 @@
           "level": "VERIFIED",
           "evidence": [
             "src/hubs/quality/patterns.json",
-            "devcenter/standards/backend/FREEPASS-ADMIN-PILOT.md",
-            "devcenter/evidence/quality/freepass-admin-backend-baseline.json"
+            "docs/research/FREEPASS-ADMIN-PILOT.md",
+            "test/fixtures/hubs/evidence/quality/freepass-admin-backend-baseline.json"
           ]
         }
       }

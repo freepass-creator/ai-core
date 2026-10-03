@@ -3,7 +3,7 @@
 - 관측일: 2026-09-09
 - 대상: `C:/dev/freepasserp4`
 - branch / HEAD: `feat/spring-atom-monitor` / `ef3a8cf5641033caeea23e29a272633266a0d7df`
-- 방식: `node scripts/inspect-project.mjs --target C:/dev/freepasserp4`
+- 방식: `node scripts/verification/inspect-project.mjs --target C:/dev/freepasserp4`
 - 판정: `NOTICE` — PASS 4, NOTICE 2, HOLD 0, FAIL 0
 
 ## 확인 결과

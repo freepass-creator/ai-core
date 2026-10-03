@@ -12,7 +12,7 @@ Development Center는 AI Core의 개발 실행 조직이다. AI Core가 회사 �
 2. [Data Hub](data.md)
 3. [Document Hub](document.md)
 4. [Engineering Hub](engineering.md)
-5. [Integration Hub](./integration.md)
+5. [Integration Hub](integration.md)
 6. [Quality Hub](quality.md)
 7. [Delivery Hub](delivery.md)
 
@@ -41,7 +41,7 @@ Readiness는 제품 품질 점수가 아니다. Hub가 공통 실행 계층으�
 
 ## 지도점검 관제실
 
-[지도점검 규정](../verification/POLICY.md)에 따라 `대상 등록 → 정본·버전 고정 → 규격 점검 → 시정 배정 → 수정 실행 → 재검사·종결`을 관리한다. `node scripts/inspect-project.mjs --target <프로젝트 경로>`로 값을 읽지 않는 기본 구조 점검을 실행할 수 있다. 결과가 규격 밖이면 근거와 재검사 방법이 포함된 시정 작업 패킷을 발행한다.
+[지도점검 규정](../verification/POLICY.md)에 따라 `대상 등록 → 정본·버전 고정 → 규격 점검 → 시정 배정 → 수정 실행 → 재검사·종결`을 관리한다. `node scripts/verification/inspect-project.mjs --target <프로젝트 경로>`로 값을 읽지 않는 기본 구조 점검을 실행할 수 있다. 결과가 규격 밖이면 근거와 재검사 방법이 포함된 시정 작업 패킷을 발행한다.
 
 ## 다른 세션의 첫 방문
 
@@ -49,7 +49,7 @@ Readiness는 제품 품질 점수가 아니다. Hub가 공통 실행 계층으�
 
 ## 현재 상태
 
-그룹·파트 골격, 로컬 규격 등록부, [브라우저 규격·원자 실험실](../../devcenter/portal/README.md), 읽기 전용 지도점검 엔진과 7 Hub 조직·라우팅 등록부가 있다.
+그룹·파트 골격, 로컬 규격 등록부, [브라우저 규격·원자 실험실](../../docs/catalog-portal.md), 읽기 전용 지도점검 엔진과 7 Hub 조직·라우팅 등록부가 있다.
 
 **Hub 등록은 구현 완료 선언이 아니다.** 기존 backing source의 구현 성숙도는 서로 다르며, 전체 규격 의미 자동 대조·대상별 수정기·전 Hub runtime은 아직 완료되지 않았다. 필요한 검토를 수행하지 못한 범위는 **HOLD**이며 폴더 존재를 검증 완료로 취급하지 않는다.
 
@@ -60,12 +60,12 @@ AI Core 루트 `registry/devcenter-datasets.json`은 기존 개발 규격과 Hub
 로컬에서는 이 저장소를 다른 프로젝트와 같은 부모 디렉터리에 둔 후 다음 명령으로 경로를 확인한다.
 
 ```powershell
-node 틀.mjs
-node 틀.mjs dev.hub.design
-node 틀.mjs dev.design.token
+node scripts/standards-find.mjs
+node scripts/standards-find.mjs dev.hub.design
+node scripts/standards-find.mjs dev.design.token
 ```
 
-`../../devcenter/틀.mjs`는 문자열 검색·경로 존재 확인만 수행한다. 후보 표시는 통과 판정이 아니다.
+`../../scripts/standards-find.mjs`는 문자열 검색·경로 존재 확인만 수행한다. 후보 표시는 통과 판정이 아니다.
 
 SSOT 조직 정의는 [ssot/PART.md](../../devcenter/ssot/PART.md), 검사기 정본은 `C:/dev/devcenter/ssot`다. `standards/ssot`는 조직상 참조 자리이며 두 번째 검사기를 만들지 않는다.
 

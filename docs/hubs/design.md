@@ -79,7 +79,7 @@ Capture 성공과 Visual QA PASS를 동일하게 취급하지 않는다. screens
 
 ## Source Adoption Evidence
 
-- Adoption receipt: `../../devcenter/evidence/design/freepass-admin-approved-shell.json`
+- Adoption receipt: `../../test/fixtures/hubs/evidence/design/freepass-admin-approved-shell.json`
 - Feedback decisions: `../../src/hubs/design/feedback.json`
 - Receipt contract: `../../contracts/hubs/design-adoption-receipt.schema.json`
 - Feedback runtime: `../../src/hubs/design/design-feedback.mjs`

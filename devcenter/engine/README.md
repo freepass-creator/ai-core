@@ -7,7 +7,7 @@
 아래는 도구를 찾는 안내다. 공통 실행기와 각 도구의 기능·소유를 합치지 않는다.
 
 - SSOT 검사기: [SSOT 파트](../ssot/PART.md), 실제 구현은 `C:/dev/devcenter/ssot`.
-- 규격 검색: 루트 [틀.mjs](../틀.mjs). 시작 템플릿 생성기가 아니다.
+- 규격 검색: 루트 [scripts/standards-find.mjs](../../scripts/standards-find.mjs). 시작 템플릿 생성기가 아니다.
 - 자동 커밋 기능은 ai-ops scripts/dev/commit-checked.ps1 에 큰파일 차단만 흡수
 
 ```powershell

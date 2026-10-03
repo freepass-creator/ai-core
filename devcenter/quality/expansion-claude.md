@@ -2,7 +2,7 @@ Read-only review; I did not execute anything, so every "reproduction" below is a
 
 ## 1. The collector imports and executes code from a project it inventories
 
-`scripts/collect-toolbox.mjs` line 1 claims *"Never imports inspected projects"*, then line 6 does exactly that:
+`scripts/catalog/collect-toolbox.mjs` line 1 claims *"Never imports inspected projects"*, then line 6 does exactly that:
 
 ```js
 import ts from '../portal/node_modules/typescript/lib/typescript.js';
@@ -10,7 +10,7 @@ import ts from '../portal/node_modules/typescript/lib/typescript.js';
 
 `portal` is an inspected project — its `package.json` becomes a `manifests[]` entry and its files are inventory candidates. So the tool runs several MB of third-party code out of a dependency tree that is itself inside the audit scope, at import time, before any containment check. The header claim is false as written, and the isolation property the design rests on ("derived pointers only, nothing from the inspected tree runs") does not hold.
 
-Secondary consequence: the hardcoded deep path bypasses resolution. Under pnpm/Yarn PnP, `portal/node_modules/typescript/lib/typescript.js` does not exist and both the collector and `verify-toolbox.mjs` fail at import with `ERR_MODULE_NOT_FOUND` — the verifier cannot even reach its assertions.
+Secondary consequence: the hardcoded deep path bypasses resolution. Under pnpm/Yarn PnP, `src/catalog-portal/node_modules/typescript/lib/typescript.js` does not exist and both the collector and `verify-toolbox.mjs` fail at import with `ERR_MODULE_NOT_FOUND` — the verifier cannot even reach its assertions.
 
 ## 2. `input.projects[].name` skips the containment check that `input.modules[].path` gets
 
@@ -53,4 +53,4 @@ The ScriptKind heuristic keys on a trailing `x` in the filename. `.jsx`/`.tsx` a
 
 ## 5. Output path may not be the served path — uncertain, needs one check
 
-The collector defaults to reading/writing `portal/public/catalog/*.json`, and `toolbox.tsx` fetches `/catalog/toolbox.json`. The working tree in this repo carries its catalog under `portal/static/catalog/` (`acceptance.json`, `functions-summary.json`, `functions/*.json`) alongside `portal/static/app.js`. I could not open the tree to confirm which directory is the static root, so this is flagged, not asserted. If `portal/static` is the served root, the fetch 404s, the `if(!r.ok)` branch throws, and the component renders the error box permanently — the retry button re-fetches the same missing URL. Confirm by checking whether `portal/public/` exists and is served; if not, the default `out` path in the CLI block and the `functions.json` input default both point at the wrong tree.
+The collector defaults to reading/writing `src/catalog-portal/public/catalog/*.json`, and `toolbox.tsx` fetches `/catalog/toolbox.json`. The working tree in this repo carries its catalog under `src/catalog-portal/static/catalog/` (`acceptance.json`, `functions-summary.json`, `functions/*.json`) alongside `src/catalog-portal/static/app.js`. I could not open the tree to confirm which directory is the static root, so this is flagged, not asserted. If `src/catalog-portal/static` is the served root, the fetch 404s, the `if(!r.ok)` branch throws, and the component renders the error box permanently — the retry button re-fetches the same missing URL. Confirm by checking whether `src/catalog-portal/public/` exists and is served; if not, the default `out` path in the CLI block and the `functions.json` input default both point at the wrong tree.

@@ -173,7 +173,7 @@
   "baseline": [
     {
       "guard": "css-token-definition",
-      "path": "devcenter/portal/app/globals.css",
+      "path": "src/catalog-portal/app/globals.css",
       "expires": "2026-10-31",
       "reason": "DevCenter 포털 로컬 변수 — design-system 토큰으로 옮길 때까지"
     },
