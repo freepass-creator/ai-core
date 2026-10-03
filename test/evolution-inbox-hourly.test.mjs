@@ -30,13 +30,14 @@ test('state가 없거나 force여도 같은 main의 자기 댓글에는 재반�
     lastCommentId: 1, lastCommentBody: '일반 댓글', force: true }), { run: true });
 });
 
-test('rerunOwn은 자기 댓글 판별만 건너뛰고 force와 함께 쓰면 재실행한다', () => {
+test('rerunOwn은 force와 함께일 때만 자기 댓글 판별을 건너뛰고 재실행한다', () => {
   const mainHead = 'abcdef0123456789';
   const input = { mainHead, lastCommentId: 1,
     lastCommentBody: '## [GPT 매시 점검 · 2026-10-03 · main abcdef01]\n\n본문', rerunOwn: true };
-  assert.deepEqual(decide(input), { run: true });
+  assert.deepEqual(decide(input), { run: false, reason: 'OWN_LAST_COMMENT' });
+  assert.deepEqual(decide({ ...input, force: false }), { run: false, reason: 'OWN_LAST_COMMENT' });
   const prev = { main_head: mainHead, last_comment_id: 1 };
-  assert.deepEqual(decide({ ...input, prev }), { run: false, reason: 'UNCHANGED' });
+  assert.deepEqual(decide({ ...input, prev, force: false }), { run: false, reason: 'OWN_LAST_COMMENT' });
   assert.deepEqual(decide({ ...input, prev, force: true }), { run: true });
   assert.deepEqual(decide({ ...input, prev, force: true, rerunOwn: false }),
     { run: false, reason: 'OWN_LAST_COMMENT' });

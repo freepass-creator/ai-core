@@ -12,7 +12,7 @@ export function ownCommentMain(body) {
 }
 
 export function decide({ prev, mainHead, lastCommentId, lastCommentBody, force, rerunOwn }) {
-  const ownMain = rerunOwn ? null : ownCommentMain(lastCommentBody);
+  const ownMain = force && rerunOwn ? null : ownCommentMain(lastCommentBody);
   if (ownMain !== null && mainHead.startsWith(ownMain)) return { run: false, reason: 'OWN_LAST_COMMENT' };
   return !force && prev && prev.main_head === mainHead && prev.last_comment_id === lastCommentId
     ? { run: false, reason: 'UNCHANGED' } : { run: true };
