@@ -9,7 +9,22 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const DEV = resolve(HERE, "..");            // C:\dev
+export function resolveLocator(locator, { repoRoot, projects, projectsRoot, exists }) {
+  const [첫, ...나머지] = locator.split(/[\\/]/);
+  if (exists(join(repoRoot, 첫))) return join(repoRoot, 첫, ...나머지);
+  const 프로젝트 = projects.find((p) => p.project_id === 첫 ||
+    p.local_path?.replace(/[\\/]+$/, "").split(/[\\/]/).at(-1) === 첫);
+  // 등록부의 local_path 는 다른 PC 경로일 수 있다 — 이 PC 에 실제로 있을 때만 쓴다
+  const 등록경로 = 프로젝트?.local_path && exists(프로젝트.local_path) ? 프로젝트.local_path : null;
+  return join(등록경로 || join(projectsRoot, 첫), ...나머지);
+}
+
+function main() {
+const repoRoot = resolve(HERE, "..");
+const projects = JSON.parse(readFileSync(join(repoRoot, "registry", "projects.json"), "utf8")).projects;
+const 위치 = (locator) => resolveLocator(locator, {
+  repoRoot, projects, projectsRoot: process.env.AI_CORE_PROJECTS_ROOT || "C:\\dev", exists: existsSync,
+});
 const registry = JSON.parse(readFileSync(join(HERE, "..", "registry", "devcenter-datasets.json"), "utf8"));
 const query = process.argv.slice(2).join(" ").trim().toLowerCase();
 
@@ -37,7 +52,7 @@ if (!matched.length) {
 
 console.log("");
 for (const d of matched) {
-  const abs = join(DEV, d.source.locator.replaceAll("/", "\\"));
+  const abs = 위치(d.source.locator);
   const there = existsSync(abs);
   let kind = "";
   if (there) kind = statSync(abs).isDirectory() ? " (폴더)" : "";
@@ -64,7 +79,7 @@ const branchOf = (repo) => {
 const repos = [...new Set(matched.map((d) => d.source.locator.split("/")[0]))];
 const offMain = [];
 for (const r of repos) {
-  const abs = join(DEV, r);
+  const abs = 위치(r);
   if (!existsSync(abs)) continue;
   const g = branchOf(abs);
   if (g && (g.b !== "main" || g.behind !== "0")) offMain.push({ r, ...g });
@@ -73,13 +88,13 @@ if (offMain.length) {
   console.log("★ 이 폴더는 «main» 이 아니다 — 폴더째 믿지 마라:");
   for (const o of offMain) {
     console.log(`   ${o.r}  가지 ${o.b}${o.behind === "0" ? "" : ` · origin/main 보다 ${o.behind} 커밋 뒤`}`);
-    console.log(`     정본으로 읽으려면:  git -C ${join(DEV, o.r)} show origin/main:<경로>`);
+    console.log(`     정본으로 읽으려면:  git -C ${위치(o.r)} show origin/main:<경로>`);
   }
   console.log("");
 }
 
 const missing = matched.filter(
-  (d) => !existsSync(join(DEV, d.source.locator.replaceAll("/", "\\"))),
+  (d) => !existsSync(위치(d.source.locator)),
 );
 const undecided = matched.filter((d) => d.role === "candidate");
 
@@ -92,3 +107,7 @@ if (undecided.length) {
 console.log("");
 
 process.exit(missing.length ? 1 : 0);
+}
+
+const isMain = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+if (isMain) main();
