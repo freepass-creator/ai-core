@@ -180,6 +180,12 @@
       "note": "AI Core 자신의 기억·계보 기록 — 규율이 소유한다"
     },
     {
+      "pattern": "^skills/",
+      "lane": "F",
+      "rule": "C",
+      "note": "모든 세션이 따르는 기본 업무 절차(Claude Code 사용자 스킬, 2026-10-03) — 일을 통과시키는 절차라 규율이 소유한다"
+    },
+    {
       "pattern": "^docs/business/",
       "lane": "F",
       "rule": "C"

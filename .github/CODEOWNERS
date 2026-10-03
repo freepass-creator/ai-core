@@ -22,6 +22,7 @@
 # F — 규율
 /src/governance/ @freepass-creator
 /memory/ @freepass-creator
+/skills/ @freepass-creator
 /docs/business/ @freepass-creator
 /src/collaboration/ @freepass-creator
 /devcenter/ @freepass-creator
