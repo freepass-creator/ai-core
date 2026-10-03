@@ -570,6 +570,26 @@
         "registry/operating-knowledge.json#platform.google-workspace"
       ],
       "capability_id": "workspace.google-direct"
+    },
+    {
+      "work_type_id": "ai-staff-assets",
+      "name": "AI 직원 캐릭터·이미지·이력서 제작",
+      "domain": "design",
+      "aliases": [
+        "AI 직원 캐릭터",
+        "AI 직원 이미지 생성",
+        "AI 직원 이력서",
+        "AI 직원 자기소개서"
+      ],
+      "target_project_id": "ai-staff",
+      "approval_boundary": "PROJECT_RULES",
+      "completion_condition": "characters/<이름>/character.json 정본과 승인 상태를 보존하고, 지정 revision의 이미지 재현·얼굴 유사도 및 이력서·자기소개서 생성 검증 증거가 남는다. 검증 전에는 HOLD다.",
+      "source_pointers": [
+        "freepass-creator/ai-staff",
+        "C:\\dev\\ai-staff\\characters",
+        "registry/projects.json"
+      ],
+      "capability_id": "design.ai-staff-assets"
     }
   ],
   "hub_routes": {

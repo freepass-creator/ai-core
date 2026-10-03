@@ -94,6 +94,10 @@
   },
   "no_gaps": "registry/projects.json 의 «모든» 프로젝트가 아래 어느 한 통에 들어가야 한다. 「미정」 통은 없다 — 판단이 들어간 것은 `confirm` 에 적는다.",
   "projects": {
+    "ai-staff": {
+      "bucket": "PRODUCT",
+      "why": "회사 AI 직원 캐릭터 정본·이미지·이력서 자산 제품. 대표 결정에 따라 ai-ops 시험판에서 분리하며, AI Core 규칙과 AI Ops 실행을 소비한다."
+    },
     "renman-data": {
       "bucket": "DATA_OWNER",
       "why": "Dedicated Renman read-contract and data-governance service; existing AI Ops business writers remain authoritative until a separately verified migration."
