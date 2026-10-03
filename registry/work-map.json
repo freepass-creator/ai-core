@@ -545,6 +545,31 @@
         "freepass-creator/freepass-sales/server/"
       ],
       "capability_id": "sales.mydata-intake"
+    },
+    {
+      "work_type_id": "google-workspace-direct",
+      "name": "구글 시트·드라이브·지메일 직접 작업",
+      "domain": "operations",
+      "aliases": [
+        "구글 시트",
+        "시트 읽어",
+        "시트 읽기",
+        "시트에 값",
+        "시트 쓰기",
+        "시트 수정",
+        "구글 드라이브",
+        "드라이브에서",
+        "드라이브 파일",
+        "지메일"
+      ],
+      "target_project_id": "ai-core",
+      "approval_boundary": "USER_APPROVAL_FOR_EXTERNAL_WRITE",
+      "completion_condition": "세션이 gws 로 직접 처리한다. 대상 파일 ID·탭·범위를 고정하고, 쓰기는 전후로 같은 범위를 읽어 바뀐 값을 확인해 반환한다. 메일 발송·공유/권한 변경·삭제는 사용자 지시가 있을 때만.",
+      "source_pointers": [
+        "memory/TOOL_CONNECTIONS.md",
+        "registry/operating-knowledge.json#platform.google-workspace"
+      ],
+      "capability_id": "workspace.google-direct"
     }
   ],
   "hub_routes": {

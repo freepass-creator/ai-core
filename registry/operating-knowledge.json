@@ -214,6 +214,7 @@
         "docs/intake/MAIL_CONNECTION_REUSE.md"
       ],
       "procedure": [
+        "Sheets/Drive/Gmail work is done by the session itself with the gws CLI on this PC (pyh@teamjpk.com). Do not route it through another AI (Codex) or ask the user to do it. Read: `gws sheets +read --spreadsheet <ID> --range \"<tab>!A1:D10\"`. Write: `gws sheets spreadsheets values update|batchUpdate|append` after reading the same range, then read it back. Drive: `gws drive files list --params ...` (prefer Bash for JSON quoting). Find sheet IDs in C:/dev/ai-ops/docs/지도/SHEET_MAP.md first.",
         "Use pyh@teamjpk.com and the profile matching the service.",
         "Read the native file as SSOT and pin file ID, tab/range, revision or modified time.",
         "Limit reads to the requested scope; after authorized edits, re-read the exact range or document.",
@@ -227,13 +228,27 @@
       ],
       "do_not_ask": [
         "Which TeamJPK Workspace account to use.",
-        "Whether a G: pointer alone proves native content access: it does not."
+        "Whether a G: pointer alone proves native content access: it does not.",
+        "Whether to send Sheets/Drive work to Codex or the user: no — run gws directly in this session."
       ],
       "forbidden": [
         "treat local cache or pointer as native SSOT",
         "copy secrets into prompts",
         "wide Drive or mailbox search outside the selected scope"
-      ]
+      ],
+      "verified": {
+        "observed_at": "2026-10-03",
+        "account": "pyh@teamjpk.com",
+        "scopes": [
+          "drive",
+          "spreadsheets",
+          "gmail.readonly",
+          "gmail.compose",
+          "gmail.send"
+        ],
+        "read_test": "PASS (B3Q gws sheets +read)",
+        "write_test": "NOT_RUN — write path exists by scope; verify per task with read-back"
+      }
     },
     {
       "id": "platform.windows-local",
