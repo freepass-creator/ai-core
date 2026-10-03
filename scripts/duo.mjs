@@ -32,6 +32,13 @@ const 기록부 = resolve(root, 'docs/coordination/CROSS_AI_LOG.md');
 export const 상태 = { 열림: 'OPEN', 답함: 'ANSWERED', 막힘: 'BLOCKED', 실패: 'FAILED' };
 const 상대 = new Set(['codex', 'claude']);
 
+/** ★Codex 모델을 명시한다(2026-10-03): ~/.codex/config.toml 기본값(gpt-6.1-sol)이 ChatGPT 계정에서
+ *  400 「not supported」로 거부돼 `--now` 상의가 전부 FAILED 였다. 사용자 설정은 건드리지 않고 호출에 적는다.
+ *  바꾸려면 CODEX_MODEL. (ai-ops scripts/gpt-상의.mjs b830091 와 같은 방식) */
+export const 코덱스모델 = process.env.CODEX_MODEL || 'gpt-5.5';
+/** 모델 이름은 셸 명령에 들어간다 — 이름 꼴(영숫자·점·밑줄·하이픈)이 아니면 부르지 않는다(Codex 검토 #368: 셸 인젝션). */
+export const 모델이름꼴 = /^[A-Za-z0-9._-]+$/;
+
 const 인자 = (이름, 기본 = null) => {
   const i = process.argv.indexOf(`--${이름}`);
   return i > 0 && process.argv[i + 1] && !process.argv[i + 1].startsWith('--') ? process.argv[i + 1] : 기본;
@@ -96,10 +103,13 @@ export function 부른다(쪽지) {
      *  (2026-09-27 이 채널의 첫 호출이 바로 이것으로 FAILED 났고, 그 실패가 우편함에 남아서 알았다.) */
     const 물음 = `${쪽지.about}\n\n${쪽지.body}\n\n200자 이내 한국어로 답해라.`;
     const 임시 = join(우편함, `${쪽지.id}.prompt.txt`);
+    if (!모델이름꼴.test(코덱스모델)) {
+      return { state: 상태.실패, answer: `codex 호출 안 함: CODEX_MODEL 이 모델 이름 꼴이 아니다(${JSON.stringify(코덱스모델)})` };
+    }
     try {
       mkdirSync(우편함, { recursive: true });
       writeFileSync(임시, 물음);
-      const 답 = execSync(`codex exec -s read-only -C "${root}" --skip-git-repo-check "$(cat "${임시}")" < /dev/null`, {
+      const 답 = execSync(`codex exec -s read-only -m ${코덱스모델} -C "${root}" --skip-git-repo-check "$(cat "${임시}")" < /dev/null`, {
         encoding: 'utf8', shell: 'bash', timeout: 300000, maxBuffer: 16 * 1024 * 1024
       });
       /** ★codex exec 는 진행 로그 뒤에 답을 낸다. 마지막 «한 줄»만 집으면 여러 줄 답이 잘린다
