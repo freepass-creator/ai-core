@@ -15,28 +15,29 @@ test('자기 댓글은 머리줄의 7~40자리 main 해시로만 판별한다', 
   }
 });
 
-test('state가 없거나 force여도 같은 main의 자기 댓글에는 재반응하지 않는다', () => {
+test('기준 지문이 같으면 force여도 같은 main의 자기 댓글에는 재반응하지 않는다 — 기준점이 없으면 한 번 본다', () => {
   const mainHead = 'abcdef0123456789';
   const lastCommentBody = `## [GPT 매시 점검 · 2026-10-03 · main abcdef01]\n\n본문`;
+  // 상태 파일이 없거나 옛 상태라 신호 지문이 없으면 PR·CI 변경을 모른다 — 한 번 본다(게시하면 기준점이 생겨 반복되지 않는다)
   for (const prev of [undefined, { main_head: mainHead, last_comment_id: 1 }]) {
-    for (const force of [false, true]) {
-      assert.deepEqual(decide({ prev, mainHead, lastCommentId: 1, lastCommentBody, force }),
-        { run: false, reason: 'OWN_LAST_COMMENT' });
-      assert.deepEqual(decide({ prev, mainHead: 'fedcba9876543210', lastCommentId: 1, lastCommentBody, force }),
-        { run: true });
-    }
+    assert.deepEqual(decide({ prev, mainHead, lastCommentId: 1, lastCommentBody, signalsDigest: 's' }), { run: true });
   }
-  assert.deepEqual(decide({ prev: { main_head: mainHead, last_comment_id: 1 }, mainHead,
-    lastCommentId: 1, lastCommentBody: '일반 댓글', force: true }), { run: true });
+  const prev = { main_head: mainHead, last_comment_id: 1, signals_digest: 's' };
+  for (const force of [false, true]) {
+    assert.deepEqual(decide({ prev, mainHead, lastCommentId: 1, lastCommentBody, signalsDigest: 's', force }),
+      { run: false, reason: 'OWN_LAST_COMMENT' });
+    assert.deepEqual(decide({ prev, mainHead: 'fedcba9876543210', lastCommentId: 1, lastCommentBody, signalsDigest: 's', force }),
+      { run: true });
+  }
+  assert.deepEqual(decide({ prev, mainHead, lastCommentId: 1, lastCommentBody: '일반 댓글', signalsDigest: 's', force: true }),
+    { run: true });
 });
 
 test('rerunOwn은 force와 함께일 때만 자기 댓글 판별을 건너뛰고 재실행한다', () => {
   const mainHead = 'abcdef0123456789';
-  const input = { mainHead, lastCommentId: 1,
+  const input = { mainHead, lastCommentId: 1, signalsDigest: 's',
     lastCommentBody: '## [GPT 매시 점검 · 2026-10-03 · main abcdef01]\n\n본문', rerunOwn: true };
-  assert.deepEqual(decide(input), { run: false, reason: 'OWN_LAST_COMMENT' });
-  assert.deepEqual(decide({ ...input, force: false }), { run: false, reason: 'OWN_LAST_COMMENT' });
-  const prev = { main_head: mainHead, last_comment_id: 1 };
+  const prev = { main_head: mainHead, last_comment_id: 1, signals_digest: 's' };
   assert.deepEqual(decide({ ...input, prev, force: false }), { run: false, reason: 'OWN_LAST_COMMENT' });
   assert.deepEqual(decide({ ...input, prev, force: true }), { run: true });
   assert.deepEqual(decide({ ...input, prev, force: true, rerunOwn: false }),
@@ -130,7 +131,8 @@ test('decide migrates legacy checkpoints and detects signals under own comments'
   for (const signals_digest of [undefined, 'old']) {
     assert.deepEqual(decide({ ...input, lastCommentBody, prev: { ...prev, signals_digest } }), { run: true });
   }
-  assert.deepEqual(decide({ ...input, lastCommentBody }), { run: false, reason: 'OWN_LAST_COMMENT' });
+  // 상태 파일이 유실되면 기준점이 없다 — 자기 댓글이 마지막이어도 PR·CI 변경을 놓치지 않게 한 번 본다(2026-10-04 Codex 반례)
+  assert.deepEqual(decide({ ...input, lastCommentBody }), { run: true });
   assert.deepEqual(decide({ ...input, lastCommentBody, prev: { ...prev, signals_digest: 'new' } }),
     { run: false, reason: 'OWN_LAST_COMMENT' });
 });
