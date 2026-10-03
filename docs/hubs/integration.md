@@ -11,7 +11,7 @@ Development Center의 시스템 연동 허브.
 - Retry / timeout / external failure handling
 
 ## 현재 backing source
-- `../../devcenter/capabilities/integrations/`
+- `../../src/hubs/integration/`
 - 각 프로젝트의 검증된 connector/adapter
 - AI Core의 Event/Error/Result/Workflow Contract
 

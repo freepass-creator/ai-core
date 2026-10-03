@@ -14,8 +14,8 @@ Development Center의 검증·품질 증거 허브.
 - PASS / FAIL / HOLD 증거
 
 ## 현재 backing source
-- `../../quality/conformance/`
-- `../../quality/testing/`
+- `../../scripts/verification/`
+- `../../test/quality-receipt.test.mjs`
 - 지도점검 재검사 증거
 
 ## 경계

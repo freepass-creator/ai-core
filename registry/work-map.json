@@ -90,10 +90,10 @@
       ],
       "target_project_id": "ai-core",
       "approval_boundary": "MERGE_APPROVAL",
-      "completion_condition": "공통 규격이 AI Core 루트 정본과 내부 DevCenter 실행 모듈에 반영되고 제품별 적용 범위와 검증 결과가 남는다.",
+      "completion_condition": "공통 규격이 AI Core 정본과 src/hubs/design 실행 모듈에 반영되고 제품별 적용 범위와 검증 결과가 남는다.",
       "source_pointers": [
         "registry/projects.json",
-        "devcenter/",
+        "docs/UI_UX_START_HERE.md",
         "registry/hubs.json",
         "registry/design-hub-binding.json"
       ],
@@ -111,10 +111,10 @@
       ],
       "target_project_id": "ai-core",
       "approval_boundary": "READ_ONLY",
-      "completion_condition": "재사용 자산·규격·검증 결과가 AI Core revision과 DevCenter module provenance에 결속된다.",
+      "completion_condition": "재사용 자산·규격·검증 결과가 AI Core revision과 본체 자산의 출처에 결속된다.",
       "source_pointers": [
         "registry/projects.json",
-        "devcenter/",
+        "docs/AI_ACADEMY_CURRICULUM.md",
         "registry/hubs.json",
         "registry/design-hub-binding.json"
       ],

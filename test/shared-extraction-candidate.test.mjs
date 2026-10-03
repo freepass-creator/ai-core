@@ -28,7 +28,7 @@ const impl=(project,overrides={})=>({
 const input=(implementations)=>({
   candidate_id:'shared.krw-display.v1',
   capability_key:'display.krw',
-  target_package:'devcenter/capabilities/shared/krw-display',
+  target_package:'packages/krw-display',
   implementations,
 });
 

@@ -52,9 +52,9 @@
         "source": {
           "level": "VERIFIED",
           "evidence": [
-            "devcenter/design/README.md",
+            "docs/UI_UX_START_HERE.md",
             "docs/hubs/design.md",
-            "ai-core/design-system/"
+            "design-system/"
           ]
         },
         "runtime": {
@@ -126,11 +126,12 @@
           ]
         },
         "source": {
-          "level": "VERIFIED",
+          "level": "PARTIAL",
           "evidence": [
             "freepass-data@5f794ae232cf9870b2873fcde9a99cdd688c3c38",
-            "devcenter/ssot/PART.md"
-          ]
+            "docs/AI_WORKING_STANDARD.md"
+          ],
+          "gap": "The constitution defines source authority, but the referenced external data revision has not been revalidated as sufficient Data Hub source evidence."
         },
         "runtime": {
           "level": "PARTIAL",
@@ -393,12 +394,11 @@
           ]
         },
         "source": {
-          "level": "VERIFIED",
+          "level": "PARTIAL",
           "evidence": [
-            "devcenter/quality/conformance",
-            "devcenter/quality/testing",
             "docs/verification/POLICY.md"
-          ]
+          ],
+          "gap": "Empty conformance/testing folders were removed as evidence; policy alone does not verify the executable quality source inventory."
         },
         "runtime": {
           "level": "PARTIAL",

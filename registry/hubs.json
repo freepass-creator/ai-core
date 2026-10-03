@@ -21,7 +21,7 @@
       "backing_paths": ["design"],
       "responsibilities": ["ui-ux", "tokens", "components", "patterns", "screen-page-spec", "visual-qa"],
       "upstream": ["ai-core-ui-ux-contract"],
-      "representative_sources": ["devcenter/design", "project-design-assets"]
+      "representative_sources": ["docs/hubs/design.md", "design-system/", "project-design-assets"]
     },
     {
       "id": "data",
