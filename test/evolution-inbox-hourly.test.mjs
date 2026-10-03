@@ -30,6 +30,18 @@ test('state가 없거나 force여도 같은 main의 자기 댓글에는 재반�
     lastCommentId: 1, lastCommentBody: '일반 댓글', force: true }), { run: true });
 });
 
+test('rerunOwn은 자기 댓글 판별만 건너뛰고 force와 함께 쓰면 재실행한다', () => {
+  const mainHead = 'abcdef0123456789';
+  const input = { mainHead, lastCommentId: 1,
+    lastCommentBody: '## [GPT 매시 점검 · 2026-10-03 · main abcdef01]\n\n본문', rerunOwn: true };
+  assert.deepEqual(decide(input), { run: true });
+  const prev = { main_head: mainHead, last_comment_id: 1 };
+  assert.deepEqual(decide({ ...input, prev }), { run: false, reason: 'UNCHANGED' });
+  assert.deepEqual(decide({ ...input, prev, force: true }), { run: true });
+  assert.deepEqual(decide({ ...input, prev, force: true, rerunOwn: false }),
+    { run: false, reason: 'OWN_LAST_COMMENT' });
+});
+
 test('main catch는 실패를 기록하고 체크포인트를 유지하며 성공 코드로 종료한다', () => {
   const source = readFileSync(new URL('../scripts/evolution-inbox-hourly.mjs', import.meta.url), 'utf8');
   const catchBody = source.match(/\} catch \{([^}]+)\}\s*\}\s*if \(process\.argv/s)?.[1];

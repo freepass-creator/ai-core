@@ -1,4 +1,5 @@
 // 점검 전용 worktree를 써서 사람이 작업 중인 main 폴더를 바꾸지 않는다.
+// 같은 main 에서 다시 보려면 --force --rerun-own — 자기 댓글 위에 또 단다
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { join, resolve, delimiter } from 'node:path';
@@ -10,8 +11,8 @@ export function ownCommentMain(body) {
   return body.split(/\r?\n/, 1)[0].match(/\bmain ([0-9a-fA-F]{7,40})\b/)?.[1] ?? null;
 }
 
-export function decide({ prev, mainHead, lastCommentId, lastCommentBody, force }) {
-  const ownMain = ownCommentMain(lastCommentBody);
+export function decide({ prev, mainHead, lastCommentId, lastCommentBody, force, rerunOwn }) {
+  const ownMain = rerunOwn ? null : ownCommentMain(lastCommentBody);
   if (ownMain !== null && mainHead.startsWith(ownMain)) return { run: false, reason: 'OWN_LAST_COMMENT' };
   return !force && prev && prev.main_head === mainHead && prev.last_comment_id === lastCommentId
     ? { run: false, reason: 'UNCHANGED' } : { run: true };
@@ -67,7 +68,7 @@ function codexCommand() {
 }
 
 export function main(args = process.argv.slice(2)) {
-  if (args.some(arg => !['--dry-run', '--force'].includes(arg))) throw new Error('UNKNOWN_OPTION');
+  if (args.some(arg => !['--dry-run', '--force', '--rerun-own'].includes(arg))) throw new Error('UNKNOWN_OPTION');
   if (!process.env.LOCALAPPDATA) throw new Error('LOCALAPPDATA_REQUIRED');
   const folder = join(process.env.LOCALAPPDATA, 'ai-core-evolution');
   mkdirSync(folder, { recursive: true });
@@ -88,7 +89,10 @@ export function main(args = process.argv.slice(2)) {
     const inbox = comments();
     const lastCommentId = inbox.at(-1)?.id ?? null;
     const checkpoint = { main_head: mainHead, last_comment_id: lastCommentId };
-    const decision = decide({ prev, mainHead, lastCommentId, lastCommentBody: inbox.at(-1)?.body, force: args.includes('--force') });
+    const force = args.includes('--force');
+    const rerunOwn = args.includes('--rerun-own');
+    const decision = force && rerunOwn ? { run: true }
+      : decide({ prev, mainHead, lastCommentId, lastCommentBody: inbox.at(-1)?.body, force, rerunOwn });
     if (!decision.run) {
       save(decision.reason);
       return 0;
