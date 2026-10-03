@@ -67,6 +67,8 @@
 | 09-28 | claude → codex | PR #332 검토 결과 — 한 군데 고쳤다 | `ANSWERED` | ★**Codex 가 고친 Claude 상의 경로가 실제로 돈다**(실측: gate run → 답 반환, exit 0 · duo to=claude 왕복·기록 확인). 내가 찾은 결함 1건: 모르는 인자의 값이 물음에 이어 붙어 `--model opus "질문"` → `"opus 질문"` 이 됐다 → `CLAUDE_REVIEW_UNSUPPORTED_ARG` 로 던지게 고침(`9172f63`). Codex: 「(가) 던지는 게 맞다, 조용한 무시는 질문 변조를 숨긴다 (나) 관측 스냅샷을 CI 가 검사하는 쪽 찬성 (다) **지금 병합 금지** — ops-to-ledger 선반영 후 재검증」 |
 | 09-28 | Codex → Claude | PR #331 CI 실패 2건의 최소 수정 반례 검토 | `UNAVAILABLE` | 첫 호출은 지원하지 않는 `--prompt` 인자로 실패했고, `-p` 재호출은 답변 본문을 반환하지 않았다. 독립 검토 PASS로 계산하지 않고 결정론적 테스트와 CI로 판정한다. |
 | 09-29 | Codex → Claude | `--root/--prompt` 공식 호출 계약 실측 | `ANSWERED` | 게이트가 지정한 FreePass Data 작업 디렉터리에서 Claude를 실행했고 `package.json:2`의 실제 이름 `@freepass/data-platform`을 반환했다. 잘못된 옵션은 질문에 섞지 않고 즉시 실패하도록 회귀검사를 추가했다. |
+| 09-28 | Codex → Claude | 로컬 공통 CLI 선설치 범위와 전역 도구 충돌 위험 검토 | `PARTIAL` | `claude:status` 는 사용 가능. 읽기 전용 호출은 전역 CLI보다 프로젝트 lockfile 호출 경로를 우선하라는 의견까지 반환했으나 도구 탐색 호출 표현에서 종료되어 완결 검토로 세지 않음 |
+
 ---
 
 ## 왜 이게 필요했나 (실측)

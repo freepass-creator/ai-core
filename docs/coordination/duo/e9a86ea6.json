@@ -1,0 +1,11 @@
+{
+  "id": "e9a86ea6",
+  "from": "codex",
+  "to": "claude",
+  "about": "FreePass Admin 공동작업 정본 노출 최종 재검증",
+  "body": "읽기 전용 검토다. 저장소 C:\\Users\\admin\\.codex\\worktrees\\claude-duo-fix\\freepass-admin 에서 방금 fetch된 origin/main=678372cb5b6a692096ba6e1cfe97a1e8ceeffa66을 기준으로 AGENTS.md와 docs/WORK-INBOX.md를 읽어라. 현재 운영 접수 쓰기 상태, 실제 저장 경로, 안전장치, next_start_here, C:\\dev\\freepass-admin을 바로 쓰면 안 되는 이유를 구분해 한국어로 짧게 보고하라. revision도 직접 확인하고 파일은 수정하지 마라.",
+  "asked_at": "2026-09-29T10:58:24.304Z",
+  "state": "ANSWERED",
+  "answer": "**revision 확인** — origin/main = `678372cb` (PR #153 merge, 09-29 19:57). 검토 worktree HEAD는 `9946eebb`이나 AGENTS.md·docs/WORK-INBOX.md는 origin/main과 diff 0 = 동일 내용.\n\n**운영 접수 쓰기**: 개통됨(`0-LIVE-INTAKE`, 09-29). `ERP5_WRITE=on` + Admin·Data Admin 양쪽 `FREEPASS_DATA_ADMIN_WORKFLOW_WRITE=on`. CODED/TESTED/PERSISTENCE·DEPLOYMENT VERIFIED. 단 Catalog cutover는 `OBSERVE`, 전자계약 `ESIGN_ENABLED=off` 유지.\n\n**저장 경로**: Admin(`freepass-admin.vercel.app`) → Vercel OIDC → private `freepass-data-admin` Cloud Run → Data Admin workflow transaction → `freepasserp5` Firestore. Admin 런타임에서 Firebase 자격증명 제거, RTDB fallback 없음.\n\n**안전장치**: 개통 전 10개 컬렉션 889건 GCS export·임시 DB 복원 건수 일치 검증 후 삭제 / 재시도 `created=false` 멱등 / sealed snapshot 없는 접수는 write 전 거부·불일치는 conflict / 검증은 비고객 접수 `stl_4qw4uanayc`로 수행.\n\n**next_start_here**: current main 또는 이 문서를 포함한 최신 clean worktree를 root로 지정. `0-PREDEPLOY`만 보고 쓰기 OFF로 판정 금지.\n\n**`C:\\dev\\freepass-admin` 금지 이유**: 실측상 HEAD가 `codex/ai-core-starter-kit-20260922-v2` / `5b4ff75b`로 origin/main과 다른 오래된 checkout이고 dirty 상태. 여기서 읽으면 `0-LIVE-INTAKE`가 없어 쓰기 OFF로 오판한다.",
+  "answered_at": "2026-09-29T10:59:06.490Z"
+}

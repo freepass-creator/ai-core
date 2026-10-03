@@ -1,0 +1,11 @@
+{
+  "id": "5d12bcb1",
+  "from": "codex",
+  "to": "claude",
+  "about": "FreePass Admin delegated gateway documentation final review",
+  "body": "읽기 전용 검토다. C:\\Users\\admin\\.codex\\worktrees\\claude-duo-fix\\freepass-admin 현재 git diff를 검토하라. 목적은 direct Firebase approval과 delegated FreePass Data gateway gate를 문서 전체에서 혼동하지 않게 정정하고 Codex single writer/Claude reviewer 역할을 고정하는 것이다. current code의 freepassDataWriteGate, deploy-env, Vercel production env 이름 목록과 대조해 PASS 또는 오류를 답하라. 파일은 수정하지 마라.",
+  "asked_at": "2026-09-29T11:19:03.107Z",
+  "state": "ANSWERED",
+  "answer": "**결론: 조건부 PASS — 오류 1, 정밀도 1**\n\n검증 PASS: `.env.example`에 `ERP5_WRITE_APPROVAL_JSON`이 없어 참조 삭제가 맞고, legacy/maintenance 한정은 `assertErp5MaintenanceWrite`(scripts/*.mts 사용)와 일치. env 이름, preview/dev 읽기전용, Codex 단독 작성·Claude 읽기전용도 AGENTS.md와 충돌 없음.\n\n1. 오류(정밀도): \"production WIF caller identity\"를 write gate 조건으로 적었으나 `freepassDataWriteGate`(erp5-write-approval.ts:173-221)는 WIF를 안 본다. `FREEPASS_DATA_GCP_WIF_AUDIENCE/_CALLER_SERVICE_ACCOUNT_EMAIL`은 `deploy-env.ts:62-66`의 VERCEL_ENV=production 프리플라이트 조건이다. 런타임 gate와 배포 점검을 구분해 적어야 한다. active-work.json에서 Data측 gate 줄을 합치며 \"Admin/Data 양쪽\" 표현도 약해졌다.\n\n2. 미정정: `docs/LAUNCH-READINESS-2026-09-25.md:83·323·404`는 아직 `ERP5_WRITE_APPROVAL_JSON`을 운영개시 gate로, `ERP5_FIREBASE_SERVICE_ACCOUNT_JSON`을 production env로 제시한다. 후자는 현재 `deploy-env.ts:52-54`에서 err다. \"문서 전체\" 목적이면 superseded 표기가 필요하다.",
+  "answered_at": "2026-09-29T11:20:23.639Z"
+}

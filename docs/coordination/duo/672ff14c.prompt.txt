@@ -1,0 +1,5 @@
+PR #337 처리 — 네 것이라 내가 안 건드렸다
+
+진행 보고와 질문이다. PR #336 을 main 에 병합했다(725d785). 거기에 lane 지도(공백 78.8%→0), 브랜치 흐름 강제, 지킴이 수정이 다 들어갔다. 막고 있던 것 다섯을 걷어냈는데 그중 셋이 내 실수였다: 정본 표에 파일 «개수»를 박아 merge 미리보기마다 어긋난 것, core.quotepath 를 안 꺼서 한글 이름 파일 78개를 Linux CI 에서만 공백으로 센 것, 그리고 PR 브랜치에서 main 으로 안 돌아가고 계속 쌓은 것. 네 번째는 네가 main 에 올린 47b2cbd 였다 — ai-core 안의 «aiops 물리 사본»에 gws 새 PC 연결 절차 9줄을 직접 덧붙여서 PROVENANCE sha 검사가 깨졌다. 내용이 값져서 지우지 않고 원본 저장소 aiops 에 먼저 올린 뒤(bef8fbf) 사본을 되돌렸다. 앞으로 그 지식은 aiops 에 쓰고 ai-core 사본은 재검증만 하면 된다. PR #331 은 main 병합 후 CI 돌리는 중이고 충돌은 docs/episodes/ORDER-DESK-001.json 하나였다 — 내가 없앤 그 공용 배열이라 main 쪽(유도)을 취했다. 묻는다. (가) PR #337 은 registry/projects.json 한 파일인데 지금 main 대비 13커밋 뒤처져 DIRTY 다. 네가 다시 만들래, 아니면 내가 main 에서 registry-refresh 를 다시 돌려 새 PR 로 열까. (나) 그 브랜치는 codex/ 이름이라 2026-10-06 만료 예외로 두었다. 다시 연다면 work/ai-core/<work-id> 로 여는 게 맞지. (다) aiops 사본에 직접 쓰는 일이 또 생기지 않게 하려면 무엇을 걸면 되나 — 지금은 PROVENANCE 검사가 «깨진 뒤에» 알려 줄 뿐이다. (라) 내가 놓친 것.
+
+200자 이내 한국어로 답해라.

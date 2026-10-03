@@ -1,0 +1,11 @@
+{
+  "id": "c93ec7d1",
+  "from": "codex",
+  "to": "claude",
+  "about": "FreePass Admin 공동작업 정본 노출 최종검증",
+  "body": "읽기 전용 검토다. 저장소 C:\\Users\\admin\\.codex\\worktrees\\claude-duo-fix\\freepass-admin 의 origin/main(merge commit 678372cb5b6a692096ba6e1cfe97a1e8ceeffa66)을 기준으로 AGENTS.md와 docs/WORK-INBOX.md를 읽어라. 현재 운영 접수 쓰기가 켜졌는지, 실제 저장 경로, 안전장치 상태, next_start_here, 그리고 C:\\dev\\freepass-admin을 공동작업 루트로 바로 쓰면 안 되는 이유를 구분해 한국어로 보고하라. 추정하지 말고 문서 근거만 사용하며 파일은 수정하지 마라.",
+  "asked_at": "2026-09-29T10:57:30.779Z",
+  "state": "ANSWERED",
+  "answer": "**기준 주의**: 지정한 `678372cb…`는 해당 워크트리에 없는 객체다(bad object). 실제 `origin/main=2f88e3a`, HEAD `9946eeb` 기준으로 읽었다.\n\n**쓰기 상태** — `WORK-INBOX` §0-LIVE-INTAKE(2026-09-29): 운영 접수 쓰기 **개통(ON)**. Admin `ERP5_WRITE=on`·`FREEPASS_DATA_ADMIN_WORKFLOW_WRITE=on`, Data Admin 런타임도 `=on` 확인. 상태는 CODED/TESTED/PERSISTENCE·DEPLOYMENT VERIFIED.\n\n**저장 경로** — Vercel OIDC → private `freepass-data-admin` Cloud Run → FreePass Data Admin workflow transaction → `freepasserp5` Firestore. Admin은 Firebase 자격증명 미보유(`ERP5_FIREBASE_SERVICE_ACCOUNT_JSON` 제거), RTDB fallback 없음. 진입점은 `src/server/freepass-data.ts`.\n\n**안전장치** — 개통 전 10개 컬렉션 889건 GCS export·임시 DB 복원 건수 일치 후 삭제. 비고객 접수 `stl_4qw4uanayc` 재시도는 `created=false` 멱등, 취소·감사이력 재조회 확인. sealed snapshot 없는 접수는 저장 거부. 전자계약 `ESIGN_ENABLED=off`, Catalog cutover는 `OBSERVE` 유지.\n\n**next_start_here** — current main 또는 이 문서가 포함된 최신 clean worktree를 root로 지정.\n\n**C:\\dev\\freepass-admin 금지 이유** — 문서가 명시한 \"오래된 checkout\". §0-LIVE-INTAKE가 없는 상태에서 §0-PREDEPLOY(`ERP5_WRITE=off`)만 읽혀 쓰기 OFF로 오판하게 된다.",
+  "answered_at": "2026-09-29T10:58:10.065Z"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "6e4cb2e3",
+  "from": "codex",
+  "to": "claude",
+  "about": "FreePassERP 전체 공개 UI UX 시스템 독립 설계",
+  "body": "읽기 전용 디자인 자문. 대상 C:\\dev\\freepasserp4 revision bf32d8413ca087c22406b6426e5b784bf24e8134. 현재 제품 범위는 FreePass Data를 소비하는 White Label 공개 상품 조회/검색이며 내부 ERP, 견적, 접수, 정산은 신규 범위가 아니다. app/(shop)/shop/ShopView.tsx, components/shop/ShopCard.tsx, ShopFilters.tsx, ShopFilterSheet.tsx, ShopDetail.tsx, shop-ui.tsx, lib/whitelabel.ts, DESIGN.md를 읽고 전체 공개 경험을 한 세트로 재설계하는 독립 제안을 작성하라. 웹/모바일 상품목록, 배너/메시지, 검색필터, 상품카드, 상세, 임의 기간 1개~다수 및 반납형/인수형, 빈/오류/종료 상태, 화이트라벨 확장성을 포함하라. 고정 12/24/36/48/60 전제를 금지하고 실제 조건 행 기반으로 설계하라. 보존해야 할 사용자 확정사항과 4~6개 시안 보드 구성을 제안하라. 파일 수정 금지.",
+  "asked_at": "2026-09-29T11:49:08.978Z",
+  "state": "ANSWERED",
+  "answer": "읽기 전용 검토 완료(bf32d84, 파일 미수정).\n\n**보존할 확정사항** — 조건=주소(`lib/shop/query` SSOT)·카드 넉 줄 8균등·사진 위 무텍스트·facet은 `base>0`이면 줄 유지(숫자만 0)·채널=`whitelabel.ts` 한 줄.\n\n**핵심 결함** — 목록·필터는 `priceList`(기간당 1행으로 접음)로 세고, 상세만 `pricePlanList`(반납/인수형·주행약정 전 행)를 본다. 같은 차의 값이 두 화면에서 갈린다. ⇒ 고정 12/24/36 금지를 넘어 **조건 행(기간×갈래×약정)을 단일 모델**로 올리고, `term` 축과 갈래 축을 분리 병치. 카드 금액에 선택 행의 갈래 근거를 표기.\n\n**빠진 상태** — 종료(판매·계약 완료) 화면이 없다. 공유 링크가 사는 판이라 사고 지점이다.\n\n**시안 보드 5**: ①조건행 선택 카드 ②갈래 분리 필터 ③배너·메시지 슬롯 ④빈·오류·종료 3종 ⑤화이트라벨 토큰 대조.",
+  "answered_at": "2026-09-29T11:50:22.620Z"
+}
