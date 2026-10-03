@@ -47,7 +47,7 @@ Start here before installing, logging in or rediscovering mail accounts. This is
 
 | Existing identity / role | Existing route / reference | Evidence and limits |
 | --- | --- | --- |
-| `pyh@teamjpk.com`, TeamJPK Workspace | `%USERPROFILE%/.config/gws`, existing gws protected credentials | 2026-09-15 owner observed auth metadata and Gmail scopes; actual read/send not tested. Workspace default policy remains read-only. |
+| `pyh@teamjpk.com`, TeamJPK Workspace | `%USERPROFILE%/.config/gws`, existing gws protected credentials | 2026-10-03 `gws auth status`: encrypted credentials, scopes `drive` · `spreadsheets` · `gmail.readonly` · `gmail.compose` · `gmail.send`. Sheets read tested PASS (B3Q). Mail **send** still needs the user's instruction per message — a send scope is not permission to send. Sheets/Drive: see «Google Workspace direct use» below. |
 | Same pyh account, SMTP route | `C:/dev/mailtool/send_mail.py`; existing `GMAIL_ADDRESS` / `GMAIL_APP_PASSWORD` environment references | Sender registration observed by owner; password validity and SMTP sending not tested. This route is not another account. |
 | `<업무폰 Gmail — 주소는 운영 설정에만 둔다>`, user alias 웰릭스 세일즈폰 / local label 업무폰 계정 | Existing profile/credential reference UNVERIFIED | Sales reviewer reported local code/docs for MyData receiving and Contacts. Live login/read/send unverified. Preserve the lowercase `w`; do not infer sending capability. |
 
@@ -59,3 +59,23 @@ Start here before installing, logging in or rediscovering mail accounts. This is
 4. Follow [mail handoff](../docs/intake/MAIL_ORDER_HANDOFF.md) for content preparation and revision-bound approval. Sending is always separately authorized; even a send scope or registered SMTP address is not a successful send or permission to send.
 
 These are time-stamped local references, not proof that another PC/server has the same profile. Keep passwords and tokens in their existing protected stores. Registered/metadata counts must not be reported as usable or authenticated account counts when auth status is FAILED/UNVERIFIED.
+
+## Google Workspace direct use
+
+★2026-10-03 대표: 「왜 구글 시트를 직접 못 만지고 코덱스를 통해서 만지냐 … 세션마다 노하우를 모르고 헤맨다」.
+**구글 시트·드라이브·지메일은 그 일을 맡은 세션이 이 PC 의 `gws` 로 직접 한다.** 다른 AI(Codex)를 거치거나 대표에게 시키지 않는다.
+정본 연결: capability `workspace.google-direct` · work type `google-workspace-direct`(`npm run ops:route -- "구글 시트…"`) · `registry/operating-knowledge.json` `platform.google-workspace`.
+전역 `~/.claude/CLAUDE.md` 「AI 가 «직접» 할 수 있는 연결」 표와 같은 말이다 — 하나를 고치면 둘 다 고친다.
+
+| 일 | 길 (계정 `pyh@teamjpk.com`) |
+| --- | --- |
+| 시트 ID 찾기 | `C:/dev/ai-ops/docs/지도/SHEET_MAP.md`(F코드) → 없으면 드라이브 검색 |
+| 시트 읽기 | `gws sheets +read --spreadsheet <ID> --range "<탭>!A1:D10"` — 2026-10-03 PASS |
+| 시트 쓰기 | `gws sheets +append …` · `gws sheets spreadsheets values update / batchUpdate --params '…' --json '…'` — **쓰기 전 같은 범위 읽기 → 쓰기 → 다시 읽어 확인**. 쓰기 경로는 범위로 확인됐고 실제 쓰기는 작업마다 되읽기로 증명한다 |
+| 드라이브 찾기 | `gws drive files list --params '{"q":"name contains …","fields":"files(id,name)"}'` — JSON 따옴표 때문에 PowerShell 보다 Bash |
+| 지메일 | 읽기·초안은 요청 범위 안에서. **보내기는 대표 지시가 있을 때만**(위 «Mail connection reuse» 경계 그대로) |
+
+막힌 것과 경계:
+- 공유·권한 변경·파일 삭제·메일 발송은 대표 지시 없이 하지 않는다.
+- 업무 숫자(대수·미수·계약)는 시트를 새로 세지 않는다 — Firestore 정본을 읽는다(전역 지침 「숫자는 세지 말고 읽는다」).
+- `gws` 가 인증 오류를 내면 그 층(인증)을 그대로 적고 멈춘다. 재설치·재로그인을 추측해서 하지 않는다.
