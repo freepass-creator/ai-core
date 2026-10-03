@@ -86,6 +86,22 @@
         "registry": "registry/sunset-devcenter-absorption.json",
         "status": "PLAN 2026-09-30 — ABSORB 12 · REVIEW 49 · ARCHIVE 161",
         "blocker_update": "「지우면 57개가 사라진다」는 보호된 복구 태그(archive/devcenter-final-*)가 Codex 조건 넷을 채우면 해소된다. 그 전까지 preserved 는 false."
+      },
+      "split_2026_10_03": {
+        "decision": "대표 10-03 「개발 센터를 AI-OPS 랑 AI-CORE 로 나눠서 갖고 와야 된다」",
+        "table": "docs/audits/DEVCENTER_SPLIT_2026-10-03.md",
+        "counts": {
+          "AI-CORE": 162,
+          "AI-OPS": 3,
+          "중복": 12,
+          "버림 후보": 45
+        },
+        "ai_ops_files": [
+          "devcenter/engine/자동커밋.mjs → ai-ops scripts/dev/",
+          "devcenter/scripts/browser-capture.mjs → ai-ops scripts/pc/",
+          "devcenter/test/browser-capture.test.mjs → ai-ops test/"
+        ],
+        "source_readme": "원본 freepass-creator/devcenter 는 보관(archive)돼 README PR 을 받을 수 없다 — 「어디로 옮겼나」는 이 항목과 위 표가 정본이다"
       }
     },
     {
