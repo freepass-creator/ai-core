@@ -1,0 +1,453 @@
+{
+  "schema": "ai-core-rule-enforcement/v1",
+  "observed_at": "2026-10-03",
+  "why": [
+    "★2026-10-03 교훈 lesson.rules-need-checkers: 글로만 있는 규칙은 지켜지지 않았다(가지 규칙 → 원격 가지 126개, duo 우편함 → 문답 29건 갇힘).",
+    "이 표는 헌법(docs/AI_WORKING_STANDARD.md)의 규칙마다 «무엇이 그것을 막는가»를 적는다. 막는 것이 없으면 NONE 으로 드러낸다 — 숨기지 않는다.",
+    "quote 는 헌법 원문에 그대로 있어야 한다(test/rule-enforcement.test.mjs). 헌법이 바뀌면 이 표도 같이 고쳐야 테스트가 통과한다."
+  ],
+  "kinds": {
+    "CHECKER": "규칙을 어기면 FAIL 하는 검사기. where 가 CI 면 병합을 막는다. report_only: true 면 돌기는 하지만 FAIL 하지 않는다(보고만).",
+    "GATE": "작업 시작·종료 때 AI 가 부르는 관문. 부르지 않으면 우회된다 — 자기 신고다.",
+    "TEST": "구현이 규칙을 지키는지 회귀 테스트(npm test → CI). 사람·AI 의 행동은 막지 못한다.",
+    "NONE": "막는 것이 없다. 판단·행동 규칙이라 기계로 못 막거나, 아직 검사기를 안 만든 것."
+  },
+  "where": {
+    "CI": "GitHub Actions 가 PR 마다 돈다 — 병합 전에 막힌다",
+    "LOCAL": "누군가 로컬에서 돌려야 한다",
+    "SESSION": "AI 세션이 시작·종료 때 부른다"
+  },
+  "rules": [
+    {
+      "id": "rule.precheck-before-work",
+      "section": "0",
+      "quote": "작업을 시작하기 전에 AI Core를 거친다",
+      "enforcement": [
+        {
+          "kind": "GATE",
+          "where": "SESSION",
+          "ref": "scripts/academy-start.mjs"
+        }
+      ],
+      "gap": "READY 영수증 없이 시작해도 막는 것이 없다(자기 신고)."
+    },
+    {
+      "id": "rule.source-precedence",
+      "section": "0",
+      "quote": "사용자의 최신 직접 지시 → AI 사관학교 헌법 → 도메인 공통 규정 → 대상 프로젝트 지침",
+      "enforcement": [
+        {
+          "kind": "NONE"
+        }
+      ],
+      "gap": "판단 규칙 — 기계로 막지 않는다."
+    },
+    {
+      "id": "rule.codex-calls-claude-through-gate",
+      "section": "협업 AI 정책",
+      "quote": "`npm run claude:review -- --root",
+      "enforcement": [
+        {
+          "kind": "GATE",
+          "where": "SESSION",
+          "ref": "scripts/claude-usage-gate.mjs"
+        },
+        {
+          "kind": "TEST",
+          "where": "CI",
+          "ref": "test/cross-ai-first-rule.test.mjs"
+        }
+      ],
+      "gap": "게이트를 거치지 않고 claude 를 직접 부르면 막지 않는다(자기 신고). 테스트는 진입 문서의 호출법만 본다."
+    },
+    {
+      "id": "rule.claude-limit-blocked-until",
+      "section": "협업 AI 정책",
+      "quote": "그 시각 전에는 Claude를 재호출하거나 사용자에게 같은 검토 가능 여부를 묻지 않고",
+      "enforcement": [
+        {
+          "kind": "GATE",
+          "where": "SESSION",
+          "ref": "scripts/claude-usage-gate.mjs"
+        }
+      ],
+      "gap": "게이트를 거치지 않으면 우회된다(자기 신고)."
+    },
+    {
+      "id": "rule.claude-calls-codex-read-only",
+      "section": "협업 AI 정책",
+      "quote": "검토 호출에는 `workspace-write`, `--full-auto`, 파일 수정 요청을 사용하지 않는다",
+      "enforcement": [
+        {
+          "kind": "TEST",
+          "where": "CI",
+          "ref": "test/cross-ai-first-rule.test.mjs"
+        },
+        {
+          "kind": "TEST",
+          "where": "CI",
+          "ref": "test/duo-channel.test.mjs"
+        }
+      ],
+      "gap": "duo 밖에서 손으로 codex exec 를 부르면 막지 않는다."
+    },
+    {
+      "id": "rule.ready-before-edit",
+      "section": "1",
+      "quote": "`READY`가 아니면 blocker를 해소하기 전 수정하지 않는다",
+      "enforcement": [
+        {
+          "kind": "GATE",
+          "where": "SESSION",
+          "ref": "scripts/academy-start.mjs"
+        },
+        {
+          "kind": "TEST",
+          "where": "CI",
+          "ref": "test/academy-start-gate.test.mjs"
+        }
+      ],
+      "gap": "HOLD 인 채 수정해도 막는 것이 없다(자기 신고)."
+    },
+    {
+      "id": "rule.kit-never-overwrites",
+      "section": "1",
+      "quote": "기존 키트 파일과 내용이 다르면 덮어쓰지 않고 중단한다",
+      "enforcement": [
+        {
+          "kind": "TEST",
+          "where": "CI",
+          "ref": "test/academy-starter-kit.test.mjs"
+        }
+      ],
+      "gap": "생성기 구현은 테스트로 지키지만, 사람이 키트 파일을 손으로 덮는 것은 막지 않는다."
+    },
+    {
+      "id": "rule.no-reask-confirmed-decisions",
+      "section": "1",
+      "quote": "AI는 현재 요청·정본·확정 결정에 이미 있는 답을 다시 묻지 않는다",
+      "enforcement": [
+        {
+          "kind": "NONE"
+        }
+      ],
+      "gap": "행동 규칙 — 키트가 OPERATING_KNOWLEDGE.json 을 실어 줄 뿐 막지 않는다."
+    },
+    {
+      "id": "rule.work-owns-branch",
+      "section": "1.1",
+      "quote": "신규 개발은 `work/<project-id>/<work-id>`를 기본으로 하고 AI 이름을 branch identity로 쓰지 않는다",
+      "enforcement": [
+        {
+          "kind": "CHECKER",
+          "where": "CI",
+          "ref": "scripts/check-branch-discipline.mjs"
+        },
+        {
+          "kind": "CHECKER",
+          "where": "LOCAL",
+          "ref": "scripts/check-branch-flow.mjs"
+        }
+      ],
+      "gap": null
+    },
+    {
+      "id": "rule.first-pr-owns-scope",
+      "section": "1.1",
+      "quote": "늦게 연 PR은 canon-guard `CANONICAL_PATH_CONTESTED`로 막히며",
+      "enforcement": [
+        {
+          "kind": "CHECKER",
+          "where": "CI",
+          "ref": "scripts/canon-guard.mjs"
+        }
+      ],
+      "gap": null
+    },
+    {
+      "id": "rule.branch-budget",
+      "section": "1.1",
+      "quote": "복잡한 프로젝트도 무제한 branch를 허용하지 않는다",
+      "enforcement": [
+        {
+          "kind": "CHECKER",
+          "where": "CI",
+          "ref": "scripts/development-continuity-audit.mjs",
+          "report_only": true
+        },
+        {
+          "kind": "CHECKER",
+          "where": "LOCAL",
+          "ref": "scripts/check-branch-flow.mjs"
+        }
+      ],
+      "gap": "CI 의 continuity:audit 는 --gate 없이 돌아 보고만 한다(main-state.yml). 한도 초과로 병합이 막히지 않는다 — 막는 것은 로컬 check-branch-flow 뿐."
+    },
+    {
+      "id": "rule.duty-to-warn",
+      "section": "1.1",
+      "quote": "이것은 **Duty to Warn**이다",
+      "enforcement": [
+        {
+          "kind": "NONE"
+        }
+      ],
+      "gap": "행동 규칙 — 키트 advisory 의 BRANCH_NOT_FLOWING 경고가 돕지만 AI 가 말하는지는 막지 않는다."
+    },
+    {
+      "id": "rule.ai-does-not-own-branch",
+      "section": "1.1",
+      "quote": "AI가 branch를 소유하지 않는다. **Work가 branch를 소유**한다.",
+      "enforcement": [
+        {
+          "kind": "CHECKER",
+          "where": "CI",
+          "ref": "scripts/check-branch-discipline.mjs"
+        }
+      ],
+      "gap": null
+    },
+    {
+      "id": "rule.resume-before-create",
+      "section": "1.1",
+      "quote": "개발 시작은 `RESUME BEFORE CREATE`다",
+      "enforcement": [
+        {
+          "kind": "CHECKER",
+          "where": "CI",
+          "ref": "scripts/canon-guard.mjs"
+        }
+      ],
+      "gap": "같은 정본 경로를 건드리는 두 번째 PR 만 막힌다. 기존 Work/PR 을 찾아 이어 가는지는 막지 않는다(자기 신고)."
+    },
+    {
+      "id": "rule.no-third-implementation",
+      "section": "1.1",
+      "quote": "같은 canonical scope의 개발선이 둘 이상이거나 branch budget을 넘으면 세 번째 구현을 만들지 않는다",
+      "enforcement": [
+        {
+          "kind": "CHECKER",
+          "where": "CI",
+          "ref": "scripts/development-continuity-audit.mjs",
+          "report_only": true
+        },
+        {
+          "kind": "CHECKER",
+          "where": "LOCAL",
+          "ref": "scripts/check-branch-flow.mjs"
+        }
+      ],
+      "gap": "구현 개수를 세는 검사기는 없다. 가지 수 한도는 로컬 check-branch-flow 만 막고 CI 의 continuity:audit 는 보고만 한다. 같은 정본 경로의 두 번째 PR 은 canon-guard 가 막지만(rule.resume-before-create) 다른 경로의 세 번째 구현은 못 잡는다."
+    },
+    {
+      "id": "rule.decide-by-written-criteria",
+      "section": "1.1",
+      "quote": "**AI는 적힌 기준대로 처리하고 사용자에게 되묻지 않는다**",
+      "enforcement": [
+        {
+          "kind": "NONE"
+        }
+      ],
+      "gap": "행동 규칙 — 기계로 막지 않는다."
+    },
+    {
+      "id": "rule.operator-essential-knowledge",
+      "section": "1.2",
+      "quote": "AI는 사용자가 어떤 개발 용어를 말하지 않았다는 이유로 그 개념을 이미 안다고 가정하지 않는다",
+      "enforcement": [
+        {
+          "kind": "NONE"
+        }
+      ],
+      "gap": "소통 규칙 — 기계로 막지 않는다."
+    },
+    {
+      "id": "rule.reuse-before-create",
+      "section": "2",
+      "quote": "`npm run reuse:check -- \"<만들려는 것>\" --root <대상 경로>`로 capability registry와 실제 파일·내용을 검색한다",
+      "enforcement": [
+        {
+          "kind": "GATE",
+          "where": "SESSION",
+          "ref": "scripts/reuse-preflight.mjs"
+        }
+      ],
+      "gap": "--create 없이 academy:start 하고 새 파일을 만들어도 막는 것이 없다(자기 신고)."
+    },
+    {
+      "id": "rule.separate-delivery-states",
+      "section": "2",
+      "quote": "파일 생성, 테스트 통과, 배포 성공, 실제 사용자 결과를 서로 다른 상태로 취급한다",
+      "enforcement": [
+        {
+          "kind": "NONE"
+        }
+      ],
+      "gap": "보고 규칙 — 기계로 막지 않는다."
+    },
+    {
+      "id": "rule.approval-boundaries",
+      "section": "2",
+      "quote": "권한·결제·삭제·운영 배포·외부 발송·민감정보 등은 해당 프로젝트의 승인 경계를 따른다",
+      "enforcement": [
+        {
+          "kind": "NONE"
+        }
+      ],
+      "gap": "AI 도구의 권한 모드(사람 승인)가 막는다 — 저장소 검사기는 없다."
+    },
+    {
+      "id": "rule.minimal-deidentified-review-context",
+      "section": "2",
+      "quote": "검토 AI에는 최소한의 비식별 맥락, 정확한 질문, 대상 revision을 전달한다",
+      "enforcement": [
+        {
+          "kind": "NONE"
+        }
+      ],
+      "gap": "상대 AI 에게 보내는 질문을 검사하는 것이 없다. duo 쪽지가 저장소에 남으므로 커밋 때 security:secrets 가 일부 잡는다."
+    },
+    {
+      "id": "rule.user-outcome-is-done-condition",
+      "section": "2",
+      "quote": "사용자가 말한 결과를 완료 조건으로 삼고",
+      "enforcement": [
+        {
+          "kind": "NONE"
+        }
+      ],
+      "gap": "행동 규칙."
+    },
+    {
+      "id": "rule.no-duplicate-canon",
+      "section": "2",
+      "quote": "같은 정본·원장·registry·workflow를 새로 만들지 않는다",
+      "enforcement": [
+        {
+          "kind": "CHECKER",
+          "where": "CI",
+          "ref": "scripts/canon-guard.mjs"
+        }
+      ],
+      "gap": "canon-guard 가 아는 관심사 밖에서 새 정본을 만들면 못 잡는다."
+    },
+    {
+      "id": "rule.create-new-needs-reason",
+      "section": "2",
+      "quote": "`CREATE_NEW_JUSTIFIED`는 기존 후보의 입력·출력·의미·상태·소비 위치가 맞지 않는 구체적 이유가 있을 때만 사용한다",
+      "enforcement": [
+        {
+          "kind": "GATE",
+          "where": "SESSION",
+          "ref": "scripts/reuse-preflight.mjs"
+        },
+        {
+          "kind": "TEST",
+          "where": "CI",
+          "ref": "test/reuse-preflight.test.mjs"
+        }
+      ],
+      "gap": "이유는 20자 이상인지만 본다. 판정 없이 파일을 만들어도 막지 않는다(자기 신고)."
+    },
+    {
+      "id": "rule.label-fact-inference",
+      "section": "2",
+      "quote": "사실, 추론, 제안, 사용자 결정, 실행 결과를 구분한다",
+      "enforcement": [
+        {
+          "kind": "NONE"
+        }
+      ],
+      "gap": "보고 규칙."
+    },
+    {
+      "id": "rule.review-proportional-to-risk",
+      "section": "2",
+      "quote": "실패 비용과 불확실성에 맞는 최소 검토를 사용한다",
+      "enforcement": [
+        {
+          "kind": "NONE"
+        }
+      ],
+      "gap": "판단 규칙."
+    },
+    {
+      "id": "rule.no-sensitive-raw-in-git",
+      "section": "3",
+      "quote": "민감한 원문이나 전체 대화는 복사하지 않고",
+      "enforcement": [
+        {
+          "kind": "CHECKER",
+          "where": "CI",
+          "ref": "scripts/check-secrets.mjs"
+        }
+      ],
+      "gap": "주민번호·키 꼴만 잡는다. 대화 원문 자체는 못 잡는다."
+    },
+    {
+      "id": "rule.work-result-six-fields",
+      "section": "3",
+      "quote": "의미 있는 작업 결과에는 아래 여섯 항목을 남긴다",
+      "enforcement": [
+        {
+          "kind": "GATE",
+          "where": "SESSION",
+          "ref": "scripts/academy-closeout.mjs"
+        },
+        {
+          "kind": "TEST",
+          "where": "CI",
+          "ref": "test/academy-closeout.test.mjs"
+        }
+      ],
+      "gap": "PR 본문·커밋에 여섯 항목이 있는지는 검사하지 않는다."
+    },
+    {
+      "id": "rule.no-order-id-for-ordinary-work",
+      "section": "4",
+      "quote": "일반 업무를 위해 order ID, work ID, claim 또는 중앙 서버 연결을 만들지 않는다",
+      "enforcement": [
+        {
+          "kind": "NONE"
+        }
+      ],
+      "gap": "행동 규칙."
+    },
+    {
+      "id": "rule.lesson-status-and-scope",
+      "section": "5",
+      "quote": "`CANDIDATE`, `ADOPTED_LOCAL`, `ADOPTED_DOMAIN`, `ADOPTED_UNIVERSAL`, `HOLD`, `REJECTED`, `SUPERSEDED` 중 현재 상태",
+      "enforcement": [
+        {
+          "kind": "CHECKER",
+          "where": "LOCAL",
+          "ref": "scripts/validate-operating-knowledge.mjs"
+        },
+        {
+          "kind": "TEST",
+          "where": "CI",
+          "ref": "test/operating-knowledge.test.mjs"
+        }
+      ],
+      "gap": "registry/operating-knowledge.json 의 lessons 만 본다. 다른 곳에 적은 노하우는 안 본다."
+    },
+    {
+      "id": "rule.unverified-is-hold",
+      "section": "6",
+      "quote": "검증하지 못한 항목은 완료가 아니라 `HOLD` 또는 미검증으로 남긴다",
+      "enforcement": [
+        {
+          "kind": "GATE",
+          "where": "SESSION",
+          "ref": "scripts/academy-closeout.mjs"
+        },
+        {
+          "kind": "TEST",
+          "where": "CI",
+          "ref": "test/academy-closeout.test.mjs"
+        }
+      ],
+      "gap": "closeout 을 부르지 않고 완료라고 말하면 막는 것이 없다."
+    }
+  ]
+}

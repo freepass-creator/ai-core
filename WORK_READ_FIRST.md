@@ -24,7 +24,7 @@
 - **기록이 없으면 안 한 것이다.** 상의는 `docs/coordination/CROSS_AI_LOG.md`, 결과는 GitHub(PR·커밋)에 남긴다. 채팅에만 둔 결과는 사라진다.
 - **가지는 main 한 방향.** 작업은 `work/<project-id>/<work-id>` 가지 → PR → main. `node scripts/check-branch-flow.mjs` 가 판정한다. worktree 를 지우기 전엔 `npm run duo -- stranded --worktree <경로>`.
 - **배운 것은 저장소에 둔다.** 한 AI 의 개인 메모리에만 두면 다른 AI 는 못 배운다 — `registry/operating-knowledge.json`·`docs/episodes/`.
-- **규칙에는 검사기를 붙인다.** 글로만 있는 규칙은 지켜지지 않았다(2026-10-03 실측: 가지 규칙·duo 우편함).
+- **규칙에는 검사기를 붙인다.** 글로만 있는 규칙은 지켜지지 않았다(2026-10-03 실측: 가지 규칙·duo 우편함). 헌법 규칙마다 무엇이 막는지는 `registry/rule-enforcement.json` — `NONE` 이 다음 고도화 후보다.
 - **되돌리기 어려운 일은 직전 승인.** 삭제·공개 전환·결제·실제 발송·운영 데이터 변경은 사용자 승인 전까지 `HOLD` 다. 앞선 승인은 다음 동작으로 이어지지 않는다.
 - **민감정보**(주민번호·계약서 원문·키)는 커밋하지 않는다 — `npm run security:secrets`. 상대 AI·외부 도구에는 비식별한 최소 맥락만 넘긴다.
 
