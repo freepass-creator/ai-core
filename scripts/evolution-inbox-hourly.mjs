@@ -56,6 +56,13 @@ function appendAlert(folder, line) {
   }
 }
 
+// 게시 뒤 남이 단 댓글은 다음 회차에서 읽는다.
+export function postedCheckpointId({ reviewedId, postedUrl, latestIds }) {
+  const id = postedUrl?.trim().match(/#issuecomment-(\d+)$/)?.[1];
+  const latest = latestIds.at(-1);
+  return id && String(latest) === id ? latest : reviewedId;
+}
+
 export function decide({ prev, mainHead, lastCommentId, lastCommentBody, signalsDigest, force, rerunOwn }) {
   const ownMain = force && rerunOwn ? null : ownCommentMain(lastCommentBody);
   // 기준점(이전 신호 지문)이 없으면 PR·CI 가 바뀌었는지 모르므로 한 번은 본다 — 게시하면 기준점이 생겨 반복되지 않는다.
@@ -231,7 +238,7 @@ export function main(args = process.argv.slice(2)) {
     }
     const url = run('gh', ['issue', 'comment', '211', '--repo', 'freepass-creator/ai-core', '--body-file', bodyFile]);
     const latest = comments();
-    save('POSTED', { ...checkpoint, last_comment_id: latest.at(-1)?.id ?? lastCommentId, comment_url: url });
+    save('POSTED', { ...checkpoint, last_comment_id: postedCheckpointId({ reviewedId: lastCommentId, postedUrl: url, latestIds: latest.map((c) => c.id) }), comment_url: url });
     return 0;
   } catch {
     // 외부 명령의 stderr에는 민감 원문이 있을 수 있어 상태 코드만 기록한다.

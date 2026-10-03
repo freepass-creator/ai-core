@@ -228,6 +228,10 @@ if (명령 === 'inbox') {
   /** worktree 를 지우기 «전»에 부른다(손발=AI Ops 가 정리할 때의 관문). 고아는 잃었을 수 있으니 실패로 센다. */
   const 대상 = 인자('worktree');
   const 판 = 갇힌기록(root, { 대상 });
+  if (판.대상없음) {
+    console.log(`FAIL: TARGET_NOT_FOUND — ${대상} 는 등록된 worktree 가 아니다(git worktree list 로 확인)`);
+    process.exit(1);
+  }
   if (!판.자리.length) {
     console.log(`PASS: GitHub 에 안 닿은 쪽지 없음${대상 ? ` (${대상})` : ' (모든 worktree)'}`);
   } else {
