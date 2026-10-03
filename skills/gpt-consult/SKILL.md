@@ -16,6 +16,28 @@ codex exec -s read-only -m gpt-5.5 -C "<대상 저장소 절대경로>" --skip-g
 - 검토 호출에 `workspace-write`·`--full-auto`·파일 수정 요청을 쓰지 않는다.
 - 공용 기록까지: AI Core 에서 `npm run duo -- ask --to codex --about "<제목>" --body "<질문>" --now`.
 
+## 1-1. Codex 에게 «고치게» 맡기기 (workspace-write — 2026-10-03 B3Q 시험 3건)
+
+```bash
+codex exec -m gpt-5.5 -s workspace-write -C "<저장소 절대경로>" --skip-git-repo-check -o "<답변 파일>" "<실행 규칙> <오더>" < /dev/null
+```
+`gpt-6-astra` 도 된다. `<실행 규칙>` 앞머리는 아래 그대로 붙인다.
+
+```text
+[실행 규칙] 이 PC 의 Codex 샌드박스는 네트워크가 없다 — 네트워크가 필요한 단계(npm install·fetch·push·웹)는 하지 말고 BLOCKED_NETWORK: <필요한 것> 한 줄로 멈춰라, 추측해서 채우지 마라. PowerShell 에서 npm 은 npm.cmd. 파일은 UTF-8.
+```
+
+- Windows elevated 샌드박스는 `-c sandbox_workspace_write.network_access=true` 를 줘도 네트워크가 막힌다(`EACCES`). 규칙 없이 맡기면 3분 재시도 끝에 조회 안 한 값을 써넣은 적이 있다. unelevated 는 명령 자체가 안 뜬다(`CreateProcessAsUserW 5`). 방화벽·실행정책 같은 시스템 보안 설정은 바꾸지 않는다.
+- 네트워크가 필요한 단계(`npm ci`·fetch·자료 받기)는 부르는 세션이 먼저 하고, Codex 에게는 «고치기+시험»만 맡긴다. push·PR 은 부르는 세션이 한다.
+
+| 시험 | 결과 |
+| --- | --- |
+| 코드 수정+npm test | 65초 완료 |
+| 네트워크 필요 | 5초 BLOCKED_NETWORK(규칙 없을 땐 179초 후 추측값) |
+| 150초 긴 명령 | 160초 완료 |
+
+끝나면 부르는 세션이 diff·시험을 직접 확인한다(맡겼다 ≠ 됐다).
+
 ## 2. 화면 짝 대화 (Codex 앱 — `pc-screen`)
 Claude 세션 하나 = Codex 앱의 같은 프로젝트 «짝 대화» 하나(첫 줄 = 이 세션 제목). 화면이 다른 세션·사람에게 쓰이고 있으면 1번으로.
 
