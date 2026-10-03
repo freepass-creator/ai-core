@@ -1,6 +1,6 @@
 {
   "schema_version": "1.1",
-  "observed_at": "2026-09-22T16:59:00Z",
+  "observed_at": "2026-09-23T00:03:39Z",
   "projects": [
     {
       "project_id": "ai-core",
@@ -52,7 +52,7 @@
           "kind": "GIT",
           "ref": "freepass-creator/aiops",
           "revision": "3d6ec8c6a0e826ae0472e3fb3e8bbaa8399b68c9",
-          "observed_at": "2026-09-22T16:59:00Z"
+          "observed_at": "2026-09-23T00:03:39Z"
         }
       ],
       "commands": {
@@ -90,7 +90,7 @@
           "kind": "GIT",
           "ref": "freepass-creator/casemap-private",
           "revision": "dd6e9d4eeb1bff1eb11b64c444f32f0f0e83b68e",
-          "observed_at": "2026-09-22T16:59:00Z"
+          "observed_at": "2026-09-23T00:03:39Z"
         }
       ],
       "commands": {
@@ -120,7 +120,7 @@
           "kind": "GIT",
           "ref": "freepass-creator/docshub",
           "revision": "4059d82779b7e1796afa2bbdf644e1d3bbdba3e7",
-          "observed_at": "2026-09-22T16:59:00Z"
+          "observed_at": "2026-09-23T00:03:39Z"
         }
       ],
       "commands": {
@@ -152,7 +152,7 @@
           "kind": "GIT",
           "ref": "freepass-creator/fp-settlement",
           "revision": "7b90d04a4461e605e2ac2987f1f9e371c476e176",
-          "observed_at": "2026-09-22T16:59:00Z"
+          "observed_at": "2026-09-23T00:03:39Z"
         }
       ],
       "commands": {
@@ -176,13 +176,13 @@
       "repository": "freepass-creator/freepass-admin",
       "default_branch": "main",
       "local_path": null,
-      "head_revision": "b1bb4f42abac427401df63d7afaac63a77a4d099",
+      "head_revision": "185f5049333463026234feb8e9c5318620917776",
       "authoritative_sources": [
         {
           "kind": "GIT",
           "ref": "freepass-creator/freepass-admin",
-          "revision": "b1bb4f42abac427401df63d7afaac63a77a4d099",
-          "observed_at": "2026-09-22T16:59:00Z"
+          "revision": "185f5049333463026234feb8e9c5318620917776",
+          "observed_at": "2026-09-23T00:03:39Z"
         },
         {
           "kind": "GIT",
@@ -225,7 +225,7 @@
           "kind": "GIT",
           "ref": "freepass-creator/freepass-estimate#main",
           "revision": "4d6a58cf474ac8a2574ae033d49349c24748bddd",
-          "observed_at": "2026-09-22T16:59:00Z"
+          "observed_at": "2026-09-23T00:03:39Z"
         },
         {
           "kind": "GIT",
@@ -266,7 +266,7 @@
           "kind": "GIT",
           "ref": "freepass-creator/freepasshomepage",
           "revision": "5afcdd03f2db7abdf8ee68fde77cdba541f21220",
-          "observed_at": "2026-09-22T16:59:00Z"
+          "observed_at": "2026-09-23T00:03:39Z"
         }
       ],
       "commands": {
@@ -296,7 +296,7 @@
           "kind": "GIT",
           "ref": "freepass-creator/freepass-sales",
           "revision": "05b6ce916b64f3d00c1426d34880c96cb41fb6b5",
-          "observed_at": "2026-09-22T16:59:00Z"
+          "observed_at": "2026-09-23T00:03:39Z"
         },
         {
           "kind": "GIT",
@@ -336,7 +336,7 @@
           "kind": "GIT",
           "ref": "freepass-creator/freepass-data",
           "revision": "09bc905a619b2d39faa649446c51a79c974b05c9",
-          "observed_at": "2026-09-22T16:59:00Z"
+          "observed_at": "2026-09-23T00:03:39Z"
         }
       ],
       "commands": {
@@ -369,7 +369,7 @@
           "kind": "GIT",
           "ref": "freepass-creator/freepasserp4",
           "revision": "f3debda9f70ebb51b7ec965783ed936444e0ad2b",
-          "observed_at": "2026-09-22T16:59:00Z"
+          "observed_at": "2026-09-23T00:03:39Z"
         },
         {
           "kind": "GIT",
@@ -441,7 +441,7 @@
           "kind": "GIT",
           "ref": "freepass-creator/sonogong-estimator",
           "revision": "a3627f6e7b8d61f71a83cc7008997b2780522e6f",
-          "observed_at": "2026-09-22T16:59:00Z"
+          "observed_at": "2026-09-23T00:03:39Z"
         }
       ],
       "commands": {
@@ -471,7 +471,7 @@
           "kind": "GIT",
           "ref": "freepass-creator/teamjpkwork",
           "revision": "867ebfdc73ea31106fea83c4320e6973e26f1027",
-          "observed_at": "2026-09-22T16:59:00Z"
+          "observed_at": "2026-09-23T00:03:39Z"
         }
       ],
       "commands": {
@@ -501,7 +501,7 @@
           "kind": "GIT",
           "ref": "freepass-creator/workcontrol",
           "revision": "71920aa1a9b7f030b931ab4c009f250d66292002",
-          "observed_at": "2026-09-22T16:59:00Z"
+          "observed_at": "2026-09-23T00:03:39Z"
         }
       ],
       "commands": {
@@ -532,7 +532,7 @@
           "kind": "GIT",
           "ref": "freepass-creator/mewcar",
           "revision": "dbe96a42f0fe5c0f71ed16d047954aba62eed4ad",
-          "observed_at": "2026-09-22T16:59:00Z"
+          "observed_at": "2026-09-23T00:03:39Z"
         }
       ],
       "commands": {
@@ -573,7 +573,7 @@
           "kind": "GIT",
           "ref": "freepass-creator/welrixtable",
           "revision": "12cadb5ca64bfb59d3bfbf9c85f82454f860baf7",
-          "observed_at": "2026-09-22T16:59:00Z"
+          "observed_at": "2026-09-23T00:03:39Z"
         }
       ],
       "commands": {
@@ -608,7 +608,7 @@
           "kind": "GIT",
           "ref": "freepass-creator/mewcar-jbwoori-proposal",
           "revision": "3fc11053ed46bfd92165bffd26530006b2de2293",
-          "observed_at": "2026-09-22T16:59:00Z"
+          "observed_at": "2026-09-23T00:03:39Z"
         }
       ],
       "commands": {
@@ -641,13 +641,13 @@
         "codex/freepass-data-consumer-20260922"
       ],
       "local_path": "C:\\dev\\kakao-remote",
-      "head_revision": "6c0a17d11f308b5f4493b8244213acf00a8c8ea0",
+      "head_revision": "167c362f2dc3fe7d2bb0ffa954088a761c09c679",
       "authoritative_sources": [
         {
           "kind": "GIT",
           "ref": "freepass-creator/kakao-ops",
-          "revision": "6c0a17d11f308b5f4493b8244213acf00a8c8ea0",
-          "observed_at": "2026-09-22T16:59:00Z"
+          "revision": "167c362f2dc3fe7d2bb0ffa954088a761c09c679",
+          "observed_at": "2026-09-23T00:03:39Z"
         }
       ],
       "commands": {
