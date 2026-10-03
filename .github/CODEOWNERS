@@ -13,6 +13,11 @@
 /management-support/ @freepass-creator
 
 # E — 엔진
+/scripts/catalog/ @freepass-creator
+/src/learning/ @freepass-creator
+/test/catalog/ @freepass-creator
+/test/fixtures/format-preview/ @freepass-creator
+/test/fixtures/hubs/ @freepass-creator
 /src/hubs/ @freepass-creator
 /docs/hubs/ @freepass-creator
 /src/engine/ @freepass-creator
@@ -22,6 +27,9 @@
 /docs/workflow/ @freepass-creator
 
 # F — 규율
+/src/verification/ @freepass-creator
+/scripts/verification/ @freepass-creator
+/test/verification/ @freepass-creator
 /docs/verification/ @freepass-creator
 /src/governance/ @freepass-creator
 /memory/ @freepass-creator
@@ -31,9 +39,12 @@
 /devcenter/ @freepass-creator
 /.github/ @freepass-creator
 /test/fixtures/known-bad/ @freepass-creator
-/scripts/ @freepass-creator
 
 # U — 정본 디자인 (잠금)
+/src/catalog-portal/ @freepass-creator
+/scripts/catalog-portal/ @freepass-creator
+/test/catalog-portal/ @freepass-creator
+/test/fixtures/catalog-portal/ @freepass-creator
 /design-system/ @freepass-creator
 /design/ @freepass-creator
 /examples/ @freepass-creator

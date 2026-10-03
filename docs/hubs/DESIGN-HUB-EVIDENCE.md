@@ -10,7 +10,7 @@
 - SHA-256 `6d2c26dc171d0c519d8ba5d8f9d7ab4be29cfeb371f6c8e639606863b62cef7d`
 
 Receipt:
-`evidence/design/freepass-admin-approved-shell.json`
+`test/fixtures/hubs/evidence/design/freepass-admin-approved-shell.json`
 
 PASS 범위:
 - legacy quick-filter row 제거

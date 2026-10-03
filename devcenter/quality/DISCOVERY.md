@@ -5,7 +5,7 @@
 - 요청: 사용자가 아직 모르는 개발 기술까지 개발센터에서 배우고 가져다 쓰도록 확장한다.
 - 위험: 중위험. 여러 UI·모델·빌드·검사 파일 변경. 실제 고객정보·운영 저장소·인증·권한·결제를 다루지 않는다.
 - SSOT / 버전: C:/dev/devcenter main, 착수 HEAD 4f1141c901fa6345a5dc8bb1aaf632a918f1e7cc. 이전 학습 이력 작업의 미커밋 변경이 이미 있으며 보존한다.
-- 재사용: 기존 메뉴·Button/Input/NativeSelect, learning-panel, 정적 빌드·해시·수동 검증 보고 체계. 코드 원본은 portal/app/discovery-model.ts. 새 규격 승인이 아닌 학습용 후보다.
+- 재사용: 기존 메뉴·Button/Input/NativeSelect, learning-panel, 정적 빌드·해시·수동 검증 보고 체계. 코드 원본은 src/catalog-portal/app/discovery-model.ts. 새 규격 승인이 아닌 학습용 후보다.
 - 신규 이유: 목록에 있던 기능을 재사용하는 것 외에 아직 안 쓰는 기술을 체험하는 경로가 없었다.
 - 완료 조건: 3개 실행 모델의 보호 유무·실패 비교, 6개 학습 안내, 공식 근거, 적용 질문·검증 계획 복사, 실행 묶음과 동일 버전의 코드 보기, 모바일·오류·반례 검사.
 - 담당: Codex 구현·재현, Claude 독립 정적 검토. Cursor/Gemini 비대화형 자문 시도.

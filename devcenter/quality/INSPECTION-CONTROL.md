@@ -7,8 +7,8 @@
 ## 구현
 
 - `docs/verification/POLICY.md`: 관제 권한, 6단계 흐름, 판정과 수정 경계.
-- `scripts/inspect-project.mjs`: 임의의 로컬 프로젝트 경로를 대상으로 Git 버전, 작업 트리, index 잠금, 추적 중인 민감 파일명, 작업 규칙, 검사 명령, 인수 증거와 SSOT 게이트를 읽기 전용 점검한다.
-- `portal/app/inspection.tsx`: 점검 집계·근거·시정 방법·재검사 방법을 표시하고 전체 또는 항목별 시정 작업 지시서를 복사한다.
+- `scripts/verification/inspect-project.mjs`: 임의의 로컬 프로젝트 경로를 대상으로 Git 버전, 작업 트리, index 잠금, 추적 중인 민감 파일명, 작업 규칙, 검사 명령, 인수 증거와 SSOT 게이트를 읽기 전용 점검한다.
+- `src/catalog-portal/app/inspection.tsx`: 점검 집계·근거·시정 방법·재검사 방법을 표시하고 전체 또는 항목별 시정 작업 지시서를 복사한다.
 - 정적 빌드는 개발센터 자체 점검 결과를 `catalog/inspection.json`에 생성한다. FAIL/HOLD는 화면에 그대로 표시하며 빌드 성공으로 숨기지 않는다.
 
 ## 현재 자기점검
@@ -20,9 +20,9 @@
 
 ## 검증
 
-- `node scripts/verify-inspection.mjs`: 임시 Git 저장소에서 추적된 `.env` 파일명과 index 잠금을 잡고, 비밀 값은 보고서에 포함하지 않는지 확인했다. 현재 개발센터의 9개 점검도 생성했다.
-- `node scripts/verify-typecheck-gate.mjs`: 새 화면을 포함한 타입·구문 관문과 빌드 중단 회귀 통과.
-- `node scripts/verify-browser.cjs`: 관제 화면, HOLD 표시, 전체 시정 지시서 JSON, 잘못된 점검 JSON 거부와 재시도 복구, uncaught runtime error 0을 실제 Chromium에서 확인했다.
+- `node test/verification/verify-inspection.mjs`: 임시 Git 저장소에서 추적된 `.env` 파일명과 index 잠금을 잡고, 비밀 값은 보고서에 포함하지 않는지 확인했다. 현재 개발센터의 9개 점검도 생성했다.
+- `node test/verification/verify-typecheck-gate.mjs`: 새 화면을 포함한 타입·구문 관문과 빌드 중단 회귀 통과.
+- `node test/catalog-portal/verify-browser.cjs`: 관제 화면, HOLD 표시, 전체 시정 지시서 JSON, 잘못된 점검 JSON 거부와 재시도 복구, uncaught runtime error 0을 실제 Chromium에서 확인했다.
 - 전체 기존 회귀와 빌드 후 고정 인수율은 41/50, 82%를 유지한다. 지도점검 확장은 고정 50개 분자에 억지로 더하지 않았다.
 
 ## 제한
