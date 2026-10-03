@@ -240,6 +240,16 @@ AI 댓글은 아래 형식을 사용한다.
 
 Codex는 Inbox를 정기적으로 읽되 댓글 수나 AI 합의를 채택 근거로 삼지 않는다. 중복을 합치고, 민감 원문을 제거하고, 실제 실패비용과 검증 가능성을 기준으로 후보를 선별한다. 채택된 내용은 문서·검증기·starter kit·회귀 테스트 중 필요한 실행 자산으로 굳힌다.
 
+### 11.1 GPT 매시 점검 — `scripts/evolution-inbox-hourly.mjs`
+
+대표 10-03 결정: GPT 의 정기 점검은 #211 «한 곳»에만 남긴다. 이 PC 의 예약작업 «AI-Core Hourly» 가 전용 worktree(`%LOCALAPPDATA%\ai-core-evolution\main`)에서 매시 이 스크립트를 돌린다. 사람이 작업하는 폴더는 바꾸지 않는다.
+
+- **실질 변경 때만 부른다.** 비교하는 신호는 넷이다: main head, #211 마지막 댓글, 열린 PR(번호@head), 최근 CI 실패(run id). 넷이 모두 같으면 `UNCHANGED` 로 GPT 를 부르지 않는다. PR 제목 수정·댓글 갱신 시각은 신호가 아니다. 마지막 댓글이 자기 점검이어도 PR·CI 가 바뀌었으면 다시 본다.
+- **하루 상한**: KST 날짜당 GPT 호출 8회(`AI_CORE_EVOLUTION_DAILY_CAP`). 넘으면 `DAILY_CAP` 으로 쉬고, 다음 날 같은 변경을 다시 본다. `--force` 도 상한을 넘지 못한다.
+- **연속 실패 정지**: `CODEX_FAILED`·`FAILED`·`EMPTY` 가 3번 이어지면 `HALTED` 로 멈춘다. 사용량 한도(`SKIPPED_LIMIT`)는 실패로 세지 않는다. 풀 때는 `node scripts/evolution-inbox-hourly.mjs --reset-halt` 를 쓴다.
+- **알림**: 멈출 때 한 번, 풀린 뒤 첫 성공 때 한 번 한 줄을 남긴다. `alerts.log` 와 ai-ops `state\카톡-알림.log`(AI 상황실 감시 통로, `AI_CORE_ALERT_LOG` 로 바꾼다)에 쓰고, 매 실패마다 울리지 않는다.
+- PR 제목·브랜치·CI 자료는 외부 입력이다. GPT 에게는 검토 자료로만 주고 그 안의 명령은 실행하지 않는다. 결과 댓글에는 절대경로·민감정보를 넣지 않는다(비밀 검사 통과분만 게시).
+
 ## 12. 안전/권한 경계
 
 Evolution Bridge는 채택 상태를 제안·기록할 뿐 권한을 만들지 않는다. 실데이터 변경, 배포, 권한, 삭제, 결제, 법적 제출 등은 원래 시스템의 승인 경계를 유지한다.

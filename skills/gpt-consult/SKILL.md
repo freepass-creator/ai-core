@@ -24,8 +24,11 @@ codex exec -m gpt-5.5 -s workspace-write -C "<저장소 절대경로>" --skip-gi
 `gpt-6-astra` 도 된다. `<실행 규칙>` 앞머리는 아래 그대로 붙인다.
 
 ```text
-[실행 규칙] 이 PC 의 Codex 샌드박스는 네트워크가 없다 — 네트워크가 필요한 단계(npm install·fetch·push·웹)는 하지 말고 BLOCKED_NETWORK: <필요한 것> 한 줄로 멈춰라, 추측해서 채우지 마라. PowerShell 에서 npm 은 npm.cmd. 파일은 UTF-8.
+[실행 규칙] 이 PC 의 Codex 샌드박스는 네트워크가 없다 — 네트워크가 필요한 단계(npm install·fetch·push·웹)는 하지 말고 BLOCKED_NETWORK: <필요한 것> 한 줄로 멈춰라, 추측해서 채우지 마라. PowerShell 에서 npm 은 npm.cmd. 파일은 UTF-8, 기존 줄끝 유지.
+[위임 범위] git 쓰기 명령(add·mv·commit·push)·gh 는 쓰지 마라 — worktree 의 git 인덱스는 샌드박스 밖이다. 파일 이동은 파일시스템 이동으로만. 스테이징·기록·커밋·push·PR·#211·독립 검토는 부르는 세션이 한다.
 ```
+
+`[위임 범위]` 가 없으면 Codex 가 git·#211·사전점검 같은 네트워크 단계에서 막혀 멈췄다(2026-10-03 devcenter 이동 실측).
 
 - Windows elevated 샌드박스는 `-c sandbox_workspace_write.network_access=true` 를 줘도 네트워크가 막힌다(`EACCES`). 규칙 없이 맡기면 3분 재시도 끝에 조회 안 한 값을 써넣은 적이 있다. unelevated 는 명령 자체가 안 뜬다(`CreateProcessAsUserW 5`). 방화벽·실행정책 같은 시스템 보안 설정은 바꾸지 않는다.
 - 네트워크가 필요한 단계(`npm ci`·fetch·자료 받기)는 부르는 세션이 먼저 하고, Codex 에게는 «고치기+시험»만 맡긴다. push·PR 은 부르는 세션이 한다.
