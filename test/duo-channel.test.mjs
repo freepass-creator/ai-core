@@ -83,3 +83,14 @@ test('EPERM 으로 유실됐던 쪽지가 복원돼 있다 — 물은 기록이 
   assert.equal(쪽지.state, 'ANSWERED');
   assert.match(쪽지.answer, /발행 나이는 빈·부분·오발행/, 'Codex 답이 그대로 남아 있어야 한다');
 });
+
+// ★2026-10-03 — Codex 기본 모델(gpt-6.1-sol)이 ChatGPT 계정에서 400 으로 거부돼 `--now` 상의가 전부 FAILED 였다.
+//   사용자 설정(~/.codex/config.toml)을 고치지 않고 호출에 모델을 적는다.
+test('Codex 호출은 모델을 명시한다 — 기본 모델이 거부되면 상의가 통째로 막힌다', () => {
+  const 본문 = read('scripts/duo.mjs');
+  assert.match(본문, /process\.env\.CODEX_MODEL \|\| 'gpt-5\.5'/, 'CODEX_MODEL 로 바꿀 수 있고 기본값이 있어야 한다');
+  assert.match(본문, /codex exec -s read-only -m \$\{코덱스모델\}/, 'codex exec 에 -m 이 빠졌다');
+  for (const 길 of ['AGENTS.md', 'CLAUDE.md', 'GEMINI.md', 'docs/AI_WORKING_STANDARD.md']) {
+    assert.match(read(길), /codex exec -s read-only -m gpt-5\.5 /, `${길}: 진입 문서의 호출법에 모델이 없다`);
+  }
+});

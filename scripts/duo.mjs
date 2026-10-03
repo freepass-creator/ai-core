@@ -32,6 +32,11 @@ const 기록부 = resolve(root, 'docs/coordination/CROSS_AI_LOG.md');
 export const 상태 = { 열림: 'OPEN', 답함: 'ANSWERED', 막힘: 'BLOCKED', 실패: 'FAILED' };
 const 상대 = new Set(['codex', 'claude']);
 
+/** ★Codex 모델을 명시한다(2026-10-03): ~/.codex/config.toml 기본값(gpt-6.1-sol)이 ChatGPT 계정에서
+ *  400 「not supported」로 거부돼 `--now` 상의가 전부 FAILED 였다. 사용자 설정은 건드리지 않고 호출에 적는다.
+ *  바꾸려면 CODEX_MODEL. (ai-ops scripts/gpt-상의.mjs b830091 와 같은 방식) */
+export const 코덱스모델 = process.env.CODEX_MODEL || 'gpt-5.5';
+
 const 인자 = (이름, 기본 = null) => {
   const i = process.argv.indexOf(`--${이름}`);
   return i > 0 && process.argv[i + 1] && !process.argv[i + 1].startsWith('--') ? process.argv[i + 1] : 기본;
@@ -99,7 +104,7 @@ export function 부른다(쪽지) {
     try {
       mkdirSync(우편함, { recursive: true });
       writeFileSync(임시, 물음);
-      const 답 = execSync(`codex exec -s read-only -C "${root}" --skip-git-repo-check "$(cat "${임시}")" < /dev/null`, {
+      const 답 = execSync(`codex exec -s read-only -m ${코덱스모델} -C "${root}" --skip-git-repo-check "$(cat "${임시}")" < /dev/null`, {
         encoding: 'utf8', shell: 'bash', timeout: 300000, maxBuffer: 16 * 1024 * 1024
       });
       /** ★codex exec 는 진행 로그 뒤에 답을 낸다. 마지막 «한 줄»만 집으면 여러 줄 답이 잘린다

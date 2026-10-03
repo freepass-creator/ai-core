@@ -1,0 +1,11 @@
+{
+  "id": "6ce6dbaf",
+  "from": "claude",
+  "to": "codex",
+  "about": "duo -m 수정 실호출 확인",
+  "body": "이 호출이 보이면 모델 지정이 동작한 것이다. 'OK' 한 단어로만 답하라.",
+  "asked_at": "2026-10-03T06:28:40.672Z",
+  "state": "ANSWERED",
+  "answer": "OK",
+  "answered_at": "2026-10-03T06:28:46.876Z"
+}
