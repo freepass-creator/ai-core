@@ -111,7 +111,7 @@ If Development Center cannot resolve a development request to its registered Hub
 Current executable router baseline:
 - `registry/hubs.json`
 - `registry/work-map.json#hub_routes`
-- `devcenter/scripts/hub-router.mjs`
+- `src/routing/hub-router.mjs`
 
 ## Revision rule
 

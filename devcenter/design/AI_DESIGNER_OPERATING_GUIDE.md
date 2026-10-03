@@ -478,7 +478,7 @@ project/
 
 UI/UX 작업은 아래 순서를 먼저 탄다.
 
-1. `hubs/design/README.md`
+1. `docs/hubs/design.md`
 2. `../registry/design-hub-binding.json` — AI Core canonical source bundle digest 확인
 3. pinned AI Core의 `docs/UI_UX_START_HERE.md`
 4. pinned AI Core의 `registry/ui-ux-entrypoint.json`

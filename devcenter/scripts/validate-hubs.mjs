@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { loadHubRouting, validateHubRegistry, validateRoutingRules } from './hub-router.mjs';
+import { loadHubRouting, validateHubRegistry, validateRoutingRules } from '../../src/routing/hub-router.mjs';
 
 try {
   const { registry, routingRules } = loadHubRouting();

@@ -64,13 +64,22 @@ test('DevCenter physical copy is complete, immutable and traceable', async () =>
   }
 
   const actualPaths = (await walk(moduleRoot)).filter(path => path !== 'PROVENANCE.json').sort();
+  // ★2026-10-03 흡수 2단계: AI-OPS 몫은 다른 저장소(ai-ops)로 «내보냈다». 그 파일은 여기서 사라지는 게 맞다.
+  const exported = item => item.disposition === 'EXPORTED_TO_AI_OPS';
   const movedPaths = new Set([...transformations.values()]
-    .filter(item => item.disposition.includes('MOVED'))
+    .filter(item => item.disposition.includes('MOVED') || exported(item))
     .map(item => item.source_path));
   assert.deepEqual(actualPaths, copiedPaths.filter(path => !movedPaths.has(path)).sort(), 'unrecorded or missing DevCenter files detected');
 
   for (const item of transformations.values()) {
     assert.match(item.reason, /\S/);
+    if (exported(item)) {
+      // 다른 저장소로 간 것은 «어느 저장소·어느 커밋·어느 경로»를 고정해야 하고, 여기엔 남아 있으면 안 된다.
+      assert.match(item.destination, /^freepass-creator\/ai-ops@[0-9a-f]{7,40}:\S+$/, `${item.source_path}: 내보낸 곳은 freepass-creator/ai-ops@<커밋>:<경로> 꼴이어야 한다`);
+      assert.throws(() => execFileSync('git', ['ls-files', '--error-unmatch', `devcenter/${item.source_path}`], { cwd: root, stdio: 'ignore' }),
+        `${item.source_path}: ai-ops 로 내보냈다고 적었는데 아직 devcenter/ 에 추적되고 있다`);
+      continue;
+    }
     const destination = item.destination.replaceAll('\\', '/');
     assert.doesNotThrow(() => execFileSync(
       'git', ['ls-files', '--error-unmatch', destination], { cwd: root, stdio: 'ignore' }
@@ -91,7 +100,7 @@ test('active DevCenter entrypoints delegate common rules to AI Core canon', asyn
     'docs/CURRENT-STANDARDS.md',
     'docs/FOUR-AI-WORKFLOW.md',
     'docs/SESSION-TOUR.md',
-    'docs/README.md',
+    // docs/README.md 는 2026-10-04 흡수 2단계에서 본체 docs/hubs/README.md 로 병합됐다(PROVENANCE: MOVED_MERGED) — devcenter 입구가 아니다
     'design/README.md',
     'standards/README.md',
     'ssot/PART.md'

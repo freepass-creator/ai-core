@@ -113,8 +113,9 @@
       "destination": "문서허브 반입이 끝나면 지운다. cutover 는 아직 승인 전이다(PRE_CUTOVER_EVIDENCE_ONLY).",
       "baseline": {
         "끌어씀": 1,
-        "언급": 9
-      }
+        "언급": 10
+      },
+      "baseline_change_2026_10_04": "언급 9→10: 새 의존이 아니라 «옮김» — devcenter 흡수 2단계로 devcenter/hubs/document/README.md·docs/DOCUMENT-HUB-RUNTIME.md 가 본체 docs/hubs/ 로 들어오면서, devcenter 안이라 세지 않던 기존 설계 문장(문서 허브 템플릿의 최종 주인 = management-support/templates/)이 세어지기 시작했다. 끌어씀은 그대로 1."
     }
   ],
   "docshub_split": {

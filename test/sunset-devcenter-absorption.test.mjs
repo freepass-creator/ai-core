@@ -61,7 +61,7 @@ test('★흡수 목록은 실제로 ai-core 가 부르는 파일이다 — 적�
   assert.deepEqual(빠짐, [], '소비처가 부르는데 흡수로 적히지 않은 파일이 있다');
   assert.ok(부르는것.size >= 12, '소비처에서 뽑은 경로가 너무 적다 — 뽑는 규칙이 깨졌다');
   // 조용히 끊기는 둘 — 지워도 테스트가 안 깨지는 입구를 빠뜨리지 않는다
-  for (const p of ['devcenter/hubs/design/README.md', 'devcenter/hubs/quality/README.md']) {
+  for (const p of ['docs/hubs/design.md', 'docs/hubs/quality.md']) {
     assert.ok(흡수.some((f) => f.path === p), `${p} 가 흡수에서 빠졌다 — 지우면 아무도 모르게 끊긴다`);
   }
 });

@@ -6,7 +6,7 @@
 
 ## 구현
 
-- `operations/inspection/POLICY.md`: 관제 권한, 6단계 흐름, 판정과 수정 경계.
+- `docs/verification/POLICY.md`: 관제 권한, 6단계 흐름, 판정과 수정 경계.
 - `scripts/inspect-project.mjs`: 임의의 로컬 프로젝트 경로를 대상으로 Git 버전, 작업 트리, index 잠금, 추적 중인 민감 파일명, 작업 규칙, 검사 명령, 인수 증거와 SSOT 게이트를 읽기 전용 점검한다.
 - `portal/app/inspection.tsx`: 점검 집계·근거·시정 방법·재검사 방법을 표시하고 전체 또는 항목별 시정 작업 지시서를 복사한다.
 - 정적 빌드는 개발센터 자체 점검 결과를 `catalog/inspection.json`에 생성한다. FAIL/HOLD는 화면에 그대로 표시하며 빌드 성공으로 숨기지 않는다.

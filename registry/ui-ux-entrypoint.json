@@ -29,9 +29,9 @@
   },
   "execution": {
     "design_hub_repository": "freepass-creator/ai-core",
-    "design_hub_entry": "devcenter/hubs/design/README.md",
+    "design_hub_entry": "docs/hubs/design.md",
     "design_hub_binding": "registry/design-hub-binding.json",
-    "quality_hub_entry": "devcenter/hubs/quality/README.md"
+    "quality_hub_entry": "docs/hubs/quality.md"
   },
   "mandatory_sequence": [
     "PIN_AI_CORE_REVISION",

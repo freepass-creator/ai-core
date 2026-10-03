@@ -75,7 +75,7 @@
       "reason": "복사 기록(PROVENANCE) — 태그와 함께 보관, 흡수 뒤 sunset 에 요지를 남긴다"
     },
     {
-      "path": "devcenter/README.md",
+      "path": "docs/hubs/README.md",
       "state": "EDITED_AFTER_COPY",
       "bucket": "REVIEW",
       "reason": "복사 뒤 ai-core 에서 고쳤다 — 공통 봉투가 대신하지 못하는 허브별 증빙·검증 규칙이면 흡수, 아니면 보관(Codex)"
@@ -87,7 +87,7 @@
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/capabilities/README.md",
+      "path": "docs/hubs/engineering-assets.md",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
@@ -279,7 +279,7 @@
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/docs/BROWSER-VERIFICATION.md",
+      "path": "docs/verification/BROWSER-VERIFICATION.md",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
@@ -291,49 +291,49 @@
       "reason": "복사 뒤 ai-core 에서 고쳤다 — 공통 봉투가 대신하지 못하는 허브별 증빙·검증 규칙이면 흡수, 아니면 보관(Codex)"
     },
     {
-      "path": "devcenter/docs/DATA-HUB-EVIDENCE.md",
+      "path": "docs/hubs/DATA-HUB-EVIDENCE.md",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/docs/DELIVERY-HUB-RUNTIME.md",
+      "path": "docs/hubs/DELIVERY-HUB-RUNTIME.md",
       "state": "EDITED_AFTER_COPY",
       "bucket": "REVIEW",
       "reason": "복사 뒤 ai-core 에서 고쳤다 — 공통 봉투가 대신하지 못하는 허브별 증빙·검증 규칙이면 흡수, 아니면 보관(Codex)"
     },
     {
-      "path": "devcenter/docs/DESIGN-HUB-COMPILER.md",
+      "path": "docs/hubs/DESIGN-HUB-COMPILER.md",
       "state": "EDITED_AFTER_COPY",
       "bucket": "REVIEW",
       "reason": "복사 뒤 ai-core 에서 고쳤다 — 공통 봉투가 대신하지 못하는 허브별 증빙·검증 규칙이면 흡수, 아니면 보관(Codex)"
     },
     {
-      "path": "devcenter/docs/DESIGN-HUB-EVIDENCE.md",
+      "path": "docs/hubs/DESIGN-HUB-EVIDENCE.md",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/docs/DESIGN-LOCK.md",
+      "path": "docs/hubs/DESIGN-LOCK.md",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/docs/DESIGN-VISUAL-QA.md",
+      "path": "docs/verification/DESIGN-VISUAL-QA.md",
       "state": "EDITED_AFTER_COPY",
       "bucket": "REVIEW",
       "reason": "복사 뒤 ai-core 에서 고쳤다 — 공통 봉투가 대신하지 못하는 허브별 증빙·검증 규칙이면 흡수, 아니면 보관(Codex)"
     },
     {
-      "path": "devcenter/docs/DOCUMENT-HUB-RUNTIME.md",
+      "path": "docs/hubs/DOCUMENT-HUB-RUNTIME.md",
       "state": "EDITED_AFTER_COPY",
       "bucket": "REVIEW",
       "reason": "복사 뒤 ai-core 에서 고쳤다 — 공통 봉투가 대신하지 못하는 허브별 증빙·검증 규칙이면 흡수, 아니면 보관(Codex)"
     },
     {
-      "path": "devcenter/docs/ENGINEERING-HUB-RUNTIME.md",
+      "path": "docs/hubs/ENGINEERING-HUB-RUNTIME.md",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
@@ -351,7 +351,7 @@
       "reason": "복사 뒤 ai-core 에서 고쳤다 — 공통 봉투가 대신하지 못하는 허브별 증빙·검증 규칙이면 흡수, 아니면 보관(Codex)"
     },
     {
-      "path": "devcenter/docs/HUB-ARCHITECTURE.md",
+      "path": "docs/hubs/HUB-ARCHITECTURE.md",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
@@ -363,13 +363,13 @@
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/docs/HUB-READINESS.md",
+      "path": "docs/hubs/HUB-READINESS.md",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/docs/HUB-ROUTER-RUNTIME.md",
+      "path": "docs/hubs/HUB-ROUTER-RUNTIME.md",
       "state": "EDITED_AFTER_COPY",
       "bucket": "REVIEW",
       "reason": "복사 뒤 ai-core 에서 고쳤다 — 공통 봉투가 대신하지 못하는 허브별 증빙·검증 규칙이면 흡수, 아니면 보관(Codex)"
@@ -381,7 +381,7 @@
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/docs/INTEGRATION-HUB-RUNTIME.md",
+      "path": "docs/hubs/INTEGRATION-HUB-RUNTIME.md",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
@@ -393,19 +393,19 @@
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/docs/QUALITY-HUB-EVIDENCE.md",
+      "path": "docs/verification/QUALITY-HUB-EVIDENCE.md",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/docs/QUALITY-RECEIPT.md",
+      "path": "docs/verification/QUALITY-RECEIPT.md",
       "state": "EDITED_AFTER_COPY",
       "bucket": "REVIEW",
       "reason": "복사 뒤 ai-core 에서 고쳤다 — 공통 봉투가 대신하지 못하는 허브별 증빙·검증 규칙이면 흡수, 아니면 보관(Codex)"
     },
     {
-      "path": "devcenter/docs/README.md",
+      "path": "docs/hubs/README.md",
       "state": "EDITED_AFTER_COPY",
       "bucket": "REVIEW",
       "reason": "복사 뒤 ai-core 에서 고쳤다 — 공통 봉투가 대신하지 못하는 허브별 증빙·검증 규칙이면 흡수, 아니면 보관(Codex)"
@@ -435,10 +435,10 @@
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/engine/자동커밋.mjs",
+      "path": "freepass-creator/ai-ops@d3e2463:scripts/dev/commit-checked.ps1",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
-      "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
+      "reason": "AI-OPS 몫 — devcenter/engine/자동커밋.mjs 를 ai-ops 로 내보냈다(freepass-creator/ai-ops@d3e2463:scripts/dev/commit-checked.ps1, 2026-10-04 흡수 2단계). 원본 devcenter@7d75060 과도 같아 태그로 복구 가능. 원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
       "path": "devcenter/evidence/data/freepass-data-catalog-v1.json",
@@ -465,61 +465,61 @@
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/hubs/data/README.md",
+      "path": "docs/hubs/data.md",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/hubs/data/consumers.json",
+      "path": "src/hubs/data/consumers.json",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/hubs/data/patterns.json",
+      "path": "src/hubs/data/patterns.json",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/hubs/data/recovery.json",
+      "path": "src/hubs/data/recovery.json",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/hubs/delivery/README.md",
+      "path": "docs/hubs/delivery.md",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/hubs/delivery/consumers.json",
+      "path": "src/hubs/delivery/consumers.json",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/hubs/design/README.md",
+      "path": "docs/hubs/design.md",
       "state": "EDITED_AFTER_COPY",
       "bucket": "ABSORB",
       "reason": "registry/ui-ux-entrypoint.json design_hub_entry · src/engine/ui-ux-entrypoint.mjs — ★지우면 아무 테스트도 깨지지 않고 조용히 끊긴다"
     },
     {
-      "path": "devcenter/hubs/design/feedback.json",
+      "path": "src/hubs/design/feedback.json",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/hubs/document/README.md",
+      "path": "docs/hubs/document.md",
       "state": "EDITED_AFTER_COPY",
       "bucket": "REVIEW",
       "reason": "복사 뒤 ai-core 에서 고쳤다 — 공통 봉투가 대신하지 못하는 허브별 증빙·검증 규칙이면 흡수, 아니면 보관(Codex)"
     },
     {
-      "path": "devcenter/hubs/document/consumers.json",
+      "path": "src/hubs/document/consumers.json",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
@@ -531,19 +531,19 @@
       "reason": "test/management-support-transition.test.mjs"
     },
     {
-      "path": "devcenter/hubs/engineering/README.md",
+      "path": "docs/hubs/engineering.md",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/hubs/engineering/assets.json",
+      "path": "src/hubs/engineering/assets.json",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/hubs/engineering/consumers.json",
+      "path": "src/hubs/engineering/consumers.json",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
@@ -567,31 +567,31 @@
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/hubs/quality/README.md",
+      "path": "docs/hubs/quality.md",
       "state": "SAME_AS_SOURCE",
       "bucket": "ABSORB",
       "reason": "registry/ui-ux-entrypoint.json quality_hub_entry · src/engine/ui-ux-entrypoint.mjs — ★위와 같음"
     },
     {
-      "path": "devcenter/hubs/quality/consumers.json",
+      "path": "src/hubs/quality/consumers.json",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/hubs/quality/patterns.json",
+      "path": "src/hubs/quality/patterns.json",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/hubs/quality/retention.json",
+      "path": "src/hubs/quality/retention.json",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/hubs/readiness.json",
+      "path": "src/hubs/readiness.json",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
@@ -609,7 +609,7 @@
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/operations/inspection/POLICY.md",
+      "path": "docs/verification/POLICY.md",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
@@ -1029,10 +1029,10 @@
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/scripts/browser-capture.mjs",
+      "path": "freepass-creator/ai-ops@d3e2463:scripts/pc/browser-capture.mjs",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
-      "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
+      "reason": "AI-OPS 몫 — devcenter/scripts/browser-capture.mjs 를 ai-ops 로 내보냈다(freepass-creator/ai-ops@d3e2463:scripts/pc/browser-capture.mjs, 2026-10-04 흡수 2단계). 원본 devcenter@7d75060 과도 같아 태그로 복구 가능. 원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
       "path": "devcenter/scripts/card-audit.mjs",
@@ -1059,49 +1059,49 @@
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/scripts/data-hub.mjs",
+      "path": "src/hubs/data/data-hub.mjs",
       "state": "EDITED_AFTER_COPY",
       "bucket": "REVIEW",
       "reason": "복사 뒤 ai-core 에서 고쳤다 — 공통 봉투가 대신하지 못하는 허브별 증빙·검증 규칙이면 흡수, 아니면 보관(Codex)"
     },
     {
-      "path": "devcenter/scripts/delivery-gate.mjs",
+      "path": "src/hubs/delivery/delivery-gate.mjs",
       "state": "EDITED_AFTER_COPY",
       "bucket": "REVIEW",
       "reason": "복사 뒤 ai-core 에서 고쳤다 — 공통 봉투가 대신하지 못하는 허브별 증빙·검증 규칙이면 흡수, 아니면 보관(Codex)"
     },
     {
-      "path": "devcenter/scripts/design-compiler.mjs",
+      "path": "src/hubs/design/design-compiler.mjs",
       "state": "EDITED_AFTER_COPY",
       "bucket": "REVIEW",
       "reason": "복사 뒤 ai-core 에서 고쳤다 — 공통 봉투가 대신하지 못하는 허브별 증빙·검증 규칙이면 흡수, 아니면 보관(Codex)"
     },
     {
-      "path": "devcenter/scripts/design-feedback.mjs",
+      "path": "src/hubs/design/design-feedback.mjs",
       "state": "EDITED_AFTER_COPY",
       "bucket": "REVIEW",
       "reason": "복사 뒤 ai-core 에서 고쳤다 — 공통 봉투가 대신하지 못하는 허브별 증빙·검증 규칙이면 흡수, 아니면 보관(Codex)"
     },
     {
-      "path": "devcenter/scripts/design-lock.mjs",
+      "path": "src/hubs/design/design-lock.mjs",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/scripts/design-visual-qa.mjs",
+      "path": "src/hubs/design/design-visual-qa.mjs",
       "state": "EDITED_AFTER_COPY",
       "bucket": "REVIEW",
       "reason": "복사 뒤 ai-core 에서 고쳤다 — 공통 봉투가 대신하지 못하는 허브별 증빙·검증 규칙이면 흡수, 아니면 보관(Codex)"
     },
     {
-      "path": "devcenter/scripts/document-hub.mjs",
+      "path": "src/hubs/document/document-hub.mjs",
       "state": "EDITED_AFTER_COPY",
       "bucket": "REVIEW",
       "reason": "복사 뒤 ai-core 에서 고쳤다 — 공통 봉투가 대신하지 못하는 허브별 증빙·검증 규칙이면 흡수, 아니면 보관(Codex)"
     },
     {
-      "path": "devcenter/scripts/engineering-hub.mjs",
+      "path": "src/hubs/engineering/engineering-hub.mjs",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
@@ -1113,13 +1113,13 @@
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/scripts/hub-readiness.mjs",
+      "path": "src/hubs/hub-readiness.mjs",
       "state": "EDITED_AFTER_COPY",
       "bucket": "REVIEW",
       "reason": "복사 뒤 ai-core 에서 고쳤다 — 공통 봉투가 대신하지 못하는 허브별 증빙·검증 규칙이면 흡수, 아니면 보관(Codex)"
     },
     {
-      "path": "devcenter/scripts/hub-router.mjs",
+      "path": "src/routing/hub-router.mjs",
       "state": "EDITED_AFTER_COPY",
       "bucket": "REVIEW",
       "reason": "복사 뒤 ai-core 에서 고쳤다 — 공통 봉투가 대신하지 못하는 허브별 증빙·검증 규칙이면 흡수, 아니면 보관(Codex)"
@@ -1131,13 +1131,13 @@
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/scripts/integration-hub.mjs",
+      "path": "src/hubs/integration/integration-hub.mjs",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/scripts/quality-receipt.mjs",
+      "path": "src/hubs/quality/quality-receipt.mjs",
       "state": "EDITED_AFTER_COPY",
       "bucket": "REVIEW",
       "reason": "복사 뒤 ai-core 에서 고쳤다 — 공통 봉투가 대신하지 못하는 허브별 증빙·검증 규칙이면 흡수, 아니면 보관(Codex)"
@@ -1293,79 +1293,79 @@
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/test/browser-capture.test.mjs",
+      "path": "freepass-creator/ai-ops@d3e2463:test/browser-capture.test.mjs",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
-      "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
+      "reason": "AI-OPS 몫 — devcenter/test/browser-capture.test.mjs 를 ai-ops 로 내보냈다(freepass-creator/ai-ops@d3e2463:test/browser-capture.test.mjs, 2026-10-04 흡수 2단계). 원본 devcenter@7d75060 과도 같아 태그로 복구 가능. 원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/test/data-hub.test.mjs",
+      "path": "test/data-hub.test.mjs",
       "state": "EDITED_AFTER_COPY",
       "bucket": "REVIEW",
       "reason": "복사 뒤 ai-core 에서 고쳤다 — 공통 봉투가 대신하지 못하는 허브별 증빙·검증 규칙이면 흡수, 아니면 보관(Codex)"
     },
     {
-      "path": "devcenter/test/delivery-gate.test.mjs",
+      "path": "test/delivery-gate.test.mjs",
       "state": "EDITED_AFTER_COPY",
       "bucket": "REVIEW",
       "reason": "복사 뒤 ai-core 에서 고쳤다 — 공통 봉투가 대신하지 못하는 허브별 증빙·검증 규칙이면 흡수, 아니면 보관(Codex)"
     },
     {
-      "path": "devcenter/test/design-compiler.test.mjs",
+      "path": "test/design-compiler.test.mjs",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/test/design-feedback.test.mjs",
+      "path": "test/design-feedback.test.mjs",
       "state": "EDITED_AFTER_COPY",
       "bucket": "REVIEW",
       "reason": "복사 뒤 ai-core 에서 고쳤다 — 공통 봉투가 대신하지 못하는 허브별 증빙·검증 규칙이면 흡수, 아니면 보관(Codex)"
     },
     {
-      "path": "devcenter/test/design-lock.test.mjs",
+      "path": "test/design-lock.test.mjs",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/test/design-visual-qa.test.mjs",
+      "path": "test/design-visual-qa.test.mjs",
       "state": "EDITED_AFTER_COPY",
       "bucket": "REVIEW",
       "reason": "복사 뒤 ai-core 에서 고쳤다 — 공통 봉투가 대신하지 못하는 허브별 증빙·검증 규칙이면 흡수, 아니면 보관(Codex)"
     },
     {
-      "path": "devcenter/test/document-hub.test.mjs",
+      "path": "test/document-hub.test.mjs",
       "state": "EDITED_AFTER_COPY",
       "bucket": "REVIEW",
       "reason": "복사 뒤 ai-core 에서 고쳤다 — 공통 봉투가 대신하지 못하는 허브별 증빙·검증 규칙이면 흡수, 아니면 보관(Codex)"
     },
     {
-      "path": "devcenter/test/engineering-hub.test.mjs",
+      "path": "test/engineering-hub.test.mjs",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/test/hub-readiness.test.mjs",
+      "path": "test/hub-readiness.test.mjs",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/test/hub-router.test.mjs",
+      "path": "test/hub-router.test.mjs",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/test/integration-hub.test.mjs",
+      "path": "test/integration-hub.test.mjs",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/test/quality-receipt.test.mjs",
+      "path": "test/quality-receipt.test.mjs",
       "state": "EDITED_AFTER_COPY",
       "bucket": "REVIEW",
       "reason": "복사 뒤 ai-core 에서 고쳤다 — 공통 봉투가 대신하지 못하는 허브별 증빙·검증 규칙이면 흡수, 아니면 보관(Codex)"
