@@ -155,6 +155,17 @@ test('★서명된 실제 방향 파일이 과태료만 맞춘다', async () => 
   assert.equal(맞는가(과, 항목({ project_id: 'aiops', id: 'MISU-001' })), false);
 });
 
+test('★2026-10-03 과태료 엔진이 renman 으로 옮겨 갔어도 서명된 방향은 renman 으로 «저절로» 넓어지지 않는다', async () => {
+  /** aiops 은퇴로 과태료 일은 renman(penalty-engine/)으로 간다(registry/work-map.json).
+   *  그러나 DIR-과태료 는 대표가 aiops 에 서명했고 원장 승인(DIRAPPROVAL-001)도 그 범위다.
+   *  AI 가 적용 대상을 바꿔 권한을 옮겨 주면 안 된다 — 대표가 renman 에 새로 서명할 때까지 renman 과태료 일은 사람 선언이 필요하다. */
+  const { readFile } = await import('node:fs/promises');
+  const f = JSON.parse(await readFile(new URL('../registry/directions.json', import.meta.url)));
+  const 과 = f.방향.find((d) => d.id === 'DIR-과태료');
+  assert.equal(과.적용.project_id, 'aiops');
+  assert.equal(맞는가(과, 항목({ project_id: 'renman', id: 'GWATAERYO-001' })), false);
+});
+
 
 test('★★파일에 적힌 서명만으로는 승격하지 못한다 — GPT 가 지적한 경계', () => {
   // 「direction 파일의 «내용만으로» 사람 승인으로 승격하면 안 된다」

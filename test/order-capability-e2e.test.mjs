@@ -30,14 +30,14 @@ test('routed order persists provenance and plans the same canonical capability w
   const response=await post(input());
   assert.equal(response.status,200);
   const order=await response.json();
-  assert.equal(order.project,'aiops');
+  assert.equal(order.project,'renman');
   assert.equal(order.routing.work_type_id,'penalty-processing');
   assert.equal(order.routing.capability_id,'operations.penalty.prepare');
 
   const plan=await (await fetch(`${url}/api/orders/${order.id}/capability`)).json();
   assert.equal(plan.status,'PLANNED');
   assert.equal(plan.order_id,order.id);
-  assert.equal(plan.project_id,'aiops');
+  assert.equal(plan.project_id,'renman');
   assert.equal(plan.capability_id,'operations.penalty.prepare');
   assert.equal(plan.subject_revision,order.routing.target_revision);
 

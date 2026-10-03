@@ -1,6 +1,6 @@
 {
   "schema_version": "1.1",
-  "observed_at": "2026-09-30T23:51:41.122Z",
+  "observed_at": "2026-10-03T03:50:53Z",
   "projects": [
     {
       "project_id": "ai-core",
@@ -40,9 +40,9 @@
       "project_id": "aiops",
       "name": "AIOps",
       "organization": "SUBSIDIARY",
-      "repository_lifecycle_status": "ACTIVE",
-      "execution_readiness_status": "HOLD",
-      "mission": "Operational control plane for Freepass contracts, receivables, penalties, insurance and cash reconciliation; also hosts generic Google/Drive/Sheets connectors pending shared-service extraction.",
+      "repository_lifecycle_status": "RETIRE",
+      "execution_readiness_status": "DISABLED",
+      "mission": "RETIRING (2026-10-03 owner decision): legacy AI-OPS repository, frozen (README notice 95a38df). Penalty engine moved to freepass-creator/renman penalty-engine/ (renman#17); Firestore lookup tool bogi moved to freepass-creator/ai-ops scripts/데이터/ (short term, long term renman-data read API); knowhow/maps moved to ai-ops docs/. Remaining: history PII purge then PRIVATE Archive. Plan: ai-ops docs/handoffs/aiops-legacy-정리표-20260929.md.",
       "repository": "freepass-creator/aiops",
       "default_branch": "main",
       "local_path": "C:\\dev\\aiops",
@@ -68,10 +68,9 @@
         "lib/seungin.mjs 행위등급 (local/drive-add/protected)"
       ],
       "known_blockers": [
-        "Actual Windows Task Scheduler Enabled/LastRun/LastTaskResult remains operationally unverified from GitHub.",
-        "Security exact-subject SHADOW is on main, but recent GitHub Actions jobs have an observed runner-entry failure mode with zero executed steps; code-level CI enforcement must be re-observed when runners execute.",
-        "Historical local checkout/history-surgery state has not been re-observed after current main advanced; do not reuse the old local-ahead count as current fact.",
-        "Runtime parity verified: f2243643...→3d6ec8c6 changes only .ai-core starter-kit files; no AIOps operational/runtime source file changed, so prior execution readiness is preserved."
+        "RETIRED 2026-10-03 (owner decision): no new work in freepass-creator/aiops. AI Core routes nothing here — operations.penalty.* moved to renman (penalty-engine/); finance.cash-status, finance.receivables and operations.insurance-status are HOLD on renman-data until a governed read adapter exists; operations.insurance is HOLD on renman.",
+        "Remaining retirement steps: history PII purge, then PRIVATE Archive. Local C:\\dev\\aiops deletion and Archive require a fresh owner confirmation (ai-ops docs/handoffs/aiops-legacy-정리표-20260929.md).",
+        "Windows scheduled tasks aiops-* (6) still point at C:\\dev\\aiops; all are Disabled and must not be re-enabled against this path."
       ]
     },
     {
@@ -716,6 +715,42 @@
         "Immutable source retention, stable contract mapping, staff confirmation and per-consumer persistent audit remain unimplemented.",
         "GitHub verify/deploy main runs 36792847815/36792847790 did not start any steps due to billing. Direct read-runtime deployment/readback verified separately; automation remains UNAVAILABLE_BILLING.",
         "AI Ops owns existing business write paths; this registration does not authorize a second arrears writer or data migration."
+      ]
+    },
+    {
+      "project_id": "renman",
+      "name": "Renman",
+      "organization": "SUBSIDIARY",
+      "repository_lifecycle_status": "ACTIVE",
+      "execution_readiness_status": "HOLD",
+      "mission": "Rental-car business ERP web app (jpkerp6, Next.js + Firebase) and, since 2026-10-03, owner of the penalty (과태료) engine moved from the retired aiops repository into penalty-engine/ (renman#17). Reads rental business data through renman-data; does not host the read gateway.",
+      "repository": "freepass-creator/renman",
+      "default_branch": "main",
+      "local_path": "C:\\dev\\renman",
+      "head_revision": "499142f23b91eff38595cfdc022cb7067b3f642b",
+      "authoritative_sources": [
+        {
+          "kind": "GIT",
+          "ref": "freepass-creator/renman",
+          "revision": "499142f23b91eff38595cfdc022cb7067b3f642b",
+          "observed_at": "2026-10-03T03:50:53Z"
+        }
+      ],
+      "commands": {
+        "install": "npm ci",
+        "test": "npm test && npm --prefix penalty-engine test",
+        "build": "npm run build"
+      },
+      "deploy_targets": [],
+      "required_approvals": [
+        "external penalty dispatch (관청발송·문서24업로드) stays with staff",
+        "production-data-write",
+        "production-deploy"
+      ],
+      "known_blockers": [
+        "Execution readiness is HOLD: penalty-engine was migrated at renman 499142f (renman#17); its own suite passed 222 of 227 with the same 5 failures as the aiops original, and no AI Core execution has been re-verified at this revision.",
+        "penalty-engine reads keys from C:\\dev\\teamjpkwork\\.env.local (WORK_ENV_PATH) and runs with penalty-engine/ as cwd; canonical tables lib/wonja/*.json, gongmun-damdang.json and beopin-jeongbon.json are absent until rebuilt in Firestore/renman-data.",
+        "Scheduled penalty tasks (aiops-gwataeryo-*) are Disabled and still point at C:\\dev\\aiops; re-register them from penalty-engine/ before enabling."
       ]
     }
   ]

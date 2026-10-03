@@ -27,8 +27,13 @@ const 읽기 = (이름) => JSON.parse(readFileSync(new URL(`../../registry/${이
  *
  *  ★그리고 «이미 실제로 ACTIVE 인 것»은 여기 두지 않는다 — 덮어 봐야 아무것도 증명하지 않는다.
  *    `test/routing-fixture-shrinks.test.mjs` 가 실제와 겹치면 빨개져서, 재검증으로 ACTIVE 가 돌아올 때마다
- *    이 목록이 스스로 줄어든다(넣자마자 ai-core·mewcar 가 걸려 빠졌다). */
-export const 고정ACTIVE = ['aiops', 'freepass-sales', 'freepasserp4'];
+ *    이 목록이 스스로 줄어든다(넣자마자 ai-core·mewcar 가 걸려 빠졌다).
+ *
+ *  ★2026-10-03 aiops → renman: 대표 결정으로 aiops 가 은퇴(RETIRE/DISABLED)했고, 고정하던 이유였던
+ *    과태료 실행기(operations.penalty.*)가 renman penalty-engine/ 으로 옮겨 갔다. 같은 전제(「과태료 일을 받는
+ *    프로젝트가 실행 가능하다」)를 지키려고 그 자리를 renman 으로 바꿨다. 수를 늘리거나 줄인 것이 아니다.
+ *    은퇴한 저장소는 실행 준비 상태를 덮어도 라우터가 TARGET_PROJECT_RETIRED 로 막는다. */
+export const 고정ACTIVE = ['renman', 'freepass-sales', 'freepasserp4'];
 
 /**
  * 살아 있는 등록부를 바탕으로, 실행 준비 상태만 고정한 사본을 만든다.

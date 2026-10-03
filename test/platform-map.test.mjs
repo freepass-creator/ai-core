@@ -38,11 +38,14 @@ test('★플랫폼은 정확히 둘이다 — AI Core 하나, AI Ops 하나', ()
   assert.deepEqual(옵스, ['ai-ops'], 'AI Ops 는 ai-ops 다(현행 저장소/프로젝트 정본)');
 });
 
-test('★기존 aiops 는 AI Ops 가 아니라 «데이터 소유 서비스»다 — 처음 판단을 정정했다', () => {
+test('★기존 aiops 는 AI Ops 가 아니었다 — 처음 판단을 정정했고, 2026-10-03 은퇴했다', () => {
   /** 2026-09-29 처음엔 ABSORB_INTO_OPS 로 적었다. 대표가 「딱 두 개가 아니라」고 지적했고,
    *  Codex 도 「정본 데이터는 AI Ops 와 분리한 도메인 소유 서비스가 맡아야 한다」고 했다.
-   *  실행과 정본을 한 곳에 두면 실행 코드가 정본을 고치기 쉽다. */
-  assert.equal(지도.projects.aiops.bucket, 'DATA_OWNER');
+   *  실행과 정본을 한 곳에 두면 실행 코드가 정본을 고치기 쉽다.
+   *  2026-10-03 대표 결정으로 은퇴했다. 「유일한 쓰기 자리」(DATA_OWNER)가 동결된 저장소일 수는 없다.
+   *  그래도 AI Ops(ai-ops)로 흡수된 것은 아니다 — 과태료 엔진은 renman, 정본 읽기는 renman-data 로 갔다. */
+  assert.equal(지도.projects.aiops.bucket, 'RETIRE');
+  assert.match(지도.projects.aiops.retired_2026_10_03, /renman/, '은퇴만 적고 후속 주인을 안 적으면 다음 세션이 옛 자리를 찾는다');
   assert.match(지도.projects.aiops.correction_2026_09_29, /틀렸다/, '틀렸던 판단을 지우면 같은 실수를 다시 한다');
   assert.match(지도.projects.aiops.risk, /전역 CLAUDE\.md/, '정본을 옮길 때 전역 지침 경로도 바꿔야 한다는 경고가 빠지면 세션마다 숫자가 엇갈린다');
 });
@@ -56,7 +59,7 @@ test('공통의 종류는 다섯이고, 데이터는 플랫폼이 공급하지 �
   assert.deepEqual(Object.keys(지도.kinds).sort(), ['CODE', 'CONTRACTS', 'DATA', 'RULES', 'RUNTIME']);
   assert.match(지도.kinds.DATA.provider, /도메인 소유 서비스/);
   const 데이터소유 = Object.entries(지도.projects).filter(([, p]) => p.bucket === 'DATA_OWNER').map(([id]) => id).sort();
-  assert.deepEqual(데이터소유, ['aiops', 'freepass-data', 'renman-data']);
+  assert.deepEqual(데이터소유, ['freepass-data', 'renman-data']);
 });
 
 test('판단이 들어간 분류는 «확인 대기»라고 적혀 있다 — 조용히 확정된 것처럼 보이지 않게', () => {

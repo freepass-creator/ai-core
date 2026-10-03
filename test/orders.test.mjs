@@ -117,7 +117,7 @@ test('HTTP and direct CLI store share truth; cross-origin, bad host and malforme
   assert.equal(projection.execution_authorized, false);
   assert.equal((await (await fetch(`${url}/api/orders`)).json()).length, 1);
   const routed = await (await fetch(`${url}/api/route?q=${encodeURIComponent('과태료 처리해')}`)).json();
-  assert.equal(routed.status, 'RESOLVED'); assert.equal(routed.work_type_id, 'penalty-processing'); assert.equal(routed.target_project_id, 'aiops'); assert.equal(routed.capability_id, 'operations.penalty.prepare');
+  assert.equal(routed.status, 'RESOLVED'); assert.equal(routed.work_type_id, 'penalty-processing'); assert.equal(routed.target_project_id, 'renman'); assert.equal(routed.capability_id, 'operations.penalty.prepare');
   const heldRoute = await (await fetch(`${url}/api/route?q=${encodeURIComponent('보고서 만들어')}`)).json();
   assert.equal(heldRoute.status, 'HOLD_PROJECT_HOLD'); assert.equal(heldRoute.target_project_id, 'docshub');
   const unknownRoute = await (await fetch(`${url}/api/route?q=${encodeURIComponent('달에서 감자 키우기')}`)).json();
@@ -127,7 +127,7 @@ test('HTTP and direct CLI store share truth; cross-origin, bad host and malforme
   const routedOrderResponse = await post(routedIntake);
   assert.equal(routedOrderResponse.status, 200);
   const routedOrder = await routedOrderResponse.json();
-  assert.equal(routedOrder.project, 'aiops');
+  assert.equal(routedOrder.project, 'renman');
   assert.equal(routedOrder.routing.work_type_id, 'penalty-processing');
   assert.equal(routedOrder.routing.capability_id, 'operations.penalty.prepare');
   assert.equal(routedOrder.routing.target_revision, routed.target_revision);
