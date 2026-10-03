@@ -83,3 +83,36 @@ test('EPERM 으로 유실됐던 쪽지가 복원돼 있다 — 물은 기록이 
   assert.equal(쪽지.state, 'ANSWERED');
   assert.match(쪽지.answer, /발행 나이는 빈·부분·오발행/, 'Codex 답이 그대로 남아 있어야 한다');
 });
+
+// ★2026-10-03 — Codex 기본 모델(gpt-6.1-sol)이 ChatGPT 계정에서 400 으로 거부돼 `--now` 상의가 전부 FAILED 였다.
+//   사용자 설정(~/.codex/config.toml)을 고치지 않고 호출에 모델을 적는다.
+test('Codex 호출은 모델을 명시한다 — 기본 모델이 거부되면 상의가 통째로 막힌다', () => {
+  const 본문 = read('scripts/duo.mjs');
+  assert.match(본문, /process\.env\.CODEX_MODEL \|\| 'gpt-5\.5'/, 'CODEX_MODEL 로 바꿀 수 있고 기본값이 있어야 한다');
+  assert.match(본문, /codex exec -s read-only -m \$\{코덱스모델\}/, 'codex exec 에 -m 이 빠졌다');
+  for (const 길 of ['AGENTS.md', 'CLAUDE.md', 'GEMINI.md', 'docs/AI_WORKING_STANDARD.md']) {
+    assert.match(read(길), /codex exec -s read-only -m gpt-5\.5 /, `${길}: 진입 문서의 호출법에 모델이 없다`);
+  }
+});
+
+test('★CODEX_MODEL 은 셸에 들어가기 전에 이름 꼴을 검사한다 — 셸 인젝션을 막는다 (Codex 검토 #368)', () => {
+  const 본문 = read('scripts/duo.mjs');
+  assert.match(본문, /if \(!모델이름꼴\.test\(코덱스모델\)\)/, '모델 이름 검사 없이 셸 명령을 만든다');
+  assert.ok(본문.indexOf('모델이름꼴.test(코덱스모델)') < 본문.indexOf('codex exec -s read-only -m'), '검사가 호출보다 뒤에 있다');
+  const 꼴 = /^[A-Za-z0-9._-]+$/;
+  for (const 좋은 of ['gpt-5.5', 'gpt-6.1-sol', 'o4_mini']) assert.ok(꼴.test(좋은), 좋은);
+  for (const 나쁜 of ['gpt-5.5; rm -rf ~', 'x$(id)', 'a b', '`id`', '']) assert.ok(!꼴.test(나쁜), 나쁜);
+});
+
+test('나쁜 CODEX_MODEL 이면 codex 를 부르지 않고 FAILED 로 돌려준다 — 실제 부른다() 로 확인', () => {
+  const 모듈 = new URL('../scripts/duo.mjs', import.meta.url).href;
+  const 결과 = execFileSync(process.execPath, ['--input-type=module', '-e', `
+    process.argv = [process.argv[0], 'duo.mjs', 'inbox'];
+    const { 부른다 } = await import(${JSON.stringify(모듈)});
+    console.log('RESULT' + JSON.stringify(부른다({ id: 't0000000', to: 'codex', about: 'a', body: 'b' })));
+  `], { cwd: root, encoding: 'utf8', env: { ...process.env, CODEX_MODEL: 'gpt-5.5; echo PWNED' } });
+  const 답 = JSON.parse(결과.slice(결과.indexOf('RESULT') + 6).trim());
+  assert.equal(답.state, 'FAILED');
+  assert.match(답.answer, /모델 이름 꼴이 아니다/);
+  assert.doesNotMatch(결과, /^PWNED/m);
+});
