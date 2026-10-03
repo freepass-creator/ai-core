@@ -86,7 +86,8 @@
     "duo": "node scripts/duo.mjs",
     "tools:doctor": "node scripts/local-toolchain-doctor.mjs",
     "academy:feedback": "node scripts/academy-feedback.mjs",
-    "academy:closeout": "node scripts/academy-closeout.mjs"
+    "academy:closeout": "node scripts/academy-closeout.mjs",
+    "skills:sync": "node scripts/skills-sync.mjs"
   },
   "dependencies": {
     "ajv": "8.20.0",
