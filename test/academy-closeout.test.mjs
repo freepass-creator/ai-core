@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { academyCloseout, parseWorkResult } from '../scripts/academy-closeout.mjs';
 
 const work = (overrides = {}) => {
@@ -124,7 +125,7 @@ test('UNKNOWN or omitted learning counters do not masquerade as zero', () => {
 
 
 test('first real Academy episode is honestly HOLD until exact proof and independent review are bound', () => {
-  const root = resolve(new URL('..', import.meta.url).pathname);
+  const root = fileURLToPath(new URL('..', import.meta.url));
   const workResultMarkdown = readFileSync(resolve(root, 'docs/episodes/ACADEMY-EPISODE-002.WORK_RESULT.md'), 'utf8');
   const realEpisode = JSON.parse(readFileSync(resolve(root, 'docs/episodes/ACADEMY-EPISODE-002.json'), 'utf8'));
   const result = academyCloseout({ workResultMarkdown, episode: realEpisode });

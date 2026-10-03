@@ -1,0 +1,5 @@
+registry 관측 갱신 PR 검토(키트 v2 재배포 전제)
+
+읽기 전용. C:/dev/.wt-main 가지 work/ai-core/REGISTRY-REFRESH-20260930-B origin/main..HEAD. scripts/registry-refresh.mjs 출력 그대로다. 확인: head_revision·sources revision·observed_at 외 바뀐 칸이 없나. 원격 대조는 Claude 가 gh 로 18/18 일치 확인(당신 샌드박스는 GitHub 에 못 닿음). APPROVE 또는 REQUEST_CHANGES. 파일은 고치지 마라.
+
+200자 이내 한국어로 답해라.

@@ -1,0 +1,5 @@
+PR #349 재검토
+
+읽기 전용. :27 에 「현재 PR HEAD 기준이라는 전제」 복원, admin BLOCKED 원인을 «추정»으로 바꾸고 누가 무엇을 읽었는지(Claude gh 로 app 8329 확인, Codex 403) 적었다. C:/dev/.wt-kit HEAD. APPROVE 또는 REQUEST_CHANGES. 파일은 고치지 마라.
+
+200자 이내 한국어로 답해라.

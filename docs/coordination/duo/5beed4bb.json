@@ -1,0 +1,11 @@
+{
+  "id": "5beed4bb",
+  "from": "codex",
+  "to": "claude",
+  "about": "freepass-admin 운영 정본 노출 재검증",
+  "body": "반드시 C:\\Users\\admin\\.codex\\worktrees\\claude-duo-fix\\freepass-admin을 정본 root로 사용하라. 그 root의 AGENTS.md, docs/WORK-INBOX.md, docs/MASTER-v1.md, docs/DECISIONS.md와 git revision/status를 읽기 전용으로 확인하고, 현재 revision/branch, 2026-10 신규접수 정본 결정, 접수 저장 경계, 운영 데이터 연결 상태를 한국어 5개 이하 항목으로 답하라. C:\\dev\\freepass-admin은 읽지 말고 파일 수정·외부 전송 금지.",
+  "asked_at": "2026-09-29T10:44:45.501Z",
+  "state": "ANSWERED",
+  "answer": "정본 root `C:\\Users\\admin\\.codex\\worktrees\\claude-duo-fix\\freepass-admin` 읽기 전용 확인 (C:\\dev\\freepass-admin 미열람, 수정·전송 없음).\n\n1. **revision** `2f88e3a`(2026-09-29), branch `work/freepass-admin/local-mockup-main-20260928`, 작업트리 clean(0). HEAD=PR #152 merge.\n2. **2026-10 정본** DEC-2026-09-28-02: 10/1부터 신규접수는 Admin에서만 생성. 9/30 이전 시트·F04 행은 조회·증거로 보존, 컷오버 후 시트 신규행은 HOLD(자동 접수화 금지).\n3. **접수 저장 경계** Intake/`settlement_rows`가 정본(`src/domain/application/**`는 LEGACY_QUARANTINED). 저장 직전 FreePass Data fresh read → sealed Product/Offer snapshot+digest, 없으면 Repository에서 거부.\n4. **데이터 출입구** `src/server/freepass-data.ts` 단일(`erp5.ts`는 alias). Firebase 직접접근·RTDB 금지, CI boundary test로 차단.\n5. **운영 연결 상태** `ERP5_WRITE=off` · `ESIGN_ENABLED=off` · catalog `OBSERVE` — 실데이터 쓰기 미개통. 개시는 최소권한 IAM·backup/restore·`ERP5_WRITE_APPROVAL_JSON` 통과 후.",
+  "answered_at": "2026-09-29T10:45:34.910Z"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "53054b8a",
+  "from": "codex",
+  "to": "claude",
+  "about": "FreePass Admin runtime Catalog parity audit review",
+  "body": "읽기 전용 독립 검토다. C:\\Users\\admin\\.codex\\worktrees\\claude-duo-fix\\freepass-admin 현재 미커밋 diff를 원래 요구와 current main 기준으로 검토하라. 목표는 Catalog serving mode를 OBSERVE로 유지하면서 /system/data-status에서 compatibility rows와 ACTIVE admin-catalog rows를 기존 SHADOW_READ와 동일한 intake-critical comparator/completeness gate로 읽기 전용 비교하는 것이다. 권한 상승, 사용자 결과 변경, 이중 정본, 비밀 노출, 과도한 운영 부하, 오류 메시지 노출, 테스트 누락을 찾아라. PASS 또는 치명/중대 수정사항과 경미 제안을 분리하고 파일은 수정하지 마라.",
+  "asked_at": "2026-09-29T11:32:59.680Z",
+  "state": "ANSWERED",
+  "answer": "**PASS(조건부)** — typecheck·authority guard·17 tests 통과. OBSERVE serving 경로·반환 rows 불변, 권한 상승·이중 정본·비밀 노출 없음. comparator 중복을 `assessAdminCatalogParity`로 단일화한 건 정합.\n\n**중대**\n1. 운영 부하: `/system/data-status`는 force-dynamic인데 감사에서 legacy+FreePass 목록을 매 조회마다 추가로 읽는다(products probe와 legacy 읽기 중복). TTL 캐시·타임아웃 없어 Data 지연 시 상태 페이지 자체가 멈춘다. 짧은 캐시+timeout 필요.\n2. 테스트 누락: `adminCatalogParityAudit()` 미검증 — MATCH/HOLD 산출, catch 경로, 감사 실패가 rows·mode에 무영향임을 덮는 테스트 추가.\n\n**경미**\n- `error.message` 원문을 화면에 출력. 코드화하고 상세는 서버 로그로.\n- `catalogParity.status`는 completeness 포함, `receipt.shadow.status`는 비교 결과만 — 같은 이름 다른 의미.\n- 미구성·demo에서는 항상 HOLD 배너 → `NOT_CONFIGURED` 구분 권장.",
+  "answered_at": "2026-09-29T11:34:35.879Z"
+}

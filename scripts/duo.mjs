@@ -11,6 +11,10 @@
 //   npm run duo -- ask  --to claude --about "제목" --body "물을 것"
 //   npm run duo -- answer <id> --body "답" [--state ANSWERED|BLOCKED|FAILED]
 //   npm run duo -- log                         기록부(CROSS_AI_LOG.md)에 붙일 줄을 만든다
+//   npm run duo -- stranded [--worktree <경로>]  GitHub 에 안 닿은 쪽지를 찾는다 — 있으면 exit 1 (worktree 지우기 전)
+//
+//   ★쪽지는 «이 worktree» 에 쓰지만 inbox·answer·log 는 «모든 worktree» 를 합쳐 본다(2026-10-03).
+//   다른 worktree 에 갇힌 문답 29건이 main 에 못 올라간 채 백업 가지에만 남아 있었다.
 //
 //   `--now` 는 상대를 «지금» 부른다: to=codex 면 codex exec, to=claude 면 claude:review 게이트를 거친다.
 //   부르지 못하면 그 사실을 BLOCKED/FAILED 로 적는다 — 막힘을 통과로 세지 않는다(1순위 규칙).
@@ -19,6 +23,7 @@ import { execFileSync, execSync } from 'node:child_process';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { randomUUID } from 'node:crypto';
+import { 갇힌기록, 모든쪽지 } from '../src/collaboration/duo-reach.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const 우편함 = resolve(root, 'docs/coordination/duo');
@@ -33,13 +38,32 @@ const 인자 = (이름, 기본 = null) => {
 };
 const 깃발 = (이름) => process.argv.includes(`--${이름}`);
 
-export const 목록 = () => {
+const 여기만 = () => {
   if (!existsSync(우편함)) return [];
   return readdirSync(우편함)
     .filter((f) => f.endsWith('.json'))
     .map((f) => ({ 파일: f, ...JSON.parse(readFileSync(join(우편함, f), 'utf8')) }))
     .sort((a, b) => String(a.asked_at).localeCompare(String(b.asked_at)));
 };
+
+/** 모든 worktree 의 쪽지를 합친다. git 이 없거나 worktree 가 아니면 이 자리만 본다. */
+export const 목록 = () => {
+  try {
+    return 모든쪽지(root).쪽지들;
+  } catch {
+    return 여기만();
+  }
+};
+
+/** 갇힌 쪽지를 한 줄씩 말한다. 고아 worktree(폴더가 사라진 것)는 이미 잃었을 수 있다는 뜻이다. */
+const 갇힘알림 = (판) => {
+  for (const w of 판.자리) {
+    const 이름 = `${w.경로} [${w.가지 ?? '?'}]${같은자리(w.경로) ? ' (여기)' : ''}`;
+    if (w.고아) console.log(`  고아  ${이름} — 폴더가 없다. 거기 있던 쪽지는 확인할 수 없다 (git worktree prune 전 확인)`);
+    else console.log(`  ${이름} — 커밋 안 됨 ${w.미커밋.length} · 푸시 안 됨 ${w.미푸시.length}`);
+  }
+};
+const 같은자리 = (p) => resolve(p).toLowerCase() === root.toLowerCase();
 
 /** ★쪽지를 «반드시» 남긴다 — 못 남기면 채널이 거짓말을 한다.
  *
@@ -129,6 +153,19 @@ if (명령 === 'inbox') {
   }
   const 전체 = 목록();
   console.log(`\n전체 ${전체.length}개 (답함 ${전체.filter((x) => x.state === 상태.답함).length} · 막힘 ${전체.filter((x) => x.state === 상태.막힘).length} · 실패 ${전체.filter((x) => x.state === 상태.실패).length})`);
+  try {
+    const { 충돌 } = 모든쪽지(root);
+    for (const c of 충돌) console.log(`★같은 id 가 worktree 마다 다르다: ${c.id} — ${c.자리.join(' · ')}`);
+    /** 지금 이 worktree 의 미커밋은 «하는 중»이라 정상이다. 다른 자리에 남은 것만 경고한다. */
+    const 판 = 갇힌기록(root);
+    const 남 = { ...판, 자리: 판.자리.filter((w) => !같은자리(w.경로)) };
+    if (남.자리.length) {
+      console.log(`\n★다른 worktree 에 GitHub 에 안 닿은 쪽지가 있다 — 그 자리에서 커밋·푸시하거나 이 가지로 옮긴다:`);
+      갇힘알림(남);
+    }
+  } catch {
+    /* git 이 없는 곳에서는 이 자리만 본다 */
+  }
 } else if (명령 === 'ask') {
   const to = (인자('to') ?? '').toLowerCase();
   if (!상대.has(to)) throw new Error('--to codex|claude 가 필요하다');
@@ -167,6 +204,7 @@ if (명령 === 'inbox') {
   쪽지.state = 인자('state') ?? 상태.답함;
   쪽지.answered_at = new Date().toISOString();
   delete 쪽지.파일;
+  delete 쪽지.자리;
   저장(쪽지);
   console.log(`${쪽지.id} → ${쪽지.state}`);
 } else if (명령 === 'log') {
@@ -176,6 +214,17 @@ if (명령 === 'inbox') {
     .map((x) => `| ${x.asked_at.slice(5, 10)} | ${x.from} → ${x.to} | ${x.about} | \`${x.state}\` | ${String(x.answer ?? '').replace(/\|/g, '·').slice(0, 160)} |`);
   console.log(줄.join('\n') || '(적을 것 없음)');
   console.log(`\n→ ${기록부} 의 표에 붙인다.`);
+} else if (명령 === 'stranded') {
+  /** worktree 를 지우기 «전»에 부른다(손발=AI Ops 가 정리할 때의 관문). 고아는 잃었을 수 있으니 실패로 센다. */
+  const 대상 = 인자('worktree');
+  const 판 = 갇힌기록(root, { 대상 });
+  if (!판.자리.length) {
+    console.log(`PASS: GitHub 에 안 닿은 쪽지 없음${대상 ? ` (${대상})` : ' (모든 worktree)'}`);
+  } else {
+    console.log(`FAIL: 커밋 안 됨 ${판.미커밋} · 푸시 안 됨 ${판.미푸시} · 고아 worktree ${판.고아}`);
+    갇힘알림(판);
+    process.exit(1);
+  }
 } else {
   console.log(readFileSync(new URL(import.meta.url), 'utf8').split('\n').slice(1, 18).map((l) => l.replace(/^\/\/ ?/, '')).join('\n'));
   process.exit(명령 ? 1 : 0);

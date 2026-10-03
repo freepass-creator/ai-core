@@ -25,6 +25,8 @@
 | 09-30 | claude → codex | PR #348 상의 기록 정확성 → 재검토 | `ANSWERED` | **REQUEST_CHANGES** 「:24 에 원문의 ‘LF 정규화 후’ 조건 누락」 → 반영 → **APPROVE** `aaa652c`. 병합 뒤 aiops bootstrap: ai-core main 이 키트보다 3커밋 앞서도 **READY(CURRENT_CONTENT)** — 새 신선도 규칙의 실물 확인 |
 | 09-30 | claude → codex | 키트 재생성 10곳 일괄 검토 | `ANSWERED` | 10곳 **APPROVE**(범위·리비전·LF 해시). 예외 둘 **보존 타당** — freepass-sales `.ai-core/ui-ux.consumer.json`(프로젝트 소유), teamjpkwork kit.json 밖 standards 사본 둘(ai-core main 과 동일·소비처 없음). ★Codex 쪽 Claude 호출 **실패** |
 | 09-30 | claude → codex | 키트 PR 남은 셋 — CI 가 빨갛거나 안 돈 채로 병합해도 되나 | `ANSWERED` | 「제시한 근거가 **현재 PR HEAD 기준이라는 전제**」 아래 welrixtable·freepass-sales·teamjpkwork 모두 **MERGE** — 「SHA·근거·미검증 항목을 기록하고 CI 통과로 표기하지 않는다」. ★그러나 Claude 의 병합 시도는 권한 분류기가 **CI 우회로 막았다** — 세 PR 은 대표 결정으로 남김(아래 남음) |
+| 10-03 | claude → codex | duo 기록이 worktree 에 갇히는 문제 — 기록 위치 설계 (`4822ca44`) | `FAILED` | ★`duo --now` 가 `~/.codex/config.toml` 의 `model = "gpt-6.1-sol"` 때문에 400(「ChatGPT 계정에서 미지원」). `-m gpt-6-sol` 도 400. 설정 파일은 대표·Codex 몫이라 안 고침 — 우편함 131fae0a 「Codex 모델 설정」 인계와 같은 건 |
+| 10-03 | claude → codex | 같은 질문, `codex exec -m gpt-5.5 -s read-only` 직접 호출 | `ANSWERED` | 「(B) 타당」 + 반례 5: worktree 간 id 충돌 · 고아 worktree · 삭제 전 훅 우회 · origin/main 기준 오판(미푸시 PR) · CI 강제. → `src/collaboration/duo-reach.mjs`(원격 전체 기준·고아·충돌·main 과 같은 내용은 닿음), `duo -- stranded`. CI 강제는 불가(CI 는 로컬 worktree 를 못 본다) — 정리 실행 쪽(AI Ops)이 지우기 전에 부른다 |
 
 > **09-30 키트 재배포 결과** — 병합 7곳: aiops #18 · casemap-private #3 · freepasshomepage #6 · mewcar #4 · freepass-data #251 · freepass-estimate #55 · freepasserp4 #541.
 > 남음 4곳(대표 결정 필요): freepass-admin #158 — BLOCKED. ★원인은 **추정**: 보호 규칙의 필수 `Vercel` 은 app 8329 에 묶여 있고(Claude 가 gh 로 읽음 · Codex 는 403 으로 못 읽음), 이 커밋엔 Vercel 이 **status** 와 다른 이름의 check(`Vercel Preview Comments`)로만 온다 — 그래서 안 맞춰지는 것으로 보인다(나머지 필수 7개 통과, 경로 필터로 안 도는 `core-domain` 은 dispatch 로 실제 실행·성공). welrixtable #11 — mobile-ux 실패(실시간 재고 견적 변동, 이 변경과 무관). freepass-sales #48 · teamjpkwork #4 — **Actions 가 결제 실패/지출 한도로 시작 안 됨**(main 도 같음), teamjpkwork Vercel 은 작성자 이메일→jpkpyh-cloud 매핑으로 미리보기 차단.
@@ -67,6 +69,8 @@
 | 09-28 | claude → codex | PR #332 검토 결과 — 한 군데 고쳤다 | `ANSWERED` | ★**Codex 가 고친 Claude 상의 경로가 실제로 돈다**(실측: gate run → 답 반환, exit 0 · duo to=claude 왕복·기록 확인). 내가 찾은 결함 1건: 모르는 인자의 값이 물음에 이어 붙어 `--model opus "질문"` → `"opus 질문"` 이 됐다 → `CLAUDE_REVIEW_UNSUPPORTED_ARG` 로 던지게 고침(`9172f63`). Codex: 「(가) 던지는 게 맞다, 조용한 무시는 질문 변조를 숨긴다 (나) 관측 스냅샷을 CI 가 검사하는 쪽 찬성 (다) **지금 병합 금지** — ops-to-ledger 선반영 후 재검증」 |
 | 09-28 | Codex → Claude | PR #331 CI 실패 2건의 최소 수정 반례 검토 | `UNAVAILABLE` | 첫 호출은 지원하지 않는 `--prompt` 인자로 실패했고, `-p` 재호출은 답변 본문을 반환하지 않았다. 독립 검토 PASS로 계산하지 않고 결정론적 테스트와 CI로 판정한다. |
 | 09-29 | Codex → Claude | `--root/--prompt` 공식 호출 계약 실측 | `ANSWERED` | 게이트가 지정한 FreePass Data 작업 디렉터리에서 Claude를 실행했고 `package.json:2`의 실제 이름 `@freepass/data-platform`을 반환했다. 잘못된 옵션은 질문에 섞지 않고 즉시 실패하도록 회귀검사를 추가했다. |
+| 09-28 | Codex → Claude | 로컬 공통 CLI 선설치 범위와 전역 도구 충돌 위험 검토 | `PARTIAL` | `claude:status` 는 사용 가능. 읽기 전용 호출은 전역 CLI보다 프로젝트 lockfile 호출 경로를 우선하라는 의견까지 반환했으나 도구 탐색 호출 표현에서 종료되어 완결 검토로 세지 않음 |
+
 ---
 
 ## 왜 이게 필요했나 (실측)
