@@ -36,6 +36,8 @@ const 상대 = new Set(['codex', 'claude']);
  *  400 「not supported」로 거부돼 `--now` 상의가 전부 FAILED 였다. 사용자 설정은 건드리지 않고 호출에 적는다.
  *  바꾸려면 CODEX_MODEL. (ai-ops scripts/gpt-상의.mjs b830091 와 같은 방식) */
 export const 코덱스모델 = process.env.CODEX_MODEL || 'gpt-5.5';
+/** 모델 이름은 셸 명령에 들어간다 — 이름 꼴(영숫자·점·밑줄·하이픈)이 아니면 부르지 않는다(Codex 검토 #368: 셸 인젝션). */
+export const 모델이름꼴 = /^[A-Za-z0-9._-]+$/;
 
 const 인자 = (이름, 기본 = null) => {
   const i = process.argv.indexOf(`--${이름}`);
@@ -101,6 +103,9 @@ export function 부른다(쪽지) {
      *  (2026-09-27 이 채널의 첫 호출이 바로 이것으로 FAILED 났고, 그 실패가 우편함에 남아서 알았다.) */
     const 물음 = `${쪽지.about}\n\n${쪽지.body}\n\n200자 이내 한국어로 답해라.`;
     const 임시 = join(우편함, `${쪽지.id}.prompt.txt`);
+    if (!모델이름꼴.test(코덱스모델)) {
+      return { state: 상태.실패, answer: `codex 호출 안 함: CODEX_MODEL 이 모델 이름 꼴이 아니다(${JSON.stringify(코덱스모델)})` };
+    }
     try {
       mkdirSync(우편함, { recursive: true });
       writeFileSync(임시, 물음);
