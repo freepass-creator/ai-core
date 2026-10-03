@@ -53,7 +53,7 @@ test('starter kit never overwrites a conflicting local file',async()=>{
   await assert.rejects(()=>installAcademyStarterKit({output:out,receipt,coreRevision:'b'.repeat(40),readings:[{path:'docs/AI_WORKING_STANDARD.md',body:'one'}]}),/KIT_FILE_CONFLICT/);
 });
 
-test('starter kit bootstrap admits generated refresh but holds authority drift and project revision mismatch',async()=>{
+test('starter kit bootstrap admits generated refresh and project advance but holds authority drift',async()=>{
   const root=await mkdtemp(join(tmpdir(),'academy-kit-git-'));
   git(root,'init','-q');
   git(root,'config','user.email','ai-core-test@example.invalid');
@@ -69,7 +69,7 @@ test('starter kit bootstrap admits generated refresh but holds authority drift a
   const verifier=join(out,'verify-kit.mjs');
   const current=spawnSync(process.execPath,[verifier],{cwd:root,encoding:'utf8'});
   assert.equal(current.status,0,current.stderr);
-  assert.deepEqual(JSON.parse(current.stdout).revision,{expected:pinned,actual:pinned,status:'MATCH',advanced_paths:[]});
+  assert.deepEqual(JSON.parse(current.stdout).revision,{expected:pinned,actual:pinned,status:'MATCH',ahead_count:null,advanced_paths:[]});
 
   git(root,'add','.ai-core');
   git(root,'commit','-q','-m','install academy kit');
@@ -212,26 +212,24 @@ test('starter kit bootstrap admits generated refresh but holds authority drift a
   git(root,'add','tracked.txt');
   git(root,'commit','-q','-m','advance project');
   const advanced=git(root,'rev-parse','HEAD');
-  const stale=spawnSync(process.execPath,[verifier],{cwd:root,encoding:'utf8'});
-  assert.equal(stale.status,1);
-  const result=JSON.parse(stale.stdout);
-  assert.equal(result.status,'FAIL');
+  /** ★2026-10-03: 제품이 키트 뒤로 앞서간 것은 정상 진행이다 — 예전엔 MISMATCH 로 HOLD 였다(늘 울리는 경보). 이제 PASS + 경고 */
+  const advancedRun=spawnSync(process.execPath,[verifier],{cwd:root,encoding:'utf8'});
+  assert.equal(advancedRun.status,0,advancedRun.stderr||advancedRun.stdout);
+  const result=JSON.parse(advancedRun.stdout);
+  assert.equal(result.status,'PASS');
   assert.equal(result.revision.expected,pinned);
   assert.equal(result.revision.actual,advanced);
-  assert.equal(result.revision.status,'MISMATCH');
+  assert.equal(result.revision.status,'PROJECT_ADVANCED');
   assert.ok(result.revision.advanced_paths.includes('tracked.txt'));
 
-  const staleBootstrapRun=spawnSync(process.execPath,[bootstrapPath],{cwd:root,encoding:'utf8'});
-  assert.equal(staleBootstrapRun.status,2,staleBootstrapRun.stderr||staleBootstrapRun.stdout);
-  const staleBootstrap=JSON.parse(staleBootstrapRun.stdout);
-  assert.equal(staleBootstrap.status,'HOLD');
-  assert.equal(staleBootstrap.project.kit_authority.status,'MATCH');
-  assert.equal(staleBootstrap.project.kit_authority.anchor_commit,refreshed);
-  assert.equal(staleBootstrap.project.kit_verification.status,'FAIL');
-  assert.equal(staleBootstrap.project.kit_verification.revision.status,'MISMATCH');
-  assert.ok(staleBootstrap.blockers.includes('STARTER_KIT_REVISION_MISMATCH'));
-  assert.equal(staleBootstrap.blockers.includes('STARTER_KIT_VERIFICATION_FAILED'),false);
-  assert.match(staleBootstrap.next_action,/exact project revision/);
+  const advancedBootstrapRun=spawnSync(process.execPath,[bootstrapPath],{cwd:root,encoding:'utf8'});
+  const advancedBootstrap=JSON.parse(advancedBootstrapRun.stdout);
+  assert.equal(advancedBootstrap.project.kit_authority.status,'MATCH');
+  assert.equal(advancedBootstrap.project.kit_verification.status,'PASS');
+  assert.equal(advancedBootstrap.project.kit_verification.revision.status,'PROJECT_ADVANCED');
+  assert.equal(advancedBootstrap.blockers.includes('STARTER_KIT_REVISION_MISMATCH'),false);
+  assert.equal(advancedBootstrap.blockers.includes('STARTER_KIT_VERIFICATION_FAILED'),false);
+  assert.ok(JSON.stringify(advancedBootstrap).includes('STARTER_KIT_PROJECT_ADVANCED'),'제품이 앞서간 사실을 경고로 남겨야 한다(무소음 금지)');
 });
 
 test('★kit integrity survives a Windows CRLF checkout but still catches a real edit',async()=>{
@@ -486,4 +484,59 @@ test('★a hostile advisory module cannot cut the safety path short — bootstra
   assert.ok(outp.warnings.some((w) => w.startsWith('ADVISORY_UNAVAILABLE')), '적대적 advisory 를 알아채지 못했다');
   assert.ok(Array.isArray(outp.blockers) && outp.status === 'HOLD', '안전 판정 출력이 끝까지 나오지 않았다');
   assert.ok(outp.blockers.includes('STARTER_KIT_VERIFICATION_FAILED'), '바뀐 advisory.mjs 를 검증기가 잡지 못했다(해시 목록)');
+});
+
+// ★2026-10-03 — 키트를 깐 뒤 제품에 평범한 커밋이 들어가면 예전엔 MISMATCH 로 그 제품의 모든 세션이 HOLD 였다(erp4·freepass-data·mewcar 실측).
+//   재배포해도 다음 제품 커밋까지만 조용한 «늘 울리는 경보». Codex 상의(MODIFY): 조상이면 PASS+경고, 조상 아님·확인 불가·기준 없음은 계속 막는다.
+test('★제품이 키트 뒤로 앞서가면 PROJECT_ADVANCED — 막지 않고 경고, 갈라진 이력은 여전히 막는다', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'academy-kit-advance-'));
+  git(root, 'init', '-q');
+  git(root, 'config', 'user.email', 'ai-core-test@example.invalid');
+  git(root, 'config', 'user.name', 'AI Core Test');
+  await writeFile(join(root, 'tracked.txt'), 'v1\n');
+  git(root, 'add', 'tracked.txt');
+  git(root, 'commit', '-q', '-m', 'baseline');
+  const pinned = git(root, 'rev-parse', 'HEAD');
+  const out = join(root, '.ai-core');
+  await installAcademyStarterKit({ output: out, receipt: { ...receipt, target: { ...receipt.target, revision: pinned } }, coreRevision: 'b'.repeat(40), readings: [{ path: 'docs/AI_WORKING_STANDARD.md', body: 'one' }], operatingKnowledge: { schema_version: '1.0', confirmed_decisions: [], methods: [], platforms: [] } });
+  git(root, 'add', '.ai-core');
+  git(root, 'commit', '-q', '-m', 'install academy kit');
+  const verify = () => JSON.parse(spawnSync(process.execPath, [join(out, 'verify-kit.mjs')], { cwd: root, encoding: 'utf8' }).stdout);
+
+  /** 평범한 제품 커밋 두 개 */
+  for (const v of ['v2', 'v3']) {
+    await writeFile(join(root, 'tracked.txt'), `${v}\n`);
+    git(root, 'commit', '-qam', `product ${v}`);
+  }
+  const advanced = verify();
+  assert.equal(advanced.status, 'PASS');
+  assert.equal(advanced.revision.status, 'PROJECT_ADVANCED');
+  assert.equal(advanced.revision.ahead_count, 3);
+  assert.ok(advanced.revision.advanced_paths.includes('tracked.txt'));
+
+  /** 갈라진 이력: pin 이 HEAD 의 조상이 아니다 → 여전히 MISMATCH */
+  git(root, 'checkout', '-q', '--orphan', 'other');
+  await writeFile(join(root, 'tracked.txt'), 'other\n');
+  git(root, 'add', '.');
+  git(root, 'commit', '-qm', 'unrelated history');
+  const diverged = verify();
+  assert.equal(diverged.status, 'FAIL');
+  assert.equal(diverged.revision.status, 'MISMATCH');
+});
+
+test('★판정 → 막힘/경고 매핑: PROJECT_ADVANCED 는 경고, ANCESTRY_UNKNOWN·TARGET_MISSING·MISMATCH 는 각자 이름으로 막힘', async () => {
+  const { kitSafetyDecision } = await import('../src/academy/starter-kit.mjs');
+  const base = { coreHeadOk: true, freshness: { status: 'CURRENT_CONTENT' }, authorityStatus: 'MATCH', kitCheckOk: true };
+  const rev = (status, extra = {}) => ({ status: ['MATCH', 'KIT_ONLY_ADVANCE', 'PROJECT_ADVANCED'].includes(status) ? 'PASS' : 'FAIL', revision: { status, expected: 'a'.repeat(40), actual: 'b'.repeat(40), ahead_count: 4, ...extra } });
+
+  const adv = kitSafetyDecision({ ...base, kitVerification: rev('PROJECT_ADVANCED') });
+  assert.deepEqual(adv.blockers, []);
+  assert.equal(adv.kitReady, true);
+  assert.ok(adv.warnings.some((w) => w.startsWith('STARTER_KIT_PROJECT_ADVANCED') && w.includes('4커밋')));
+
+  assert.deepEqual(kitSafetyDecision({ ...base, kitVerification: rev('MISMATCH') }).blockers, ['STARTER_KIT_REVISION_MISMATCH']);
+  assert.deepEqual(kitSafetyDecision({ ...base, kitVerification: rev('ANCESTRY_UNKNOWN') }).blockers, ['STARTER_KIT_REVISION_ANCESTRY_UNKNOWN']);
+  assert.deepEqual(kitSafetyDecision({ ...base, kitVerification: rev('TARGET_MISSING') }).blockers, ['STARTER_KIT_TARGET_REVISION_MISSING']);
+  /** 변조는 조상 여부와 무관하게 막는다 */
+  assert.deepEqual(kitSafetyDecision({ ...base, authorityStatus: 'MISMATCH', kitVerification: rev('PROJECT_ADVANCED') }).blockers, ['STARTER_KIT_VERIFICATION_FAILED']);
 });
