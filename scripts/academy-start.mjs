@@ -2,7 +2,7 @@ import { execFileSync, spawnSync } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 import { basename, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { buildAcademyStartReceipt, TRACK_DOCS } from '../src/academy/start-gate.mjs';
+import { buildAcademyStartReceipt, parseLsRemoteHead, TRACK_DOCS } from '../src/academy/start-gate.mjs';
 import { installAcademyStarterKit } from '../src/academy/starter-kit.mjs';
 
 const coreRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
@@ -33,6 +33,22 @@ try {
 const repository = remote?.replaceAll('\\', '/').replace(/\.git$/, '').match(/(?:github\.com[/:])([^/]+\/[^/]+)$/i)?.[1] ?? null;
 const project = registry.projects.find(item => item.project_id === requestedProject || (!requestedProject && item.repository.toLowerCase() === repository?.toLowerCase())) ?? null;
 
+/** 기본 가지인데 HEAD 가 등록부 pin 과 다를 때만 원격 기본 가지를 실제로 읽는다(src/academy/start-gate.mjs judgeDefaultBranchHead).
+ *  원격을 못 읽으면 revision 이 null 로 남고, 그러면 판정은 닫힌 채(HOLD)다. */
+let remoteHead = null;
+if (project && branch && branch === project.default_branch && revision && revision !== project.head_revision) {
+  const ref = `refs/heads/${project.default_branch}`;
+  let remoteRevision = null;
+  try { remoteRevision = parseLsRemoteHead(git(['ls-remote', 'origin', ref])); } catch {}
+  let pinIsAncestor = null;
+  if (/^[0-9a-f]{40}$/.test(project.head_revision ?? '')) {
+    /** exit 0 = 조상, 1 = 조상 아님, 그 밖(얕은 클론·객체 없음) = 확인 불가 */
+    const r = spawnSync('git', ['merge-base', '--is-ancestor', project.head_revision, 'HEAD'], { cwd: root, windowsHide: true });
+    pinIsAncestor = r.status === 0 ? true : r.status === 1 ? false : null;
+  }
+  remoteHead = { ref, revision: remoteRevision, observed_at: new Date().toISOString(), pin_is_ancestor: pinIsAncestor };
+}
+
 const baseDocs = ['docs/AI_WORKING_STANDARD.md', ...TRACK_DOCS[track]];
 const readings = [];
 for (const path of [...new Set(baseDocs)]) readings.push({ path, body: await read(join(coreRoot, path)), purpose: path.endsWith('AI_WORKING_STANDARD.md') ? 'constitution' : 'track_rule' });
@@ -49,7 +65,7 @@ if (create) {
   try { reuse = JSON.parse(result.stdout); } catch { reuse = { verdict: { status: 'HOLD', reason: 'REUSE_CHECK_FAILED' }, candidates: [] }; }
 }
 
-const receipt = buildAcademyStartReceipt({ task, track, project, repository, branch, revision, dirty, instructions, readings, reuse, observedAt: new Date().toISOString() });
+const receipt = buildAcademyStartReceipt({ task, track, project, repository, branch, revision, dirty, instructions, readings, reuse, remoteHead, observedAt: new Date().toISOString() });
 if (receipt.target) {
   receipt.target.root = root;
   receipt.target.display_name = basename(root);

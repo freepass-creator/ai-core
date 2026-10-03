@@ -11,15 +11,40 @@ const TRACK_DOCS = {
 const hash = value => createHash('sha256').update(value).digest('hex');
 const isPinnedRevision = value => typeof value === 'string' && /^[0-9a-f]{40}$/.test(value);
 
-export function buildAcademyStartReceipt({ task, track, project, repository, branch, revision, dirty, instructions, readings, reuse = null, observedAt }) {
+/** 기본 가지에서 등록부 pin 과 HEAD 가 다를 때의 판정.
+ *
+ *  ★2026-10-03: 등록부 head_revision 은 «최신성 pin»이 아니라 «등록부 스냅샷»이다. 프로젝트 main 은 계속 움직이고
+ *  등록부는 registry-refresh PR 이 병합돼야 따라오므로, 예전 판정(다르면 HOLD)은 main 에서 시작하는 모든 세션을
+ *  구조적으로 HOLD 시켰다(ai-core main · ai-ops master 실측). 늘 HOLD 면 AI 는 HOLD 를 무시하도록 배운다.
+ *  그래서 «원격 기본 가지와 같고, pin 이 그 조상»이면 비차단 경고로 낮춘다. 나머지는 전부 닫힌 채로 둔다.
+ *  (Codex 상의 2026-10-03 MODIFY: 저장소 불일치·조상 확인 불가·원격 미관측은 HOLD, 원격 관측값을 영수증에 남긴다)
+ *
+ *  remoteHead = { ref, revision|null, observed_at, pin_is_ancestor: true|false|null(확인 불가) } */
+export function judgeDefaultBranchHead({ project, repository, revision, remoteHead }) {
+  const pin = project.head_revision;
+  if (revision === pin) return { blockers: [], warnings: [] };
+  const 같은저장소 = typeof project.repository === 'string' && project.repository.toLowerCase() === String(repository ?? '').toLowerCase();
+  if (!같은저장소 || !isPinnedRevision(remoteHead?.revision)) return { blockers: ['DEFAULT_BRANCH_REVISION_MISMATCH'], warnings: [] };
+  if (remoteHead.pin_is_ancestor === null || remoteHead.pin_is_ancestor === undefined) return { blockers: ['REGISTRY_PIN_NOT_VERIFIABLE'], warnings: [] };
+  if (remoteHead.pin_is_ancestor === false) return { blockers: ['DEFAULT_BRANCH_REVISION_MISMATCH'], warnings: [] };
+  if (revision !== remoteHead.revision) return { blockers: ['LOCAL_BRANCH_NOT_CURRENT'], warnings: [] };
+  return { blockers: [], warnings: ['REGISTRY_HEAD_STALE'] };
+}
+
+export function buildAcademyStartReceipt({ task, track, project, repository, branch, revision, dirty, instructions, readings, reuse = null, remoteHead = null, observedAt }) {
   const blockers = [];
+  const warnings = [];
   if (!task?.trim()) blockers.push('TASK_REQUIRED');
   if (!TRACK_DOCS[track]) blockers.push('TRACK_UNSUPPORTED');
   if (!project) blockers.push('PROJECT_NOT_REGISTERED');
   if (!isPinnedRevision(revision)) blockers.push('REVISION_NOT_PINNED');
   if (project && branch === project.default_branch) {
     if (!isPinnedRevision(project.head_revision)) blockers.push('REGISTRY_REVISION_NOT_PINNED');
-    else if (isPinnedRevision(revision) && revision !== project.head_revision) blockers.push('DEFAULT_BRANCH_REVISION_MISMATCH');
+    else if (isPinnedRevision(revision)) {
+      const 판 = judgeDefaultBranchHead({ project, repository, revision, remoteHead });
+      blockers.push(...판.blockers);
+      warnings.push(...판.warnings);
+    }
   }
   if (dirty) blockers.push('DIRTY_WORKTREE_REVIEW_REQUIRED');
   if (!instructions.length) blockers.push('PROJECT_INSTRUCTIONS_MISSING');
@@ -29,6 +54,8 @@ export function buildAcademyStartReceipt({ task, track, project, repository, bra
     status: blockers.length ? 'HOLD' : 'READY',
     task: task?.trim() ?? '', track,
     target: project ? { project_id: project.project_id, repository, branch, revision, registry_revision: project.head_revision } : null,
+    /** target 밖에 둔다 — target 은 키트(kit.json)에 실리므로, 매번 바뀌는 관측 시각이 들어가면 키트가 매번 달라진다. */
+    remote_head: remoteHead ? { ref: remoteHead.ref, revision: remoteHead.revision, observed_at: remoteHead.observed_at, registry_pin_is_ancestor: remoteHead.pin_is_ancestor } : null,
     learned: readings.map(item => ({ path: item.path, sha256: hash(item.body), purpose: item.purpose })),
     project_instructions: instructions.map(item => ({ path: item.path, sha256: hash(item.body) })),
     precheck: {
@@ -39,6 +66,7 @@ export function buildAcademyStartReceipt({ task, track, project, repository, bra
       completion_verification: project?.commands ?? null,
     },
     blockers,
+    warnings,
     start_contract: blockers.length ? null : {
       preserve_revision: revision,
       inspect_before_edit: true,
@@ -50,3 +78,9 @@ export function buildAcademyStartReceipt({ task, track, project, repository, bra
 }
 
 export { TRACK_DOCS };
+
+/** `git ls-remote origin <ref>` 출력에서 sha 만 꺼낸다(「<sha>\t<ref>」). 꼴이 아니면 null — 판정이 닫힌다. */
+export function parseLsRemoteHead(text) {
+  const sha = String(text ?? '').trim().split(/\s+/)[0];
+  return isPinnedRevision(sha) ? sha : null;
+}
