@@ -28,9 +28,11 @@ test('current repository state is internally consistent', async () => {
   assert.deepEqual(await verifyRepository(fileURLToPath(new URL('..', import.meta.url))), []);
 });
 
-test('main-state CI watches the tested Claude entrypoint', async () => {
+test('main-state CI runs on every pull request — it is a required check, so no paths filter (covers CLAUDE.md and skills/)', async () => {
   const workflow = await readFile(new URL('../.github/workflows/main-state.yml', import.meta.url), 'utf8');
-  assert.match(workflow, /^\s+- ['"]CLAUDE\.md['"]\s*$/m);
+  const on = workflow.slice(workflow.indexOf('\non:'), workflow.indexOf('\njobs:'));
+  assert.match(on, /^\s+pull_request:\s*$/m);
+  assert.doesNotMatch(on, /^\s+paths(-ignore)?:/m, 'paths 필터가 있으면 필수 검사 verify 가 어떤 PR 에선 안 돌아 영원히 막힌다');
 });
 
 test('a frozen historical observation must reference an existing commit', () => {

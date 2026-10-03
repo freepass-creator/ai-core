@@ -9,29 +9,10 @@ name: Main State Consistency
 # A PR exact-head run is sufficient; the same full suite is not repeated on
 # push to main after a reviewed PR merge.
 on:
+  # ★2026-10-03: paths 필터를 뺐다 — verify 를 main 보호의 필수 검사로 걸려면 «모든» PR 에서 돌아야 한다.
+  #   필터가 있으면 skills/·*.md 만 바뀐 PR 에선 verify 가 안 돌아, 필수로 걸면 영원히 막히고(freepass-admin Vercel 과 같은 병)
+  #   안 걸면 그런 PR 이 lane-coverage 같은 검사를 건너뛴다(#377 의 skills/ 가 lane 없이 들어간 길).
   pull_request:
-    paths:
-      - '.github/workflows/**'
-      - 'CLAUDE.md'
-      - 'package.json'
-      - 'package-lock.json'
-      - 'src/**'
-      - 'scripts/**'
-      - 'test/**'
-      - 'contracts/**'
-      - 'registry/**'
-      - 'design-system/**'
-      - 'devcenter/**'
-      - 'config/**'
-      - 'examples/**/*.json'
-      - 'docs/**/*.json'
-      - 'management-support/**/*.json'
-      - 'management-support/**/*.js'
-      - 'management-support/**/*.mjs'
-      - 'management-support/**/*.cjs'
-      - 'management-support/**/*.ts'
-      - 'management-support/**/*.tsx'
-      - 'management-support/**/*.py'
   workflow_dispatch:
 
 concurrency:
