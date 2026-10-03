@@ -119,7 +119,6 @@
 !/docs/BROWSER-VERIFICATION.md
 
 # 자동 커밋 도구 (2026-09-09) — 내용 확인 후 파일 단위로 허용
-!/engine/자동커밋.mjs
 !/docs/STARTER-TEMPLATES.md
 !/docs/FOLDER-CONSOLIDATION.md
 !/design/patterns/RESPONSIVE-SHELL.md

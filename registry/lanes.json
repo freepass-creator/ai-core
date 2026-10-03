@@ -85,6 +85,16 @@
       "lane": "E"
     },
     {
+      "pattern": "^test/(data-hub|delivery-gate|design-(compiler|feedback|lock|visual-qa)|document-hub|engineering-hub|hub-(readiness|router)|integration-hub|quality-receipt)\\.test\\.mjs$",
+      "lane": "E",
+      "rule": "A"
+    },
+    {
+      "pattern": "^docs/verification/",
+      "lane": "F",
+      "rule": "C"
+    },
+    {
       "pattern": "^docs/hubs/",
       "lane": "E",
       "rule": "C"

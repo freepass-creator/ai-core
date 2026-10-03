@@ -24,8 +24,8 @@ Development Center의 시스템 연동 허브.
 - Connector contract: `../../contracts/hubs/integration-connector.schema.json`
 - Connector registry: `../../src/hubs/integration/connectors.json`
 - Consumer registry: `../../src/hubs/integration/consumers.json`
-- Runtime/gate: `../../devcenter/scripts/integration-hub.mjs`
-- Regression definitions: `../../devcenter/test/integration-hub.test.mjs`
-- Guide: `../../devcenter/docs/INTEGRATION-HUB-RUNTIME.md`
+- Runtime/gate: `../../src/hubs/integration/integration-hub.mjs`
+- Regression definitions: `../../test/integration-hub.test.mjs`
+- Guide: `../../docs/hubs/INTEGRATION-HUB-RUNTIME.md`
 
 모든 connector는 timeout/retry/idempotency/auth/health/recovery를 선언해야 하며 Secret 값은 Registry에 저장하지 않는다. 프로젝트 구현이 존재해도 production 증거 없이는 CANDIDATE를 유지한다.

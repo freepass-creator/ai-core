@@ -67,7 +67,7 @@
       "id": "DESIGN.BROWSER_VISUAL_QA",
       "status": "HOLD",
       "evidence": [
-        "devcenter/docs/DESIGN-VISUAL-QA.md"
+        "docs/verification/DESIGN-VISUAL-QA.md"
       ],
       "remediation": "Run browser capture and visual review on the exact UI revision.",
       "recheck": "Produce Design Visual Receipt for required viewports."

@@ -8,7 +8,7 @@
 
 - SSOT 검사기: [SSOT 파트](../ssot/PART.md), 실제 구현은 `C:/dev/devcenter/ssot`.
 - 규격 검색: 루트 [틀.mjs](../틀.mjs). 시작 템플릿 생성기가 아니다.
-- 개발센터 자동 커밋: [자동커밋.mjs](자동커밋.mjs). 맡은 경로만 지정해서 사용한다.
+- 자동 커밋 기능은 ai-ops scripts/dev/commit-checked.ps1 에 큰파일 차단만 흡수
 
 ```powershell
 python C:\dev\devcenter\ssot\ssot_audit.py C:\dev\devcenter\registry.json

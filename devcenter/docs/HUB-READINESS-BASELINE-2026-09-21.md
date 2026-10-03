@@ -1,6 +1,6 @@
 # Hub Readiness Baseline — 2026-09-21
 
-평가 기준: `hubs/readiness.json`  
+평가 기준: `src/hubs/readiness.json`  
 목표: 모든 Hub 90% 이상 + critical axis(contract/source/runtime/validation) 전부 VERIFIED
 
 | 순위 | Hub | Readiness | 상태 | 가장 큰 현재 gap |

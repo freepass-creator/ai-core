@@ -6,12 +6,12 @@
 
 | receipt_kind | payload schema | generator |
 |---|---|---|
-| `hub.quality` | `contracts/quality-receipt.schema.json` | `devcenter/scripts/quality-receipt.mjs` |
-| `hub.design-adoption` | `contracts/design-adoption-receipt.schema.json` | `devcenter/scripts/design-feedback.mjs` |
-| `hub.design-visual` | `contracts/design-visual-receipt.schema.json` | `devcenter/scripts/design-visual-qa.mjs` |
-| `hub.document` | `contracts/document-receipt.schema.json` | `devcenter/scripts/document-hub.mjs` |
-| `hub.data` | `contracts/data-receipt.schema.json` | `devcenter/scripts/data-hub.mjs` |
-| `hub.delivery` | `contracts/delivery-receipt.schema.json` | `devcenter/scripts/delivery-gate.mjs` |
+| `hub.quality` | `contracts/quality-receipt.schema.json` | `src/hubs/quality/quality-receipt.mjs` |
+| `hub.design-adoption` | `contracts/design-adoption-receipt.schema.json` | `src/hubs/design/design-feedback.mjs` |
+| `hub.design-visual` | `contracts/design-visual-receipt.schema.json` | `src/hubs/design/design-visual-qa.mjs` |
+| `hub.document` | `contracts/document-receipt.schema.json` | `src/hubs/document/document-hub.mjs` |
+| `hub.data` | `contracts/data-receipt.schema.json` | `src/hubs/data/data-hub.mjs` |
+| `hub.delivery` | `contracts/delivery-receipt.schema.json` | `src/hubs/delivery/delivery-gate.mjs` |
 
 기존 `devcenter-*-receipt/v1` 이름은 호환성과 출처 추적을 위해 `payload.legacy_contract`에만 남긴다. 새 소비자는 최상위 `schema_version`, `status`, `source_revision`, `evidence_refs`를 먼저 읽고 필요한 경우에만 `payload`를 읽는다.
 

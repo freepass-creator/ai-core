@@ -387,7 +387,7 @@
           "duplicate_of": null,
           "pii": false,
           "secret": false,
-          "why": "Business-neutral ingestion safety standard; devcenter/hubs/data/patterns.json adopts RAW/canonical/lineage/outbox rules but not source-run coverage/accepted-head rules."
+          "why": "Business-neutral ingestion safety standard; src/hubs/data/patterns.json adopts RAW/canonical/lineage/outbox rules but not source-run coverage/accepted-head rules."
         },
         {
           "path": "docs/INCIDENT-2026-09-21-STALE-UPSTREAM-FALSE-PASS.md",
@@ -404,9 +404,9 @@
           "path": "docs/DELIVERY-IDEMPOTENCY.md",
           "category": "DEV",
           "label": "DUPLICATE_OF_HQ",
-          "hq_target": "devcenter/hubs/data/patterns.json",
+          "hq_target": "src/hubs/data/patterns.json",
           "generalize": "Only if HQ wants the detailed text: remove Catalog/ERP Public names.",
-          "duplicate_of": "devcenter/hubs/data/patterns.json#revision-idempotency-audit-outbox",
+          "duplicate_of": "src/hubs/data/patterns.json#revision-idempotency-audit-outbox",
           "pii": false,
           "secret": false,
           "why": "HQ already adopted the rule (from freepass-data@bd75b604); this repo copy is newer and more detailed (receipt-by-eventId, out-of-order convergence, markDone failure window) - refresh HQ evidence pointer to 09bc905a."
@@ -415,9 +415,9 @@
           "path": "docs/PROJECTION-RELEASE-EVIDENCE.md",
           "category": "DEV",
           "label": "DUPLICATE_OF_HQ",
-          "hq_target": "devcenter/hubs/data/patterns.json",
+          "hq_target": "src/hubs/data/patterns.json",
           "generalize": null,
-          "duplicate_of": "devcenter/hubs/data/patterns.json#evidence-gated-release",
+          "duplicate_of": "src/hubs/data/patterns.json#evidence-gated-release",
           "pii": false,
           "secret": false,
           "why": "Rule already adopted in HQ from older revision bd75b604; project doc is newer - update HQ evidence revision, do not copy."
@@ -426,9 +426,9 @@
           "path": "docs/FIELD-AUTHORITY.md + src/domain/authority.ts",
           "category": "DEV",
           "label": "DUPLICATE_OF_HQ",
-          "hq_target": "devcenter/hubs/data/patterns.json",
+          "hq_target": "src/hubs/data/patterns.json",
           "generalize": null,
-          "duplicate_of": "devcenter/hubs/data/patterns.json#field-authority-lineage-provenance",
+          "duplicate_of": "src/hubs/data/patterns.json#field-authority-lineage-provenance",
           "pii": false,
           "secret": false,
           "why": "Field-authority/lineage rule already in HQ patterns; implementation is catalog-typed (aggregate union, command types) so the code stays."
@@ -1469,7 +1469,7 @@
           "label": "HQ_EXTRACT_GENERALIZE",
           "hq_target": "devcenter/tooling/checks/check-design-locked.mts",
           "generalize": "Locked items list tied to docs/DESIGN_CONFIRMED_*.md is project data; extract the doc-row↔code-assertion mechanism",
-          "duplicate_of": "devcenter/scripts/design-lock.mjs",
+          "duplicate_of": "src/hubs/design/design-lock.mjs",
           "pii": false,
           "secret": false,
           "why": "Owner-confirmed design lock gate; compare with HQ design-lock.mjs before choosing"

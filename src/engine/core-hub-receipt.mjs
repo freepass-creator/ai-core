@@ -204,7 +204,7 @@ export function finalizeCoreHubReceipt({
     endedAt,
     evidenceRefs:collectEvidence(payload),
     environmentRevision:subject?.revision??null,
-    commandRef:`devcenter/scripts/${SCRIPT[kind]??kind}.mjs`
+    commandRef:`src/hubs/${kind.startsWith('design')?'design':kind}/${SCRIPT[kind]??kind}.mjs`
   });
   return {
     ...coreReceipt,
