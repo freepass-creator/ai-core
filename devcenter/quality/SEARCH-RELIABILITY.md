@@ -2,7 +2,7 @@
 
 - 요청: 억지로 범위를 늘리지 않고 실제로 필요한 부분을 개선한다.
 - 범위 / 위험: 낮음. 기존 FunctionSearch 단일 컴포넌트의 조회·입력 처리와 회귀검사. 데이터 쓰기·권한·외부 전송 없음. core SSOT 및 승인 기준 변경 없음.
-- 정본: C:/dev/devcenter/portal/app/function-search.tsx, main 작업 트리. 이전 학습·실험 변경은 그대로 보존한다.
+- 정본: C:/dev/ai-core/src/catalog-portal/app/function-search.tsx, main 작업 트리. 이전 학습·실험 변경은 그대로 보존한다.
 - 재사용: 기존 검색 색인과 Input/Button, 기존 학습 패널 스타일, 기존 브라우저 검사기.
 
 ## 발견과 수정

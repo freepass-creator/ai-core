@@ -191,7 +191,7 @@
       "role": "authoritative",
       "source": {
         "kind": "markdown_doc",
-        "locator": "devcenter/design/patterns/RESPONSIVE-SHELL.md"
+        "locator": "docs/design/RESPONSIVE-SHELL.md"
       },
       "key": "section",
       "required": [],
@@ -205,7 +205,7 @@
       "role": "authoritative",
       "source": {
         "kind": "markdown_doc",
-        "locator": "devcenter/design/components/CATALOG.md"
+        "locator": "docs/design/CATALOG.md"
       },
       "key": "section",
       "required": [],
@@ -429,7 +429,7 @@
       "role": "authoritative",
       "source": {
         "kind": "javascript_module",
-        "locator": "devcenter/scripts/validate-hubs.mjs"
+        "locator": "scripts/verification/validate-hubs.mjs"
       },
       "key": "entry",
       "required": [],
@@ -1031,7 +1031,7 @@
       "role": "authoritative",
       "source": {
         "kind": "json",
-        "locator": "devcenter/evidence/data/freepass-data-catalog-v1.json"
+        "locator": "test/fixtures/hubs/evidence/data/freepass-data-catalog-v1.json"
       },
       "key": "entry",
       "required": [],
@@ -1045,7 +1045,7 @@
       "role": "authoritative",
       "source": {
         "kind": "json",
-        "locator": "devcenter/evidence/quality/freepass-admin-backend-baseline.json"
+        "locator": "test/fixtures/hubs/evidence/quality/freepass-admin-backend-baseline.json"
       },
       "key": "entry",
       "required": [],
@@ -1115,7 +1115,7 @@
       "role": "authoritative",
       "source": {
         "kind": "json",
-        "locator": "devcenter/evidence/design/freepass-admin-approved-shell.json"
+        "locator": "test/fixtures/hubs/evidence/design/freepass-admin-approved-shell.json"
       },
       "key": "entry",
       "required": [],

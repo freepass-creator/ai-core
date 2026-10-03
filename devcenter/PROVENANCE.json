@@ -18439,15 +18439,15 @@
     },
     {
       "source_path": "scripts/scan-standards.py",
-      "disposition": "ADAPTED_IN_PLACE",
-      "destination": "devcenter/scripts/scan-standards.py",
-      "reason": "consume AI Core root registry after physical merge"
+      "disposition": "MOVED_ADAPTED",
+      "destination": "scripts/catalog/scan-standards.py",
+      "reason": "consume AI Core root registry after physical merge; 2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
     },
     {
       "source_path": "틀.mjs",
-      "disposition": "ADAPTED_IN_PLACE",
-      "destination": "devcenter/틀.mjs",
-      "reason": "consume AI Core root registry after physical merge"
+      "disposition": "MOVED_ADAPTED",
+      "destination": "scripts/standards-find.mjs",
+      "reason": "consume AI Core root registry after physical merge; 2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
     },
     {
       "source_path": "AGENTS.md",
@@ -18469,9 +18469,9 @@
     },
     {
       "source_path": "docs/STARTER-TEMPLATES.md",
-      "disposition": "ADAPTED_IN_PLACE",
-      "destination": "devcenter/docs/STARTER-TEMPLATES.md",
-      "reason": "consume AI Core root registry after physical merge"
+      "disposition": "MOVED_ADAPTED",
+      "destination": "docs/research/STARTER-TEMPLATES.md",
+      "reason": "consume AI Core root registry after physical merge; 2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
     },
     {
       "source_path": "hubs/design/core-binding.json",
@@ -18493,9 +18493,9 @@
     },
     {
       "source_path": "design/AI_DESIGNER_OPERATING_GUIDE.md",
-      "disposition": "ADAPTED_IN_PLACE",
-      "destination": "devcenter/design/AI_DESIGNER_OPERATING_GUIDE.md",
-      "reason": "mark unique design method as subordinate to AI Core and product canon; 2026-10-04 devcenter 흡수 2단계 — 본체로 옮긴 허브 자료·ai-ops 로 내보낸 실행기의 새 위치를 가리키도록 경로만 고침"
+      "disposition": "MOVED_ADAPTED",
+      "destination": "docs/design/AI_DESIGNER_OPERATING_GUIDE.md",
+      "reason": "mark unique design method as subordinate to AI Core and product canon; 2026-10-04 devcenter 흡수 2단계 — 본체로 옮긴 허브 자료·ai-ops 로 내보낸 실행기의 새 위치를 가리키도록 경로만 고침; 2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
     },
     {
       "source_path": "docs/DESIGN-HUB-COMPILER.md",
@@ -18553,9 +18553,9 @@
     },
     {
       "source_path": "design/AI_EDITORIAL_LAYOUT_COMPILER.md",
-      "disposition": "ADAPTED_IN_PLACE",
-      "destination": "devcenter/design/AI_EDITORIAL_LAYOUT_COMPILER.md",
-      "reason": "mark unique layout knowhow as subordinate to AI Core and product canon"
+      "disposition": "MOVED_ADAPTED",
+      "destination": "docs/design/AI_EDITORIAL_LAYOUT_COMPILER.md",
+      "reason": "mark unique layout knowhow as subordinate to AI Core and product canon; 2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
     },
     {
       "source_path": "contracts/data-receipt.schema.json",
@@ -18679,75 +18679,75 @@
     },
     {
       "source_path": "portal/build-static.mjs",
-      "disposition": "ADAPTED_IN_PLACE",
-      "destination": "devcenter/portal/build-static.mjs",
-      "reason": "remove the portal sibling-checkout dependency by using verified pinned catalog sources and staged logical manifest evidence"
+      "disposition": "MOVED_ADAPTED",
+      "destination": "scripts/catalog-portal/build-static.mjs",
+      "reason": "remove the portal sibling-checkout dependency by using verified pinned catalog sources and staged logical manifest evidence; 2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
     },
     {
       "source_path": "portal/package.json",
-      "disposition": "ADAPTED_IN_PLACE",
-      "destination": "devcenter/portal/package.json",
-      "reason": "remove the portal sibling-checkout dependency by using verified pinned catalog sources and staged logical manifest evidence"
+      "disposition": "MOVED_ADAPTED",
+      "destination": "src/catalog-portal/package.json",
+      "reason": "remove the portal sibling-checkout dependency by using verified pinned catalog sources and staged logical manifest evidence; 2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
     },
     {
       "source_path": "portal/tsconfig.gallery.json",
-      "disposition": "ADAPTED_IN_PLACE",
-      "destination": "devcenter/portal/tsconfig.gallery.json",
-      "reason": "remove the portal sibling-checkout dependency by using verified pinned catalog sources and staged logical manifest evidence"
+      "disposition": "MOVED_ADAPTED",
+      "destination": "src/catalog-portal/tsconfig.gallery.json",
+      "reason": "remove the portal sibling-checkout dependency by using verified pinned catalog sources and staged logical manifest evidence; 2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
     },
     {
       "source_path": "portal/README.md",
-      "disposition": "ADAPTED_IN_PLACE",
-      "destination": "devcenter/portal/README.md",
-      "reason": "remove the portal sibling-checkout dependency by using verified pinned catalog sources and staged logical manifest evidence"
+      "disposition": "MOVED_ADAPTED",
+      "destination": "docs/catalog-portal.md",
+      "reason": "remove the portal sibling-checkout dependency by using verified pinned catalog sources and staged logical manifest evidence; 2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
     },
     {
       "source_path": "portal/app/formatting-lab.tsx",
-      "disposition": "ADAPTED_IN_PLACE",
-      "destination": "devcenter/portal/app/formatting-lab.tsx",
-      "reason": "remove the portal sibling-checkout dependency by using verified pinned catalog sources and staged logical manifest evidence"
+      "disposition": "MOVED_ADAPTED",
+      "destination": "src/catalog-portal/app/formatting-lab.tsx",
+      "reason": "remove the portal sibling-checkout dependency by using verified pinned catalog sources and staged logical manifest evidence; 2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
     },
     {
       "source_path": "portal/app/function-library.tsx",
-      "disposition": "ADAPTED_IN_PLACE",
-      "destination": "devcenter/portal/app/function-library.tsx",
-      "reason": "remove the portal sibling-checkout dependency by using verified pinned catalog sources and staged logical manifest evidence"
+      "disposition": "MOVED_ADAPTED",
+      "destination": "src/catalog-portal/app/function-library.tsx",
+      "reason": "remove the portal sibling-checkout dependency by using verified pinned catalog sources and staged logical manifest evidence; 2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
     },
     {
       "source_path": "portal/public/catalog/source-code.json",
-      "disposition": "ADAPTED_IN_PLACE",
-      "destination": "devcenter/portal/public/catalog/source-code.json",
-      "reason": "remove the portal sibling-checkout dependency by using verified pinned catalog sources and staged logical manifest evidence"
+      "disposition": "MOVED_ADAPTED",
+      "destination": "src/catalog-portal/public/catalog/source-code.json",
+      "reason": "remove the portal sibling-checkout dependency by using verified pinned catalog sources and staged logical manifest evidence; 2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
     },
     {
       "source_path": "scripts/typecheck-gate.mjs",
-      "disposition": "ADAPTED_IN_PLACE",
-      "destination": "devcenter/scripts/typecheck-gate.mjs",
-      "reason": "remove the portal sibling-checkout dependency by using verified pinned catalog sources and staged logical manifest evidence"
+      "disposition": "MOVED_ADAPTED",
+      "destination": "scripts/verification/typecheck-gate.mjs",
+      "reason": "remove the portal sibling-checkout dependency by using verified pinned catalog sources and staged logical manifest evidence; 2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
     },
     {
       "source_path": "scripts/acceptance-evidence.mjs",
-      "disposition": "ADAPTED_IN_PLACE",
-      "destination": "devcenter/scripts/acceptance-evidence.mjs",
-      "reason": "remove the portal sibling-checkout dependency by using verified pinned catalog sources and staged logical manifest evidence"
+      "disposition": "MOVED_ADAPTED",
+      "destination": "src/verification/catalog/acceptance-evidence.mjs",
+      "reason": "remove the portal sibling-checkout dependency by using verified pinned catalog sources and staged logical manifest evidence; 2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
     },
     {
       "source_path": "scripts/report-acceptance.mjs",
-      "disposition": "ADAPTED_IN_PLACE",
-      "destination": "devcenter/scripts/report-acceptance.mjs",
-      "reason": "remove the portal sibling-checkout dependency by using verified pinned catalog sources and staged logical manifest evidence"
+      "disposition": "MOVED_ADAPTED",
+      "destination": "scripts/verification/report-acceptance.mjs",
+      "reason": "remove the portal sibling-checkout dependency by using verified pinned catalog sources and staged logical manifest evidence; 2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
     },
     {
       "source_path": "scripts/card-audit.mjs",
-      "disposition": "ADAPTED_IN_PLACE",
-      "destination": "devcenter/scripts/card-audit.mjs",
-      "reason": "remove the portal sibling-checkout dependency by using verified pinned catalog sources and staged logical manifest evidence"
+      "disposition": "MOVED_ADAPTED",
+      "destination": "scripts/catalog/card-audit.mjs",
+      "reason": "remove the portal sibling-checkout dependency by using verified pinned catalog sources and staged logical manifest evidence; 2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
     },
     {
       "source_path": "scripts/verify-typecheck-gate.mjs",
-      "disposition": "ADAPTED_IN_PLACE",
-      "destination": "devcenter/scripts/verify-typecheck-gate.mjs",
-      "reason": "remove the portal sibling-checkout dependency by using verified pinned catalog sources and staged logical manifest evidence"
+      "disposition": "MOVED_ADAPTED",
+      "destination": "test/verification/verify-typecheck-gate.mjs",
+      "reason": "remove the portal sibling-checkout dependency by using verified pinned catalog sources and staged logical manifest evidence; 2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
     },
     {
       "source_path": "hubs/document/README.md",
@@ -18873,7 +18873,7 @@
       "source_path": "hubs/README.md",
       "disposition": "ADAPTED_IN_PLACE",
       "destination": "devcenter/hubs/README.md",
-      "reason": "2026-10-03 devcenter 흡수 1단계 — 본체로 옮긴 계약·연결 자료의 새 경로를 가리키도록 경로만 고침(docs/audits/DEVCENTER_SPLIT_2026-10-03.md); 2026-10-04 devcenter 흡수 2단계 — 본체로 옮긴 허브 자료·ai-ops 로 내보낸 실행기의 새 위치를 가리키도록 경로만 고침"
+      "reason": "2026-10-03 devcenter 흡수 1단계 — 본체로 옮긴 계약·연결 자료의 새 경로를 가리키도록 경로만 고침(docs/audits/DEVCENTER_SPLIT_2026-10-03.md); 2026-10-04 devcenter 흡수 2단계 — 본체로 옮긴 허브 자료·ai-ops 로 내보낸 실행기의 새 위치를 가리키도록 경로만 고침; 2026-10-04 devcenter 흡수 4단계 — 본체로 옮긴 portal·수집기·검증 입력의 새 위치를 가리키도록 경로만 고침"
     },
     {
       "source_path": "hubs/data/README.md",
@@ -18925,9 +18925,9 @@
     },
     {
       "source_path": "design/patterns/RESPONSIVE-SHELL.md",
-      "disposition": "ADAPTED_IN_PLACE",
-      "destination": "devcenter/design/patterns/RESPONSIVE-SHELL.md",
-      "reason": "2026-10-04 devcenter 흡수 2단계 — 본체로 옮긴 허브 자료·ai-ops 로 내보낸 실행기의 새 위치를 가리키도록 경로만 고침"
+      "disposition": "MOVED_ADAPTED",
+      "destination": "docs/design/RESPONSIVE-SHELL.md",
+      "reason": "2026-10-04 devcenter 흡수 2단계 — 본체로 옮긴 허브 자료·ai-ops 로 내보낸 실행기의 새 위치를 가리키도록 경로만 고침; 2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
     },
     {
       "source_path": "docs/HUB-READINESS-BASELINE-2026-09-21.md",
@@ -18939,7 +18939,7 @@
       "source_path": "engine/README.md",
       "disposition": "ADAPTED_IN_PLACE",
       "destination": "devcenter/engine/README.md",
-      "reason": "2026-10-04 devcenter 흡수 2단계 — 본체로 옮긴 허브 자료·ai-ops 로 내보낸 실행기의 새 위치를 가리키도록 경로만 고침"
+      "reason": "2026-10-04 devcenter 흡수 2단계 — 본체로 옮긴 허브 자료·ai-ops 로 내보낸 실행기의 새 위치를 가리키도록 경로만 고침; 2026-10-04 devcenter 흡수 4단계 — 본체로 옮긴 portal·수집기·검증 입력의 새 위치를 가리키도록 경로만 고침"
     },
     {
       "source_path": "engine/자동커밋.mjs",
@@ -18949,15 +18949,15 @@
     },
     {
       "source_path": "evidence/design/freepass-admin-approved-shell.json",
-      "disposition": "ADAPTED_IN_PLACE",
-      "destination": "devcenter/evidence/design/freepass-admin-approved-shell.json",
-      "reason": "2026-10-04 devcenter 흡수 2단계 — 본체로 옮긴 허브 자료·ai-ops 로 내보낸 실행기의 새 위치를 가리키도록 경로만 고침"
+      "disposition": "MOVED_ADAPTED",
+      "destination": "test/fixtures/hubs/evidence/design/freepass-admin-approved-shell.json",
+      "reason": "2026-10-04 devcenter 흡수 2단계 — 본체로 옮긴 허브 자료·ai-ops 로 내보낸 실행기의 새 위치를 가리키도록 경로만 고침; 2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
     },
     {
       "source_path": "quality/INSPECTION-CONTROL.md",
       "disposition": "ADAPTED_IN_PLACE",
       "destination": "devcenter/quality/INSPECTION-CONTROL.md",
-      "reason": "2026-10-04 devcenter 흡수 2단계 — 본체로 옮긴 허브 자료·ai-ops 로 내보낸 실행기의 새 위치를 가리키도록 경로만 고침"
+      "reason": "2026-10-04 devcenter 흡수 2단계 — 본체로 옮긴 허브 자료·ai-ops 로 내보낸 실행기의 새 위치를 가리키도록 경로만 고침; 2026-10-04 devcenter 흡수 4단계 — 본체로 옮긴 portal·수집기·검증 입력의 새 위치를 가리키도록 경로만 고침"
     },
     {
       "source_path": "scripts/browser-capture.mjs",
@@ -18967,9 +18967,9 @@
     },
     {
       "source_path": "scripts/validate-hubs.mjs",
-      "disposition": "ADAPTED_IN_PLACE",
-      "destination": "devcenter/scripts/validate-hubs.mjs",
-      "reason": "2026-10-04 devcenter 흡수 2단계 — 본체로 옮긴 허브 자료·ai-ops 로 내보낸 실행기의 새 위치를 가리키도록 경로만 고침"
+      "disposition": "MOVED_ADAPTED",
+      "destination": "scripts/verification/validate-hubs.mjs",
+      "reason": "2026-10-04 devcenter 흡수 2단계 — 본체로 옮긴 허브 자료·ai-ops 로 내보낸 실행기의 새 위치를 가리키도록 경로만 고침; 2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
     },
     {
       "source_path": "test/browser-capture.test.mjs",
@@ -19138,6 +19138,438 @@
       "disposition": "MOVED_ADAPTED",
       "destination": "test/integration-hub.test.mjs",
       "reason": "2026-10-04 devcenter 흡수 2단계(허브 판정) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "docs/BOOTSTRAP.md",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/docs/BOOTSTRAP.md",
+      "reason": "2026-10-04 devcenter 흡수 4단계 — 본체로 옮긴 portal·수집기·검증 입력의 새 위치를 가리키도록 경로만 고침"
+    },
+    {
+      "source_path": "docs/FOLDER-CONSOLIDATION.md",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/docs/FOLDER-CONSOLIDATION.md",
+      "reason": "2026-10-04 devcenter 흡수 4단계 — 본체로 옮긴 portal·수집기·검증 입력의 새 위치를 가리키도록 경로만 고침"
+    },
+    {
+      "source_path": "docs/IMPROVEMENT-REPORT.md",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/docs/IMPROVEMENT-REPORT.md",
+      "reason": "2026-10-04 devcenter 흡수 4단계 — 본체로 옮긴 portal·수집기·검증 입력의 새 위치를 가리키도록 경로만 고침"
+    },
+    {
+      "source_path": "operations/inspection/FIRST-PATROL.md",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/operations/inspection/FIRST-PATROL.md",
+      "reason": "2026-10-04 devcenter 흡수 4단계 — 본체로 옮긴 portal·수집기·검증 입력의 새 위치를 가리키도록 경로만 고침"
+    },
+    {
+      "source_path": "operations/progress-handoff/2026-09-09-PM-인계.md",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/operations/progress-handoff/2026-09-09-PM-인계.md",
+      "reason": "2026-10-04 devcenter 흡수 4단계 — 본체로 옮긴 portal·수집기·검증 입력의 새 위치를 가리키도록 경로만 고침"
+    },
+    {
+      "source_path": "quality/CATALOG-RECOVERY.md",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/quality/CATALOG-RECOVERY.md",
+      "reason": "2026-10-04 devcenter 흡수 4단계 — 본체로 옮긴 portal·수집기·검증 입력의 새 위치를 가리키도록 경로만 고침"
+    },
+    {
+      "source_path": "quality/DISCOVERY.md",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/quality/DISCOVERY.md",
+      "reason": "2026-10-04 devcenter 흡수 4단계 — 본체로 옮긴 portal·수집기·검증 입력의 새 위치를 가리키도록 경로만 고침"
+    },
+    {
+      "source_path": "quality/EXPANSION.md",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/quality/EXPANSION.md",
+      "reason": "2026-10-04 devcenter 흡수 4단계 — 본체로 옮긴 portal·수집기·검증 입력의 새 위치를 가리키도록 경로만 고침"
+    },
+    {
+      "source_path": "quality/LEARNING-HISTORY.md",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/quality/LEARNING-HISTORY.md",
+      "reason": "2026-10-04 devcenter 흡수 4단계 — 본체로 옮긴 portal·수집기·검증 입력의 새 위치를 가리키도록 경로만 고침"
+    },
+    {
+      "source_path": "quality/SEARCH-RELIABILITY.md",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/quality/SEARCH-RELIABILITY.md",
+      "reason": "2026-10-04 devcenter 흡수 4단계 — 본체로 옮긴 portal·수집기·검증 입력의 새 위치를 가리키도록 경로만 고침"
+    },
+    {
+      "source_path": "quality/acceptance-claude-review.md",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/quality/acceptance-claude-review.md",
+      "reason": "2026-10-04 devcenter 흡수 4단계 — 본체로 옮긴 portal·수집기·검증 입력의 새 위치를 가리키도록 경로만 고침"
+    },
+    {
+      "source_path": "quality/expansion-claude.md",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/quality/expansion-claude.md",
+      "reason": "2026-10-04 devcenter 흡수 4단계 — 본체로 옮긴 portal·수집기·검증 입력의 새 위치를 가리키도록 경로만 고침"
+    },
+    {
+      "source_path": "quality/COMPLETION.md",
+      "disposition": "MOVED_ADAPTED",
+      "destination": "docs/catalog-portal/COMPLETION.md",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "design/components/CATALOG.md",
+      "disposition": "MOVED_ADAPTED",
+      "destination": "docs/design/CATALOG.md",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "capabilities/IMPROVEMENTS.md",
+      "disposition": "MOVED_ADAPTED",
+      "destination": "docs/episodes/DEVCENTER-CAPABILITY-IMPROVEMENTS.md",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "standards/backend/FREEPASS-ADMIN-PILOT.md",
+      "disposition": "MOVED_UNCHANGED",
+      "destination": "docs/research/FREEPASS-ADMIN-PILOT.md",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "scripts/collect-functions.mjs",
+      "disposition": "MOVED_ADAPTED",
+      "destination": "scripts/catalog/collect-functions.mjs",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "scripts/collect-style-assets.py",
+      "disposition": "MOVED_ADAPTED",
+      "destination": "scripts/catalog/collect-style-assets.py",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "scripts/collect-toolbox.mjs",
+      "disposition": "MOVED_ADAPTED",
+      "destination": "scripts/catalog/collect-toolbox.mjs",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "scripts/function-python-index.py",
+      "disposition": "MOVED_UNCHANGED",
+      "destination": "scripts/catalog/function-python-index.py",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "scripts/inspect-project.mjs",
+      "disposition": "MOVED_ADAPTED",
+      "destination": "scripts/verification/inspect-project.mjs",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "portal/.gitignore",
+      "disposition": "MOVED_UNCHANGED",
+      "destination": "src/catalog-portal/.gitignore",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "portal/app/academy.tsx",
+      "disposition": "MOVED_UNCHANGED",
+      "destination": "src/catalog-portal/app/academy.tsx",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "portal/app/acceptance.tsx",
+      "disposition": "MOVED_UNCHANGED",
+      "destination": "src/catalog-portal/app/acceptance.tsx",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "portal/app/button-gallery.tsx",
+      "disposition": "MOVED_UNCHANGED",
+      "destination": "src/catalog-portal/app/button-gallery.tsx",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "portal/app/catalog-input.ts",
+      "disposition": "MOVED_UNCHANGED",
+      "destination": "src/catalog-portal/app/catalog-input.ts",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "portal/app/center.tsx",
+      "disposition": "MOVED_UNCHANGED",
+      "destination": "src/catalog-portal/app/center.tsx",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "portal/app/design-tools-model.ts",
+      "disposition": "MOVED_UNCHANGED",
+      "destination": "src/catalog-portal/app/design-tools-model.ts",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "portal/app/design-tools.tsx",
+      "disposition": "MOVED_UNCHANGED",
+      "destination": "src/catalog-portal/app/design-tools.tsx",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "portal/app/discovery-model.ts",
+      "disposition": "MOVED_UNCHANGED",
+      "destination": "src/catalog-portal/app/discovery-model.ts",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "portal/app/discovery.tsx",
+      "disposition": "MOVED_UNCHANGED",
+      "destination": "src/catalog-portal/app/discovery.tsx",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "portal/app/evidence.tsx",
+      "disposition": "MOVED_UNCHANGED",
+      "destination": "src/catalog-portal/app/evidence.tsx",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "portal/app/foundation.css",
+      "disposition": "MOVED_UNCHANGED",
+      "destination": "src/catalog-portal/app/foundation.css",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "portal/app/function-search.tsx",
+      "disposition": "MOVED_UNCHANGED",
+      "destination": "src/catalog-portal/app/function-search.tsx",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "portal/app/globals.css",
+      "disposition": "MOVED_UNCHANGED",
+      "destination": "src/catalog-portal/app/globals.css",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "portal/app/inspection.tsx",
+      "disposition": "MOVED_UNCHANGED",
+      "destination": "src/catalog-portal/app/inspection.tsx",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "portal/app/learning-history.tsx",
+      "disposition": "MOVED_UNCHANGED",
+      "destination": "src/catalog-portal/app/learning-history.tsx",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "portal/app/learning-model.ts",
+      "disposition": "MOVED_UNCHANGED",
+      "destination": "src/catalog-portal/app/learning-model.ts",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "portal/app/practice.tsx",
+      "disposition": "MOVED_UNCHANGED",
+      "destination": "src/catalog-portal/app/practice.tsx",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "portal/app/primitives.tsx",
+      "disposition": "MOVED_UNCHANGED",
+      "destination": "src/catalog-portal/app/primitives.tsx",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "portal/app/reuse-model.ts",
+      "disposition": "MOVED_UNCHANGED",
+      "destination": "src/catalog-portal/app/reuse-model.ts",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "portal/app/session-tour.tsx",
+      "disposition": "MOVED_UNCHANGED",
+      "destination": "src/catalog-portal/app/session-tour.tsx",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "portal/app/specimen/page.tsx",
+      "disposition": "MOVED_UNCHANGED",
+      "destination": "src/catalog-portal/app/specimen/page.tsx",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "portal/app/styles-library.tsx",
+      "disposition": "MOVED_UNCHANGED",
+      "destination": "src/catalog-portal/app/styles-library.tsx",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "portal/app/toolbox.tsx",
+      "disposition": "MOVED_UNCHANGED",
+      "destination": "src/catalog-portal/app/toolbox.tsx",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "portal/package-lock.json",
+      "disposition": "MOVED_UNCHANGED",
+      "destination": "src/catalog-portal/package-lock.json",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "portal/public/catalog/atomic-audit.json",
+      "disposition": "MOVED_UNCHANGED",
+      "destination": "src/catalog-portal/public/catalog/atomic-audit.json",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "portal/public/catalog/index.json",
+      "disposition": "MOVED_ADAPTED",
+      "destination": "src/catalog-portal/public/catalog/index.json",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "portal/public/catalog/styles.json",
+      "disposition": "MOVED_ADAPTED",
+      "destination": "src/catalog-portal/public/catalog/styles.json",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "portal/tsconfig.json",
+      "disposition": "MOVED_UNCHANGED",
+      "destination": "src/catalog-portal/tsconfig.json",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "scripts/assess-learning.mjs",
+      "disposition": "MOVED_ADAPTED",
+      "destination": "src/learning/assess-learning.mjs",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "standards/cards.json",
+      "disposition": "MOVED_ADAPTED",
+      "destination": "src/learning/cards.json",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "scripts/verify-acceptance.mjs",
+      "disposition": "MOVED_ADAPTED",
+      "destination": "test/catalog-portal/verify-acceptance.mjs",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "scripts/verify-browser.cjs",
+      "disposition": "MOVED_ADAPTED",
+      "destination": "test/catalog-portal/verify-browser.cjs",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "scripts/verify-button-recipes.cjs",
+      "disposition": "MOVED_ADAPTED",
+      "destination": "test/catalog-portal/verify-button-recipes.cjs",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "scripts/verify-card-evidence.mjs",
+      "disposition": "MOVED_ADAPTED",
+      "destination": "test/catalog-portal/verify-card-evidence.mjs",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "scripts/verify-catalog-input.mjs",
+      "disposition": "MOVED_ADAPTED",
+      "destination": "test/catalog-portal/verify-catalog-input.mjs",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "scripts/verify-design-tools.mjs",
+      "disposition": "MOVED_ADAPTED",
+      "destination": "test/catalog-portal/verify-design-tools.mjs",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "scripts/verify-discovery.mjs",
+      "disposition": "MOVED_ADAPTED",
+      "destination": "test/catalog-portal/verify-discovery.mjs",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "scripts/verify-learning.mjs",
+      "disposition": "MOVED_ADAPTED",
+      "destination": "test/catalog-portal/verify-learning.mjs",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "scripts/verify-reuse.cjs",
+      "disposition": "MOVED_ADAPTED",
+      "destination": "test/catalog-portal/verify-reuse.cjs",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "scripts/verify-function-collector.mjs",
+      "disposition": "MOVED_ADAPTED",
+      "destination": "test/catalog/verify-function-collector.mjs",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "scripts/verify-function-examples.mjs",
+      "disposition": "MOVED_ADAPTED",
+      "destination": "test/catalog/verify-function-examples.mjs",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "scripts/verify-portable-package.mjs",
+      "disposition": "MOVED_ADAPTED",
+      "destination": "test/catalog/verify-portable-package.mjs",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "scripts/verify-toolbox.mjs",
+      "disposition": "MOVED_ADAPTED",
+      "destination": "test/catalog/verify-toolbox.mjs",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "quality/acceptance-v1.json",
+      "disposition": "MOVED_UNCHANGED",
+      "destination": "test/fixtures/catalog-portal/acceptance-v1.json",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "quality/card-evidence.json",
+      "disposition": "MOVED_UNCHANGED",
+      "destination": "test/fixtures/catalog-portal/card-evidence.json",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "capabilities/packages/VERIFIED.json",
+      "disposition": "MOVED_UNCHANGED",
+      "destination": "test/fixtures/format-preview/VERIFIED.json",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "capabilities/packages/fp4-format-preview.tgz",
+      "disposition": "MOVED_UNCHANGED",
+      "destination": "test/fixtures/format-preview/fp4-format-preview.tgz",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "evidence/data/freepass-data-catalog-v1.json",
+      "disposition": "MOVED_UNCHANGED",
+      "destination": "test/fixtures/hubs/evidence/data/freepass-data-catalog-v1.json",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "evidence/quality/freepass-admin-backend-baseline.json",
+      "disposition": "MOVED_UNCHANGED",
+      "destination": "test/fixtures/hubs/evidence/quality/freepass-admin-backend-baseline.json",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "scripts/verify-inspection.mjs",
+      "disposition": "MOVED_ADAPTED",
+      "destination": "test/verification/verify-inspection.mjs",
+      "reason": "2026-10-04 devcenter 흡수 4단계(portal·수집기·검증 입력) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
     }
   ]
 }

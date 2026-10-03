@@ -1,8 +1,0 @@
-import assert from 'node:assert/strict';import fs from 'node:fs';import vm from 'node:vm';import ts from '../portal/node_modules/typescript/lib/typescript.js';
-const context={exports:{}};vm.runInNewContext(ts.transpileModule(fs.readFileSync(new URL('../portal/app/design-tools-model.ts',import.meta.url),'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS}}).outputText,context);
-const {contrast,dimension,gridRecipe}=context.exports;
-assert.equal(contrast('#000000','#ffffff').ratio,21);assert.equal(contrast('#ffffff','#ffffff').ratio,1);assert.equal(contrast('#777777','#ffffff').normalAA,false);assert.equal(contrast('#767676','#ffffff').normalAA,true);assert.throws(()=>contrast('red','#ffffff'));assert.throws(()=>dimension('',1,100));assert.throws(()=>gridRecipe(2.5,4));assert.throws(()=>gridRecipe(3,Infinity));assert(gridRecipe(3,16).includes('repeat(3, minmax(0, 1fr))'));
-const formats={exports:{}};vm.runInNewContext(ts.transpileModule(fs.readFileSync(new URL('../../freepasserp4/lib/format.ts',import.meta.url),'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS}}).outputText,formats,{timeout:1000});
-for(const [name,input,expected] of [['man',398000,'40만'],['manWon',398000,'39만 8,000원'],['manWon',0,'0원'],['manShort',398000,'39만원'],['kmDisplay','83,000km','83,000km'],['kmDisplay','',''],['isEvFuel','전기',true],['isEvFuel','가솔린',false]])assert.equal(formats.exports[name](input),expected);
-assert.equal(formats.exports.manShort(398000,{decimal:true}),'39.8만원');
-console.log('PASS: contrast known values and AA boundary; invalid inputs; grid bounds; original money/distance/fuel examples.');

@@ -4,12 +4,12 @@
 - task_id: learning-history-v1
 - 목적 / 완료 조건: 다음 세션이 답안·실습 계획·실행 결과를 보관하고, 오래된 문제 버전과 보완 대상을 찾아 이어서 학습한다. L10의 실제 지속 관리 흐름을 검증한다.
 - 대상 / 허용 범위: C:/dev/devcenter main. 착수 확인 HEAD 4f1141c901fa6345a5dc8bb1aaf632a918f1e7cc, 변경 전 작업 트리 clean. 원본 프로젝트와 운영 데이터는 수정하지 않는다.
-- 기준 원본: quality/acceptance-v1.json의 고정 50개 조건, standards/cards.json의 문제, portal/app/learning-model.ts의 채점·계획 검사.
+- 기준 원본: quality/acceptance-v1.json의 고정 50개 조건, standards/cards.json의 문제, src/catalog-portal/app/learning-model.ts의 채점·계획 검사.
 - 적용 UI / 재사용: 기존 Button/Input/NativeSelect, Academy/Practice, checkPlan/gradeQuestions. 학습 화면 버튼에 적용되던 작은 링크용 스타일만 별도 학습 패널 범위에서 보완.
 - 신규 제작 이유: 기존 학습은 복사만 가능했고 지속 이력이 없었다. 로컬 저장·이력 병합·백업 UI를 추가한다.
 - 위험 / 미확정: 중위험. 여러 파일과 로컬 사용자 기록이 연관된다. 자기 보고는 독립 검수나 정식 승인이 아니다.
 - 담당 / 독립 검토: Codex 구현·재현, Claude 독립 정적 검토. Cursor/Gemini 실제 호출은 폴더 신뢰 제한으로 실패. 최종 전원 검수 HOLD.
-- 증거: scripts/verify-learning.mjs, scripts/verify-browser.cjs, quality/acceptance-machine.json, quality/acceptance-browser.json. 검토 입력 SHA는 history-review-inputs.json.
+- 증거: test/catalog-portal/verify-learning.mjs, test/catalog-portal/verify-browser.cjs, quality/acceptance-machine.json, quality/acceptance-browser.json. 검토 입력 SHA는 history-review-inputs.json.
 - 외부 행동: 사용자가 이미 요청한 개발센터 GitHub 변경 외 신규 공개·운영 배포·계정 변경 없음. 실제 학습 기록은 GitHub로 자동 전송하지 않는다.
 
 ## 구현한 것

@@ -11,6 +11,6 @@
 
 브라우저 **기능 창고**에서 프로젝트 → 그룹 → 함수/모듈을 선택한다. 원본 경로·SHA·입력 이름·반환 표기·직접 상대경로 참조를 확인한다. 구현 본문·민감 원문은 이 창고에 게시하지 않는다. JS/TS와 Python은 구문 트리로 추출하며 나머지 지원 범위와 누락은 화면에 표시한다.
 
-수집 실행: `node scripts/collect-functions.mjs`. 결과 `portal/public/catalog/functions.json`은 로컬 파생 자료이며 빌드가 프로젝트별 브라우저 자료를 생성한다. 다른 환경에서는 동일한 프로젝트 원본 접근이 필요하다.
+수집 실행: `node scripts/catalog/collect-functions.mjs`. 결과 `src/catalog-portal/public/catalog/functions.json`은 로컬 파생 자료이며 빌드가 프로젝트별 브라우저 자료를 생성한다. 다른 환경에서는 동일한 프로젝트 원본 접근이 필요하다.
 
-[오류·부족·개선 기록](../../devcenter/capabilities/IMPROVEMENTS.md)을 함께 확인한다. 함수 선언 수는 독립된 업무 기능 수나 검증 통과 수가 아니다.
+[오류·부족·개선 기록](../../docs/episodes/DEVCENTER-CAPABILITY-IMPROVEMENTS.md)을 함께 확인한다. 함수 선언 수는 독립된 업무 기능 수나 검증 통과 수가 아니다.

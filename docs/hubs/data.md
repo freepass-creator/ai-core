@@ -24,7 +24,7 @@ Data Hub는 운영 데이터 저장소가 아니다. 고객·계약·차량 등 
 ## Evidence / Promotion Runtime
 
 - Data Receipt contract: `../../contracts/hubs/data-receipt.schema.json`
-- First real receipt: `../../devcenter/evidence/data/freepass-data-catalog-v1.json`
+- First real receipt: `../../test/fixtures/hubs/evidence/data/freepass-data-catalog-v1.json`
 - Adopted patterns: `../../src/hubs/data/patterns.json`
 - Consumer map: `../../src/hubs/data/consumers.json`
 - Recovery contract/state: `../../src/hubs/data/recovery.json`

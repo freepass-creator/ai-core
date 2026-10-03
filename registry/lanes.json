@@ -81,6 +81,65 @@
   ],
   "paths": [
     {
+      "pattern": "^src/catalog-portal/",
+      "lane": "U"
+    },
+    {
+      "pattern": "^scripts/catalog-portal/",
+      "lane": "U"
+    },
+    {
+      "pattern": "^docs/catalog-portal(?:/|\\.md$)",
+      "lane": "U",
+      "rule": "C"
+    },
+    {
+      "pattern": "^scripts/catalog/",
+      "lane": "E"
+    },
+    {
+      "pattern": "^src/learning/",
+      "lane": "E"
+    },
+    {
+      "pattern": "^src/verification/",
+      "lane": "F"
+    },
+    {
+      "pattern": "^scripts/verification/",
+      "lane": "F"
+    },
+    {
+      "pattern": "^test/verification/",
+      "lane": "F",
+      "rule": "A"
+    },
+    {
+      "pattern": "^test/catalog-portal/",
+      "lane": "U",
+      "rule": "A"
+    },
+    {
+      "pattern": "^test/catalog/",
+      "lane": "E",
+      "rule": "A"
+    },
+    {
+      "pattern": "^test/fixtures/catalog-portal/",
+      "lane": "U",
+      "rule": "A"
+    },
+    {
+      "pattern": "^test/fixtures/format-preview/",
+      "lane": "E",
+      "rule": "A"
+    },
+    {
+      "pattern": "^test/fixtures/hubs/",
+      "lane": "E",
+      "rule": "A"
+    },
+    {
       "pattern": "^src/hubs/",
       "lane": "E"
     },
@@ -126,7 +185,7 @@
       "rule": "C"
     },
     {
-      "pattern": "^(scripts|src|test)/.*(design-system|claude-v1|ui-ux|token)",
+      "pattern": "^(?!src/(?:catalog-portal|learning|verification)/|scripts/(?:catalog|catalog-portal|verification)/|test/(?:catalog|catalog-portal|verification|fixtures/(?:catalog-portal|format-preview|hubs))/)(scripts|src|test)/.*(design-system|claude-v1|ui-ux|token)",
       "lane": "U"
     },
     {
@@ -147,7 +206,7 @@
       "lane": "I"
     },
     {
-      "pattern": "^(scripts|src|test)/.*(ops-watch|ops-to-ledger|erp5-keeper|registry-refresh|shadow-freshness)",
+      "pattern": "^(?!src/(?:catalog-portal|learning|verification)/|scripts/(?:catalog|catalog-portal|verification)/|test/(?:catalog|catalog-portal|verification|fixtures/(?:catalog-portal|format-preview|hubs))/)(scripts|src|test)/.*(ops-watch|ops-to-ledger|erp5-keeper|registry-refresh|shadow-freshness)",
       "lane": "I"
     },
     {
@@ -179,7 +238,7 @@
       "note": "엔진이 지키는 계약 — 대상의 lane 을 따른다"
     },
     {
-      "pattern": "^(scripts|src|test)/.*(routing|capability|control-tower|work-ledger|work-map|workflow)",
+      "pattern": "^(?!src/(?:catalog-portal|learning|verification)/|scripts/(?:catalog|catalog-portal|verification)/|test/(?:catalog|catalog-portal|verification|fixtures/(?:catalog-portal|format-preview|hubs))/)(scripts|src|test)/.*(routing|capability|control-tower|work-ledger|work-map|workflow)",
       "lane": "E",
       "note": "★`order` 를 넣지 않는다 — src/integration/order-*.mjs 를 끌고 가 I 와 겹쳤다(실측). 주문은 위 두 줄이 이미 나눈다: 뒷단 src/orders→E · 어댑터 src/integration→I"
     },
@@ -258,19 +317,19 @@
       "note": ".gitignore 같은 뿌리 점파일"
     },
     {
-      "pattern": "^docs/(?!UI_UX|DESIGN|ACCESSIBILITY|ADAPTIVE_WEB)[^/]+$",
+      "pattern": "^docs/(?!catalog-portal|UI_UX|DESIGN|ACCESSIBILITY|ADAPTIVE_WEB)[^/]+$",
       "lane": "F",
       "rule": "C",
       "note": "docs 최상위 문서는 표준·규약·플레이북이다 — 규율이 소유한다. 디자인 표준은 위 U 규칙이 먼저 가져간다"
     },
     {
-      "pattern": "^scripts/",
+      "pattern": "^scripts/(?!catalog/|catalog-portal/|verification/)",
       "lane": "F",
       "rule": "D",
       "note": "도구와 관문은 규율 lane 이 맡는다. I·E·U 의 도구는 위에서 이름으로 «먼저» 가져가므로 여기 남는 것은 실제로 규율 도구다"
     },
     {
-      "pattern": "^(scripts|src|test)/.*(academy|reuse|canon-guard|canonical-guard|branch-discipline|verify-main-state|duo|claude-usage-gate|checkpoint-work|secret|lane-)",
+      "pattern": "^(?!src/(?:catalog-portal|learning|verification)/|scripts/(?:catalog|catalog-portal|verification)/|test/(?:catalog|catalog-portal|verification|fixtures/(?:catalog-portal|format-preview|hubs))/)(scripts|src|test)/.*(academy|reuse|canon-guard|canonical-guard|branch-discipline|verify-main-state|duo|claude-usage-gate|checkpoint-work|secret|lane-)",
       "lane": "F"
     }
   ],

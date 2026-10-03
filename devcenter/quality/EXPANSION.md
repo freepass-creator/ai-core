@@ -6,7 +6,7 @@
 
 - 기능 수집: Git 작업 폴더를 포함한 C:/dev의 75개 폴더, 코드 33,858개, 이름 있는 함수 선언 201,601개. 미색인 익명 callable 330,075개, 미지원 파일 122개, 파싱 오류 후보 1개, 읽기 오류 0개. 선언 수는 독립 업무 기능 수가 아니다.
 - 공개 심볼: 74,205개. 폴더 기반 UI 공개 심볼 10,088개, 상태·훅 후보 995개, 나머지 공개 값·함수·클래스·이름 있는 재수출 63,122개. 부품의 실행·의미·독립성을 판정한 숫자가 아니다.
-- 원본 재대조: 33,856/33,858개 해시 일치. 조사 중 바뀐 `_wt-dict/scripts/check-ui-contract.mts`, `devcenter/scripts/verify-function-collector.mjs`는 도구 모음에서 제외했다. 변한 원본을 예전 내용으로 대체하지 않았다.
+- 원본 재대조: 33,856/33,858개 해시 일치. 조사 중 바뀐 `_wt-dict/scripts/check-ui-contract.mts`, `test/catalog/verify-function-collector.mjs`는 도구 모음에서 제외했다. 변한 원본을 예전 내용으로 대체하지 않았다.
 - 도구 선언: 소스 상위 경로와 프로젝트 루트에서 package.json 48개, 서로 다른 의존 도구 이름 77종. 설치·잠금 버전·라이선스 검증이 아니다. 소스 없는 깊은 패키지는 미조사다.
 - 스타일: CSS/SCSS 264개(일반 포함 218, 가림 처리 46), 인라인 스타일 후보 파일 4,050개, 위치 57,074개. 가려진 소스는 실행용 코드로 표시하지 않는다.
 - 생성물·민감 경로·연결 경로·크기 제한 등은 각 원본 JSON의 coverage/limitations/errors에 공개한다. 원격 전용 저장소와 다른 드라이브는 이 수집 범위 밖이다.
@@ -22,9 +22,9 @@
 
 ## 검사 근거
 
-- scripts/verify-toolbox.mjs: 실제 임시 폴더로 wrapper/reexport, JS 안의 JSX, 문자열 오탐, 원본 변경, 프로젝트 `..`/절대경로, 외부 폴더 junction 차단, 명령 본문·URL·문자열 리터럴 비노출을 검사했다.
-- scripts/verify-design-tools.mjs: 21:1/1:1, AA 경계, 잘못된 색/숫자, 격자 범위, 원본 금액·주행거리·연료 예제를 실행했다.
-- scripts/verify-browser.cjs: 실제 Chromium 1440/390 화면, 탐색/검색/복사/학습/원자/신규 도구 27개 검사 PASS. 실행 trace는 reviews/expansion-browser-trace.zip에 저장하며 해시는 quality/acceptance-browser.json에 기록한다. 로컬 trace는 Git 제외다.
+- test/catalog/verify-toolbox.mjs: 실제 임시 폴더로 wrapper/reexport, JS 안의 JSX, 문자열 오탐, 원본 변경, 프로젝트 `..`/절대경로, 외부 폴더 junction 차단, 명령 본문·URL·문자열 리터럴 비노출을 검사했다.
+- test/catalog-portal/verify-design-tools.mjs: 21:1/1:1, AA 경계, 잘못된 색/숫자, 격자 범위, 원본 금액·주행거리·연료 예제를 실행했다.
+- test/catalog-portal/verify-browser.cjs: 실제 Chromium 1440/390 화면, 탐색/검색/복사/학습/원자/신규 도구 27개 검사 PASS. 실행 trace는 reviews/expansion-browser-trace.zip에 저장하며 해시는 quality/acceptance-browser.json에 기록한다. 로컬 trace는 Git 제외다.
 - 새 도구 모음의 HTTP 503과 잘못된 JSON 스키마를 실제 브라우저에서 재현했고, 오류 표시 후 재시도로 실제 목록이 돌아오는 것을 확인했다. 전체 화면의 모든 네트워크 실패 검증(D10)을 대신하지 않는다.
 - 기존 타입 검사·버튼/기능 예제·학습·오래된 증거 배제·로컬 패키지 설치 검사를 다시 실행했다.
 

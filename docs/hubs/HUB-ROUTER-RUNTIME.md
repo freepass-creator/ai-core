@@ -9,7 +9,7 @@
 - Hub 조직: AI Core 루트 `registry/hubs.json`
 - 라우팅 규칙: AI Core 루트 `registry/work-map.json`의 `hub_routes`
 - 실행기: `src/routing/hub-router.mjs`
-- 설정 검증: `scripts/validate-hubs.mjs`
+- 설정 검증: `scripts/verification/validate-hubs.mjs`
 - 회귀 테스트: `test/hub-router.test.mjs`
 
 ## Fail-closed 원칙
@@ -26,7 +26,7 @@ Router는 모르는 요청을 임의 추측하지 않는다.
 ## 사용
 
 ```powershell
-node scripts/validate-hubs.mjs
+node scripts/verification/validate-hubs.mjs
 node --test test/hub-router.test.mjs
 node src/routing/hub-router.mjs "전체 디자인 통일시켜"
 node src/routing/hub-router.mjs "Firebase 연동 구조 정리"

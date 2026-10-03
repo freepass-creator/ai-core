@@ -4,7 +4,7 @@
 
 - task_id: catalog-recovery-v1
 - 목적: 규격 목록·원자 대조·원본 코드 자료가 손상됐을 때 빈 화면이나 실행 오류 대신 원인을 표시하고 다시 불러온다.
-- 정본: `C:/dev/devcenter/portal/app/center.tsx`, 빌드가 고정한 FP4 원본 코드 5개, `portal/static/catalog`의 세 파생 자료.
+- 정본: `C:/dev/ai-core/src/catalog-portal/app/center.tsx`, 빌드가 고정한 FP4 원본 코드 5개, `src/catalog-portal/static/catalog`의 세 파생 자료.
 - 변경 허용 범위: 개발센터의 읽기·표시 경계와 그 검사. 원본 프로젝트, 승인 상태, 운영 데이터는 변경하지 않는다.
 - 위험: 낮음. 읽기 전용 자료의 입력 검증과 오류 복구이며 외부 쓰기·권한·배포가 없다.
 
@@ -22,8 +22,8 @@
 
 ## 검증
 
-- `scripts/verify-catalog-input.mjs`: 현재 세 자료 전체, 문서 수 불일치, 중복 ID/프로젝트, 잘못된 문서·원자 SHA와 행, 누락된 원본 코드, 본문 변경을 검사했다.
-- `scripts/verify-browser.cjs`의 `CATALOG_RECOVERY`: `{}` 규격 목록, 깨진 원자 JSON, 본문과 선언 해시를 함께 바꾼 원본 코드, HTTP 503을 각각 새 브라우저에서 재현했다. 오류 표시 후 다시 불러와 규격 검색 결과가 돌아오고 uncaught page error가 0인지 확인했다.
+- `test/catalog-portal/verify-catalog-input.mjs`: 현재 세 자료 전체, 문서 수 불일치, 중복 ID/프로젝트, 잘못된 문서·원자 SHA와 행, 누락된 원본 코드, 본문 변경을 검사했다.
+- `test/catalog-portal/verify-browser.cjs`의 `CATALOG_RECOVERY`: `{}` 규격 목록, 깨진 원자 JSON, 본문과 선언 해시를 함께 바꾼 원본 코드, HTTP 503을 각각 새 브라우저에서 재현했다. 오류 표시 후 다시 불러와 규격 검색 결과가 돌아오고 uncaught page error가 0인지 확인했다.
 - 병렬 요청은 유지했고, effect 정리에서 AbortController로 남은 요청을 중단한다. 다섯 코드 본문의 해시는 작은 고정 집합이므로 브라우저에서 확인한다.
 
 이 검사는 파생 자료가 현재 실행 묶음과 맞는지 확인하는 경계다. 원본 프로젝트의 전체 현행 의미·승인·소비 관계를 판정하지 않으며 I04/S08/S09를 통과시키지 않는다. 기존 고정 점수와 전원 검수 HOLD를 유지한다.
