@@ -43,6 +43,7 @@
 | 고도화 제안·반복 마찰 | [Evolution Bridge](docs/AI_CORE_EVOLUTION_BRIDGE.md) → [Evolution Inbox #211](https://github.com/freepass-creator/ai-core/issues/211) |
 | 기존 중앙 오더(order-control-v1) 업무를 이어받음 | [공유 오더 실행](docs/SHARED_ORDER_EXECUTION.md) — 이 경로에서만 원장·claim 계약을 지킨다. 일반 업무용 order/work ID 를 새로 만들거나 추정하지 않는다 |
 | 메일 | [기존 도구 연결](memory/TOOL_CONNECTIONS.md) — 설치·로그인 반복 금지, 발송은 승인 후 |
+| 제품 저장소의 AI Core 키트 재배포 | `node scripts/kit-redistribute.mjs <project-id> --branch <PR 가지>` — 준비만(임시 worktree·프로젝트 소유 파일 보존·검증), 푸시는 찍어 준 lease 고정 명령으로 따로 |
 | 로컬 도구가 필요 | [도구 플레이북](docs/LOCAL_TOOLCHAIN_PLAYBOOK.md) · `npm run tools:doctor` |
 
 압축 기억은 `MEMORY.md` → `memory/CURRENT.md`. 연구 후보(`memory/RESEARCH_INDEX.md`)는 자동 채택이 아니다. Gmail·Chat 기록은 출처일 뿐 운영 승인이 아니다.
