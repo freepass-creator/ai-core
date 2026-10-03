@@ -4,7 +4,7 @@ import {readFileSync} from 'node:fs';
 import {extractTemplateCatalog,finalizeDocumentLock,finalizeDocumentReceipt,makeRenderPlan,validateDocumentJob} from '../scripts/document-hub.mjs';
 
 
-const liveBinding=JSON.parse(readFileSync(new URL('../hubs/document/source-binding.json',import.meta.url),'utf8'));
+const liveBinding=JSON.parse(readFileSync(new URL('../../src/hubs/document/source-binding.json',import.meta.url),'utf8'));
 const projectRegistry=JSON.parse(readFileSync(new URL('../../registry/projects.json',import.meta.url),'utf8'));
 const importClassification=JSON.parse(readFileSync(new URL('../../docs/integration/DOCSHUB_IMPORT_CLASSIFICATION_2026-09-23.json',import.meta.url),'utf8'));
 

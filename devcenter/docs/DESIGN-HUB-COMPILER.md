@@ -44,8 +44,8 @@ Quality Receipt
 ## 정본
 
 - AI Core binding: `registry/design-hub-binding.json`
-- Job contract: `contracts/design-job.schema.json`
-- Plan contract: `contracts/design-plan.schema.json`
+- Job contract: `../../contracts/hubs/design-job.schema.json`
+- Plan contract: `../../contracts/hubs/design-plan.schema.json`
 - Compiler: `scripts/design-compiler.mjs`
 - Regression definitions: `test/design-compiler.test.mjs`
 

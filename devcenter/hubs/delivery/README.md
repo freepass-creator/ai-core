@@ -25,8 +25,8 @@ Quality Hub의 검증 없이 배포 완료를 주장하지 않는다. Secret, pr
 
 ## Release / Receipt Runtime
 
-- Release contract: `../../contracts/delivery-release.schema.json`
-- Delivery receipt: `../../contracts/delivery-receipt.schema.json`
+- Release contract: `../../../contracts/hubs/delivery-release.schema.json`
+- Delivery receipt: `../../../contracts/hubs/delivery-receipt.schema.json`
 - Gate/runtime: `../../scripts/delivery-gate.mjs`
 - Regression definitions: `../../test/delivery-gate.test.mjs`
 - Consumer registry: `consumers.json`

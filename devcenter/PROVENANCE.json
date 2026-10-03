@@ -18459,7 +18459,7 @@
       "source_path": "README.md",
       "disposition": "ADAPTED_IN_PLACE",
       "destination": "devcenter/README.md",
-      "reason": "consume AI Core root registry after physical merge"
+      "reason": "consume AI Core root registry after physical merge; 2026-10-03 devcenter 흡수 1단계 — 본체로 옮긴 계약·연결 자료의 새 경로를 가리키도록 경로만 고침(docs/audits/DEVCENTER_SPLIT_2026-10-03.md)"
     },
     {
       "source_path": "docs/CURRENT-STANDARDS.md",
@@ -18489,7 +18489,7 @@
       "source_path": "hubs/design/README.md",
       "disposition": "ADAPTED_IN_PLACE",
       "destination": "devcenter/hubs/design/README.md",
-      "reason": "consume root digest binding after physical merge"
+      "reason": "consume root digest binding after physical merge; 2026-10-03 devcenter 흡수 1단계 — 본체로 옮긴 계약·연결 자료의 새 경로를 가리키도록 경로만 고침(docs/audits/DEVCENTER_SPLIT_2026-10-03.md)"
     },
     {
       "source_path": "design/AI_DESIGNER_OPERATING_GUIDE.md",
@@ -18501,7 +18501,7 @@
       "source_path": "docs/DESIGN-HUB-COMPILER.md",
       "disposition": "ADAPTED_IN_PLACE",
       "destination": "devcenter/docs/DESIGN-HUB-COMPILER.md",
-      "reason": "consume root digest binding after physical merge"
+      "reason": "consume root digest binding after physical merge; 2026-10-03 devcenter 흡수 1단계 — 본체로 옮긴 계약·연결 자료의 새 경로를 가리키도록 경로만 고침(docs/audits/DEVCENTER_SPLIT_2026-10-03.md)"
     },
     {
       "source_path": "docs/HUB-ROUTER-RUNTIME.md",
@@ -18559,39 +18559,39 @@
     },
     {
       "source_path": "contracts/data-receipt.schema.json",
-      "disposition": "ADAPTED_IN_PLACE",
-      "destination": "devcenter/contracts/data-receipt.schema.json",
-      "reason": "unify hub receipt output on the AI Core core-receipt/v1 envelope while preserving typed hub payload"
+      "disposition": "MOVED_ADAPTED",
+      "destination": "contracts/hubs/data-receipt.schema.json",
+      "reason": "unify hub receipt output on the AI Core core-receipt/v1 envelope while preserving typed hub payload; 2026-10-03 devcenter 흡수 1단계(대표 「개발 센터를 AI-OPS 랑 AI-CORE 로 나눠서」) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
     },
     {
       "source_path": "contracts/delivery-receipt.schema.json",
-      "disposition": "ADAPTED_IN_PLACE",
-      "destination": "devcenter/contracts/delivery-receipt.schema.json",
-      "reason": "unify hub receipt output on the AI Core core-receipt/v1 envelope while preserving typed hub payload"
+      "disposition": "MOVED_ADAPTED",
+      "destination": "contracts/hubs/delivery-receipt.schema.json",
+      "reason": "unify hub receipt output on the AI Core core-receipt/v1 envelope while preserving typed hub payload; 2026-10-03 devcenter 흡수 1단계(대표 「개발 센터를 AI-OPS 랑 AI-CORE 로 나눠서」) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
     },
     {
       "source_path": "contracts/design-adoption-receipt.schema.json",
-      "disposition": "ADAPTED_IN_PLACE",
-      "destination": "devcenter/contracts/design-adoption-receipt.schema.json",
-      "reason": "unify hub receipt output on the AI Core core-receipt/v1 envelope while preserving typed hub payload"
+      "disposition": "MOVED_ADAPTED",
+      "destination": "contracts/hubs/design-adoption-receipt.schema.json",
+      "reason": "unify hub receipt output on the AI Core core-receipt/v1 envelope while preserving typed hub payload; 2026-10-03 devcenter 흡수 1단계(대표 「개발 센터를 AI-OPS 랑 AI-CORE 로 나눠서」) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
     },
     {
       "source_path": "contracts/design-visual-receipt.schema.json",
-      "disposition": "ADAPTED_IN_PLACE",
-      "destination": "devcenter/contracts/design-visual-receipt.schema.json",
-      "reason": "unify hub receipt output on the AI Core core-receipt/v1 envelope while preserving typed hub payload"
+      "disposition": "MOVED_ADAPTED",
+      "destination": "contracts/hubs/design-visual-receipt.schema.json",
+      "reason": "unify hub receipt output on the AI Core core-receipt/v1 envelope while preserving typed hub payload; 2026-10-03 devcenter 흡수 1단계(대표 「개발 센터를 AI-OPS 랑 AI-CORE 로 나눠서」) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
     },
     {
       "source_path": "contracts/document-receipt.schema.json",
-      "disposition": "ADAPTED_IN_PLACE",
-      "destination": "devcenter/contracts/document-receipt.schema.json",
-      "reason": "unify hub receipt output on the AI Core core-receipt/v1 envelope while preserving typed hub payload"
+      "disposition": "MOVED_ADAPTED",
+      "destination": "contracts/hubs/document-receipt.schema.json",
+      "reason": "unify hub receipt output on the AI Core core-receipt/v1 envelope while preserving typed hub payload; 2026-10-03 devcenter 흡수 1단계(대표 「개발 센터를 AI-OPS 랑 AI-CORE 로 나눠서」) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
     },
     {
       "source_path": "contracts/quality-receipt.schema.json",
-      "disposition": "ADAPTED_IN_PLACE",
-      "destination": "devcenter/contracts/quality-receipt.schema.json",
-      "reason": "unify hub receipt output on the AI Core core-receipt/v1 envelope while preserving typed hub payload"
+      "disposition": "MOVED_ADAPTED",
+      "destination": "contracts/hubs/quality-receipt.schema.json",
+      "reason": "unify hub receipt output on the AI Core core-receipt/v1 envelope while preserving typed hub payload; 2026-10-03 devcenter 흡수 1단계(대표 「개발 센터를 AI-OPS 랑 AI-CORE 로 나눠서」) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
     },
     {
       "source_path": "scripts/data-hub.mjs",
@@ -18621,7 +18621,7 @@
       "source_path": "scripts/document-hub.mjs",
       "disposition": "ADAPTED_IN_PLACE",
       "destination": "devcenter/scripts/document-hub.mjs",
-      "reason": "unify hub receipt output on the AI Core core-receipt/v1 envelope while preserving typed hub payload"
+      "reason": "unify hub receipt output on the AI Core core-receipt/v1 envelope while preserving typed hub payload; 2026-10-03 devcenter 흡수 1단계 — 본체로 옮긴 계약·연결 자료의 새 경로를 가리키도록 경로만 고침(docs/audits/DEVCENTER_SPLIT_2026-10-03.md)"
     },
     {
       "source_path": "test/data-hub.test.mjs",
@@ -18657,25 +18657,25 @@
       "source_path": "docs/QUALITY-RECEIPT.md",
       "disposition": "ADAPTED_IN_PLACE",
       "destination": "devcenter/docs/QUALITY-RECEIPT.md",
-      "reason": "unify hub receipt output on the AI Core core-receipt/v1 envelope while preserving typed hub payload"
+      "reason": "unify hub receipt output on the AI Core core-receipt/v1 envelope while preserving typed hub payload; 2026-10-03 devcenter 흡수 1단계 — 본체로 옮긴 계약·연결 자료의 새 경로를 가리키도록 경로만 고침(docs/audits/DEVCENTER_SPLIT_2026-10-03.md)"
     },
     {
       "source_path": "docs/DELIVERY-HUB-RUNTIME.md",
       "disposition": "ADAPTED_IN_PLACE",
       "destination": "devcenter/docs/DELIVERY-HUB-RUNTIME.md",
-      "reason": "unify hub receipt output on the AI Core core-receipt/v1 envelope while preserving typed hub payload"
+      "reason": "unify hub receipt output on the AI Core core-receipt/v1 envelope while preserving typed hub payload; 2026-10-03 devcenter 흡수 1단계 — 본체로 옮긴 계약·연결 자료의 새 경로를 가리키도록 경로만 고침(docs/audits/DEVCENTER_SPLIT_2026-10-03.md)"
     },
     {
       "source_path": "docs/DESIGN-VISUAL-QA.md",
       "disposition": "ADAPTED_IN_PLACE",
       "destination": "devcenter/docs/DESIGN-VISUAL-QA.md",
-      "reason": "unify hub receipt output on the AI Core core-receipt/v1 envelope while preserving typed hub payload"
+      "reason": "unify hub receipt output on the AI Core core-receipt/v1 envelope while preserving typed hub payload; 2026-10-03 devcenter 흡수 1단계 — 본체로 옮긴 계약·연결 자료의 새 경로를 가리키도록 경로만 고침(docs/audits/DEVCENTER_SPLIT_2026-10-03.md)"
     },
     {
       "source_path": "docs/DOCUMENT-HUB-RUNTIME.md",
       "disposition": "ADAPTED_IN_PLACE",
       "destination": "devcenter/docs/DOCUMENT-HUB-RUNTIME.md",
-      "reason": "replace stale permanent-external-source wording with exact transitional source and management-support cutover gate"
+      "reason": "replace stale permanent-external-source wording with exact transitional source and management-support cutover gate; 2026-10-03 devcenter 흡수 1단계 — 본체로 옮긴 계약·연결 자료의 새 경로를 가리키도록 경로만 고침(docs/audits/DEVCENTER_SPLIT_2026-10-03.md)"
     },
     {
       "source_path": "portal/build-static.mjs",
@@ -18753,19 +18753,169 @@
       "source_path": "hubs/document/README.md",
       "disposition": "ADAPTED_IN_PLACE",
       "destination": "devcenter/hubs/document/README.md",
-      "reason": "clarify DocsHub transitional external authority, management-support target ownership, and no-dual-SSOT cutover boundary"
+      "reason": "clarify DocsHub transitional external authority, management-support target ownership, and no-dual-SSOT cutover boundary; 2026-10-03 devcenter 흡수 1단계 — 본체로 옮긴 계약·연결 자료의 새 경로를 가리키도록 경로만 고침(docs/audits/DEVCENTER_SPLIT_2026-10-03.md)"
     },
     {
       "source_path": "hubs/document/source-binding.json",
-      "disposition": "ADAPTED_IN_PLACE",
-      "destination": "devcenter/hubs/document/source-binding.json",
-      "reason": "refresh the pinned DocsHub revision while preserving unchanged source blob SHAs and transitional authority"
+      "disposition": "MOVED_ADAPTED",
+      "destination": "src/hubs/document/source-binding.json",
+      "reason": "refresh the pinned DocsHub revision while preserving unchanged source blob SHAs and transitional authority; 2026-10-03 devcenter 흡수 1단계(대표 「개발 센터를 AI-OPS 랑 AI-CORE 로 나눠서」) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
     },
     {
       "source_path": "test/document-hub.test.mjs",
       "disposition": "ADAPTED_IN_PLACE",
       "destination": "devcenter/test/document-hub.test.mjs",
-      "reason": "add regression coverage that registry, source binding and import classification converge on one DocsHub transition authority"
+      "reason": "add regression coverage that registry, source binding and import classification converge on one DocsHub transition authority; 2026-10-03 devcenter 흡수 1단계 — 본체로 옮긴 계약·연결 자료의 새 경로를 가리키도록 경로만 고침(docs/audits/DEVCENTER_SPLIT_2026-10-03.md)"
+    },
+    {
+      "source_path": "contracts/browser-capture-manifest.schema.json",
+      "disposition": "MOVED_ADAPTED",
+      "destination": "contracts/hubs/browser-capture-manifest.schema.json",
+      "reason": "2026-10-03 devcenter 흡수 1단계(대표 「개발 센터를 AI-OPS 랑 AI-CORE 로 나눠서」) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "contracts/delivery-release.schema.json",
+      "disposition": "MOVED_ADAPTED",
+      "destination": "contracts/hubs/delivery-release.schema.json",
+      "reason": "2026-10-03 devcenter 흡수 1단계(대표 「개발 센터를 AI-OPS 랑 AI-CORE 로 나눠서」) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "contracts/design-job.schema.json",
+      "disposition": "MOVED_ADAPTED",
+      "destination": "contracts/hubs/design-job.schema.json",
+      "reason": "2026-10-03 devcenter 흡수 1단계(대표 「개발 센터를 AI-OPS 랑 AI-CORE 로 나눠서」) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "contracts/design-lock.schema.json",
+      "disposition": "MOVED_ADAPTED",
+      "destination": "contracts/hubs/design-lock.schema.json",
+      "reason": "2026-10-03 devcenter 흡수 1단계(대표 「개발 센터를 AI-OPS 랑 AI-CORE 로 나눠서」) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "contracts/design-plan.schema.json",
+      "disposition": "MOVED_ADAPTED",
+      "destination": "contracts/hubs/design-plan.schema.json",
+      "reason": "2026-10-03 devcenter 흡수 1단계(대표 「개발 센터를 AI-OPS 랑 AI-CORE 로 나눠서」) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "contracts/design-visual-job.schema.json",
+      "disposition": "MOVED_ADAPTED",
+      "destination": "contracts/hubs/design-visual-job.schema.json",
+      "reason": "2026-10-03 devcenter 흡수 1단계(대표 「개발 센터를 AI-OPS 랑 AI-CORE 로 나눠서」) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "contracts/design-visual-plan.schema.json",
+      "disposition": "MOVED_ADAPTED",
+      "destination": "contracts/hubs/design-visual-plan.schema.json",
+      "reason": "2026-10-03 devcenter 흡수 1단계(대표 「개발 센터를 AI-OPS 랑 AI-CORE 로 나눠서」) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "contracts/document-job.schema.json",
+      "disposition": "MOVED_ADAPTED",
+      "destination": "contracts/hubs/document-job.schema.json",
+      "reason": "2026-10-03 devcenter 흡수 1단계(대표 「개발 센터를 AI-OPS 랑 AI-CORE 로 나눠서」) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "contracts/document-lock.schema.json",
+      "disposition": "MOVED_ADAPTED",
+      "destination": "contracts/hubs/document-lock.schema.json",
+      "reason": "2026-10-03 devcenter 흡수 1단계(대표 「개발 센터를 AI-OPS 랑 AI-CORE 로 나눠서」) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "contracts/engineering-asset.schema.json",
+      "disposition": "MOVED_ADAPTED",
+      "destination": "contracts/hubs/engineering-asset.schema.json",
+      "reason": "2026-10-03 devcenter 흡수 1단계(대표 「개발 센터를 AI-OPS 랑 AI-CORE 로 나눠서」) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "contracts/integration-connector.schema.json",
+      "disposition": "MOVED_ADAPTED",
+      "destination": "contracts/hubs/integration-connector.schema.json",
+      "reason": "2026-10-03 devcenter 흡수 1단계(대표 「개발 센터를 AI-OPS 랑 AI-CORE 로 나눠서」) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "hubs/integration/README.md",
+      "disposition": "MOVED_ADAPTED",
+      "destination": "docs/hubs/integration.md",
+      "reason": "2026-10-03 devcenter 흡수 1단계(대표 「개발 센터를 AI-OPS 랑 AI-CORE 로 나눠서」) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "hubs/integration/connectors.json",
+      "disposition": "MOVED_UNCHANGED",
+      "destination": "src/hubs/integration/connectors.json",
+      "reason": "2026-10-03 devcenter 흡수 1단계(대표 「개발 센터를 AI-OPS 랑 AI-CORE 로 나눠서」) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "hubs/integration/consumers.json",
+      "disposition": "MOVED_UNCHANGED",
+      "destination": "src/hubs/integration/consumers.json",
+      "reason": "2026-10-03 devcenter 흡수 1단계(대표 「개발 센터를 AI-OPS 랑 AI-CORE 로 나눠서」) — docs/audits/DEVCENTER_SPLIT_2026-10-03.md 의 AI-CORE 행대로 본체로 옮김"
+    },
+    {
+      "source_path": "docs/DESIGN-LOCK.md",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/docs/DESIGN-LOCK.md",
+      "reason": "2026-10-03 devcenter 흡수 1단계 — 본체로 옮긴 계약·연결 자료의 새 경로를 가리키도록 경로만 고침(docs/audits/DEVCENTER_SPLIT_2026-10-03.md)"
+    },
+    {
+      "source_path": "docs/ENGINEERING-HUB-RUNTIME.md",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/docs/ENGINEERING-HUB-RUNTIME.md",
+      "reason": "2026-10-03 devcenter 흡수 1단계 — 본체로 옮긴 계약·연결 자료의 새 경로를 가리키도록 경로만 고침(docs/audits/DEVCENTER_SPLIT_2026-10-03.md)"
+    },
+    {
+      "source_path": "docs/INTEGRATION-HUB-RUNTIME.md",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/docs/INTEGRATION-HUB-RUNTIME.md",
+      "reason": "2026-10-03 devcenter 흡수 1단계 — 본체로 옮긴 계약·연결 자료의 새 경로를 가리키도록 경로만 고침(docs/audits/DEVCENTER_SPLIT_2026-10-03.md)"
+    },
+    {
+      "source_path": "hubs/README.md",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/hubs/README.md",
+      "reason": "2026-10-03 devcenter 흡수 1단계 — 본체로 옮긴 계약·연결 자료의 새 경로를 가리키도록 경로만 고침(docs/audits/DEVCENTER_SPLIT_2026-10-03.md)"
+    },
+    {
+      "source_path": "hubs/data/README.md",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/hubs/data/README.md",
+      "reason": "2026-10-03 devcenter 흡수 1단계 — 본체로 옮긴 계약·연결 자료의 새 경로를 가리키도록 경로만 고침(docs/audits/DEVCENTER_SPLIT_2026-10-03.md)"
+    },
+    {
+      "source_path": "hubs/delivery/README.md",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/hubs/delivery/README.md",
+      "reason": "2026-10-03 devcenter 흡수 1단계 — 본체로 옮긴 계약·연결 자료의 새 경로를 가리키도록 경로만 고침(docs/audits/DEVCENTER_SPLIT_2026-10-03.md)"
+    },
+    {
+      "source_path": "hubs/engineering/README.md",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/hubs/engineering/README.md",
+      "reason": "2026-10-03 devcenter 흡수 1단계 — 본체로 옮긴 계약·연결 자료의 새 경로를 가리키도록 경로만 고침(docs/audits/DEVCENTER_SPLIT_2026-10-03.md)"
+    },
+    {
+      "source_path": "hubs/quality/README.md",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/hubs/quality/README.md",
+      "reason": "2026-10-03 devcenter 흡수 1단계 — 본체로 옮긴 계약·연결 자료의 새 경로를 가리키도록 경로만 고침(docs/audits/DEVCENTER_SPLIT_2026-10-03.md)"
+    },
+    {
+      "source_path": "hubs/quality/patterns.json",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/hubs/quality/patterns.json",
+      "reason": "2026-10-03 devcenter 흡수 1단계 — 본체로 옮긴 계약·연결 자료의 새 경로를 가리키도록 경로만 고침(docs/audits/DEVCENTER_SPLIT_2026-10-03.md)"
+    },
+    {
+      "source_path": "hubs/readiness.json",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/hubs/readiness.json",
+      "reason": "2026-10-03 devcenter 흡수 1단계 — 본체로 옮긴 계약·연결 자료의 새 경로를 가리키도록 경로만 고침(docs/audits/DEVCENTER_SPLIT_2026-10-03.md)"
+    },
+    {
+      "source_path": "scripts/integration-hub.mjs",
+      "disposition": "ADAPTED_IN_PLACE",
+      "destination": "devcenter/scripts/integration-hub.mjs",
+      "reason": "2026-10-03 devcenter 흡수 1단계 — 본체로 옮긴 계약·연결 자료의 새 경로를 가리키도록 경로만 고침(docs/audits/DEVCENTER_SPLIT_2026-10-03.md)"
     }
   ]
 }

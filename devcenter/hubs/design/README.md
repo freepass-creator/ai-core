@@ -44,8 +44,8 @@ binding이 작업자가 의도한 AI Core revision과 다르면 **HOLD**한다.
 Design Hub는 AI Core UI/UX 값을 복제하지 않고 pinned binding으로 읽는다.
 
 - AI Core binding: `../../../registry/design-hub-binding.json`
-- Design Job: `../../contracts/design-job.schema.json`
-- Design Plan: `../../contracts/design-plan.schema.json`
+- Design Job: `../../../contracts/hubs/design-job.schema.json`
+- Design Plan: `../../../contracts/hubs/design-plan.schema.json`
 - Compiler: `../../scripts/design-compiler.mjs`
 - Compiler tests: `../../test/design-compiler.test.mjs`
 - Guide: `../../docs/DESIGN-HUB-COMPILER.md`
@@ -56,7 +56,7 @@ Design Hub는 AI Core UI/UX 값을 복제하지 않고 pinned binding으로 읽�
 
 승인된 디자인의 last-known-good 기준:
 
-- Contract: `../../contracts/design-lock.schema.json`
+- Contract: `../../../contracts/hubs/design-lock.schema.json`
 - Runtime: `../../scripts/design-lock.mjs`
 - Guide: `../../docs/DESIGN-LOCK.md`
 
@@ -66,10 +66,10 @@ Design Hub는 AI Core UI/UX 값을 복제하지 않고 pinned binding으로 읽�
 
 Design Plan 이후의 실제 화면 증거 계층:
 
-- Visual Job: `../../contracts/design-visual-job.schema.json`
-- Visual Plan: `../../contracts/design-visual-plan.schema.json`
-- Capture Manifest: `../../contracts/browser-capture-manifest.schema.json`
-- Design Visual Receipt: `../../contracts/design-visual-receipt.schema.json`
+- Visual Job: `../../../contracts/hubs/design-visual-job.schema.json`
+- Visual Plan: `../../../contracts/hubs/design-visual-plan.schema.json`
+- Capture Manifest: `../../../contracts/hubs/browser-capture-manifest.schema.json`
+- Design Visual Receipt: `../../../contracts/hubs/design-visual-receipt.schema.json`
 - Planner/Reviewer: `../../scripts/design-visual-qa.mjs`
 - Built-in Chromium adapter: `../../scripts/browser-capture.mjs`
 - Guide: `../../docs/DESIGN-VISUAL-QA.md`
@@ -81,7 +81,7 @@ Capture 성공과 Visual QA PASS를 동일하게 취급하지 않는다. screens
 
 - Adoption receipt: `../../evidence/design/freepass-admin-approved-shell.json`
 - Feedback decisions: `feedback.json`
-- Receipt contract: `../../contracts/design-adoption-receipt.schema.json`
+- Receipt contract: `../../../contracts/hubs/design-adoption-receipt.schema.json`
 - Feedback runtime: `../../scripts/design-feedback.mjs`
 - Guide: `../../docs/DESIGN-HUB-EVIDENCE.md`
 

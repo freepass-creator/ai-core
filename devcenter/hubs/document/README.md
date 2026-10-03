@@ -18,7 +18,7 @@ Document Hub는 **템플릿 본문 SSOT가 아니다.** 템플릿을 소비하�
 현재는 전환 단계다.
 
 - 현재 임시 템플릿 원천: `freepass-creator/docshub@4059d82779b7e1796afa2bbdf644e1d3bbdba3e7`
-- exact source binding: `source-binding.json`
+- exact source binding: `../../../src/hubs/document/source-binding.json`
 - 전환 계획: `../../../docs/integration/DOCSHUB_IMPORT_CLASSIFICATION_2026-09-23.json`
 - 최종 템플릿 소유 목표: AI Core `management-support/templates/`
 - 프로젝트/수명 상태 정본: AI Core 루트 `registry/projects.json`
@@ -41,10 +41,10 @@ Document Hub는 **템플릿 본문 SSOT가 아니다.** 템플릿을 소비하�
 
 ## Runtime / Receipt
 
-- Transitional DocsHub source binding: `source-binding.json`
-- Document Job: `../../contracts/document-job.schema.json`
-- Document Receipt: `../../contracts/document-receipt.schema.json`
-- Document Lock: `../../contracts/document-lock.schema.json`
+- Transitional DocsHub source binding: `../../../src/hubs/document/source-binding.json`
+- Document Job: `../../../contracts/hubs/document-job.schema.json`
+- Document Receipt: `../../../contracts/hubs/document-receipt.schema.json`
+- Document Lock: `../../../contracts/hubs/document-lock.schema.json`
 - Runtime/planner: `../../scripts/document-hub.mjs`
 - Regression definitions: `../../test/document-hub.test.mjs`
 - Consumer registry: `consumers.json`

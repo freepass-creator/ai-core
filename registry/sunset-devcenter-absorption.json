@@ -117,103 +117,103 @@
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/contracts/browser-capture-manifest.schema.json",
+      "path": "contracts/hubs/browser-capture-manifest.schema.json",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/contracts/data-receipt.schema.json",
+      "path": "contracts/hubs/data-receipt.schema.json",
       "state": "EDITED_AFTER_COPY",
       "bucket": "ABSORB",
       "reason": "test/core-hub-receipt.test.mjs — 허브 영수증이 공통 봉투를 잇는지 검사(동적 경로)"
     },
     {
-      "path": "devcenter/contracts/delivery-receipt.schema.json",
+      "path": "contracts/hubs/delivery-receipt.schema.json",
       "state": "EDITED_AFTER_COPY",
       "bucket": "ABSORB",
       "reason": "test/core-hub-receipt.test.mjs (동적 경로)"
     },
     {
-      "path": "devcenter/contracts/delivery-release.schema.json",
+      "path": "contracts/hubs/delivery-release.schema.json",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/contracts/design-adoption-receipt.schema.json",
+      "path": "contracts/hubs/design-adoption-receipt.schema.json",
       "state": "EDITED_AFTER_COPY",
       "bucket": "ABSORB",
       "reason": "test/core-hub-receipt.test.mjs (동적 경로)"
     },
     {
-      "path": "devcenter/contracts/design-job.schema.json",
+      "path": "contracts/hubs/design-job.schema.json",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/contracts/design-lock.schema.json",
+      "path": "contracts/hubs/design-lock.schema.json",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/contracts/design-plan.schema.json",
+      "path": "contracts/hubs/design-plan.schema.json",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/contracts/design-visual-job.schema.json",
+      "path": "contracts/hubs/design-visual-job.schema.json",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/contracts/design-visual-plan.schema.json",
+      "path": "contracts/hubs/design-visual-plan.schema.json",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/contracts/design-visual-receipt.schema.json",
+      "path": "contracts/hubs/design-visual-receipt.schema.json",
       "state": "EDITED_AFTER_COPY",
       "bucket": "ABSORB",
       "reason": "test/core-hub-receipt.test.mjs (동적 경로)"
     },
     {
-      "path": "devcenter/contracts/document-job.schema.json",
+      "path": "contracts/hubs/document-job.schema.json",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/contracts/document-lock.schema.json",
+      "path": "contracts/hubs/document-lock.schema.json",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/contracts/document-receipt.schema.json",
+      "path": "contracts/hubs/document-receipt.schema.json",
       "state": "EDITED_AFTER_COPY",
       "bucket": "ABSORB",
       "reason": "test/core-hub-receipt.test.mjs (동적 경로)"
     },
     {
-      "path": "devcenter/contracts/engineering-asset.schema.json",
+      "path": "contracts/hubs/engineering-asset.schema.json",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/contracts/integration-connector.schema.json",
+      "path": "contracts/hubs/integration-connector.schema.json",
       "state": "SAME_AS_SOURCE",
       "bucket": "ABSORB",
       "reason": "registry/canonical-development-lines.json — integration-connectors 정본 입구"
     },
     {
-      "path": "devcenter/contracts/quality-receipt.schema.json",
+      "path": "contracts/hubs/quality-receipt.schema.json",
       "state": "EDITED_AFTER_COPY",
       "bucket": "ABSORB",
       "reason": "test/core-hub-receipt.test.mjs (동적 경로)"
@@ -525,7 +525,7 @@
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/hubs/document/source-binding.json",
+      "path": "src/hubs/document/source-binding.json",
       "state": "EDITED_AFTER_COPY",
       "bucket": "ABSORB",
       "reason": "test/management-support-transition.test.mjs"
@@ -549,19 +549,19 @@
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"
     },
     {
-      "path": "devcenter/hubs/integration/README.md",
+      "path": "docs/hubs/integration.md",
       "state": "SAME_AS_SOURCE",
       "bucket": "ABSORB",
       "reason": "registry/canonical-development-lines.json — integration-connectors 정본 입구"
     },
     {
-      "path": "devcenter/hubs/integration/connectors.json",
+      "path": "src/hubs/integration/connectors.json",
       "state": "SAME_AS_SOURCE",
       "bucket": "ABSORB",
       "reason": "registry/canonical-development-lines.json — integration-connectors 정본 입구"
     },
     {
-      "path": "devcenter/hubs/integration/consumers.json",
+      "path": "src/hubs/integration/consumers.json",
       "state": "SAME_AS_SOURCE",
       "bucket": "ARCHIVE",
       "reason": "원본 freepass-creator/devcenter@7d75060 과 같다 — 원본과 태그로 복구"

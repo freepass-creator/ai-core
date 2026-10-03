@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://teamjpk.local/devcenter/contracts/document-lock.schema.json",
+  "$id": "https://teamjpk.local/contracts/hubs/document-lock.schema.json",
   "title": "Development Center Document Lock v1",
   "type": "object",
   "additionalProperties": false,

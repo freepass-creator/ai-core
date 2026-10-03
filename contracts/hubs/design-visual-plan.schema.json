@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://teamjpk.local/devcenter/contracts/design-visual-plan.schema.json",
+  "$id": "https://teamjpk.local/contracts/hubs/design-visual-plan.schema.json",
   "title": "Development Center Design Visual Plan v1",
   "type": "object",
   "additionalProperties": false,

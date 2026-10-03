@@ -359,7 +359,7 @@
       "role": "authoritative",
       "source": {
         "kind": "markdown_doc",
-        "locator": "devcenter/hubs/integration/README.md"
+        "locator": "docs/hubs/integration.md"
       },
       "key": "section",
       "required": [],
@@ -485,7 +485,7 @@
       "role": "authoritative",
       "source": {
         "kind": "json_schema",
-        "locator": "devcenter/contracts/quality-receipt.schema.json"
+        "locator": "contracts/hubs/quality-receipt.schema.json"
       },
       "key": "entry",
       "required": [],
@@ -541,7 +541,7 @@
       "role": "authoritative",
       "source": {
         "kind": "json_schema",
-        "locator": "devcenter/contracts/design-job.schema.json"
+        "locator": "contracts/hubs/design-job.schema.json"
       },
       "key": "entry",
       "required": [],
@@ -555,7 +555,7 @@
       "role": "authoritative",
       "source": {
         "kind": "json_schema",
-        "locator": "devcenter/contracts/design-plan.schema.json"
+        "locator": "contracts/hubs/design-plan.schema.json"
       },
       "key": "entry",
       "required": [],
@@ -583,7 +583,7 @@
       "role": "authoritative",
       "source": {
         "kind": "json_schema",
-        "locator": "devcenter/contracts/design-lock.schema.json"
+        "locator": "contracts/hubs/design-lock.schema.json"
       },
       "key": "entry",
       "required": [],
@@ -611,7 +611,7 @@
       "role": "authoritative",
       "source": {
         "kind": "json_schema",
-        "locator": "devcenter/contracts/design-visual-job.schema.json"
+        "locator": "contracts/hubs/design-visual-job.schema.json"
       },
       "key": "entry",
       "required": [],
@@ -625,7 +625,7 @@
       "role": "authoritative",
       "source": {
         "kind": "json_schema",
-        "locator": "devcenter/contracts/design-visual-plan.schema.json"
+        "locator": "contracts/hubs/design-visual-plan.schema.json"
       },
       "key": "entry",
       "required": [],
@@ -639,7 +639,7 @@
       "role": "authoritative",
       "source": {
         "kind": "json_schema",
-        "locator": "devcenter/contracts/browser-capture-manifest.schema.json"
+        "locator": "contracts/hubs/browser-capture-manifest.schema.json"
       },
       "key": "entry",
       "required": [],
@@ -653,7 +653,7 @@
       "role": "authoritative",
       "source": {
         "kind": "json_schema",
-        "locator": "devcenter/contracts/design-visual-receipt.schema.json"
+        "locator": "contracts/hubs/design-visual-receipt.schema.json"
       },
       "key": "entry",
       "required": [],
@@ -695,7 +695,7 @@
       "role": "authoritative",
       "source": {
         "kind": "json_schema",
-        "locator": "devcenter/contracts/delivery-release.schema.json"
+        "locator": "contracts/hubs/delivery-release.schema.json"
       },
       "key": "entry",
       "required": [],
@@ -709,7 +709,7 @@
       "role": "authoritative",
       "source": {
         "kind": "json_schema",
-        "locator": "devcenter/contracts/delivery-receipt.schema.json"
+        "locator": "contracts/hubs/delivery-receipt.schema.json"
       },
       "key": "entry",
       "required": [],
@@ -765,7 +765,7 @@
       "role": "authoritative",
       "source": {
         "kind": "json",
-        "locator": "devcenter/hubs/document/source-binding.json"
+        "locator": "src/hubs/document/source-binding.json"
       },
       "key": "entry",
       "required": [],
@@ -779,7 +779,7 @@
       "role": "authoritative",
       "source": {
         "kind": "json_schema",
-        "locator": "devcenter/contracts/document-job.schema.json"
+        "locator": "contracts/hubs/document-job.schema.json"
       },
       "key": "entry",
       "required": [],
@@ -793,7 +793,7 @@
       "role": "authoritative",
       "source": {
         "kind": "json_schema",
-        "locator": "devcenter/contracts/document-receipt.schema.json"
+        "locator": "contracts/hubs/document-receipt.schema.json"
       },
       "key": "entry",
       "required": [],
@@ -807,7 +807,7 @@
       "role": "authoritative",
       "source": {
         "kind": "json_schema",
-        "locator": "devcenter/contracts/document-lock.schema.json"
+        "locator": "contracts/hubs/document-lock.schema.json"
       },
       "key": "entry",
       "required": [],
@@ -849,7 +849,7 @@
       "role": "authoritative",
       "source": {
         "kind": "json_schema",
-        "locator": "devcenter/contracts/engineering-asset.schema.json"
+        "locator": "contracts/hubs/engineering-asset.schema.json"
       },
       "key": "entry",
       "required": [],
@@ -905,7 +905,7 @@
       "role": "authoritative",
       "source": {
         "kind": "json_schema",
-        "locator": "devcenter/contracts/integration-connector.schema.json"
+        "locator": "contracts/hubs/integration-connector.schema.json"
       },
       "key": "entry",
       "required": [],
@@ -919,7 +919,7 @@
       "role": "authoritative",
       "source": {
         "kind": "json",
-        "locator": "devcenter/hubs/integration/connectors.json"
+        "locator": "src/hubs/integration/connectors.json"
       },
       "key": "entry",
       "required": [],
@@ -933,7 +933,7 @@
       "role": "authoritative",
       "source": {
         "kind": "json",
-        "locator": "devcenter/hubs/integration/consumers.json"
+        "locator": "src/hubs/integration/consumers.json"
       },
       "key": "entry",
       "required": [],
@@ -961,7 +961,7 @@
       "role": "authoritative",
       "source": {
         "kind": "json_schema",
-        "locator": "devcenter/contracts/data-receipt.schema.json"
+        "locator": "contracts/hubs/data-receipt.schema.json"
       },
       "key": "entry",
       "required": [],
@@ -1101,7 +1101,7 @@
       "role": "authoritative",
       "source": {
         "kind": "json_schema",
-        "locator": "devcenter/contracts/design-adoption-receipt.schema.json"
+        "locator": "contracts/hubs/design-adoption-receipt.schema.json"
       },
       "key": "entry",
       "required": [],

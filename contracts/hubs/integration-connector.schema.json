@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://teamjpk.local/devcenter/contracts/integration-connector.schema.json",
+  "$id": "https://teamjpk.local/contracts/hubs/integration-connector.schema.json",
   "title": "Development Center Integration Connector Registry v1",
   "type": "object",
   "additionalProperties": false,

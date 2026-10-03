@@ -81,6 +81,15 @@
   ],
   "paths": [
     {
+      "pattern": "^src/hubs/",
+      "lane": "E"
+    },
+    {
+      "pattern": "^docs/hubs/",
+      "lane": "E",
+      "rule": "C"
+    },
+    {
       "pattern": "^design-system/",
       "lane": "U"
     },

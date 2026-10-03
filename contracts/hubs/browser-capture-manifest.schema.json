@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://teamjpk.local/devcenter/contracts/browser-capture-manifest.schema.json",
+  "$id": "https://teamjpk.local/contracts/hubs/browser-capture-manifest.schema.json",
   "title": "Development Center Browser Capture Manifest v1",
   "type": "object",
   "additionalProperties": false,

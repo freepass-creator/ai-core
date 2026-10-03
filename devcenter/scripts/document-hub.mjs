@@ -137,7 +137,7 @@ export function finalizeDocumentLock(draft,{createdAt=new Date().toISOString()}=
 }
 
 export function loadBinding(baseDir=HERE){
-  return readJson(path.join(baseDir,'hubs','document','source-binding.json'));
+  return readJson(path.join(baseDir,'..','src','hubs','document','source-binding.json'));
 }
 
 const isMain=process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url);

@@ -106,7 +106,7 @@ const isMain=process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(impo
 if(isMain){
   const [command]=process.argv.slice(2);
   try{
-    const registry=readJson(path.join(HERE,'hubs','integration','connectors.json'));
+    const registry=readJson(path.join(HERE,'..','src','hubs','integration','connectors.json'));
     if(command==='validate'){
       const errors=validateConnectors(registry);
       console.log(JSON.stringify({status:errors.length?'FAIL':'PASS',errors,connector_count:registry.connectors.length},null,2));
