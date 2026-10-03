@@ -9,7 +9,7 @@ AI Core 본사의 경영지원 영역이다.
 - 상태: **SCAFFOLD / HOLD**
 - 현재 외부 문서 템플릿 원천: `freepass-creator/docshub@4059d82779b7e1796afa2bbdf644e1d3bbdba3e7`
 - 전환 계약: `../docs/integration/DOCSHUB_IMPORT_CLASSIFICATION_2026-09-23.json`
-- 문서 실행/검증 소비자: `../devcenter/hubs/document/`
+- 문서 실행/검증 소비자: `../src/hubs/document/`
 - 최종 공통 템플릿 본문 소유 위치: `templates/`
 
 현재는 수용 구조만 만든다. 실제 DocsHub 템플릿 본문은 아직 이 폴더로 복사하지 않는다.

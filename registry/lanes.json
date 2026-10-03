@@ -70,7 +70,7 @@
     {
       "id": "D",
       "name": "저장소 공용은 F",
-      "why": "package.json·.github·devcenter 처럼 누구의 것도 아닌 것은 «기타»로 두지 않고 규율 lane 이 맡는다. 「기타」 통을 만들지 않는 것이 공백을 안 만드는 길이다.",
+      "why": "package.json·.github 처럼 누구의 것도 아닌 것은 «기타»로 두지 않고 규율 lane 이 맡는다. 「기타」 통을 만들지 않는 것이 공백을 안 만드는 길이다.",
       "lane": "F"
     }
   ],
@@ -271,11 +271,6 @@
     {
       "pattern": "^src/collaboration/",
       "lane": "F"
-    },
-    {
-      "pattern": "^devcenter/",
-      "lane": "F",
-      "rule": "D"
     },
     {
       "pattern": "^\\.github/",

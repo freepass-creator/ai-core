@@ -49,7 +49,7 @@ const html=(spec)=>`<!doctype html><html lang="ko"><head><meta charset="utf-8"><
 fs.writeFileSync(path.join(out,'index.html'),html(false));fs.mkdirSync(path.join(out,'specimen'),{recursive:true});fs.writeFileSync(path.join(out,'specimen/index.html'),html(true));
 fs.cpSync(path.join(root,'public/catalog'),path.join(out,'catalog'),{recursive:true,filter:p=>!['styles.json','functions.json'].includes(path.basename(p))});
 // The browser guide is derived from the same entry document other sessions read.
-fs.copyFileSync(path.join(root,'../../devcenter/docs/SESSION-TOUR.md'),path.join(out,'session-tour.md'));
+fs.copyFileSync(path.join(root,'../../docs/AI_ACADEMY_CURRICULUM.md'),path.join(out,'session-tour.md'));
 fs.copyFileSync(path.join(root,'../../docs/episodes/DEVCENTER-CAPABILITY-IMPROVEMENTS.md'),path.join(out,'function-improvements.md'));
 const functionData=JSON.parse(fs.readFileSync(path.join(root,'public/catalog/functions.json'),'utf8'));
 const moduleById=new Map(functionData.modules.map(m=>[m.id,m]));

@@ -242,7 +242,7 @@ design/brands/{brand}/
   "text": "#...",
   "background": "#...",
   "muted": "#...",
-  "logo": "../../devcenter/design/logo.svg"
+  "logo": "<project-approved-logo-path>"
 }
 ```
 

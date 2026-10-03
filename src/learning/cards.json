@@ -8,8 +8,8 @@
       "group": "standards",
       "sources": [
         {
-          "path": "devcenter/docs/BASELINE.md",
-          "sha256": "a57b6393f01014f24a07e3ef3cbfac9a619a67dbc398e3a7c59cc1ff0788e8fe"
+          "path": "docs/AI_WORKING_STANDARD.md",
+          "sha256": "103829366ed608f3aa8c4332484424dd866efe2f9f3525d875c26878046237ec"
         }
       ],
       "scope": "대상 작업의 scope와 승인된 원본에 한정",
@@ -38,8 +38,8 @@
       "group": "standards",
       "sources": [
         {
-          "path": "devcenter/docs/BASELINE.md",
-          "sha256": "a57b6393f01014f24a07e3ef3cbfac9a619a67dbc398e3a7c59cc1ff0788e8fe"
+          "path": "docs/AI_ACADEMY_CURRICULUM.md",
+          "sha256": "fec2b99ec070799db3593b599078c26e36b290a3e9c53917783a14d4b78ebde5"
         }
       ],
       "scope": "각 프로젝트에서 선택한 UI 프로필과 기능 범위",
@@ -221,7 +221,7 @@
       "sources": [
         {
           "path": "docs/design/RESPONSIVE-SHELL.md",
-          "sha256": "ee659ae55a9d9703063ee875b16ccbb40f55fcaf2751c6413e168a18530f6694"
+          "sha256": "ce3bcd71d8f0407e160cc7027c9aae16b9833462f25d2c5d0b10f7a5d27bfe8a"
         }
       ],
       "scope": "개발센터의 현재 반응형 shell",
@@ -347,7 +347,7 @@
       "sources": [
         {
           "path": "scripts/catalog/collect-functions.mjs",
-          "sha256": "40351909dbdab67fb062e8de8f257ba13f5aeadd7b9c039984a21df60083d07e"
+          "sha256": "2e3f77d96975e588aafb690c8e6662cc2b2ca715e74b52bdb590c4a2128d3c83"
         }
       ],
       "scope": "수집기가 명시한 로컬 개발 소스 범위",

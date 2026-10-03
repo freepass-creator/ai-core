@@ -36,7 +36,6 @@
 /skills/ @freepass-creator
 /docs/business/ @freepass-creator
 /src/collaboration/ @freepass-creator
-/devcenter/ @freepass-creator
 /.github/ @freepass-creator
 /test/fixtures/known-bad/ @freepass-creator
 

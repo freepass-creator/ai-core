@@ -13,14 +13,14 @@ Development Center의 빌드·배포·릴리스·복구 허브.
 - Last-known-good
 
 ## 현재 backing source
-- `../../quality/release-recovery/` (과도기 경로)
+- `../../src/hubs/delivery/delivery-gate.mjs`
 - 프로젝트별 CI/CD 및 배포 설정
 - AI Core release/recovery 관련 Contract
 
 ## 경계
 Quality Hub의 검증 없이 배포 완료를 주장하지 않는다. Secret, production 권한, 배포 승인 주체는 기존 권한 체계에 남긴다.
 
-물리적으로 `quality/release-recovery`를 옮기는 것은 별도 migration으로 다룬다.
+실행·복구 근거는 아래 Release / Receipt Runtime과 revision에 결속된 영수증으로 확인한다.
 
 
 ## Release / Receipt Runtime

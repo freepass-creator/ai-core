@@ -41,7 +41,7 @@ const hit = (d) =>
     .toLowerCase()
     .includes(query);
 
-const matched = registry.datasets.filter(hit);
+const matched = registry.datasets.filter((d) => d.role !== "retired" && hit(d));
 
 if (!matched.length) {
   console.log(`\n「${query}」에 걸리는 등록 규격이 없다.`);
@@ -103,8 +103,7 @@ if (undecided.length) {
   for (const d of undecided) console.log(`   ${d.scope}  (${d.source.locator})`);
   console.log("");
 }
-console.log("겹치는 규격이 있는지 검사:");
-console.log("   python devcenter\\ssot\\ssot_audit.py registry\\devcenter-datasets.json");
+// 규격 검색은 정본 검증 통과를 뜻하지 않는다.
 console.log("");
 
 process.exit(missing.length ? 1 : 0);

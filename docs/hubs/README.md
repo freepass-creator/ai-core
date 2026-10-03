@@ -18,24 +18,24 @@ Development Center는 AI Core의 개발 실행 조직이다. AI Core가 회사 �
 
 `operations / standards / registry / ssot / inspection / engine / runs`는 제8의 Hub가 아니라 모든 Hub를 관장하는 **Control Plane**이다.
 
-조직·라우팅 정본은 [Development Center Hub Architecture](HUB-ARCHITECTURE.md), machine-readable 등록부는 AI Core 루트 [registry/hubs.json](../../registry/hubs.json), 실제 요청의 첫 진입점은 [어디를보나.md](../../devcenter/어디를보나.md)를 본다. 실행 라우팅은 [Hub Router Runtime](HUB-ROUTER-RUNTIME.md)과 `node src/routing/hub-router.mjs "<요청>"`을 사용한다.
+조직·라우팅 정본은 [Development Center Hub Architecture](HUB-ARCHITECTURE.md), machine-readable 등록부는 AI Core 루트 [registry/hubs.json](../../registry/hubs.json), 실제 요청의 첫 진입점은 [업무 라우팅 등록부](../../registry/work-map.json)를 본다. 실행 라우팅은 [Hub Router Runtime](HUB-ROUTER-RUNTIME.md)과 `node src/routing/hub-router.mjs "<요청>"`을 사용한다.
 
 ## 기존 경로와 Hub 매핑
 
-기존 자산은 정본 충돌을 막기 위해 물리 이동하지 않고 현재 경로를 backing source로 사용한다.
+흡수된 자산은 아래 본체 경로를 backing source로 사용한다.
 
-- [design](../../devcenter/design/README.md) → **Design Hub**
-- `capabilities/shared` → **Engineering Hub**
-- `capabilities/integrations` → **Integration Hub**
-- `quality/conformance`, `quality/testing` → **Quality Hub**
-- `quality/release-recovery` → **Delivery Hub** 과도기 backing path
+- [UI/UX 진입점](../UI_UX_START_HERE.md) → **Design Hub**
+- `../../src/hubs/engineering/` → **Engineering Hub**
+- `../../src/hubs/integration/` → **Integration Hub**
+- `../../scripts/verification/`, `../../test/quality-receipt.test.mjs` → **Quality Hub**
+- `../../src/hubs/delivery/` → **Delivery Hub**
 - `freepass-creator/docshub` → **Document Hub** authoritative source
 - AI Core Core/Data Contract + `freepass-creator/freepass-data` → **Data Hub** 기준 + 대표 구현
-- [operations](../../devcenter/operations/README.md), [standards](../../devcenter/standards/README.md), [engine](../../devcenter/engine/README.md), `../../registry/devcenter-datasets.json`, `ssot/`, `runs/` → **Control Plane**
+- [헌법](../AI_WORKING_STANDARD.md), [Academy](../AI_ACADEMY_CURRICULUM.md), [Hub Router Runtime](HUB-ROUTER-RUNTIME.md), `../../registry/devcenter-datasets.json` → **Control Plane**
 
 ## Hub Readiness
 
-7개 Hub는 [readiness 정본](../../src/hubs/readiness.json)과 [계산기](../../src/hubs/hub-readiness.mjs)로 실행 준비도를 측정한다. 목표는 각 Hub **90% 이상 + contract/source/runtime/validation 전부 VERIFIED**다. 초기 기준은 [2026-09-21 baseline](../../devcenter/docs/HUB-READINESS-BASELINE-2026-09-21.md)을 본다.
+7개 Hub는 [readiness 정본](../../src/hubs/readiness.json)과 [계산기](../../src/hubs/hub-readiness.mjs)로 실행 준비도를 측정한다. 목표는 각 Hub **90% 이상 + contract/source/runtime/validation 전부 VERIFIED**다. 초기 기준은 [2026-09-21 baseline](https://github.com/freepass-creator/ai-core/blob/4d28654a99b76c9491afad6c54466574181fcdb1/devcenter/docs/HUB-READINESS-BASELINE-2026-09-21.md)을 본다.
 
 Readiness는 제품 품질 점수가 아니다. Hub가 공통 실행 계층으로 재사용·검증 가능한 수준인지 측정하며, 문서 존재만으로 점수를 올리지 않는다.
 
@@ -45,7 +45,7 @@ Readiness는 제품 품질 점수가 아니다. Hub가 공통 실행 계층으�
 
 ## 다른 세션의 첫 방문
 
-[개발센터 견학](../../devcenter/docs/SESSION-TOUR.md)부터 시작한다. 이번 작업의 정본 찾기 → Primary Hub 선택 → 필요한 Secondary Hub 연결 → 원자 직접 사용 → 충돌 반례 확인 → 검증 결과 인계 순서다. 브라우저의 **세션 견학**에서도 같은 안내와 다른 세션에 전달할 요청문을 제공한다. 읽었다는 사실을 자동 검수 통과로 취급하지 않는다.
+[Academy 작업 시작 안내](../AI_ACADEMY_CURRICULUM.md)부터 시작한다. 이번 작업의 정본 찾기 → Primary Hub 선택 → 필요한 Secondary Hub 연결 → 원자 직접 사용 → 충돌 반례 확인 → 검증 결과 인계 순서다. 브라우저의 **세션 견학**에서도 같은 안내와 다른 세션에 전달할 요청문을 제공한다. 읽었다는 사실을 자동 검수 통과로 취급하지 않는다.
 
 ## 현재 상태
 
@@ -67,7 +67,7 @@ node scripts/standards-find.mjs dev.design.token
 
 `../../scripts/standards-find.mjs`는 문자열 검색·경로 존재 확인만 수행한다. 후보 표시는 통과 판정이 아니다.
 
-SSOT 조직 정의는 [ssot/PART.md](../../devcenter/ssot/PART.md), 검사기 정본은 `C:/dev/devcenter/ssot`다. `standards/ssot`는 조직상 참조 자리이며 두 번째 검사기를 만들지 않는다.
+정본 사용 원칙은 [헌법](../AI_WORKING_STANDARD.md)을 따른다. 현재 검증 도구는 `../../scripts/verification/`와 `npm run canon:guard`이며, 규격 검색은 검증 통과를 뜻하지 않는다.
 
 ## 자산과 기록
 
@@ -76,7 +76,7 @@ SSOT 조직 정의는 [ssot/PART.md](../../devcenter/ssot/PART.md), 검사기 �
 - 로컬 조사/실행 기록: `reviews/`, `runs/` (업로드 제외)
 - Firebase: 향후 다중 사용자 실시간 상태가 필요할 때 별도 검토; 현재 Development Center 자체 운영 저장소로 도입하지 않음
 
-[저장소 등록 범위](../../devcenter/docs/BOOTSTRAP.md)를 확인한다. 사용자 지정 구조와 구현/검수 완료는 구분한다.
+[저장소 등록 범위](https://github.com/freepass-creator/ai-core/blob/4d28654a99b76c9491afad6c54466574181fcdb1/devcenter/docs/BOOTSTRAP.md)를 확인한다. 사용자 지정 구조와 구현/검수 완료는 구분한다.
 
 ## 허브 문서 탐색
 
@@ -84,7 +84,7 @@ SSOT 조직 정의는 [ssot/PART.md](../../devcenter/ssot/PART.md), 검사기 �
 
 ## 현재 실행 문서
 
-- [작업 시작 안내](../../devcenter/docs/SESSION-TOUR.md)
+- [작업 시작 안내](../AI_ACADEMY_CURRICULUM.md)
 - [Hub Architecture](HUB-ARCHITECTURE.md)
 - [Hub Router Runtime](HUB-ROUTER-RUNTIME.md)
 - [Hub Readiness](HUB-READINESS.md)
@@ -92,10 +92,10 @@ SSOT 조직 정의는 [ssot/PART.md](../../devcenter/ssot/PART.md), 검사기 �
 
 ## 호환·역사 문서
 
-- [기본선 호환 포인터](../../devcenter/docs/BASELINE.md)
-- [2026-09-09 원본 조사 기록](../../devcenter/docs/CURRENT-STANDARDS.md)
-- [과거 4-AI 작업안의 현재 정책 포인터](../../devcenter/docs/FOUR-AI-WORKFLOW.md)
-- [당시 출처와 버전](../../devcenter/docs/baseline-sources.json)
-- [당시 문제·개선 기록](../../devcenter/docs/IMPROVEMENT-REPORT.md)
+- [공통 헌법](../AI_WORKING_STANDARD.md)
+- [2026-09-09 원본 조사 기록](https://github.com/freepass-creator/ai-core/blob/4d28654a99b76c9491afad6c54466574181fcdb1/devcenter/docs/CURRENT-STANDARDS.md)
+- [현재 AI 협업 정책](../AI_WORKING_STANDARD.md)
+- [당시 출처와 버전](https://github.com/freepass-creator/ai-core/blob/4d28654a99b76c9491afad6c54466574181fcdb1/devcenter/docs/baseline-sources.json)
+- [당시 문제·개선 기록](https://github.com/freepass-creator/ai-core/blob/4d28654a99b76c9491afad6c54466574181fcdb1/devcenter/docs/IMPROVEMENT-REPORT.md)
 
 공통 규칙의 정본은 AI Core 루트 `docs/`, `design-system/`, `contracts/`, `registry/`다. DevCenter 문서 등록이나 과거 검토 상태는 기능 구현·현재 규격 승인·배포 완료를 뜻하지 않는다.

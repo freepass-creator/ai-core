@@ -4,6 +4,8 @@
 //                   「ㅇㅇ 그러니까 삭제할 수 있는 준비를 하자고」
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import { 참조찾기, 준비도 } from '../src/governance/sunset.mjs';
 import { 설정읽기, 저장소파일 } from '../scripts/check-sunset-progress.mjs';
 
@@ -39,14 +41,16 @@ test('보존이 안 된 구역은 참조가 0 이어도 «지울 수 있다» �
   assert.equal(준비도(있음, [], 0).지울수있나, true);
 });
 
-test('★devcenter 는 «사본이 원본보다 앞서» 지울 수 없다 — 그리고 처음 기록이 틀렸다는 것도 남아 있다', () => {
+test('★devcenter 는 보호된 main SHA 로 보존한다 — 과거 정정 기록도 남아 있다', () => {
   /** 2026-09-29: 처음엔 「원본이 없다 — ai-core 자신의 모듈」이라 적고 이 검사로 못 박았다. 틀렸다.
    *  devcenter/PROVENANCE.json 이 원본(freepass-creator/devcenter)을 분명히 적고 있었는데 안 읽었다.
    *  실제 막는 까닭은 «원본 없음»이 아니라 «사본에서 57개를 더 고쳤다»이다. 틀린 사실을 지키는 검사는
    *  맞는 사실을 지키는 검사보다 나쁘다 — 틀린 것을 오래 살려 두기 때문이다. */
   const d = 설정.areas.find((a) => a.path === 'devcenter/');
   assert.equal(d.source, 'freepass-creator/devcenter', '원본이 있다');
-  assert.equal(d.preserved, false, '앞선 작업을 원본에 돌려보내기 전에는 보존이 아니다');
+  assert.equal(d.preserved, true, '보호된 main SHA 와 복구·처분·계보 검증으로 보존한다');
+  assert.equal(d.retired_at, '2026-10-04');
+  assert.match(d.preserved_how, /d7f1935763a5511536ca8c31489cd282cb13b1d6/);
   assert.match(d.preserved_blocker, /앞서/, '막는 까닭이 «사본이 앞섬»이어야 한다');
   assert.match(d.correction_2026_09_29 ?? '', /틀렸다/, '틀렸던 기록을 지우면 같은 실수를 다시 한다');
 });
@@ -75,7 +79,7 @@ test('★재는 도구는 재는 대상에 안 잡힌다 — 그리고 그 제�
   /** 2026-09-29 실측: sunset.mjs 와 그 검사가 예시로 'aiops/' 를 적었다는 이유로 참조로 세어졌다.
    *  선언과 의존은 다르다. 다만 「기타」 통으로 빠져나가지 않게 파일 이름을 명시로 적는다. */
   assert.ok(설정.self?.files?.length > 0, '제외 목록이 없으면 도구가 스스로를 막는다');
-  for (const f of 설정.self.files) assert.match(f, /sunset/, `일몰 측정과 무관한 파일이 제외에 들어갔다: ${f}`);
+  for (const f of 설정.self.files) assert.ok(/sunset/.test(f) || f === 'test/devcenter-recovery.test.mjs', `일몰 측정과 무관한 파일이 제외에 들어갔다: ${f}`);
   const 파일 = [{ path: 'src/governance/sunset.mjs', text: "참조찾기(본문, 'aiops/')" }];
   assert.deepEqual(참조찾기(파일, 'aiops/', ['aiops/'], 설정.self.files).끌어씀, []);
 });
@@ -107,5 +111,22 @@ test('★지운 구역은 코드가 «절대» 끌어 쓰지 않는다 — 톱�
 test('지운 구역에는 «어떻게 지웠는지»가 남아 있다', () => {
   for (const a of 설정.areas.filter((x) => x.retired_at)) {
     assert.ok(a.retired_how?.length > 40, `${a.path} 를 왜·어떻게 지웠는지 없으면 다음 사람이 되살린다`);
+  }
+});
+
+test('retired areas reject tracked file resurrection', () => {
+  const root = fileURLToPath(new URL('..', import.meta.url));
+  for (const area of 설정.areas.filter(a => a.retired_at)) {
+    const tracked = execFileSync('git', ['ls-files', '-z', '--', area.path], { cwd: root, encoding: 'utf8' }).split('\0').filter(Boolean);
+    assert.deepEqual(tracked, [], area.path + ': retired tracked files reappeared');
+  }
+});
+
+// Untracked additions must also fail before staging; ignored local artifacts remain untouched.
+test('retired areas reject untracked file resurrection', () => {
+  const root = fileURLToPath(new URL('..', import.meta.url));
+  for (const area of 설정.areas.filter(a => a.retired_at)) {
+    const added = execFileSync('git', ['ls-files', '--others', '--exclude-standard', '-z', '--', area.path], { cwd: root, encoding: 'utf8' }).split('\0').filter(Boolean);
+    assert.deepEqual(added, [], area.path + ': untracked files reappeared');
   }
 });

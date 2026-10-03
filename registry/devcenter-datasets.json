@@ -121,7 +121,7 @@
       "role": "candidate",
       "source": {
         "kind": "markdown_doc",
-        "locator": "devcenter/ssot/AGENTS.md"
+        "locator": "docs/AI_WORKING_STANDARD.md"
       },
       "key": "role",
       "required": [],
@@ -135,7 +135,7 @@
       "role": "authoritative",
       "source": {
         "kind": "markdown_doc",
-        "locator": "devcenter/ssot/PART.md"
+        "locator": "docs/AI_WORKING_STANDARD.md"
       },
       "key": "clause",
       "required": [],
@@ -149,7 +149,7 @@
       "role": "authoritative",
       "source": {
         "kind": "markdown_doc",
-        "locator": "devcenter/AGENTS.md"
+        "locator": "docs/AI_WORKING_STANDARD.md"
       },
       "key": "clause",
       "required": [],
@@ -163,7 +163,7 @@
       "role": "authoritative",
       "source": {
         "kind": "markdown_doc",
-        "locator": "devcenter/어디를보나.md"
+        "locator": "docs/hubs/HUB-ROUTER-RUNTIME.md"
       },
       "key": "entry",
       "required": [],
@@ -230,7 +230,8 @@
       "scope": "dev.spec.estimate.price_basis",
       "project": "freepasserp4",
       "owner": "dev",
-      "role": "authoritative",
+      "role": "candidate",
+      "reason": "정본 미확정: 기존 견적 기준 경로가 없으며 대체 원본을 확인하지 못했다. 견적 정본으로 사용하지 않는다.",
       "source": {
         "kind": "markdown_doc",
         "locator": "devcenter/ssot/FREEPASS-QUOTE-BASIS.md"
@@ -468,7 +469,8 @@
       "scope": "dev.org.hubs.readiness.baseline",
       "project": "devcenter",
       "owner": "devcenter",
-      "role": "authoritative",
+      "role": "retired",
+      "reason": "은퇴: 2026-09-21 당시 readiness baseline이며 현행 검색·판정에 사용하지 않는다. 현재 readiness로 대체하지 않고 Git 이력에 보존한다.",
       "source": {
         "kind": "markdown_doc",
         "locator": "devcenter/docs/HUB-READINESS-BASELINE-2026-09-21.md"
