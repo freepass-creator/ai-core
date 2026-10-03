@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://teamjpk.local/devcenter/contracts/delivery-release.schema.json",
+  "$id": "https://teamjpk.local/contracts/hubs/delivery-release.schema.json",
   "title": "Development Center Delivery Release v1",
   "type": "object",
   "additionalProperties": false,

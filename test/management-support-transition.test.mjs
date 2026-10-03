@@ -10,7 +10,7 @@ const classification=readJson('docs/integration/DOCSHUB_IMPORT_CLASSIFICATION_20
 const workMap=readJson('registry/work-map.json');
 const capabilities=readJson('registry/capabilities.json');
 const projects=readJson('registry/projects.json');
-const binding=readJson('devcenter/hubs/document/source-binding.json');
+const binding=readJson('src/hubs/document/source-binding.json');
 
 function walk(dir){
   const out=[];

@@ -13,6 +13,8 @@
 /management-support/ @freepass-creator
 
 # E — 엔진
+/src/hubs/ @freepass-creator
+/docs/hubs/ @freepass-creator
 /src/engine/ @freepass-creator
 /src/workflow/ @freepass-creator
 /src/contracts/ @freepass-creator

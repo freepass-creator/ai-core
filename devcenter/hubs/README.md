@@ -6,7 +6,7 @@ Development Center의 공식 전문 실행 영역은 아래 **7개 Hub**다.
 2. [Data Hub](data/README.md)
 3. [Document Hub](document/README.md)
 4. [Engineering Hub](engineering/README.md)
-5. [Integration Hub](integration/README.md)
+5. [Integration Hub](../../docs/hubs/integration.md)
 6. [Quality Hub](quality/README.md)
 7. [Delivery Hub](delivery/README.md)
 

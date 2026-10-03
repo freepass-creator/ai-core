@@ -29,7 +29,7 @@ test('all hub receipt schemas extend the single core receipt envelope',()=>{
   ajv.addSchema(read('contracts/core-execution-identity.schema.json'));
   ajv.addSchema(read('contracts/core-receipt.schema.json'));
   for(const file of specialized){
-    const schema=read(`devcenter/contracts/${file}`);
+    const schema=read(`contracts/hubs/${file}`);
     assert.equal(schema.allOf[0].$ref,'https://schemas.freepass.ai/core/receipt/v1');
     assert.doesNotThrow(()=>ajv.compile(schema),file);
   }

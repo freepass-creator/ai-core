@@ -12,7 +12,7 @@ Development Center는 AI Core의 개발 실행 조직이다. AI Core가 회사 �
 2. [Data Hub](hubs/data/README.md)
 3. [Document Hub](hubs/document/README.md)
 4. [Engineering Hub](hubs/engineering/README.md)
-5. [Integration Hub](hubs/integration/README.md)
+5. [Integration Hub](../docs/hubs/integration.md)
 6. [Quality Hub](hubs/quality/README.md)
 7. [Delivery Hub](hubs/delivery/README.md)
 

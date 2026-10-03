@@ -11,7 +11,7 @@ Development Center의 시스템 연동 허브.
 - Retry / timeout / external failure handling
 
 ## 현재 backing source
-- `../../capabilities/integrations/`
+- `../../devcenter/capabilities/integrations/`
 - 각 프로젝트의 검증된 connector/adapter
 - AI Core의 Event/Error/Result/Workflow Contract
 
@@ -21,11 +21,11 @@ Development Center의 시스템 연동 허브.
 
 ## Connector Runtime
 
-- Connector contract: `../../contracts/integration-connector.schema.json`
-- Connector registry: `connectors.json`
-- Consumer registry: `consumers.json`
-- Runtime/gate: `../../scripts/integration-hub.mjs`
-- Regression definitions: `../../test/integration-hub.test.mjs`
-- Guide: `../../docs/INTEGRATION-HUB-RUNTIME.md`
+- Connector contract: `../../contracts/hubs/integration-connector.schema.json`
+- Connector registry: `../../src/hubs/integration/connectors.json`
+- Consumer registry: `../../src/hubs/integration/consumers.json`
+- Runtime/gate: `../../devcenter/scripts/integration-hub.mjs`
+- Regression definitions: `../../devcenter/test/integration-hub.test.mjs`
+- Guide: `../../devcenter/docs/INTEGRATION-HUB-RUNTIME.md`
 
 모든 connector는 timeout/retry/idempotency/auth/health/recovery를 선언해야 하며 Secret 값은 Registry에 저장하지 않는다. 프로젝트 구현이 존재해도 production 증거 없이는 CANDIDATE를 유지한다.

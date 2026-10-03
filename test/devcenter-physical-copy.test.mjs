@@ -76,7 +76,10 @@ test('DevCenter physical copy is complete, immutable and traceable', async () =>
       'git', ['ls-files', '--error-unmatch', destination], { cwd: root, stdio: 'ignore' }
     ), `transformation destination is not tracked: ${destination}`);
     if (item.disposition === 'MOVED_UNCHANGED') {
-      assert.equal(allIndexBlobs.get(destination), provenance.files.find(file => file.path === item.source_path).source_git_blob);
+      // 옮긴 곳이 registry/ 밖(2026-10-03 흡수 1단계: contracts/hubs/·src/hubs/)일 수 있어 그 경로의 blob 을 직접 읽는다 — 대조는 그대로 엄격하다.
+      const destinationBlob = allIndexBlobs.get(destination)
+        ?? execFileSync('git', ['-c', 'core.quotepath=false', 'ls-files', '-s', '--', destination], { cwd: root, encoding: 'utf8' }).split(' ')[1];
+      assert.equal(destinationBlob, provenance.files.find(file => file.path === item.source_path).source_git_blob, `${item.source_path} → ${destination} was recorded MOVED_UNCHANGED but its content changed`);
     }
   }
 });

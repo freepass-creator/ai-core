@@ -6,8 +6,8 @@ Build/Deploy/Release/Rollback을 프로젝트별 임의 절차가 아니라 **ex
 
 ## 구성
 
-- Release contract: `contracts/delivery-release.schema.json`
-- Delivery receipt: `contracts/delivery-receipt.schema.json`
+- Release contract: `../../contracts/hubs/delivery-release.schema.json`
+- Delivery receipt: `../../contracts/hubs/delivery-receipt.schema.json`
 - Gate/runtime: `scripts/delivery-gate.mjs`
 - Regression definitions: `test/delivery-gate.test.mjs`
 - Consumer registry: `hubs/delivery/consumers.json`

@@ -6,9 +6,9 @@ Firebase, Google, GitHub, 외부 API, Webhook 등 연동을 프로젝트별 임�
 
 ## 정본
 
-- Connector contract: `contracts/integration-connector.schema.json`
-- Connector registry: `hubs/integration/connectors.json`
-- Consumer registry: `hubs/integration/consumers.json`
+- Connector contract: `../../contracts/hubs/integration-connector.schema.json`
+- Connector registry: `../../src/hubs/integration/connectors.json`
+- Consumer registry: `../../src/hubs/integration/consumers.json`
 - Runtime/gate: `scripts/integration-hub.mjs`
 - Regression definitions: `test/integration-hub.test.mjs`
 

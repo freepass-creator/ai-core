@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://teamjpk.local/devcenter/contracts/design-job.schema.json",
+  "$id": "https://teamjpk.local/contracts/hubs/design-job.schema.json",
   "title": "Development Center Design Job v1",
   "type": "object",
   "additionalProperties": false,

@@ -12,7 +12,7 @@
 | 실제 자산 | — | **`C:\dev\docshub` 로컬 폴더** — 양식 150 · data 10 · 업무 187 · 사건 112 · _레거시 122 |
 | 버전 | revision 고정 | **git 저장소가 아니다**(추적 파일 0) |
 
-즉 **정본으로 삼을 revision 이 존재하지 않는다.** 그래서 매니페스트는 revision 대신 **파일 내용 해시**로 고정한다. 이 사실은 전환 승인 전에 정리돼야 한다 — 지금 `projects.json#docshub.head_revision` 과 `devcenter/hubs/document/source-binding.json` 이 가리키는 revision 은 이 자산의 것이 아니다.
+즉 **정본으로 삼을 revision 이 존재하지 않는다.** 그래서 매니페스트는 revision 대신 **파일 내용 해시**로 고정한다. 이 사실은 전환 승인 전에 정리돼야 한다 — 지금 `projects.json#docshub.head_revision` 과 `src/hubs/document/source-binding.json` 이 가리키는 revision 은 이 자산의 것이 아니다.
 
 ## 1. 규격이 세 세대 공존한다
 

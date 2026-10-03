@@ -21,7 +21,7 @@ Development Center의 공통 구현·재사용 코드 허브.
 
 ## Shared Asset Runtime
 
-- Asset contract: `../../contracts/engineering-asset.schema.json`
+- Asset contract: `../../../contracts/hubs/engineering-asset.schema.json`
 - Asset registry: `assets.json`
 - Consumer registry: `consumers.json`
 - Runtime/gate: `../../scripts/engineering-hub.mjs`

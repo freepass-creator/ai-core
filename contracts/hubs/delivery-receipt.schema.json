@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://teamjpk.local/devcenter/contracts/document-receipt.schema.json",
-  "title": "Development Center Document Receipt Core Extension v1",
+  "$id": "https://teamjpk.local/contracts/hubs/delivery-receipt.schema.json",
+  "title": "Development Center Delivery Receipt Core Extension v1",
   "description": "Specialized payload for core-receipt/v1. Common receipt fields are defined only by the AI Core receipt schema.",
   "allOf": [
     {
@@ -15,7 +15,7 @@
       ],
       "properties": {
         "receipt_kind": {
-          "const": "hub.document"
+          "const": "hub.delivery"
         },
         "payload": {
           "type": "object",
@@ -23,32 +23,44 @@
           "required": [
             "legacy_contract",
             "subject",
-            "template",
-            "source",
-            "artifacts",
-            "checks",
+            "target",
+            "quality_receipts",
+            "build",
+            "deployment",
+            "smoke",
+            "rollback",
             "result"
           ],
           "properties": {
             "legacy_contract": {
-              "const": "devcenter-document-receipt/v1"
+              "const": "devcenter-delivery-receipt/v1"
             },
             "subject": {
               "type": "object"
             },
-            "template": {
+            "target": {
               "type": "object"
             },
-            "source": {
+            "quality_receipts": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "build": {
               "type": "object"
             },
-            "artifacts": {
-              "type": "array",
-              "minItems": 1
+            "deployment": {
+              "type": "object"
             },
-            "checks": {
-              "type": "array",
-              "minItems": 1
+            "smoke": {
+              "type": "object"
+            },
+            "rollback": {
+              "type": "object"
             },
             "result": {
               "type": "object"

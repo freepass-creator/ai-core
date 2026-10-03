@@ -99,7 +99,7 @@
         "recovery": {
           "level": "PARTIAL",
           "evidence": [
-            "devcenter/contracts/design-lock.schema.json",
+            "contracts/hubs/design-lock.schema.json",
             "devcenter/scripts/design-lock.mjs",
             "devcenter/docs/DESIGN-LOCK.md"
           ],
@@ -187,16 +187,16 @@
         "contract": {
           "level": "VERIFIED",
           "evidence": [
-            "devcenter/contracts/document-job.schema.json",
-            "devcenter/contracts/document-receipt.schema.json",
-            "devcenter/contracts/document-lock.schema.json",
+            "contracts/hubs/document-job.schema.json",
+            "contracts/hubs/document-receipt.schema.json",
+            "contracts/hubs/document-lock.schema.json",
             "devcenter/docs/DOCUMENT-HUB-RUNTIME.md"
           ]
         },
         "source": {
           "level": "VERIFIED",
           "evidence": [
-            "devcenter/hubs/document/source-binding.json",
+            "src/hubs/../../src/hubs/document/source-binding.json",
             "docshub@fbb54727fb7ee497eede2f95563b633b6333c300",
             "devcenter/hubs/document/README.md"
           ]
@@ -228,7 +228,7 @@
         "evidence": {
           "level": "PARTIAL",
           "evidence": [
-            "devcenter/contracts/document-receipt.schema.json",
+            "contracts/hubs/document-receipt.schema.json",
             "devcenter/scripts/document-hub.mjs"
           ],
           "gap": "Canonical artifact receipt format exists, but no real generated document artifact receipt is accumulated."
@@ -236,7 +236,7 @@
         "recovery": {
           "level": "PARTIAL",
           "evidence": [
-            "devcenter/contracts/document-lock.schema.json",
+            "contracts/hubs/document-lock.schema.json",
             "devcenter/scripts/document-hub.mjs#finalizeDocumentLock"
           ],
           "gap": "Approval-gated last-known-good lock exists, but no approved artifact lock/rollback chain is accumulated."
@@ -254,7 +254,7 @@
         "contract": {
           "level": "VERIFIED",
           "evidence": [
-            "devcenter/contracts/engineering-asset.schema.json",
+            "contracts/hubs/engineering-asset.schema.json",
             "devcenter/docs/ENGINEERING-HUB-RUNTIME.md"
           ]
         },
@@ -299,7 +299,7 @@
         "recovery": {
           "level": "PARTIAL",
           "evidence": [
-            "devcenter/contracts/engineering-asset.schema.json#lifecycle",
+            "contracts/hubs/engineering-asset.schema.json#lifecycle",
             "devcenter/hubs/engineering/assets.json"
           ],
           "gap": "Rollback refs and deprecation successors are modeled, but real rollback/deprecation migration evidence is not accumulated."
@@ -320,14 +320,14 @@
         "contract": {
           "level": "VERIFIED",
           "evidence": [
-            "devcenter/contracts/integration-connector.schema.json",
+            "contracts/hubs/integration-connector.schema.json",
             "devcenter/docs/INTEGRATION-HUB-RUNTIME.md"
           ]
         },
         "source": {
           "level": "VERIFIED",
           "evidence": [
-            "devcenter/hubs/integration/connectors.json",
+            "src/hubs/../../src/hubs/integration/connectors.json",
             "freepass-data@bd75b604fcd06358dedaa77edf62284cf0d17ae9:src/infra/firestore-store.ts",
             "freepass-data@bd75b604fcd06358dedaa77edf62284cf0d17ae9:src/infra/source-firestore-store.ts"
           ]
@@ -350,7 +350,7 @@
         "consumers": {
           "level": "PARTIAL",
           "evidence": [
-            "devcenter/hubs/integration/consumers.json",
+            "src/hubs/../../src/hubs/integration/consumers.json",
             "freepass-data@bd75b604fcd06358dedaa77edf62284cf0d17ae9"
           ],
           "gap": "FreePass Data is mapped, but production Firebase binding/IAM/writer cutover remain unverified and broader consumer adoption is incomplete."
@@ -358,7 +358,7 @@
         "evidence": {
           "level": "PARTIAL",
           "evidence": [
-            "devcenter/hubs/integration/connectors.json",
+            "src/hubs/../../src/hubs/integration/connectors.json",
             "devcenter/scripts/integration-hub.mjs#finalizeIntegrationReceipt"
           ],
           "gap": "Receipt shape and connector evidence are normalized, but no real runtime integration receipt has been accumulated."
@@ -366,8 +366,8 @@
         "recovery": {
           "level": "PARTIAL",
           "evidence": [
-            "devcenter/contracts/integration-connector.schema.json#recovery",
-            "devcenter/hubs/integration/connectors.json"
+            "contracts/hubs/integration-connector.schema.json#recovery",
+            "src/hubs/../../src/hubs/integration/connectors.json"
           ],
           "gap": "Fail-closed/fallback/disable paths are modeled, but no verified real dependency failure/recovery rehearsal is attached."
         },
@@ -387,7 +387,7 @@
         "contract": {
           "level": "VERIFIED",
           "evidence": [
-            "devcenter/contracts/quality-receipt.schema.json",
+            "contracts/hubs/quality-receipt.schema.json",
             "devcenter/docs/QUALITY-RECEIPT.md",
             "devcenter/operations/inspection/POLICY.md"
           ]
@@ -437,7 +437,7 @@
           "level": "PARTIAL",
           "evidence": [
             "devcenter/hubs/quality/retention.json",
-            "devcenter/contracts/quality-receipt.schema.json"
+            "contracts/hubs/quality-receipt.schema.json"
           ],
           "gap": "Receipt immutability/retention requirements are explicit, but persistent cross-project index and restore rehearsal are not verified."
         },
@@ -457,8 +457,8 @@
         "contract": {
           "level": "VERIFIED",
           "evidence": [
-            "devcenter/contracts/delivery-release.schema.json",
-            "devcenter/contracts/delivery-receipt.schema.json",
+            "contracts/hubs/delivery-release.schema.json",
+            "contracts/hubs/delivery-receipt.schema.json",
             "devcenter/docs/DELIVERY-HUB-RUNTIME.md"
           ]
         },
@@ -496,7 +496,7 @@
         "evidence": {
           "level": "PARTIAL",
           "evidence": [
-            "devcenter/contracts/delivery-receipt.schema.json",
+            "contracts/hubs/delivery-receipt.schema.json",
             "devcenter/scripts/delivery-gate.mjs"
           ],
           "gap": "Canonical Delivery Receipt format exists, but no real build/deploy/smoke receipt has been accumulated."
@@ -504,7 +504,7 @@
         "recovery": {
           "level": "PARTIAL",
           "evidence": [
-            "devcenter/contracts/delivery-release.schema.json#rollback",
+            "contracts/hubs/delivery-release.schema.json#rollback",
             "devcenter/scripts/delivery-gate.mjs",
             "freepass-admin/docs/RELEASE.md"
           ],

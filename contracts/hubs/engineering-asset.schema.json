@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://teamjpk.local/devcenter/contracts/engineering-asset.schema.json",
+  "$id": "https://teamjpk.local/contracts/hubs/engineering-asset.schema.json",
   "title": "Development Center Engineering Asset Registry v1",
   "type": "object",
   "additionalProperties": false,

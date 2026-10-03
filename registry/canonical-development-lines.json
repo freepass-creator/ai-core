@@ -80,10 +80,10 @@
     },
     {
       "id": "integration-connectors",
-      "canonical_entrypoint": "devcenter/hubs/integration/README.md",
+      "canonical_entrypoint": "docs/hubs/integration.md",
       "canonical_roots": [
-        "devcenter/contracts/integration-connector.schema.json",
-        "devcenter/hubs/integration/connectors.json"
+        "contracts/hubs/integration-connector.schema.json",
+        "src/hubs/integration/connectors.json"
       ]
     }
   ],

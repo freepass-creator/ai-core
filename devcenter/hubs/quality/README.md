@@ -25,7 +25,7 @@ Release/Deploy/Rollback 실행 자체는 Delivery Hub 책임이다. Quality Hub�
 
 모든 Hub의 검증 증거를 공통 형식으로 남기는 정본:
 
-- Contract: `../../contracts/quality-receipt.schema.json`
+- Contract: `../../../contracts/hubs/quality-receipt.schema.json`
 - Runtime: `../../scripts/quality-receipt.mjs`
 - Test: `../../test/quality-receipt.test.mjs`
 - Guide: `../../docs/QUALITY-RECEIPT.md`

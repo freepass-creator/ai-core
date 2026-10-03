@@ -36,7 +36,7 @@
         "revision": "3eab2df45c9c28a40223a4fc8e47ca8d566d6263"
       },
       "evidence": [
-        "devcenter/contracts/quality-receipt.schema.json",
+        "contracts/hubs/quality-receipt.schema.json",
         "devcenter/docs/QUALITY-RECEIPT.md"
       ],
       "rule": "PASS applies only to the named claims, exact revision and attached evidence; it is not project-wide or production-ready certification."

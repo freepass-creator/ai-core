@@ -34,10 +34,10 @@ Quality Receipt
 
 ## 정본
 
-- Visual Job: `contracts/design-visual-job.schema.json`
-- Visual Plan: `contracts/design-visual-plan.schema.json`
-- Capture Manifest: `contracts/browser-capture-manifest.schema.json`
-- Visual Receipt: `contracts/design-visual-receipt.schema.json`
+- Visual Job: `../../contracts/hubs/design-visual-job.schema.json`
+- Visual Plan: `../../contracts/hubs/design-visual-plan.schema.json`
+- Capture Manifest: `../../contracts/hubs/browser-capture-manifest.schema.json`
+- Visual Receipt: `../../contracts/hubs/design-visual-receipt.schema.json`
 - Planner/reviewer runtime: `scripts/design-visual-qa.mjs`
 - Built-in browser adapter: `scripts/browser-capture.mjs`
 

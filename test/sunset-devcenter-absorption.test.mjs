@@ -23,7 +23,7 @@ test('★git 이 추적하는 devcenter/ 파일은 모두 표에 정확히 한 �
     return;
   }
   const 실제 = execFileSync('git', ['-c', 'core.quotepath=false', 'ls-files', 'devcenter'], { cwd: root, encoding: 'utf8' }).split('\n').filter(Boolean).sort();
-  const 적힌 = 표.files.map((f) => f.path).sort();
+  const 적힌 = 표.files.filter((f) => f.path.startsWith('devcenter/')).map((f) => f.path).sort();
   assert.equal(new Set(적힌).size, 적힌.length, '같은 파일이 두 번 적혔다');
   assert.deepEqual(적힌, 실제, '표에 없는 파일이 있거나, 없는 파일이 표에 있다');
 });
@@ -47,16 +47,16 @@ test('★흡수 목록은 실제로 ai-core 가 부르는 파일이다 — 적�
   const 문서허브 = 읽기('test/management-support-transition.test.mjs');
   for (const f of 흡수) {
     const 부름 = 입구.includes(f.path) || 정본선.includes(f.path) || 문서허브.includes(f.path.replace('devcenter/', '')) || 문서허브.includes(f.path)
-      || (f.path.startsWith('devcenter/contracts/') && 영수증.includes(`'${basename(f.path)}'`));
+      || (f.path.startsWith('contracts/hubs/') && 영수증.includes(`'${basename(f.path)}'`));
     assert.ok(부름, `${f.path} 는 흡수로 적혔는데 적힌 소비처가 부르지 않는다 — 흡수 까닭이 없다`);
   }
   // ★반대 방향(Codex 검토): 소비처가 부르는 devcenter 경로는 «전부» ABSORB 여야 한다. 손으로 적은 목록이 아니라 소비처에서 뽑는다.
   const 흡수경로 = new Set(흡수.map((f) => f.path));
   const 부르는것 = new Set([
-    ...[...입구.matchAll(/devcenter\/[^"'\s]+/g), ...정본선.matchAll(/devcenter\/[^"'\s]+/g), ...문서허브.matchAll(/devcenter\/[^"'\s`]+/g)].map((m) => m[0]),
-    ...[...(영수증.match(/const specialized=\[([\s\S]*?)\]/)?.[1] ?? '').matchAll(/'([^']+\.json)'/g)].map((m) => `devcenter/contracts/${m[1]}`),
+    ...[...입구.matchAll(/(?:devcenter|contracts\/hubs|src\/hubs|docs\/hubs)\/[^"'\s]+/g), ...정본선.matchAll(/(?:devcenter|contracts\/hubs|src\/hubs|docs\/hubs)\/[^"'\s]+/g), ...문서허브.matchAll(/(?:devcenter|contracts\/hubs|src\/hubs|docs\/hubs)\/[^"'\s`]+/g)].map((m) => m[0]),
+    ...[...(영수증.match(/const specialized=\[([\s\S]*?)\]/)?.[1] ?? '').matchAll(/'([^']+\.json)'/g)].map((m) => `contracts/hubs/${m[1]}`),
   ]);
-  const 기준선만 = new Set(표.also_retire_on_delete.flatMap((x) => x.match(/devcenter\/[^\s(]+/g) ?? []));
+  const 기준선만 = new Set(표.also_retire_on_delete.flatMap((x) => x.match(/(?:devcenter|contracts\/hubs|src\/hubs|docs\/hubs)\/[^\s(]+/g) ?? []));
   const 빠짐 = [...부르는것].filter((p) => !흡수경로.has(p) && !기준선만.has(p) && 표.files.some((f) => f.path === p));
   assert.deepEqual(빠짐, [], '소비처가 부르는데 흡수로 적히지 않은 파일이 있다');
   assert.ok(부르는것.size >= 12, '소비처에서 뽑은 경로가 너무 적다 — 뽑는 규칙이 깨졌다');

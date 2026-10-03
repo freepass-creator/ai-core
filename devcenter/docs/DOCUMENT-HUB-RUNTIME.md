@@ -32,7 +32,7 @@ Approved Template Lock / Last-known-good
 
 - repository: `freepass-creator/docshub`
 - exact revision: `4059d82779b7e1796afa2bbdf644e1d3bbdba3e7`
-- binding: `hubs/document/source-binding.json`
+- binding: `../../src/hubs/document/source-binding.json`
 - import/cutover classification: `../integration/DOCSHUB_IMPORT_CLASSIFICATION_2026-09-23.json` (AI Core 루트 기준 `docs/integration/...`)
 
 이 revision에서 `README.md`, `app.js`, `index.html`, `styles.css`의 blob SHA는 기존 binding과 동일하다. 즉 template source content drift는 없고 revision pointer만 최신 관측으로 갱신됐다.

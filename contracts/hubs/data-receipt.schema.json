@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://teamjpk.local/devcenter/contracts/data-receipt.schema.json",
+  "$id": "https://teamjpk.local/contracts/hubs/data-receipt.schema.json",
   "title": "Development Center Data Hub Receipt Core Extension v1",
   "description": "Specialized payload for core-receipt/v1. Common receipt fields are defined only by the AI Core receipt schema.",
   "allOf": [

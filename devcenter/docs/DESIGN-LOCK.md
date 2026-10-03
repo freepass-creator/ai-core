@@ -15,7 +15,7 @@
 
 ## 정본
 
-- Contract: `contracts/design-lock.schema.json`
+- Contract: `../../contracts/hubs/design-lock.schema.json`
 - Runtime: `scripts/design-lock.mjs`
 - Test definitions: `test/design-lock.test.mjs`
 

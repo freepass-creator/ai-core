@@ -5,7 +5,7 @@
 Development Center에서 “검사했다”, “문제없다”, “배포 준비됐다”를 말로 끝내지 않고 **프로젝트 exact revision에 묶인 검증 영수증**으로 남긴다.
 
 Machine contract:
-- `contracts/quality-receipt.schema.json`
+- `../../contracts/hubs/quality-receipt.schema.json`
 
 Runtime:
 - `scripts/quality-receipt.mjs`

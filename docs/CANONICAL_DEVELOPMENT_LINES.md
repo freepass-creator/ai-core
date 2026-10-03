@@ -13,7 +13,7 @@ AI Core는 같은 관심사에 두 개 이상의 정본을 두지 않는다. 브
 | Core Contract | `docs/CORE_CONTRACT_STANDARD.md` + `contracts/core-*` + `src/contracts/` | provider Adapter 표준 포함 |
 | Capability Runtime | `src/engine/capability-engine.mjs` | runtime adapter envelope는 Core Adapter 표준을 대체하지 않음 |
 | Workflow | `docs/workflow/WORKFLOW_CONSTITUTION.md` + `src/workflow/` + `registry/workflow-*` | 과거 D1~D8 브랜치는 정본 아님 |
-| Integration Connector | `devcenter/hubs/integration/` + `devcenter/contracts/integration-connector.schema.json` | 과거 root connector-registry 계보는 정본 아님 |
+| Integration Connector | `src/hubs/integration/` + `contracts/hubs/integration-connector.schema.json` | 과거 root connector-registry 계보는 정본 아님 |
 | AIOps import | `aiops/README.md`가 import 경계를 설명 | 내부 legacy 문서의 과거 "정본" 선언은 AI Core 전체에 효력 없음 |
 
 기계용 정본은 `registry/canonical-development-lines.json`이다.

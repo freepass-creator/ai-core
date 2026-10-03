@@ -6,7 +6,7 @@
 
 ## 정본
 
-- Asset contract: `contracts/engineering-asset.schema.json`
+- Asset contract: `../../contracts/hubs/engineering-asset.schema.json`
 - Asset registry: `hubs/engineering/assets.json`
 - Consumer registry: `hubs/engineering/consumers.json`
 - Runtime/gate: `scripts/engineering-hub.mjs`
