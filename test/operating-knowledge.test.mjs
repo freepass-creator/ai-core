@@ -77,6 +77,20 @@ test('교훈은 날짜 있는 실측 근거·적용법·check 칸이 있어야 �
   } finally { rmSync(집, { recursive: true, force: true }); }
 });
 
+test('★교훈은 헌법 §5 의 채택 상태와 적용 범위·적용 안 되는 조건을 가진다 — 한 프로젝트의 성공을 전사 규칙처럼 퍼뜨리지 않는다', () => {
+  const { 집, 파일 } = 판짜기((k) => {
+    k.lessons[0].status = 'TRUE';
+    delete k.lessons[1].not_applicable_when;
+  });
+  try {
+    const e = 돌린다(파일).out.errors;
+    assert.ok(e.includes(`LESSON_STATUS_INVALID:${정본.lessons[0].id}`));
+    assert.ok(e.includes(`LESSON_SCOPE_REQUIRED:${정본.lessons[1].id}`));
+  } finally { rmSync(집, { recursive: true, force: true }); }
+  /** 지금 교훈은 모두 한 저장소(ai-core·카톡)에서 나왔다 — 다른 사례로 재현되기 전엔 UNIVERSAL 이 아니다 */
+  assert.equal(정본.lessons.some((l) => l.status === 'ADOPTED_UNIVERSAL'), false);
+});
+
 test('check 는 읽기 전용·ai-core 루트·exit 0 계약이고 실재하는 검사기여야 한다 (Codex 상의)', () => {
   const { 집, 파일 } = 판짜기((k) => {
     k.lessons[0].check = { command: 'node scripts/check-branch-flow.mjs', cwd: 'ai-core-root', read_only: false, pass_exit_code: 0 };

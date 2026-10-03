@@ -374,7 +374,10 @@
         "cwd": "ai-core-root",
         "read_only": true,
         "pass_exit_code": 0
-      }
+      },
+      "status": "ADOPTED_LOCAL",
+      "applies_to": "ai-core 의 규칙·원칙 문서(가지 규칙·duo 우편함 두 사례). 다른 저장소에서 재현되면 ADOPTED_UNIVERSAL 후보.",
+      "not_applicable_when": "검사기를 만들 수 없는 사람 판단(사업 결정·문안 품질)에는 적용하지 않는다."
     },
     {
       "id": "lesson.classification-no-gaps",
@@ -386,7 +389,10 @@
         }
       ],
       "how_to_apply": "정본은 파일 하나에 규칙 몇 줄로 두고, 덮임·배타가 깨지면 FAIL 하는 검사를 넣는다. 파생 문서는 거기서 생성한다.",
-      "check": null
+      "check": null,
+      "status": "ADOPTED_LOCAL",
+      "applies_to": "ai-core 의 lane·상태·종류 같은 구분값.",
+      "not_applicable_when": "일회성 메모·임시 목록처럼 소비자가 없는 분류에는 검사기를 강제하지 않는다."
     },
     {
       "id": "lesson.local-test-is-not-ci",
@@ -398,7 +404,10 @@
         }
       ],
       "how_to_apply": "푸시 전에 .github/workflows/*.yml 의 run: 명령을 로컬에서 돌린다. UI 원천을 고치면 registry/design-hub-binding.json 의 sha256 도 갱신한다.",
-      "check": null
+      "check": null,
+      "status": "ADOPTED_LOCAL",
+      "applies_to": "ai-core 처럼 npm test 와 CI 워크플로가 다른 검사를 도는 저장소.",
+      "not_applicable_when": "CI 가 npm test 하나만 도는 저장소에서는 해당 없음."
     },
     {
       "id": "lesson.no-chained-commit-after-fallible-step",
@@ -410,7 +419,10 @@
         }
       ],
       "how_to_apply": "충돌 표식(<<<<<<<) 잔존과 JSON 파싱을 따로 확인한 다음 호출에서 커밋한다. 정규식이 든 코드는 셸 이스케이프 대신 파일 편집 도구로 쓴다.",
-      "check": null
+      "check": null,
+      "status": "ADOPTED_LOCAL",
+      "applies_to": "충돌 해소·파일 변환 뒤 커밋(aiops PR #20 사례). Windows CRLF 저장소에서 특히.",
+      "not_applicable_when": "실패할 수 없는 단계(이미 확인된 파일만 add)에는 해당 없음."
     },
     {
       "id": "lesson.ui-text-is-not-state",
@@ -422,7 +434,10 @@
         }
       ],
       "how_to_apply": "「빈 것」이 무엇으로 보이는지(placeholder) 먼저 정하고, 넣은 것이 아니라 앱이 한 일(말풍선 생성 등)로 확인한다.",
-      "check": null
+      "check": null,
+      "status": "ADOPTED_LOCAL",
+      "applies_to": "데스크톱·웹 UI 자동화(카톡 자동화 사례).",
+      "not_applicable_when": "앱이 상태 API 를 주는 경우엔 API 상태가 우선이며 화면 판독 자체가 필요 없다."
     },
     {
       "id": "lesson.state-a-position",
@@ -434,7 +449,10 @@
         }
       ],
       "how_to_apply": "상대 AI 의 의견도 절대 명령이 아니다. 실제 코드·문서를 읽은 근거로 입장을 정하고, 그다음 사용자 확인을 받는다.",
-      "check": null
+      "check": null,
+      "status": "ADOPTED_LOCAL",
+      "applies_to": "AI 간 검토·설계 상의와 사용자에게 올리는 결정.",
+      "not_applicable_when": "기술적 근거로 고를 수 없는 사업 판단(가격·브랜드·공개 범위)은 선택지를 그대로 올린다."
     },
     {
       "id": "lesson.always-on-alarm-teaches-ignoring",
@@ -450,7 +468,10 @@
         }
       ],
       "how_to_apply": "막힘을 새로 만들 때 「정상 상태에서도 울리는가」를 먼저 본다. 울린다면 경고로 두거나 판정 기준을 실제 상태(원격 head 등)로 바꾼다. 경고로 낮춰도 위험한 갈래는 닫힌 채로 둔다.",
-      "check": null
+      "check": null,
+      "status": "ADOPTED_LOCAL",
+      "applies_to": "ai-core 의 게이트·경보(키트 STALE·academy HEAD 두 사례).",
+      "not_applicable_when": "보안·개인정보 차단은 자주 울려도 낮추지 않는다 — 원인을 고친다."
     },
     {
       "id": "lesson.kit-blocking-inputs-stale-everything",
@@ -462,7 +483,10 @@
         }
       ],
       "how_to_apply": "차단 입력을 고치는 PR 은 「키트 재배포가 필요하다」를 남음에 적고, 여러 변경을 모아 한 번에 재배포한다. 사소한 문구 때문에 차단 입력을 건드리지 않는다.",
-      "check": null
+      "check": null,
+      "status": "ADOPTED_LOCAL",
+      "applies_to": "ai-core 의 키트 차단 입력(헌법·트랙 규격·operating-knowledge·academy-kit-compat).",
+      "not_applicable_when": "키트를 쓰지 않는 저장소에는 해당 없음."
     }
   ]
 }

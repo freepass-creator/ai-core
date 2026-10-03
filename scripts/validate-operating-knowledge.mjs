@@ -24,6 +24,9 @@ for(const l of j.lessons??[]){
   if(!/^lesson\.[a-z0-9-]+$/.test(l.id??''))errors.push(`LESSON_ID_INVALID:${l.id}`);
   if(!l.lesson||!l.how_to_apply)errors.push(`LESSON_INCOMPLETE:${l.id}`);
   if(!Array.isArray(l.evidence)||!l.evidence.length||l.evidence.some(e=>!/^\d{4}-\d{2}-\d{2}$/.test(e.date??'')||!e.observed))errors.push(`LESSON_EVIDENCE_REQUIRED:${l.id}`);
+  // 헌법 §5: 노하우는 현재 상태와 적용 범위·적용하면 안 되는 조건을 가진다. 한 프로젝트의 성공은 ADOPTED_LOCAL 이다.
+  if(!['CANDIDATE','ADOPTED_LOCAL','ADOPTED_DOMAIN','ADOPTED_UNIVERSAL','HOLD','REJECTED','SUPERSEDED'].includes(l.status))errors.push(`LESSON_STATUS_INVALID:${l.id}`);
+  if(!l.applies_to||!l.not_applicable_when)errors.push(`LESSON_SCOPE_REQUIRED:${l.id}`);
   if(!('check' in l))errors.push(`LESSON_CHECK_FIELD_REQUIRED:${l.id}`);
   else if(l.check!==null){const c=l.check;if(typeof c.command!=='string'||c.cwd!=='ai-core-root'||c.read_only!==true||c.pass_exit_code!==0)errors.push(`LESSON_CHECK_INVALID:${l.id}`);else{const s=c.command.match(/^node (scripts\/\S+\.mjs)/);if(!s||!existsSync(resolve(root,s[1])))errors.push(`LESSON_CHECK_NOT_FOUND:${l.id}`)}}
   if(JSON.stringify(l).match(/\d{6}-?[1-4]\d{6}|password|access_token|refresh_token/i))errors.push(`LESSON_SENSITIVE:${l.id}`);
