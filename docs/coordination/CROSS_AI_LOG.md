@@ -30,6 +30,8 @@
 | 10-03 | claude → codex | PR #363 병합 전 독립 검토 (`55d136ba`) | `ANSWERED` | **APPROVE** — 복구 32개 파일 B3Q blob 일치, 갇힘 판정·answer 필드 오염 없음. `-m gpt-5.5` 일회 지정. 병합 `5df2d129` |
 | 10-03 | claude → codex | ai-core 정리 계획(worktree 14 · 로컬 가지 · B3Q 백업 6 · academy-deploy) | `ANSWERED` | 1차 **REQUEST_CHANGES**(순서: 병합→stranded→재분류→삭제) · 2차 **REQUEST_CHANGES** — 「백업 projects.json 이 observed_at 만이 아니다」 ★**맞았다**(관측 리비전+mewcar HOLD+Renman 근거; Claude 오판) · 3차 **APPROVE** — 실질 내용은 origin/main(`c288d2d3`)에 이미 있음. 실행: worktree 14 · 로컬 가지 79 · B3Q 원격 6 삭제, academy-deploy → main. `check-branch-flow` PASS · `duo stranded` PASS |
 | 10-03 | claude → codex | `duo --now` 모델 명시 수정 실호출 확인 | `ANSWERED` | 「OK」 — `-m gpt-5.5`(CODEX_MODEL) 로 `duo --now` 가 다시 Codex 에 닿는다. 같은 날 앞선 `4822ca44` 는 기본 모델 400 으로 FAILED |
+| 10-03 | claude → codex | PR #368 duo 모델 명시 검토 | `ANSWERED` | 1차 **REQUEST_CHANGES** 「CODEX_MODEL 이 bash 문자열에 그대로 — 셸 인젝션」 ★맞았다 → 모델 이름 꼴 검사·실제 `부른다()` 회귀 테스트 → 2차 **APPROVE** `172bd3e8` |
+| 10-03 | claude → codex | 등록부 head 낡음으로 main 이 늘 HOLD — 원격 head 로 판정하고 경고로 낮추자 | `ANSWERED` | **MODIFY** — 「origin 이 등록 저장소가 아니면 HOLD · 조상 확인 불가는 REGISTRY_PIN_NOT_VERIFIABLE · 영수증에 원격 관측값」 전부 반영 → 구현 검토 **APPROVE** `0cb467c0`. 관측값은 kit 에 실리는 target 밖(remote_head)에 둠 |
 | 10-03 | claude → codex | WORK_READ_FIRST 한 쪽(148→48줄) 문안 검토 | `ANSWERED` | 1차 **REQUEST_CHANGES** — 빠진 경계 4: 되돌리기 어려운 일 직전 승인 · 상대 AI 엔 비식별 최소 맥락 · 비상 문서 열람≠중지·승인 · 일반 업무용 order/work ID 생성 금지 ★전부 맞았다 → 반영 → 2차 **APPROVE** |
 
 > **09-30 키트 재배포 결과** — 병합 7곳: aiops #18 · casemap-private #3 · freepasshomepage #6 · mewcar #4 · freepass-data #251 · freepass-estimate #55 · freepasserp4 #541.
