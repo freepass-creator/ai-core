@@ -46,6 +46,9 @@ test('★다른 worktree 의 커밋 안 된 쪽지를 찾는다 — 지우면 �
     assert.equal(판.미커밋, 1);
     assert.equal(판.자리.length, 1);
     assert.match(판.자리[0].경로, /side$/);
+    assert.equal(갇힌기록(본, { 대상: join(집, 'typo') }).대상없음, true);
+    assert.notEqual(갇힌기록(본, { 대상: 본 }).대상없음, true);
+    assert.notEqual(갇힌기록(본, { 대상: 곁 }).대상없음, true);
     /** 지우기 전 검사는 그 worktree 하나만 본다 */
     assert.equal(갇힌기록(본, { 대상: 본 }).자리.length, 0);
     assert.equal(갇힌기록(본, { 대상: 곁 }).미커밋, 1);

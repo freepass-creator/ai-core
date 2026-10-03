@@ -58,7 +58,11 @@ export function 안닿은것(경로) {
 /** 모든 worktree 를 훑어 갇힌 쪽지를 모은다. `대상` 을 주면 그 worktree 하나만 본다(지우기 전 검사). */
 export function 갇힌기록(root, { 대상 = null } = {}) {
   const 자리 = [];
-  for (const w of worktree들(root)) {
+  const 목록 = worktree들(root);
+  if (대상 && !목록.some((w) => 같은길(w.경로, 대상))) {
+    return { 자리, 미커밋: 0, 미푸시: 0, 고아: 0, 대상없음: true };
+  }
+  for (const w of 목록) {
     if (대상 && !같은길(w.경로, 대상)) continue;
     if (!w.있음) {
       자리.push({ ...w, 고아: true, 미커밋: [], 미푸시: [] });
