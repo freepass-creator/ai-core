@@ -14,7 +14,9 @@ export function resolveLocator(locator, { repoRoot, projects, projectsRoot, exis
   if (exists(join(repoRoot, 첫))) return join(repoRoot, 첫, ...나머지);
   const 프로젝트 = projects.find((p) => p.project_id === 첫 ||
     p.local_path?.replace(/[\\/]+$/, "").split(/[\\/]/).at(-1) === 첫);
-  return join(프로젝트?.local_path || join(projectsRoot, 첫), ...나머지);
+  // 등록부의 local_path 는 다른 PC 경로일 수 있다 — 이 PC 에 실제로 있을 때만 쓴다
+  const 등록경로 = 프로젝트?.local_path && exists(프로젝트.local_path) ? 프로젝트.local_path : null;
+  return join(등록경로 || join(projectsRoot, 첫), ...나머지);
 }
 
 function main() {
