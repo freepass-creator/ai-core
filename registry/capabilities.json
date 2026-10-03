@@ -791,6 +791,27 @@
       ],
       "result_contract": "ai-core-work-result/v1",
       "hold_reason": "REFERENCE — Capability Engine 이 실행하지 않는다. 각 AI 세션이 이 PC 의 gws CLI 로 직접 쓴다(다른 AI·대표를 거치지 않는다). 절차는 memory/TOOL_CONNECTIONS.md «Google Workspace direct use». 시트 쓰기는 쓰기 전 같은 범위 읽기 → 쓰기 → 다시 읽어 확인. 메일 발송·공유/권한 변경·삭제는 대표 지시가 있을 때만. 2026-10-03 대표: 「왜 구글 시트를 직접 못 만지고 코덱스를 통해서 만지냐 … 세션마다 노하우를 모르고 헤맨다」. B3Q 시험: gws(pyh@teamjpk.com)로 시트 읽기 성공, 범위 drive·spreadsheets·gmail(readonly·compose·send) 확인."
+    },
+    {
+      "id": "design.ai-staff-assets",
+      "title": "AI 직원 캐릭터 정본·이미지·이력서·자기소개서 생성",
+      "status": "HOLD",
+      "domains": [
+        "design",
+        "document"
+      ],
+      "projects": [
+        "ai-staff"
+      ],
+      "mode": "LOCAL_MUTATION",
+      "priority": 70,
+      "inputs": [],
+      "required_scopes": [],
+      "walls": [
+        "external-publication"
+      ],
+      "result_contract": "ai-core-work-result/v1",
+      "hold_reason": "ai-staff 지정 revision에서 캐릭터 정본, RealVisXL + IP-Adapter + openpose 이미지 재현·얼굴 유사도 검사, 이력서·자기소개서 생성의 실행 검증과 AI Core adapter가 아직 없다. 이든은 확정, 루다는 초안이며 등록을 실행 준비 완료로 보지 않는다."
     }
   ]
 }
