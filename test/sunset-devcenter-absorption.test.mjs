@@ -5,7 +5,7 @@
 //   정적 grep 만으로는 동적 경로(스키마 6개)를 놓쳤다 — devcenter/ 를 지운 임시 체크아웃에서 전체 테스트를 돌려 찾았다.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { resolve, dirname, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -15,17 +15,14 @@ const 표 = JSON.parse(readFileSync(resolve(root, 'registry/sunset-devcenter-abs
 const 통 = new Set(['ABSORB', 'REVIEW', 'ARCHIVE']);
 const 읽기 = (p) => readFileSync(resolve(root, p), 'utf8');
 
-test('★git 이 추적하는 devcenter/ 파일은 모두 표에 정확히 한 번 있다 — 공백도 중복도 없다', () => {
-  if (!existsSync(resolve(root, 'devcenter'))) {
-    // ★Codex 검토: 폴더가 없을 때 그냥 넘어가면 «태그 없이 지운 것»도 통과한다. 지웠다면 검증된 태그가 실제로 있어야 한다.
-    assert.equal(표.recovery_tag.status, 'VERIFIED', 'devcenter/ 가 없는데 복구 태그가 검증되지 않았다');
-    execFileSync('git', ['rev-parse', '--verify', `refs/tags/${표.recovery_tag.name}`], { cwd: root, stdio: 'ignore' });
-    return;
-  }
-  const 실제 = execFileSync('git', ['-c', 'core.quotepath=false', 'ls-files', 'devcenter'], { cwd: root, encoding: 'utf8' }).split('\n').filter(Boolean).sort();
-  const 적힌 = 표.files.filter((f) => f.path.startsWith('devcenter/')).map((f) => f.path).sort();
-  assert.equal(new Set(적힌).size, 적힌.length, '같은 파일이 두 번 적혔다');
-  assert.deepEqual(적힌, 실제, '표에 없는 파일이 있거나, 없는 파일이 표에 있다');
+test('devcenter tracked assets are retired and the historical manifest is recoverable', () => {
+  const tracked = execFileSync('git', ['ls-files', '-z', '--', 'devcenter'], { cwd: root, encoding: 'utf8' }).split('\0').filter(Boolean);
+  assert.deepEqual(tracked, [], 'stage the authorized deletions before final retirement verification');
+  assert.equal(표.recovery.kind, 'PROTECTED_MAIN_SHA');
+  const historical = 표.files.filter(f => f.path.startsWith('devcenter/')).map(f => f.path).sort();
+  const deleted = 표.recovery.deleted_manifest.map(f => 'devcenter/' + f.path).sort();
+  assert.equal(new Set(historical).size, 57);
+  assert.deepEqual(historical, deleted);
 });
 
 test('통은 셋뿐이고, 셈이 맞는다', () => {
@@ -66,8 +63,10 @@ test('★흡수 목록은 실제로 ai-core 가 부르는 파일이다 — 적�
   }
 });
 
-test('★REVIEW 가 남았거나 복구 태그가 없으면 «완료»가 아니다', () => {
-  const 남음 = 표.counts.REVIEW > 0 || 표.recovery_tag.status !== 'VERIFIED';
-  if (남음) assert.doesNotMatch(표.status, /^COMPLETE/, '검토가 남았거나 태그가 검증 전인데 완료로 적었다');
-  assert.equal(표.recovery_tag.conditions_codex.length, 4, '태그를 복구 수단으로 인정하는 Codex 조건 넷이 빠졌다');
+test('retirement uses the decided recovery contract while preserving old classification and tag history', () => {
+  assert.match(표.status, /흡수 완료/);
+  assert.equal(표.recovery.kind, 'PROTECTED_MAIN_SHA');
+  assert.equal(표.recovery.sha, 'd7f1935763a5511536ca8c31489cd282cb13b1d6');
+  assert.match(표.recovery_tag.superseded, /2026-10-04 사용자 결정/);
+  assert.equal(표.recovery_tag.conditions_codex.length, 4, 'retain superseded decision history');
 });
